@@ -1,0 +1,83 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://wso2.org/humantask/schema/server/config"
+            xmlns:tns="http://wso2.org/humantask/schema/server/config"
+            elementFormDefault="qualified">
+    <xsd:element name="HumanTaskServerConfig" type="tns:tHumanTaskServerConfig"/>
+    <xsd:complexType name="tHumanTaskServerConfig">
+        <xsd:sequence>
+            <xsd:element name="PersistenceConfig" type="tns:tPersistenceConfig"/>
+            <xsd:element name="PeopleQueryEvaluatorConfig" type="tns:tPeopleQueryEvaluatorConfig"/>
+            <xsd:element name="SchedulerConfig" type="tns:tSchedulerConfig"/>
+            <xsd:element name="TransactionManagerConfig" type="tns:tTransactionManagerConfig"/>
+            <xsd:element name="TaskCleanupConfig" type="tns:tTaskCleanupConfig"/>
+            <xsd:element name="TaskEventListeners" type="tns:tTaskEventListeners"/>
+            <xsd:element name="UIRenderingEnabled" type="xsd:boolean"/>
+            <xsd:element name="HumanTaskCoordination" type="tns:tHumanTaskCoordination" />
+            <xsd:element name="EnableTaskOperationsForBusinessAdministrator" type="xsd:boolean" />
+            <xsd:element name="CacheConfiguration" type="tns:tCacheConfiguration"/>
+            <xsd:element name="EnableTaskValidationBeforeDeployment" type="xsd:boolean"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tPersistenceConfig">
+        <xsd:sequence>
+            <xsd:element name="DataSource" type="xsd:string"/>
+            <xsd:element name="DAOConnectionFactoryClass" type="xsd:string"/>
+            <xsd:element name="GenerateDdl" type="xsd:boolean"/>
+            <xsd:element name="ShowSql" type="xsd:boolean"/>
+            <xsd:element name="JNDIInitialContextFactory" type="xsd:string"/>
+            <xsd:element name="JNDIProviderUrl" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tPeopleQueryEvaluatorConfig">
+        <xsd:sequence>
+            <xsd:element name="PeopleQueryEvaluatorClass" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tSchedulerConfig">
+        <xsd:sequence>
+            <xsd:element name="MaxThreadPoolSize" type="xsd:int"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tTransactionManagerConfig">
+        <xsd:sequence>
+            <xsd:element name="TransactionManagerClass" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tTaskCleanupConfig">
+        <xsd:sequence>
+            <xsd:element name="cronExpression" type="xsd:string"/>
+            <xsd:element name="statuses" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tTaskEventListeners">
+        <xsd:sequence>
+            <xsd:element name="ClassName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- HumanTask Coordination Related configuration -->
+    <xsd:complexType name="tHumanTaskCoordination">
+        <xsd:sequence>
+            <xsd:element name="TaskCoordinationEnabled" type="xsd:boolean" />
+            <xsd:element name="RegistrationServiceAuthentication" type="tns:tRegServiceAuth" />
+            <xsd:element name="TaskRegistrationEnabled" type="xsd:boolean"/>
+            <xsd:element name="ClusteredTaskEngines" type="tns:tClusterConfig"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tRegServiceAuth">
+        <xsd:sequence>
+            <xsd:element name="Username" type="xsd:string"/>
+            <xsd:element name="Password" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tClusterConfig">
+        <xsd:sequence>
+            <xsd:element name="LoadBalancerURL" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tCacheConfiguration">
+        <xsd:sequence>
+            <xsd:element name="EnableCaching" type="xsd:boolean"/>
+            <xsd:element name="CacheExpiryDuration" type="xsd:int" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

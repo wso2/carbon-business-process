@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) OASIS Open 2009. All Rights Reserved.
+-->
+<wsdl:definitions 
+  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803"
+  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803" 
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:htd="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+  xmlns:htt="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">
+
+  <wsdl:documentation>
+    Web Service Definition for WS-HumanTask 1.1 - Operations for Task Parent Applications
+  </wsdl:documentation>
+
+  <wsdl:types>
+    <xsd:schema 
+      targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803"
+      elementFormDefault="qualified" 
+      blockDefault="#all">
+
+      <xsd:import
+        namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803" 
+        schemaLocation="ws-humantask.xsd"/>
+      <xsd:import
+        namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803" 
+        schemaLocation="ws-humantask-types.xsd"/>
+        
+      <!-- Input and output elements -->
+      <xsd:element name="registerLeanTaskDefinition">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="taskDefinition" type="htd:tLeanTask" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="registerLeanTaskDefinitionResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="taskName" type="xsd:NCName" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="unregisterLeanTaskDefinition">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="taskName" type="xsd:NCName" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="unregisterLeanTaskDefinitionResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="taskName" type="xsd:NCName" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="listLeanTaskDefinitions">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:annotation>
+              <xsd:documentation>Empty message</xsd:documentation>
+            </xsd:annotation>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="listLeanTaskDefinitionsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="leanTaskDefinitions">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="leanTaskDefinition" type="htd:tLeanTask" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="createLeanTask">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="inputMessage">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:any processContents="lax" namespace="##any" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="taskDefinition" type="htd:tLeanTask" minOccurs="0"/>
+            <xsd:element name="taskName" type="xsd:NCName" minOccurs="0" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="createLeanTaskResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outputMessage">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:any processContents="lax" namespace="##any" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="createLeanTaskAsync">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="inputMessage">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:any processContents="lax" namespace="##any" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="taskDefinition" type="htd:tLeanTask" minOccurs="0"/>
+            <xsd:element name="taskName" type="xsd:NCName" minOccurs="0" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="createLeanTaskAsyncResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:annotation>
+              <xsd:documentation>Empty message</xsd:documentation>
+            </xsd:annotation>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="createLeanTaskAsyncCallback">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="outputMessage">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:any processContents="lax" namespace="##any" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <!-- Fault elements -->
+      <xsd:element name="illegalState">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="status" type="htt:tStatus"/>
+            <xsd:element name="message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      
+      <xsd:element name="illegalArgument" type="xsd:string"/>
+      
+      <xsd:element name="illegalAccess" type="xsd:string"/>
+      
+    </xsd:schema>
+  </wsdl:types>
+  
+  <!-- Declaration of messages -->
+  <wsdl:message name="registerLeanTaskDefinition">
+    <wsdl:part name="registerLeanTaskDefinition" element="registerLeanTaskDefinition"/>
+  </wsdl:message>
+  <wsdl:message name="registerLeanTaskDefinitionResponse">
+    <wsdl:part name="registerLeanTaskDefinitionResponse" element="registerLeanTaskDefinitionResponse"/>
+  </wsdl:message>
+
+  <wsdl:message name="unregisterLeanTaskDefinition">
+    <wsdl:part name="unregisterLeanTaskDefinition" element="unregisterLeanTaskDefinition"/>
+  </wsdl:message>
+  <wsdl:message name="unregisterLeanTaskDefinitionResponse">
+    <wsdl:part name="unregisterLeanTaskDefinitionResponse" element="unregisterLeanTaskDefinitionResponse"/>
+  </wsdl:message>
+
+  <wsdl:message name="listLeanTaskDefinitions">
+    <wsdl:part name="listLeanTaskDefinitions" element="listLeanTaskDefinitions"/>
+  </wsdl:message>
+  <wsdl:message name="listLeanTaskDefinitionsResponse">
+    <wsdl:part name="listLeanTaskDefinitionsResponse" element="listLeanTaskDefinitionsResponse"/>
+  </wsdl:message>
+
+  <wsdl:message name="createLeanTask">
+    <wsdl:part name="createLeanTask" element="createLeanTask"/>
+  </wsdl:message>
+  <wsdl:message name="createLeanTaskResponse">
+    <wsdl:part name="createLeanTaskResponse" element="createLeanTaskResponse"/>
+  </wsdl:message>
+
+  <wsdl:message name="createLeanTaskAsync">
+    <wsdl:part name="createLeanTaskAsync" element="createLeanTaskAsync"/>
+  </wsdl:message>
+  <wsdl:message name="createLeanTaskAsyncResponse">
+    <wsdl:part name="createLeanTaskAsyncResponse" element="createLeanTaskAsyncResponse"/>
+  </wsdl:message>
+
+  <wsdl:message name="createLeanTaskAsyncCallback">
+    <wsdl:part name="createLeanTaskAsyncCallback" element="createLeanTaskAsyncCallback"/>
+  </wsdl:message>
+
+  <!-- Declaration of fault messages -->
+  <wsdl:message name="illegalStateFault">
+    <wsdl:part name="illegalState" element="illegalState"/>
+  </wsdl:message>
+  <wsdl:message name="illegalArgumentFault">
+    <wsdl:part name="illegalArgument" element="illegalArgument"/>
+  </wsdl:message>
+  <wsdl:message name="illegalAccessFault">
+    <wsdl:part name="illegalAccess" element="illegalAccess"/>
+  </wsdl:message>
+  
+  <!-- Port type definitions -->
+  <wsdl:portType name="leanTaskOperations">
+
+    <wsdl:operation name="registerLeanTaskDefinition">
+      <wsdl:input message="registerLeanTaskDefinition"/>
+      <wsdl:output message="registerLeanTaskDefinitionResponse"/>
+      <wsdl:fault name="illegalStateFault" message="illegalStateFault"/>
+      <wsdl:fault name="illegalAccessFault" message="illegalAccessFault"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="unregisterLeanTaskDefinition">
+      <wsdl:input message="unregisterLeanTaskDefinition"/>
+      <wsdl:output message="unregisterLeanTaskDefinitionResponse"/>
+      <wsdl:fault name="illegalArgumentFault" message="illegalArgumentFault"/>
+      <wsdl:fault name="illegalAccessFault" message="illegalAccessFault"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="listLeanTaskDefinitions">
+      <wsdl:input message="listLeanTaskDefinitions"/>
+      <wsdl:output message="listLeanTaskDefinitionsResponse"/>
+      <wsdl:fault name="illegalAccessFault" message="illegalAccessFault"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="createLeanTask">
+      <wsdl:input message="createLeanTask"/>
+      <wsdl:output message="createLeanTaskResponse"/>
+      <wsdl:fault name="illegalArgumentFault" message="illegalArgumentFault"/>
+      <wsdl:fault name="illegalAccessFault" message="illegalAccessFault"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="createLeanTaskAsync">
+      <wsdl:input message="createLeanTaskAsync"/>
+      <wsdl:output message="createLeanTaskAsyncResponse"/>
+      <wsdl:fault name="illegalArgumentFault" message="illegalArgumentFault"/>
+      <wsdl:fault name="illegalAccessFault" message="illegalAccessFault"/>
+    </wsdl:operation>
+
+  </wsdl:portType>
+  
+  <wsdl:portType name="leanTaskCallbackOperations">
+
+    <wsdl:operation name="createLeanTaskAsyncCallback">
+      <wsdl:input message="createLeanTaskAsyncCallback"/>
+    </wsdl:operation>
+
+  </wsdl:portType>  
+  
+</wsdl:definitions>

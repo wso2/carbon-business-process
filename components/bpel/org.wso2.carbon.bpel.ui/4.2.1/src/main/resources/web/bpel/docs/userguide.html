@@ -1,0 +1,220 @@
+<!--
+ ~ Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
+ -->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+    <title>Business Process Component User Guide</title>
+    <link href="../../admin/css/documentation.css" rel="stylesheet" type="text/css" media="all"/>
+    <style type="text/css">
+        img {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>WSO2 BPEL Component User Guide</h1>
+
+<h2>Introduction</h2>
+
+<p>
+    WSO2 Business Process component adds the capability to execute business processes written using
+    WS-BPEL standard in WSO2 SOA platform. It also provides a complete web based graphical console
+    to deploy, manage and view processes and process instances. WSO2 Business Process component is
+    powered by Apache ODE(Orchestration Director Engine).
+</p>
+
+<h3>WS-BPEL</h3>
+
+<p><a href="http://docs.oasis-open.org/wsbpel/2.0/OS/wsbpel-v2.0-OS.html"
+      target="_blank">WS-BPEL</a> defines a language for the specification of Executable and
+    Abstract business processes. By doing so, it extends the Web Services interaction model and
+    enables it to support business transactions. WS-BPEL defines an interoperable integration model
+    that should facilitate the expansion of automated process integration in both the
+    intra-corporate and the business-to-business spaces. Processes in WS-BPEL export and import
+    functionality by using Web Service interfaces exclusively.
+</p>
+
+<h2>Table of Content</h2>
+<ul>
+    <li><a href="#processes">Processes</a>
+        <ul>
+            <li>Difference between Active and Retired Processes</li>
+            <li>Detailed View of Deployed Business Process</li>
+            <li>Deployment Descriptor Editor</li>
+        </ul>
+    </li>
+    <li><a href="#instances">Instances</a>
+        <ul>
+            <li>Instance Filtering</li>
+            <li>Instance Detail Page</li>
+        </ul>
+    </li>
+    <li><a href="#manageBPEL">Managing BPEL Processes</a>
+        <ul>
+            <li>BPEL Package Format</li>
+            <li>Folder structure of BPEL Package</li>
+            <li>Deploying BPEL packages through the management console</li>
+            <li>Undeploying BPEL packages</li>
+        </ul>
+    </li>
+</ul>
+
+<h2><a name="processes">Processes</a></h2>
+
+<p>In the management console, under <strong>Processes</strong> click <strong>List</strong>. The
+    <strong>Processes</strong> page will
+    appear.</p>
+<img src="img/Processes.png" alt="Deployed Processes"/>
+
+<p>Process list will display IDs of the deployed processes with their version, status, deployed
+    date and the package they are contained in. With this list you can retire and activate processes. You can view detailed description
+    about the process, when you click the process id link. By clicking the Package Name, you can view details, undeploy or download the package.</p>
+
+<h3>Difference between Active and Retired Processes</h3>
+
+<p>Active processes can be invoked by partners and as a result, new process instances will be
+    created. When a process is retired all the running instances of that particular process will
+    behave normally. But no new instances will be created from retired processes.</p>
+
+<h3>Detailed View of Deployed Business Process</h3>
+<img src="img/ProcessPage.png" alt="Process Details"/>
+
+<p>In the management console, click <strong>List</strong> under <strong>Processes</strong>. Then click
+    on any of the
+    process ID links. It will display a detailed description about the process including version,
+    status, deployed date, container package of that process, total instance, instance summary,
+    syntax highlighted process definition and process visualization.</p>
+
+<p>Using the link display in front of the <strong>Status</strong> of the process users can activate
+    or retire that
+    process.</p>
+<img src="img/Status.png" alt="Process Status"/>
+
+<p>Under <strong>Quality of Service Configuration</strong>, you can configure QoS for each
+    partner-link used in the
+    business process.</p>
+<img src="img/QoS.png" alt="QoS Configurations"/>
+
+<p>Under <strong>WSDL details</strong>, you create instances for the provided partner links and view
+    their WSDLs.</p>
+<img src="img/WSDL Info.png" alt="WSDL Details"/>
+
+<h3>Deployment Descriptor Editor</h3>
+
+<p>You can go to Deployment Descriptor Editor by clicking the link <strong>View or Edit Deployment Descriptor</strong>
+   on any of the detailed process description pages. </p>
+<img src="img/DeployEditorLink.png" alt="Link to Deployment Descriptor Editor"/>
+
+<p>This editor allows BPEL process administrators to configure process/instance/scope event generation, instance cleanup at run-time.
+   Also it provides the other configuration details like MEX interceptors, process properties, provided services (inbound interfaces)
+   and invoked partner services (outbound interfaces). </p>
+<img src="img/DeployEditor.png" alt="Deployment Descriptor Editor"/>
+<h2><a name="instances">Instances</a></h2>
+<img src="img/Instances.png" alt="Instance List"/>
+
+<p>
+    When you click Instances under Business Processes, <strong>Instances</strong> page will appear.
+    This page will
+    display paginated list of currently available process instances in the system.
+</p>
+
+<p>
+    The instance list will display ID of the instance with the process id of that instance, current
+    status, date started, last active date and actions that can be performed on that instance. Users
+    can click on the instance id link to go to the detailed view of that instance and use process id
+    link to view the details of the process. Users can use Suspend/Resume, Terminate and Delete
+    links to suspend/resume active instance, terminate active instance and to delete instance from
+    the system. Complete and Terminated instances can only be deleted and can't perform any other
+    actions on it.
+</p>
+
+<h3>Instance Filtering</h3>
+
+<p>User can filter the available instances according to their status. Advance Filter link will
+    expand the filter from and users can use that to filter the instance list according to process
+    name, process namespace, started date and etc.. If the user want to reset the filter and list
+    all the available instances user can use either 'All' shortcut link or 'Reset Filter' link.</p>
+
+<p>Advance Filter link will expand the filter form and user can use it to narrow down the instance
+    list.</p>
+<img src="img/AdvancedFilter.png" alt="Advanced Filter"/>
+
+<h3>Instance Details Page</h3>
+
+<p>When a user clicks on instance id link at the 'Instances Created' page, instance details page for
+    the instance represented by that ID will appear.</p>
+<img src="img/InstanceDetails.png" alt="Instance Details"/>
+
+<p>Instance details page will display information like process id of that instance, status, last
+    active date and event information, scope information, variable values and activity-event
+    information of that instance. It will also include process instance details visualization with different abstraction levels</p>
+
+<h2><a name="manageBPEL">Managing BPEL Processes</a></h2>
+
+<h3>BPEL Package Format</h3>
+
+<p>BPEL package is a ZIP archived directory with all the relevant deployment artifacts. Minimal BPEL
+    package contains the deployment descriptor, one or more process definitions(.bpel or .cbp), WSDL
+    and XSDs(excluding the ones compiled into .cbp). The deployment descriptor is a file named
+    deploy.xml. To deploy, just copy the BPEL package containing your artifacts to the
+    %CARBON_HOME%/repository/deployment/server/bpel directory. If you are using a URL repository
+    copy the package to 'bpel' directory in that repository.</p>
+
+<h3>Folder structure of a BPEL Package</h3>
+<img src="img/BPELPackageFormat.png" alt="Package Format"/>
+
+<h3>Deploying BPEL packages through the management console</h3>
+<img src="img/AddBPEL.png" alt="Add New BPEL"/>
+
+<p>
+<ol>
+    <li>In the management console, under Business Processes click Add BPEL. The <strong>Add
+        BPEL</strong> page will
+        appear.
+    </li>
+    <li>Click <strong>Browse</strong> to locate the file you want to upload.</li>
+    <li>You can upload multiple files by clicking on the <strong>+</strong> sign</li>
+    <li>Click <strong>Upload</strong>. If the BPEL package contains valid processes and adheres to
+        the format, a
+        message will appear saying the deployment was successful. If there are compilation failures
+        in process definitions, a compilation error message will appear. In case of missing
+        deployment descriptor, 'deploy.xml does not exist' message will appear. In this case
+        management console will not automatically go to Processes page or Deployed Packages page.
+    </li>
+</ol>
+</p>
+<img src="img/SuccessDeploy.png" alt="After successful deployment"/>
+<h3>Undeploying BPEL packages</h3>
+<img src="img/Undploy.png" alt="Undploying BPEL"/>
+
+<p>
+<ol>
+    <li>In the management console, under Processes click List. The <strong>Deployed Process List</strong> page will
+        appear.
+    </li>
+    <li>Click the <strong>Package Name</strong> of the package you want to undeploy</li>
+    <li>Click <strong>Undeploy</strong> from the <strong>Actions</strong> list.</li>
+    <li>Make sure you click <strong>Yes</strong> in the <strong>Confirmation</strong> dialog.</li>
+</ol>
+<img src="img/UndployConfirm.png" alt="Confirm Undeploying"/>
+</p>
+</body>
+</html>

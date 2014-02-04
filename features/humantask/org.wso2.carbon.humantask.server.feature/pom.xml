@@ -1,0 +1,233 @@
+<!--
+ ~ Copyright (c) 2005-2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.wso2.carbon</groupId>
+    	<artifactId>humantask-feature</artifactId>
+        <version>4.3.0-SNAPSHOT</version>
+	<relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <version>4.3.0-SNAPSHOT</version>
+    <artifactId>org.wso2.carbon.humantask.server.feature</artifactId>
+    <packaging>pom</packaging>
+    <name>WSO2 Carbon - HumanTask Core Feature</name>
+    <url>http://wso2.org</url>
+    <description>This feature contains the core bundles required for Back-end HumanTask functionality</description>
+
+    <dependencies>
+		<dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
+            <version>4.3.0-SNAPSHOT</version>
+        </dependency>
+		<dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask</artifactId>
+	    	<version>4.3.0-SNAPSHOT</version>
+        </dependency>
+		<dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask.deployer</artifactId>
+	    	<version>4.3.0-SNAPSHOT</version>
+        </dependency>
+		<dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask.cleanup.scheduler</artifactId>
+	    	<version>4.3.0-SNAPSHOT</version>
+        </dependency>
+		<dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask.coordination.module</artifactId>
+	    	<version>4.3.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database.wso2</groupId>
+            <artifactId>h2-database-engine</artifactId>
+            <version>${wso2.h2.orbit.version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.bpel.common</artifactId>
+	    <version>4.3.0-SNAPSHOT</version>
+       </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+	    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>clean-ht-h2-database</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+				                <delete file="resources/conf/jpadb.h2.db"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-ht-h2-database</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <path id="h2.classpath">
+                                    <path refid="maven.compile.classpath"/>
+                                </path>
+
+                                <echo
+                                        message="########### Create HumanTask Database ##############"/>
+
+                                <sql
+                                        driver="org.h2.Driver"
+                                        url="jdbc:h2:${basedir}/resources/conf/jpadb;create=true"
+                                        userid="wso2carbon" password="wso2carbon" autocommit="true"
+                                        onerror="continue">
+                                    <classpath>
+                                        <path refid="h2.classpath"/>
+                                    </classpath>
+                                    <fileset
+                                            file="${basedir}/resources/dbscripts/h2.sql"/>
+                                </sql>
+                                <echo
+                                        message="##################### END ############################"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+		            <execution>
+                        <id>clean_target</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="src/main/resources"/>
+                                <delete dir="src/main"/>
+                                <delete dir="src"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+	        <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prefilter-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>**/jpadb.h2.db</include>
+                                        <include>**/humantask.xml</include>
+                                        <include>**/datasources.properties</include>
+                                        <include>**/*.sql</include>
+                                        <include>p2.inf</include>
+                                        <include>build.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wso2.maven</groupId>
+                <artifactId>carbon-p2-plugin</artifactId>
+                <version>${carbon.p2.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>4-p2-feature-generation</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-feature-gen</goal>
+                        </goals>
+                        <configuration>
+                            <id>org.wso2.carbon.humantask.server</id>
+                            <propertiesFile>../../../etc/feature.properties</propertiesFile>
+                            <adviceFile>
+                                <properties>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
+                                </properties>
+                            </adviceFile>
+                            <bundles>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask:${wso2carbon.humantask.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.deployer:${wso2carbon.humantask.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.skeleton:${wso2carbon.humantask.version.4.3.0-SNAPSHOT}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.cleanup.scheduler:${wso2carbon.humantask.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.coordination.module:${wso2carbon.humantask.version}</bundleDef>
+                            </bundles>
+                            <importBundles>
+                                <importBundleDef>org.apache.openjpa:openjpa</importBundleDef>
+                                <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec</importBundleDef>
+                                <importBundleDef>org.apache.xmlbeans.wso2:xmlbeans</importBundleDef>
+                                <importBundleDef>org.apache.geronimo.components.wso2:geronimo-connector</importBundleDef>
+                                <importBundleDef>org.apache.geronimo.components.wso2:geronimo-transaction</importBundleDef>
+                                <importBundleDef>org.apache.ws.commons.axiom.wso2:axiom</importBundleDef>
+                                <importBundleDef>hsqldb.wso2:hsqldb</importBundleDef>
+                                <importBundleDef>org.wso2.carbon:org.wso2.carbon.bpel.common</importBundleDef>
+                                <importBundleDef>org.wso2.carbon:org.wso2.carbon.unifiedendpoint.core</importBundleDef>
+                                <importBundleDef>org.apache.ode.wso2:ode:${ode.version}</importBundleDef>
+                                <importBundleDef>net.sf.saxon.wso2:saxon.he</importBundleDef>
+                                <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec</importBundleDef>
+                                <importBundleDef>net.sourceforge.serp.wso2:serp</importBundleDef>
+                            </importBundles>
+                            <importFeatures>
+                                <importFeatureDef>org.wso2.carbon.core.server:${wso2carbon.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.datasource.server:${wso2carbon.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${wso2carbon.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${wso2carbon.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${wso2carbon.attachment.mgt.version}</importFeatureDef>
+                            </importFeatures>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+   <properties>
+		<wso2carbon.attachment.mgt.version>4.3.0-SNAPSHOT</wso2carbon.attachment.mgt.version>
+		<wso2carbon.humantask.version>4.3.0-SNAPSHOT</wso2carbon.humantask.version>
+		<wso2carbon.humantask.version.4.3.0-SNAPSHOT>4.3.0-SNAPSHOT</wso2carbon.humantask.version.4.3.0-SNAPSHOT>
+		<ode.version>1.3.5.wso2v11</ode.version>
+   </properties>
+
+
+</project>

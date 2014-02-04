@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) OASIS Open 2009. All Rights Reserved.
+-->
+<xsd:schema
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+  elementFormDefault="qualified" blockDefault="#all">
+  
+  <xsd:annotation>
+    <xsd:documentation>
+      XML Schema for WS-HumanTask 1.1 - WS-HumanTask Task Definition Language
+    </xsd:documentation>
+  </xsd:annotation>
+  
+  <!-- other namespaces -->
+  <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+    schemaLocation="http://www.w3.org/2001/xml.xsd" />
+
+  <!-- base types for extensible elements -->
+  <xsd:complexType name="tExtensibleElements">
+    <xsd:sequence>
+      <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:anyAttribute namespace="##other" processContents="lax" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="tDocumentation" mixed="true">
+    <xsd:sequence>
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute ref="xml:lang" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExtensibleMixedContentElements"
+    mixed="true">
+    <xsd:sequence>
+      <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:anyAttribute namespace="##other" processContents="lax" />
+  </xsd:complexType>
+
+  <!-- human interactions definition -->
+  <xsd:element name="humanInteractions" type="tHumanInteractions" />
+  <xsd:complexType name="tHumanInteractions">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="extensions" type="tExtensions" minOccurs="0" />
+          <xsd:element name="import" type="tImport" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="logicalPeopleGroups" type="tLogicalPeopleGroups" minOccurs="0" />
+          <xsd:element name="tasks" type="tTasks" minOccurs="0" />
+          <xsd:element name="notifications" type="tNotifications" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="targetNamespace" type="xsd:anyURI" use="required" />
+        <xsd:attribute name="queryLanguage" type="xsd:anyURI" />
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExtensions">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="extension" type="tExtension" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExtension">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:attribute name="namespace" type="xsd:anyURI" use="required" />
+        <xsd:attribute name="mustUnderstand" type="tBoolean" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:element name="import" type="tImport" />
+  <xsd:complexType name="tImport">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:attribute name="namespace" type="xsd:anyURI" use="optional" />
+        <xsd:attribute name="location" type="xsd:anyURI" use="optional" />
+        <xsd:attribute name="importType" type="xsd:anyURI" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:element name="logicalPeopleGroups" type="tLogicalPeopleGroups" />
+  <xsd:complexType name="tLogicalPeopleGroups">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="logicalPeopleGroup" type="tLogicalPeopleGroup" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tLogicalPeopleGroup">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="parameter" type="tParameter" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="reference" type="xsd:NCName" use="optional" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- generic human roles used in tasks and notifications -->
+  <!--<xsd:element name="genericHumanRole" type="tGenericHumanRoleAssignmentBase" abstract="true" block=""/>-->
+  <xsd:group name="genericHumanRole">
+      <xsd:choice>
+          <xsd:element ref="potentialOwners" />
+          <xsd:element ref="excludedOwners" />
+          <xsd:element ref="taskInitiator" />
+          <xsd:element ref="taskStakeholders" />
+          <xsd:element ref="businessAdministrators" />
+          <xsd:element ref="recipients" />
+      </xsd:choice>
+  </xsd:group>
+
+  <xsd:element name="potentialOwners" type="tPotentialOwnerAssignment"/>
+  <xsd:element name="excludedOwners" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="taskInitiator" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="taskStakeholders" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="businessAdministrators" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="recipients" type="tGenericHumanRoleAssignment"/>
+
+  <!--<xsd:element name="potentialOwners" type="tPotentialOwnerAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="excludedOwners" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="taskInitiator" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="taskStakeholders" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="businessAdministrators" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="recipients" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+
+  <xsd:complexType name="tGenericHumanRoleAssignmentBase" block="">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tGenericHumanRoleAssignment">
+    <xsd:complexContent>
+      <xsd:extension base="tGenericHumanRoleAssignmentBase">
+        <xsd:sequence>
+          <xsd:element name="from" type="tFrom" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tPotentialOwnerAssignment">
+    <xsd:complexContent>
+      <xsd:extension base="tGenericHumanRoleAssignmentBase">
+        <xsd:choice>
+          <xsd:element name="from" type="tFrom" />
+          <xsd:element name="parallel" type="tParallel" />
+          <xsd:element name="sequence" type="tSequence" />
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- routing patterns -->
+  <xsd:complexType name="tParallel">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="completionBehavior" type="tCompletionBehavior" minOccurs="0" />
+          <xsd:element name="from" type="tFrom" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="parallel" type="tParallel" />
+            <xsd:element name="sequence" type="tSequence" />
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="type" type="tRoutingPatternType" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tSequence">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="completionBehavior" type="tCompletionBehavior" />
+          <xsd:element name="from" type="tFrom" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="parallel" type="tParallel" />
+            <xsd:element name="sequence" type="tSequence" />
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="type" type="tRoutingPatternType" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="tRoutingPatternType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="all" />
+      <xsd:enumeration value="single" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- completion behavior -->
+  <xsd:complexType name="tCompletionBehavior">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="completion" type="tCompletion" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="defaultCompletion" type="tDefaultCompletion" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="completionAction" type="tPattern" use="optional" default="automatic" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tCompletion">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="condition" type="tBoolean-expr" />
+          <xsd:element name="result" type="tResult" minOccurs="0" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tDefaultCompletion">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="result" type="tResult" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- result construction -->
+  <xsd:complexType name="tResult">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="aggregate" type="tAggregate" />
+          <xsd:element name="copy" type="tCopy" />
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tAggregate">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:attribute name="part" type="xsd:NCName" use="optional" />
+        <xsd:attribute name="location" type="xsd:string" use="optional" />
+        <xsd:attribute name="condition" type="xsd:string" />
+        <xsd:attribute name="function" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tCopy">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="from" type="tExpression" />
+          <xsd:element name="to" type="tQuery" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- human tasks -->
+  <xsd:element name="tasks" type="tTasks" />
+  <xsd:complexType name="tTasks">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="task" type="tTask" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tTaskBase" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="interface" type="tTaskInterface" minOccurs="0" />
+          <xsd:element name="messageSchema" type="tMessageSchema" minOccurs="0" />
+          <xsd:element name="priority" type="tPriority-expr" minOccurs="0" />
+          <xsd:element name="peopleAssignments" type="tPeopleAssignments" minOccurs="0" />
+          <xsd:element name="completionBehavior" type="tCompletionBehavior" minOccurs="0" />
+          <xsd:element name="delegation" type="tDelegation" minOccurs="0" />
+          <xsd:element name="presentationElements" type="tPresentationElements" minOccurs="0" />
+          <xsd:element name="outcome" type="tQuery" minOccurs="0" />
+          <xsd:element name="searchBy" type="tExpression" minOccurs="0" />
+          <xsd:element name="renderings" type="tRenderings" minOccurs="0" />
+          <xsd:element name="deadlines" type="tDeadlines" minOccurs="0" />
+          <xsd:element name="composition" type="tComposition" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="actualOwnerRequired" type="tBoolean" use="optional" default="yes" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:element name="task" type="tTask" />
+  <xsd:complexType name="tTask">
+    <xsd:complexContent>
+      <xsd:restriction base="tTaskBase">
+        <xsd:sequence>
+          <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="interface" type="tTaskInterface" />
+          <xsd:element name="messageSchema" type="tMessageSchema" minOccurs="0" maxOccurs="0" />
+          <xsd:element name="priority" type="tPriority-expr" minOccurs="0" />
+          <xsd:element name="peopleAssignments" type="tPeopleAssignments" minOccurs="0" />
+          <xsd:element name="completionBehavior" type="tCompletionBehavior" minOccurs="0" />  
+         <xsd:element name="delegation" type="tDelegation" minOccurs="0" />
+          <xsd:element name="presentationElements" type="tPresentationElements" minOccurs="0" />
+          <xsd:element name="outcome" type="tQuery" minOccurs="0" />
+          <xsd:element name="searchBy" type="tExpression" minOccurs="0" />
+          <xsd:element name="renderings" type="tRenderings" minOccurs="0" />
+          <xsd:element name="deadlines" type="tDeadlines" minOccurs="0" />
+          <xsd:element name="composition" type="tComposition" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="actualOwnerRequired" type="tBoolean" use="optional" default="yes" />
+        <xsd:anyAttribute namespace="##other" processContents="lax" />
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tTaskInterface">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:attribute name="portType" type="xsd:QName" use="required" />
+        <xsd:attribute name="operation" type="xsd:NCName" use="required" />
+        <xsd:attribute name="responsePortType" type="xsd:QName" use="optional" />
+        <xsd:attribute name="responseOperation" type="xsd:NCName" use="optional" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- presentation elements -->
+  <xsd:complexType name="tPresentationElements">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="name" type="tText" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="presentationParameters" type="tPresentationParameters" minOccurs="0" />
+          <xsd:element name="subject" type="tText" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="description" type="tDescription" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tPresentationParameters">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="presentationParameter" type="tPresentationParameter" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tPresentationParameter">
+    <xsd:complexContent>
+      <xsd:extension base="tParameter" />
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- elements for rendering tasks -->
+  <xsd:complexType name="tRenderings">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="rendering" type="tRendering" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tRendering">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:attribute name="type" type="xsd:QName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- elements for people assignment -->
+  <xsd:element name="peopleAssignments" type="tPeopleAssignments" />
+  <xsd:complexType name="tPeopleAssignments">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:group ref="genericHumanRole" minOccurs="0" maxOccurs="unbounded" />
+          <!--<xsd:element ref="genericHumanRole" minOccurs="0" maxOccurs="unbounded" />-->
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- elements for handling timeouts and escalation -->
+  <xsd:complexType name="tDeadlines">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="startDeadline" type="tDeadline" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="completionDeadline" type="tDeadline" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tDeadline">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="for" type="tDuration-expr" />
+            <xsd:element name="until" type="tDeadline-expr" />
+          </xsd:choice>
+          <xsd:element name="escalation" type="tEscalation" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tEscalation">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="condition" type="tBoolean-expr" minOccurs="0" />
+          <xsd:element name="toParts" type="tToParts" minOccurs="0" />
+          <xsd:choice>
+            <xsd:element name="notification" type="tNotification" />
+            <xsd:element name="localNotification" type="tLocalNotification" />
+            <xsd:element name="reassignment" type="tReassignment" />
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tLocalNotification">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:choice>
+          <xsd:sequence>
+            <xsd:element name="priority" type="tPriority-expr" minOccurs="0" />
+            <xsd:element name="peopleAssignments" type="tPeopleAssignments" minOccurs="0" />
+          </xsd:sequence>
+        </xsd:choice>
+        <xsd:attribute name="reference" type="xsd:QName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tReassignment">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element ref="potentialOwners" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tToParts">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="toPart" type="tToPart" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tToPart" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- task delegation -->
+  <xsd:complexType name="tDelegation">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="from" type="tFrom" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="potentialDelegatees" type="tPotentialDelegatees" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="tPotentialDelegatees">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="anybody" />
+      <xsd:enumeration value="nobody" />
+      <xsd:enumeration value="potentialOwners" />
+      <xsd:enumeration value="other" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- composite tasks -->  
+  <xsd:complexType name="tComposition">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="subtask" type="tSubtask" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="type" type="tCompositionType" use="optional" default="sequential" />
+        <xsd:attribute name="instantiationPattern" type="tPattern" use="optional" default="manual" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="tCompositionType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="sequential" />
+      <xsd:enumeration value="parallel" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="tPattern">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="manual" />
+      <xsd:enumeration value="automatic" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="tSubtask">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:choice>
+          <xsd:element name="task" type="tTask"/>
+          <xsd:element name="localTask" type="tLocalTask" />
+        </xsd:choice>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="tLocalTask">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="priority" type="tPriority-expr" minOccurs="0" />
+          <xsd:element name="peopleAssignments" type="tPeopleAssignments" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="reference" type="xsd:QName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- lean tasks -->  
+  <xsd:element name="leanTask" type="tLeanTask"/>
+  <xsd:complexType name="tLeanTask">
+    <xsd:complexContent>
+      <xsd:restriction base="tTaskBase">
+        <xsd:sequence>
+          <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="interface" type="tTaskInterface" minOccurs="0" maxOccurs="0" />
+          <xsd:element name="messageSchema" type="tMessageSchema" />
+          <xsd:element name="priority" type="tPriority-expr" minOccurs="0" />
+          <xsd:element name="peopleAssignments" type="tPeopleAssignments" minOccurs="0" />
+          <xsd:element name="delegation" type="tDelegation" minOccurs="0" />
+          <xsd:element name="presentationElements" type="tPresentationElements" minOccurs="0" />
+          <xsd:element name="outcome" type="tQuery" minOccurs="0" />
+          <xsd:element name="searchBy" type="tExpression" minOccurs="0" />
+          <xsd:element name="renderings" type="tRenderings" minOccurs="0" />
+          <xsd:element name="deadlines" type="tDeadlines" minOccurs="0" />
+          <xsd:element name="composition" type="tComposition" minOccurs="0" maxOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="actualOwnerRequired" type="tBoolean" use="optional" default="yes" />
+        <xsd:anyAttribute namespace="##other" processContents="lax" />
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tMessageSchema">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+           <xsd:element name="messageField" type="tMessageField" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tMessageField">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+           <xsd:element name="messageDisplay" type="tMessageDisplay" maxOccurs="unbounded" />
+           <xsd:element name="messageChoice" type="tMessageChoice" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" />
+        <xsd:attribute name="type" type="xsd:QName" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tMessageChoice">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+           <xsd:element name="messageDisplay" type="tMessageDisplay" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="value" type="xsd:anySimpleType" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tMessageDisplay" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute ref="xml:lang" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <!-- notifications -->
+  <xsd:element name="notifications" type="tNotifications" />
+  <xsd:complexType name="tNotifications">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="notification" type="tNotification" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:element name="notification" type="tNotification" />
+  <xsd:complexType name="tNotification">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:sequence>
+          <xsd:element name="interface" type="tNotificationInterface" />
+          <xsd:element name="priority" type="tPriority-expr" minOccurs="0" />
+          <xsd:element name="peopleAssignments" type="tPeopleAssignments" />
+          <xsd:element name="presentationElements" type="tPresentationElements" />
+          <xsd:element name="renderings" type="tRenderings" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tNotificationInterface">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleElements">
+        <xsd:attribute name="portType" type="xsd:QName" use="required" />
+        <xsd:attribute name="operation" type="xsd:NCName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- miscellaneous helper types -->
+  <xsd:complexType name="tText" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute ref="xml:lang" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tDescription" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute ref="xml:lang" />
+        <xsd:attribute name="contentType" type="xsd:string" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tFrom" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:element name="argument" type="tArgument" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="literal" type="tLiteral" minOccurs="0" />
+          </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
+        <xsd:attribute name="logicalPeopleGroup" type="xsd:NCName" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tArgument">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute name="name" type="xsd:NCName" />
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tParameter" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="type" type="xsd:QName" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tLiteral" mixed="true">
+    <xsd:sequence>
+      <xsd:any namespace="##any" processContents="lax"/>
+    </xsd:sequence>
+    <xsd:anyAttribute namespace="##other" processContents="lax" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="tQuery" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute name="part" />
+        <xsd:attribute name="queryLanguage" type="xsd:anyURI" />
+      </xsd:extension>
+    </xsd:complexContent> 
+  </xsd:complexType>
+  
+  <xsd:complexType name="tExpression" mixed="true">
+    <xsd:complexContent>
+      <xsd:extension base="tExtensibleMixedContentElements">
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
+      </xsd:extension>
+    </xsd:complexContent> 
+  </xsd:complexType>
+  
+  <xsd:element name="priority" type="tPriority-expr" />
+  <xsd:complexType name="tPriority-expr" mixed="true">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="tExpression" />
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tBoolean-expr" mixed="true">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="tExpression" />
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tDuration-expr" mixed="true">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="tExpression" />
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tDeadline-expr" mixed="true">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="tExpression" />
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="tBoolean">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="yes" />
+      <xsd:enumeration value="no" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+</xsd:schema>
