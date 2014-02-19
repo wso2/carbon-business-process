@@ -33,10 +33,11 @@
     <url>http://wso2.org</url>
 
     <modules>
-        <!--module>bpel</module-->
+        <module>bpel</module>
         <module>humantask</module>
         <module>common</module>
         <module>attachment-mgt</module>
+        <module>unified-endpoint</module>
     </modules>
     <dependencyManagement>
         <dependencies>
