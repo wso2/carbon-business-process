@@ -14,7 +14,8 @@
         <module>service-stubs/attachment-mgt</module>
         <module>service-stubs/bpel</module>
         <module>service-stubs/humantask</module>       
-        <module>components/attachment-mgt</module>    
+        <module>components/attachment-mgt</module>  
+	<module>components/common</module> 
     </modules>
 
     <dependencyManagement>
