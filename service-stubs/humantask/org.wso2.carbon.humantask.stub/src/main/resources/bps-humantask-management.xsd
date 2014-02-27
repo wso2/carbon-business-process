@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
+ -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://wso2.org/bps/humantask/management/schema"
+            attributeFormDefault="unqualified"
+            elementFormDefault="qualified"
+            targetNamespace="http://wso2.org/bps/humantask/management/schema">
+    <!-- Deployment management -->
+    <xsd:element name="undeployHumanTaskPackage">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="package" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="undeployStatus">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="SUCCESS"/>
+                <xsd:enumeration value="FAILED"/>
+                <xsd:enumeration value="REGFAILED"/>
+                <xsd:enumeration value="INVALID_PACKAGE_NAME"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:element>
+    <xsd:element name="redeployHumanTaskPackage">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="package" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="redeployStatus">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="SUCCESS"/>
+                <xsd:enumeration value="FAILED"/>
+                <xsd:enumeration value="EXISITS"/>
+                <xsd:enumeration value="NOTINREGISTRY"/>
+                <xsd:enumeration value="INVALID_PACKAGE_NAME"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:element>
+    <xsd:element name="deleteHumanTaskPackage">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="package" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="deleteStatus">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="SUCCESS"/>
+                <xsd:enumeration value="FAILED"/>
+                <xsd:enumeration value="REGFAILED"/>
+                <xsd:enumeration value="INVALID_PACKAGE_NAME"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:element>
+    <xsd:element name="listDeployedPackagesPaginated">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="page" type="xsd:int"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="listDeployedTaskDefinitionsPaginated">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="page" type="xsd:int"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="deployedPackagesPaginated">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="pages" type="xsd:int"/>
+                <xsd:element name="package" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="name" type="xsd:string"/>
+                        </xsd:sequence>
+                        <xsd:attribute name="state" type="tns:PackageStatusType"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="deployedTaskDefinitionsPaginated">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="pages" type="xsd:int"/>
+                <xsd:element name="taskDefinition" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="taskName" type="xsd:string"/>
+                            <xsd:element name="packageName" type="xsd:string"/>
+							<xsd:element name="erroneous" type="xsd:boolean"/>
+							<xsd:element name="deploymentError" type="xsd:string"/>
+                        </xsd:sequence>
+                        <xsd:attribute name="state" type="tns:TaskStatusType"/>
+                        <xsd:attribute name="type" type="tns:TaskType"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="getTaskInfoIn">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="taskId" type="xsd:QName"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="TaskInfo" type="tns:TaskInfoType"/>
+    <xsd:complexType name="TaskInfoType">
+        <xsd:annotation>
+            <xsd:documentation>Information about a HumanTask Definition.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="taskId" type="xsd:QName"/>
+            <xsd:element name="packageName" type="xsd:string"/>
+            <xsd:element name="taskType" type="tns:TaskType"/>
+            <xsd:element name="status" type="tns:TaskStatusType"/>
+            <xsd:element name="definitionInfo" type="tns:TaskDefinitionInfo"/>
+			<xsd:element name="erroneous" type="xsd:boolean"/>
+			<xsd:element name="deploymentError" type="xsd:string"/>
+            <xsd:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xsd:sequence>
+        <xsd:anyAttribute namespace="##other" processContents="lax"/>
+    </xsd:complexType>
+    <xsd:complexType name="TaskDefinitionInfo">
+        <xsd:sequence>
+            <xsd:element name="TaskName" type="xsd:QName"/>
+            <xsd:element name="Definition" type="tns:humanTaskDefinition"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="humanTaskDefinition">
+        <xsd:sequence>
+            <xsd:any namespace="##other" processContents="lax"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="PackageStatusType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="UNDEPLOYED"/>
+            <xsd:enumeration value="REDEPLOYED"/>
+            <xsd:enumeration value="DEPLOYED"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="TaskStatusType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ACTIVE"/>
+			<xsd:enumeration value="UNDEPLOYING"/>
+			<xsd:enumeration value="INACTIVE"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="listTasksInPackage">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="package" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="tasksInPackage">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="task" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="name" type="xsd:string"/>
+							<xsd:element name="erroneous" type="xsd:boolean"/>
+							<xsd:element name="deploymentError" type="xsd:string"/>							
+                        </xsd:sequence>
+                        <xsd:attribute name="type" type="tns:TaskType"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <!--xsd:attribute name="tType" type="xsd:string"/-->
+            <!--xsd:attribute name="tType" type="tns:TaskType"/-->
+            <!--xsd:attribute name="packageName" type="xsd:string"/-->
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:simpleType name="TaskType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="NOTIFICATION"/>
+            <xsd:enumeration value="TASK"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="packageManagementException">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="xsd:string"/>
+                <xsd:element name="stackTrace" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="HumanTaskPackageDownloadData">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="packageName" nillable="true" type="xsd:string"/>
+            <xsd:element minOccurs="0" name="packageFileData" nillable="true"
+                         type="xsd:base64Binary"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="downloadHumanTaskPackageArchive">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element minOccurs="0" name="packageName" nillable="true"
+                             type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="downloadHumanTaskPackageArchiveResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element minOccurs="0" name="return" nillable="true"
+                             type="tns:HumanTaskPackageDownloadData"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
