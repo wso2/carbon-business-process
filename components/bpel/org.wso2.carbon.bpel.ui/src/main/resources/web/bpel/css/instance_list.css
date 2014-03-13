@@ -1,0 +1,62 @@
+table.styledLeft thead th {
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-right: 0;
+}
+
+#instanceListTable a {
+    margin-left: 5px;
+    text-decoration: underline;
+}
+
+.ui-datepicker-trigger {
+    cursor: pointer;
+}
+
+#instanceListForm {
+    height: 265px;
+    display: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#loading {
+    display: none;
+    position: absolute;
+    z-index: 100;
+}
+
+.slide-btn {
+    background-image: url(images/show.gif);
+    background-position: left top;
+    background-repeat: no-repeat;
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-top: 5px;
+    padding-left: 20px;
+    position: relative;
+    white-space: nowrap;
+}
+
+.active {
+    background-image: url(images/hide.gif);
+}
+
+span.icon-field {
+    background-image: url(../images/default-menu-icon.gif);
+    background-repeat: no-repeat;
+    background-position: left top;
+    padding-left: 20px;
+    line-height: 17px;
+    height: 17px;
+    position: relative;
+    margin-left: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+}
