@@ -16,7 +16,7 @@
         <module>service-stubs/humantask</module>       
         <module>components/attachment-mgt</module>  
 	<module>components/common</module> 
-	<!--module>components/bpel</module--> 
+	<module>components/bpel</module> 
     </modules>
 
     <dependencyManagement>
