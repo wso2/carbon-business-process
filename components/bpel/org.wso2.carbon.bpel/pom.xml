@@ -71,6 +71,7 @@
         <dependency>
             <groupId>org.apache.ode.wso2</groupId>
             <artifactId>ode</artifactId>
+	    <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.openjpa</groupId>
