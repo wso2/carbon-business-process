@@ -35,40 +35,33 @@
     <description>This feature contains the core bundles required for Back-end HumanTask functionality</description>
 
     <dependencies>
-		<dependency>
+	<dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
-		<dependency>
+	<dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.humantask</artifactId>
-	    	<version>4.3.0-SNAPSHOT</version>
         </dependency>
 		<dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.humantask.deployer</artifactId>
-	    	<version>4.3.0-SNAPSHOT</version>
         </dependency>
-		<dependency>
+	<dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.humantask.cleanup.scheduler</artifactId>
-	    	<version>4.3.0-SNAPSHOT</version>
         </dependency>
-		<dependency>
+	<dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.humantask.coordination.module</artifactId>
-	    	<version>4.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
-            <version>${wso2.h2.orbit.version}</version>
         </dependency>
 	    <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.common</artifactId>
-	    <version>4.3.0-SNAPSHOT</version>
        </dependency>
     </dependencies>
     
@@ -187,11 +180,11 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask:${wso2carbon.humantask.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.deployer:${wso2carbon.humantask.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.skeleton:${wso2carbon.humantask.version.4.3.0-SNAPSHOT}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.cleanup.scheduler:${wso2carbon.humantask.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.coordination.module:${wso2carbon.humantask.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.deployer:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.skeleton:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.coordination.module:${carbon.platform.version}</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.apache.openjpa:openjpa</importBundleDef>
@@ -209,11 +202,11 @@
                                 <importBundleDef>net.sourceforge.serp.wso2:serp</importBundleDef>
                             </importBundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.datasource.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${wso2carbon.attachment.mgt.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.datasource.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>
@@ -222,12 +215,5 @@
         </plugins>
     </build>
 
-   <properties>
-		<wso2carbon.attachment.mgt.version>4.3.0-SNAPSHOT</wso2carbon.attachment.mgt.version>
-		<wso2carbon.humantask.version>4.3.0-SNAPSHOT</wso2carbon.humantask.version>
-		<wso2carbon.humantask.version.4.3.0-SNAPSHOT>4.3.0-SNAPSHOT</wso2carbon.humantask.version.4.3.0-SNAPSHOT>
-		<ode.version>1.3.5.wso2v11</ode.version>
-   </properties>
-
-
 </project>
+
