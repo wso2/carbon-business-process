@@ -646,13 +646,25 @@
             <artifactId>org.wso2.carbon.bpel.server.feature</artifactId>
             <version>${carbon.platform.version}</version>
             <type>zip</type>
-	    </dependency>
+        </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.ui.feature</artifactId>
             <version>${carbon.platform.version}</version>
             <type>zip</type>
-	    </dependency>
+	</dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask.server.feature</artifactId>
+            <version>${carbon.platform.version}</version>
+            <type>zip</type>
+	</dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.humantask.ui.feature</artifactId>
+            <version>${carbon.platform.version}</version>
+            <type>zip</type>
+	</dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.core</artifactId>
@@ -831,6 +843,21 @@
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.humantask</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.humantask.coordination.module</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.humantask.ui</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.humantask.cleanup.scheduler</artifactId>
                 <version>${carbon.platform.version}</version>
             </dependency>
             <dependency>
