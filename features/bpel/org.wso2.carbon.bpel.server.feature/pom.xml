@@ -33,41 +33,35 @@
     <name>WSO2 Carbon - BPEL Core Feature</name>
     <url>http://wso2.org</url>
     <description>This feature contains the core bundles required for Back-end BPEL functionality</description>
+
     <dependencies>
 	<dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
-            <version>${wso2.h2.orbit.version}</version>
         </dependency>
 	<dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.skeleton</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.deployer</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.b4p</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.cluster.notifier</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode.wso2</groupId>
             <artifactId>ode</artifactId>
-            <version>1.3.5.wso2v11</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.h2database</groupId>
@@ -75,11 +69,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
+
     <build>
-        <plugins>
-	     
+        <plugins>	     
 	     <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -126,7 +119,7 @@
                                 <echo
                                         message="##################### END ############################"/>
 				<echo message="********Version of H2: "/>  
-  				<echo>${wso2.h2.orbit.version}</echo> 
+  				<echo>${orbit.version.h2.engine}</echo> 
                             </tasks>
                         </configuration>
                     </execution>
@@ -147,7 +140,7 @@
                 </executions>
             </plugin>
 
-		<plugin>
+            <plugin>
                <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
@@ -232,12 +225,12 @@
                                 <importBundleDef>org.wso2.carbon:org.wso2.carbon.bpel.common</importBundleDef>
                             </importBundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.datasource.server:${wso2carbon.datasource.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${wso2carbon.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${wso2carbon.version}</importFeatureDef>
-                		<importFeatureDef>org.wso2.carbon.attachment.mgt.server:${wso2carbon.attachment.mgt.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.datasource.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${previous.version}</importFeatureDef>
+                		<importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>
@@ -245,8 +238,6 @@
             </plugin>
         </plugins>
     </build>
-    <properties>
-	<wso2carbon.datasource.version>4.3.0-SNAPSHOT</wso2carbon.datasource.version>
-        <wso2carbon.attachment.mgt.version>4.3.0-SNAPSHOT</wso2carbon.attachment.mgt.version>
-    </properties>
+
 </project>
+

@@ -25,6 +25,7 @@
         <version>4.3.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
     </parent>
+
     <version>4.3.0-SNAPSHOT</version>	
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.bpel.bam.publisher.feature</artifactId>
@@ -32,14 +33,14 @@
     <name>WSO2 Carbon - BPEL BAM Publisher Feature</name>
     <url>http://wso2.org</url>
     <description>This feature contains bpel bam publisher components required to monitor BPEL process with BAM2</description>
+
     <dependencies>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -67,9 +68,9 @@
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.bpel</importFeatureDef>
-			 	<importFeatureDef>org.wso2.carbon.databridge.agent.thrift.server:4.3.0-SNAPSHOT</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.databridge.commons.thrift.server:4.3.0-SNAPSHOT</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.databridge.commons.server:4.3.0-SNAPSHOT</importFeatureDef>
+			 	<importFeatureDef>org.wso2.carbon.databridge.agent.thrift.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.databridge.commons.thrift.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.databridge.commons.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>
