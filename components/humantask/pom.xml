@@ -38,7 +38,7 @@
         <module>org.wso2.carbon.humantask</module>
         <!--module>org.wso2.carbon.humantask.deployer</module-->
         <module>org.wso2.carbon.humantask.ui</module>
-        <!--module>org.wso2.carbon.humantask.cleanup.scheduler</module-->
+        <module>org.wso2.carbon.humantask.cleanup.scheduler</module>
     </modules>
 
         <dependencies>
