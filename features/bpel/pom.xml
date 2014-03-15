@@ -35,8 +35,8 @@
     <modules>
         <module>org.wso2.carbon.bpel.server.feature</module>
         <module>org.wso2.carbon.bpel.ui.feature</module>
-        <!--module>org.wso2.carbon.bpel.feature</module>
-        <module>org.wso2.carbon.bpel.bam.publisher.feature</module-->
+        <module>org.wso2.carbon.bpel.feature</module>
+        <module>org.wso2.carbon.bpel.bam.publisher.feature</module>
     </modules>
 
         <dependencies>
