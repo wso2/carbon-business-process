@@ -71,7 +71,6 @@
                         <artifactId>saxon-xqj</artifactId>
                     </exclusion>
                 </exclusions>
-                <version>${wso2carbon.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon.wso2</groupId>
