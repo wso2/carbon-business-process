@@ -538,6 +538,11 @@
             <version>${geronimo.transaction.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.geronimo.components.wso2</groupId>
+            <artifactId>geronimo-connector</artifactId>
+            <version>${geronimo.transaction.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
             <version>${orbit.version.h2.engine}</version>
