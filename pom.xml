@@ -19,7 +19,7 @@
 	<module>components/bpel</module> 
 	<module>components/humantask</module>
 	<module>features/attachment-mgt</module>
-	<module>features/bpel</module>
+	<!--module>features/bpel</module-->
     </modules>
 
     <dependencyManagement>
