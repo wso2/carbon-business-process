@@ -6,7 +6,7 @@
 		<groupId>org.wso2.carbon</groupId>
 		<artifactId>attachment-mgt-feature</artifactId>
 		<version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -21,23 +21,19 @@
 		<dependency>
 			<groupId>org.wso2.carbon</groupId>
 			<artifactId>org.wso2.carbon.attachment.mgt</artifactId>
-            		<version>4.3.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.wso2.carbon</groupId>
 			<artifactId>org.wso2.carbon.attachment.mgt.skeleton</artifactId>
-			<version>4.3.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
             		<groupId>com.h2database.wso2</groupId>
             		<artifactId>h2-database-engine</artifactId>
-            		<version>${wso2.h2.orbit.version}</version>
-        </dependency>
+        	</dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
-			
+		<plugins>			
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -84,7 +80,7 @@
                                 <echo
                                         message="##################### END ############################"/>
 				<echo message="********Version of H2: "/>  
-  				<echo>${wso2.h2.orbit.version}</echo> 
+  				<echo>${orbit.version.h2.engine}</echo> 
                             </tasks>
                         </configuration>
                     </execution>
@@ -154,12 +150,12 @@
 								</properties>
 							</adviceFile>
 							<bundles>
-								<bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt:4.3.0-SNAPSHOT</bundleDef>
+								<bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt:${wso2carbon.attachment.mgt.version}</bundleDef>
 								<bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt.skeleton:${wso2carbon.attachment.mgt.version}</bundleDef>
 							</bundles>
 
 							<importFeatures>
-								<importFeatureDef>org.wso2.carbon.core.server:${wso2carbon.version}</importFeatureDef>
+								<importFeatureDef>org.wso2.carbon.core.server:${carbon.platform.version}</importFeatureDef>
 							</importFeatures>
 						</configuration>
 					</execution>
@@ -167,7 +163,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<properties>
-		<wso2carbon.attachment.mgt.version>4.3.0-SNAPSHOT</wso2carbon.attachment.mgt.version>
-	</properties>
 </project>
