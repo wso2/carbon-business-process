@@ -32,7 +32,7 @@
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Human Task Engine</name>
     <url>http://wso2.org</url>
-    <description>WSO2 Huamn Task Engine</description>
+    <description>WSO2 Human Task Engine</description>
 
     <dependencies>
         <dependency>
