@@ -19,7 +19,7 @@
 	<module>components/common</module> 
 	<module>components/bpel</module> 
 	<module>components/humantask</module>
-	<module>components/unified-endpoint</module>
+	<!--module>components/unified-endpoint</module-->
 	<module>features/attachment-mgt</module>
 	<module>features/bpel</module>
 	<module>features/humantask</module>
