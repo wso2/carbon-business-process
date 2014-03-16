@@ -47,8 +47,7 @@
                         <Private-Package>
                         </Private-Package>
                         <Export-Package>
-                            org.wso2.carbon.unifiedendpoint.stub.*;
-                            version="${carbon.platform.package.export.version}"
+                            org.wso2.carbon.unifiedendpoint.stub.*;version="${carbon.platform.package.export.version}"
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.unifiedendpoint.stub.*
