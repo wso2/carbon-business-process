@@ -14,12 +14,12 @@
         <module>service-stubs/attachment-mgt</module>
         <module>service-stubs/bpel</module>
         <module>service-stubs/humantask</module>
-        <!--module>service-stubs/unified-endpoint</module-->       
+        <module>service-stubs/unified-endpoint</module>       
         <module>components/attachment-mgt</module>  
 	<module>components/common</module> 
 	<module>components/bpel</module> 
 	<module>components/humantask</module>
-	<!--module>components/unified-endpoint</module-->
+	<module>components/unified-endpoint</module>
 	<module>features/attachment-mgt</module>
 	<module>features/bpel</module>
 	<module>features/humantask</module>
@@ -689,13 +689,13 @@
             <version>${carbon.platform.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
-            <version>${carbon.platform.version}</version>
-        </dependency>
-         <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.stub</artifactId>
+		<version>${carbon.platform.version}</version>
+        </dependency>
+        <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
 		<version>${carbon.platform.version}</version>
         </dependency>
             <dependency>
