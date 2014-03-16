@@ -23,6 +23,7 @@
 	<module>features/attachment-mgt</module>
 	<module>features/bpel</module>
 	<module>features/humantask</module>
+	<module>features/unified-endpoint</module>
     </modules>
 
     <dependencyManagement>
@@ -670,6 +671,18 @@
 	</dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.unifiedendpoint.server.feature</artifactId>
+            <version>${carbon.platform.version}</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.unifiedendpoint.ui.feature</artifactId>
+            <version>${carbon.platform.version}</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.core</artifactId>
             <version>${carbon.platform.version}</version>
         </dependency>
@@ -696,6 +709,16 @@
         <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
+		<version>${carbon.platform.version}</version>
+        </dependency>
+        <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.unifiedendpoint.service</artifactId>
+		<version>${carbon.platform.version}</version>
+        </dependency>
+        <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.unifiedendpoint.ui</artifactId>
 		<version>${carbon.platform.version}</version>
         </dependency>
             <dependency>
