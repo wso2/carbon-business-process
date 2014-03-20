@@ -1226,6 +1226,8 @@
 
         <!-- Axis2 Version -->
         <axis2.version>1.6.1-wso2v11-SNAPSHOT</axis2.version>
+        <exp.pkg.version.axis2>1.6.1.wso2v11-SNAPSHOT</exp.pkg.version.axis2>
+        <imp.pkg.version.axis2>[1.6.1.wso2v11-SNAPSHOT, 1.7.0)</imp.pkg.version.axis2>
         <axis2-transports.version>1.1.0-wso2v11</axis2-transports.version>
         <axis2.osgi.version.range>[1.6.1.wso2v11-SNAPSHOT, 1.7.0)</axis2.osgi.version.range>
         <neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>
