@@ -1220,9 +1220,10 @@
         <!-- Axiom Version -->
         <axiom.wso2.version>1.2.11.wso2v5-SNAPSHOT</axiom.wso2.version>
         <axiom.version>1.2.11.wso2v5-SNAPSHOT</axiom.version>
-        <axiom.osgi.version.range>[1.2.11.wso2v5, 1.3.0)</axiom.osgi.version.range>
+        <axiom.osgi.version.range>[1.2.11.wso2v5-SNAPSHOT, 1.3.0)</axiom.osgi.version.range>
         <exp.pkg.version.axiom>1.2.11.wso2v5-SNAPSHOT</exp.pkg.version.axiom>
         <imp.pkg.version.axiom>[1.2.11.wso2v5-SNAPSHOT, 1.3.0)</imp.pkg.version.axiom>
+	<axiom.osgi.version.range.unifiedendpoint>[1.2.11.wso2v5-SNAPSHOT, 1.3.0)</axiom.osgi.version.range.unifiedendpoint>
 
         <!-- Axis2 Version -->
         <axis2.version>1.6.1-wso2v11-SNAPSHOT</axis2.version>
