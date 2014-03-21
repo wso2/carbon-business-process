@@ -1288,6 +1288,7 @@
         <!-- Abdera -->
         <version.abdera>1.0-wso2v2</version.abdera>
         <orbit.version.abdera>1.0.0.wso2v2</orbit.version.abdera>
+	<imp.pkg.version.abdera>[1.0.0.wso2v2, 2)</imp.pkg.version.abdera>
 
         <!-- Misc -->
         <jxl.wso2.version>2.6.8.wso2v1</jxl.wso2.version>
@@ -1309,6 +1310,7 @@
         <jetty.version>6.1.5</jetty.version>
         <orbit.version.infinispan>5.1.2.wso2v1</orbit.version.infinispan>
         <orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
+	<imp.pkg.version.h2.engine>[1.2.140.wso2v3, 2)</imp.pkg.version.h2.engine>
         <orbit.version.spring>3.1.0.wso2v1</orbit.version.spring>
         <imp.pkg.version.spring>[3.1.0.wso2v1, 3.2.0)</imp.pkg.version.spring>
         <orbit.version.commons.fileuploader>1.2.0.wso2v1</orbit.version.commons.fileuploader>
@@ -1329,10 +1331,14 @@
         <aopalliance.version>1.0</aopalliance.version>
         <wsdl4j.version>1.6.3</wsdl4j.version>
         <xmlsec.version>1.5.5</xmlsec.version>
+	<imp.pkg.version.xmlsec>[1.5.5,2)</imp.pkg.version.xmlsec>
         <xmlschema.core.version>2.0.3</xmlschema.core.version>
         <xml.resolver.version>1.2</xml.resolver.version>
-        <wss4j.version>1.6.11</wss4j.version>
-        <neethi.version>3.0.2</neethi.version>
+        <wss4j.version>1.5.11-wso2v3</wss4j.version>
+        <wss4j.osgi.version>1.5.11.wso2v3</wss4j.osgi.version>
+	<neethi.version>3.0.2</neethi.version>
+        <neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>
+        <neethi.osgi.version.range>[2.0.4.wso2v4, 3.1.0)</neethi.osgi.version.range>
         <stax2.version>3.1.1</stax2.version>
         <woodstox.core.version>4.2.0</woodstox.core.version>
         <jaxb.xjc.version>2.1.13</jaxb.xjc.version>
