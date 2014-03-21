@@ -229,7 +229,7 @@
                                 <importFeatureDef>org.wso2.carbon.datasource.server:${previous.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.platform.version}</importFeatureDef>
                 		<importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
