@@ -225,10 +225,10 @@
                                 <importBundleDef>org.wso2.carbon:org.wso2.carbon.bpel.common</importBundleDef>
                             </importBundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.datasource.server:${previous.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${previous.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${previous.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.system.statistics.server:${previous.version}</importFeatureDef>
                 		<importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
