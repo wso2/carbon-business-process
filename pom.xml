@@ -759,7 +759,7 @@
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.statistics.ui</artifactId>
-                <version>4.2.0</version>
+                <version>${carbon.platform.version}</version>
             </dependency>
 	    <dependency>
                 <groupId>org.wso2.carbon</groupId>
@@ -769,7 +769,7 @@
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.statistics.stub</artifactId>
-                <version>4.2.0</version>
+                <version>${carbon.platform.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.synapse</groupId>
