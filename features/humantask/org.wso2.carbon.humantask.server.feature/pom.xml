@@ -185,6 +185,7 @@
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.skeleton:${carbon.platform.version}</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.platform.version}</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.coordination.module:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.apache.openjpa.wso2:openjpa:2.2.0.wso2v2</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.apache.openjpa:openjpa</importBundleDef>
