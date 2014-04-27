@@ -1246,7 +1246,7 @@
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
 
         <!-- Rampart Version -->
-        <rampart.wso2.version>1.6.1.wso2v9</rampart.wso2.version>
+        <rampart.wso2.version>1.6.1-wso2v13-SNAPSHOT</rampart.wso2.version>
 
         <libthrift.wso2.version>0.8.0.wso2v1</libthrift.wso2.version>
 
