@@ -576,11 +576,11 @@
                 <artifactId>geronimo-connector</artifactId>
                 <version>${geronimo.transaction.version}</version>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.apache.geronimo.specs.wso2</groupId>
                 <artifactId>geronimo-ejb_2.1_spec</artifactId>
                 <version>${geronimo-ejb_2.1_spec.version}</version>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>com.h2database.wso2</groupId>
                 <artifactId>h2-database-engine</artifactId>
