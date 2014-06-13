@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://services.mgt.core.bpmn.carbon.wso2.org" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax23="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" xmlns:ax21="http://core.bpmn.carbon.wso2.org/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd">
+            <xs:complexType name="BPMNDeployment">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="deploymentName" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="deploymentTime" nillable="true" type="xs:date"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="BPMNProcess">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="key" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="version" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://core.bpmn.carbon.wso2.org/xsd">
+            <xs:complexType name="BPSException">
+                <xs:sequence/>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax24="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" xmlns:ax22="http://core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
+            <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"/>
+            <xs:import namespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd"/>
+            <xs:element name="BPMNDeploymentServiceBPSException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="BPSException" nillable="true" type="ax21:BPSException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="undeploy">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="deploymentName" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessModel">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessModelResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessDiagram">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessDiagramResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeployments">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeploymentsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax23:BPMNDeployment"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeployedProcesses">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeployedProcessesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax23:BPMNProcess"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getDeployedProcessesRequest">
+        <wsdl:part name="parameters" element="ns:getDeployedProcesses"/>
+    </wsdl:message>
+    <wsdl:message name="getDeployedProcessesResponse">
+        <wsdl:part name="parameters" element="ns:getDeployedProcessesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="BPMNDeploymentServiceBPSException">
+        <wsdl:part name="parameters" element="ns:BPMNDeploymentServiceBPSException"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessModelRequest">
+        <wsdl:part name="parameters" element="ns:getProcessModel"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessModelResponse">
+        <wsdl:part name="parameters" element="ns:getProcessModelResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessDiagramRequest">
+        <wsdl:part name="parameters" element="ns:getProcessDiagram"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessDiagramResponse">
+        <wsdl:part name="parameters" element="ns:getProcessDiagramResponse"/>
+    </wsdl:message>
+    <wsdl:message name="undeployRequest">
+        <wsdl:part name="parameters" element="ns:undeploy"/>
+    </wsdl:message>
+    <wsdl:message name="getDeploymentsRequest">
+        <wsdl:part name="parameters" element="ns:getDeployments"/>
+    </wsdl:message>
+    <wsdl:message name="getDeploymentsResponse">
+        <wsdl:part name="parameters" element="ns:getDeploymentsResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="BPMNDeploymentServicePortType">
+        <wsdl:operation name="getDeployedProcesses">
+            <wsdl:input message="ns:getDeployedProcessesRequest" wsaw:Action="urn:getDeployedProcesses"/>
+            <wsdl:output message="ns:getDeployedProcessesResponse" wsaw:Action="urn:getDeployedProcessesResponse"/>
+            <wsdl:fault message="ns:BPMNDeploymentServiceBPSException" name="BPMNDeploymentServiceBPSException" wsaw:Action="urn:getDeployedProcessesBPMNDeploymentServiceBPSException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessModel">
+            <wsdl:input message="ns:getProcessModelRequest" wsaw:Action="urn:getProcessModel"/>
+            <wsdl:output message="ns:getProcessModelResponse" wsaw:Action="urn:getProcessModelResponse"/>
+            <wsdl:fault message="ns:BPMNDeploymentServiceBPSException" name="BPMNDeploymentServiceBPSException" wsaw:Action="urn:getProcessModelBPMNDeploymentServiceBPSException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessDiagram">
+            <wsdl:input message="ns:getProcessDiagramRequest" wsaw:Action="urn:getProcessDiagram"/>
+            <wsdl:output message="ns:getProcessDiagramResponse" wsaw:Action="urn:getProcessDiagramResponse"/>
+            <wsdl:fault message="ns:BPMNDeploymentServiceBPSException" name="BPMNDeploymentServiceBPSException" wsaw:Action="urn:getProcessDiagramBPMNDeploymentServiceBPSException"/>
+        </wsdl:operation>
+        <wsdl:operation name="undeploy">
+            <wsdl:input message="ns:undeployRequest" wsaw:Action="urn:undeploy"/>
+            <wsdl:fault message="ns:BPMNDeploymentServiceBPSException" name="BPMNDeploymentServiceBPSException" wsaw:Action="urn:undeployBPMNDeploymentServiceBPSException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <wsdl:input message="ns:getDeploymentsRequest" wsaw:Action="urn:getDeployments"/>
+            <wsdl:output message="ns:getDeploymentsResponse" wsaw:Action="urn:getDeploymentsResponse"/>
+            <wsdl:fault message="ns:BPMNDeploymentServiceBPSException" name="BPMNDeploymentServiceBPSException" wsaw:Action="urn:getDeploymentsBPMNDeploymentServiceBPSException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BPMNDeploymentServiceSoap11Binding" type="ns:BPMNDeploymentServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getDeployedProcesses">
+            <soap:operation soapAction="urn:getDeployedProcesses" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessModel">
+            <soap:operation soapAction="urn:getProcessModel" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessDiagram">
+            <soap:operation soapAction="urn:getProcessDiagram" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="undeploy">
+            <soap:operation soapAction="urn:undeploy" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <soap:operation soapAction="urn:getDeployments" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BPMNDeploymentServiceSoap12Binding" type="ns:BPMNDeploymentServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getDeployedProcesses">
+            <soap12:operation soapAction="urn:getDeployedProcesses" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap12:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessModel">
+            <soap12:operation soapAction="urn:getProcessModel" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap12:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessDiagram">
+            <soap12:operation soapAction="urn:getProcessDiagram" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap12:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="undeploy">
+            <soap12:operation soapAction="urn:undeploy" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap12:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <soap12:operation soapAction="urn:getDeployments" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNDeploymentServiceBPSException">
+                <soap12:fault use="literal" name="BPMNDeploymentServiceBPSException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BPMNDeploymentServiceHttpBinding" type="ns:BPMNDeploymentServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="getDeployedProcesses">
+            <http:operation location="getDeployedProcesses"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessModel">
+            <http:operation location="getProcessModel"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessDiagram">
+            <http:operation location="getProcessDiagram"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="undeploy">
+            <http:operation location="undeploy"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <http:operation location="getDeployments"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="BPMNDeploymentService">
+        <wsdl:port name="BPMNDeploymentServiceHttpSoap11Endpoint" binding="ns:BPMNDeploymentServiceSoap11Binding">
+            <soap:address location="http://localhost:8080/axis2/services/BPMNDeploymentService"/>
+        </wsdl:port>
+        <wsdl:port name="BPMNDeploymentServiceHttpSoap12Endpoint" binding="ns:BPMNDeploymentServiceSoap12Binding">
+            <soap12:address location="http://localhost:8080/axis2/services/BPMNDeploymentService"/>
+        </wsdl:port>
+        <wsdl:port name="BPMNDeploymentServiceHttpEndpoint" binding="ns:BPMNDeploymentServiceHttpBinding">
+            <http:address location="http://localhost:8080/axis2/services/BPMNDeploymentService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

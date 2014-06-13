@@ -124,10 +124,10 @@
                 <groupId>org.apache.geronimo.components.wso2</groupId>
                 <artifactId>geronimo-connector</artifactId>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.apache.geronimo.specs.wso2</groupId>
                 <artifactId>geronimo-ejb_2.1_spec</artifactId>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>org.apache.geronimo.specs.wso2</groupId>
                 <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>

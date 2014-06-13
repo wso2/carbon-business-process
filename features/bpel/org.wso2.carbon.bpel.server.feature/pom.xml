@@ -208,7 +208,7 @@
                                 <importBundleDef>axion.wso2:axion</importBundleDef>
                                 <importBundleDef>commons-primitives.wso2:commons-primitives</importBundleDef>
                                 <importBundleDef>org.apache.geronimo.components.wso2:geronimo-connector</importBundleDef>
-                                <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-ejb_2.1_spec</importBundleDef>
+                                <!--importBundleDef>org.apache.geronimo.specs.wso2:geronimo-ejb_2.1_spec</importBundleDef-->
                                 <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec</importBundleDef>
                                 <importBundleDef>org.apache.geronimo.modules.wso2:geronimo-kernel</importBundleDef>
                                 <importBundleDef>geronimo-spec.wso2:geronimo-spec-javamail</importBundleDef>

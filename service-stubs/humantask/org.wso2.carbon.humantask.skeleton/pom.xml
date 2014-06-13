@@ -133,8 +133,8 @@
                         <_nouse>true</_nouse>
                         <Import-Package>
                             !org.wso2.carbon.humantask.client.api.*,
-			    !org.wso2.carbon.humantask.skeleton.protocol.mgt.services.*,
-			    !org.wso2.carbon.humantask.skeleton.mgt.services.*,
+			                !org.wso2.carbon.humantask.skeleton.protocol.mgt.services.*,
+			                !org.wso2.carbon.humantask.skeleton.mgt.services.*,
                             javax.activation.*;version="[0.0.0, 1.0.0)"
                         </Import-Package>			
                         <DynamicImport-Package>*</DynamicImport-Package>
