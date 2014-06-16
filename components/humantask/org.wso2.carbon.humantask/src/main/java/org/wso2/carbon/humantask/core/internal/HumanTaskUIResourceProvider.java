@@ -22,6 +22,7 @@ import org.wso2.carbon.ui.util.UIResourceProvider;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -62,6 +63,7 @@ public class HumanTaskUIResourceProvider implements UIResourceProvider {
     }
 
     public Set<String> getUIResourcePaths(String s) {
-        return null;
+        Set<String> result = new HashSet<String>();
+        return result;
     }
 }

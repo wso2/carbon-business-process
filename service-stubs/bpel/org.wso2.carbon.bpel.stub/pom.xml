@@ -117,9 +117,10 @@
                             org.wso2.carbon.bpel.stub.upload.*; version="${carbon.platform.package.export.version}"
                         </Export-Package>
                         <_nouse>true</_nouse>
-                        <!--<Import-Package>
-
-                        </Import-Package>-->
+                        <Import-Package>
+                            javax.activation;resolution:=optional;version="0.0.0",
+                            org.apache.axiom.*;version="${orbit.version.axiom}",*;resolution:=optional
+                        </Import-Package>
 			            <!--<Embed-Dependency>org.wso2.carbon.bpel.stub;scope=compile|runtime;inline=true</Embed-Dependency>-->
                         <!--<Carbon-Component>UIBundle</Carbon-Component>-->
                         <DynamicImport-Package>*</DynamicImport-Package>

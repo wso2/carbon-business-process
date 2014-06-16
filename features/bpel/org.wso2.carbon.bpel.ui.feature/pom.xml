@@ -23,10 +23,10 @@
         <groupId>org.wso2.carbon</groupId>
         <artifactId>bpel-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <version>4.3.0-SNAPSHOT</version>	
+    <version>4.3.0-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.bpel.ui.feature</artifactId>
     <packaging>pom</packaging>
@@ -83,7 +83,7 @@
                             </adviceFile>
                             <bundles>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.ui</bundleDef>
-				<bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.stub</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.stub</bundleDef>
                                 <bundleDef>com.googlecode.json-simple.wso2:json-simple</bundleDef>
                             </bundles>
                             <importBundles>
@@ -99,7 +99,7 @@
                                 <importBundleDef>commons-primitives.wso2:commons-primitives</importBundleDef>
                                 <importBundleDef>org.apache.geronimo.components.wso2:geronimo-connector
                                 </importBundleDef>
-                                <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-ejb_2.1_spec</importBundleDef>
+                                <!--importBundleDef>org.apache.geronimo.specs.wso2:geronimo-ejb_2.1_spec</importBundleDef-->
                                 <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec
                                 </importBundleDef>
                                 <importBundleDef>org.apache.geronimo.modules.wso2:geronimo-kernel</importBundleDef>
@@ -118,9 +118,11 @@
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.core.ui:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.service.mgt.ui:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.service.mgt.ui:${carbon.platform.version}
+                                </importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.tryit:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.ui:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.ui:${carbon.platform.version}
+                                </importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>
@@ -128,6 +130,6 @@
             </plugin>
         </plugins>
     </build>
- 
+
 </project>
 
