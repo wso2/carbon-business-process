@@ -144,7 +144,7 @@
                 processStatus = processInfo.getStatus().getValue();
                 processDeployedDate = processInfo.getDeploymentInfo().getDeployDate().getTime().toString();
 
-                processDefPrettyPrinted = BpelUIUtil.prettyPrint(BpelUIUtil.getProcessDefinition(processInfo));
+                processDefPrettyPrinted = BpelUIUtil.prettyPrint(BpelUIUtil.getProcessDefinition(processInfo)).replaceAll("<", "&lt").replaceAll(">", "&gt");
 
                 refMap = BpelUIUtil.getEndpointRefsMap(processInfo);
                 partnerLinkEprMap = BpelUIUtil.getEndpointReferences(processInfo);
@@ -282,6 +282,12 @@
             topPage="false"
             request="<%=request%>"/>
     <jsp:include page="../dialog/display_messages.jsp"/>
+    <link href="css/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <script type="text/javascript" src="js/run_prettify.js"></script>
+    <script type="text/javascript">
+        window.onload=prettyPrint();
+    </script>
     <div id="middle">
 
     <h2><fmt:message key="bpel.process_info"/> (<%=processID%>)</h2>
@@ -632,10 +638,10 @@
                                     <%--<div id="process-definition">
                                         <%=processDefPrettyPrinted%>
                                     </div>--%>
-                                    <textarea id="xmlPay" name="design"
-                                          style="border: 0px solid rgb(204, 204, 204); width: 99%; height: 275px; margin-top: 5px;"
-                                          rows="50"><%=processDefPrettyPrinted%>
-                                    </textarea>
+                                    <!--?prettify lang=html linenums=true?-->
+                                    <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
+                                        <%=processDefPrettyPrinted%>
+                                    </pre>
                                     <script type="text/javascript">
                                         jQuery(document).ready(function() {
                                             document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
