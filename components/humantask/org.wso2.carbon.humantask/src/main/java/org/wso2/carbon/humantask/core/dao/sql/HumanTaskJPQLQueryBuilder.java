@@ -236,9 +236,6 @@ public class HumanTaskJPQLQueryBuilder {
         allTasksQuery.setParameter(TASK_TYPE, TaskType.TASK);
         if (hasStatus) {
             allTasksQuery.setParameter(TASK_STATUSES, statuses);
-        } else {
-            List<TaskStatus> statusList = Arrays.asList(TaskStatus.OBSOLETE);
-            allTasksQuery.setParameter(TASK_STATUSES, statusList);
         }
         if (hasTaskName) {
             allTasksQuery.setParameter(TASK_NAME, queryCriteria.getTaskName());
@@ -466,9 +463,6 @@ public class HumanTaskJPQLQueryBuilder {
         allTasksQuery.setParameter(TASK_TYPE, TaskType.TASK);
         if (hasStatus) {
             allTasksQuery.setParameter(TASK_STATUSES, statuses);
-        } else {
-        List<TaskStatus> statusList = Arrays.asList(TaskStatus.OBSOLETE);
-        allTasksQuery.setParameter(TASK_STATUSES, statusList);
         }
         if (hasTaskName) {
             allTasksQuery.setParameter(TASK_NAME, queryCriteria.getTaskName());
