@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.humantask.ui.util;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.axis2.util.XMLPrettyPrinter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
@@ -23,10 +26,9 @@ import org.wso2.carbon.humantask.stub.mgt.types.TaskInfoType;
 import org.wso2.carbon.humantask.stub.mgt.types.Task_type0;
 import org.wso2.carbon.humantask.stub.ui.task.client.api.types.*;
 import org.wso2.carbon.humantask.ui.constants.HumanTaskUIConstants;
-import org.wso2.carbon.utils.xml.XMLPrettyPrinter;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashMap;
 
 /**
@@ -313,10 +315,22 @@ public final class HumanTaskUIUtil {
         String tRawXML = taskDefinitionRawXml;
         tRawXML = tRawXML.replaceAll("\n|\\r|\\f|\\t", "");
         tRawXML = tRawXML.replaceAll("> +<", "><");
-        InputStream xmlIn = new ByteArrayInputStream(tRawXML.getBytes());
-        XMLPrettyPrinter xmlPrettyPrinter = new XMLPrettyPrinter(xmlIn);
-        tRawXML = xmlPrettyPrinter.xmlFormat();
-        return tRawXML;
+        //InputStream xmlIn = new ByteArrayInputStream(tRawXML.getBytes());
+        //XMLPrettyPrinter xmlPrettyPrinter = new XMLPrettyPrinter(xmlIn);
+        //tRawXML = xmlPrettyPrinter.xmlFormat();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        OMElement elem;
+        try {
+            elem = AXIOMUtil.stringToOM(tRawXML);
+            XMLPrettyPrinter.prettify(elem, stream);
+        } catch (XMLStreamException e) {
+            log.error("Error processing the XML message " + e);
+        } catch (Exception e) {
+            log.error("Error processing the XML message " + e);
+        }
+
+        return new String(stream.toByteArray()).trim();
     }
 
     public static String getTaskListURL(String client) {
