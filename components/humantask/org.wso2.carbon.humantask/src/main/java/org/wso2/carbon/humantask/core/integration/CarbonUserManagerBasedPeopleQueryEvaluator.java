@@ -104,6 +104,12 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
                     if(userNameListForRoleCache != null) {
                         getUserNameListForRoleCache().put(roleName, usernameList);
                     }
+                    Cache<String, Boolean> userNameListCache = getUserNameListCache();
+                    if (userNameListCache != null) {
+                        for (String userName : usernameList) {
+                            userNameListCache.put(userName, true);
+                        }
+                    }
                 }
                 return usernameList;
             } catch (UserStoreException e) {
@@ -134,6 +140,12 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
                                             getRoleListOfUser(tUserName)));
                     if (cachingEnabled) {
                         getRoleNameListForUserCache().put(tUserName, matchingRoleNames);
+                        Cache<String, Boolean> roleNameListCache = getRoleNameListCache();
+                        if (roleNameListCache != null) {
+                            for(String roleName: matchingRoleNames){
+                                roleNameListCache.put(roleName, true);
+                            }
+                        }
                     }
                 } catch (UserStoreException ex) {
                     throw new HumanTaskRuntimeException("Error occurred while calling" +
