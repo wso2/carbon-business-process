@@ -48,12 +48,37 @@ public class SimpleQueryCriteria {
      * The simple query type
      */
     public enum QueryType {
+        /**
+         * ASSIGNED_TO_ME - Returns matching tasks, where the current logged-in user
+         * is the Actual Owner.
+         */
         ASSIGNED_TO_ME,
+        /**
+         * ASSIGNABLE - Return matching tasks, where the current logged-in user act as a Business Administrator.
+         */
         ASSIGNABLE,
+        /**
+         * CLAIMABLE - Return matching tasks where the current logged-in user can claim
+         * (Potential Owner)
+         */
         CLAIMABLE,
+        /**
+         * ALL_TASKS - Return all tasks where the current logged-in user can see.
+         */
         ALL_TASKS,
+        /**
+         * NOTIFICATIONS - Return all Notification where the current logged-in user can see. (Notification recipient)
+         */
         NOTIFICATIONS,
+        /**
+         * REMOVE_TASKS - Used to remove task based on status. External world can't use this queryType since this is
+         * not supported by HumanTask Admin API. This is only use for HumanTask cron job.
+         */
         REMOVE_TASKS,
+        /**
+         * ADVANCED - NOT supported yet.
+         *
+         */
         ADVANCED
     }
 
