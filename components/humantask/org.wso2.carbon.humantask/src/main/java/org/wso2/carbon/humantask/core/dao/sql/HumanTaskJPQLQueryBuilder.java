@@ -223,8 +223,7 @@ public class HumanTaskJPQLQueryBuilder {
                 JOIN_HUMAN_ROLES_JOIN_ORG_ENTITIES +
                 OE_NAME_IN_NAMES +
                 AND +
-                (hasStatus ? T_STATUS_IN_TASK_STATUSES : T_STATUS_NOT_IN_TASK_STATUSES) +
-                AND +
+                (hasStatus ? T_STATUS_IN_TASK_STATUSES + AND  : "") +
                 T_TYPE_TASK_TYPE + (hasTaskName ? AND + FILTER_BY_TASKNAME : "") +
                 AND +
                 T_TENANT_ID_TENANT_ID +
@@ -268,7 +267,7 @@ public class HumanTaskJPQLQueryBuilder {
                 AND +
                 T_TYPE_TASK_TYPE + (hasTaskName ? AND + FILTER_BY_TASKNAME : "") +
                 AND +
-                (hasStatus ? T_STATUS_IN_TASK_STATUSES : T_STATUS_NOT_IN_TASK_STATUSES) +
+                T_STATUS_IN_TASK_STATUSES +
                 generateOrderedByQuery()).setMaxResults(queryCriteria.getPageSize()).setFirstResult(queryCriteria
                 .getPageSize() * queryCriteria.getPageNumber());
 
@@ -280,10 +279,9 @@ public class HumanTaskJPQLQueryBuilder {
         if (hasStatus) {
             assignedToMeQuery.setParameter(TASK_STATUSES, statuses);
         } else {
-            List<TaskStatus> statusList = Arrays.asList(TaskStatus.COMPLETED,
-                    TaskStatus.OBSOLETE,
-                    TaskStatus.FAILED,
-                    TaskStatus.REMOVED);
+            List<TaskStatus> statusList = Arrays.asList(TaskStatus.RESERVED,
+                    TaskStatus.IN_PROGRESS,
+                    TaskStatus.SUSPENDED);
             assignedToMeQuery.setParameter(TASK_STATUSES, statusList);
         }
         if (hasTaskName) {
@@ -457,8 +455,7 @@ public class HumanTaskJPQLQueryBuilder {
                 JOIN_HUMAN_ROLES_JOIN_ORG_ENTITIES +
                 OE_NAME_IN_NAMES +
                 AND +
-                (hasStatus ? T_STATUS_IN_TASK_STATUSES : T_STATUS_NOT_IN_TASK_STATUSES) +
-                AND +
+                (hasStatus ? T_STATUS_IN_TASK_STATUSES + AND : "") +
                 T_TYPE_TASK_TYPE + (hasTaskName ? AND + FILTER_BY_TASKNAME : "") +
                 AND +
                 T_TENANT_ID_TENANT_ID);
@@ -501,7 +498,7 @@ public class HumanTaskJPQLQueryBuilder {
                 AND +
                 T_TYPE_TASK_TYPE + (hasTaskName ? AND + FILTER_BY_TASKNAME : "") +
                 AND +
-                (hasStatus ? T_STATUS_IN_TASK_STATUSES : T_STATUS_NOT_IN_TASK_STATUSES));
+                T_STATUS_IN_TASK_STATUSES);
 
         assignedToMeQuery.setParameter(TENANT_ID, queryCriteria.getCallerTenantId());
         assignedToMeQuery.setParameter("name", queryCriteria.getCaller());
@@ -511,10 +508,9 @@ public class HumanTaskJPQLQueryBuilder {
         if (hasStatus) {
             assignedToMeQuery.setParameter(TASK_STATUSES, statuses);
         } else {
-        List<TaskStatus> statusList = Arrays.asList(TaskStatus.COMPLETED,
-                TaskStatus.OBSOLETE,
-                TaskStatus.FAILED,
-                TaskStatus.REMOVED);
+        List<TaskStatus> statusList = Arrays.asList(TaskStatus.RESERVED,
+                TaskStatus.IN_PROGRESS,
+                TaskStatus.SUSPENDED);
         assignedToMeQuery.setParameter(TASK_STATUSES, statusList);
         }
         if (hasTaskName) {
