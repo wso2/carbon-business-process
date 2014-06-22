@@ -69,7 +69,6 @@ import javax.wsdl.extensions.http.HTTPBinding;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.xml.namespace.QName;
-import java.io.File;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,63 +77,31 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 public class PeopleActivity {
+    private static final long serialVersionUID = -89894857418738012L;
     private final Log log = LogFactory.getLog(PeopleActivity.class);
-
     private String name;
     private String inputVarName;
     private String outputVarName;
     private boolean isSkipable = false;
-
     private String partnerLinkName;
     private String operation;
     private String callbackOperationName;
-
     private String serviceURI;
     private String servicePort;
     private String callbackServicePort;
-
     private InteractionType activityType;
-
     private QName processId;
-
     private boolean isRPC = false;
     private boolean isTwoWay = true;
-
     private QName serviceName;
     private QName callbackServiceName;
     private Definition hiWSDL;
-
     private AttachmentPropagation attachmentPropagation;
 
-
-    private static final long serialVersionUID = -89894857418738012L;
-
-//    public InteractionType getActivityType() {
-//        return activityType;
-//    }
-//
-//    public QName getCallbackServiceName() {
-//        return callbackServiceName;
-//    }
-//
-//    public String getCallbackServicePort() {
-//        return callbackServicePort;
-//    }
 
     public PeopleActivity(ExtensionContext extensionContext, Element element) throws FaultException {
         init(extensionContext, element);
     }
-
-//    public Element getInputMessage(ExtensionContext extensionContext) throws FaultException {
-//        Node inputNode = extensionContext.readVariable(inputVarName);
-//
-//        if (inputNode.getNodeType() == Node.ELEMENT_NODE) {
-//            return (Element) inputNode;
-//        } else {
-//            log.error("The node type of the variable is not ELEMENT");
-//            throw new FaultException(new QName(BPEL4PeopleConstants.B4P_NAMESPACE, "Unsupported variable type"));
-//        }
-//    }
 
     public Operation getOperation(ExtensionContext extensionContext) {
         BpelRuntimeContext runTimeContext = extensionContext.getInternalInstance();
@@ -146,24 +113,9 @@ public class PeopleActivity {
         return partnerLink.getPartnerRoleOperation(operation);
     }
 
-//    public Operation getCallbackOperation(ExtensionContext extensionContext) {
-//        BpelRuntimeContext runTimeContext = extensionContext.getInternalInstance();
-//
-//        OProcess process = runTimeContext.getProcessModel();
-//
-//        OPartnerLink partnerLink = process.getPartnerLink(partnerLinkName);
-//
-//        return partnerLink.getMyRoleOperation(callbackOperationName);
-//
-//    }
-
     public String getOperationName() {
         return operation;
     }
-
-//    public String getEPRURL() {
-//        return serviceURI;
-//    }
 
     public String getServicePort() {
         return servicePort;
@@ -173,29 +125,13 @@ public class PeopleActivity {
         return outputVarName;
     }
 
-//    public DeploymentUnitDir getDu() {
-//        return du;
-//    }
-
     public QName getServiceName() {
         return serviceName;
     }
 
-//    public Definition getHiWSDL() {
-//        return hiWSDL;
-//    }
-
-//    public Definition getCallbackWSDL() {
-//        return du.getDefinitionForService(callbackServiceName);
-//    }
-
-//    public String getCallbackOperationName() {
-//        return callbackOperationName;
-//    }
-//
-//    public String getPartnerLinkName() {
-//        return partnerLinkName;
-//    }
+    public QName getProcessId() {
+        return processId;
+    }
 
     /**
      * Parse a localTask node and extract the information
@@ -222,9 +158,8 @@ public class PeopleActivity {
     }
 
     /**
-     * Parse a remoteNotification node and extract the information
-     * eg -
-     * <b4p:remoteNotification partnerLink="b4pNPartnerLink" operation="notify"></b4p:remoteNotification>
+     * Parse a remoteNotification node and extract the information eg - <b4p:remoteNotification
+     * partnerLink="b4pNPartnerLink" operation="notify"></b4p:remoteNotification>
      *
      * @param remoteNotificationNode Node reference of the remoteNotification
      */
@@ -244,10 +179,8 @@ public class PeopleActivity {
     }
 
     /**
-     * Parse a remoteTask node and extract the information
-     * eg -
-     * <b4p:remoteTask partnerLink="b4pPartnerLink" operation="approve" responseOperation="approvalResponse">
-     * </b4p:remoteTask>
+     * Parse a remoteTask node and extract the information eg - <b4p:remoteTask partnerLink="b4pPartnerLink"
+     * operation="approve" responseOperation="approvalResponse"> </b4p:remoteTask>
      *
      * @param remoteTaskNode Node reference of the remoteTask
      */
@@ -292,12 +225,8 @@ public class PeopleActivity {
     }
 
     /**
-     * In a peopleActivity element there can be exist only one standard element.
-     * eg - Standard Elements are
-     * 1. task
-     * 2. localTask
-     * 3. remoteTask
-     * 4. remoteNotification etc.
+     * In a peopleActivity element there can be exist only one standard element. eg - Standard Elements are 1. task 2.
+     * localTask 3. remoteTask 4. remoteNotification etc.
      * <p/>
      * This method verify there's only one standard element exist and return the type of that standard element
      *
@@ -395,8 +324,8 @@ public class PeopleActivity {
      * Process the &lt;attachmentPropagation/&gt; element defined under peopleActivity
      *
      * @param peopleActivityElement peopleActivity (parent element) where the &lt;attachmentPropagation/&gt; resides
-     * @throws FaultException can be raised if there are more than one &lt;attachmentPropagation/&gt; elements
-     *                        defined or the namespace for the &lt;attachmentPropagation/&gt; element is not defined correctly
+     * @throws FaultException can be raised if there are more than one &lt;attachmentPropagation/&gt; elements defined
+     *                        or the namespace for the &lt;attachmentPropagation/&gt; element is not defined correctly
      */
     private void processAttachmentPropagationElement(Element peopleActivityElement)
             throws FaultException {
@@ -448,14 +377,29 @@ public class PeopleActivity {
                 element.getAttribute(BPEL4PeopleConstants.PEOPLE_ACTIVITY_IS_SKIPABLE));
 
         processStandardElement(element);
-
         processAttachmentPropagationElement(element);
 
-        DeploymentUnitDir du = new DeploymentUnitDir(new File(extensionContext.getDUDir()));
+        String duDir = extensionContext.getDUDir().toString();
+        String duVersion = duDir.substring(duDir.lastIndexOf('-') + 1);
+        if (duVersion.endsWith("/")) {
+            duVersion = duVersion.substring(0, duVersion.lastIndexOf("/"));
+        } else if (duVersion.endsWith("\\")) {
+            duVersion = duVersion.substring(0, duVersion.lastIndexOf("\\"));
+        }
+
+//        //Commenting this logic to fix memory issues.
+//        DeploymentUnitDir du = new DeploymentUnitDir(new File(extensionContext.getDUDir()));
+//        processId = new QName(extensionContext.getProcessModel().getQName().getNamespaceURI(),
+//                extensionContext.getProcessModel().getQName().getLocalPart() + "-" +
+//                        du.getStaticVersion());
+
         processId = new QName(extensionContext.getProcessModel().getQName().getNamespaceURI(),
                 extensionContext.getProcessModel().getQName().getLocalPart() + "-" +
-                        du.getStaticVersion());
+                        duVersion);
 
+        Integer tenantId = B4PServiceComponent.getBPELServer().getMultiTenantProcessStore().getTenantId(processId);
+        DeploymentUnitDir du = B4PServiceComponent.getBPELServer().getMultiTenantProcessStore()
+                .getTenantsProcessStore(tenantId).getDeploymentUnitDir(processId);
 
         isTwoWay = activityType.equals(InteractionType.TASK);
 
@@ -601,16 +545,6 @@ public class PeopleActivity {
         return processConf.getTenantConfigurationContext();
     }
 
-//    public WSDLAwareMessage getWSDLAwareMessage() throws FaultException {
-//        Element request = getInputMessage();
-//        WSDLAwareMessage message = new WSDLAwareMessage();
-//        message.setBinding(getBinding());
-//        message.setPortName(servicePort);
-//        message.setRPC(isRPC);
-//        message.setServiceName(serviceName.getLocalPart());
-//        message.addBodyPart();
-//    }
-
     /**
      * Process the current runtime context and generate a list of attachment ids bind to the current runtime context.
      *
@@ -643,8 +577,8 @@ public class PeopleActivity {
      *
      * @param extensionContext
      * @param taskMessageContext
-     * @return a list of attachment ids. The list can be empty if attachment propagation is not allowed from process
-     *         to human task
+     * @return a list of attachment ids. The list can be empty if attachment propagation is not allowed from process to
+     *         human task
      */
     private List<Long> extractAttachmentIDsToBeSentToHumanTask(ExtensionContext extensionContext,
                                                                BPELMessageContext taskMessageContext) {
@@ -682,7 +616,7 @@ public class PeopleActivity {
             log.error(" Cannot find the tenant domain " + e.toString());
         }
 
-        if(tenantDomain == null) {
+        if (tenantDomain == null) {
             tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
         }
 
@@ -742,7 +676,7 @@ public class PeopleActivity {
                     "Error occurred while generating Registration Service URL" + serviceName,
                     coordinationFault);
         }
-// it seems the WSDLAwareMessage is not required.
+//       it seems the WSDLAwareMessage is not required.
 //        taskMessageContext.setRequestMessage();
 
         if (taskMessageContext.getFaultMessageContext() != null ||
@@ -757,7 +691,6 @@ public class PeopleActivity {
 
         String taskID = SOAPHelper.parseResponseFeedback(
                 taskMessageContext.getOutMessageContext().getEnvelope().getBody());
-
         // HT-Coordination - Persisting taskID against message ID
         // Ignore Notifications, since we are ignore coordination context for notification.
         if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() && InteractionType.TASK.equals(activityType)) {
@@ -774,8 +707,7 @@ public class PeopleActivity {
                 try {
                     messageID = UUID.randomUUID();
                     String protocolHandlerURL = generateTaskProtocolHandlerURL(taskMessageContext);
-                    if(log.isDebugEnabled())
-                    {
+                    if (log.isDebugEnabled()) {
                         log.debug("Generated Protocol Handler URL : " + protocolHandlerURL);
                     }
                     createCoordinationData(messageID.toString(), protocolHandlerURL, Long.toString(instanceID), taskID);
@@ -805,12 +737,12 @@ public class PeopleActivity {
     }
 
     private HTProtocolHandlerDAO createCoordinationData(final String messageID, final String participantProtocolService,
-                                        final String instanceID, final String taskID) throws Exception {
+                                                        final String instanceID, final String taskID) throws Exception {
         HTProtocolHandlerDAO htProtocolHandlerDAO = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer()).getScheduler().execTransaction(new Callable<HTProtocolHandlerDAO>() {
             @Override
             public HTProtocolHandlerDAO call() throws Exception {
                 HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController().getDaoConnectionFactory().getConnection();
-                return daoConnection.createCoordinatedTask(messageID, participantProtocolService,instanceID,taskID);
+                return daoConnection.createCoordinatedTask(messageID, participantProtocolService, instanceID, taskID);
             }
         });
         return htProtocolHandlerDAO;
@@ -879,15 +811,36 @@ public class PeopleActivity {
         return protocolHandlerURL;
     }
 
+    enum FromProcessSpec {
+        all,
+        none
+    }
+
+    enum ToProcessSpec {
+        all,
+        newOnly,
+        none
+    }
+
     /**
-     * Manage the child element of PeopleActivity
-     * eg -
-     * <b4p:attachmentPropagation fromProcess="all|none" toProcess="all|newOnly|none" />
+     * Manage the child element of PeopleActivity eg - <b4p:attachmentPropagation fromProcess="all|none"
+     * toProcess="all|newOnly|none" />
      */
     class AttachmentPropagation {
         private String fromProcess;
         private String toProcess;
         private boolean isInitialized;
+
+        /**
+         * Default constructor : specifies the default values for the &lt;attachmentPropagation/&gt; child element
+         */
+        public AttachmentPropagation() throws FaultException {
+            init();
+        }
+
+        private AttachmentPropagation(Element element) throws FaultException {
+            init(element);
+        }
 
         public boolean isInitialized() {
             return isInitialized;
@@ -899,17 +852,6 @@ public class PeopleActivity {
 
         public String getToProcess() {
             return toProcess;
-        }
-
-        /**
-         * Default constructor : specifies the default values for the &lt;attachmentPropagation/&gt; child element
-         */
-        public AttachmentPropagation() throws FaultException {
-            init();
-        }
-
-        private AttachmentPropagation(Element element) throws FaultException {
-            init(element);
         }
 
         /**
@@ -961,17 +903,6 @@ public class PeopleActivity {
                                 " attribute is not compliant with the specification.");
             }
         }
-    }
-
-    enum FromProcessSpec {
-        all,
-        none
-    }
-
-    enum ToProcessSpec {
-        all,
-        newOnly,
-        none
     }
 }
 
