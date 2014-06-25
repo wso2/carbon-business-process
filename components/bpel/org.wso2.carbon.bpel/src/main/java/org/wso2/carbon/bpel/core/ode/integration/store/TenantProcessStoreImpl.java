@@ -1015,4 +1015,15 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     public Map getDataPublisherMap(){
         return dataPublisherMap;
     }
+
+    public DeploymentUnitDir getDeploymentUnitDir(QName pid) {
+        for (String du : processesInDeploymentUnit.keySet()) {
+            if (processesInDeploymentUnit.get(du) != null) {
+                if (processesInDeploymentUnit.get(du).contains(pid)) {
+                    return deploymentUnits.get(du);
+                }
+            }
+        }
+        return null;
+    }
 }

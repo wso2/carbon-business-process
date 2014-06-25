@@ -67,6 +67,9 @@ public class BPEL4PeopleExtensionOperation extends AbstractLongRunningExtensionO
         extensionContext.setCorrelationValues(new String[]{taskID});
         extensionContext.setCorrelatorId(peopleActivity.inferCorrelatorId(extensionContext));
         outputVarName = peopleActivity.getOutputVarName();
+        if (log.isDebugEnabled()) {
+            log.debug("B4P extension invoked by Process "+ peopleActivity.getProcessId() +", pid:" + extensionContext.getInternalInstance().getPid() + ", task:" + taskID);
+        }
     }
 
     /**

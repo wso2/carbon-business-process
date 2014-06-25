@@ -269,7 +269,9 @@ public class BAMPublisherExtensionOperation extends AbstractSyncExtensionOperati
                 "  ]" +
                 "}";
 
-        dataPublisher.addStreamDefinition(streamDefinition, stream.getName(), stream.getVersion());
+        if (!dataPublisher.isStreamDefinitionAdded(stream.getName(), stream.getVersion())) {
+            dataPublisher.addStreamDefinition(streamDefinition, stream.getName(), stream.getVersion());
+        }
     }
 
     private void addEventStream(AsyncDataPublisher dataPublisher, BAMStreamConfiguration stream)

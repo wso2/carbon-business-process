@@ -27,7 +27,7 @@
             <region>region1</region>
             <order>1</order>
             <style-class>manage</style-class>
-            <icon>../bpel/images/type.gif</icon>
+            <icon>../bpel/images/bpel-process.gif</icon>
             <skip-authentication>false</skip-authentication>
             <!--<require-permission>/permission/admin/manage/bpel</require-permission>-->
         </menu>
@@ -43,45 +43,72 @@
             <icon>../bpel/images/bpel-summary.gif</icon>
             <require-permission>/permission/admin/monitor/bpel/summary</require-permission>
         </menu-->
-
         <menu>
-            <id>processes_menu</id>
+            <id>list_menu</id>
             <i18n-key>processmgt.list.menu</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
             <parent-menu>bpel_menu</parent-menu>
+            <link>#</link>
+            <region>region1</region>
+            <order>1</order>
+            <style-class>manage</style-class>
+            <icon>../bpel/images/list.gif</icon>
+            <skip-authentication>false</skip-authentication>
+            <!--<require-permission>/permission/admin/manage/bpel</require-permission>-->
+        </menu>
+
+        <menu>
+            <id>processes_menu</id>
+            <i18n-key>bpel</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>list_menu</parent-menu>
             <link>../bpel/process_list.jsp</link>
             <region>region1</region>
             <order>2</order>
             <style-class>manage</style-class>
-             <icon>../bpel/images/list.gif</icon>
+            <icon>../bpel/images/type.gif</icon>
              <!--<skip-authentication>false</skip-authentication>-->
              <require-permission>/permission/admin/manage/bpel/processes</require-permission>
         </menu>
 
         <menu>
             <id>processes_menu</id>
-            <i18n-key>bpel.processes</i18n-key>
+            <i18n-key>bpel</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>bpel_menu</parent-menu>
+            <parent-menu>list_menu</parent-menu>
             <link>../bpel/process_list.jsp</link>
             <region>region2</region>
             <order>2</order>
             <style-class>manage</style-class>
-             <icon>../bpel/images/list.gif</icon>
+            <icon>../bpel/images/type.gif</icon>
              <!--<skip-authentication>false</skip-authentication>-->
              <require-permission>/permission/admin/monitor/bpel</require-permission>
         </menu>
 
         <menu>
-            <id>deploy_packages_menu</id>
+            <id>add_menu</id>
             <i18n-key>processmgt.add.menu</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
             <parent-menu>bpel_menu</parent-menu>
+            <link>#</link>
+            <region>region1</region>
+            <order>1</order>
+            <style-class>manage</style-class>
+            <icon>../bpel/images/add.gif</icon>
+            <skip-authentication>false</skip-authentication>
+            <!--<require-permission>/permission/admin/manage/bpel</require-permission>-->
+        </menu>
+
+        <menu>
+            <id>deploy_packages_menu</id>
+            <i18n-key>bpel</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>add_menu</parent-menu>
             <link>../bpel/upload_bpel.jsp</link>
             <region>region1</region>
             <order>3</order>
             <style-class>manage</style-class>
-            <icon>../bpel/images/add.gif</icon>
+            <icon>../bpel/images/type.gif</icon>
             <require-permission>/permission/admin/manage/bpel/add</require-permission>
         </menu>
 
@@ -99,27 +126,27 @@
         </menu>-->
 
         <menu>
-            <id>bpel_instances_menu</id>
-            <i18n-key>bpel.business.processes</i18n-key>
+            <id>instances_menu</id>
+            <i18n-key>bpel.instances</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
-            <parent-menu></parent-menu>
+            <parent-menu>manage_menu</parent-menu>
             <link>#</link>
-            <region>region2</region>
-            <order>1</order>
+            <region>region1</region>
+            <order>30</order>
             <style-class>manage</style-class>
-            <icon>../bpel/images/type.gif</icon>
+            <!--<icon>../bpel/images/bpel-process.gif</icon>-->
             <skip-authentication>false</skip-authentication>
             <!--<require-permission>/permission/admin/manage/bpel</require-permission>-->
         </menu>
 
         <menu>
-            <id>instances_menu</id>
-            <i18n-key>bpel.instances</i18n-key>
+            <id>bpel_instances_menu</id>
+            <i18n-key>bpel</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>bpel_instances_menu</parent-menu>
+            <parent-menu>instances_menu</parent-menu>
             <!--<link>../bpel/instance_list.jsp</link>-->
             <link>../bpel/list_instances.jsp</link>
-            <region>region2</region>
+            <region>region1</region>
             <order>36</order>
             <style-class>manage</style-class>
              <icon>../bpel/images/bpel-instance.gif</icon>
@@ -128,13 +155,13 @@
         <!--The following menu is repeated with a different permission
             But we should be able to provide several permissions to a single menu-->
         <menu>
-            <id>instances_menu</id>
-            <i18n-key>bpel.instances</i18n-key>
+            <id>bpel_instances_menu</id>
+            <i18n-key>bpel</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>bpel_instances_menu</parent-menu>
+            <parent-menu>instances_menu</parent-menu>
             <!--<link>../bpel/instance_list.jsp</link>-->
             <link>../bpel/list_instances.jsp</link>
-            <region>region2</region>
+            <region>region1</region>
             <order>36</order>
             <style-class>manage</style-class>
              <icon>../bpel/images/bpel-instance.gif</icon>

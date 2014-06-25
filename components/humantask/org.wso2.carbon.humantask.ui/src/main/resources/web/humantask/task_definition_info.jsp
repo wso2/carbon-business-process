@@ -79,6 +79,12 @@
             resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
             topPage="false"
             request="<%=request%>"/>
+<link href="css/prettify.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="js/prettify.js"></script>
+<script type="text/javascript" src="js/run_prettify.js"></script>
+<script type="text/javascript">
+    window.onload=prettyPrint();
+</script>
     <div id="middle">
         <div id="package-list-main">
             <h2><fmt:message key="humantask.task.definition"/>&nbsp;(<%=taskDefId%>)</h2>
@@ -91,7 +97,7 @@
                 <div id="humantask-task-definition-dashboard">
                     <%
                         taskInfoType = serviceClient.getTaskInfo(taskId);
-                        taskDefPrettyPrinted = HumanTaskUIUtil.prettyPrint(HumanTaskUIUtil.getTaskDefinition(taskInfoType));
+                        taskDefPrettyPrinted = HumanTaskUIUtil.prettyPrint(HumanTaskUIUtil.getTaskDefinition(taskInfoType)).replaceAll("<", "&lt").replaceAll(">", "&gt");
                     %>
                     <table width="100%" cellspacing="0" cellpadding="0" border="0">
 
@@ -110,10 +116,10 @@
                                     </thead>
                                     <tr>
                                         <td>
-                                            <textarea id="xmlPay" name="design"
-                                                      style="border: 0px solid rgb(204, 204, 204); width: 99%; height: 275px; margin-top: 5px;"
-                                                      rows="50"><%=taskDefPrettyPrinted%>
-                                            </textarea>
+                                            <!--?prettify lang=html linenums=true?-->
+                                            <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
+                                            <%=taskDefPrettyPrinted%>
+                                            </pre>
                                             <script type="text/javascript">
                                                 jQuery(document).ready(function() {
                                                     document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");

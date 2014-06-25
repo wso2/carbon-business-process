@@ -32,6 +32,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <%@ page import="javax.xml.namespace.QName" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.TreeMap" %>
 
 <jsp:useBean id="instanceFilter" scope="session" class="org.wso2.carbon.bpel.ui.InstanceFilter"/>
 <jsp:setProperty name="instanceFilter" property="*" />
@@ -410,14 +412,20 @@
                                                             <option value="all" selected>All</option>
 <%
             if(processIds != null && processIds.length > 0) {
+                Map<String, String> sortedPIDs = new TreeMap<String, String>();
                 for(String pid : processIds) {
+                    int i = pid.lastIndexOf("}");
+                    sortedPIDs.put(pid.substring(i + 1) + "\t" + "|" + "\t" + pid.substring(0, i + 1), pid);
+                }
+                for(String modifiedPId : sortedPIDs.keySet()) {
+                    String pid = sortedPIDs.get(modifiedPId);
                     if(instanceFilter != null && instanceFilter.getPid() != null && instanceFilter.getPid().equals(pid)) {
 %>
-                                                            <option value="<%=pid%>" selected><%=pid%></option>
+                                                            <option value="<%=pid%>" selected><%=modifiedPId%></option>
 <%
                     } else {
 %>
-                                                            <option value="<%=pid%>"><%=pid%></option>
+                                                            <option value="<%=pid%>"><%=modifiedPId%></option>
 <%
                     }
                 }

@@ -18,6 +18,7 @@ package org.wso2.carbon.bpel.core.ode.integration.store;
 
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
+import org.apache.ode.store.DeploymentUnitDir;
 import org.wso2.carbon.bpel.core.ode.integration.config.bam.BAMServerProfile;
 
 import javax.xml.namespace.QName;
@@ -112,4 +113,6 @@ public interface TenantProcessStore {
     void addDataPublisher(String processName, Object dataPublisher);
 
     public Map getDataPublisherMap();
+
+    DeploymentUnitDir getDeploymentUnitDir(QName pid);
 }
