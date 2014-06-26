@@ -107,4 +107,35 @@
     <!-- <tns:PersistenceProvider>Hibernate<tns:PersistenceProvider> -->
     <!-- <tns:NodeId></tns:NodeId>  -->
 
+    <!-- Simple Scheduler related configuration -->
+    <!--<tns:ODESchedulerConfiguration>-->
+        <!-- Maximum number of jobs in the "near future" todo queue. -->
+        <!--<tns:ODESchedulerQueueLength>10000</tns:ODESchedulerQueueLength>-->
+
+        <!--Jobs scheduled with a time that is between [now, now+immediateInterval] will be assigned to the current node,
+         and placed directly on the todo queue. time in ms-->
+        <!--<tns:ODESchedulerImmediateInterval>30000</tns:ODESchedulerImmediateInterval>-->
+
+        <!--Jobs scheduled with a time that is between (now+immediateInterval,now+nearFutureInterval) will be assigned to the current
+        node, but will not be placed on the todo queue (the promoter will pick them up). time in ms -->
+        <!--<tns:ODESchedulerNearFutureInterval>600000</tns:ODESchedulerNearFutureInterval>-->
+
+        <!-- Stale node check interval in ms-->
+        <!--<tns:ODESchedulerStaleInterval>10000</tns:ODESchedulerStaleInterval>-->
+
+        <!--  Estimated sustained transaction per second capacity of the system.
+        e.g. 100 means the system can process 100 jobs per seconds, on average
+        This number is used to determine how many jobs to load from the database at once.-->
+        <!--<tns:ODESchedulerTransactionsPerSecond>100</tns:ODESchedulerTransactionsPerSecond>-->
+
+        <!-- Duration used to log a warning if a job scheduled at a date D is queued at D'>D+_warningDelay -->
+        <!--<tns:ODESchedulerWarningDelay>300000</tns:ODESchedulerWarningDelay>-->
+
+        <!--  Number of immediate retries when the transaction fails -->
+        <!--<tns:ODESchedulerImmediateTransactionRetryLimit>3</tns:ODESchedulerImmediateTransactionRetryLimit>-->
+
+        <!-- Interval between immediate retries when the transaction fails -->
+        <!--<tns:ODESchedulerImmediateTransactionRetryInterval>1000</tns:ODESchedulerImmediateTransactionRetryInterval>-->
+    <!--</tns:ODESchedulerConfiguration>-->
+
 </tns:WSO2BPS>
