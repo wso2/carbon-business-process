@@ -1,5 +1,6 @@
 package org.wso2.carbon.bpmn.core.deployment;
 
+import com.hazelcast.core.HazelcastInstance;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -36,6 +37,11 @@ public class TenantRepository {
 
     public TenantRepository(Integer tenantId) {
         this.tenantId = tenantId;
+        if(BPMNServerHolder.getInstance().getHazelcastInstance() != null){
+            // clustering enabled and hazelcast instance available
+            setDeploymentIds(BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_DEPLOYMENT_ID_SET + tenantId));
+            setProcessDefinitionIds(BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_PROCESS_DEFINITION_ID_SET + tenantId));
+        }
     }
 
     public File getRepoFolder() {
@@ -298,4 +304,5 @@ public class TenantRepository {
     public Set<Object> getProcessDefinitionIds() {
         return processDefinitionIds;
     }
+
 }

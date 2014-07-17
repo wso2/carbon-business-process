@@ -14,7 +14,7 @@ public class BPMNServerHolder {
     private ProcessEngine engine = null;
     private TenantManager tenantManager = null;
     private RegistryService registryService = null;
-    private HazelcastInstance hazelcastInstance;
+    private HazelcastInstance hazelcastInstance = null;
 
     private static BPMNServerHolder bpmnServerHolder = null;
 

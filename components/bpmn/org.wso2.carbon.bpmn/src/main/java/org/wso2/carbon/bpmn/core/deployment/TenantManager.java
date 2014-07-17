@@ -1,6 +1,7 @@
 package org.wso2.carbon.bpmn.core.deployment;
 
 import com.hazelcast.core.HazelcastInstance;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSException;
 import org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent;
@@ -34,8 +35,8 @@ public class TenantManager {
 
         for (TenantRepository tenantRepository : tenantRepositories.values()) {
 
-            Set<Object> deploymentIds = BPMNServerHolder.getInstance().getHazelcastInstance().getSet("deploymentIds" + tenantRepository.getTenantId());
-            Set<Object> processDefinitionIds = BPMNServerHolder.getInstance().getHazelcastInstance().getSet("processDefinitionIds" + tenantRepository.getTenantId());
+            Set<Object> deploymentIds = BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_DEPLOYMENT_ID_SET + tenantRepository.getTenantId());
+            Set<Object> processDefinitionIds = BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_PROCESS_DEFINITION_ID_SET + tenantRepository.getTenantId());
             for (Object o : tenantRepository.getDeploymentIds()) {
 
                 deploymentIds.add(o);
