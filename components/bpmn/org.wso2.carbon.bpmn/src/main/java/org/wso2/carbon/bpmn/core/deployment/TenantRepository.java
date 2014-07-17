@@ -14,13 +14,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.*;
+import org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent;
 import org.wso2.carbon.registry.api.*;
+import org.wso2.carbon.registry.api.Collection;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipInputStream;
 
 public class TenantRepository {
@@ -29,9 +28,9 @@ public class TenantRepository {
 
     private Integer tenantId;
 
-    private List<String> deploymentIds = new ArrayList<String>();
+    private Set<Object> deploymentIds=new HashSet<Object>();
 
-    private List<String> processDefinitionIds = new ArrayList<String>();
+    private Set<Object> processDefinitionIds=new HashSet<Object>();
 
     private File repoFolder;
 
@@ -274,7 +273,29 @@ public class TenantRepository {
                     log.error(msg, e);
                     throw new BPSException(msg, e);
                 }
+
             }
         }
+
+    }
+
+    public void setDeploymentIds(Set<Object> deploymentIds) {
+        this.deploymentIds = deploymentIds;
+    }
+
+    public void setProcessDefinitionIds(Set<Object> processDefinitionIds) {
+        this.processDefinitionIds = processDefinitionIds;
+    }
+
+    public Integer getTenantId() {
+        return tenantId;
+    }
+
+    public Set<Object> getDeploymentIds() {
+        return deploymentIds;
+    }
+
+    public Set<Object> getProcessDefinitionIds() {
+        return processDefinitionIds;
     }
 }

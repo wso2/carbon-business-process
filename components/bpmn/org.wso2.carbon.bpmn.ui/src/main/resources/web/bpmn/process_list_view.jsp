@@ -71,8 +71,13 @@ WorkflowServiceClient client;
 <script>
     function startProcess(pid) {
         function startYes() {
-            window.location.href = "process_list_view.jsp?region=region1&item=bpmn_menu&operation=startProcess&processID=" + pid;
-
+            $.ajax({
+            type: 'POST',
+            url: location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu&operation=startProcess&processID=" + pid,
+            success: function(data){
+                window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp";
+               }
+            });
         }
         sessionAwareFunction(function() {
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.start.process"/> ' + pid + "?", startYes, null);

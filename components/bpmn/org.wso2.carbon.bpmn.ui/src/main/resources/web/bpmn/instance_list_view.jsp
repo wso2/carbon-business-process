@@ -70,8 +70,13 @@
 <script>
     function deleteInstance(iid) {
         function deleteYes() {
-            window.location.href = "instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteProcessInstance&instanceID=" + iid;
-
+        $.ajax({
+        type: 'POST',
+        url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteProcessInstance&instanceID=" + iid,
+        success: function(data){
+	        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu";
+           }
+        });
         }
         sessionAwareFunction(function() {
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.delete.instance"/> ' + iid + "?", deleteYes, null);
@@ -80,19 +85,30 @@
     };
     function suspendInstance(iid) {
         function suspendYes() {
-            window.location.href = "instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=suspendProcessInstance&instanceID=" + iid;
-
+        $.ajax({
+        type: 'POST',
+        url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=suspendProcessInstance&instanceID=" + iid,
+        success: function(data){
+	        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu";
+           }
+        });
         }
         sessionAwareFunction(function() {
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.suspend.instance"/> ' + iid + "?", suspendYes, null);
+
         }, "<fmt:message key="session.timed.out"/>");
         return false;
     };
     function activateInstance(iid) {
             function activateYes() {
-                window.location.href = "instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=activateProcessInstance&instanceID=" + iid;
-
-            }
+            $.ajax({
+            type: 'POST',
+            url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=activateProcessInstance&instanceID=" + iid,
+            success: function(data){
+	window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu";
+           }
+        });
+        }
             sessionAwareFunction(function() {
             CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.activate.instance"/> ' + iid + "?", activateYes, null);
             }, "<fmt:message key="session.timed.out"/>");
