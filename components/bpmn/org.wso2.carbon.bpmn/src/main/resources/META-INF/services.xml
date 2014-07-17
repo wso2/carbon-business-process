@@ -29,5 +29,5 @@
     
     <parameter name="adminService" locked="true">true</parameter>
     <parameter name="hiddenService" locked="true">true</parameter>
-    <parameter name="AuthorizationAction" locked="true">/permission/protected/manage</parameter>
+    <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/bpmn</parameter>
 </serviceGroup>

@@ -13,4 +13,6 @@ public class BPMNConstants {
 
     public static final String BPMN_PACKAGE_EXTENSION = "bar";
     public static final String BPMN_PACKAGE_TEMP_DIRECTORY = File.separator + "tmp" + File.separator + "bpmnuploads";
+    public static final String BPMN_DISTRIBUTED_DEPLOYMENT_ID_SET = "deploymentIDs";
+    public static final String BPMN_DISTRIBUTED_PROCESS_DEFINITION_ID_SET = "processDefinitionIDs";
 }
