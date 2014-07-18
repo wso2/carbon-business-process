@@ -64,6 +64,11 @@ function validate() {
 </script>
 
 <div id="middle">
+    <carbon:breadcrumb
+            label="bpmn.newpackage"
+            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+            topPage="true"
+            request="<%=request%>"/>
     <h2><fmt:message key="bpmn.newpackage"/></h2>
 
     <div id="workArea">
