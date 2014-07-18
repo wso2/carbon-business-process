@@ -48,13 +48,13 @@
     String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
 %>
-
-<div id="middle">
     <carbon:breadcrumb
             label="bpmn.package.dashboard"
-            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
-            topPage="true"
+            resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
+            topPage="false"
             request="<%=request%>"/>
+<div id="middle">
+
     <h2><fmt:message key="bpmn.package.dashboard"/> (<%=deploymentName%>)</h2>
 
     <div id="workArea">

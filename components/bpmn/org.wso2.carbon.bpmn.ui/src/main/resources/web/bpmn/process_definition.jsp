@@ -58,15 +58,13 @@
 <script type="text/javascript">
     window.onload=prettyPrint();
 </script>
-
-<div id="middle">
     <carbon:breadcrumb
             label="bpmn.process.info"
-            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
-            topPage="true"
+            resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
+            topPage="false"
             request="<%=request%>"/>
+<div id="middle">
     <h2><fmt:message key="bpmn.process.info"/> (<%=processId%>)</h2>
-
     <div id="workArea">
         <table class="styledLeft" id="moduleTable">
             <thead>

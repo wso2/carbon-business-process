@@ -62,15 +62,13 @@ function validate() {
     }
 }
 </script>
-
-<div id="middle">
     <carbon:breadcrumb
             label="bpmn.newpackage"
-            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+            resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
             topPage="true"
             request="<%=request%>"/>
+<div id="middle">
     <h2><fmt:message key="bpmn.newpackage"/></h2>
-
     <div id="workArea">
         <div id="formset">
             <form id="bpmn_upload_form" method="post" name="bpmnUpload" action="../../fileupload/bpmn"

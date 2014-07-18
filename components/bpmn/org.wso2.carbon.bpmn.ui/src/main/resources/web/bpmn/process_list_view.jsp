@@ -86,12 +86,12 @@ WorkflowServiceClient client;
     };
 </script>
 <jsp:include page="../dialog/display_messages.jsp"/>
-<div id="middle">
     <carbon:breadcrumb
             label="bpmn.deployed.processes"
-            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+            resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
             topPage="true"
             request="<%=request%>"/>
+<div id="middle">
     <h2><fmt:message key="bpmn.deployed.processes"/></h2>
 
     <div id="workArea">
