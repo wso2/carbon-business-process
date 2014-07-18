@@ -50,6 +50,11 @@
 %>
 
 <div id="middle">
+    <carbon:breadcrumb
+            label="bpmn.package.dashboard"
+            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+            topPage="true"
+            request="<%=request%>"/>
     <h2><fmt:message key="bpmn.package.dashboard"/> (<%=deploymentName%>)</h2>
 
     <div id="workArea">

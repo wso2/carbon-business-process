@@ -55,6 +55,11 @@
 %>
 
 <div id="middle">
+    <carbon:breadcrumb
+            label="bpmn.instance.info"
+            resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+            topPage="true"
+            request="<%=request%>"/>
     <h2><fmt:message key="bpmn.instance.info"/> (<%=instanceId%>)</h2>
 
     <div id="workArea">
