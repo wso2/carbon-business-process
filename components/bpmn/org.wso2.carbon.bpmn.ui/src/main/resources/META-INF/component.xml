@@ -41,7 +41,7 @@
             <order>3</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn.gif</icon>
-            <require-permission>/permission/protected/manage</require-permission>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
         </menu>
         <menu>
             <id>bpmn_upload_menu</id>
@@ -53,7 +53,7 @@
             <order>3</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn.gif</icon>
-            <require-permission>/permission/protected/manage</require-permission>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
         </menu>
         <menu>
             <id>bpmn_instace_menu</id>
@@ -65,7 +65,7 @@
             <order>38</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn-instance.gif</icon>
-            <require-permission>/permission/protected/manage</require-permission>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
         </menu>
     </menus>
     <FileUploadConfig>

@@ -11,6 +11,8 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPSException;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -31,7 +33,14 @@ public class BPMNDeployer extends AbstractDeployer {
             File tenantRepoFolder = createTenantRepo(configurationContext);
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
             tenantRepository.setRepoFolder(tenantRepoFolder);
-            tenantRepository.fixDeployments();
+
+            // Currently using the registry read/write mount property to determine whether this node is a master node
+            // or a slave node
+            // Only master node can fix deployment issues in BPMN packages
+            if (!isServerReadOnly()) {
+                tenantRepository.fixDeployments();
+            }
+
         } catch (BPSException e) {
             String msg = "Failed to create a tenant store for tenant: " + tenantId;
             log.error(msg);
@@ -40,7 +49,13 @@ public class BPMNDeployer extends AbstractDeployer {
 
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
 
-        // TODO: check if this is worker node
+        // Currently using the registry read/write mount property to determine whether this node is a master node
+        // or a slave node.
+        boolean isMasterServer = !isServerReadOnly();
+        //worker nodes cannot deploy BPMN packages
+        if (!isMasterServer) {
+            return;
+        }
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
@@ -60,6 +75,15 @@ public class BPMNDeployer extends AbstractDeployer {
     }
 
     public void undeploy(String bpmnArchivePath) throws DeploymentException {
+
+        // Currently using the registry read/write mount property to determine whether this node is a master node
+        // or a slave node.
+        boolean isMasterServer = !isServerReadOnly();
+        //worker nodes cannot un deploy BPMN packages
+        if (!isMasterServer) {
+            return;
+        }
+
         File bpmnArchiveFile = new File(bpmnArchivePath);
         if (bpmnArchiveFile.exists()) {
             if (log.isTraceEnabled()) {
@@ -114,9 +138,18 @@ public class BPMNDeployer extends AbstractDeployer {
 
     }
 
+    private boolean isServerReadOnly() {
 
+        try {
+            RegistryContext registryContext = BPMNServerHolder.getInstance().getRegistryService().getConfigSystemRegistry().getRegistryContext();
+            if (registryContext.isReadOnly()) {
+                return true;
+            }
+        } catch (RegistryException e) {
+            log.error("Error while reading registry status");
 
-
-
+        }
+        return false;
+    }
 
 }

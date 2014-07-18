@@ -72,7 +72,7 @@
     </dependencies>
 
     <build>
-        <plugins>	     
+        <plugins>
 	     <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -114,12 +114,12 @@
                                         <path refid="h2.classpath"/>
                                     </classpath>
                                     <fileset
-                                            file="${basedir}/resources/dbscripts/h2.sql"/>
+                                            file="${basedir}/resources/dbscripts/create/h2.sql"/>
                                 </sql>
                                 <echo
                                         message="##################### END ############################"/>
-				<echo message="********Version of H2: "/>  
-  				<echo>${orbit.version.h2.engine}</echo> 
+				<echo message="********Version of H2: "/>
+  				<echo>${orbit.version.h2.engine}</echo>
                             </tasks>
                         </configuration>
                     </execution>

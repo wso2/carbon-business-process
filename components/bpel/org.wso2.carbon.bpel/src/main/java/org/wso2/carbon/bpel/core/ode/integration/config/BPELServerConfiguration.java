@@ -121,6 +121,17 @@ public class BPELServerConfiguration {
     private int maxPoolSize = 100;
     private int minPoolSize = 5;
 
+
+    //SimpleScheduler Configuration
+    private int odeSchedulerQueueLength  = 10000;
+    private long odeSchedulerImmediateInterval  = 30000;
+    private long odeSchedulerNearFutureInterval  = 10 * 60 * 1000;
+    private long odeSchedulerStaleInterval  = 10000;
+    private int odeSchedulerTransactionsPerSecond  = 100;
+    private long odeSchedulerWarningDelay  = 5*60*1000;
+    private int odeSchedulerImmediateTransactionRetryLimit  = 3;
+    private long odeSchedulerImmediateTransactionRetryInterval  = 1000;
+
     public BPELServerConfiguration() {
         if (log.isDebugEnabled()) {
             log.debug("Loading bps configuration....");
@@ -329,6 +340,31 @@ public class BPELServerConfiguration {
         odeConfig.setProperty(addPrefix(OdeConfigProperties.PROP_THREAD_POOL_SIZE),
                 Integer.toString(odeSchedulerThreadPoolSize));
 
+        // ODE simple Scheduler related configuration.
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_QUEUE_LENGTH,
+                Integer.toString(this.odeSchedulerQueueLength));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_IMMEDIATE_INTERVAL,
+                Long.toString(this.odeSchedulerImmediateInterval));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_NEAR_FUTURE_INTERVAL,
+                Long.toString(this.odeSchedulerNearFutureInterval));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_STALE_INTERVAL,
+                Long.toString(this.odeSchedulerStaleInterval));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_TPS,
+                Integer.toString(this.odeSchedulerTransactionsPerSecond));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_WARNING_DELAY ,
+                Long.toString(this.odeSchedulerWarningDelay));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_LIMIT,
+                Integer.toString(this.odeSchedulerImmediateTransactionRetryLimit));
+
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_INTERVAL,
+                Long.toString(this.odeSchedulerImmediateTransactionRetryInterval));
+
         return odeConfig;
     }
 
@@ -385,6 +421,7 @@ public class BPELServerConfiguration {
         populateUseInstanceStateCache();
         populatePersistenceProvider();
         populateNodeId();
+        populateODESchedulerConfiguration();
     }
 
     private void populateSyncWithRegistry() {
@@ -685,5 +722,35 @@ public class BPELServerConfiguration {
 
     public String getNodeId(){
         return this.nodeId;
+    }
+
+    private void populateODESchedulerConfiguration() {
+        if (bpsConfigDocument.getWSO2BPS().getODESchedulerConfiguration() != null) {
+            SimpleSchedulerConfig config = bpsConfigDocument.getWSO2BPS().getODESchedulerConfiguration();
+
+            odeSchedulerQueueLength = config.getODESchedulerQueueLength() > 0 ?
+                    config.getODESchedulerQueueLength() : odeSchedulerQueueLength;
+
+            odeSchedulerImmediateInterval = config.getODESchedulerImmediateInterval() > 0 ?
+                    config.getODESchedulerImmediateInterval() : odeSchedulerImmediateInterval;
+
+            odeSchedulerNearFutureInterval = config.getODESchedulerNearFutureInterval() > 0 ?
+                    config.getODESchedulerNearFutureInterval() : odeSchedulerNearFutureInterval;
+
+            odeSchedulerStaleInterval = config.getODESchedulerStaleInterval() > 0 ?
+                    config.getODESchedulerStaleInterval() : odeSchedulerStaleInterval;
+
+            odeSchedulerTransactionsPerSecond = config.getODESchedulerTransactionsPerSecond() > 0 ?
+                    config.getODESchedulerTransactionsPerSecond() : odeSchedulerTransactionsPerSecond;
+
+            odeSchedulerWarningDelay = config.getODESchedulerWarningDelay() > 0 ?
+                    config.getODESchedulerWarningDelay() : odeSchedulerWarningDelay;
+
+            odeSchedulerImmediateTransactionRetryLimit = config.getODESchedulerImmediateTransactionRetryLimit() > 0 ?
+                    config.getODESchedulerImmediateTransactionRetryLimit() : odeSchedulerImmediateTransactionRetryLimit;
+
+            odeSchedulerImmediateTransactionRetryInterval = config.getODESchedulerImmediateInterval() > 0 ?
+                    config.getODESchedulerImmediateTransactionRetryInterval() : odeSchedulerImmediateTransactionRetryInterval;
+        }
     }
 }

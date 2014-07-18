@@ -26,6 +26,7 @@
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
+<fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <%
     String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
     ConfigurationContext configContext =
@@ -51,9 +52,13 @@
     String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
 %>
-
+    <carbon:breadcrumb
+            label="bpmn.deployed.processes"
+            resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
+            topPage="true"
+            request="<%=request%>"/>
 <div id="middle">
-    <h2>Deployed BPMN Processes</h2>
+    <h2><fmt:message key="bpmn.deployed.processes"/></h2>
 
     <div id="workArea">
         <table class="styledLeft" id="moduleTable">

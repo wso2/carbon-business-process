@@ -286,4 +286,16 @@ public final class BPELConstants {
     public static final String WS_ADDRESSING_NS2 = "http://www.w3.org/2006/05/addressing/wsdl";
     public static final String WS_ADDRESSING_NS3 = "http://www.w3.org/2006/02/addressing/wsdl";
     public static final String WS_ADDRESSING_NS4 = "http://schemas.xmlsoap.org/ws/2004/08/addressing";
+
+
+    public static final String ODE_SCHEDULER_QUEUE_LENGTH = "ode.scheduler.queueLength";
+    public static final String ODE_SCHEDULER_IMMEDIATE_INTERVAL = "ode.scheduler.immediateInterval";
+    public static final String ODE_SCHEDULER_NEAR_FUTURE_INTERVAL = "ode.scheduler.nearFutureInterval";
+    public static final String ODE_SCHEDULER_STALE_INTERVAL = "ode.scheduler.staleInterval";
+    public static final String ODE_SCHEDULER_TPS = "ode.scheduler.transactionsPerSecond";
+    public static final String ODE_SCHEDULER_WARNING_DELAY = "ode.scheduler.warningDelay";
+    public static final String ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_LIMIT
+            = "ode.scheduler.immediateTransactionRetryLimit";
+    public static final String ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_INTERVAL
+            = "ode.scheduler.immediateTransactionRetryInterval";
 }

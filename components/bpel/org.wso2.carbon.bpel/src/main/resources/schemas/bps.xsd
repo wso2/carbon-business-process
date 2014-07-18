@@ -65,6 +65,7 @@
             <xsd:element name="UseInstanceStateCache" type="xsd:string" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="PersistenceProvider" type="xsd:string" minOccurs="0" maxOccurs="1"></xsd:element>
             <xsd:element name="NodeId" type="xsd:string" minOccurs="0" maxOccurs="1"></xsd:element>
+            <xsd:element name="ODESchedulerConfiguration" type="tns:simpleSchedulerConfig" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -252,6 +253,18 @@
         </xsd:attribute>
     </xsd:complexType>
     <xsd:element name="WSO2BPS" type="tns:tBPS"></xsd:element>
+    <xsd:complexType name="simpleSchedulerConfig">
+        <xsd:sequence>
+            <xsd:element name="ODESchedulerQueueLength" type="xsd:int" />
+            <xsd:element name="ODESchedulerImmediateInterval" type="xsd:long" />
+            <xsd:element name="ODESchedulerNearFutureInterval" type="xsd:long" />
+            <xsd:element name="ODESchedulerStaleInterval" type="xsd:long" />
+            <xsd:element name="ODESchedulerTransactionsPerSecond" type="xsd:int" />
+            <xsd:element name="ODESchedulerWarningDelay" type="xsd:long" />
+            <xsd:element name="ODESchedulerImmediateTransactionRetryLimit" type="xsd:int" />
+            <xsd:element name="ODESchedulerImmediateTransactionRetryInterval" type="xsd:long" />
+        </xsd:sequence>
+    </xsd:complexType>
 </xsd:schema>
 
 

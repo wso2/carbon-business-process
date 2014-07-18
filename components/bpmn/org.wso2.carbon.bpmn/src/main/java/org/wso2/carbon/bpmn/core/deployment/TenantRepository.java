@@ -13,10 +13,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.*;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.registry.api.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,14 +33,19 @@ public class TenantRepository {
 
     private Integer tenantId;
 
-    private List<String> deploymentIds = new ArrayList<String>();
+    private Set<Object> deploymentIds = new HashSet<Object>();
 
-    private List<String> processDefinitionIds = new ArrayList<String>();
+    private Set<Object> processDefinitionIds = new HashSet<Object>();
 
     private File repoFolder;
 
     public TenantRepository(Integer tenantId) {
         this.tenantId = tenantId;
+        if (BPMNServerHolder.getInstance().getHazelcastInstance() != null) {
+            // clustering enabled and hazelcast instance available
+            setDeploymentIds(BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_DEPLOYMENT_ID_SET + tenantId));
+            setProcessDefinitionIds(BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_PROCESS_DEFINITION_ID_SET + tenantId));
+        }
     }
 
     public File getRepoFolder() {
@@ -131,7 +140,7 @@ public class TenantRepository {
                     undeployById(deployment.getId());
                 } catch (IllegalAccessException e) {
                     String msg = "Deployment ID: " + deployment.getId() + " of the deployment " + deploymentName +
-                                " does not belong to tenant " + tenantId + ". Skipping the undeployment.";
+                            " does not belong to tenant " + tenantId + ". Skipping the undeployment.";
                     log.error(msg);
                 }
             }
@@ -223,6 +232,12 @@ public class TenantRepository {
         }
     }
 
+    /*
+    This method will fix the deployment conflicts when
+    truncating activiti db or
+    registry db or
+    delete from file system.
+    */
     public void fixDeployments() throws BPSException {
 
         List<String> fileArchiveNames = new ArrayList<String>();
@@ -266,7 +281,8 @@ public class TenantRepository {
         allDeploymentNames.addAll(registryDeploymentNames);
 
         for (String deploymentName : allDeploymentNames) {
-            if (!(fileArchiveNames.contains(deploymentName) && activitiDeploymentNames.contains(deploymentName) && registryDeploymentNames.contains(deploymentName))) {
+            // TODO: need to check two scenarios when truncating activiti db or registry db.
+            if (!(fileArchiveNames.contains(deploymentName))) {
                 try {
                     undeploy(deploymentName, true);
                 } catch (BPSException e) {
@@ -274,7 +290,31 @@ public class TenantRepository {
                     log.error(msg, e);
                     throw new BPSException(msg, e);
                 }
+
             }
         }
+
     }
+
+    public void setDeploymentIds(Set<Object> deploymentIds) {
+        this.deploymentIds = deploymentIds;
+    }
+
+    public void setProcessDefinitionIds(Set<Object> processDefinitionIds) {
+        this.processDefinitionIds = processDefinitionIds;
+    }
+
+    public Integer getTenantId() {
+        return tenantId;
+    }
+
+    public Set<Object> getDeploymentIds() {
+        return deploymentIds;
+    }
+
+    public Set<Object> getProcessDefinitionIds() {
+        return processDefinitionIds;
+    }
+
+
 }
