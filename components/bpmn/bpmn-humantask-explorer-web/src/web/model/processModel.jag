@@ -1,0 +1,29 @@
+<%
+var pagination = request.getParameter("pagination");
+if (pagination == null || pagination == ""){
+	pagination = 1;
+}
+var start = 0;
+if(pagination > 0){
+	start = (pagination - 1)*10 ;
+}
+var headers = {"Authorization":"Basic " + auth};
+
+var processCount = get( httpUrl + "/bpmnrest/repository/process-definitions" ,null, headers, "json" ).data.total;
+var paginatePageCount = parseInt((processCount / 10));
+
+
+
+var list = [];
+
+var processes = get( httpUrl + "/bpmnrest/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc" 
+	,null, headers, "json" ).data;
+
+for (var j=0; j<processes.data.length; j++){
+	list.push({
+		processName: processes.data[j].name,
+		processId: processes.data[j].id,
+		version: processes.data[j].version
+	});
+}
+%>

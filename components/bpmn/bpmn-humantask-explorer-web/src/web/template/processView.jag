@@ -1,0 +1,87 @@
+<div class="col-sm-12">
+	<ol class="breadcrumb">
+	  <li><a href="#">Home</a></li>
+	  <li class="active">Processes</li>
+	</ol>
+	<div class="panel panel-primary">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">Processes</div>
+
+	  <!-- Table -->
+	  <table class="table">
+	    <thead>
+	    	<tr>
+	    		<th>Process Name</th>
+	    		<th>Process ID</th>
+	    		<th>Version</th>
+	    		<th>Action</th>
+	    	</tr>
+	    </thead>
+	    <tbody>
+	    	<% var previous = list[0].processName; var count = 0;%>
+	    	<% for(var i=0; i<list.length; i++){ %>
+	    		<% if(previous == list[i].processName){ 
+	    			count++;
+	    		} else {
+	    		%>
+	    			<tr>
+		    			<td rowspan="<%=count%>"><%=list[i-count].processName%></td>
+		    			<td><%=list[i-count].processId%></td>
+						<td><%=list[i-count].version%></td>
+						<td><button class="btn btn-xs btn-info" onclick="startProcess('<%=list[i-count].processId%>')">Start</button></td>
+					</tr>
+	    		<%
+	    			for (var j=count-1; j>0; j--){
+		    		%>
+		    			<tr>
+			    			<td><%=list[i-j].processId%></td>
+							<td><%=list[i-j].version%></td>
+							<td><button class="btn btn-xs btn-info" onclick="startProcess('<%=list[i-j].processId%>')">Start</button></td>
+						</tr>
+		    		<%
+	    			}
+	    			count = 1;
+	    			previous = list[i].processName;
+	    		}%>
+	    		<% if(i >= list.length-1){ i++; %>
+	    			<tr>
+		    			<td rowspan="<%=count%>"><%=list[i-count].processName%></td>
+		    			<td><%=list[i-count].processId%></td>
+						<td><%=list[i-count].version%></td>
+						<td><button class="btn btn-xs btn-info" onclick="startProcess('<%=list[i-count].processId%>')">Start</button></td>
+					</tr>
+	    		<%
+	    			for (var j=count-1; j>0; j--){
+		    	%>
+		    			<tr>
+			    			<td><%=list[i-j].processId%></td>
+							<td><%=list[i-j].version%></td>
+							<td><button class="btn btn-xs btn-info" onclick="startProcess('<%=list[i-j].processId%>')">Start</button></td>
+						</tr>
+		    	<%
+	    			}
+	    		}%>		    	
+	    	<% } %>
+	    </tbody>
+	  </table>
+	</div>
+	<ul class="pagination">
+		<% if(pagination != 1){ %>
+			<li><a href="inbox?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
+		<% } else { %>
+			<li class="disabled"><a href="#">&laquo;</a></li>			
+		<% } %>
+		<% for(var i = 1; i<=paginatePageCount+1; i++){ 
+				if(pagination == i){ %>
+					<li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+			<% }else { %>
+					<li><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+			<% } %>
+		<% } %>
+		<% if(pagination != paginatePageCount+1){ %>
+			<li><a href="inbox?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
+		<% } else { %>
+			<li class="disabled"><a href="#">&raquo;</a></li>			
+		<% } %>
+	</ul>
+</div>

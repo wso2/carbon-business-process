@@ -1,0 +1,4 @@
+<%
+	session.put("authSuccess" ,false);
+	response.sendRedirect("login");
+%>
