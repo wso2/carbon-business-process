@@ -1,10 +1,9 @@
 <%
-var httpUrl = "http://localhost:9763";
-var data = {
-	title : "BPMN Humantask",
-	author: "Amal Gunatilake",
-	footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved."
-};
-var encoder = require("/assets/encoder.js");
-var auth = encoder.encode("admin:admin");
+var data = require('/config.json'),
+	encoder = require("/assets/encoder.js"),
+	process = require('process'),
+    	localIP = process.getProperty('carbon.local.ip'),
+	httpsPort = process.getProperty('mgt.transport.https.port'),
+	auth = session.get('auth'),
+	httpUrl = "https://"+localIP+":"+httpsPort;
 %>
