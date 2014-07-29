@@ -1,0 +1,14 @@
+{
+    "app": {
+	"title" : "BPMN Humantask Explorer",
+	"author": "WSO2 Business Process Server",
+	"footer": "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved."
+    },
+    "server": {
+        "https": "%https.host%",
+        "http": "%http.host%"
+    }
+}
+
+
+
