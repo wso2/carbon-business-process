@@ -1,7 +1,8 @@
 var httpUrl = location.protocol + "//" + location.host;
+var CONTEXT="bpmn-humantask-explorer";
 
 function completeTask(data, id){
-	var url = "/bpmn-humantask/send?req=/bpmnrest/runtime/tasks/" + id;
+	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
 	var variables = [];
 	for(var i=0; i<data.length; i++){
 		variables.push({
@@ -20,13 +21,13 @@ function completeTask(data, id){
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function(data){
-        	window.location=httpUrl+"/bpmn-humantask/inbox";
+        	window.location=httpUrl+"/"+CONTEXT+"/inbox";
         }
     });
 }
 
 function reassign(username, id){
-	var url = "/bpmn-humantask/send?req=/bpmnrest/runtime/tasks/" + id;
+	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
 	var body = { 
 		"assignee" : username
 	};
@@ -37,13 +38,13 @@ function reassign(username, id){
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function(data){
-        	window.location=httpUrl+"/bpmn-humantask/inbox";
+        	window.location=httpUrl+"/"+CONTEXT+"/inbox";
         }
     });
 }
 
 function transfer(username, id){
-	var url = "/bpmn-humantask/send?req=/bpmnrest/runtime/tasks/" + id;
+	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
 	var body = { 
 		"owner" : username
 	};
@@ -54,13 +55,13 @@ function transfer(username, id){
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function(data){
-        	window.location=httpUrl+"/bpmn-humantask/inbox";
+        	window.location=httpUrl+"/"+CONTEXT+"/inbox";
         }
     });
 }
 
 function startProcess(processDefId){
-    var url = "/bpmn-humantask/send?req=/bpmnrest/runtime/process-instances";
+    var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/process-instances";
     var body = { 
       "processDefinitionId": processDefId
     };
@@ -71,7 +72,7 @@ function startProcess(processDefId){
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function(data){
-            window.location=httpUrl+"/bpmn-humantask/inbox";
+            window.location=httpUrl+"/"+CONTEXT+"/inbox";
         }
     });
 }
