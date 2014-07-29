@@ -1,30 +1,34 @@
 <%
-var log = new Log();
+     log = new Log();
 
 if(!session.get("authSuccess")){
 	response.sendRedirect("login");
 } else {
-	var httpUrl = "http://localhost:9763";
-	var encoder = require("/assets/encoder.js");
-	var auth = encoder.encode("admin:admin");
-	var contentType = request.getContentType();
-	var headers = {
+
+    var process = require('process'),
+	localIP = process.getProperty('carbon.local.ip'),
+   	httpPort = process.getProperty('mgt.transport.http.port'),
+	httpUrl = "http://"+localIP+":"+httpPort,
+	encoder = require("/assets/encoder.js"),
+	auth = session.get('auth'),
+	contentType = request.getContentType(),	
+	headers = {
 		"Content-Type": contentType,
 		"Authorization":"Basic " + auth
-	};
-	var run = request.getMethod();
+	},
+	run = request.getMethod();
 	if(run == "POST"){
-		var req = request.getParameter("req");
-		var url = req;
-		var data = request.getContent();
-		var result = post( httpUrl + url, JSON.stringify(data), headers, "text");
+		     req = request.getParameter("req");
+		     url = req;
+		     data = request.getContent();
+		     result = post( httpUrl + url, JSON.stringify(data), headers, "text");
 		log.debug("BPMN Rest POST results: " + result);
 	}
 	if(run == "PUT"){
-		var req = request.getParameter("req");
-		var url = req;
-		var data = request.getContent();
-		var result = put( httpUrl + url, JSON.stringify(data), headers, "text");
+		     req = request.getParameter("req");
+		     url = req;
+		     data = request.getContent();
+		     result = put( httpUrl + url, JSON.stringify(data), headers, "text");
 		log.debug("BPMN Rest PUT results: " + result);
 	}
 }
