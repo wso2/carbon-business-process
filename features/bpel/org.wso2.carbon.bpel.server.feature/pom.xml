@@ -221,7 +221,7 @@
                                 <importBundleDef>tranql.wso2:tranql-connector</importBundleDef>
                                 <importBundleDef>antlr.wso2:antlr</importBundleDef>
                                 <importBundleDef>rhino.wso2:js</importBundleDef>
-                                <importBundleDef>org.springframework.ws.wso2:spring.framework:3.1.0.wso2v1</importBundleDef>
+                                <importBundleDef>org.springframework.ws.wso2:spring.framework:${orbit.version.spring}</importBundleDef>
                                 <importBundleDef>org.wso2.carbon:org.wso2.carbon.bpel.common</importBundleDef>
                             </importBundles>
                             <importFeatures>
