@@ -164,7 +164,7 @@ public class HumanTaskEngine {
 		try {
 
 			serviceClient = new ServiceClient();
-			//
+
 			// getting email details from rendering elements in HumanTaskName.ht
 			// email details
 			Document docTemp = xmlRead(taskConfiguration.getRenderings().toString());
