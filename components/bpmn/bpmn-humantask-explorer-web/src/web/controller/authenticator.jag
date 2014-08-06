@@ -1,0 +1,17 @@
+<%
+	var authentication = require("/assets/authentication.js");
+	var username = request.getParameter("username");
+	var password = request.getParameter("password");
+	if(username == "" || password == ""){
+		authSuccess = false;
+	} else{
+		var authSuccess = authentication.authenticate(username,password);
+	}
+	if(!authSuccess){
+		session.put("loginFailed" ,true);
+		response.sendRedirect("login");
+	} else {
+		session.put('authSuccess', authSuccess);
+		response.sendRedirect("inbox");
+	}
+%>

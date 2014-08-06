@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) OASIS Open 2009. All Rights Reserved.
+-->
+<xsd:schema 
+  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/context/200803" 
+  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/context/200803" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:htt="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803" 
+  elementFormDefault="qualified" 
+  blockDefault="#all">
+
+  <xsd:annotation>
+    <xsd:documentation>
+      XML Schema for WS-HumanTask 1.1 - Human Task Context for Task Interactions
+    </xsd:documentation>
+  </xsd:annotation>
+  
+  <!-- other namespaces -->
+  <xsd:import 
+    namespace="http://www.w3.org/XML/1998/namespace" 
+    schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+  <xsd:import 
+    namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803" 
+    schemaLocation="ws-humantask-types.xsd"/>
+
+  <!-- human task context -->
+  <xsd:element name="humanTaskRequestContext" type="tHumanTaskRequestContext"/>
+  <xsd:complexType name="tHumanTaskRequestContext">
+    <xsd:complexContent>
+      <xsd:extension base="tHumanTaskContextBase">
+        <xsd:sequence>
+          <xsd:element name="peopleAssignments" type="tPeopleAssignments" minOccurs="0"/>
+          <xsd:element name="isSkipable" type="xsd:boolean" minOccurs="0"/>
+          <xsd:element name="expirationTime" type="xsd:dateTime" minOccurs="0"/>
+          <xsd:element name="activationDeferralTime" type="xsd:dateTime" minOccurs="0"/>
+          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="humanTaskResponseContext" type="tHumanTaskResponseContext"/>
+  <xsd:complexType name="tHumanTaskResponseContext">
+    <xsd:complexContent>
+      <xsd:extension base="tHumanTaskContextBase">
+        <xsd:sequence>
+          <xsd:element name="actualOwner" type="htt:tUser"/>
+          <xsd:element name="actualPeopleAssignments" type="tPeopleAssignments"/>
+          <xsd:element name="outcome" type="xsd:string" minOccurs="0"/>
+          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="tHumanTaskContextBase" abstract="true">
+    <xsd:sequence>
+      <xsd:element name="priority" type="htt:tPriority" minOccurs="0"/>
+      <xsd:element name="attachments" type="tAttachments" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- people assignments -->
+  <xsd:complexType name="tPeopleAssignments">
+    <xsd:sequence>
+      <xsd:element ref="genericHumanRole" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="genericHumanRole" type="tGenericHumanRole" abstract="true" block="restriction extension"/>
+  <xsd:element name="potentialOwners" type="tGenericHumanRole" substitutionGroup="genericHumanRole"/>
+  <xsd:element name="excludedOwners" type="tGenericHumanRole" substitutionGroup="genericHumanRole"/>
+  <xsd:element name="taskInitiator" type="tGenericHumanRole" substitutionGroup="genericHumanRole"/>
+  <xsd:element name="taskStakeholders" type="tGenericHumanRole" substitutionGroup="genericHumanRole"/>
+  <xsd:element name="businessAdministrators" type="tGenericHumanRole" substitutionGroup="genericHumanRole"/>
+  <xsd:element name="recipients" type="tGenericHumanRole" substitutionGroup="genericHumanRole"/>
+  <xsd:complexType name="tGenericHumanRole">
+    <xsd:sequence>
+      <xsd:element ref="htt:organizationalEntity"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- attachments -->
+  <xsd:complexType name="tAttachments">
+    <xsd:sequence>
+      <xsd:element name="returnAttachments" type="tReturnAttachments" minOccurs="0"/>
+      <xsd:element ref="htt:attachment" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="tReturnAttachments">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="all"/>
+      <xsd:enumeration value="newOnly"/>
+      <xsd:enumeration value="none"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

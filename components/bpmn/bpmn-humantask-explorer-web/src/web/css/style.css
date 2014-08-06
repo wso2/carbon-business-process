@@ -1,0 +1,9 @@
+.align{
+	text-align: center;
+}
+.model-center { /* Edited classname 10/03/2014 */
+    margin: 0;
+    position: relative;
+    top: 30%;
+    left: 35%;
+}

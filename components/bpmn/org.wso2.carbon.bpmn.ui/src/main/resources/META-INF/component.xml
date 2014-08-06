@@ -1,0 +1,79 @@
+
+<!--
+ ~ Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
+ -->
+<component xmlns="http://products.wso2.org/carbon">
+    <menus>
+        <!--<menu>
+            <id>instance_menu</id>
+            <i18n-key>bpmn.instance</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>manage_menu</parent-menu>
+            <link>#</link>
+            <region>region1</region>
+            <order>30</order>
+            <style-class>manage</style-class>
+            <icon>../bpel/images/bpmn-instance.gif</icon>
+            <skip-authentication>false</skip-authentication>
+            &lt;!&ndash;<require-permission>/permission/admin/manage/bpel</require-permission>&ndash;&gt;
+        </menu>-->
+        <menu>
+            <id>bpmn_menu</id>
+            <i18n-key>bpmn.main</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>list_menu</parent-menu>
+            <link>../bpmn/process_list_view.jsp</link>
+            <region>region1</region>
+            <order>3</order>
+            <style-class>manage</style-class>
+            <icon>../bpmn/images/bpmn.gif</icon>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
+        </menu>
+        <menu>
+            <id>bpmn_upload_menu</id>
+            <i18n-key>bpmn.main</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>add_menu</parent-menu>
+            <link>../bpmn/upload_bpmn.jsp</link>
+            <region>region1</region>
+            <order>3</order>
+            <style-class>manage</style-class>
+            <icon>../bpmn/images/bpmn.gif</icon>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
+        </menu>
+        <menu>
+            <id>bpmn_instace_menu</id>
+            <i18n-key>bpmn.main</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>instances_menu</parent-menu>
+            <link>../bpmn/instance_list_view.jsp</link>
+            <region>region1</region>
+            <order>38</order>
+            <style-class>manage</style-class>
+            <icon>../bpmn/images/bpmn-instance.gif</icon>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
+        </menu>
+    </menus>
+    <FileUploadConfig>
+        <Mapping>
+            <Actions>
+                <Action>bpmn</Action>
+            </Actions>
+            <Class>org.wso2.carbon.bpmn.ui.fileupload.BPMNUploadExecutor</Class>
+        </Mapping>
+    </FileUploadConfig>
+</component>

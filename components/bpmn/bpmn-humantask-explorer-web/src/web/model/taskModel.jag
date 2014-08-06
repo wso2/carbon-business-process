@@ -1,0 +1,16 @@
+<%
+var id = request.getParameter("id");
+var headers = {"Authorization":"Basic " + auth};
+var task = get( httpUrl + "/bpmnrest/task/" + id ,null, headers, "json" ).data;
+var taskData = {
+	name:task.name,
+	desc:task.description,
+	pid:task.processDefinitionId,
+	owner:task.owner,
+	assignee:task.assignee,
+	subtask:task.subtaskList
+};
+var formGenTool = require("/assets/dynamicFormGen.js");
+var formData = get( httpUrl + "/bpmnrest/form/" + id + "/properties" ,null, headers, "json" ).data;
+var formContent = formGenTool.generateForm(formData.data);
+%>

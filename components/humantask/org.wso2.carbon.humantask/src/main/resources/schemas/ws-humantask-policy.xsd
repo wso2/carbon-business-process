@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) OASIS Open 2009. All Rights Reserved.
+-->
+<xsd:schema 
+  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/policy/200803"
+  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/policy/200803"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:wsp="http://www.w3.org/ns/ws-policy"
+  elementFormDefault="qualified" 
+  blockDefault="#all">
+
+  <xsd:annotation>
+    <xsd:documentation>
+      XML Schema for WS-HumanTask 1.1 - WS-HumanTask Policy Assertion
+    </xsd:documentation>
+  </xsd:annotation>
+  
+  <!-- other namespaces -->
+  <xsd:import
+      namespace="http://www.w3.org/ns/ws-policy"
+      schemaLocation="ws-policy.xsd" />
+
+  <!-- ws-humantask policy assertion -->
+  <xsd:element name="HumanTaskAssertion" type="tHumanTaskAssertion"/>
+  <xsd:complexType name="tHumanTaskAssertion" >
+    <xsd:attribute ref="wsp:Optional" />
+    <xsd:anyAttribute namespace="##any" processContents="lax" />
+  </xsd:complexType>  
+
+</xsd:schema>

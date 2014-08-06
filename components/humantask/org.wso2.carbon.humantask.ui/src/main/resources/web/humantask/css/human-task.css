@@ -1,0 +1,61 @@
+#taskTools {
+    padding: 5px;
+    font-size: 10px;
+    border: 1px solid #CCCCCC;
+    margin-left: 1px;
+    margin-right: -1px;
+}
+
+#tools {
+    margin-bottom: 10px;
+}
+
+#paginationButtonBar {
+    float: right;
+    font-size: 6px;
+}
+
+#paginationControls {
+    background-color: #F2F2F2;
+}
+
+.ui-hover {
+    background: #EEEFFB;
+}
+
+.ui-selected {
+    background: #B4D5F0;
+    color: white;
+}
+
+.messageBar {
+    background: #EEEFFB;
+    border: 1px solid #CCCCCC;
+    font-size: 10px;
+    color: #CCCCCC;
+}
+
+#taskContainer {
+    font-size: 10px;
+}
+
+.tv_underline_header{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.tv_task_name{
+    padding-bottom:5px !important;
+    padding-top:5px !important;
+}
+
+.ui-tabs-nav {
+    float:none;
+    font-size:10px;
+}
+
+.ui-dialog .ui-dialog-buttonpane{
+    padding:0px;
+    font-size:10px;
+}
+

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
+ -->
+<definitions name="HumanTaskPackageManagement"
+             targetNamespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement"
+             xmlns:ns="http://wso2.org/bps/humantask/management/schema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <types>
+        <xsd:schema targetNamespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <xsd:import namespace="http://wso2.org/bps/humantask/management/schema"
+                        schemaLocation="bps-humantask-management.xsd"/>
+        </xsd:schema>
+    </types>
+    <!-- SVN ChECK -->
+    <message name="undeployHumanTaskPackageRequest">
+        <part name="part" element="ns:undeployHumanTaskPackage"/>
+    </message>
+    <message name="undeployHumanTaskPackageResponse">
+        <part name="part" element="ns:undeployStatus"/>
+    </message>
+    <message name="redeployHumanTaskPackageRequest">
+        <part name="part" element="ns:redeployHumanTaskPackage"/>
+    </message>
+    <message name="redeployHumanTaskPackageResponse">
+        <part name="part" element="ns:redeployStatus"/>
+    </message>
+    <message name="deleteHumanTaskPackageRequest">
+        <part name="part" element="ns:deleteHumanTaskPackage"/>
+    </message>
+    <message name="deleteHumanTaskPackageResponse">
+        <part name="part" element="ns:deleteStatus"/>
+    </message>
+    <message name="listDeployedTaskDefinitionsPaginatedRequest">
+        <part name="part" element="ns:listDeployedTaskDefinitionsPaginated"/>
+    </message>
+    <message name="listDeployedTaskDefinitionsPaginatedResponse">
+        <part name="part" element="ns:deployedTaskDefinitionsPaginated"/>
+    </message>
+    <message name="listDeployedPackagesPaginatedRequest">
+        <part name="part" element="ns:listDeployedPackagesPaginated"/>
+    </message>
+    <message name="listDeployedPackagesPaginatedResponse">
+        <part name="part" element="ns:deployedPackagesPaginated"/>
+    </message>
+    <message name="listTasksInPackageRequest">
+        <part name="part" element="ns:listTasksInPackage"/>
+    </message>
+    <message name="listTasksInPackageResponse">
+        <part name="part" element="ns:tasksInPackage"/>
+    </message>
+	<message name="packageManagementException">
+        <part name="part" element="ns:packageManagementException"/>
+    </message>
+    <message name="getTaskInfoRequest">
+        <part name="part" element="ns:getTaskInfoIn"/>
+    </message>
+    <message name="getTaskInfoResponse">
+        <part name="part" element="ns:TaskInfo"/>
+    </message>
+    <message name="downloadHumanTaskPackageRequest">
+        <part name="part" element="ns:downloadHumanTaskPackageArchive" />
+    </message>
+    <message name="downloadHumanTaskPackageResponse">
+        <part name="part" element="ns:downloadHumanTaskPackageArchiveResponse" />
+    </message>
+
+    <portType name="HumanTaskPackageManagementPortType">
+        <operation name="undeployHumanTaskPackage">
+            <input message="tns:undeployHumanTaskPackageRequest"/>
+            <output message="tns:undeployHumanTaskPackageResponse"/>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </operation>
+        <operation name="listDeployedPackagesPaginated">
+            <input message="tns:listDeployedPackagesPaginatedRequest"/>
+            <output message="tns:listDeployedPackagesPaginatedResponse"/>
+	    <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </operation>
+        <operation name="listDeployedTaskDefinitionsPaginated">
+            <input message="tns:listDeployedTaskDefinitionsPaginatedRequest"/>
+            <output message="tns:listDeployedTaskDefinitionsPaginatedResponse"/>
+	    <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </operation>
+        <operation name="listTasksInPackage">
+            <input message="tns:listTasksInPackageRequest"/>
+            <output message="tns:listTasksInPackageResponse"/>
+	    <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </operation>
+        <operation name="getTaskInfo">
+            <input message="tns:getTaskInfoRequest"/>
+            <output message="tns:getTaskInfoResponse"/>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </operation>
+        <operation name="downloadHumanTaskPackage">
+            <input message="tns:downloadHumanTaskPackageRequest"/>
+            <output message="tns:downloadHumanTaskPackageResponse"/>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </operation>
+    </portType>
+    <binding name="HumanTaskPackageManagementSOAPBinding" type="tns:HumanTaskPackageManagementPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="undeployHumanTaskPackage">
+            <soap:operation soapAction="urn:undeployHumanTaskPackage"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+	    <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="listDeployedPackagesPaginated">
+            <soap:operation soapAction="urn:listDeployedPackagesPaginated"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+	    <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="listDeployedTaskDefinitionsPaginated">
+            <soap:operation soapAction="urn:listDeployedTaskDefinitionsPaginated"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+	    <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="listTasksInPackage">
+            <soap:operation soapAction="urn:listTasksInPackage"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="getTaskInfo">
+            <soap:operation soapAction="urn:getTaskInfo"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="downloadHumanTaskPackage">
+            <soap:operation soapAction="urn:downloadHumanTaskPackage" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="HumanTaskPackageManagement">
+        <port name="HumanTaskPackageManagementSOAPPort" binding="tns:HumanTaskPackageManagementSOAPBinding">
+            <soap:address location="https://localhost:9763/services/HumanTaskPackageManagementService"/>
+        </port>
+    </service>
+</definitions>

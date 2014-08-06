@@ -1,0 +1,31 @@
+<%
+var log = new Log();
+
+if(!session.get("authSuccess")){
+	response.sendRedirect("login");
+} else {
+	var httpUrl = "http://localhost:9763";
+	var encoder = require("/assets/encoder.js");
+	var auth = encoder.encode("admin:admin");
+	var contentType = request.getContentType();
+	var headers = {
+		"Content-Type": contentType,
+		"Authorization":"Basic " + auth
+	};
+	var run = request.getMethod();
+	if(run == "POST"){
+		var req = request.getParameter("req");
+		var url = req;
+		var data = request.getContent();
+		var result = post( httpUrl + url, JSON.stringify(data), headers, "text");
+		log.debug("BPMN Rest POST results: " + result);
+	}
+	if(run == "PUT"){
+		var req = request.getParameter("req");
+		var url = req;
+		var data = request.getContent();
+		var result = put( httpUrl + url, JSON.stringify(data), headers, "text");
+		log.debug("BPMN Rest PUT results: " + result);
+	}
+}
+%>

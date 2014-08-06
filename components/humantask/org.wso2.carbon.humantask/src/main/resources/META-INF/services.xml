@@ -1,0 +1,1072 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Copyright (c) 2005-2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~    http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
+ -->
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.6.1-wso2v4  Built on : Dec 19, 2011 (11:56:55 IST) -->
+<serviceGroup>
+    <service name="HumanTaskClientAPIAdmin">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.wso2.carbon.humantask.client.api.HumanTaskClientAPIAdminMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">org.wso2.carbon.humantask.core.api.client.TaskOperationsImpl</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="batchStop" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchStop</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchStopResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getMyTaskAbstracts" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getMyTaskAbstracts</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstractsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskAbstracts/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="stop" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/stop</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stopResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/stop/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchComplete" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchComplete</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchCompleteResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="resume" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/resume</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resumeResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/resume/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getRenderingTypes" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getRenderingTypes</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRenderingTypesResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRenderingTypes/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRenderingTypes/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRenderingTypes/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setTaskCompletionDeadlineExpression" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setTaskCompletionDeadlineExpression</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpressionResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDeadlineExpression/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setOutput" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setOutput</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutputResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setOutput/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getTaskOperations" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getTaskOperations</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperationsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperations/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperations/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperations/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperations/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperations/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskOperations/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchRelease" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchRelease</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchReleaseResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getTaskDetails" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getTaskDetails</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDetailsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDetails/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDetails/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDetails/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="forward" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/forward</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forwardResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/forward/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="isSubtask" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/isSubtask</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtaskResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/isSubtask/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="suspend" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/suspend</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspend/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="updateComment" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/updateComment</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateCommentResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/updateComment/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="loadTask" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadTask</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTaskResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTask/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getMyTaskDetails" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getMyTaskDetails</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetailsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getMyTaskDetails/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchNominate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchNominate</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchNominateResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getSubtaskIdentifiers" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getSubtaskIdentifiers</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiersResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtaskIdentifiers/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getOutcome" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getOutcome</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcomeResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcome/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcome/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcome/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcome/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcome/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutcome/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getRendering" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getRendering</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRenderingResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRendering/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRendering/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getRendering/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="skip" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/skip</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skipResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/skip/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchFail" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchFail</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchFailResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setTaskCompletionDurationExpression" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setTaskCompletionDurationExpression</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpressionResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskCompletionDurationExpression/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="start" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/start</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/startResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/start/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+         </operation>
+        <operation name="fail" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/fail</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/failResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/fail/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="activate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/activate</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activateResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/activate/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="addComment" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/addComment</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addCommentResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addComment/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="deleteComment" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteComment</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteCommentResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteComment/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+       </operation>
+        <operation name="delegate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/delegate</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegateResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="recipientNotAllowed">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/recipientNotAllowed</faultActionMapping>
+            <faultActionMapping faultName="RecipientNotAllowed">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/recipientNotAllowed</faultActionMapping>
+            <faultActionMapping faultName="RecipientNotAllowed_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/recipientNotAllowed</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/delegate/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getComments" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getComments</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getCommentsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getComments/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getTaskInstanceData" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getTaskInstanceData</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceDataResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskInstanceData/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getParentTask" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getParentTask</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTask/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="addAttachment" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/addAttachment</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachmentResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/addAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchResume" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchResume</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchResumeResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchRemove" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchRemove</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchRemoveResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getAttachment" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getAttachment</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getAttachmentInfos" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getAttachmentInfos</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfosResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAttachmentInfos/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="remove" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/remove</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/removeResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/remove/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchStart" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchStart</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchStartResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="instantiateSubtask" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/instantiateSubtask</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtaskResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/instantiateSubtask/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getTaskHistory" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getTaskHistory</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistoryResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskHistory/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setTaskStartDeadlineExpression" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setTaskStartDeadlineExpression</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpressionResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDeadlineExpression/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchDelegate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchDelegate</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchDelegateResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchSetGenericHumanRole" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchSetGenericHumanRole</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchSetGenericHumanRoleResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setGenericHumanRole" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setGenericHumanRole</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRoleResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setGenericHumanRole/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getInput" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getInput</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInputResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getInput/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchSkip" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchSkip</actionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchSkipResponse</outputActionMapping>
+        </operation>
+        <operation name="complete" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/complete</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/completeResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/complete/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks,/permission/admin/manage/resources/notifications</parameter>
+        </operation>
+        <operation name="hasSubtasks" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/hasSubtasks</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasksResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/hasSubtasks/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchActivate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchActivate</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchActivateResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="claim" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/claim</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claimResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/claim/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="query" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/query</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/queryResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/query/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/query/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/query/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/query/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/query/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/query/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="simpleQuery" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQueryResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQuery/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQuery/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQuery/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQuery/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQuery/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/simpleQuery/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks,/permission/admin/manage/resources/notifications</parameter>
+        </operation>
+        <operation name="loadAuthorisationParams" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadAuthorisationParams</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParamsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParams/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParams/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParams/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParams/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParams/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadAuthorisationParams/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="loadTaskEvents" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadTaskEvents</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTaskEventsResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTaskEvents/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/loadTaskEvents/Fault/illegalStateFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks,/permission/admin/manage/resources/notifications</parameter>
+        </operation>
+        <operation name="getAssignableUserList" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getAssignableUserList</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAssignableUserListResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAssignableUserList/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getAssignableUserList/Fault/illegalStateFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchClaim" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchClaim</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchClaimResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchSetPriority" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchSetPriority</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchSetPriorityResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setFault" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setFault</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFaultResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setFault/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="suspendUntil" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/suspendUntil</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntilResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/suspendUntil/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setTaskStartDurationExpression" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setTaskStartDurationExpression</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpressionResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setTaskStartDurationExpression/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getTaskDescription" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getTaskDescription</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDescriptionResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDescription/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDescription/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getTaskDescription/Fault/illegalArgumentFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="deleteAttachment" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteAttachment</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachmentResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteAttachment/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="nominate" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/nominate</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominateResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/nominate/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="deleteOutput" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteOutput</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutputResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteOutput/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchForward" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchForward</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchForwardResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchSuspend" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchSuspend</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchSuspendResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getSubtasks" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getSubtasks</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasksResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getSubtasks/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="deleteFault" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteFault</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFaultResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/deleteFault/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getOutput" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getOutput</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutputResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getOutput/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="release" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/release</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/releaseResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/release/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getFault" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getFault</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFaultResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getFault/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="setPriority" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setPriority</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriorityResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/setPriority/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="batchSuspendUntil" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/batchSuspendUntil</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/batchSuspendUntilResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getParentTaskIdentifier" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getParentTaskIdentifier</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifierResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalOperationFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalOperationFault</faultActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/taskOperations/getParentTaskIdentifier/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+    </service>
+    <service name="HumanTaskPackageManagement">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.wso2.carbon.humantask.skeleton.mgt.services.HumanTaskPackageManagementMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">org.wso2.carbon.humantask.core.mgt.services.HumanTaskPackageManagementSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="listDeployedPackagesPaginated" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <actionMapping>urn:listDeployedPackagesPaginated</actionMapping>
+            <outputActionMapping>urn:listDeployedPackagesPaginatedResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
+        <operation name="listDeployedTaskDefinitionsPaginated" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <actionMapping>urn:listDeployedTaskDefinitionsPaginated</actionMapping>
+            <outputActionMapping>urn:listDeployedTaskDefinitionsPaginatedResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
+        <operation name="listTasksInPackage" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <actionMapping>urn:listTasksInPackage</actionMapping>
+            <outputActionMapping>urn:listTasksInPackageResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
+        <operation name="undeployHumanTaskPackage" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <actionMapping>urn:undeployHumanTaskPackage</actionMapping>
+            <outputActionMapping>urn:undeployHumanTaskPackageResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
+        <operation name="getTaskInfo" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <actionMapping>urn:getTaskInfo</actionMapping>
+            <outputActionMapping>urn:getTaskInfoResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
+        <operation name="downloadHumanTaskPackage" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement">
+            <actionMapping>urn:downloadHumanTaskPackage</actionMapping>
+            <outputActionMapping>urn:downloadHumanTaskPackageResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
+    </service>
+    <service name="HumanTaskProtocolHandler">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only" class="org.wso2.carbon.humantask.skeleton.protocol.mgt.services.HumanTaskProtocolHandlerMessageReceiverInOnly" />
+        </messageReceivers>
+        <parameter name="ServiceClass">org.wso2.carbon.humantask.core.protocol.mgt.services.HumanTaskCoordinationProtocolManagementSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="exitOperation" mep="http://www.w3.org/ns/wsdl/in-only" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803/exit</actionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+    </service>
+    <parameter name="adminService" locked="true">true</parameter>
+    <parameter name="hiddenService" locked="true">true</parameter>
+</serviceGroup>

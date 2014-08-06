@@ -1,0 +1,33 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://wso2.org/attachment/mgt/schema/server/config"
+            xmlns:tns="http://wso2.org/attachment/mgt/schema/server/config"
+            elementFormDefault="qualified">
+    <xsd:element name="AttachmentManagementConfig" type="tns:tAttachmentManagementConfig"/>
+    <xsd:complexType name="tAttachmentManagementConfig">
+        <xsd:sequence>
+            <xsd:element name="PersistenceConfig" type="tns:tPersistenceConfig" />
+            <xsd:element name="TransactionManagerConfig" type="tns:tTransactionManagerConfig" />
+            <xsd:element name="TransformerFactoryConfig" type="tns:tTransformerFactoryConfig" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tPersistenceConfig">
+        <xsd:sequence>
+            <xsd:element name="DataSource" type="xsd:string"/>
+            <xsd:element name="DAOConnectionFactoryClass" type="xsd:string"/>
+            <xsd:element name="GenerateDdl" type="xsd:boolean"/>
+            <xsd:element name="ShowSql" type="xsd:boolean"/>
+            <xsd:element name="JNDIInitialContextFactory" type="xsd:string"/>
+            <xsd:element name="JNDIProviderUrl" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tTransactionManagerConfig">
+        <xsd:sequence>
+            <xsd:element name="TransactionManagerClass" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tTransformerFactoryConfig">
+        <xsd:sequence>
+            <xsd:element name="TransformerFactoryClass" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,33 @@
+<serviceGroup>
+    <service name="BPMNDeploymentService" scope="transportsession">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService</parameter>
+    </service>
+
+    <service name="BPMNInstanceService" scope="transportsession">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNInstanceService</parameter>
+    </service>
+
+    <service name="BPMNHumanTasksService" scope="transportsession">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNHumanTasksService</parameter>
+    </service>
+
+    <service name="BPMNUploaderService" scope="transportsession">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNUploader</parameter>
+    </service>
+    
+    <parameter name="adminService" locked="true">true</parameter>
+    <parameter name="hiddenService" locked="true">true</parameter>
+    <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/bpmn</parameter>
+</serviceGroup>

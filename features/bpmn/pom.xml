@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ ~ Copyright (c) 2009-2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
+    <parent>
+        <groupId>org.wso2.carbon</groupId>
+        <artifactId>carbon-business-process</artifactId>
+        <version>4.3.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>bpmn-feature</artifactId>
+    <packaging>pom</packaging>
+    <name>WSO2 Carbon - BPMN Feature Aggregator Module</name>
+    <url>http://wso2.org</url>
+
+    <modules>
+        <module>org.wso2.carbon.bpmn.server.feature</module>
+        <module>org.wso2.carbon.bpmn.ui.feature</module>
+        <module>org.wso2.carbon.bpmn.feature</module>
+    </modules>
+
+        <!--<dependencies>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.b4p</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.deployer</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.cluster.notifier</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.ui</artifactId>-->
+            <!--</dependency>-->
+	    <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.stub</artifactId>-->
+            <!--</dependency>-->
+	    <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.skeleton</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>-->
+            <!--</dependency>-->
+            <!--&lt;!&ndash;dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.bam.publisher.ui</artifactId>-->
+                <!--<version>${wso2carbon.version.bpel}</version>-->
+            <!--</dependency&ndash;&gt;-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.bam.publisher.skeleton</artifactId>-->
+            <!--</dependency>-->
+            <!--&lt;!&ndash;dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.bam.publisher.stub</artifactId>-->
+                <!--<version>${wso2carbon.version.bpel}</version>-->
+            <!--</dependency&ndash;&gt;-->
+	    <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.bpel.common</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.ode.wso2</groupId>-->
+                <!--<artifactId>ode</artifactId>-->
+                <!--<exclusions>-->
+                    <!--<exclusion>-->
+                        <!--<groupId>com.h2database</groupId>-->
+                        <!--<artifactId>h2</artifactId>-->
+                    <!--</exclusion>-->
+                <!--</exclusions>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.openjpa</groupId>-->
+                <!--<artifactId>openjpa</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.geronimo.specs</groupId>-->
+                <!--<artifactId>geronimo-jpa_2.0_spec</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>axion.wso2</groupId>-->
+                <!--<artifactId>axion</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>commons-collections.wso2</groupId>-->
+                <!--<artifactId>commons-collections</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>commons-primitives.wso2</groupId>-->
+                <!--<artifactId>commons-primitives</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.geronimo.components.wso2</groupId>-->
+                <!--<artifactId>geronimo-connector</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.geronimo.specs.wso2</groupId>-->
+                <!--<artifactId>geronimo-ejb_2.1_spec</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.geronimo.specs.wso2</groupId>-->
+                <!--<artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.geronimo.modules.wso2</groupId>-->
+                <!--<artifactId>geronimo-kernel</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>geronimo-spec.wso2</groupId>-->
+                <!--<artifactId>geronimo-spec-javamail</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>geronimo-spec.wso2</groupId>-->
+                <!--<artifactId>geronimo-spec-jms</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.geronimo.components.wso2</groupId>-->
+                <!--<artifactId>geronimo-transaction</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>net.sf.saxon.wso2</groupId>-->
+                <!--<artifactId>saxon.he</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>net.sourceforge.serp.wso2</groupId>-->
+                <!--<artifactId>serp</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>tranql.wso2</groupId>-->
+                <!--<artifactId>tranql-connector</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>antlr.wso2</groupId>-->
+                <!--<artifactId>antlr</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.datasource</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.datasource.ui</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.ode.wso2</groupId>-->
+                <!--<artifactId>xalan</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>rhino.wso2</groupId>-->
+                <!--<artifactId>js</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>asm.wso2</groupId>-->
+                <!--<artifactId>asm</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>cglib.wso2</groupId>-->
+                <!--<artifactId>cglib</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.axis2.wso2</groupId>-->
+                <!--<artifactId>axis2-jibx</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.jibx.wso2</groupId>-->
+                <!--<artifactId>jibx</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.axis2.wso2</groupId>-->
+                <!--<artifactId>axis2-jaxbri</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>com.sun.xml.bind.wso2</groupId>-->
+                <!--<artifactId>jaxb</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.bcel.wso2</groupId>-->
+                <!--<artifactId>bcel</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apache.batik.wso2</groupId>-->
+                <!--<artifactId>batik</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>com.googlecode.json-simple.wso2</groupId>-->
+                <!--<artifactId>json-simple</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.springframework.ws.wso2</groupId>-->
+                <!--<artifactId>spring.framework</artifactId>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.statistics.ui</artifactId>-->
+            <!--</dependency>-->
+             <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.statistics</artifactId>-->
+            <!--</dependency>-->
+        <!--</dependencies>-->
+
+</project>
+

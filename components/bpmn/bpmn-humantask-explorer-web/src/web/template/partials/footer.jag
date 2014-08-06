@@ -1,0 +1,13 @@
+		<div class="footer">
+			<div class="col-sm-12">
+				<div class="well well-sm"><%=data.footer%></div>
+			</div>
+		</div>
+		<!-- javascript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="<%=request.getContextPath()%>/js/actions.js"></script>
+		<script src="<%=request.getContextPath()%>/js/jquery.min.js"></script>
+		<script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
+	</div>
+</body>

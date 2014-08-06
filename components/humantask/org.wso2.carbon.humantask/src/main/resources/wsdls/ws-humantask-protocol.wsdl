@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) OASIS Open 2009. All Rights Reserved.
+-->
+<wsdl:definitions 
+  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:htp="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803">
+
+  <wsdl:documentation>
+    Web Service Definition for WS-HumanTask 1.1 - Operations WS-HumanTask Protocol Participants
+  </wsdl:documentation>
+
+  <wsdl:types>
+  <xsd:schema 
+    targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+    elementFormDefault="qualified" 
+    blockDefault="#all">
+  
+    <xsd:complexType name="tProtocolMsgType">
+    <xsd:sequence>
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0"
+      maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:anyAttribute namespace="##any" processContents="lax" />
+    </xsd:complexType>
+  
+    <xsd:element name="skipped" type="htp:tProtocolMsgType" />
+    <xsd:element name="fault" type="htp:tProtocolMsgType" />
+    <xsd:element name="exit" type="htp:tProtocolMsgType" />
+
+    <xsd:element name="responseAction" type="xsd:anyURI" />
+    <xsd:element name="responseOperation" type="xsd:NCName" />
+  
+    </xsd:schema>
+  </wsdl:types>
+
+  <wsdl:message name="skipped">
+    <wsdl:part name="parameters" element="skipped" />
+  </wsdl:message>
+  <wsdl:message name="fault">
+    <wsdl:part name="parameters" element="fault" />
+  </wsdl:message>
+  <wsdl:message name="exit">
+    <wsdl:part name="parameters" element="exit" />
+  </wsdl:message>
+
+  <wsdl:portType name="clientParticipantPortType">
+    <wsdl:operation name="skippedOperation">
+      <wsdl:input message="skipped" />
+    </wsdl:operation>
+    <wsdl:operation name="faultOperation">
+      <wsdl:input message="fault" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:portType name="humanTaskParticipantPortType">
+    <wsdl:operation name="exitOperation">
+      <wsdl:input message="exit" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+</wsdl:definitions>

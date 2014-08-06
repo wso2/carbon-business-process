@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:axis2="http://service.unifiedendpoint.carbon.wso2.org" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http1="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://service.unifiedendpoint.carbon.wso2.org">
+    <wsdl:documentation>UnifiedEndpointAdmin</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema xmlns:ns="http://org.apache.axis2/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://org.apache.axis2/xsd">
+            <xs:element name="saveUnifiedEP">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="key" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="ele" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="saveUnifiedEPResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Exception">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Exception" nillable="true" type="ns1:Exception"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="Exception">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="getDynamicEndpoints">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="pageNumber" type="xs:int"/>
+                        <xs:element minOccurs="0" name="endpointsPerPage" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDynamicEndpointsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getDynamicEndpointsRequest">
+        <wsdl:part name="parameters" element="ns1:getDynamicEndpoints"/>
+    </wsdl:message>
+    <wsdl:message name="getDynamicEndpointsResponse">
+        <wsdl:part name="parameters" element="ns1:getDynamicEndpointsResponse"/>
+    </wsdl:message>
+    <wsdl:message name="Exception">
+        <wsdl:part name="parameters" element="ns1:Exception"/>
+    </wsdl:message>
+    <wsdl:message name="saveUnifiedEPRequest">
+        <wsdl:part name="parameters" element="ns1:saveUnifiedEP"/>
+    </wsdl:message>
+    <wsdl:message name="saveUnifiedEPResponse">
+        <wsdl:part name="parameters" element="ns1:saveUnifiedEPResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="UnifiedEndpointAdminPortType">
+        <wsdl:operation name="getDynamicEndpoints">
+            <wsdl:input message="axis2:getDynamicEndpointsRequest" wsaw:Action="urn:getDynamicEndpoints"/>
+            <wsdl:output message="axis2:getDynamicEndpointsResponse" wsaw:Action="urn:getDynamicEndpointsResponse"/>
+            <wsdl:fault message="axis2:Exception" name="Exception" wsaw:Action="urn:getDynamicEndpointsException"/>
+        </wsdl:operation>
+        <wsdl:operation name="saveUnifiedEP">
+            <wsdl:input message="axis2:saveUnifiedEPRequest" wsaw:Action="urn:saveUnifiedEP"/>
+            <wsdl:output message="axis2:saveUnifiedEPResponse" wsaw:Action="urn:saveUnifiedEPResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="UnifiedEndpointAdminSoap11Binding" type="axis2:UnifiedEndpointAdminPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getDynamicEndpoints">
+            <soap:operation soapAction="urn:getDynamicEndpoints" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap:fault use="literal" name="Exception"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="saveUnifiedEP">
+            <soap:operation soapAction="urn:saveUnifiedEP" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="UnifiedEndpointAdminSoap12Binding" type="axis2:UnifiedEndpointAdminPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getDynamicEndpoints">
+            <soap12:operation soapAction="urn:getDynamicEndpoints" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap12:fault use="literal" name="Exception"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="saveUnifiedEP">
+            <soap12:operation soapAction="urn:saveUnifiedEP" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="UnifiedEndpointAdminHttpBinding" type="axis2:UnifiedEndpointAdminPortType">
+        <http1:binding verb="POST"/>
+        <wsdl:operation name="getDynamicEndpoints">
+            <http1:operation location="getDynamicEndpoints"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="saveUnifiedEP">
+            <http1:operation location="saveUnifiedEP"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="UnifiedEndpointAdmin">
+        <wsdl:port name="UnifiedEndpointAdminHttpsSoap11Endpoint" binding="axis2:UnifiedEndpointAdminSoap11Binding">
+            <soap:address location="https://localhost:8243/services/UnifiedEndpointAdmin.UnifiedEndpointAdminHttpsSoap11Endpoint"/>
+        </wsdl:port>
+        <wsdl:port name="UnifiedEndpointAdminHttpsSoap12Endpoint" binding="axis2:UnifiedEndpointAdminSoap12Binding">
+            <soap12:address location="https://localhost:8243/services/UnifiedEndpointAdmin.UnifiedEndpointAdminHttpsSoap12Endpoint"/>
+        </wsdl:port>
+        <wsdl:port name="UnifiedEndpointAdminHttpsEndpoint" binding="axis2:UnifiedEndpointAdminHttpBinding">
+            <http1:address location="https://localhost:8243/services/UnifiedEndpointAdmin.UnifiedEndpointAdminHttpsEndpoint"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

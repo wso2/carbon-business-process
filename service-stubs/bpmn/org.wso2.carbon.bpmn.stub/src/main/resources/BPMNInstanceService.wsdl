@@ -1,0 +1,327 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://services.mgt.core.bpmn.carbon.wso2.org" xmlns:ax221="http://core.bpmn.carbon.wso2.org/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax223="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
+    <wsdl:documentation>BPMNInstanceService</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd">
+            <xs:complexType name="BPMNInstance">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="instanceId" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="startTime" nillable="true" type="xs:date"></xs:element>
+                    <xs:element minOccurs="0" name="suspended" type="xs:boolean"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="variables" nillable="true" type="ax223:BPMNVariable"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="BPMNVariable">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://core.bpmn.carbon.wso2.org/xsd">
+            <xs:complexType name="BPSException">
+                <xs:sequence></xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax222="http://core.bpmn.carbon.wso2.org/xsd" xmlns:ax224="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
+            <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"></xs:import>
+            <xs:import namespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd"></xs:import>
+            <xs:element name="BPMNInstanceServiceBPSException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="BPSException" nillable="true" type="ax221:BPSException"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="suspendProcessInstance">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="instanceId" nillable="true" type="xs:string"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="startProcess">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="processID" nillable="true" type="xs:string"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessInstances">
+                <xs:complexType>
+                    <xs:sequence></xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessInstancesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getInstanceCount">
+                <xs:complexType>
+                    <xs:sequence></xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getInstanceCountResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" type="xs:int"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteProcessInstance">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="instanceId" nillable="true" type="xs:string"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="activateProcessInstance">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="instanceId" nillable="true" type="xs:string"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="suspendProcessInstanceRequest">
+        <wsdl:part name="parameters" element="ns:suspendProcessInstance"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BPMNInstanceServiceBPSException">
+        <wsdl:part name="parameters" element="ns:BPMNInstanceServiceBPSException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getInstanceCountRequest">
+        <wsdl:part name="parameters" element="ns:getInstanceCount"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getInstanceCountResponse">
+        <wsdl:part name="parameters" element="ns:getInstanceCountResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="activateProcessInstanceRequest">
+        <wsdl:part name="parameters" element="ns:activateProcessInstance"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getProcessInstancesRequest">
+        <wsdl:part name="parameters" element="ns:getProcessInstances"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getProcessInstancesResponse">
+        <wsdl:part name="parameters" element="ns:getProcessInstancesResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="startProcessRequest">
+        <wsdl:part name="parameters" element="ns:startProcess"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="deleteProcessInstanceRequest">
+        <wsdl:part name="parameters" element="ns:deleteProcessInstance"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="BPMNInstanceServicePortType">
+        <wsdl:operation name="suspendProcessInstance">
+            <wsdl:input message="ns:suspendProcessInstanceRequest" wsaw:Action="urn:suspendProcessInstance"></wsdl:input>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSException" name="BPMNInstanceServiceBPSException" wsaw:Action="urn:suspendProcessInstanceBPMNInstanceServiceBPSException"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getInstanceCount">
+            <wsdl:input message="ns:getInstanceCountRequest" wsaw:Action="urn:getInstanceCount"></wsdl:input>
+            <wsdl:output message="ns:getInstanceCountResponse" wsaw:Action="urn:getInstanceCountResponse"></wsdl:output>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSException" name="BPMNInstanceServiceBPSException" wsaw:Action="urn:getInstanceCountBPMNInstanceServiceBPSException"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <wsdl:input message="ns:activateProcessInstanceRequest" wsaw:Action="urn:activateProcessInstance"></wsdl:input>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSException" name="BPMNInstanceServiceBPSException" wsaw:Action="urn:activateProcessInstanceBPMNInstanceServiceBPSException"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <wsdl:input message="ns:getProcessInstancesRequest" wsaw:Action="urn:getProcessInstances"></wsdl:input>
+            <wsdl:output message="ns:getProcessInstancesResponse" wsaw:Action="urn:getProcessInstancesResponse"></wsdl:output>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSException" name="BPMNInstanceServiceBPSException" wsaw:Action="urn:getProcessInstancesBPMNInstanceServiceBPSException"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="startProcess">
+            <wsdl:input message="ns:startProcessRequest" wsaw:Action="urn:startProcess"></wsdl:input>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSException" name="BPMNInstanceServiceBPSException" wsaw:Action="urn:startProcessBPMNInstanceServiceBPSException"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="deleteProcessInstance">
+            <wsdl:input message="ns:deleteProcessInstanceRequest" wsaw:Action="urn:deleteProcessInstance"></wsdl:input>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSException" name="BPMNInstanceServiceBPSException" wsaw:Action="urn:deleteProcessInstanceBPMNInstanceServiceBPSException"></wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BPMNInstanceServiceSoap11Binding" type="ns:BPMNInstanceServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"></soap:binding>
+        <wsdl:operation name="suspendProcessInstance">
+            <soap:operation soapAction="urn:suspendProcessInstance" style="document"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSException"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getInstanceCount">
+            <soap:operation soapAction="urn:getInstanceCount" style="document"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSException"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <soap:operation soapAction="urn:activateProcessInstance" style="document"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSException"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <soap:operation soapAction="urn:getProcessInstances" style="document"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSException"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="startProcess">
+            <soap:operation soapAction="urn:startProcess" style="document"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSException"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="deleteProcessInstance">
+            <soap:operation soapAction="urn:deleteProcessInstance" style="document"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSException"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BPMNInstanceServiceSoap12Binding" type="ns:BPMNInstanceServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"></soap12:binding>
+        <wsdl:operation name="suspendProcessInstance">
+            <soap12:operation soapAction="urn:suspendProcessInstance" style="document"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSException"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getInstanceCount">
+            <soap12:operation soapAction="urn:getInstanceCount" style="document"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSException"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <soap12:operation soapAction="urn:activateProcessInstance" style="document"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSException"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <soap12:operation soapAction="urn:getProcessInstances" style="document"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSException"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="startProcess">
+            <soap12:operation soapAction="urn:startProcess" style="document"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSException"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="deleteProcessInstance">
+            <soap12:operation soapAction="urn:deleteProcessInstance" style="document"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSException">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSException"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BPMNInstanceServiceHttpBinding" type="ns:BPMNInstanceServicePortType">
+        <http:binding verb="POST"></http:binding>
+        <wsdl:operation name="suspendProcessInstance">
+            <http:operation location="suspendProcessInstance"></http:operation>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getInstanceCount">
+            <http:operation location="getInstanceCount"></http:operation>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <http:operation location="activateProcessInstance"></http:operation>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <http:operation location="getProcessInstances"></http:operation>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="startProcess">
+            <http:operation location="startProcess"></http:operation>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="deleteProcessInstance">
+            <http:operation location="deleteProcessInstance"></http:operation>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"></mime:content>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="BPMNInstanceService">
+        <wsdl:port name="BPMNInstanceServiceHttpsSoap11Endpoint" binding="ns:BPMNInstanceServiceSoap11Binding">
+            <soap:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap11Endpoint/"></soap:address>
+        </wsdl:port>
+        <wsdl:port name="BPMNInstanceServiceHttpsSoap12Endpoint" binding="ns:BPMNInstanceServiceSoap12Binding">
+            <soap12:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap12Endpoint/"></soap12:address>
+        </wsdl:port>
+        <wsdl:port name="BPMNInstanceServiceHttpsEndpoint" binding="ns:BPMNInstanceServiceHttpBinding">
+            <http:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsEndpoint/"></http:address>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
