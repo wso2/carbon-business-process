@@ -26,6 +26,8 @@ import org.wso2.carbon.humantask.HumanInteractionsDocument;
 import org.wso2.carbon.humantask.TDeadlines;
 import org.wso2.carbon.humantask.TPresentationElements;
 import org.wso2.carbon.humantask.TPriorityExpr;
+import org.wso2.carbon.humantask.TRenderings;
+import org.wso2.carbon.humantask.client.api.types.TRendering;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
@@ -34,6 +36,7 @@ import org.wso2.carbon.humantask.core.utils.HumanTaskNamespaceContext;
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -310,5 +313,7 @@ public abstract class HumanTaskBaseConfiguration {
     public long getVersion() {
         return this.version;
     }
+    
+   public abstract TRenderings getRenderings();
 
 }

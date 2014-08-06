@@ -129,4 +129,27 @@ public final class HumanTaskConstants {
 
     //Default Cache expiry duration in seconds
     public static final int DEFAULT_CACHE_EXPIRY_DURATION = 30;
+    
+    /*Human task notification related constants*/
+    public static final String RENDERING_TYPE_EMAIL="email";
+    public static final String RENDERING_TYPE_SMS="sms";
+    public static final String EMAIL_TO_TAG="to";
+    public static final String EMAIL_CC_TAG="cc";
+    public static final String EMAIL_BCC_TAG="bcc";
+    public static final String EMAIL_SUBJECT_TAG="mailSubject";
+    public static final String EMAIL_OR_SMS_BODY_TAG="body";
+    public static final String SMS_RECIEVER_TAG="reciever";
+    public static final String RENDERING_TAG="rendering";
+    public static final String TRANSPORT_SMS="sms";
+    
+    public static final String SMS_IMPLCLASS="smsImplClass";
+    public static final String SMS_COM_PORT="com_port";
+    public static final String SMS_GATEWAY_ID="gateway_id";
+    public static final String SMS_BAUD_RATE="baud_rate";
+    public static final String SMS_DONGLE_MANUFATURER="manufacturer";
+    public static final String SMS_DONGLE_MODEL="model";
+    public static final String HTD_NAMESPACE="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803";
+    
+    
+    
 }
