@@ -8,11 +8,12 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
-import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.tenant.mgt.services.TenantMgtAdminService;
 import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.UserStoreManager;
 
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,10 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
 
-    private UserStoreManager userStoreManager;
+    private TenantMgtAdminService tenantMgtAdminService;
 
-    public BPSUserIdentityManager(UserStoreManager userStoreManager) {
-        this.userStoreManager = userStoreManager;
+    public BPSUserIdentityManager() {
+        this.tenantMgtAdminService = new TenantMgtAdminService();
     }
 
     @Override
@@ -108,10 +109,25 @@ public class BPSUserIdentityManager extends UserEntityManager {
     public Boolean checkPassword(String s, String s1) {
         boolean authenticated = false;
         try {
-            authenticated = userStoreManager.authenticate(s, s1);
+            /*
+            TenantManagement Service will be used to get the domain of user who sent service request.
+            */
+
+            String[] userNameTokens = s.split("@");
+            int tenantId = BPMNConstants.SUPER_TENANT_ID;
+
+            if (userNameTokens.length > 1) {
+                tenantId = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]).getTenantId();
+            }
+
+            log.debug("Rest Service request from user:" + s);
+            return BPMNServerHolder.getInstance().getRegistryService().getUserRealm(tenantId).getUserStoreManager().authenticate(userNameTokens[0], s1);
+
         } catch (UserStoreException e) {
             String msg = "Error in authenticating user: " + s;
             log.error(msg, e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return authenticated;
     }
