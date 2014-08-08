@@ -115,10 +115,10 @@ WorkflowServiceClient client;
                     <% for(BPMNProcess process: processes){ %>
                         <tr>
                             <% if(firstRow){ %>
-                                <td rowspan=<%=processes.length%>><a href=<%="process_list_view.jsp?region=region1&item=bpmn_menu&operation=packageInfo&deploymentName=" + deployment.getDeploymentName()%>><%=deployment.getDeploymentName() + "-" + deployment.getDeploymentId()%></a></td>
+                                <td rowspan=<%=processes.length%>><a href=<%="process_list_view.jsp?operation=packageInfo&deploymentName=" + deployment.getDeploymentName()%>><%=deployment.getDeploymentName() + "-" + deployment.getDeploymentId()%></a></td>
                                 <% firstRow = false; %>
                             <% } %>
-                            <td><a href=<%="process_list_view.jsp?region=region1&item=bpmn_menu&operation=processDef&processID=" + process.getProcessId()%>>
+                            <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + process.getProcessId()%>>
                                    <%=process.getProcessId()%></a></td>
                             <td><%=process.getVersion()%></td>
                             <td><%=deployment.getDeploymentTime().toString()%></td>
