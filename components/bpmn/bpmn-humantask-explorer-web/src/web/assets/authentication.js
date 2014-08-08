@@ -3,7 +3,7 @@ function authenticate(username, password){
 	process = require('process'),
 	localIP = process.getProperty('carbon.local.ip'),
    	httpsPort = process.getProperty('mgt.transport.https.port'),
-	httpUrl = "https://"+localIP+":"+httpsPort,
-	srv = new carbon.server.Server({url: httpUrl});
+	httpsUrl = "https://"+localIP+":"+httpsPort,
+	srv = new carbon.server.Server({url: httpsUrl});
 	return srv.authenticate(username, password);
 }
