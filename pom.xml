@@ -1448,7 +1448,7 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.14-wso2v1</org.activiti.wso2.version>
+        <org.activiti.wso2.version>5.16-wso2v1</org.activiti.wso2.version>
     </properties>
 
     <distributionManagement>
