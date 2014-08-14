@@ -102,6 +102,7 @@
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
+                            org.wso2.carbon.ndatasource.*,
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Import-Package>-->

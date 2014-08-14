@@ -43,13 +43,6 @@ public class BPSUserIdentityManager extends UserEntityManager {
     }
 
     @Override
-    public void updateUser(UserEntity userEntity) {
-        String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
-        throw new UnsupportedOperationException(msg);
-    }
-
-    @Override
     public UserEntity findUserById(String s) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
         log.error(msg);

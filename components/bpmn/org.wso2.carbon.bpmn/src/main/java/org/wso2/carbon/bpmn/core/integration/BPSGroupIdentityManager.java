@@ -38,13 +38,6 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     }
 
     @Override
-    public void updateGroup(GroupEntity updatedGroup) {
-        String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
-        throw new UnsupportedOperationException(msg);
-    }
-
-    @Override
     public void deleteGroup(String groupId) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
         log.error(msg);
