@@ -19,7 +19,7 @@
     <name>WSO2 Carbon - BPMN Stub</name>
 
 
-    <dependencies>
+<!--    <dependencies>
         <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2</artifactId>
@@ -36,7 +36,7 @@
             <groupId>wsdl4j.wso2</groupId>
             <artifactId>wsdl4j</artifactId>
         </dependency>
-    </dependencies>
+    </dependencies>-->
 
     <build>
         <plugins>
@@ -116,7 +116,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Export-Package>
                             org.wso2.carbon.bpmn.stub.*,
                             org.wso2.carbon.bpmn.core.mgt.model.xsd.*

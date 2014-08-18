@@ -137,8 +137,8 @@
                 <% if(bpmnInstances!=null && bpmnInstances.length>0){ %>
                 <%  for(BPMNInstance bpmnInstance: bpmnInstances){ %>
                     <tr>
-                        <td><a href=<%="instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=instanceInfo&instanceID=" + bpmnInstance.getInstanceId()%>><%=bpmnInstance.getInstanceId()%></a></td>
-                        <td><a href=<%="process_list_view.jsp?region=region1&item=bpmn_menu&operation=processDef&processID=" + bpmnInstance.getProcessId()%>><%=bpmnInstance.getProcessId()%></a></td>
+                        <td><a href=<%="instance_list_view.jsp?operation=instanceInfo&instanceID=" + bpmnInstance.getInstanceId()%>><%=bpmnInstance.getInstanceId()%></a></td>
+                        <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + bpmnInstance.getProcessId()%>><%=bpmnInstance.getProcessId()%></a></td>
                         <td><%=bpmnInstance.getStartTime().toString()%></td>
                         <td>
                             <% if(!bpmnInstance.getSuspended()){ %>

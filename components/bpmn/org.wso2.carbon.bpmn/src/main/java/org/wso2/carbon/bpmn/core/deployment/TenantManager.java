@@ -1,13 +1,10 @@
 package org.wso2.carbon.bpmn.core.deployment;
 
-import com.hazelcast.core.HazelcastInstance;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSException;
-import org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
