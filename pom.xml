@@ -502,6 +502,11 @@
                 <artifactId>commons-primitives</artifactId>
                 <version>${commons-primitives.version}</version>
             </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-logging.version}</version>
+            </dependency>
             <!-- end of common dependencies-->
 
             <dependency>
