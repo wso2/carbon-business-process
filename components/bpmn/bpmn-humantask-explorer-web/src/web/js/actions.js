@@ -1,5 +1,5 @@
 var httpUrl = location.protocol + "//" + location.host;
-var CONTEXT="bpmn-humantask-explorer";
+var CONTEXT="bpmn-explorer";
 
 function completeTask(data, id){
 	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
