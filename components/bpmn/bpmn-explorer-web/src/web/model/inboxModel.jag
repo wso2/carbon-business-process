@@ -1,0 +1,23 @@
+<%
+var pagination = request.getParameter("pagination");
+if (pagination == null || pagination == ""){
+	pagination = 1;
+}
+var start = 0;
+if(pagination > 0){
+	start = (pagination - 1)*10 ;
+}
+var headers = {"Authorization":"Basic " + auth};
+var user = session.get("user");
+var task = [];
+var tasks = get( httpUrl + "/bpmnrest/tasks?assignee=" + user + "&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+for(var i=0; i < tasks.data.length; i++){
+	task.push({
+		id:tasks.data[i].id,
+		name:tasks.data[i].name,
+		date:tasks.data[i].dueDate
+	});
+}
+var taskCount = get( httpUrl + "/bpmnrest/tasks?assignee=" + user ,null, headers, "json" ).data.total;
+var paginatePageCount = parseInt((taskCount / 10));
+%>

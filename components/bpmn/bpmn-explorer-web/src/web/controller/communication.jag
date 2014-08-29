@@ -1,0 +1,35 @@
+<%
+     log = new Log();
+
+if(!session.get("authSuccess")){
+	response.sendRedirect("login");
+} else {
+
+    var process = require('process'),
+	localIP = process.getProperty('carbon.local.ip'),
+   	httpPort = process.getProperty('mgt.transport.http.port'),
+	httpUrl = "http://"+localIP+":"+httpPort,
+	encoder = require("/assets/encoder.js"),
+	auth = session.get('auth'),
+	contentType = request.getContentType(),	
+	headers = {
+		"Content-Type": contentType,
+		"Authorization":"Basic " + auth
+	},
+	run = request.getMethod();
+	if(run == "POST"){
+		     req = request.getParameter("req");
+		     url = req;
+		     data = request.getContent();
+		     result = post( httpUrl + url, JSON.stringify(data), headers, "text");
+		log.debug("BPMN Rest POST results: " + result);
+	}
+	if(run == "PUT"){
+		     req = request.getParameter("req");
+		     url = req;
+		     data = request.getContent();
+		     result = put( httpUrl + url, JSON.stringify(data), headers, "text");
+		log.debug("BPMN Rest PUT results: " + result);
+	}
+}
+%>

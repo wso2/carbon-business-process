@@ -1,0 +1,49 @@
+<div class="col-sm-12">
+	<ol class="breadcrumb">
+	  <li><a href="inbox?pagination=1">Home</a></li>
+	  <li class="active">Inbox</li>
+	</ol>
+	<div class="panel panel-primary">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">Inbox</div>
+
+	  <!-- Table -->
+	  <table class="table">
+	    <thead>
+	    	<tr>
+	    		<th>Task ID</th>
+	    		<th>Task Name</th>
+	    		<th>Due Date</th>
+	    	</tr>
+	    </thead>
+	    <tbody>
+	    	<% for(var i=0; i<task.length; i++){ %>
+	    	<tr>
+	    		<td><a href="inboxTask?id=<%=task[i].id%>"><%=task[i].id%></a></td>
+				<td><%=task[i].name%></td>
+				<td><%=task[i].date%></td>
+	    	</tr>
+	    	<% } %>
+	    </tbody>
+	  </table>
+	</div>
+	<ul class="pagination">
+		<% if(pagination != 1){ %>
+			<li><a href="inbox?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
+		<% } else { %>
+			<li class="disabled"><a href="#">&laquo;</a></li>			
+		<% } %>
+		<% for(var i = 1; i<=paginatePageCount+1; i++){ 
+				if(pagination == i){ %>
+					<li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+			<% }else { %>
+					<li><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+			<% } %>
+		<% } %>
+		<% if(pagination != paginatePageCount+1){ %>
+			<li><a href="inbox?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
+		<% } else { %>
+			<li class="disabled"><a href="#">&raquo;</a></li>			
+		<% } %>
+	</ul>
+</div>

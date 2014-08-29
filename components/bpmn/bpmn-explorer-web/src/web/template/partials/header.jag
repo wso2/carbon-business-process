@@ -1,0 +1,23 @@
+<head>
+	<meta charset="utf-8">
+	<title><%=data.app.title%></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="<%=data.app.title%>">
+	<meta name="author" content="<%=data.app.author%>">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/bootstrap-theme.min.css">
+	<!-- Custom theme -->
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<div class="col-sm-12">
+				<div class="page-header">
+					<h1><%=data.app.title%></h1>
+				</div>
+			</div>
+		</div>

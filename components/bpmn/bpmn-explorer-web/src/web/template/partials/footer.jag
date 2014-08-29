@@ -1,0 +1,14 @@
+		<div class="footer">
+			<div class="col-sm-12">
+				<div class="well well-sm"><%=data.app.footer%></div>
+			</div>
+		</div>
+	</div>
+		<!-- javascript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="<%=request.getContextPath()%>/js/actions.js"></script>
+		<script src="<%=request.getContextPath()%>/js/jquery.min.js"></script>
+		<script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
+		<!--[if lte IE 8]> <script src="js/html5shiv.min.js"></script> <script src="js/respond.min.js"></script> <![endif]-->
+</body>

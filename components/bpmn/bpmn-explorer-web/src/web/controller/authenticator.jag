@@ -1,0 +1,34 @@
+<%
+	var authentication = require("/assets/authentication.js");
+	var username = request.getParameter("username");
+	var password = request.getParameter("password");
+	var authSuccess=false;
+	var USER='user',
+	    AUTH='auth',
+	    AUTH_SUCCESS='authSuccess';
+	
+	try{
+		if(username == "" || password == ""){
+			authSuccess = false;
+		} else{
+			authSuccess = authentication.authenticate(username,password);
+				
+		}
+		if(!authSuccess){
+			session.put("loginFailed" ,true);
+			response.sendRedirect("login");
+		} else {
+		
+			var encoder = require("/assets/encoder.js");
+			var auth = encoder.encode(username+':'+password);
+			session.put(AUTH_SUCCESS, authSuccess);
+			session.put(AUTH, auth);
+			session.put(USER, username);
+			response.sendRedirect("inbox");
+		}
+	
+	}catch(e){
+		session.put("loginFailed" ,true);
+		response.sendRedirect("login");
+	}
+%>

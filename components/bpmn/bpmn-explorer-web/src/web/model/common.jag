@@ -1,0 +1,9 @@
+<%
+var data = require('/config.json'),
+	encoder = require("/assets/encoder.js"),
+	process = require('process'),
+    	localIP = process.getProperty('carbon.local.ip'),
+	httpsPort = process.getProperty('mgt.transport.https.port'),
+	auth = session.get('auth'),
+	httpUrl = "https://"+localIP+":"+httpsPort;
+%>
