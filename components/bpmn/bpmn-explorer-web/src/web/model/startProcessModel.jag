@@ -1,0 +1,19 @@
+<%
+var id = request.getParameter("id");
+var headers = {"Authorization":"Basic " + auth,
+	"Content-Type": "application/json"
+};
+var formGenTool = require("/assets/dynamicFormGen.js");
+var formData = get( httpUrl + "/bpmnrest/process-definition/" + id + "/properties" ,null, headers, "json" ).data;
+
+if(formData.data.length <= 0){
+	var url = "/bpmnrest/runtime/process-instances";
+	var body = { 
+  		"processDefinitionId": id
+	};
+	var result = post(httpUrl + url, JSON.stringify(body), headers, "application/json");
+	response.sendRedirect("inbox");
+} else {
+	var formContent = formGenTool.generateForm(formData.data);
+}
+%>

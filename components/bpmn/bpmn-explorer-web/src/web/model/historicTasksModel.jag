@@ -1,0 +1,25 @@
+<%
+var pagination = request.getParameter("pagination");
+if (pagination == null || pagination == ""){
+	pagination = 1;
+}
+var start = 0;
+if(pagination > 0){
+	start = (pagination - 1)*10 ;
+}
+var headers = {"Authorization":"Basic " + auth};
+var task = [];
+var tasks = get( httpUrl + "/bpmnrest/history/historic-process-instances" ,null, headers, "json" ).data;
+for(var i=0; i < tasks.data.length; i++){
+	if(tasks.data[i].endTime != null){
+		task.push({
+			id:tasks.data[i].id,
+			processDefinitionId:tasks.data[i].processDefinitionId,
+			startTime:tasks.data[i].startTime,
+			endTime:tasks.data[i].endTime
+		});
+	}
+}
+var taskCount = get( httpUrl + "/bpmnrest/history/historic-process-instances" ,null, headers, "json" ).data.total;
+var paginatePageCount = parseInt((taskCount / 10));
+%>

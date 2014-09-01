@@ -76,3 +76,27 @@ function startProcess(processDefId){
         }
     });
 }
+
+function startProcessWithData(data, id){
+    var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/process-instances";
+    var variables = [];
+    for(var i=0; i<data.length; i++){
+        variables.push({
+            "name":data[i].name,
+            "value":data[i].value
+        });
+    }
+    var body = {
+        "processDefinitionId": id,
+        "variables" : variables
+    };
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function(data){
+            window.location=httpUrl+"/"+CONTEXT+"/inbox";
+        }
+    });
+}

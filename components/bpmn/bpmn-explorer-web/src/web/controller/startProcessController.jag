@@ -1,0 +1,13 @@
+<%
+	var authSuccess = session.get("authSuccess");
+	if(!authSuccess){
+		response.sendRedirect("login");
+	} else {
+		include("/model/common.jag");
+		include("/model/startProcessModel.jag");
+		include("/template/partials/header.jag");
+		include("/template/partials/navigation.jag");
+		include("/template/startProcessView.jag");
+		include("/template/partials/footer.jag");
+	}
+%>

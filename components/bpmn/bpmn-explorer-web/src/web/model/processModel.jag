@@ -20,10 +20,13 @@ var processes = get( httpUrl + "/bpmnrest/repository/process-definitions?sort=na
 	,null, headers, "json" ).data;
 
 for (var j=0; j<processes.data.length; j++){
+	var imageUrl = processes.data[j].diagramResource.replace("resources", "resourcedata").split(":")[2].substring(4);
+
 	list.push({
 		processName: processes.data[j].name,
 		processId: processes.data[j].id,
-		version: processes.data[j].version
+		version: processes.data[j].version,
+		imageUrl: imageUrl
 	});
 }
 %>

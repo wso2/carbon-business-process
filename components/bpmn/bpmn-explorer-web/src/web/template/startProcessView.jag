@@ -1,0 +1,24 @@
+<div class="col-sm-12">
+	<ol class="breadcrumb">
+	  <li><a href="inbox?pagination=1">Home</a></li>
+	  <li><a href="process">Processes</a></li>
+	  <li class="active"><%=id%></li>
+	</ol>
+	<div class="panel panel-primary">
+		<!-- Default panel contents -->
+		<div class="panel-heading">Start Process</div>
+
+	  
+	  	<table style="margin-left:10px;">
+	  		<form >
+	  			<%=formContent%>
+	  		</form>
+	  		<tr>
+	  			<td align="center" colspan="2" style="padding-top:10px; padding-bottom:10px">
+	  				<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn btn-sm btn-primary">Start</button>
+	  			</td>
+	  		</tr>
+	  	</table>
+	  
+	</div>
+</div>
