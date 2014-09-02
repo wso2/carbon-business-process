@@ -33,19 +33,10 @@ public class TenantRepository {
 
     private Integer tenantId;
 
-    private Set<Object> deploymentIds = new HashSet<Object>();
-
-    private Set<Object> processDefinitionIds = new HashSet<Object>();
-
     private File repoFolder;
 
     public TenantRepository(Integer tenantId) {
         this.tenantId = tenantId;
-        if (BPMNServerHolder.getInstance().getHazelcastInstance() != null) {
-            // clustering enabled and hazelcast instance available
-            setDeploymentIds(BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_DEPLOYMENT_ID_SET + tenantId));
-            setProcessDefinitionIds(BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_PROCESS_DEFINITION_ID_SET + tenantId));
-        }
     }
 
     public File getRepoFolder() {
@@ -86,22 +77,11 @@ public class TenantRepository {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
 
-            DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(deploymentName);
+            DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
             ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
             deploymentBuilder.addZipInputStream(archiveStream);
             Deployment deployment = deploymentBuilder.deploy();
-            repositoryService.setDeploymentCategory(deployment.getId(), tenantId.toString());
             archiveStream.close();
-
-            deploymentIds.add(deployment.getId());
-
-            List<ProcessDefinition> processDefinitions =
-                    repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).list();
-            for (ProcessDefinition processDefinition : processDefinitions) {
-                processDefinitionIds.add(processDefinition.getId());
-            }
-
-            // TODO: inform all members about the deployment using cluster messages
 
         } catch (Exception e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
@@ -131,7 +111,7 @@ public class TenantRepository {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> deployments =
-                    repositoryService.createDeploymentQuery().deploymentName(deploymentName).deploymentCategory(tenantId.toString()).list();
+                    repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
             if (deployments.isEmpty()) {
                 return;
             }
@@ -155,48 +135,22 @@ public class TenantRepository {
 
     private void undeployById(String deploymentId) throws IllegalAccessException {
 
-        if (!deploymentIds.contains(deploymentId)) {
-            String msg = "Operation not permitted for tenant: " + tenantId;
-            log.error(msg);
-            throw new IllegalAccessException(msg);
-        }
 
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
 
         List<ProcessDefinition> processDefinitions =
-                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).list();
+                repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString()).deploymentId(deploymentId).list();
 
         repositoryService.deleteDeployment(deploymentId, true);
 
-        deploymentIds.remove(deploymentId);
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            processDefinitionIds.remove(processDefinition.getId());
-        }
-
-        // TODO: inform all members about the undeployment using cluster messages
-    }
-
-    public boolean isTenantProcess(String processID) {
-        return processDefinitionIds.contains(processID);
-    }
-
-    public boolean isTenantTask(Task task) throws BPSException {
-        RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
-        ProcessInstance processInstance =
-                runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).list().get(0);
-        return isTenantInstance(processInstance);
-    }
-
-    public boolean isTenantInstance(ProcessInstance instance) {
-        return processDefinitionIds.contains(instance.getProcessDefinitionId());
     }
 
     public List<Deployment> getDeployments() throws BPSException {
 
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         List<Deployment> tenantDeployments =
-                engine.getRepositoryService().createDeploymentQuery().deploymentCategory(tenantId.toString()).list();
+                engine.getRepositoryService().createDeploymentQuery().deploymentTenantId(tenantId.toString()).list();
 
         return tenantDeployments;
     }
@@ -204,33 +158,10 @@ public class TenantRepository {
     public List<ProcessDefinition> getDeployedProcessDefinitions() throws BPSException {
 
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-        List<ProcessDefinition> processDefinitions = engine.getRepositoryService().createProcessDefinitionQuery().list();
-
-        List<ProcessDefinition> tenantProcessDefinitions = new ArrayList<ProcessDefinition>();
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            if (processDefinitionIds.contains(processDefinition.getId())) {
-                tenantProcessDefinitions.add(processDefinition);
-            }
-        }
-
-        return tenantProcessDefinitions;
+        List<ProcessDefinition> processDefinitions = engine.getRepositoryService().createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString()).list();
+        return processDefinitions;
     }
 
-    public void loadExistingDeployments() throws BPSException {
-
-        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().deploymentCategory(tenantId.toString()).list();
-        for (Deployment deployment : tenantDeployments) {
-            deploymentIds.add(deployment.getId());
-
-            List<ProcessDefinition> tenantProcesses =
-                    repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).list();
-            for (ProcessDefinition tenantProcess : tenantProcesses) {
-                processDefinitionIds.add(tenantProcess.getId());
-            }
-        }
-    }
 
     /*
     This method will fix the deployment conflicts when
@@ -296,25 +227,9 @@ public class TenantRepository {
 
     }
 
-    public void setDeploymentIds(Set<Object> deploymentIds) {
-        this.deploymentIds = deploymentIds;
-    }
-
-    public void setProcessDefinitionIds(Set<Object> processDefinitionIds) {
-        this.processDefinitionIds = processDefinitionIds;
-    }
-
     public Integer getTenantId() {
         return tenantId;
     }
 
-    public Set<Object> getDeploymentIds() {
-        return deploymentIds;
-    }
-
-    public Set<Object> getProcessDefinitionIds() {
-        return processDefinitionIds;
-    }
-
-
 }
+

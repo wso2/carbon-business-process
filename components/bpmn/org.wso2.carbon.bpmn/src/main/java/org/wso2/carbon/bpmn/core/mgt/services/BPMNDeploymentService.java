@@ -23,12 +23,12 @@ public class BPMNDeploymentService {
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
 
     public BPMNDeployment[] getDeployments() throws BPSException {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
             TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-
             List<Deployment> deployments = tenantRepository.getDeployments();
-
             BPMNDeployment[] bpmnDeployments = new BPMNDeployment[deployments.size()];
             for (int i = 0; i < deployments.size(); i++) {
                 Deployment deployment = deployments.get(i);
@@ -47,9 +47,9 @@ public class BPMNDeploymentService {
     }
 
     public BPMNProcess[] getDeployedProcesses() throws BPSException {
-        try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
             TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
             List<ProcessDefinition> processDefinitions = tenantRepository.getDeployedProcessDefinitions();
 
@@ -72,9 +72,11 @@ public class BPMNDeploymentService {
     }
 
     public String getProcessDiagram(String processId) throws BPSException {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try{
             RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
                     .processDefinitionId(processId)
                     .singleResult();
             String diagramResourceName = processDefinition.getDiagramResourceName();
@@ -90,9 +92,11 @@ public class BPMNDeploymentService {
     }
 
     public String getProcessModel(String processId) throws BPSException {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try{
             RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
                     .processDefinitionId(processId)
                     .singleResult();
             InputStream stream = repositoryService.getProcessModel(processDefinition.getId());
@@ -111,8 +115,9 @@ public class BPMNDeploymentService {
     }
 
     public void undeploy(String deploymentName) throws BPSException {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
             TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
             tenantRepository.undeploy(deploymentName, false);
 

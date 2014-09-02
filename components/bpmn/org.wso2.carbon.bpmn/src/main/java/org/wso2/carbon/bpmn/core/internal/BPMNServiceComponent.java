@@ -16,9 +16,6 @@ import org.wso2.carbon.registry.core.service.RegistryService;
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
- * @scr.reference name="hazelcast.instance.service"
- * interface="com.hazelcast.core.HazelcastInstance" cardinality="0..1"
- * policy="dynamic" bind="setHazelcastInstance" unbind="unsetHazelcastInstance"
  */
 public class BPMNServiceComponent {
 
@@ -54,22 +51,6 @@ public class BPMNServiceComponent {
             log.debug("RegistryService unbound from the BPMN component");
         }
         BPMNServerHolder.getInstance().unsetRegistryService(registryService);
-    }
-    public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-
-        log.info("Getting Hazelcast Instance");
-        BPMNServerHolder.getInstance().setHazelcastInstance(hazelcastInstance);
-        try {
-
-            BPMNServerHolder.getInstance().getTenantManager().populateDistributedSets();
-        } catch (BPSException e) {
-            log.error(e);
-        }
-    }
-
-    public void unsetHazelcastInstance(HazelcastInstance hazelcastInstance) {
-
-        BPMNServerHolder.getInstance().setHazelcastInstance(null);
     }
 
 }

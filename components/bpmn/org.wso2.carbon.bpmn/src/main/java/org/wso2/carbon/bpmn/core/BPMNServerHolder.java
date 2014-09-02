@@ -14,7 +14,6 @@ public class BPMNServerHolder {
     private ProcessEngine engine = null;
     private TenantManager tenantManager = null;
     private RegistryService registryService = null;
-    private HazelcastInstance hazelcastInstance = null;
 
     private static BPMNServerHolder bpmnServerHolder = null;
 
@@ -55,11 +54,4 @@ public class BPMNServerHolder {
         return registryService;
     }
 
-    public HazelcastInstance getHazelcastInstance() {
-        return hazelcastInstance;
-    }
-
-    public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        this.hazelcastInstance = hazelcastInstance;
-    }
 }

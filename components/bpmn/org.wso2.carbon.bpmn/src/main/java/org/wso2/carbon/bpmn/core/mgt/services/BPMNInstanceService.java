@@ -22,13 +22,9 @@ public class BPMNInstanceService {
     private static Log log = LogFactory.getLog(BPMNInstanceService.class);
 
     public void startProcess(String processID) throws BPSException {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-            if (!BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId).isTenantProcess(processID)) {
-                String msg = "Operation not permitted for tenant: " + tenantId;
-                log.error(msg);
-                throw new BPSException(msg);
-            }
 
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RuntimeService runtimeService = engine.getRuntimeService();
@@ -41,11 +37,12 @@ public class BPMNInstanceService {
     }
 
     public BPMNInstance[] getProcessInstances() throws BPSException {
+
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RuntimeService runtimeService = engine.getRuntimeService();
-            List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().list();
+            List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).list();
             BPMNInstance[] bpmnInstances = getTenantBPMNInstances(instances);
             return bpmnInstances;
 
@@ -58,12 +55,12 @@ public class BPMNInstanceService {
 
     public int getInstanceCount() throws BPSException {
 
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RuntimeService runtimeService = engine.getRuntimeService();
-            List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().list();
-            List<ProcessInstance> tenantInstances = filterTenantInstances(instances);
-            return tenantInstances.size();
+            List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).list();
+            return instances.size();
 
         } catch (Exception e) {
             String msg = "Failed to get the number of process instances.";
@@ -74,23 +71,17 @@ public class BPMNInstanceService {
 
     public void suspendProcessInstance(String instanceId) throws BPSException {
 
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
             RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
-            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).list();
+            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
                 String msg = "No process instances with the ID: " + instanceId;
                 log.error(msg);
                 throw new BPSException(msg);
             }
-
             ProcessInstance processInstance = processInstances.get(0);
-            if (!BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId).isTenantInstance(processInstance)) {
-                String msg = "Operation not permitted for tenant: " + tenantId;
-                log.error(msg);
-                throw new BPSException(msg);
-            }
-
             runtimeService.suspendProcessInstanceById(instanceId);
 
         } catch (Exception e) {
@@ -102,10 +93,11 @@ public class BPMNInstanceService {
 
     public void deleteProcessInstance(String instanceId) throws BPSException {
 
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
             RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
-            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).list();
+            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
                 String msg = "No process instances with the ID: " + instanceId;
                 log.error(msg);
@@ -113,12 +105,6 @@ public class BPMNInstanceService {
             }
 
             ProcessInstance processInstance = processInstances.get(0);
-            if (!BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId).isTenantInstance(processInstance)) {
-                String msg = "Operation not permitted for tenant: " + tenantId;
-                log.error(msg);
-                throw new BPSException(msg);
-            }
-
             runtimeService.deleteProcessInstance(instanceId, "Deleted by user.");
 
         } catch (Exception e) {
@@ -130,10 +116,11 @@ public class BPMNInstanceService {
 
     public void activateProcessInstance(String instanceId) throws BPSException {
 
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
             RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
-            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceId(instanceId).list();
+            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
                 String msg = "No process instances with the ID: " + instanceId;
                 log.error(msg);
@@ -141,12 +128,6 @@ public class BPMNInstanceService {
             }
 
             ProcessInstance processInstance = processInstances.get(0);
-            if (!BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId).isTenantInstance(processInstance)) {
-                String msg = "Operation not permitted for tenant: " + tenantId;
-                log.error(msg);
-                throw new BPSException(msg);
-            }
-
             runtimeService.activateProcessInstanceById(instanceId);
 
         } catch (Exception e) {
@@ -156,25 +137,14 @@ public class BPMNInstanceService {
         }
     }
 
-    private List<ProcessInstance> filterTenantInstances(List<ProcessInstance> instances) {
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        List<ProcessInstance> tenantInstances = new ArrayList<ProcessInstance>();
-        TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-        for (ProcessInstance instance : instances) {
-            if (tenantRepository.isTenantProcess(instance.getProcessDefinitionId())) {
-                tenantInstances.add(instance);
-            }
-        }
-        return tenantInstances;
-    }
 
     private BPMNInstance[] getTenantBPMNInstances(List<ProcessInstance> instances) {
+
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         List<BPMNInstance> bpmnInstances = new ArrayList<BPMNInstance>();
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-        HistoricProcessInstanceQuery query = BPMNServerHolder.getInstance().getEngine().getHistoryService().createHistoricProcessInstanceQuery();
+        HistoricProcessInstanceQuery query = BPMNServerHolder.getInstance().getEngine().getHistoryService().createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString());
         for (ProcessInstance instance : instances) {
-            if (tenantRepository.isTenantProcess(instance.getProcessDefinitionId())) {
                 BPMNInstance bpmnInstance = new BPMNInstance();
                 bpmnInstance.setInstanceId(instance.getId());
                 bpmnInstance.setProcessId(instance.getProcessDefinitionId());
@@ -182,7 +152,6 @@ public class BPMNInstanceService {
                 bpmnInstance.setStartTime(query.processInstanceId(instance.getId()).singleResult().getStartTime());
                 bpmnInstance.setVariables(formatVariables(instance.getProcessVariables()));
                 bpmnInstances.add(bpmnInstance);
-            }
         }
         BPMNInstance[] instanceArray = bpmnInstances.toArray(new BPMNInstance[bpmnInstances.size()]);
         return instanceArray;
