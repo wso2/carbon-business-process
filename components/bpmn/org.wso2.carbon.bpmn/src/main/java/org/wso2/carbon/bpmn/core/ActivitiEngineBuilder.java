@@ -3,27 +3,21 @@ package org.wso2.carbon.bpmn.core;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.interceptor.SessionFactory;
-import org.activiti.engine.impl.persistence.GenericManagerFactory;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-import org.wso2.carbon.bpmn.core.integration.BPSUserIdentityManager;
 import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ActivitiEngineBuilder {
 
-    private static Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
+    private static final Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
 
     public ProcessEngine buildEngine() throws BPSException {
         ProcessEngine engine = null;

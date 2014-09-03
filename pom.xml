@@ -588,14 +588,14 @@
             </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.datasource</artifactId>
+                <artifactId>org.wso2.carbon.ndatasource.core</artifactId>
                 <version>${carbon.platform.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.datasource.ui</artifactId>
-                <version>${carbon.platform.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.datasource.ui</artifactId>-->
+                <!--<version>${carbon.platform.version}</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.apache.xmlbeans.wso2</groupId>
                 <artifactId>xmlbeans</artifactId>

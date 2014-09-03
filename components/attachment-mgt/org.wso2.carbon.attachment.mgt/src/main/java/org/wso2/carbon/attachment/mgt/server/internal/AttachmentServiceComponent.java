@@ -27,7 +27,7 @@ import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
 import org.wso2.carbon.attachment.mgt.server.AttachmentServerServiceImpl;
 import org.wso2.carbon.attachment.mgt.servlet.AttachmentDownloadServlet;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.datasource.DataSourceInformationRepositoryService;
+import org.wso2.carbon.ndatasource.core.DataSourceService;
 
 import javax.servlet.Servlet;
 import javax.servlet.http.HttpServlet;
@@ -36,10 +36,10 @@ import java.util.Hashtable;
 
 /**
  * @scr.component name="org.wso2.carbon.attachment.mgt.server.internal.AttachmentServiceComponent" immediate="true"
- * @scr.reference name="datasource.information.repository.service"
- * interface="org.wso2.carbon.datasource.DataSourceInformationRepositoryService"
- * cardinality="1..1" policy="dynamic"  bind="setDataSourceInformationRepositoryService"
- * unbind="unsetDataSourceInformationRepositoryService"
+ * @scr.reference name="datasource.dataSourceService"
+ * interface="org.wso2.carbon.ndatasource.core.DataSourceService"
+ * cardinality="1..1" policy="dynamic"  bind="setDataSourceService"
+ * unbind="unsetDataSourceService"
  */
 
 public class AttachmentServiceComponent {
@@ -51,7 +51,7 @@ public class AttachmentServiceComponent {
     /**
      * Equals to true if the data-source is available when Attachment-Mgt bundle is resolved.
      */
-    private boolean dataSourceInfoRepoProvided = false;
+    private boolean dataSourceServiceProvided = false;
 
     /**
      * The bundle context.
@@ -67,7 +67,7 @@ public class AttachmentServiceComponent {
         try {
             PrivilegedCarbonContext.startTenantFlow();
             this.bundleContext = componentContext.getBundleContext();
-            if (dataSourceInfoRepoProvided) {
+            if (dataSourceServiceProvided) {
                 initAttachmentServer();
                 registerAttachmentDownloadServlet();
                 registerAttachmentServerService();
@@ -128,26 +128,24 @@ public class AttachmentServiceComponent {
     /**
      * Invoked when the Attachment-Mgt bundle starts.
      *
-     * @param repositoryService
+     * @param dataSourceService
      */
-    protected void setDataSourceInformationRepositoryService(
-            DataSourceInformationRepositoryService repositoryService) {
+    protected void setDataSourceService(DataSourceService dataSourceService) {
         if (log.isDebugEnabled()) {
             log.debug("DataSourceInformationRepositoryService bound to the Attachment-Mgt component");
         }
-        this.dataSourceInfoRepoProvided = true;
+        this.dataSourceServiceProvided = true;
     }
 
     /**
      * Invoked when the Attachment-Mgt bundle stops.
      *
-     * @param repositoryService
+     * @param dataSourceService
      */
-    protected void unsetDataSourceInformationRepositoryService(
-            DataSourceInformationRepositoryService repositoryService) {
+    protected void unsetDataSourceService(DataSourceService dataSourceService) {
         if (log.isDebugEnabled()) {
             log.debug("DataSourceInformationRepositoryService unbound from the Attachment-Mgt component");
         }
-        this.dataSourceInfoRepoProvided = false;
+        this.dataSourceServiceProvided = false;
     }
 }

@@ -158,7 +158,7 @@
                                         <include>**/bps.xml</include>
                                         <incluse>**/b4p-coordination-config.xml</incluse>
                                         <include>**/jpadb.h2.db</include>
-                                        <include>**/datasources.properties</include>
+                                        <include>**/bps-datasources.xml</include>
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
                                         <include>build.properties</include>
@@ -226,7 +226,6 @@
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.datasource.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.platform.version}</importFeatureDef>

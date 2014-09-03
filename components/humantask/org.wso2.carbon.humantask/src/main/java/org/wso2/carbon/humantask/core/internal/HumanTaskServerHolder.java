@@ -28,7 +28,7 @@ public final class HumanTaskServerHolder {
     private static HumanTaskServerHolder instance = new HumanTaskServerHolder();
 
     private RealmService realmService = null;
-    private boolean dataSourceInfoRepoProvided = false;
+    private boolean dataSourceServiceProvided = false;
     private HumanTaskServer htServer = null;
     private RegistryService registryService;
     private AttachmentServerService attachmentService;
@@ -53,12 +53,12 @@ public final class HumanTaskServerHolder {
         this.realmService = realmService;
     }
 
-    public boolean isDataSourceInfoRepoProvided() {
-        return dataSourceInfoRepoProvided;
+    public boolean isDataSourceServiceProvided() {
+        return dataSourceServiceProvided;
     }
 
-    public void setDataSourceInfoRepoProvided(boolean dataSourceInfoRepoProvided) {
-        this.dataSourceInfoRepoProvided = dataSourceInfoRepoProvided;
+    public void setDataSourceServiceProvided(boolean dataSourceServiceProvided) {
+        this.dataSourceServiceProvided = dataSourceServiceProvided;
     }
 
     public HumanTaskServer getHtServer() {
