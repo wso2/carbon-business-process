@@ -3,9 +3,10 @@
     <!-- Default panel contents -->
     <div class="panel-heading">BPMN Statistics</div>
   
+    <%if(processNames.data.length>0 && (activeProcesses>0 || suspendProcesses>0 || completedProcesses>0)){%>
+    <link rel="stylesheet" href="css/tooltip.css">
     <script src="js/pieChartGen.js"></script>
     <script src="js/corechartEn.js"></script>
-    <link rel="stylesheet" href="css/tooltip.css">
     <link rel="stylesheet" href="css/chart.css">
 
     <script type="text/javascript">
@@ -75,6 +76,10 @@
       }
     </script>
     <div id="taskInstances" style="width: 900px; height: 400px;"></div>
-
+    <%}else{%>
+      <br/>
+      &nbsp;&nbsp;Welcome to BPMN Explorer statistical view. Please deploy processes from admin view and create tasks to generate statistics.
+      <br/><br/>
+    <%}%>
   </div>
 </div>
