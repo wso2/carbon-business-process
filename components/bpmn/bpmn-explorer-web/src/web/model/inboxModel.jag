@@ -11,11 +11,16 @@ var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
 var task = [];
 var tasks = get( httpUrl + "/bpmnrest/tasks?assignee=" + user + "&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+
 for(var i=0; i < tasks.data.length; i++){
+	var dueDate = tasks.data[i].dueDate;
+	if(dueDate == null){ dueDate = "Not available"; }
+	var taskName = tasks.data[i].name;
+	if(taskName == null){ taskName = "Not available"; }
 	task.push({
 		id:tasks.data[i].id,
-		name:tasks.data[i].name,
-		date:tasks.data[i].dueDate
+		name:taskName,
+		date:dueDate
 	});
 }
 var taskCount = get( httpUrl + "/bpmnrest/tasks?assignee=" + user ,null, headers, "json" ).data.total;

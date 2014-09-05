@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-        <a class="navbar-brand" href="inbox?pagination=1">Home</a>
+        <a class="navbar-brand" href="stats">Home</a>
       </div>
 
       <!-- Collect <th></th>e nav links, forms, and other content for toggling -->

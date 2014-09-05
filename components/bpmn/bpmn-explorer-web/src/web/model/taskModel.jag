@@ -2,11 +2,17 @@
 var id = request.getParameter("id");
 var headers = {"Authorization":"Basic " + auth};
 var task = get( httpUrl + "/bpmnrest/task/" + id ,null, headers, "json" ).data;
+var taskDesc = task.description;
+if(taskDesc == null) { taskDesc = "Description not available"; }
+var taskOwner = task.owner;
+if(taskOwner == null) { taskOwner = "Not available"; }
+var taskName = task.name;
+if(taskName == null) { taskName = "Not available"; }
 var taskData = {
-	name:task.name,
-	desc:task.description,
+	name:taskName,
+	desc:taskDesc,
 	pid:task.processDefinitionId,
-	owner:task.owner,
+	owner:taskOwner,
 	assignee:task.assignee,
 	subtask:task.subtaskList
 };

@@ -24,7 +24,7 @@
 			session.put(AUTH_SUCCESS, authSuccess);
 			session.put(AUTH, auth);
 			session.put(USER, username);
-			response.sendRedirect("inbox");
+			response.sendRedirect("stats");
 		}
 	
 	}catch(e){

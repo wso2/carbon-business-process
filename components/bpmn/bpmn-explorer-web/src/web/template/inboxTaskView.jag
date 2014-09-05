@@ -1,6 +1,6 @@
 <div class="col-sm-12">
 	<ol class="breadcrumb">
-	  <li><a href="inbox?pagination=1">Home</a></li>
+	  <li><a href="stats">Home</a></li>
 	  <li><a href="inbox">Inbox</a></li>
 	  <li class="active">Task:<%=id%></li>
 	</ol>
@@ -23,7 +23,16 @@
 	    	</tr>
 	    	<tr>
 	    		<th>Subtasks: <button class="btn btn-xs btn-info">+</button></th>
-	    		<td colspan='2'>No sub tasks<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button--></td>
+	    		<td colspan='2'>
+	    			<%if(taskData.subtask == null){%>
+	    				No sub tasks
+	    			<%}else{%>
+	    				<%for(var i=0; i<taskData.subtask.length; i++){%>
+	    					<%=taskData.subtask[i].id + " "%>
+	    					<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button-->
+	    				<%}%>
+	    			<%}%>
+	    		</td>
 	    	</tr>
 	    	<tr>
 	    		<th>Fill in the form:</th>

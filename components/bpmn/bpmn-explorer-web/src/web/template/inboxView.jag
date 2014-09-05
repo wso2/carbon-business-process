@@ -1,6 +1,6 @@
 <div class="col-sm-12">
 	<ol class="breadcrumb">
-	  <li><a href="inbox?pagination=1">Home</a></li>
+	  <li><a href="stats">Home</a></li>
 	  <li class="active">Inbox</li>
 	</ol>
 	<div class="panel panel-primary">
