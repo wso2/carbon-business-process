@@ -15,7 +15,7 @@ function getRoles(username, password){
    	httpsPort = process.getProperty('mgt.transport.https.port'),
 	httpsUrl = "https://"+localIP+":"+httpsPort,
 	srv = new carbon.server.Server({url: httpsUrl}),
-	tenantId = -1234,
+	tenantId = carbon.server.tenantId(),
 	userManager = new carbon.user.UserManager(srv, tenantId),
 	user = new carbon.user.User(userManager, username),
 	roles = user.getRoles();
