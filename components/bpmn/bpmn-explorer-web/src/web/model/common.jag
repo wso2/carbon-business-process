@@ -5,5 +5,6 @@ var data = require('/config.json'),
     	localIP = process.getProperty('carbon.local.ip'),
 	httpsPort = process.getProperty('mgt.transport.https.port'),
 	auth = session.get('auth'),
+	roles = session.get('roles'),
 	httpUrl = "https://"+localIP+":"+httpsPort;
 %>

@@ -10,7 +10,7 @@ if(pagination > 0){
 var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
 var task = [];
-var tasks = get( httpUrl + "/bpmnrest/tasks?assignee=" + user + "&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+var tasks = get( httpUrl + "/bpmnrest/runtime/tasks?assignee=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 
 for(var i=0; i < tasks.data.length; i++){
 	var dueDate = tasks.data[i].dueDate;
@@ -23,6 +23,30 @@ for(var i=0; i < tasks.data.length; i++){
 		date:dueDate
 	});
 }
-var taskCount = get( httpUrl + "/bpmnrest/tasks?assignee=" + user ,null, headers, "json" ).data.total;
+
+//candidateGroups
+var groups = "";
+for(var j=0; j<roles.length; j++){
+	groups += roles[j];
+	if(j+1<roles.length){
+		groups += ",";
+	} 
+}
+
+tasks = get( httpUrl + "/bpmnrest/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+
+for(var i=0; i < tasks.data.length; i++){
+	var dueDate = tasks.data[i].dueDate;
+	if(dueDate == null){ dueDate = "Not available"; }
+	var taskName = tasks.data[i].name;
+	if(taskName == null){ taskName = "Not available"; }
+	task.push({
+		id:tasks.data[i].id,
+		name:taskName,
+		date:dueDate
+	});
+}
+
+var taskCount = get( httpUrl + "/bpmnrest/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((taskCount / 10));
 %>

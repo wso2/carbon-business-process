@@ -5,7 +5,8 @@
 	var authSuccess=false;
 	var USER='user',
 	    AUTH='auth',
-	    AUTH_SUCCESS='authSuccess';
+	    AUTH_SUCCESS='authSuccess',
+	    ROLES='roles';
 	
 	try{
 		if(username == "" || password == ""){
@@ -18,12 +19,13 @@
 			session.put("loginFailed" ,true);
 			response.sendRedirect("login");
 		} else {
-		
+			var roles = authentication.getRoles(username,password);
 			var encoder = require("/assets/encoder.js");
 			var auth = encoder.encode(username+':'+password);
 			session.put(AUTH_SUCCESS, authSuccess);
 			session.put(AUTH, auth);
 			session.put(USER, username);
+			session.put(ROLES ,roles);
 			response.sendRedirect("stats");
 		}
 	
