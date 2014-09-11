@@ -127,7 +127,7 @@ public class BPELPackageRepository {
                 /**Following methods are commented out due to BPS-562
                 //addLatestArchiveToRegistryCollection(deploymentContext);
                 //createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);**/
-                createLabelForCurrentVersion(deploymentContext);
+                createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -160,7 +160,7 @@ public class BPELPackageRepository {
                  //addLatestArchiveToRegistryCollection(deploymentContext);
                  //createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);**/
 
-                createLabelForCurrentVersion(deploymentContext);
+                createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -532,7 +532,7 @@ public class BPELPackageRepository {
      *                           registry.
      */
 
-    private void createLabelForCurrentVersion(
+    private void createCollectionWithBPELPackageWithoutContentForCurrentVersion(
             BPELDeploymentContext deploymentContext){
 
         try {
