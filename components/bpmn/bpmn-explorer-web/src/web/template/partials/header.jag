@@ -11,13 +11,14 @@
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 	<!-- Custom theme -->
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
 </head>
 <body>
 	<div class="container">
 		<div class="header">
 			<div class="col-sm-12">
-				<div class="page-header">
-					<h1><%=data.app.title%></h1>
+				<div class="page-header"><img width="400px" src="images/bpmn_logo.png"/>
+					<!--h1><%=data.app.title%></h1-->
 				</div>
 			</div>
 		</div>

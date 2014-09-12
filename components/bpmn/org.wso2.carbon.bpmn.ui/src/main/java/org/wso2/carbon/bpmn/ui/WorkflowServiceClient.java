@@ -89,6 +89,15 @@ public class WorkflowServiceClient {
         instanceServiceStub.deleteProcessInstance(instanceID);
     }
 
+    public void deleteAllProcessInstances() throws Exception {
+        BPMNInstance[] instances = getProcessInstances();
+        List<String> instanceIds = new ArrayList<String>();
+        for(BPMNInstance instance : instances){
+            instanceIds.add(instance.getInstanceId());
+        }
+        instanceServiceStub.deleteProcessInstanceSet(instanceIds.toArray(new String[instanceIds.size()]));
+    }
+
     public void suspendProcessInstance(String instanceID) throws Exception {
         instanceServiceStub.suspendProcessInstance(instanceID);
     }

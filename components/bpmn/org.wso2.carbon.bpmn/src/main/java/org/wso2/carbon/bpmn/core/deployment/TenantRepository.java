@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Manages BPMN deployments of a tenant.
+ */
 public class TenantRepository {
 
     private static Log log = LogFactory.getLog(TenantRepository.class);
@@ -47,14 +50,20 @@ public class TenantRepository {
         this.repoFolder = repoFolder;
     }
 
+    /*
+    Deploys a BPMN package in the Activiti engine. Each BPMN package has an entry in the registry. Checksum of the latest version of the BPMN package is stored in this entry.
+    This checksum is used to determine whether a package is a new deployment (or a new version of an existing package) or a redeployment of an existing package. We have to ignore
+    the later case. If a package is a new deployment, it is deployed in the Activiti engine.
+     */
     public void deploy(BPMNDeploymentContext deploymentContext) throws DeploymentException {
 
         try {
             //TODO: validate package
 
             String deploymentName = FilenameUtils.getBaseName(deploymentContext.getBpmnArchive().getName());
-            String checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
 
+            // Compare the checksum of the BPMN archive with the currently available checksum in the registry to determine whether this is a new deployment.
+            String checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
             Registry tenantRegistry = registryService.getConfigSystemRegistry(tenantId);
             String deploymentRegistryPath = BPMNConstants.BPMN_REGISTRY_PATH + BPMNConstants.REGISTRY_PATH_SEPARATOR + deploymentName;
@@ -62,25 +71,25 @@ public class TenantRepository {
             if (tenantRegistry.resourceExists(deploymentRegistryPath)) {
                 deploymentEntry = tenantRegistry.get(deploymentRegistryPath);
             } else {
-                // this is a new deployment
+                // This is a new deployment
                 deploymentEntry = tenantRegistry.newCollection();
             }
 
             String latestChecksum = deploymentEntry.getProperty(BPMNConstants.LATEST_CHECKSUM_PROPERTY);
             if (latestChecksum != null && checksum.equals(latestChecksum)) {
-                // this is a server restart
+                // This is a server restart
                 return;
             }
             deploymentEntry.setProperty(BPMNConstants.LATEST_CHECKSUM_PROPERTY, checksum);
             tenantRegistry.put(deploymentRegistryPath, deploymentEntry);
 
+            // Deploy the package in the Activiti engine
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
-
             DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
             ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
             deploymentBuilder.addZipInputStream(archiveStream);
-            Deployment deployment = deploymentBuilder.deploy();
+            deploymentBuilder.deploy();
             archiveStream.close();
 
         } catch (Exception e) {
@@ -90,10 +99,13 @@ public class TenantRepository {
         }
     }
 
+    /*
+    Undeploys a BPMN package. This may be called by the BPMN deployer, when a BPMN package is deleted from the deployment folder or by admin services.
+     */
     public void undeploy(String deploymentName, boolean force) throws BPSException {
 
         try {
-            // remove the deployment from the tenant's registry
+            // Remove the deployment from the tenant's registry
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
             Registry tenantRegistry = registryService.getConfigSystemRegistry(tenantId);
             String deploymentRegistryPath = BPMNConstants.BPMN_REGISTRY_PATH + BPMNConstants.REGISTRY_PATH_SEPARATOR + deploymentName;
@@ -104,25 +116,17 @@ public class TenantRepository {
             }
             tenantRegistry.delete(deploymentRegistryPath);
 
-            // remove the deployment archive from the tenant's deployment folder
+            // Remove the deployment archive from the tenant's deployment folder
             File deploymentArchive = new File(repoFolder, deploymentName + ".bar");
             FileUtils.deleteQuietly(deploymentArchive);
 
+            // Delete all versions of this package from the Activiti engine.
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
-            if (deployments.isEmpty()) {
-                return;
-            }
             for (Deployment deployment : deployments) {
-                try {
-                    undeployById(deployment.getId());
-                } catch (IllegalAccessException e) {
-                    String msg = "Deployment ID: " + deployment.getId() + " of the deployment " + deploymentName +
-                            " does not belong to tenant " + tenantId + ". Skipping the undeployment.";
-                    log.error(msg);
-                }
+                repositoryService.deleteDeployment(deployment.getId());
             }
 
         } catch (RegistryException e) {
@@ -130,19 +134,6 @@ public class TenantRepository {
             log.error(msg, e);
             throw new BPSException(msg, e);
         }
-
-    }
-
-    private void undeployById(String deploymentId) throws IllegalAccessException {
-
-
-        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-
-        List<ProcessDefinition> processDefinitions =
-                repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString()).deploymentId(deploymentId).list();
-
-        repositoryService.deleteDeployment(deploymentId, true);
 
     }
 
@@ -164,13 +155,19 @@ public class TenantRepository {
 
 
     /*
-    This method will fix the deployment conflicts when
-    truncating activiti db or
-    registry db or
-    delete from file system.
+    Information about BPMN deployments are recorded in 3 places: Activiti database, Registry and the file system (deployment folder). If information about a particular deployment
+    is not recorded in all these 3 places, BPS may not work correctly. Therefore, this method checks whether deployments are recorded in all these places and undeploys packages, if
+    they are missing in few places in an inconsistent way.
+
+    As there are 3 places, there are 8 ways a package can be placed. These cases are handled as follows:
+    (1) Whenever a package is not in the deployment folder, it is undeploye (this covers 4 combinations).
+    (2) If a package is in all 3 places, it is a proper deployment and it is left untouched.
+    (3) If a package is only in the deployment folder, it is a new deployment. This will be handled by the deployer.
+    (4) If a package is in the deployment folder AND it is in either registry or Activiti DB (but not both), then it is an inconsistent deployment. This will be undeployed.
     */
     public void fixDeployments() throws BPSException {
 
+        // get all deployments in the deployment folder
         List<String> fileArchiveNames = new ArrayList<String>();
         File[] fileDeployments = repoFolder.listFiles();
         for (File fileDeployment : fileDeployments) {
@@ -178,15 +175,17 @@ public class TenantRepository {
             fileArchiveNames.add(deploymentName);
         }
 
+        // get all deployments in the Activiti DB
         List<String> activitiDeploymentNames = new ArrayList<String>();
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
-        List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().deploymentCategory(tenantId.toString()).list();
+        List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).list();
         for (Deployment deployment : tenantDeployments) {
             String deploymentName = deployment.getName();
             activitiDeploymentNames.add(deploymentName);
         }
 
+        // get all deployments in the registry
         List<String> registryDeploymentNames = new ArrayList<String>();
         try {
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
@@ -206,30 +205,34 @@ public class TenantRepository {
             throw new BPSException(msg, e);
         }
 
+        // construct the union of all deployments
         Set<String> allDeploymentNames = new HashSet<String>();
         allDeploymentNames.addAll(fileArchiveNames);
         allDeploymentNames.addAll(activitiDeploymentNames);
         allDeploymentNames.addAll(registryDeploymentNames);
 
         for (String deploymentName : allDeploymentNames) {
-            // TODO: need to check two scenarios when truncating activiti db or registry db.
-            if (!(fileArchiveNames.contains(deploymentName))) {
-                try {
+            try {
+                if (!(fileArchiveNames.contains(deploymentName))) {
+                    if (log.isDebugEnabled()) log.debug(deploymentName + " has been removed from the deployment folder. Undeploying the package...");
                     undeploy(deploymentName, true);
-                } catch (BPSException e) {
-                    String msg = "Failed undeploy inconsistent deployment: " + deploymentName;
-                    log.error(msg, e);
-                    throw new BPSException(msg, e);
-                }
+                } else {
+                    if (activitiDeploymentNames.contains(deploymentName) && !registryDeploymentNames.contains(deploymentName)) {
+                        if (log.isDebugEnabled()) log.debug(deploymentName + " is missing in the registry. Undeploying the package to avoid inconsistencies...");
+                        undeploy(deploymentName, true);
+                    }
 
+                    if (!activitiDeploymentNames.contains(deploymentName) && registryDeploymentNames.contains(deploymentName)) {
+                        if (log.isDebugEnabled()) log.debug(deploymentName + " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
+                        undeploy(deploymentName, true);
+                    }
+                }
+            } catch (BPSException e) {
+                String msg = "Failed undeploy inconsistent deployment: " + deploymentName;
+                log.error(msg, e);
+                throw new BPSException(msg, e);
             }
         }
-
     }
-
-    public Integer getTenantId() {
-        return tenantId;
-    }
-
 }
 
