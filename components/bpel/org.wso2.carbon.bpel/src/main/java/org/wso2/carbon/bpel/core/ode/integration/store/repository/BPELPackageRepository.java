@@ -543,11 +543,6 @@ public class BPELPackageRepository {
 
             configRegistry.put(collectionLocation, collection);
 
-       
-
-//            File file = new File(deploymentContext.getBpelPackageNameWithVersion());
-//            //file.mkdir();
-//            RegistryClientUtils.importToRegistry(file, collectionLocation, configRegistry);
         } catch (RegistryException e) {
             e.printStackTrace();
         }
