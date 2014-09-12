@@ -91,6 +91,12 @@ public class BPMNInstanceService {
         }
     }
 
+    public void deleteProcessInstanceSet(String[] instanceIdSet) throws BPSException {
+	for(int i=0; i<instanceIdSet.length; i++){
+	    deleteProcessInstance(instanceIdSet[i]);
+	}
+    }
+
     public void deleteProcessInstance(String instanceId) throws BPSException {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
