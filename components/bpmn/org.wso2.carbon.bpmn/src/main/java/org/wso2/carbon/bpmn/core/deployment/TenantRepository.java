@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Manages BPMN deployments of a tenant.
+ */
 public class TenantRepository {
 
     private static Log log = LogFactory.getLog(TenantRepository.class);
@@ -47,14 +50,20 @@ public class TenantRepository {
         this.repoFolder = repoFolder;
     }
 
+    /*
+    Deploys a BPMN package in the Activiti engine. Each BPMN package has an entry in the registry. Checksum of the latest version of the BPMN package is stored in this entry.
+    This checksum is used to determine whether a package is a new deployment (or a new version of an existing package) or a redeployment of an existing package. We have to ignore
+    the later case. If a package is a new deployment, it is deployed in the Activiti engine.
+     */
     public void deploy(BPMNDeploymentContext deploymentContext) throws DeploymentException {
 
         try {
             //TODO: validate package
 
             String deploymentName = FilenameUtils.getBaseName(deploymentContext.getBpmnArchive().getName());
-            String checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
 
+            // Compare the checksum of the BPMN archive with the currently available checksum in the registry to determine whether this is a new deployment.
+            String checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
             Registry tenantRegistry = registryService.getConfigSystemRegistry(tenantId);
             String deploymentRegistryPath = BPMNConstants.BPMN_REGISTRY_PATH + BPMNConstants.REGISTRY_PATH_SEPARATOR + deploymentName;
@@ -62,25 +71,25 @@ public class TenantRepository {
             if (tenantRegistry.resourceExists(deploymentRegistryPath)) {
                 deploymentEntry = tenantRegistry.get(deploymentRegistryPath);
             } else {
-                // this is a new deployment
+                // This is a new deployment
                 deploymentEntry = tenantRegistry.newCollection();
             }
 
             String latestChecksum = deploymentEntry.getProperty(BPMNConstants.LATEST_CHECKSUM_PROPERTY);
             if (latestChecksum != null && checksum.equals(latestChecksum)) {
-                // this is a server restart
+                // This is a server restart
                 return;
             }
             deploymentEntry.setProperty(BPMNConstants.LATEST_CHECKSUM_PROPERTY, checksum);
             tenantRegistry.put(deploymentRegistryPath, deploymentEntry);
 
+            // Deploy the package in the Activiti engine
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
-
             DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
             ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
             deploymentBuilder.addZipInputStream(archiveStream);
-            Deployment deployment = deploymentBuilder.deploy();
+            deploymentBuilder.deploy();
             archiveStream.close();
 
         } catch (Exception e) {
@@ -90,10 +99,13 @@ public class TenantRepository {
         }
     }
 
+    /*
+    Undeploys a BPMN package. This may be called by the BPMN deployer, when a BPMN package is deleted from the deployment folder or by admin services.
+     */
     public void undeploy(String deploymentName, boolean force) throws BPSException {
 
         try {
-            // remove the deployment from the tenant's registry
+            // Remove the deployment from the tenant's registry
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
             Registry tenantRegistry = registryService.getConfigSystemRegistry(tenantId);
             String deploymentRegistryPath = BPMNConstants.BPMN_REGISTRY_PATH + BPMNConstants.REGISTRY_PATH_SEPARATOR + deploymentName;
@@ -104,10 +116,11 @@ public class TenantRepository {
             }
             tenantRegistry.delete(deploymentRegistryPath);
 
-            // remove the deployment archive from the tenant's deployment folder
+            // Remove the deployment archive from the tenant's deployment folder
             File deploymentArchive = new File(repoFolder, deploymentName + ".bar");
             FileUtils.deleteQuietly(deploymentArchive);
 
+            // Delete all versions of this package from the Activiti engine.
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> deployments =
@@ -219,15 +232,7 @@ public class TenantRepository {
                 log.error(msg, e);
                 throw new BPSException(msg, e);
             }
-
-
         }
-
     }
-
-    public Integer getTenantId() {
-        return tenantId;
-    }
-
 }
 

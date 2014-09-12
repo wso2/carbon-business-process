@@ -62,11 +62,9 @@ public class BPMNDeployer extends AbstractDeployer {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
         log.info("Deploying BPMN archive " + deploymentFileData.getFile().getName() + " for tenant: " + tenantId);
-
         try {
             BPMNDeploymentContext deploymentContext = new BPMNDeploymentContext(tenantId);
             deploymentContext.setBpmnArchive(deploymentFileData.getFile());
-
             tenantRepository.deploy(deploymentContext);
 
         } catch (Exception e) {
@@ -78,9 +76,9 @@ public class BPMNDeployer extends AbstractDeployer {
 
     public void undeploy(String bpmnArchivePath) throws DeploymentException {
 
-        // Currently using the registry read/write mount property to determine whether this node is a master node
-        // or a slave node.
+        // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
         boolean isMasterServer = !isServerReadOnly();
+
         //worker nodes cannot un deploy BPMN packages
         if (!isMasterServer) {
             return;
