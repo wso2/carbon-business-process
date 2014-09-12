@@ -17,6 +17,9 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 
+/*
+Deployer for BPMN packages. There is a separate deployer for each tenant.
+ */
 public class BPMNDeployer extends AbstractDeployer {
 
     private static Log log = LogFactory.getLog(BPMNDeployer.class);
@@ -34,8 +37,7 @@ public class BPMNDeployer extends AbstractDeployer {
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
             tenantRepository.setRepoFolder(tenantRepoFolder);
 
-            // Currently using the registry read/write mount property to determine whether this node is a master node
-            // or a slave node
+            // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
             // Only master node can fix deployment issues in BPMN packages
             if (!isServerReadOnly()) {
                 tenantRepository.fixDeployments();
@@ -49,10 +51,10 @@ public class BPMNDeployer extends AbstractDeployer {
 
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
 
-        // Currently using the registry read/write mount property to determine whether this node is a master node
-        // or a slave node.
+        // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
         boolean isMasterServer = !isServerReadOnly();
-        //worker nodes cannot deploy BPMN packages
+
+        // Worker nodes cannot deploy BPMN packages
         if (!isMasterServer) {
             return;
         }
