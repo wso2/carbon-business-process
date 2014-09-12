@@ -543,7 +543,7 @@ public class BPELPackageRepository {
 
             configRegistry.put(collectionLocation, collection);
 
-            log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="+collectionLocation);
+       
 
 //            File file = new File(deploymentContext.getBpelPackageNameWithVersion());
 //            //file.mkdir();
