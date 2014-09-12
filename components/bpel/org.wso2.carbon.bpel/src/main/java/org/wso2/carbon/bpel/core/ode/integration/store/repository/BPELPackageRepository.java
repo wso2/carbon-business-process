@@ -537,10 +537,17 @@ public class BPELPackageRepository {
 
         try {
             String collectionLocation =
-                    BPELPackageRepositoryUtils.getResourcePathForBPELPackageVersions(deploymentContext);
-            File file = new File(deploymentContext.getBpelPackageNameWithVersion());
-            file.mkdir();
-            RegistryClientUtils.importToRegistry(file, collectionLocation, configRegistry);
+                    BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
+
+            Collection collection = configRegistry.newCollection();
+
+            configRegistry.put(collectionLocation, collection);
+
+            log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="+collectionLocation);
+
+//            File file = new File(deploymentContext.getBpelPackageNameWithVersion());
+//            //file.mkdir();
+//            RegistryClientUtils.importToRegistry(file, collectionLocation, configRegistry);
         } catch (RegistryException e) {
             e.printStackTrace();
         }
