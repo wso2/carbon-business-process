@@ -536,13 +536,9 @@ public class BPELPackageRepository {
             BPELDeploymentContext deploymentContext){
 
         try {
-            String collectionLocation =
-                    BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
-
+            String collectionLocation = BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
             Collection collection = configRegistry.newCollection();
-
             configRegistry.put(collectionLocation, collection);
-
         } catch (RegistryException e) {
             e.printStackTrace();
         }
