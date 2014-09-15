@@ -1,13 +1,26 @@
+/**
+ *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.core.deployment;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.apache.axis2.deployment.DeploymentException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -17,10 +30,15 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSException;
 import org.wso2.carbon.bpmn.core.Utils;
-import org.wso2.carbon.registry.api.*;
+import org.wso2.carbon.registry.api.Collection;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.api.Resource;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,9 +51,7 @@ import java.util.zip.ZipInputStream;
 public class TenantRepository {
 
     private static Log log = LogFactory.getLog(TenantRepository.class);
-
     private Integer tenantId;
-
     private File repoFolder;
 
     public TenantRepository(Integer tenantId) {
@@ -56,6 +72,7 @@ public class TenantRepository {
     the later case. If a package is a new deployment, it is deployed in the Activiti engine.
      */
     public void deploy(BPMNDeploymentContext deploymentContext) throws DeploymentException {
+        ZipInputStream archiveStream = null;
 
         try {
             //TODO: validate package
@@ -87,15 +104,21 @@ public class TenantRepository {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
             DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
-            ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+            archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
             deploymentBuilder.addZipInputStream(archiveStream);
             deploymentBuilder.deploy();
-            archiveStream.close();
-
         } catch (Exception e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
             log.error(errorMessage, e);
             throw new DeploymentException(errorMessage, e);
+        } finally {
+            if (archiveStream != null) {
+                try {
+                    archiveStream.close();
+                } catch (IOException e) {
+                    log.error("Could not close archive stream", e);
+                }
+            }
         }
     }
 
@@ -214,16 +237,22 @@ public class TenantRepository {
         for (String deploymentName : allDeploymentNames) {
             try {
                 if (!(fileArchiveNames.contains(deploymentName))) {
-                    if (log.isDebugEnabled()) log.debug(deploymentName + " has been removed from the deployment folder. Undeploying the package...");
+                    if (log.isDebugEnabled()) {
+                        log.debug(deploymentName + " has been removed from the deployment folder. Undeploying the package...");
+                    }
                     undeploy(deploymentName, true);
                 } else {
                     if (activitiDeploymentNames.contains(deploymentName) && !registryDeploymentNames.contains(deploymentName)) {
-                        if (log.isDebugEnabled()) log.debug(deploymentName + " is missing in the registry. Undeploying the package to avoid inconsistencies...");
+                        if (log.isDebugEnabled()) {
+                            log.debug(deploymentName + " is missing in the registry. Undeploying the package to avoid inconsistencies...");
+                        }
                         undeploy(deploymentName, true);
                     }
 
                     if (!activitiDeploymentNames.contains(deploymentName) && registryDeploymentNames.contains(deploymentName)) {
-                        if (log.isDebugEnabled()) log.debug(deploymentName + " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
+                        if (log.isDebugEnabled()) {
+                            log.debug(deploymentName + " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
+                        }
                         undeploy(deploymentName, true);
                     }
                 }

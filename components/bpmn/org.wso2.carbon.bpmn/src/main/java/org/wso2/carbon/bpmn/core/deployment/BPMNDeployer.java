@@ -1,3 +1,19 @@
+/**
+ *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.core.deployment;
 
 import org.apache.axis2.context.ConfigurationContext;
@@ -8,8 +24,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.core.BPSException;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.BPSException;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.core.config.RegistryContext;
@@ -23,7 +39,6 @@ Deployer for BPMN packages. There is a separate deployer for each tenant.
 public class BPMNDeployer extends AbstractDeployer {
 
     private static Log log = LogFactory.getLog(BPMNDeployer.class);
-
     private TenantRepository tenantRepository = null;
 
     @Override
@@ -31,7 +46,6 @@ public class BPMNDeployer extends AbstractDeployer {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
-
         try {
             File tenantRepoFolder = createTenantRepo(configurationContext);
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
@@ -42,10 +56,9 @@ public class BPMNDeployer extends AbstractDeployer {
             if (!isServerReadOnly()) {
                 tenantRepository.fixDeployments();
             }
-
         } catch (BPSException e) {
             String msg = "Failed to create a tenant store for tenant: " + tenantId;
-            log.error(msg);
+            log.error(msg, e);
         }
     }
 
@@ -53,14 +66,12 @@ public class BPMNDeployer extends AbstractDeployer {
 
         // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
         boolean isMasterServer = !isServerReadOnly();
-
         // Worker nodes cannot deploy BPMN packages
         if (!isMasterServer) {
             return;
         }
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-
         log.info("Deploying BPMN archive " + deploymentFileData.getFile().getName() + " for tenant: " + tenantId);
         try {
             BPMNDeploymentContext deploymentContext = new BPMNDeploymentContext(tenantId);
@@ -83,16 +94,14 @@ public class BPMNDeployer extends AbstractDeployer {
         if (!isMasterServer) {
             return;
         }
-
         File bpmnArchiveFile = new File(bpmnArchivePath);
         if (bpmnArchiveFile.exists()) {
             if (log.isTraceEnabled()) {
                 log.trace("BPMN package: " + bpmnArchivePath + " exists in the deployment folder. " +
-                        "Therefore, this can be an update of the package and the undeployment will be aborted.");
+                          "Therefore, this can be an update of the package and the undeployment will be aborted.");
             }
             return;
         }
-
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
         try {
@@ -130,16 +139,13 @@ public class BPMNDeployer extends AbstractDeployer {
 
     @Override
     public void setDirectory(String s) {
-
     }
 
     @Override
     public void setExtension(String s) {
-
     }
 
     private boolean isServerReadOnly() {
-
         try {
             RegistryContext registryContext = BPMNServerHolder.getInstance().getRegistryService().getConfigSystemRegistry().getRegistryContext();
             if (registryContext.isReadOnly()) {
@@ -147,7 +153,6 @@ public class BPMNDeployer extends AbstractDeployer {
             }
         } catch (RegistryException e) {
             log.error("Error while reading registry status");
-
         }
         return false;
     }
