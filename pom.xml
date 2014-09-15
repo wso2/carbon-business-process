@@ -1343,7 +1343,7 @@
         <orbit.version.infinispan>5.1.2.wso2v1</orbit.version.infinispan>
         <orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
         <imp.pkg.version.h2.engine>[1.2.140.wso2v3, 2)</imp.pkg.version.h2.engine>
-        <orbit.version.spring>3.1.0.wso2v1</orbit.version.spring>
+        <orbit.version.spring>3.2.9.wso2v1</orbit.version.spring>
         <imp.pkg.version.spring>[3.1.0.wso2v1, 3.2.0)</imp.pkg.version.spring>
         <orbit.version.commons.fileuploader>1.2.0.wso2v1</orbit.version.commons.fileuploader>
         <orbit.version.woden>1.0.0.M8-wso2v1</orbit.version.woden>
