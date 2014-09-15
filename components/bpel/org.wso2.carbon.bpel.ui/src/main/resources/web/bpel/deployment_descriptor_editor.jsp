@@ -267,25 +267,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><fmt:message key="process.status"/></td>
-                    <td colspan="2">
-                        <input type="radio" name="processstate" value="active" disabled="true"
-                                <%= BpelUIUtil.isProcessStateChecked(deployDescriptorUpdater, "active")%>
-                                <%= BpelUIUtil.isElementDisabled(isAuthorizedToManageProcesses)%>
-                                <%= deployDescriptorUpdater.isActiveStateSelected()%>>Active<br/>
-                        <input type="radio" name="processstate" value="retired" disabled="true"
-                                <%= BpelUIUtil.isProcessStateChecked(deployDescriptorUpdater, "retired")%>
-                                <%= BpelUIUtil.isElementDisabled(isAuthorizedToManageProcesses)%>
-                                <%= deployDescriptorUpdater.isRetiredStateSelected()%>>Retired<br/>
-                        <input type="radio" name="processstate" value="disabled" disabled="true"
-                                <%= BpelUIUtil.isProcessStateChecked(deployDescriptorUpdater, "disabled")%>
-                                <%= BpelUIUtil.isElementDisabled(isAuthorizedToManageProcesses)%>
-                                <%= deployDescriptorUpdater.isDisabledStateSelected()%>>Disabled
-                        <br/>
-                    </td>
-
-                </tr>
-                <tr>
                     <td><fmt:message key="is.inmemory"/></td>
                     <td>
                         <input type="radio" name="inmemorystatus" value="true" disabled="true"
