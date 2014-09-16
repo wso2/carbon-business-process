@@ -48,6 +48,8 @@
             client.suspendProcessInstance(instanceId);
         }else if(operation != null && operation.equals("activateProcessInstance")){
             client.activateProcessInstance(instanceId);
+        }else if(operation != null && operation.equals("deleteAllProcessInstances")){
+            client.deleteAllProcessInstances();
         }
 
         bpmnInstances = client.getProcessInstances();
@@ -68,6 +70,21 @@
 <%  }else{ %>
 <link rel="stylesheet" type="text/css" href="css/bpmn_icon_link.css" />
 <script>
+    function deleteAllInstance(iid) {
+        function deleteYes() {
+        $.ajax({
+        type: 'POST',
+        url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteAllProcessInstances",
+        success: function(data){
+            window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu";
+           }
+        });
+        }
+        sessionAwareFunction(function() {
+        CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.delete.all.instances"/> ' + "?", deleteYes, null);
+        }, "<fmt:message key="session.timed.out"/>");
+        return false;
+    };
     function deleteInstance(iid) {
         function deleteYes() {
         $.ajax({
@@ -158,6 +175,10 @@
                 <% } %>
             </tbody>
         </table>
+        <% if(bpmnInstances!=null && bpmnInstances.length>0){ %>
+            <br/>
+            <a href="#" class="bpmn-icon-link" style="background-image:url(images/delete.gif);" onclick="deleteAllInstance()"><fmt:message key="bpmn.instance.deleteAll"/></a>
+        <% } %>
     </div>
 </div>
 <%  } %>

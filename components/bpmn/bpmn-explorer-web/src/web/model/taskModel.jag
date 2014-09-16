@@ -1,0 +1,22 @@
+<%
+var id = request.getParameter("id");
+var headers = {"Authorization":"Basic " + auth};
+var task = get( httpUrl + "/bpmnrest/task/" + id ,null, headers, "json" ).data;
+var taskDesc = task.description;
+if(taskDesc == null) { taskDesc = "Description not available"; }
+var taskOwner = task.owner;
+if(taskOwner == null) { taskOwner = "Not available"; }
+var taskName = task.name;
+if(taskName == null) { taskName = "Not available"; }
+var taskData = {
+	name:taskName,
+	desc:taskDesc,
+	pid:task.processDefinitionId,
+	owner:taskOwner,
+	assignee:task.assignee,
+	subtask:task.subtaskList
+};
+var formGenTool = require("/assets/dynamicFormGen.js");
+var formData = get( httpUrl + "/bpmnrest/form/" + id + "/properties" ,null, headers, "json" ).data;
+var formContent = formGenTool.generateForm(formData.data);
+%>

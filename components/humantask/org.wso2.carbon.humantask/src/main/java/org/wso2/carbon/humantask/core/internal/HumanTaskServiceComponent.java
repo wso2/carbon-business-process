@@ -22,9 +22,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
 import org.wso2.carbon.core.ServerStartupHandler;
-import org.wso2.carbon.datasource.DataSourceInformationRepositoryService;
 import org.wso2.carbon.humantask.core.*;
 import org.wso2.carbon.humantask.core.engine.HumanTaskServerException;
+import org.wso2.carbon.ndatasource.core.DataSourceService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.ui.util.UIResourceProvider;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -32,10 +32,10 @@ import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.humantask.HumanTaskServiceComponent" immediate="true"
- * @scr.reference name="datasource.information.repository.service"
- * interface="org.wso2.carbon.datasource.DataSourceInformationRepositoryService"
- * cardinality="1..1" policy="dynamic"  bind="setDataSourceInformationRepositoryService"
- * unbind="unsetDataSourceInformationRepositoryService"
+ * @scr.reference name="datasource.dataSourceService"
+ * interface="org.wso2.carbon.ndatasource.core.DataSourceService"
+ * cardinality="1..1" policy="dynamic"  bind="setDataSourceService"
+ * unbind="unsetDataSourceService"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  * @scr.reference name="user.realmservice.default"
@@ -68,7 +68,7 @@ public class HumanTaskServiceComponent {
         try {
             this.bundleContext = ctxt.getBundleContext();
             HumanTaskServerHolder htServerHolder = HumanTaskServerHolder.getInstance();
-            if (htServerHolder.isDataSourceInfoRepoProvided() &&
+            if (htServerHolder.isDataSourceServiceProvided() &&
                 htServerHolder.getRealmService() != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Activating the HumanTaskServiceComponent....");
@@ -134,20 +134,18 @@ public class HumanTaskServiceComponent {
         return HumanTaskServerHolder.getInstance().getRealmService();
     }
 
-    protected void setDataSourceInformationRepositoryService(
-            DataSourceInformationRepositoryService dsInformationRepo) {
+    protected void setDataSourceService(DataSourceService dataSourceService) {
         if (log.isDebugEnabled()) {
             log.debug("DataSourceInformationRepositoryService bound to HumanTask component");
         }
-        HumanTaskServerHolder.getInstance().setDataSourceInfoRepoProvided(true);
+        HumanTaskServerHolder.getInstance().setDataSourceServiceProvided(true);
     }
 
-    protected void unsetDataSourceInformationRepositoryService(
-            DataSourceInformationRepositoryService dsInformationRepo) {
+    protected void unsetDataSourceService(DataSourceService dataSourceService) {
         if (log.isDebugEnabled()) {
             log.debug("DataSourceInformationRepositoryService unbound from HumanTask component");
         }
-        HumanTaskServerHolder.getInstance().setDataSourceInfoRepoProvided(false);
+        HumanTaskServerHolder.getInstance().setDataSourceServiceProvided(false);
     }
 
     protected void setRegistryService(RegistryService registrySvc) {
@@ -174,7 +172,7 @@ public class HumanTaskServiceComponent {
 
     private void registerHumanTaskServerService() {
         this.bundleContext.registerService(HumanTaskEngineService.class.getName(),
-                                                          new HumanTaskEngineServiceImpl(), null);
+                                      new HumanTaskEngineServiceImpl(), null);
     }
 
     /**

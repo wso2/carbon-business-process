@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
 import org.wso2.carbon.bpel.core.Axis2ConfigurationContextObserverImpl;
 import org.wso2.carbon.bpel.core.BPELEngineService;
 import org.wso2.carbon.bpel.core.BPELEngineServiceImpl;
@@ -30,20 +31,19 @@ import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerInitializer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.core.ServerStartupHandler;
-import org.wso2.carbon.datasource.DataSourceInformationRepositoryService;
+import org.wso2.carbon.ndatasource.core.DataSourceService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
-import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
 /**
  * @scr.component name="org.wso2.carbon.bpel.BPELServiceComponent" immediate="true"
- * @scr.reference name="datasource.information.repository.service"
- * interface="org.wso2.carbon.datasource.DataSourceInformationRepositoryService"
- * cardinality="1..1" policy="dynamic"  bind="setDataSourceInformationRepositoryService"
- * unbind="unsetDataSourceInformationRepositoryService"
+ * @scr.reference name="datasource.dataSourceService"
+ * interface="org.wso2.carbon.ndatasource.core.DataSourceService"
+ * cardinality="1..1" policy="dynamic"  bind="setDataSourceService"
+ * unbind="unsetDataSourceService"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  * @scr.reference name="attachment.mgt.service" interface="org.wso2.carbon.attachment.mgt.server.AttachmentServerService"
@@ -61,13 +61,13 @@ import org.wso2.carbon.utils.ConfigurationContextService;
 public class BPELServiceComponent {
     private static Log log = LogFactory.getLog(BPELServiceComponent.class);
     private BundleContext bundleContext;
-    private boolean dataSourceInfoRepoProvided = false;
+    private boolean dataSourceServiceProvided = false;
     private ServiceRegistration registration;
 
     protected void activate(ComponentContext ctxt) {
         try {
             this.bundleContext = ctxt.getBundleContext();
-            if (dataSourceInfoRepoProvided) {
+            if (dataSourceServiceProvided) {
                 initializeBPELServer();
                 registerAxis2ConfigurationContextObserver();
                 registerBPELServerService();
@@ -84,20 +84,18 @@ public class BPELServiceComponent {
         }
     }
 
-    protected void setDataSourceInformationRepositoryService(
-            DataSourceInformationRepositoryService repositoryService) {
+    protected void setDataSourceService(DataSourceService dataSourceService) {
         if (log.isDebugEnabled()) {
             log.debug("DataSourceInformationRepositoryService bound to the BPEL component");
         }
-        this.dataSourceInfoRepoProvided = true;
+        this.dataSourceServiceProvided = true;
     }
 
-    protected void unsetDataSourceInformationRepositoryService(
-            DataSourceInformationRepositoryService repositoryService) {
+    protected void unsetDataSourceService(DataSourceService dataSourceService) {
         if (log.isDebugEnabled()) {
             log.debug("DataSourceInformationRepositoryService unbound from the BPEL component");
         }
-        this.dataSourceInfoRepoProvided = false;
+        this.dataSourceServiceProvided = false;
     }
 
     protected void setRegistryService(RegistryService registrySvc) {

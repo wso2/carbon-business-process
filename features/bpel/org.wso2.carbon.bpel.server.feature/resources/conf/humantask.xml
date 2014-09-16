@@ -4,8 +4,8 @@
         <JPAVendorAdaptor>org.wso2.carbon.humantask.core.dao.jpa.vendor.OpenJpaVendorAdapter</JPAVendorAdaptor>
         <GenerateDdl>true</GenerateDdl>
         <ShowSql>false</ShowSql>
-        <JNDIInitialContextFactory>com.sun.jndi.rmi.registry.RegistryContextFactory</JNDIInitialContextFactory>
-        <JNDIProviderUrl>rmi://localhost:2199</JNDIProviderUrl>
+        <!--JNDIInitialContextFactory>com.sun.jndi.rmi.registry.RegistryContextFactory</JNDIInitialContextFactory>
+        <JNDIProviderUrl>rmi://localhost:2199</JNDIProviderUrl-->
         <DAOConnectionFactoryClass>org.wso2.carbon.humantask.core.dao.jpa.openjpa.HumanTaskDAOConnectionFactoryImpl</DAOConnectionFactoryClass>
     </PersistenceConfig>
     <PeopleQueryEvaluatorConfig>

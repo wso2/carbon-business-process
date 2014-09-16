@@ -1,3 +1,18 @@
+/**
+ *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.wso2.carbon.bpmn.core.integration;
 
 import org.activiti.engine.identity.Group;
@@ -12,8 +27,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.stratos.common.beans.TenantInfoBean;
 import org.wso2.carbon.tenant.mgt.services.TenantMgtAdminService;
-import org.wso2.carbon.user.core.UserStoreException;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +36,6 @@ import java.util.Map;
 public class BPSUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
-
     private TenantMgtAdminService tenantMgtAdminService;
 
     public BPSUserIdentityManager() {
@@ -29,120 +43,106 @@ public class BPSUserIdentityManager extends UserEntityManager {
     }
 
     @Override
-    public User createNewUser(String s) {
+    public User createNewUser(String userId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public void insertUser(User user) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public UserEntity findUserById(String s) {
+    public UserEntity findUserById(String userId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public void deleteUser(String s) {
+    public void deleteUser(String userId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public List<User> findUserByQueryCriteria(UserQueryImpl userQuery, Page page) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public long findUserCountByQueryCriteria(UserQueryImpl userQuery) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public List<Group> findGroupsByUser(String s) {
+    public List<Group> findGroupsByUser(String userId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public UserQuery createNewUserQuery() {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public IdentityInfoEntity findUserInfoByUserIdAndKey(String s, String s1) {
+    public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public List<String> findUserInfoKeysByUserIdAndType(String s, String s1) {
+    public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public Boolean checkPassword(String s, String s1) {
-        boolean authenticated = false;
+    public Boolean checkPassword(String userId, String password) {
         try {
-            /*
-            TenantManagement Service will be used to get the domain of user who sent service request.
-            */
-
-            String[] userNameTokens = s.split("@");
+            //TenantManagement Service will be used to get the domain of user who sent service request.
+            String[] userNameTokens = userId.split("@");
             int tenantId = BPMNConstants.SUPER_TENANT_ID;
-
             if (userNameTokens.length > 1) {
-                tenantId = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]).getTenantId();
+                TenantInfoBean tenantInfoBean = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]);
+                if (tenantInfoBean != null) {
+                    tenantId = tenantInfoBean.getTenantId();
+                } else {
+                    throw new Exception("Could not find tenant on given tenant id");
+                }
             }
-
-            log.debug("Rest Service request from user:" + s);
-            return BPMNServerHolder.getInstance().getRegistryService().getUserRealm(tenantId).getUserStoreManager().authenticate(userNameTokens[0], s1);
-
-        } catch (UserStoreException e) {
-            String msg = "Error in authenticating user: " + s;
-            log.error(msg, e);
+            if (log.isDebugEnabled()) {
+                log.debug("Rest Service request from user:" + userId);
+            }
+            return BPMNServerHolder.getInstance().getRegistryService().getUserRealm(tenantId).getUserStoreManager().authenticate(userNameTokens[0], password);
         } catch (Exception e) {
-            e.printStackTrace();
+            String msg = "Error in authenticating user: " + userId;
+            log.error(msg, e);
         }
-        return authenticated;
+        return false;
     }
 
     @Override
-    public List<User> findPotentialStarterUsers(String s) {
+    public List<User> findPotentialStarterUsers(String proceDefId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public List<User> findUsersByNativeQuery(Map<String, Object> stringObjectMap, int i, int i1) {
+    public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult,
+                                             int maxResults) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public long findUserCountByNativeQuery(Map<String, Object> stringObjectMap) {
+    public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 }
