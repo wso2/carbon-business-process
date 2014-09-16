@@ -4,7 +4,6 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,63 +25,55 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     @Override
     public Group createNewGroup(String groupId) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public void insertGroup(Group group) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public void deleteGroup(String groupId) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public GroupQuery createNewGroupQuery() {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public List<Group> findGroupsByUser(String userId) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
-    public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult,
+                                               int maxResults) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        log.error(msg);
         throw new UnsupportedOperationException(msg);
     }
 }

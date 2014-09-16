@@ -76,7 +76,7 @@
                 <groupId>hsqldb.wso2</groupId>
                 <artifactId>hsqldb</artifactId>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.datasource</artifactId>
                 <exclusions>
@@ -93,7 +93,11 @@
                         <artifactId>saxon-xqj</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
+            </dependency-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.ndatasource.core</artifactId>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>

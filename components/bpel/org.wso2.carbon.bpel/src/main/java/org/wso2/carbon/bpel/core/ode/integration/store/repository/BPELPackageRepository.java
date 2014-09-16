@@ -123,8 +123,11 @@ public class BPELPackageRepository {
             if (!isDUCollectionIsThere(deploymentContext)) {
                 configRegistry.beginTransaction();
                 createBPELPackageParentCollectionWithProperties(deploymentContext);
-                addLatestArchiveToRegistryCollection(deploymentContext);
-                createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);
+
+                /**Following methods are commented out due to BPS-562
+                //addLatestArchiveToRegistryCollection(deploymentContext);
+                //createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);**/
+                createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -152,8 +155,12 @@ public class BPELPackageRepository {
             if (!isDUCollectionIsThere(deploymentContext)) {
                 configRegistry.beginTransaction();
                 updateBPELPackageProperties(deploymentContext);
-                addLatestArchiveToRegistryCollection(deploymentContext);
-                createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);
+
+                /**Following methods are commented out due to BPS-562
+                 //addLatestArchiveToRegistryCollection(deploymentContext);
+                 //createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);**/
+
+                createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -510,6 +517,31 @@ public class BPELPackageRepository {
         RegistryClientUtils.importToRegistry(deploymentContext.getBPELPackageContent(),
                 collectionLocation,
                 configRegistry);
+    }
+
+    /**
+     * This repository persist the BPEL package versions inside the BPEL Package collection
+     * under the child collection 'versions'. The collection name is same as directory with version
+     * attached to it's name(Example: HelloWorld-3).
+     * <p/>
+     * For the 'HelloWorld' BPEL package, extracted BPEL package will be stored in a registry
+     * location like '<config_registry_root>/bpel/packages/HelloWorld/versions/HelloWorld-3'.
+     *
+     * @param deploymentContext containing information on current BPEL deployment.
+     * @throws RegistryException if an error occurred during import of file system content to
+     *                           registry.
+     */
+
+    private void createCollectionWithBPELPackageWithoutContentForCurrentVersion(
+            BPELDeploymentContext deploymentContext){
+
+        try {
+            String collectionLocation = BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
+            Collection collection = configRegistry.newCollection();
+            configRegistry.put(collectionLocation, collection);
+        } catch (RegistryException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isDUCollectionIsThere(BPELDeploymentContext deploymentContext)
