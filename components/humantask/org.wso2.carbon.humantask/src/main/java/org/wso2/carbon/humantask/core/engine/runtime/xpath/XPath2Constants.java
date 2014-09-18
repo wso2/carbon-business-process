@@ -39,6 +39,8 @@ public final class XPath2Constants {
 
     public static final String FUNCTION_GET_INPUT = "getInput";
 
+    public static final String FUNCTION_GET_OUTPUT = "getOutput";
+
     public static final String FUNCTION_GET_LOGICAL_PEOPLE_GROUP = "getLogicalPeopleGroup";
 
     public static final String WSHT_EXP_LANG_XPATH20 = "urn:wsht:sublang:xpath2.0";

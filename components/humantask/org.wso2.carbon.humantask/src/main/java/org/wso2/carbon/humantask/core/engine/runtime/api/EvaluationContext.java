@@ -19,6 +19,8 @@ package org.wso2.carbon.humantask.core.engine.runtime.api;
 import org.w3c.dom.Node;
 import org.wso2.carbon.humantask.core.dao.GenericHumanRoleDAO;
 import org.wso2.carbon.humantask.core.dao.MessageDAO;
+import org.wso2.carbon.humantask.core.dao.TaskDAO;
+import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 
 import javax.xml.namespace.NamespaceContext;
 
@@ -35,6 +37,12 @@ public interface EvaluationContext {
      * @return Message
      */
     MessageDAO getInput();
+
+    /**
+     * Return the output message of the task.
+     * @return Message
+     */
+    MessageDAO getOutput();
 
     /**
      * Return generic human role of give type
@@ -56,4 +64,16 @@ public interface EvaluationContext {
      * @throws Exception :
      */
     Node getRootNode() throws Exception;
+
+    /**
+     * Return Task configuration.
+     * @return HumanTaskBaseConfiguration
+     */
+    HumanTaskBaseConfiguration getTaskConfig();
+
+    /**
+     * Return TaskDAO.
+     * @return
+     */
+    TaskDAO getTask();
 }
