@@ -57,6 +57,10 @@ public final class HumanTaskConstants {
     /** BPEL4People namespace */
     public static final String B4P_NAMESPACE = "http://docs.oasis-open.org/ns/bpel4people/bpel4people/200803";
 
+    /** HumanTask Namespaces*/
+    public static final String HTD_NAMESPACE = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803";
+    public static final String HTT_NAMESPACE = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803";
+
     /** Default pagination size */
 	public static final int ITEMS_PER_PAGE = 20;
 
@@ -107,17 +111,11 @@ public final class HumanTaskConstants {
 
     public static final String B4P_REGISTRATIONS_USERNAME_ALIAS = "B4P.RegistrationService.Username";
     public static final String B4P_REGISTRATIONS_PASSWORD_ALIAS = "B4P.RegistrationService.Password";
-	
-
-    public static final QName organizationalEntityQname = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803",
-            "organizationalEntity");
 
 
-    public static final QName groupQname = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803",
-            "group");
-
-    public static final QName userQname = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803",
-            "user");
+    public static final QName organizationalEntityQname = new QName(HTT_NAMESPACE, "organizationalEntity");
+    public static final QName groupQname = new QName(HTT_NAMESPACE, "group");
+    public static final QName userQname = new QName(HTT_NAMESPACE, "user");
 
 
     /*HumanTask Caching related constants*/

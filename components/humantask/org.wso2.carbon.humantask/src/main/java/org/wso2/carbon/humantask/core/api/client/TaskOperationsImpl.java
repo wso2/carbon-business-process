@@ -74,6 +74,7 @@ import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateEx
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
+import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -258,9 +259,37 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
-    public QName[] getRenderingTypes(URI taskId) throws IllegalArgumentFault {
-        handleUnsupportedOperation();
+    /**
+     * Applies to both tasks and notifications.
+     * Returns the rendering  types available for the task or notification.
+     *
+     * @param taskIdURI : task identifier
+     * @return : Array of QNames
+     * @throws IllegalArgumentFault
+     */
+    public QName[] getRenderingTypes(URI taskIdURI) throws IllegalArgumentFault {
+        try {
+            final Long taskId = validateTaskId(taskIdURI);
+
+            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                    execTransaction(new Callable<TaskDAO>() {
+                        public TaskDAO call() throws Exception {
+
+                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+                            TaskDAO task = daoConn.getTask(taskId);
+                            validateTaskTenant(task);
+                            return task;
+                        }
+                    });
+            HumanTaskBaseConfiguration taskConfiguration = HumanTaskServiceComponent.getHumanTaskServer().
+                    getTaskStoreManager().getHumanTaskStore(task.getTenantId()).
+                    getTaskConfiguration(QName.valueOf(task.getName()));
+            QName[] types = (QName[]) taskConfiguration.getRenderingTypes().toArray();
+        } catch (Exception ex) {
+            log.error(ex);
+            throw new IllegalArgumentFault(ex);
+        }
         return new QName[0];
     }
 
@@ -483,23 +512,30 @@ public class TaskOperationsImpl extends AbstractAdmin
      * @throws IllegalAccessFault
      */
     public TTaskAbstract loadTask(URI taskIdURI) throws IllegalAccessFault {
-        try {
-            final Long taskId = validateTaskId(taskIdURI);
-            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<TaskDAO>() {
-                        public TaskDAO call() throws Exception {
-                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
-                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
-                            TaskDAO task = daoConn.getTask(taskId);
-                            validateTaskTenant(task);
-                            return task;
-                        }
-                    });
-            return TransformerUtils.transformTask(task, getCaller());
-        }  catch (Exception ex) {
-            log.error(ex);
-            throw new IllegalAccessFault(ex);
-        }
+//        try {
+        final Long taskId = validateTaskId(taskIdURI);
+//            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+//                    execTransaction(new Callable<TaskDAO>() {
+//                        public TaskDAO call() throws Exception {
+//                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+//                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+//                            TaskDAO task = daoConn.getTask(taskId);
+//                            validateTaskTenant(task);
+//                            return task;
+//                        }
+//                    });
+//            return TransformerUtils.transformTask(task, getCaller());
+//        }  catch (Exception ex) {
+//            log.error(ex);
+//            throw new IllegalAccessFault(ex);
+//        }
+
+        // New Logic
+        HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+        HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+        TaskDAO task = daoConn.getTask(taskId);
+        validateTaskTenant(task);
+        return TransformerUtils.transformTask(task, getCaller());
     }
 
 
@@ -531,11 +567,36 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-
-    public Object getRendering(URI uri, QName qName) throws IllegalArgumentFault {
-        validateTaskId(uri);
-        handleUnsupportedOperation();
-        return null;
+    /**
+     * Returns the rendering specified by the type parameter.
+     * @param taskIdURI task identifier
+     * @param qName rendering type
+     * @return rendering string
+     * @throws IllegalArgumentFault
+     */
+    public Object getRendering(final URI taskIdURI,final QName qName) throws IllegalArgumentFault {
+        final Long taskId = validateTaskId(taskIdURI);
+        try {
+            return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                    execTransaction(new Callable<String>() {
+                        public String call() throws Exception {
+                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+                            TaskDAO task = daoConn.getTask(taskId);
+                            validateTaskTenant(task);
+                            List<QName> renderingTypes = new ArrayList<QName>();
+                            renderingTypes.add(qName);
+                            HumanTaskBaseConfiguration taskConfiguration = HumanTaskServiceComponent.getHumanTaskServer().
+                                    getTaskStoreManager().getHumanTaskStore(task.getTenantId()).
+                                    getTaskConfiguration(QName.valueOf(task.getName()));
+                            Map<QName, String> renderings = CommonTaskUtil.getRenderings(task, taskConfiguration, renderingTypes);
+                            return renderings.get(qName);
+                        }
+                    });
+        } catch (Exception e) {
+            log.error(e);
+            throw new IllegalArgumentFault(e);
+        }
     }
 
     /**
@@ -802,11 +863,20 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-
-    public TTaskInstanceData getTaskInstanceData(URI taskId, String s,
-                                                 TRenderingTypes[] tRenderingTypeses)
+    /**
+     * Get details of a task including rendering elements, similar to load task operation.
+     * @param taskIdentifier : task identifier
+     * @param properties : properties for getTaskInstanceData
+     * @param tRenderingTypes : rendering types.
+     * @return
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
+    public TTaskInstanceData getTaskInstanceData(URI taskIdentifier, String  properties,
+                                                 TRenderingTypes[] tRenderingTypes)
             throws IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault {
-        handleUnsupportedOperation();
+        final Long taskId = validateTaskId(taskIdentifier);
         return null;
     }
 

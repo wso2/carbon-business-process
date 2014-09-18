@@ -22,10 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
-import org.wso2.carbon.humantask.HumanInteractionsDocument;
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TPresentationElements;
-import org.wso2.carbon.humantask.TPriorityExpr;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
@@ -310,5 +307,26 @@ public abstract class HumanTaskBaseConfiguration {
     public long getVersion() {
         return this.version;
     }
+
+    /**
+     * Get all renderings
+     * @return
+     */
+    public abstract TRenderings getRenderings();
+
+    /**
+     * Get All rendering QNames
+     * @return QName List
+     */
+    public abstract List<QName> getRenderingTypes();
+
+    /**
+     * Get specific rendering type
+     * @param type QName of the rendering type
+     * @return TRendering object.
+     */
+    public abstract TRendering getRendering(QName type);
+
+
 
 }
