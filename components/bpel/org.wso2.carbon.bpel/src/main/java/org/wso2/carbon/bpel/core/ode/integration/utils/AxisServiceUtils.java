@@ -27,9 +27,12 @@ import org.apache.axis2.context.ServiceGroupContext;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.*;
 import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.protocol.HTTP;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.utils.Namespaces;
 import org.apache.ode.utils.stl.CollectionsX;
@@ -37,12 +40,15 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.w3c.dom.Element;
 import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.bpel.config.TMultithreadedHttpConnectionManagerConfig;
 import org.wso2.carbon.bpel.core.BPELConstants;
+import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.BPELMessageContext;
 import org.wso2.carbon.bpel.core.ode.integration.BPELProcessProxy;
 import org.wso2.carbon.bpel.core.ode.integration.axis2.Axis2UriResolver;
 import org.wso2.carbon.bpel.core.ode.integration.axis2.Axis2WSDLLocator;
 import org.wso2.carbon.bpel.core.ode.integration.axis2.receivers.BPELMessageReceiver;
+import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
 import org.wso2.carbon.utils.ServerConstants;
 
 import javax.wsdl.*;
@@ -59,7 +65,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class contains utility functions used by ODE-Carbon Integration Layer to create,
@@ -278,6 +286,9 @@ public final class AxisServiceUtils {
         (by assingning that epr by partnerlink assign) if there is a endpoint
         configuration available for that particular service
         */
+
+        addCustomHeadersToMessageContext(mctx);
+
         opClient.addMessageContext(mctx);
         Options operationOptions = opClient.getOptions();
 
@@ -495,5 +506,24 @@ public final class AxisServiceUtils {
             }
         }
         return null;
+    }
+
+    public static void addCustomHeadersToMessageContext(MessageContext mctx){
+
+        List<Header> headers = null;
+
+        BPELServerConfiguration bpelServerConfiguration = BPELServiceComponent.getBPELServer().getBpelServerConfiguration();
+
+        if (!bpelServerConfiguration.isKeepAlive())  {
+
+            headers = new ArrayList();
+            headers.add(new Header(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE));
+        }
+
+
+        //Add more custom header values in the future
+        if( (headers != null) && (headers.size() > 0) ) {
+            mctx.setProperty(HTTPConstants.HTTP_HEADERS, headers);
+        }
     }
 }

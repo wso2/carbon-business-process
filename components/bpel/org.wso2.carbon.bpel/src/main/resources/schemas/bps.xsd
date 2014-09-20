@@ -66,6 +66,7 @@
             <xsd:element name="PersistenceProvider" type="xsd:string" minOccurs="0" maxOccurs="1"></xsd:element>
             <xsd:element name="NodeId" type="xsd:string" minOccurs="0" maxOccurs="1"></xsd:element>
             <xsd:element name="ODESchedulerConfiguration" type="tns:simpleSchedulerConfig" minOccurs="0" maxOccurs="1"/>
+
         </xsd:sequence>
     </xsd:complexType>
 
@@ -81,6 +82,12 @@
                     <xsd:attribute name="value" type="xsd:int"/>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="KeepAlive">
+                <xsd:complexType>
+                    <xsd:attribute name="value" type="xsd:boolean"/>
+                </xsd:complexType>
+            </xsd:element>
+
         </xsd:sequence>
     </xsd:complexType>
 
