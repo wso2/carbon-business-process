@@ -85,6 +85,19 @@
                 <% } %>
             </tbody>
         </table>
+        <br/><br/>
+        <table class="styledLeft" id="moduleTable">
+            <thead>
+            <tr>
+                <th width="100%"><fmt:message key="bpmn.process.active.diagram"/></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><image src="<%=client.getProcessInstanceDiagram(instanceId)%>" /></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 </fmt:bundle>

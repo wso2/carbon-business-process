@@ -129,6 +129,18 @@ public class WorkflowServiceClient {
         return dataUri;
     }
 
+    public String getProcessInstanceDiagram(String instanceId) throws Exception {
+        String imageString = instanceServiceStub.getProcessInstanceDiagram(instanceId);
+        BufferedImage bufferedImage = decodeToImage(imageString);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write( bufferedImage, "png", baos );
+        baos.flush();
+        String dataUri = "data:image/png;base64," +
+                DatatypeConverter.printBase64Binary(baos.toByteArray());
+        baos.close();
+        return dataUri;
+    }
+
     public String getProcessModel(String processId) throws Exception {
         String tRawXML = deploymentServiceStub.getProcessModel(processId);
         tRawXML = tRawXML.replaceAll("\n|\\r|\\f|\\t", "");
