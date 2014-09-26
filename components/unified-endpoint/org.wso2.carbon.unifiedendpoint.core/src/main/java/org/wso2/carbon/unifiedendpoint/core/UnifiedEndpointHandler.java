@@ -31,6 +31,7 @@ import org.apache.synapse.core.axis2.SOAPUtils;
 import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.registry.api.RegistryException;
@@ -278,9 +279,8 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 throw new AxisFault(errMsg, e);
             }
         } else if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG)) {
-            Registry reg = PrivilegedCarbonContext.getCurrentContext(
-                    msgContext.getConfigurationContext()).
-                    getRegistry(RegistryType.SYSTEM_GOVERNANCE);
+	        Registry reg = CarbonContext.getThreadLocalCarbonContext().
+			        getRegistry(RegistryType.SYSTEM_GOVERNANCE);
             path = path.substring(UnifiedEndpointConstants.VIRTUAL_GOV_REG.length());
             try {
                 if (reg.resourceExists(path)) {
@@ -293,8 +293,7 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 throw new AxisFault(errMsg, e);
             }
         } else if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG)) {
-            Registry reg = PrivilegedCarbonContext.getCurrentContext(
-                    msgContext.getConfigurationContext()).
+	        Registry reg = CarbonContext.getThreadLocalCarbonContext().
                     getRegistry(RegistryType.SYSTEM_CONFIGURATION);
             path = path.substring(UnifiedEndpointConstants.VIRTUAL_CONF_REG.length());
             try {
