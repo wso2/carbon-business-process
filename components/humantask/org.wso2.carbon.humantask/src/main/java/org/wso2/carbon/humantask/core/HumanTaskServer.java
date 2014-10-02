@@ -163,7 +163,7 @@ public class HumanTaskServer {
         //TODO - need to handle the external transaction managers.
         database.setTransactionManager(tnxManager);
         try {
-            database.start();
+	        database.start();
         } catch (Exception e) {
             String errMsg = "Humantask Database Initialization failed.";
             log.error(errMsg);
