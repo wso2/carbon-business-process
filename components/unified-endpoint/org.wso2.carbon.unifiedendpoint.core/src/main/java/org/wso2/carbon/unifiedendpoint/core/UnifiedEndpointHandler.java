@@ -32,7 +32,6 @@ import org.apache.neethi.PolicyEngine;
 import org.apache.synapse.core.axis2.SOAPUtils;
 import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
@@ -294,7 +293,7 @@ public class UnifiedEndpointHandler extends AbstractHandler {
             }
         } else if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG)) {
 	        Registry reg = CarbonContext.getThreadLocalCarbonContext().
-			        getRegistry(RegistryType.SYSTEM_CONFIGURATION);
+                    getRegistry(RegistryType.SYSTEM_CONFIGURATION);
             path = path.substring(UnifiedEndpointConstants.VIRTUAL_CONF_REG.length());
             try {
                 if (reg.resourceExists(path)) {
