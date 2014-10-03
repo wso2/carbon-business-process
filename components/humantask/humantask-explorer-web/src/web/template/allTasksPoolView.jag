@@ -1,0 +1,153 @@
+<%
+	var log = new Log();
+	log.debug("START : allTaskPoolView");
+%>
+<div class="row">
+	<ol class="breadcrumb">
+	  <li><a href="#">Home</a></li>
+	  <li class="active">AllTasks</li>
+	</ol>
+</div>
+<div class="row">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">Advance Search</h3>
+		</div>
+		<div class="panel-body">
+			<form role="form" class="" action="alltasks" method="GET">
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<div class="form-group">
+						<label for="taskName" class="control-label">Task Name</label>
+						<div class="">
+							<input type="text" class="form-control" id="taskName" name="taskName" placeholder="Enter Task Name">						
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2 col-md-2 col-lg-2">
+					<div class="form-group">
+						<label for="taskStatus" class="control-label">Status</label>
+					
+						<select id="taskStatus" name="taskStatus" class="form-control">
+							<option value="" selected>ALL</option>
+							<option value="CREATED">CREATED</option>
+							<option value="READY">READY</option>
+							<option value="RESERVED">RESERVED</option>
+							<option value="IN_PROGRESS">IN_PROGRESS</option>
+							<option value="COMPLETED">COMPLETED</option>
+							<option value="SUSPENDED">SUSPENDED</option>
+							<option value="FAILED">FAILED</option>
+							<option value="ERROR">ERROR</option>
+							<option value="EXITED">EXITED</option>
+							<option value="OBSOLETE">OBSOLETE</option>
+							<option value="REMOVED">REMOVED</option>
+							<option value="UNDEFINED">UNDEFINED</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-3 col-md-3 col-lg-3">
+					<div class="form-group">
+						<label for="taskCategory">Category</label>
+						<select id="taskCategory" name="taskCategory" class="form-control">
+							<option value="ASSIGNED_TO_ME">ASSIGNED TO ME</option>
+							<option value="ASSIGNABLE">ASSIGNABLE</option>
+							<option value="CLAIMABLE">CLAIMABLE</option>
+							<option value="ALL_TASKS" selected>ALL TASKS</option>
+							<option value="NOTIFICATIONS">NOTIFICATIONS</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-3 col-md-3 col-lg-3">
+					<div class="form-group">
+						<label for="craetedDate">Created Date</label>
+						<input id="craetedDate" name="craetedDate" type="datetime-local" class="form-control">
+					</div>
+				</div>
+
+				<div class="col-sm-2 col-md-2 col-lg-2">
+					<div class="form-group">
+						<label for="queryOrderBy">Order</label>
+						<select id="queryOrderBy" name="queryOrderBy" class="form-control">
+							<option value="TASK_NAME">TASK NAME</option>
+							<option value="CREATED_DATE" selected>CREATED DATE</option>
+							<option value="UPDATED_DATE">UPDATED DATE</option>
+							<option value="PRIORITY">PRIORITY</option>
+							<option value="STATUS">STATUS</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-2 col-md-2 col-lg-2">
+					<div class="form-group">
+						<label for="queryOrder">Order</label>
+						<select id="queryOrder" name="queryOrder" class="form-control">
+							<option value="ASCENDING" selected>ASCENDING</option>
+							<option value="DESCENDING">DESCENDING</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-12 col-md-12 col-lg-2">
+					<button type="submit" class="btn btn-primary btn-info">Search</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<%if (queryReceived == true && taskXMLList != null){%>
+		<div class="panel panel-primary">
+			  <!-- Default panel contents -->
+			  <div class="panel-heading">Search Results</div>
+	
+			  <div class="row">	
+			        <div class="col-sm-12 col-md-12 col-lg-12 main">
+					    <!-- Table -->
+					  	<table class="table">
+						    <thead>
+						    	<tr>
+						    		<th>ID</th>
+						    		<th>Type</th>
+						    		<th>Task Name</th>
+						    		<th>Subject</th>
+						    		<th>Status</th>
+						    		<th>Priority</th>
+						    	</tr>
+						    </thead>
+						    <tbody>
+						    	<% for(var i=0; i<taskXMLList.length(); i++){ %>
+						    	<tr>
+						    		<td><a href="taskview?id=<%=taskXMLList[i].rowNS::id.toString()%>"><%=taskXMLList[i].rowNS::id.toString()%></a></td>
+						    		<td><%=taskXMLList[i].rowNS::taskType.text()%></td>
+									<td><%=taskXMLList[i].rowNS::presentationName.text()%></td>
+									<td><%=taskXMLList[i].rowNS::presentationSubject%></td>
+									<td><%=taskXMLList[i].rowNS::status%></td>
+									<td><%=taskXMLList[i].rowNS::priority%></td>
+						    	</tr>
+						    	<% } %>
+						    </tbody>
+						</table>
+					</div>
+			  </div>
+		</div>
+		<ul class="pagination">
+			<% if(pagination != 1){ %>
+				<li><a href="alltasks?<%=newQueryString%>&pagination=<%=pagination-1%>">&laquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&laquo;</a></li>			
+			<% } %>
+			<% for(var i = 1; i<=paginatePageCount; i++){ 
+					if(pagination == i){ %>
+						<li class="active"><a href="alltasks?<%=newQueryString%>&pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+				<% }else { %>
+						<li><a href="alltasks?<%=newQueryString%>&pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+				<% } %>
+			<% } %>
+			<% if(pagination != paginatePageCount){ %>
+				<li><a href="alltasks?<%=newQueryString%>&pagination=<%=pagination+1%>">&raquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&raquo;</a></li>			
+			<% } %>
+		</ul>
+	<%}%>
+</div>
+<%
+	log.debug("START : allTaskPoolView");
+%>
