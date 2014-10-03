@@ -28,9 +28,7 @@ import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStore;
 import org.wso2.carbon.bpel.deployer.internal.BPELDeployerServiceComponent;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.CarbonUtils;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.io.File;
 
@@ -42,7 +40,8 @@ import java.io.File;
  * @see org.wso2.carbon.bpel.core.Axis2ConfigurationContextObserverImpl
  */
 public class BPELDeployer extends AbstractDeployer {
-    private static Log log = LogFactory.getLog(BPELDeployer.class);
+
+    private static final Log log = LogFactory.getLog(BPELDeployer.class);
 
     private TenantProcessStore tenantProcessStore;
 

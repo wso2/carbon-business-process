@@ -89,6 +89,15 @@ public class WorkflowServiceClient {
         instanceServiceStub.deleteProcessInstance(instanceID);
     }
 
+    public void deleteAllProcessInstances() throws Exception {
+        BPMNInstance[] instances = getProcessInstances();
+        List<String> instanceIds = new ArrayList<String>();
+        for(BPMNInstance instance : instances){
+            instanceIds.add(instance.getInstanceId());
+        }
+        instanceServiceStub.deleteProcessInstanceSet(instanceIds.toArray(new String[instanceIds.size()]));
+    }
+
     public void suspendProcessInstance(String instanceID) throws Exception {
         instanceServiceStub.suspendProcessInstance(instanceID);
     }
@@ -110,6 +119,18 @@ public class WorkflowServiceClient {
 
     public String getProcessDiagram(String processId) throws Exception {
         String imageString = deploymentServiceStub.getProcessDiagram(processId);
+        BufferedImage bufferedImage = decodeToImage(imageString);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write( bufferedImage, "png", baos );
+        baos.flush();
+        String dataUri = "data:image/png;base64," +
+                DatatypeConverter.printBase64Binary(baos.toByteArray());
+        baos.close();
+        return dataUri;
+    }
+
+    public String getProcessInstanceDiagram(String instanceId) throws Exception {
+        String imageString = instanceServiceStub.getProcessInstanceDiagram(instanceId);
         BufferedImage bufferedImage = decodeToImage(imageString);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "png", baos );

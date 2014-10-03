@@ -70,6 +70,7 @@
     <!--<tns:MultithreadedHttpConnectionManagerConfig>
         <tns:maxConnectionsPerHost value="20"/>
         <tns:maxTotalConnections value="100"/>
+            <tns:KeepAlive value="true"/>
     </tns:MultithreadedHttpConnectionManagerConfig>-->
 
     <!-- Process instance cleanup feature in WSO2 Business Process Server

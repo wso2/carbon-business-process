@@ -588,14 +588,14 @@
             </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.datasource</artifactId>
+                <artifactId>org.wso2.carbon.ndatasource.core</artifactId>
                 <version>${carbon.platform.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.datasource.ui</artifactId>
-                <version>${carbon.platform.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon</groupId>-->
+                <!--<artifactId>org.wso2.carbon.datasource.ui</artifactId>-->
+                <!--<version>${carbon.platform.version}</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.apache.xmlbeans.wso2</groupId>
                 <artifactId>xmlbeans</artifactId>
@@ -1343,7 +1343,7 @@
         <orbit.version.infinispan>5.1.2.wso2v1</orbit.version.infinispan>
         <orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
         <imp.pkg.version.h2.engine>[1.2.140.wso2v3, 2)</imp.pkg.version.h2.engine>
-        <orbit.version.spring>3.1.0.wso2v1</orbit.version.spring>
+        <orbit.version.spring>3.2.9.wso2v1</orbit.version.spring>
         <imp.pkg.version.spring>[3.1.0.wso2v1, 3.2.0)</imp.pkg.version.spring>
         <orbit.version.commons.fileuploader>1.2.0.wso2v1</orbit.version.commons.fileuploader>
         <orbit.version.woden>1.0.0.M8-wso2v1</orbit.version.woden>

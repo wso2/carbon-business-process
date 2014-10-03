@@ -15,7 +15,12 @@ import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class BPMNDeploymentService {
@@ -23,12 +28,11 @@ public class BPMNDeploymentService {
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
 
     public BPMNDeployment[] getDeployments() throws BPSException {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
             TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-
             List<Deployment> deployments = tenantRepository.getDeployments();
-
             BPMNDeployment[] bpmnDeployments = new BPMNDeployment[deployments.size()];
             for (int i = 0; i < deployments.size(); i++) {
                 Deployment deployment = deployments.get(i);
@@ -47,9 +51,8 @@ public class BPMNDeploymentService {
     }
 
     public BPMNProcess[] getDeployedProcesses() throws BPSException {
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-
             TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
             List<ProcessDefinition> processDefinitions = tenantRepository.getDeployedProcessDefinitions();
 
@@ -72,9 +75,10 @@ public class BPMNDeploymentService {
     }
 
     public String getProcessDiagram(String processId) throws BPSException {
-        try{
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
             RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
                     .processDefinitionId(processId)
                     .singleResult();
             String diagramResourceName = processDefinition.getDiagramResourceName();
@@ -82,7 +86,7 @@ public class BPMNDeploymentService {
             BufferedImage bufferedImage = ImageIO.read(imageStream);
 
             return encodeToString(bufferedImage, "png");
-        }catch(Exception e){
+        } catch (Exception e) {
             String msg = "Failed to create the diagram for process: " + processId;
             log.error(msg, e);
             throw new BPSException(msg, e);
@@ -90,32 +94,41 @@ public class BPMNDeploymentService {
     }
 
     public String getProcessModel(String processId) throws BPSException {
-        try{
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        BufferedReader br = null;
+        try {
             RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
                     .processDefinitionId(processId)
                     .singleResult();
             InputStream stream = repositoryService.getProcessModel(processDefinition.getId());
-            BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+            br = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
             return sb.toString();
-        }catch(Exception e){
+        } catch (Exception e) {
             String msg = "Failed to create the diagram for process: " + processId;
             log.error(msg, e);
             throw new BPSException(msg, e);
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                log.error("Could not close the reader", e);
+            }
         }
     }
 
     public void undeploy(String deploymentName) throws BPSException {
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
             TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
             tenantRepository.undeploy(deploymentName, false);
-
         } catch (Exception e) {
             String msg = "Failed to undeploy the BPMN deployment: " + deploymentName;
             log.error(msg, e);
@@ -126,17 +139,19 @@ public class BPMNDeploymentService {
     private String encodeToString(BufferedImage image, String type) {
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
         try {
             ImageIO.write(image, type, bos);
             byte[] imageBytes = bos.toByteArray();
-
             BASE64Encoder encoder = new BASE64Encoder();
             imageString = encoder.encode(imageBytes);
-
-            bos.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Could not write image data", e);
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException e) {
+                log.error("Could not close the byte stream", e);
+            }
         }
         return imageString;
     }

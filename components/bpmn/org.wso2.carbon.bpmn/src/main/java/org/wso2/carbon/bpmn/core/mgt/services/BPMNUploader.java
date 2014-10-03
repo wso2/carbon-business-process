@@ -27,7 +27,11 @@ import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.activation.DataHandler;
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * BPMN package uploader admin service
@@ -74,8 +78,8 @@ public class BPMNUploader extends AbstractAdmin {
                 }
             } else {
                 throw new AxisFault("Invalid file type : " + uploadedFile.getFileType() + " ." +
-                        BPMNConstants.BPMN_PACKAGE_EXTENSION +
-                        " file type is expected");
+                                    BPMNConstants.BPMN_PACKAGE_EXTENSION +
+                                    " file type is expected");
             }
         }
 
@@ -105,7 +109,7 @@ public class BPMNUploader extends AbstractAdmin {
         boolean isDeleted = tempDestFile.delete();
         if (!isDeleted) {
             log.warn("temp file: " + tempDestFile.getAbsolutePath() +
-                    " deletion failed, scheduled deletion on server exit.");
+                     " deletion failed, scheduled deletion on server exit.");
             tempDestFile.deleteOnExit();
         }
     }

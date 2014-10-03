@@ -1,12 +1,25 @@
+/**
+ *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.core.deployment;
 
-import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class TenantManager {
 
@@ -18,34 +31,8 @@ public class TenantManager {
 
     public TenantRepository createTenantRepository(Integer tenantId) throws BPSException {
         TenantRepository tenantRepository = new TenantRepository(tenantId);
-        tenantRepository.loadExistingDeployments();
         tenantRepositories.put(tenantId, tenantRepository);
         return tenantRepository;
     }
 
-    /**
-     * When clustering is enabled we need to add Hazelcast distributed sets for local deployment and process definitions IDs in tenant repository.
-     * First need to populate local contents of sets to distributed sets.
-     * Then distributed sets will be used in clustering mode.
-     */
-    public void populateDistributedSets() throws BPSException {
-
-        for (TenantRepository tenantRepository : tenantRepositories.values()) {
-
-            Set<Object> deploymentIds = BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_DEPLOYMENT_ID_SET + tenantRepository.getTenantId());
-            Set<Object> processDefinitionIds = BPMNServerHolder.getInstance().getHazelcastInstance().getSet(BPMNConstants.BPMN_DISTRIBUTED_PROCESS_DEFINITION_ID_SET + tenantRepository.getTenantId());
-            for (Object o : tenantRepository.getDeploymentIds()) {
-
-                deploymentIds.add(o);
-            }
-            for (Object o : tenantRepository.getProcessDefinitionIds()) {
-
-                processDefinitionIds.add(o);
-            }
-            tenantRepository.setDeploymentIds(deploymentIds);
-            tenantRepository.setProcessDefinitionIds(processDefinitionIds);
-
-        }
-
-    }
 }

@@ -117,7 +117,7 @@
 		                            <directory>resources</directory>
 		                            <includes>
 		                                <include>conf/attachment-management.xml</include>                                   
-		                                <include>conf/datasources.properties</include>
+		                                <include>conf/bps-datasources.xml</include>
 						<include>conf/jpadb.h2.db</include>
 						<include>**/*.sql</include>
 		                                <include>p2.inf</include>

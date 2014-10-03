@@ -102,6 +102,8 @@ public class BPELServerConfiguration {
 
     private boolean syncWithRegistry = false;
 
+    private boolean keepAlive = true;
+
     private long inMemoryInstanceTTL = 600000;
     // scheduler thread pool size
     private int odeSchedulerThreadPoolSize = 0;
@@ -188,6 +190,15 @@ public class BPELServerConfiguration {
     public List<String> getExtensionCorrelationFilters() {
         return extensionCorrelationFilters;
     }
+
+    public boolean isKeepAlive() {
+        return keepAlive;
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        this.keepAlive = keepAlive;
+    }
+
 
 //    public List<String> getExtensionBundleValidators() {
 //        return extensionBundleValidators;
@@ -576,6 +587,7 @@ public class BPELServerConfiguration {
                     getValue();
             this.maxTotalConnections = multiThreadedConManagerConfig.getMaxTotalConnections().
                     getValue();
+            this.keepAlive = multiThreadedConManagerConfig.getKeepAlive().getValue();
         }
     }
 
