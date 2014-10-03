@@ -42,14 +42,14 @@ public interface DeploymentMapper {
 
 	final String SELECT_TENANT_PACKAGE =
 			"SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE +
-			"WHERE TENANT_ID_ = #{tenantID} AND NAME_ = #{name}";
+			" WHERE TENANT_ID_ = #{tenantID} AND NAME_ = #{name}";
 	final String SELECT_ALL_PACKAGE =
 			"SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE + " ; ";
 	final String INSERT_META_DATA =
 			"INSERT INTO " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE +
-			" (ID_, NAME_, TENANT_ID_, CHECK_SUM_) VALUES (#{id}, #{packageName}, #{tenantID}, #{checkSum})";
+			"  (ID_, NAME_, TENANT_ID_, CHECK_SUM_) VALUES (#{id}, #{packageName}, #{tenantID}, #{checkSum})";
 	final String UPDATE_META_DATA = "UPDATE " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE +
-	                                " SET CHECK_SUM_ = #{checkSum} WHERE  NAME_= #{packageName} AND TENANT_ID_ = #{tenantID} ";
+	                                "  SET CHECK_SUM_ = #{checkSum} WHERE  NAME_= #{packageName} AND TENANT_ID_ = #{tenantID} ";
 	final String DELETE_META_DATA =
 			"DELETE FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE +
 			"  WHERE  NAME_= #{packageName} AND TENANT_ID_ = #{tenantID} ";

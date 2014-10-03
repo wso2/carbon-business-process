@@ -49,6 +49,6 @@ public class BPMNDatabaseCreator extends DatabaseCreator {
         }
         String carbonHome = System.getProperty("carbon.home");
         return carbonHome + File.separator + "dbscripts" + File.separator + "bps" + File.separator
-                + "bpmn" + File.separator + "checksum" + File.separator + "create" + File.separator + scriptName;
+                + "bpmn" + File.separator + "metadata" + File.separator + "create" + File.separator + scriptName;
     }
 }
