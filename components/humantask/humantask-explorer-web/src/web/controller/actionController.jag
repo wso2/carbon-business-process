@@ -33,16 +33,16 @@
 	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
 	
-	try{
+	try {
 		if (actionType == 'claim_task') {
 			//claim specified task
 			var result = new XML(htRequest.claimTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::claimResponse;
 			
-			if (resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//claiming success
 				var responseMsg = '<claim_taskResponse><success>true</success></claim_taskResponse>';
-			}else{
+			} else {
 				//claiming unsuccessfull
 				var responseMsg = '<claim_taskResponse><success>false</success></claim_taskResponse>';
 			}
@@ -72,7 +72,7 @@
 			var result =  new XML(htRequest.startTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::startResponse;
 					
-			if(resultCheck.length() > 0) {
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<start_taskResponse><success>true</success></start_taskResponse>';
 			} else {
@@ -102,14 +102,14 @@
 			</soapenv:Envelope>
 			*/
 			
-		}else if (actionType == 'stop_task'){
+		} else if (actionType == 'stop_task') {
 			var result = new XML(htRequest.stopTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::stopResponse;
 			
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//stop successfull
 				var responseMsg = '<stop_taskResponse><success>true</success></stop_taskResponse>';
-			}else{
+			} else {
 				//stop unsuccessfull
 				var responseMsg = '<stop_taskResponse><success>false</success></stop_taskResponse>';
 			}
@@ -137,14 +137,14 @@
 				</soapenv:Envelope>
 				*/
 			
-		}else if (actionType == 'release_task'){
+		} else if (actionType == 'release_task') {
 			var result = new XML(htRequest.releaseTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::releaseResponse;
 			
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<release_taskResponse><success>true</success></release_taskResponse>';
-			}else{
+			} else {
 				//start unsuccessfull
 				var responseMsg = '<release_taskResponse><success>false</success></release_taskResponse>';
 			}
@@ -173,14 +173,14 @@
 				
 				*/
 			
-		}else if (actionType == 'suspend_task'){
+		} else if (actionType == 'suspend_task') {
 			var result = new XML(htRequest.suspendTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::suspendResponse;
 					
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<suspend_taskResponse><success>true</success></suspend_taskResponse>';
-			}else{
+			} else {
 				//start unsuccessfull
 				var responseMsg = '<suspend_taskResponse><success>false</success></suspend_taskResponse>';
 			}
@@ -208,14 +208,14 @@
 				</soapenv:Envelope>
 				*/
 			
-		}else if (actionType == 'resume_task'){
+		} else if (actionType == 'resume_task') {
 			var result = new XML(htRequest.resumeTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::resumeResponse;
 			
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<resume_taskResponse><success>true</success></resume_taskResponse>';
-			}else{
+			} else {
 				//start unsuccessfull
 				var responseMsg = '<resume_taskResponse><success>false</success></resume_taskResponse>';
 			}
@@ -244,14 +244,14 @@
 				</soapenv:Envelope>
 	
 				*/
-		}else if (actionType == 'fail_task'){
+		} else if (actionType == 'fail_task') {
 			var result = new XML(htRequest.failTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::failResponse;
 			
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<fail_taskResponse><success>true</success></fail_taskResponse>';
-			}else{
+			} else {
 				//start unsuccessfull
 				var responseMsg = '<fail_taskResponse><success>false</success></fail_taskResponse>';
 			}
@@ -280,7 +280,7 @@
 				</soapenv:Envelope>
 	
 				*/
-		}else if (actionType == "addComment_task"){
+		} else if (actionType == "addComment_task") {
 			//format of request : <addComment><text>Comment</text></addComment>
 			//the Comment contains text data wrapped by <![CDATA[ text content ]]
 			var requestPayload = XML(request.getContent());
@@ -290,10 +290,10 @@
 			var result = new XML(htRequest.addComment(taskId, '<![CDATA[' +requestPayload.text +']]>'));
 			var resultCheck = result.soapenvNS::Body.ns2NS::addCommentResponse;
 			
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<addComment_taskResponse><success>true</success></addComment_taskResponse>';			
-			}else{
+			} else {
 				//start unsuccessfull
 				var responseMsg = '<addComment_taskResponse><success>false</success></addComment_taskResponse>';
 			}
@@ -322,14 +322,14 @@
 			   </soapenv:Body>
 			</soapenv:Envelope>
 			 */
-		}else if (actionType == "deleteComment"){
+		} else if (actionType == "deleteComment") {
 			var result = new XML(htRequest.deleteComment(taskId, request.getParameter('commentId')));
 			var resultCheck = result.soapenvNS::Body.ns2NS::deleteCommentResponse;
 			
-			if(resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//start successfull
 				var responseMsg = '<deleteComment_Response><success>true</success></deleteComment_Response>';
-			}else{
+			} else {
 				//start unsuccessfull
 				var responseMsg = '<deleteComment_Response><success>false</success></deleteComment_Response>';
 			}
@@ -345,17 +345,17 @@
 			</soapenv:Envelope> 
 			*/
 			
-		}else if (actionType == "assign_task"){
+		} else if (actionType == "assign_task") {
 			var userName = request.getParameter('assignee');
 			var result = new XML(htRequest.assignTask(taskId, userName));
 			var resultCheck = result.soapenvNS::Body.ns2NS::delegateResponse;
 			
-			if (resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				var responseMsg =  '<assign_taskResponse>\
 										<success>true</success>\
 									</assign_taskResponse>';			
-			}else{
+			} else {
 				var responseMsg =  '<assign_taskResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
@@ -383,7 +383,7 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 				*/
-		}else{
+		} else {
 			var responseMsg = '<unknownTaskResponse>\
 									<success>false</success>\
 									<data>unknon task</data>\
@@ -391,7 +391,7 @@
 			response.contentType = 'text/xml';
 			response.content = responseMsg;
 		}
-	}catch(e){
+	} catch(e) {
 		log.error(e);
 		var responseMsg =  '<fault_taskResponse>\
 								<success>false</success>\

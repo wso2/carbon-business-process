@@ -18,7 +18,7 @@
  */
 
 	var authSuccess = session.get("authSuccess");
-	if(!authSuccess){
+	if (!authSuccess) {
 		response.sendRedirect("login");
 	} else {
 		include("/model/common.jag");
@@ -28,10 +28,10 @@
 		include("/template/modals/addCommentModal.jag");
 		
 		var user = session.get('userName');
-		if (user == taskAbstract.ns1NS::actualOwner.text()){
+		if (user == taskAbstract.ns1NS::actualOwner.text()) {
 			//This task belongs to this user
 			include("/template/inboxTaskView.jag");
-		}else{
+		} else {
 			//this user is not the actual owner of this task			
 			include("/template/taskView.jag");
 		}

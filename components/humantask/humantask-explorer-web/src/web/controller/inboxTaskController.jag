@@ -18,7 +18,7 @@
  */
 
 	var authSuccess = session.get("authSuccess");
-	if(!authSuccess){
+	if (!authSuccess) {
 		response.sendRedirect("login");
 	} else {
 		include("/model/common.jag");
@@ -28,9 +28,9 @@
 		include("/template/modals/addCommentModal.jag");
 		include("/template/modals/assignTaskModal.jag");
 
-		if(taskAbstract != null){
+		if (taskAbstract != null) {
 			var user = session.get('userName');
-			if (user == taskAbstract.ns1NS::actualOwner.text()){
+			if (user == taskAbstract.ns1NS::actualOwner.text()) {
 				include("/template/inboxTaskView.jag");			
 			} else {			
 				include("/template/taskView.jag");

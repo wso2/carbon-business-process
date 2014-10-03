@@ -38,14 +38,14 @@
 	
 			var resultCheck = result.soapenvNS::Body.ns2NS::getCommentsResponse;
 			
-			if (resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				var responseMsg =  '<update_commentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getCommentsResponse +'</data>\
 									</update_commentsResponse>';
 				
-			}else{
+			} else {
 				var responseMsg =  '<update_commentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
@@ -56,21 +56,21 @@
 			response.content = responseMsg;
 			
 			
-		}else if (updateType == 'update_history'){
+		} else if (updateType == 'update_history') {
 			//update History
 			var result = retrieveHistory(taskId);
 			log.debug('HISTORY RESPONSE: ' +result);
 	
 			var resultCheck = result.soapenvNS::Body.ns2NS::loadTaskEventsResponse;
 			
-			if (resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//history retrieval success
 				var responseMsg =  '<update_historyResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::loadTaskEventsResponse +'</data>\
 									</update_historyResponse>';
 				
-			}else{
+			} else {
 				var responseMsg =  '<update_historyResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
@@ -109,20 +109,20 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 				*/
-		}else if (updateType == 'update_assignableUsers'){
+		} else if (updateType == 'update_assignableUsers') {
 			//retrive assignable user list
 			var result = retrieveAssignableUserList(taskId);
 			log.debug('RESULT : ' +result);
 			
 			var resultCheck = result.soapenvNS::Body.ns2NS::getAssignableUserListResponse;
 			
-			if (resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				var responseMsg =  '<update_assignableUsersResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAssignableUserListResponse +'</data>\
 									</update_assignableUsersResponse>';			
-			}else{
+			} else {
 				var responseMsg =  '<update_assignableUsersResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
@@ -146,20 +146,20 @@
 				FAILURE
 				
 			*/
-		}else if (updateType == 'update_attachments'){
+		} else if (updateType == 'update_attachments') {
 			//retrive attachment list
 			var result = retrieveAttachments(taskId);
 			log.debug('RESULT : ' +result);
 			
 			var resultCheck = result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse;
 			
-			if (resultCheck.length() > 0){
+			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				var responseMsg =  '<update_attachmentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse +'</data>\
 									</update_attachmentsResponse>';			
-			}else{
+			} else {
 				var responseMsg =  '<update_attachmentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
@@ -206,7 +206,7 @@
 	 * @param  id task Id
 	 * @return XML response payload
 	 */
-	function retrieveComments(id){
+	function retrieveComments(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 										xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 						   <soapenv:Header/>\
@@ -230,7 +230,7 @@
 	 * @param  id task Id
 	 * @return XML response payload
 	 */
-	function retrieveHistory(id){
+	function retrieveHistory(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 						   <soapenv:Header/>\
@@ -252,7 +252,7 @@
 	 * @param  id task Id
 	 * @return XML response payload
 	 */
-	function retrieveAssignableUserList(id){
+	function retrieveAssignableUserList(id) {
 		
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 										xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
@@ -277,7 +277,7 @@
 	 * @param  id task Id
 	 * @return XML response payload
 	 */
-	function retrieveAttachments(id){
+	function retrieveAttachments(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 							xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 						   <soapenv:Header/>\

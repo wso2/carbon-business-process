@@ -47,7 +47,7 @@
 		var responseStatus = httpClient.statusText;
 		if (httpClient.statusText.valueOf() == "Accepted") {
 			log.debug('LOGOUT SUCCESS');
-		}else {
+		} else {
 			log.error('LOGOUT FAILED');
 		}
 	} catch (e) {

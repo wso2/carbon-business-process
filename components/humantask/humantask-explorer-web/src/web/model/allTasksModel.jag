@@ -25,7 +25,7 @@
 	htRequest.initHTServerInfo(BPSUrl, session.get('BPSSessionCookie'));
 	
 	var requestParameters = request.getAllParameters();
-	if(request.getQueryString() != null){
+	if (request.getQueryString() != null) {
 		//At first request (or without query parameters) no need to load task list
 		//process search query
 		var queryReceived = true;
@@ -43,9 +43,9 @@
 								+'&craetedDate=' +createdDate +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;
 		
 		var paginationStr = requestParameters.pagination;
-		if (paginationStr == null || paginationStr === ""){
+		if (paginationStr == null || paginationStr === "") {
 			var pagination = 1;
-		}else{
+		} else {
 			var pagination = parseInt(paginationStr);
 		}
 
@@ -70,7 +70,7 @@
 			log.error(e);
 			response.sendRedirect('login');
 		}	
-	}else{
+	} else {
 		//no need to process search because user havn't enter search data
 		var queryReceived = false;
 	}

@@ -21,7 +21,7 @@
 	log.debug("START : allTasksController");
 
 	var authSuccess = session.get("authSuccess");
-	if(!authSuccess){
+	if (!authSuccess) {
 		response.sendRedirect("login");
 	} else {
 		include("/model/common.jag");

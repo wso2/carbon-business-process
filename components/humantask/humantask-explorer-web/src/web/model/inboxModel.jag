@@ -28,14 +28,14 @@
 	var requestParameters = request.getAllParameters();
 	
 	var paginationStr = requestParameters.pagination;
-	if (paginationStr == null || paginationStr === ""){
+	if (paginationStr == null || paginationStr === "") {
 		var pagination = 1;//1st page
-	}else{
+	} else {
 		var pagination = parseInt(paginationStr);
 	}
 	
 	var statusQuery = requestParameters.status_query;
-	if (statusQuery == null){
+	if (statusQuery == null) {
 		statusQuery = "";
 	}
 	
@@ -45,7 +45,7 @@
 	var queryOrderBy = 'CREATED_DATE';
 	var queryCategory = 'ASSIGNED_TO_ME';
 
-	try{ 
+	try { 
 		var taskXMLList = null;
 		var paginatePageCount = 0;
 		var BPSResponseXML = new XML(htRequest.simpleQueryBasic(statusQuery, pageSize, pageNumber, queryCategory, 
@@ -83,7 +83,7 @@
 		taskXMLList = BPSResponseXML..soapenvNS::Body.ns2NS::simpleQueryResponse.ns2NS::taskSimpleQueryResultSet.rowNS::row;
 		paginatePageCount =  parseInt(BPSResponseXML..soapenvNS::Body.ns2NS::simpleQueryResponse
 																		.ns2NS::taskSimpleQueryResultSet.ns1NS::pages);
-	}catch(e){
+	} catch(e) {
 		log.error(e);
 		response.sendRedirect('login');
 	}

@@ -25,7 +25,7 @@
  * @throws
  * @return response payload
  */
-	function requestBPS(endPoint, soapAction, BPSSessionCookie, payload){
+	function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
 		var BPSResponse = null;
 		var httpClient = new XMLHttpRequest();
 		httpClient.open('POST', endPoint, false);
@@ -33,10 +33,10 @@
 		httpClient.setRequestHeader('SOAPAction', soapAction);
 		httpClient.setRequestHeader('Content-Type','text/xml');
 
-		try{
+		try {
 			httpClient.send(payload);
 			BPSResponse = httpClient.responseText;
-		}catch(e){
+		} catch(e){
 			log.error(e.toString()); 
 			throw e;
 		}

@@ -28,7 +28,7 @@
 	<div class="panel panel-primary">
 	  <div class="panel-heading">
 	  		Task Abstract : <%=taskAbstract.ns1NS::presentationName.text()%>
-	  		<%if (taskAbstract.ns1NS::status.text() == "READY" || taskAbstract.ns1NS::status.text() == "CREATED"){%>
+	  		<%if (taskAbstract.ns1NS::status.text() == "READY" || taskAbstract.ns1NS::status.text() == "CREATED") {%>
 	  			<span><button  onclick="claimTask(<%=id%>)" class="btn btn-xs btn-danger" style="float:right;">Claim</button></span>
 	  		<%}%>
 	  </div>

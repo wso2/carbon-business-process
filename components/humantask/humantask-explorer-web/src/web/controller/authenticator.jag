@@ -24,16 +24,16 @@
 	var username = request.getParameter("username");
 	var password = request.getParameter("password");
 
-	if(username === "" || password === ""){
+	if (username === "" || password === "") {
 		var authSuccess = false;
-	} else{
+	} else {
 		try {
 			var authSuccess = HTTPAuthenticate(username, password, 'localhost');
 		} catch (Exception) {
 			var authSuccess = false;
 		}
 	}
-	if(!authSuccess){
+	if (!authSuccess) {
 		session.put("loginFailed" ,true);
 		response.sendRedirect("login");
 	} else {
@@ -49,7 +49,7 @@
 	 * @param remoteAddr target url
 	 * @return true if success otherwise false
 	 */
-	function HTTPAuthenticate(username, password, remoteAddr){
+	function HTTPAuthenticate(username, password, remoteAddr) {
 
 		var httpAuth = new XMLHttpRequest();
 		var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
@@ -69,7 +69,7 @@
 							</soapenv:Body>\
 						</soapenv:Envelope>';
 
-		try{
+		try {
 			httpAuth.send(payload);
 			var BPSResponse = httpAuth.responseText;
 			log.debug('Login RESPONSE:' +httpAuth.responseText.toString());
@@ -80,18 +80,18 @@
 
 			log.debug('Login Success:' +isLoginSuccess);
 
-			if(isLoginSuccess == 'true'){
+			if (isLoginSuccess == 'true') {
 				//retrieve session cookie with BPS and store in session
 				var cookie = httpAuth.getResponseHeader('Set-Cookie').split(';')[0];
 				session.put('BPSSessionCookie' , cookie);
 				
 				log.debug('Session cookie : ' +cookie);
 				return true;
-			}else{
+			} else {
 				log.debug('Login in to BPS Failed');
 				return false;
 			}
-		}catch(e){
+		} catch(e) {
 			 log.error(e);
 			 throw e;
 		}

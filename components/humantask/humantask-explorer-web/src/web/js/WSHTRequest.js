@@ -23,7 +23,7 @@ var log = new Log();
  * @param url back end url
  * @param sessionCookie session cookie
  */
-function initHTServerInfo(url, sessionCookie){
+function initHTServerInfo(url, sessionCookie) {
 	this.URL = url;
 	this.endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
 	this.cookie = sessionCookie;
@@ -35,7 +35,7 @@ function initHTServerInfo(url, sessionCookie){
  * return response payload
  * throw exception 
  */
-function requestBPS(endPoint, soapAction, BPSSessionCookie, payload){
+function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
 	var BPSResponse = null;
 	var httpClient = new XMLHttpRequest();
 	httpClient.open('POST', endPoint, false);
@@ -43,10 +43,10 @@ function requestBPS(endPoint, soapAction, BPSSessionCookie, payload){
 	httpClient.setRequestHeader('SOAPAction', soapAction);
 	httpClient.setRequestHeader('Content-Type','text/xml');
 
-	try{
+	try {
 		httpClient.send(payload);
 		BPSResponse = httpClient.responseText;
-	}catch(e){
+	} catch(e) {
 		throw e;
 	}
 	
@@ -60,7 +60,7 @@ function requestBPS(endPoint, soapAction, BPSSessionCookie, payload){
  * return response payload
  * throw org.mozilla.javascript.WrappedException
  */
-function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy){
+function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 									xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
@@ -82,9 +82,9 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
 	//var endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
 	var BPSResponse = null;
-	try{
+	try {
 		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	}catch(e){
+	} catch(e) {
 		throw e;
 	}
 	return BPSResponse;
@@ -96,7 +96,7 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
  * return response payload
  * throw exception
  */
-function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy, createdDate, taskName){
+function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy, createdDate, taskName) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 							xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 							xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
@@ -137,7 +137,7 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
  * return response payload
  * throw org.mozilla.javascript.WrappedException
  */
-function loadTask(id){
+function loadTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -163,7 +163,7 @@ function loadTask(id){
  * return response payload
  * throw org.mozilla.javascript.WrappedException
  */
-function getComments(id){
+function getComments(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 								<soapenv:Body>\
@@ -190,7 +190,7 @@ function getComments(id){
  * @throws exception
  */
 
-function claimTask(id){
+function claimTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -216,7 +216,7 @@ function claimTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function startTask(id){
+function startTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 						xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -243,7 +243,7 @@ function startTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function stopTask(id){
+function stopTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 								xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -271,7 +271,7 @@ function stopTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function releaseTask(id){			
+function releaseTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -297,7 +297,7 @@ function releaseTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function suspendTask(id){
+function suspendTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 										xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -324,7 +324,7 @@ function suspendTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function resumeTask(id){
+function resumeTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -350,7 +350,7 @@ function resumeTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function failTask(id){		
+function failTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 											 xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 											 xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
@@ -378,7 +378,7 @@ function failTask(id){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function addComment(id, text){
+function addComment(id, text) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 								xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -407,7 +407,7 @@ function addComment(id, text){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function deleteComment(taskId, commentId){		
+function deleteComment(taskId, commentId) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 						xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
@@ -435,7 +435,7 @@ function deleteComment(taskId, commentId){
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws exception
  */
-function assignTask(id, userName){		
+function assignTask(id, userName) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 							xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 							xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\

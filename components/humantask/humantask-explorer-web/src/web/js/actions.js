@@ -23,22 +23,22 @@ var appName = "WS-Humantask-Explorer"; //TODO finalize appName
  * function to make ajax call to claim task
  * @param id target task id
  */
-function claimTask(id){
+function claimTask(id) {
 	var requestUrl = "/"+ appName +"/action?type=claim_task&tid=" +id;
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){	
+		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;			
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id=" +id;
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to claim the task : " +id);
 			}
         },
-        error:function(response){
+        error:function (response) {
         	console.error(response);
         	alert('Failed : ERROR OCCURED please refresh page');
     	}
@@ -54,13 +54,13 @@ function startTask(id) {
 	$.ajax({		
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){			
+		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;					
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task Start success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to start the task : " +id);
 			}
@@ -72,47 +72,46 @@ function startTask(id) {
  * function to make ajax call to stop task
  * @param id task id
  */
-function stopTask(id){
+function stopTask(id) {
 	var requestUrl = "/"+ appName +"/action?type=stop_task&tid=" +id;
 	
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){
+		success: function (data) {
 			
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task STOP success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to start the task : " +id);
 			}
         }
 	});
-
 }
 
 /**
  * function to make ajax call to release task
  * @param id task id
  */
-function releaseTask (id) {
+function releaseTask(id) {
 	var requestUrl = "/"+ appName +"/action?type=release_task&tid=" +id;
 	
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){
+		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task RELEASE success : " +id);
 				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
 
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to RELEASE the task : " +id);
 			}
@@ -124,20 +123,20 @@ function releaseTask (id) {
  * function to make ajax call to suspend task
  * @param id task id
  */
-function suspendTask(id){
+function suspendTask(id) {
 	var requestUrl = "/"+ appName +"/action?type=suspend_task&tid=" +id;
 	
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){
+		success: function (data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task SUSPEND success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to SUSPEND the task : " +id);
 			}
@@ -150,7 +149,7 @@ function suspendTask(id){
  * function to make ajax call to resume suspended task
  * @param id task id
  */
-function resumeTask(id){
+function resumeTask(id) {
 	var requestUrl = "/"+ appName +"/action?type=resume_task&tid=" +id;
 
 	$.ajax({
@@ -159,11 +158,11 @@ function resumeTask(id){
 		success: function(data){
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task RESUME success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to RESUME the task : " +id);
 			}
@@ -176,20 +175,20 @@ function resumeTask(id){
  * function to make ajax call to fail task
  * @param id task ID
  */
-function failTask(id){
+function failTask(id) {
 	var requestUrl = "/"+ appName +"/action?type=fail_task&tid=" +id;
 	
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){
+		success: function(data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful			
 				alert("Task FAIL success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to FAIL the task : " +id);
 			}
@@ -201,7 +200,7 @@ function failTask(id){
  * function to make ajax call to update comments
  * @param id task id
  */
-function updateComments(id){
+function updateComments(id) {
 	$('#commentTab').attr("class","active");
 	$('#historyTab').attr("class","");
 	$('#attachmentTab').attr("class","");
@@ -219,7 +218,7 @@ function updateComments(id){
 		url: httpUrl + requestUrl,
 		success: function(data){
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;		
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
 				var commentList = data.firstChild.getElementsByTagNameNS('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803','comment');				
@@ -240,7 +239,7 @@ function updateComments(id){
 				}
 				
 				$('#commentList').html(commentViewList);
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to update comments the task : " +id);
 			}
@@ -263,17 +262,17 @@ function addComment(id) {
 		data: requestPayload,
 		contentType: "text/xml",
 		dataType: "xml",
-		success: function(data){
+		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task ADDCOMMENT success : " +id);
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to ADDCOMMENT the task : " +id);
 			}
         },
-        error:function(response){
+        error:function(response) {
         	alert('Failed : ERROR OCCURED');
     	}
 	});
@@ -306,9 +305,9 @@ function updateHistory(id) {
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){		
+		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful				
 				var historyList = data.firstChild.getElementsByTagName('event');
 				var historyViewList = new String();
@@ -334,12 +333,12 @@ function updateHistory(id) {
 														</li>';
 				}
 				$('#historyList').html(historyViewList);
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to ADDCOMMENT the task : " +id);
 			}
         },
-        error:function(response){
+        error:function(response) {
         	alert('Failed : ERROR OCCURED : ' +response);
     	}
 	});
@@ -349,7 +348,7 @@ function updateHistory(id) {
  * function to make ajax call to update attachments
  * @param id task id
  */
-function updateAttachments(id){	
+function updateAttachments(id) {
 	$('#commentTab').attr("class","");
 	$('#historyTab').attr("class","");
 	$('#attachmentTab').attr("class","active");
@@ -365,10 +364,10 @@ function updateAttachments(id){
 	$.ajax({
 		type:'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){	
+		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful				
 				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
 				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
@@ -394,7 +393,7 @@ function updateAttachments(id){
 				}
 
 				$('#AttchmentsList').html(attachmentViewList);
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to ADDCOMMENT the task : " +id);
 			}
@@ -422,21 +421,21 @@ function deleteComment(id, commentId) {
 		success: function(data){		
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				var commentElementId = "comment_" + commentId;
 				var element = document.getElementById(commentElementId);
-				if (element != null){
+				if (element != null) {
 					element.parentNode.removeChild(element);
-				}else{
+				} else {
 					alert('ERROR OCCURED : element ' +commentElementId +" not found. Please refresh the page");
 				}
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to DELETE COMMENT : " +commentId);
 			}
         },
-        error:function(response){
+        error:function(response) {
         	alert('Failed : ERROR OCCURED : ' +response);
     	}
 	});
@@ -446,7 +445,7 @@ function deleteComment(id, commentId) {
  * function to make ajax call to assign task to assignable user
  * @param id task id
  */
-function assignTask(id){
+function assignTask(id) {
 	var assignee = document.getElementById("assignableUserList").value;
 	var requestUrl = "/"+ appName +"/action?type=assign_task&tid=" +id +"&assignee=" +assignee;
 	
@@ -458,7 +457,7 @@ function assignTask(id){
 		success: function(data){
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				alert("Task ASSIGNTASK success : " +id);
 				
@@ -467,7 +466,7 @@ function assignTask(id){
 				//redirect to task view
 				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
 				
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to ASSIGNTASK the task : " +id);
 				$('#assignTaskModal').modal('hide');
@@ -485,23 +484,23 @@ function assignTask(id){
  * function to make ajax call to retrieve task assignable user list
  * @param id task id
  */
-function assignTaskModalUpdate(id){
+function assignTaskModalUpdate(id) {
 	var requestUrl = "/"+ appName +"/update?type=update_assignableUsers&tid=" +id;
 	
 	$.ajax({
 		type: 'POST',
 		url: httpUrl + requestUrl,
-		success: function(data){	
+		success: function(data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true'){
+			if (success == 'true') {
 				//successful
 				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
 				var userList = data.firstChild.getElementsByTagNameNS(ns2NS ,'user');
 			
 				var userListDisplay = new String();
-				if (userList.length > 0){
+				if (userList.length > 0) {
 					for (var i = 0; i < userList.length; i++) {	
 						userListDisplay = userListDisplay + '<option value="'+userList[i].textContent +'">'+userList[i].textContent +'</option>';
 					}
@@ -510,7 +509,7 @@ function assignTaskModalUpdate(id){
 					document.getElementById('taskAssignBtn').removeAttribute('disabled');
 					document.getElementById('userUnavailableAlert').style.display = "none";
 					
-				}else{
+				} else {
 					//no users available to assign
 					document.getElementById('assignableUserList').innerHTML = userListDisplay;
 					document.getElementById('taskAssignBtn').setAttribute('disabled','disabled');
@@ -518,12 +517,12 @@ function assignTaskModalUpdate(id){
 				}
 				//show modal
 				$('#assignTaskModal').modal();
-			}else{
+			} else {
 				//unsuccessful
 				alert("Unable to retrieve assignable user list : " +id);
 			}
         },
-        error:function(response){
+        error:function(response) {
         	alert('Failed : ERROR OCCURED please refresh');
     	}
 	});	

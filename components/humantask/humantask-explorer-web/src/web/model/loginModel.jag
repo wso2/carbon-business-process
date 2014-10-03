@@ -18,7 +18,7 @@
  */
 
 var message = "";
-if(session.get("loginFailed")){
+if (session.get("loginFailed")) {
 	message = "Username or password invalid!";
 	session.remove("loginFailed");
 }

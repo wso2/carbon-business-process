@@ -36,7 +36,7 @@
 	          <ul class="nav nav-sidebar nav-pills nav-stacked">
 	          	<%
 	          		function updateActiveStatusNavTab(status, button){
-	          			if (status != button){
+	          			if (status != button) {
 	          				return "";
 	          			}
 	          			return "class=\"active\"";
@@ -86,19 +86,19 @@
 	  </div>
 	</div>
 	<ul class="pagination">
-		<% if(pagination != 1){ %>
+		<% if (pagination != 1) { %>
 			<li><a href="inbox?pagination=<%=pagination-1%>">&laquo;</a></li>
 		<% } else { %>
 			<li class="disabled"><a href="#">&laquo;</a></li>			
 		<% } %>
 		<% for(var i = 1; i<=paginatePageCount; i++){ 
-				if(pagination == i){ %>
+				if (pagination == i) { %>
 					<li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
 			<% }else { %>
 					<li><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
 			<% } %>
 		<% } %>
-		<% if(pagination != paginatePageCount){ %>
+		<% if (pagination != paginatePageCount) { %>
 			<li><a href="inbox?pagination=<%=pagination+1%>">&raquo;</a></li>
 		<% } else { %>
 			<li class="disabled"><a href="#">&raquo;</a></li>			

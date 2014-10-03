@@ -53,7 +53,7 @@
 		
 	/*
 	 * 
-	 * SAMPLE EXPECTED RESPONSES
+	 * SAMPLE EXPECTED RESPONSES FOR LOADTASK
 	
 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 	  <soapenv:Body>
@@ -102,7 +102,7 @@
 	
 	*/
 	
-	/*
+	/* SAMPLE EXPECTED RESPONSES FOR GETCOMMENTS
 	 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 	   <soapenv:Body>
 	      <ns2:getCommentsResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
