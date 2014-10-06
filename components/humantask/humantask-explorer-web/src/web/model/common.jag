@@ -1,0 +1,42 @@
+<%
+/*
+ * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+	var log = new Log();
+	log.debug("START : Common.jag");
+	
+	var data = {
+		title : "WS Humantask Explorer",
+		author: "WSO2 Business Process Server",
+		footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved."
+	};
+	
+	//construct backend URI (asume webapp deployed in BPS)
+	var BPSUrl = application.get('bpsURI');
+	if (BPSUrl == null || BPSUrl === "") {
+		var process = require("process");
+		var localIP = process.getProperty('carbon.local.ip');
+		var httpsPort = process.getProperty('mgt.transport.https.port');
+		BPSUrl = "https://" +localIP +":" +httpsPort;
+		application.put('bpsURI', BPSUrl);
+		
+		log.debug("Back-end BPS URI :" +BPSUrl);
+	}
+	
+	log.debug("END : Common.jag");
+%>

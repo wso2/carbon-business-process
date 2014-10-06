@@ -1,0 +1,142 @@
+<%
+/*
+ * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+%>
+<div class="row">
+	<ol class="breadcrumb">
+	  <li><a href="#">Home</a></li>
+	  <li><a href="inbox">Inbox</a></li>
+	  <li class="active">Task : <%=id%></li>
+	</ol>
+</div>
+<div class="row">
+	<div class="panel panel-primary">
+	  <div class="panel-heading">
+	  		Task Abstract : <%=taskAbstract.ns1NS::presentationName.text()%>
+	  </div>
+	  <table class="table">
+	    <tbody>
+	    	<tr>
+	    		<th>Subject</th>
+				<td colspan='2'><%=taskAbstract.ns1NS::presentationSubject.text()%></td>
+	    	</tr>
+	    	<tr>
+	    		<th>Description</th>
+				<td colspan='2'><%=taskAbstract.ns1NS::presentationDescription.text()%></td>
+	    	</tr>
+	    	<tr>	
+	    		<th>Summary</th>
+				<td colspan='1'>
+					<p><small><b>Type : </b><%=taskAbstract.ns1NS::taskType.text()%></small></p>
+					<p><small><b>Owner : </b><%=taskAbstract.ns1NS::actualOwner.text()%></small></p>
+					<p><small><b>Created Time &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.ns1NS::createdTime.text()%></small></p>
+					<p><small><b>Activation Time: </b><%=taskAbstract.ns1NS::activationTime.text()%></small></p>
+					<p><small><b>Last Modified &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.ns1NS::updatedTime.text()%></small></p>
+				</td>
+				<td colspan='1'>
+					<p><small><b>Status : </b><%=taskAbstract.ns1NS::status.text()%></small></p>
+					<p><small><b>Priority : </b><%=taskAbstract.ns1NS::priority.text()%></small></p>
+				</td>
+	    	</tr>
+	    </tbody>
+	  </table>
+	</div>
+	<div id="taskActionBtns" class="btn-group" align="center">
+	  <%
+	    var taskStatus = taskAbstract.ns1NS::status.text();
+	    if (taskStatus == 'RESERVED') {%>
+	  		<button onclick="startTask(<%=id%>)" type="button" class="btn btn-default">Start</button>
+	  		<button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
+	  		<button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
+	  		<button type="button" class="btn btn-default">Comment</button>
+	  		<button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
+	  <%} else if (taskStatus == 'IN_PROGRESS') {%>
+	  		<button onclick="stopTask(<%=id%>)" type="button" class="btn btn-default">Stop</button>
+	  		<button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
+	  		<button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
+	  		<button type="button" class="btn btn-default">Comment</button>
+	  		<button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
+	  		<button onclick="failTask(<%=id%>)" type="button" class="btn btn-default">Fail</button>
+	  <%} else if (taskStatus == 'SUSPENDED') {%>
+	  		<button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
+	  		<button type="button" class="btn btn-default">Comment</button>
+	  
+	  <%} else if (taskStatus == 'COMPLETED') {%>
+	  		<button type="button" class="btn btn-default">Comment</button>
+	  <%} else if(taskStatus == 'FAILED') {%>
+	  		<button type="button" class="btn btn-default">Comment</button>
+	  <%}%>
+	</div>
+</div>
+<br/>
+<br/>
+<div class="row" name="additionalInfoSection">
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="active" id="commentTab">
+			<a href="#additionalInfoSection" onclick="updateComments(<%=id%>)">
+				Comments
+				<span class="glyphicon glyphicon-comment"></span>
+			</a>
+		</li>
+		<li id="historyTab">
+			<a href="#additionalInfoSection" onclick="updateHistory(<%=id%>)">History</a>
+		</li>
+		<li id="attachmentTab">
+			<a href="#additionalInfoSection" onclick="updateAttachments(<%=id%>)">Attachments</a>
+		</li>
+		
+		<li id="addComment" style="float:right;">
+			<a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
+				<span class="glyphicon glyphicon-plus"></span>
+			</a>
+		</li>
+	</ul>
+	<ul class="list-group" id="commentList">
+		<%
+		  if (commentList != null) {
+		  	for (var i=0; i < commentList.length(); i++) {%>
+			<%
+				var commentID = commentList[i].ns1NS::id.text();
+				var commentLiID = "comment_" + commentID;
+			%>
+			<li class="list-group-item" id="<%=commentLiID%>">
+				<div><%=commentList[i].ns1NS::addedBy.text()%> added a comment - 
+					<time id="time">
+						<script>
+							var d = new Date("<%=commentList[i].ns1NS::addedTime.text()%>");
+							document.write(d);
+						</script>
+					</time>
+					<a href="#additionalInfoSection" onclick="deleteComment(<%=id%>, <%=commentID%>)">
+						<span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>
+					</a>
+				</div>
+				<div><%=commentList[i].ns1NS::text.text()%></div>
+			</li>
+		<%	
+			}
+		  }
+		%>
+	</ul>
+	<ul class="list-group" id="historyList" hidden>
+		<li class="list-group-item">not updated !</li>
+	</ul>
+	<ul class="list-group" id="AttchmentsList" hidden>
+		<li class="list-group-item">not implemented !</li>
+	</ul>
+</div>
