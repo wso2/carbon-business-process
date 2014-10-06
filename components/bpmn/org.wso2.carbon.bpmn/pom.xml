@@ -98,6 +98,7 @@
                             !org.wso2.carbon.bpmn.core.internal,
                             org.wso2.carbon.bpmn.core.*; version=${project.version},
                             org.wso2.carbon.bpmn.core.mgt.*; version=${project.version},
+                            org.wso2.carbon.bpmn.core.mgt.model.*; version=${project.version},
                             org.wso2.carbon.bpmn.core.deployment.*; version=${project.version},
                         </Export-Package>
                         <Import-Package>
@@ -108,7 +109,8 @@
                         <!--<Import-Package>-->
                         <!--org.activiti.*,org.osgi.*,org.apache.axis2.*-->
                         <!--</Import-Package>-->
-                        <Axis2Deployer>BPMNDeployer</Axis2Deployer>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Axis2Deployer>BPMDeployer</Axis2Deployer>
                     </instructions>
                 </configuration>
             </plugin>
