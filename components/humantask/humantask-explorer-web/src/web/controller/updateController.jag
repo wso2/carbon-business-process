@@ -29,7 +29,9 @@
 	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
 	var ns1NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
-	
+
+    var responseMsg;
+
 	try {
 		if (updateType == 'update_comments') {
 			//update comments
@@ -40,13 +42,13 @@
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				var responseMsg =  '<update_commentsResponse>\
+				responseMsg =  '<update_commentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getCommentsResponse +'</data>\
 									</update_commentsResponse>';
 				
 			} else {
-				var responseMsg =  '<update_commentsResponse>\
+				responseMsg =  '<update_commentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_commentsResponse>';
@@ -65,13 +67,13 @@
 			
 			if (resultCheck.length() > 0) {
 				//history retrieval success
-				var responseMsg =  '<update_historyResponse>\
+				responseMsg =  '<update_historyResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::loadTaskEventsResponse +'</data>\
 									</update_historyResponse>';
 				
 			} else {
-				var responseMsg =  '<update_historyResponse>\
+				responseMsg =  '<update_historyResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_historyResponse>';
@@ -118,12 +120,12 @@
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				var responseMsg =  '<update_assignableUsersResponse>\
+				responseMsg =  '<update_assignableUsersResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAssignableUserListResponse +'</data>\
 									</update_assignableUsersResponse>';			
 			} else {
-				var responseMsg =  '<update_assignableUsersResponse>\
+				responseMsg =  '<update_assignableUsersResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_assignableUsersResponse>';
@@ -155,12 +157,12 @@
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				var responseMsg =  '<update_attachmentsResponse>\
+				responseMsg =  '<update_attachmentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse +'</data>\
 									</update_attachmentsResponse>';			
 			} else {
-				var responseMsg =  '<update_attachmentsResponse>\
+				responseMsg =  '<update_attachmentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_attachmentsResponse>';
@@ -193,7 +195,7 @@
 
 	} catch (e) {
 		log.error(e);
-		var responseMsg =  '<fault_Response>\
+		responseMsg =  '<fault_Response>\
 								<success>false</success>\
 								<data>' +e.message +'</data>\
 							</fault_Response>';
@@ -205,6 +207,7 @@
 	 * function to retrieve comments
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveComments(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -229,6 +232,7 @@
 	 * function to retrieve history information
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveHistory(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -251,6 +255,7 @@
 	 * function to retrieve list of assignable users
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveAssignableUserList(id) {
 		
@@ -276,6 +281,7 @@
 	 * function to retrieve attachment list
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveAttachments(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
