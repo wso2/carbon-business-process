@@ -30,7 +30,7 @@ function claimTask(id) {
 		url: httpUrl + requestUrl,
 		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;			
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id=" +id;
 			} else {
@@ -57,7 +57,7 @@ function startTask(id) {
 		url: httpUrl + requestUrl,
 		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;					
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
@@ -86,7 +86,7 @@ function stopTask(id) {
 		success: function (data) {
 			
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 
@@ -115,7 +115,7 @@ function releaseTask(id) {
 		url: httpUrl + requestUrl,
 		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
 
@@ -145,7 +145,7 @@ function suspendTask(id) {
 		success: function (data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
@@ -175,7 +175,7 @@ function resumeTask(id) {
 		success: function(data){
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
@@ -205,7 +205,7 @@ function failTask(id) {
 		success: function(data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
@@ -243,11 +243,11 @@ function updateComments(id) {
 		url: httpUrl + requestUrl,
 		success: function(data){
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;		
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
 				var commentList = data.firstChild.getElementsByTagNameNS('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803','comment');				
-				var commentViewList = new String();
+				var commentViewList;
 
 				for (var i = 0; i < commentList.length; i++) {
 					var dateInfo = new Date(commentList[i].getElementsByTagNameNS(ns1NS,'lastModifiedTime')[0].textContent);
@@ -294,7 +294,7 @@ function addComment(id) {
 		dataType: "xml",
 		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
                 $('#addCommentModal').modal('hide');
 			} else {
@@ -339,10 +339,10 @@ function updateHistory(id) {
 		url: httpUrl + requestUrl,
 		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful				
 				var historyList = data.firstChild.getElementsByTagName('event');
-				var historyViewList = new String();
+				var historyViewList;
 				
 				for (var i = 0; i < historyList.length; i++) {
 					var dateInfo = new Date(historyList[i].getElementsByTagName('eventTime')[0].textContent);
@@ -401,7 +401,7 @@ function updateAttachments(id) {
 		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful				
 				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
 				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
@@ -457,7 +457,7 @@ function deleteComment(id, commentId) {
 		success: function(data){		
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				var commentElementId = "comment_" + commentId;
 				var element = document.getElementById(commentElementId);
@@ -496,7 +496,7 @@ function assignTask(id) {
 		success: function(data){
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				$('#assignTaskModal').modal('hide');
 				//redirect to task view
@@ -532,7 +532,7 @@ function assignTaskModalUpdate(id) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
 				var userList = data.firstChild.getElementsByTagNameNS(ns2NS ,'user');

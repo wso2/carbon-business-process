@@ -16,7 +16,6 @@
  * under the License.
  */
 
-var log = new Log();
 
 /**
  * Initialize HT server information

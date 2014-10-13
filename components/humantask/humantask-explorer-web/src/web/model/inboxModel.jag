@@ -18,7 +18,6 @@
  */
 
 	var log = new Log();
-	log.debug("START : inboxModel");
 	
 	//initialize BPS HT service request creator
 	var htRequest = require ('/js/WSHTRequest.js');
@@ -48,9 +47,11 @@
 	try { 
 		var taskXMLList = null;
 		var paginatePageCount = 0;
-		var BPSResponseXML = new XML(htRequest.simpleQueryBasic(statusQuery, pageSize, pageNumber, queryCategory, 
+		var BPSResponseXML = new XML(htRequest.simpleQueryBasic(statusQuery, pageSize, pageNumber, queryCategory,
 																						queryOrder, queryOrderBy));
-		log.debug('BPS RESPONSE : ' +BPSResponseXML);
+        if (log.isDebugEnabled()) {
+            log.debug('BPS RESPONSE : ' + BPSResponseXML);
+        }
 
 		/*
 		 * Expected Sample response
@@ -87,6 +88,5 @@
 		log.error(e);
 		response.sendRedirect('login');
 	}
-	
-	log.debug("END : inboxModel");
+
 %>

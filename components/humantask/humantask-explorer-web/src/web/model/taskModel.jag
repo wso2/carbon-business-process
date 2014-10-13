@@ -18,22 +18,21 @@
  */
 
 	var log = new Log();
-	log.debug("START : taskModel");
 	
 	//initialize BPS HT service request creator
 	var htRequest = require ('/js/WSHTRequest.js');
 	htRequest.initHTServerInfo(BPSUrl, session.get('BPSSessionCookie'));
 	
 	var id = request.getParameter("id");
-	log.debug('Task ID :' +id);
 	
 	try {
 		var taskAbstract = null;
 		var commentList = null;
 		//Retrieve task Details
 		var result = new XML(htRequest.loadTask(id));
-		log.debug('loadTask BPS RESPONSE : ' +result);
-		
+        if (log.isDebugEnabled()) {
+            log.debug('loadTask BPS RESPONSE : ' + result);
+        }
 		//defining namespaces
 		var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 		var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
@@ -43,7 +42,9 @@
 		
 		//retrieve comments
 		var commentResults = new XML(htRequest.getComments(id));
-		log.debug('getComments BPS RESPONSE :' +commentResults);
+        if (log.isDebugEnabled()) {
+            log.debug('getComments BPS RESPONSE :' + commentResults);
+        }
 			
 		commentList = commentResults.soapenvNS::Body.ns2NS::getCommentsResponse.ns2NS::comment;
 	} catch (e) {
@@ -126,8 +127,6 @@
 	   </soapenv:Body>
 	</soapenv:Envelope>
 	  */
-	
-	log.debug("END : taskModel");
 %>
 
 

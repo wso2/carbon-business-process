@@ -19,12 +19,14 @@
 
 	include ("/model/common.jag");
 	include("/model/BPSWSRequest.jag");
-	
+
+    var log = new Log();
 	var taskId = request.getParameter('tid');
 	var updateType = request.getParameter('type');
-	
-	log.debug('Task Id : ' +taskId);
-	log.debug('Update Type : ' +updateType);
+    if (log.isDebugEnabled()) {
+        log.debug('Task Id : ' + taskId);
+        log.debug('Update Type : ' + updateType);
+    }
 	
 	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
@@ -33,10 +35,12 @@
     var responseMsg;
 
 	try {
-		if (updateType == 'update_comments') {
+		if (updateType === 'update_comments') {
 			//update comments
-			var result = retrieveComments(taskId);		
-			log.debug('COMMENTS RESPONSE: ' +result);
+			var result = retrieveComments(taskId);
+            if (log.isDebugEnabled()) {
+                log.debug('COMMENTS RESPONSE: ' + result);
+            }
 	
 			var resultCheck = result.soapenvNS::Body.ns2NS::getCommentsResponse;
 			
@@ -58,10 +62,12 @@
 			response.content = responseMsg;
 			
 			
-		} else if (updateType == 'update_history') {
+		} else if (updateType === 'update_history') {
 			//update History
 			var result = retrieveHistory(taskId);
-			log.debug('HISTORY RESPONSE: ' +result);
+            if (log.isDebugEnabled()) {
+                log.debug('HISTORY RESPONSE: ' + result);
+            }
 	
 			var resultCheck = result.soapenvNS::Body.ns2NS::loadTaskEventsResponse;
 			
@@ -111,11 +117,12 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 				*/
-		} else if (updateType == 'update_assignableUsers') {
+		} else if (updateType === 'update_assignableUsers') {
 			//retrive assignable user list
 			var result = retrieveAssignableUserList(taskId);
-			log.debug('RESULT : ' +result);
-			
+            if (log.isDebugEnabled()) {
+                log.debug('RESULT : ' + result);
+            }
 			var resultCheck = result.soapenvNS::Body.ns2NS::getAssignableUserListResponse;
 			
 			if (resultCheck.length() > 0) {
@@ -148,11 +155,12 @@
 				FAILURE
 				
 			*/
-		} else if (updateType == 'update_attachments') {
+		} else if (updateType === 'update_attachments') {
 			//retrive attachment list
 			var result = retrieveAttachments(taskId);
-			log.debug('RESULT : ' +result);
-			
+            if (log.isDebugEnabled()) {
+                log.debug('RESULT : ' + result);
+            }
 			var resultCheck = result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse;
 			
 			if (resultCheck.length() > 0) {

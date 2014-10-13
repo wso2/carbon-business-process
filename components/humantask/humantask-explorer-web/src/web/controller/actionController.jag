@@ -20,7 +20,6 @@
 	include ("/model/common.jag");
 	
 	var log = new Log();
-	log.debug("START : actionController");
 	
 	//initialize BPS HT service request creator
 	var htRequest = require ('/js/WSHTRequest.js');
@@ -28,14 +27,15 @@
 
 	var taskId = request.getParameter('tid');
 	var actionType = request.getParameter('type');
-	log.debug('Task id : ' +taskId +'  Task action : ' +actionType);
-	
+    if (log.isDebugEnabled()) {
+        log.debug('Task id : ' + taskId + '  Task action : ' + actionType);
+    }
 	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
 
     var responseMsg;
 	try {
-		if (actionType == 'claim_task') {
+		if (actionType === 'claim_task') {
 			//claim specified task
 
             var result = new XML(htRequest.claimTask(taskId));
@@ -70,7 +70,7 @@
 			   </soapenv:Body>
 			</soapenv:Envelope>
 			 */
-		} else if (actionType == 'start_task') {
+		} else if (actionType === 'start_task') {
 
 			var result =  new XML(htRequest.startTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::startResponse;
@@ -105,7 +105,7 @@
 			</soapenv:Envelope>
 			*/
 			
-		} else if (actionType == 'stop_task') {
+		} else if (actionType === 'stop_task') {
 			var result = new XML(htRequest.stopTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::stopResponse;
 			
@@ -140,7 +140,7 @@
 				</soapenv:Envelope>
 				*/
 			
-		} else if (actionType == 'release_task') {
+		} else if (actionType === 'release_task') {
 			var result = new XML(htRequest.releaseTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::releaseResponse;
 			
@@ -176,7 +176,7 @@
 				
 				*/
 			
-		} else if (actionType == 'suspend_task') {
+		} else if (actionType === 'suspend_task') {
 			var result = new XML(htRequest.suspendTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::suspendResponse;
 					
@@ -211,7 +211,7 @@
 				</soapenv:Envelope>
 				*/
 			
-		} else if (actionType == 'resume_task') {
+		} else if (actionType === 'resume_task') {
 			var result = new XML(htRequest.resumeTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::resumeResponse;
 			
@@ -247,7 +247,7 @@
 				</soapenv:Envelope>
 	
 				*/
-		} else if (actionType == 'fail_task') {
+		} else if (actionType === 'fail_task') {
 			var result = new XML(htRequest.failTask(taskId));
 			var resultCheck = result.soapenvNS::Body.ns2NS::failResponse;
 			
@@ -283,12 +283,11 @@
 				</soapenv:Envelope>
 	
 				*/
-		} else if (actionType == "addComment_task") {
+		} else if (actionType === "addComment_task") {
 			//format of request : <addComment><text>Comment</text></addComment>
 			//the Comment contains text data wrapped by <![CDATA[ text content ]]
 			var requestPayload = XML(request.getContent());
-			log.debug('COMMENT REQUEST PAYLOAD : ' +requestPayload.text);
-	
+
 			//need to rewrap text content by CDATA 
 			var result = new XML(htRequest.addComment(taskId, '<![CDATA[' +requestPayload.text +']]>'));
 			var resultCheck = result.soapenvNS::Body.ns2NS::addCommentResponse;
@@ -325,7 +324,7 @@
 			   </soapenv:Body>
 			</soapenv:Envelope>
 			 */
-		} else if (actionType == "deleteComment") {
+		} else if (actionType === "deleteComment") {
 			var result = new XML(htRequest.deleteComment(taskId, request.getParameter('commentId')));
 			var resultCheck = result.soapenvNS::Body.ns2NS::deleteCommentResponse;
 			
@@ -348,7 +347,7 @@
 			</soapenv:Envelope> 
 			*/
 			
-		} else if (actionType == "assign_task") {
+		} else if (actionType === "assign_task") {
 			var userName = request.getParameter('assignee');
 			var result = new XML(htRequest.assignTask(taskId, userName));
 			var resultCheck = result.soapenvNS::Body.ns2NS::delegateResponse;

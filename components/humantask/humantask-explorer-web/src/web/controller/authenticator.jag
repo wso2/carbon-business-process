@@ -69,31 +69,30 @@
 							</soapenv:Body>\
 						</soapenv:Envelope>';
 
-		try {
-			httpAuth.send(payload);
-			var BPSResponse = httpAuth.responseText;
-			log.debug('Login RESPONSE:' +httpAuth.responseText.toString());
 
-			var returnStart = BPSResponse.indexOf('<ns:return>') + '<ns:return>'.length;
-			var returnEnd = BPSResponse.indexOf('</ns:return>');
-			var isLoginSuccess = BPSResponse.substring(returnStart, returnEnd);
+        httpAuth.send(payload);
+        var BPSResponse = httpAuth.responseText;
+        if (log.isDebugEnabled()) {
+            log.debug('Login RESPONSE:' + httpAuth.responseText.toString());
+        }
 
-			log.debug('Login Success:' +isLoginSuccess);
+        var returnStart = BPSResponse.indexOf('<ns:return>') + '<ns:return>'.length;
+        var returnEnd = BPSResponse.indexOf('</ns:return>');
+        var isLoginSuccess = BPSResponse.substring(returnStart, returnEnd);
 
-			if (isLoginSuccess == 'true') {
-				//retrieve session cookie with BPS and store in session
-				var cookie = httpAuth.getResponseHeader('Set-Cookie').split(';')[0];
-				session.put('BPSSessionCookie' , cookie);
-				
-				log.debug('Session cookie : ' +cookie);
-				return true;
-			} else {
-				log.debug('Login in to BPS Failed');
-				return false;
-			}
-		} catch(e) {
-			 log.error(e);
-			 throw e;
-		}
+        if (log.isDebugEnabled()) {
+            log.debug('Login Success:' + isLoginSuccess);
+        }
+
+        if (isLoginSuccess === 'true') {
+            //retrieve session cookie with BPS and store in session
+            var cookie = httpAuth.getResponseHeader('Set-Cookie').split(';')[0];
+            session.put('BPSSessionCookie' , cookie);
+            return true;
+        } else {
+            log.debug('Login in to BPS Failed');
+            return false;
+        }
+
 	}
 %>
