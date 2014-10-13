@@ -47,35 +47,35 @@ public class ActivitiEngineBuilder {
 	 * @throws BPSException  Throws in the event of failure of ProcessEngine
 	 */
 
-	public ProcessEngine buildEngine() throws BPSException {
-		ProcessEngine engine = null;
-		try {
-			String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-			String activitiConfigPath = carbonConfigDirPath + File.separator +
-			                            BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-			File activitiConfigFile = new File(activitiConfigPath);
-			ProcessEngineConfigurationImpl processEngineConfigurationImpl =
-					(ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
-									                                                           new FileInputStream(
-											                                                           activitiConfigFile));
-			// we have to build the process engine first to initialize session factories.
-			engine = processEngineConfigurationImpl.buildProcessEngine();
-			processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-			                                                         new BPSUserManagerFactory());
-			processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-			                                                         new BPSGroupManagerFactory());
+    public ProcessEngine buildEngine() throws BPSException {
+        ProcessEngine engine = null;
+        try {
+            String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+            String activitiConfigPath = carbonConfigDirPath + File.separator +
+                    BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+            File activitiConfigFile = new File(activitiConfigPath);
+            ProcessEngineConfigurationImpl processEngineConfigurationImpl =
+                    (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
+                            new FileInputStream(
+                                    activitiConfigFile));
+            // we have to build the process engine first to initialize session factories.
+            engine = processEngineConfigurationImpl.buildProcessEngine();
+            processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
+                    new BPSUserManagerFactory());
+            processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
+                    new BPSGroupManagerFactory());
 
-			dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
-			                                                   .getDataSourceJndiName();
+            dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
+                    .getDataSourceJndiName();
 
-		} catch (FileNotFoundException e) {
-			String msg = "Failed to create an Activiti engine. Activiti configuration file not found";
-			log.error(msg, e);
-			throw new BPSException(msg, e);
-		}
-		return engine;
-	}
-	public String getDataSourceJndiName() {
+        } catch (FileNotFoundException e) {
+            String msg = "Failed to create an Activiti engine. Activiti configuration file not found";
+            throw new BPSException(msg, e);
+        }
+        return engine;
+    }
+
+    public String getDataSourceJndiName() {
 		return dataSourceJndiName;
 	}
 }

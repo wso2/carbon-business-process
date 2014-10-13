@@ -22,6 +22,7 @@ package org.wso2.carbon.bpmn.core.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
+import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 
 /**
  * Initializes and starts the BPMN database.
@@ -35,16 +36,9 @@ public class DataSourceHandler {
 
 
     public void initDataSource(String jndiDataSourceName) throws
-                                                          BPMNMetaDataTableCreationException {
-
+            BPMNMetaDataTableCreationException, DatabaseConfigurationException {
         database = new Database(jndiDataSourceName);
-        try {
-            database.init();
-        } catch (Exception e) {
-            String errMsg = "BPMN database Initialization failed.";
-            log.error(errMsg, e);
-            throw new BPMNMetaDataTableCreationException(errMsg, e);
-        }
+        database.init();
     }
 
     public void closeDataSource(){

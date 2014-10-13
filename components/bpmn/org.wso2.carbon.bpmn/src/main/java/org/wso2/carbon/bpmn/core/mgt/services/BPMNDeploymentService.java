@@ -124,16 +124,10 @@ public class BPMNDeploymentService {
         }
     }
 
-    public void undeploy(String deploymentName) throws BPSException {
+    public void undeploy(String deploymentName){
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        try {
-            TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-            tenantRepository.undeploy(deploymentName, false);
-        } catch (Exception e) {
-            String msg = "Failed to undeploy the BPMN deployment: " + deploymentName;
-            log.error(msg, e);
-            throw new BPSException(msg, e);
-        }
+        TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
+        tenantRepository.undeploy(deploymentName, false);
     }
 
     private String encodeToString(BufferedImage image, String type) {

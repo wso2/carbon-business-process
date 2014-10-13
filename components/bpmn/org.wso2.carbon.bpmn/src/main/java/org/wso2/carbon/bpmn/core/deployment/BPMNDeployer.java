@@ -99,7 +99,6 @@ public class BPMNDeployer extends AbstractDeployer {
 
         } catch (DeploymentException e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentFileData.getAbsolutePath();
-            log.error(errorMessage, e);
             throw new DeploymentException(errorMessage, e);
         }
     }
@@ -130,15 +129,9 @@ public class BPMNDeployer extends AbstractDeployer {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
-        try {
-            String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
-            tenantRepository.undeploy(deploymentName, true);
+        String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
+        tenantRepository.undeploy(deploymentName, true);
 
-        } catch (Exception e) {
-            String errorMessage = "Failed to undeploy the archive: " + bpmnArchivePath;
-            log.error(errorMessage, e);
-            throw new DeploymentException(errorMessage, e);
-        }
 
     }
 
@@ -152,7 +145,6 @@ public class BPMNDeployer extends AbstractDeployer {
         String axisRepoPath = configurationContext.getAxisConfiguration().getRepository().getPath();
         if (CarbonUtils.isURL(axisRepoPath)) {
             String msg = "URL Repositories are not supported: " + axisRepoPath;
-            log.error(msg);
             throw new BPSException(msg);
         }
         File tenantsRepository = new File(axisRepoPath);
@@ -162,7 +154,6 @@ public class BPMNDeployer extends AbstractDeployer {
             boolean status = bpmnRepo.mkdir();
             if (!status) {
                 String msg = "Failed to create BPMN repository folder " + bpmnRepo.getAbsolutePath() + ".";
-                log.error(msg);
                 throw new BPSException(msg);
             }
         }
