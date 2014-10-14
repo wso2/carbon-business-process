@@ -30,17 +30,18 @@ function claimTask(id) {
 		url: httpUrl + requestUrl,
 		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;			
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id=" +id;
 			} else {
 				//unsuccessful
-				alert("Unable to claim the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Claim task");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function (response) {
-        	console.error(response);
-        	alert('Failed : ERROR OCCURED please refresh page');
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 	});
 }
@@ -56,14 +57,18 @@ function startTask(id) {
 		url: httpUrl + requestUrl,
 		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;					
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task Start success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
 				//unsuccessful
-				alert("Unable to start the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Start task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -81,15 +86,19 @@ function stopTask(id) {
 		success: function (data) {
 			
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task STOP success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 
 			} else {
 				//unsuccessful
-				alert("Unable to start the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Stop task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -106,15 +115,19 @@ function releaseTask(id) {
 		url: httpUrl + requestUrl,
 		success: function (data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task RELEASE success : " +id);
 				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
 
 			} else {
 				//unsuccessful
-				alert("Unable to RELEASE the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Release task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -132,14 +145,18 @@ function suspendTask(id) {
 		success: function (data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task SUSPEND success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
 				//unsuccessful
-				alert("Unable to SUSPEND the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Suspend task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -158,14 +175,18 @@ function resumeTask(id) {
 		success: function(data){
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task RESUME success : " +id);
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
 				//unsuccessful
-				alert("Unable to RESUME the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Resume task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -184,14 +205,18 @@ function failTask(id) {
 		success: function(data) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success == 'true') {
-				//successful			
-				alert("Task FAIL success : " +id);
+			if (success === 'true') {
+				//successful
 				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
 			} else {
 				//unsuccessful
-				alert("Unable to FAIL the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Fail task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -218,11 +243,11 @@ function updateComments(id) {
 		url: httpUrl + requestUrl,
 		success: function(data){
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;		
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
 				var commentList = data.firstChild.getElementsByTagNameNS('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803','comment');				
-				var commentViewList = new String();
+				var commentViewList;
 
 				for (var i = 0; i < commentList.length; i++) {
 					var dateInfo = new Date(commentList[i].getElementsByTagNameNS(ns1NS,'lastModifiedTime')[0].textContent);
@@ -241,8 +266,13 @@ function updateComments(id) {
 				$('#commentList').html(commentViewList);
 			} else {
 				//unsuccessful
-				alert("Unable to update comments the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Update Comments task");
+                $('#additionalInfoErr').show();
 			}
+        },
+        error:function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
         }
 	});
 }
@@ -264,16 +294,18 @@ function addComment(id) {
 		dataType: "xml",
 		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task ADDCOMMENT success : " +id);
+                $('#addCommentModal').modal('hide');
 			} else {
 				//unsuccessful
-				alert("Unable to ADDCOMMENT the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Add Comment task");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function(response) {
-        	alert('Failed : ERROR OCCURED');
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 	});
 
@@ -307,10 +339,10 @@ function updateHistory(id) {
 		url: httpUrl + requestUrl,
 		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful				
 				var historyList = data.firstChild.getElementsByTagName('event');
-				var historyViewList = new String();
+				var historyViewList;
 				
 				for (var i = 0; i < historyList.length; i++) {
 					var dateInfo = new Date(historyList[i].getElementsByTagName('eventTime')[0].textContent);
@@ -335,11 +367,13 @@ function updateHistory(id) {
 				$('#historyList').html(historyViewList);
 			} else {
 				//unsuccessful
-				alert("Unable to ADDCOMMENT the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Update History task");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function(response) {
-        	alert('Failed : ERROR OCCURED : ' +response);
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 	});
 }
@@ -367,13 +401,13 @@ function updateAttachments(id) {
 		success: function(data) {
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful				
 				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
 				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
 				var attachmentList = data.firstChild.getElementsByTagNameNS(ns2NS,'info');
 				
-				var attachmentViewList = new String();
+				var attachmentViewList = '';
 				for (var i = 0; i < attachmentList.length; i++) {					
 					var dateInfo = new Date(attachmentList[i].getElementsByTagNameNS(ns1NS,'attachedTime')[0].textContent);
 					
@@ -395,11 +429,13 @@ function updateAttachments(id) {
 				$('#AttchmentsList').html(attachmentViewList);
 			} else {
 				//unsuccessful
-				alert("Unable to ADDCOMMENT the task : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to Update Attachements task");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function(response){
-        	alert('Failed : ERROR OCCURED : ' +response);
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 		
 	});
@@ -421,22 +457,25 @@ function deleteComment(id, commentId) {
 		success: function(data){		
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				var commentElementId = "comment_" + commentId;
 				var element = document.getElementById(commentElementId);
 				if (element != null) {
 					element.parentNode.removeChild(element);
 				} else {
-					alert('ERROR OCCURED : element ' +commentElementId +" not found. Please refresh the page");
+                    $('#InfoErrMsg').html("ERROR : element " +commentElementId +" not found. Please refresh the page");
+                    $('#additionalInfoErr').show();
 				}
 			} else {
 				//unsuccessful
-				alert("Unable to DELETE COMMENT : " +commentId);
+                $('#InfoErrMsg').html("ERROR : Unable to Delete Comment task");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function(response) {
-        	alert('Failed : ERROR OCCURED : ' +response);
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 	});
 }
@@ -457,23 +496,22 @@ function assignTask(id) {
 		success: function(data){
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
-				alert("Task ASSIGNTASK success : " +id);
-				
 				$('#assignTaskModal').modal('hide');
-				
 				//redirect to task view
 				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
 				
 			} else {
 				//unsuccessful
-				alert("Unable to ASSIGNTASK the task : " +id);
-				$('#assignTaskModal').modal('hide');
+                $('#InfoErrMsg').html("ERROR : Unable to Assign task");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function(response){
-        	alert('Failed : ERROR OCCURED');
+            $('#assignTaskModal').modal('hide');
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 		
 	});
@@ -494,36 +532,38 @@ function assignTaskModalUpdate(id) {
 
 			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
-			if (success == 'true') {
+			if (success === 'true') {
 				//successful
 				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
 				var userList = data.firstChild.getElementsByTagNameNS(ns2NS ,'user');
-			
-				var userListDisplay = new String();
+
+                var userListDisplay = '';
 				if (userList.length > 0) {
 					for (var i = 0; i < userList.length; i++) {	
 						userListDisplay = userListDisplay + '<option value="'+userList[i].textContent +'">'+userList[i].textContent +'</option>';
 					}
 					
-					document.getElementById('assignableUserList').innerHTML = userListDisplay;
-					document.getElementById('taskAssignBtn').removeAttribute('disabled');
-					document.getElementById('userUnavailableAlert').style.display = "none";
+					$('#assignableUserList').html(userListDisplay);
+					$('#taskAssignBtn').removeAttr('disabled');
+					$('#userUnavailableAlert').hide();
 					
 				} else {
 					//no users available to assign
-					document.getElementById('assignableUserList').innerHTML = userListDisplay;
-					document.getElementById('taskAssignBtn').setAttribute('disabled','disabled');
-					document.getElementById('userUnavailableAlert').style.display = "block";
+					$('#assignableUserList').html(userListDisplay);
+					$('#taskAssignBtn').attr('disabled','disabled');
+					$('#userUnavailableAlert').show();
 				}
 				//show modal
 				$('#assignTaskModal').modal();
 			} else {
 				//unsuccessful
-				alert("Unable to retrieve assignable user list : " +id);
+                $('#InfoErrMsg').html("ERROR : Unable to AssignTask Modal Update Failed");
+                $('#additionalInfoErr').show();
 			}
         },
         error:function(response) {
-        	alert('Failed : ERROR OCCURED please refresh');
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
     	}
 	});	
 	

@@ -18,7 +18,6 @@
  */
 
 	var log = new Log();
-	log.debug("START : allTaskModel");
 	
 	//initialize BPS HT service request creator
 	var htRequest = require ('/js/WSHTRequest.js');
@@ -57,7 +56,9 @@
 			var paginatePageCount = 0;
 			var BPSResponseXML = new XML(htRequest.simpleQueryAdvance(taskStatus, pageSize, pageNumber, taskCategory, 
 																		queryOrder, queryOrderBy, createdDate, taskName));
-			log.debug('simpleQueryAdvance RESPONSE : ' +BPSResponseXML);
+            if (log.isDebugEnabled()) {
+                log.debug('simpleQueryAdvance RESPONSE : ' + BPSResponseXML);
+            }
 			
 			var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 			var ns1NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
@@ -74,6 +75,5 @@
 		//no need to process search because user havn't enter search data
 		var queryReceived = false;
 	}
-	
-	log.debug("END : allTaskModel");
+
 %>

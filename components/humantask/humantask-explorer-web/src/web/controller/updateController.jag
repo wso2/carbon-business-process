@@ -19,34 +19,40 @@
 
 	include ("/model/common.jag");
 	include("/model/BPSWSRequest.jag");
-	
+
+    var log = new Log();
 	var taskId = request.getParameter('tid');
 	var updateType = request.getParameter('type');
-	
-	log.debug('Task Id : ' +taskId);
-	log.debug('Update Type : ' +updateType);
+    if (log.isDebugEnabled()) {
+        log.debug('Task Id : ' + taskId);
+        log.debug('Update Type : ' + updateType);
+    }
 	
 	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
 	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
 	var ns1NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
-	
+
+    var responseMsg;
+
 	try {
-		if (updateType == 'update_comments') {
+		if (updateType === 'update_comments') {
 			//update comments
-			var result = retrieveComments(taskId);		
-			log.debug('COMMENTS RESPONSE: ' +result);
+			var result = retrieveComments(taskId);
+            if (log.isDebugEnabled()) {
+                log.debug('COMMENTS RESPONSE: ' + result);
+            }
 	
 			var resultCheck = result.soapenvNS::Body.ns2NS::getCommentsResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				var responseMsg =  '<update_commentsResponse>\
+				responseMsg =  '<update_commentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getCommentsResponse +'</data>\
 									</update_commentsResponse>';
 				
 			} else {
-				var responseMsg =  '<update_commentsResponse>\
+				responseMsg =  '<update_commentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_commentsResponse>';
@@ -56,22 +62,24 @@
 			response.content = responseMsg;
 			
 			
-		} else if (updateType == 'update_history') {
+		} else if (updateType === 'update_history') {
 			//update History
 			var result = retrieveHistory(taskId);
-			log.debug('HISTORY RESPONSE: ' +result);
+            if (log.isDebugEnabled()) {
+                log.debug('HISTORY RESPONSE: ' + result);
+            }
 	
 			var resultCheck = result.soapenvNS::Body.ns2NS::loadTaskEventsResponse;
 			
 			if (resultCheck.length() > 0) {
 				//history retrieval success
-				var responseMsg =  '<update_historyResponse>\
+				responseMsg =  '<update_historyResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::loadTaskEventsResponse +'</data>\
 									</update_historyResponse>';
 				
 			} else {
-				var responseMsg =  '<update_historyResponse>\
+				responseMsg =  '<update_historyResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_historyResponse>';
@@ -109,21 +117,22 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 				*/
-		} else if (updateType == 'update_assignableUsers') {
+		} else if (updateType === 'update_assignableUsers') {
 			//retrive assignable user list
 			var result = retrieveAssignableUserList(taskId);
-			log.debug('RESULT : ' +result);
-			
+            if (log.isDebugEnabled()) {
+                log.debug('RESULT : ' + result);
+            }
 			var resultCheck = result.soapenvNS::Body.ns2NS::getAssignableUserListResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				var responseMsg =  '<update_assignableUsersResponse>\
+				responseMsg =  '<update_assignableUsersResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAssignableUserListResponse +'</data>\
 									</update_assignableUsersResponse>';			
 			} else {
-				var responseMsg =  '<update_assignableUsersResponse>\
+				responseMsg =  '<update_assignableUsersResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_assignableUsersResponse>';
@@ -146,21 +155,22 @@
 				FAILURE
 				
 			*/
-		} else if (updateType == 'update_attachments') {
+		} else if (updateType === 'update_attachments') {
 			//retrive attachment list
 			var result = retrieveAttachments(taskId);
-			log.debug('RESULT : ' +result);
-			
+            if (log.isDebugEnabled()) {
+                log.debug('RESULT : ' + result);
+            }
 			var resultCheck = result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				var responseMsg =  '<update_attachmentsResponse>\
+				responseMsg =  '<update_attachmentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse +'</data>\
 									</update_attachmentsResponse>';			
 			} else {
-				var responseMsg =  '<update_attachmentsResponse>\
+				responseMsg =  '<update_attachmentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_attachmentsResponse>';
@@ -193,7 +203,7 @@
 
 	} catch (e) {
 		log.error(e);
-		var responseMsg =  '<fault_Response>\
+		responseMsg =  '<fault_Response>\
 								<success>false</success>\
 								<data>' +e.message +'</data>\
 							</fault_Response>';
@@ -205,6 +215,7 @@
 	 * function to retrieve comments
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveComments(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -229,6 +240,7 @@
 	 * function to retrieve history information
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveHistory(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -251,6 +263,7 @@
 	 * function to retrieve list of assignable users
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveAssignableUserList(id) {
 		
@@ -276,6 +289,7 @@
 	 * function to retrieve attachment list
 	 * @param  id task Id
 	 * @return XML response payload
+     * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
 	 */
 	function retrieveAttachments(id) {
 		var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\

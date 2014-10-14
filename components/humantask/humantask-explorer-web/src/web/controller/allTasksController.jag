@@ -17,9 +17,6 @@
  * under the License.
  */
 
-	var log = new Log();
-	log.debug("START : allTasksController");
-
 	var authSuccess = session.get("authSuccess");
 	if (!authSuccess) {
 		response.sendRedirect("login");
@@ -31,6 +28,5 @@
 		include("/template/allTasksPoolView.jag");
 		include("/template/partials/footer.jag");
 	}
-	
-	log.debug("END : allTasksController");
+
 %>

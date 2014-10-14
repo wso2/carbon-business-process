@@ -17,9 +17,6 @@
  * under the License.
  */
 
-	var log = new Log();
-	log.debug("START : taskPoolController");
-
 	var authSuccess = session.get("authSuccess");
 	if (!authSuccess) {
 		response.sendRedirect("login");
@@ -33,6 +30,4 @@
 		}
 		include("/template/partials/footer.jag");
 	}
-	
-	log.debug("END : taskPoolController");
 %>

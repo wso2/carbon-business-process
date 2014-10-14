@@ -28,7 +28,7 @@
 		include("/template/modals/addCommentModal.jag");
 		
 		var user = session.get('userName');
-		if (user == taskAbstract.ns1NS::actualOwner.text()) {
+		if (user === taskAbstract.ns1NS::actualOwner.text()) {
 			//This task belongs to this user
 			include("/template/inboxTaskView.jag");
 		} else {

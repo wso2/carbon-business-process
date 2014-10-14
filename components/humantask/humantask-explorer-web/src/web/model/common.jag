@@ -18,7 +18,6 @@
  */
 
 	var log = new Log();
-	log.debug("START : Common.jag");
 	
 	var data = {
 		title : "WS Humantask Explorer",
@@ -34,9 +33,9 @@
 		var httpsPort = process.getProperty('mgt.transport.https.port');
 		BPSUrl = "https://" +localIP +":" +httpsPort;
 		application.put('bpsURI', BPSUrl);
-		
-		log.debug("Back-end BPS URI :" +BPSUrl);
+        if (log.isDebugEnabled()) {
+            log.debug("Back-end BPS URI :" + BPSUrl);
+        }
 	}
-	
-	log.debug("END : Common.jag");
+
 %>

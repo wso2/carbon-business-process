@@ -16,7 +16,6 @@
  * under the License.
  */
 
-var log = new Log();
 
 /**
  * Initialize HT server information
@@ -32,24 +31,20 @@ function initHTServerInfo(url, sessionCookie) {
 /*
  * Function to send http request to back-end server
  * 
- * return response payload
- * throw exception 
+ * @returns response payload
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
-	var BPSResponse = null;
+	var BPSResponse;
 	var httpClient = new XMLHttpRequest();
 	httpClient.open('POST', endPoint, false);
 	httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
 	httpClient.setRequestHeader('SOAPAction', soapAction);
 	httpClient.setRequestHeader('Content-Type','text/xml');
 
-	try {
-		httpClient.send(payload);
-		BPSResponse = httpClient.responseText;
-	} catch(e) {
-		throw e;
-	}
-	
+	httpClient.send(payload);
+	BPSResponse = httpClient.responseText;
+
 	return BPSResponse;
 }
 
@@ -57,8 +52,8 @@ function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
 /*
  * Function to make WS-HT simplequery request with basic limited parameters 
  * 
- * return response payload
- * throw org.mozilla.javascript.WrappedException
+ * @returns response payload
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -80,21 +75,17 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
 					</soapenv:Envelope>';
 	
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
-	//var endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
-	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch(e) {
-		throw e;
-	}
+	var BPSResponse;
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
 /**
  * Function to make WS-HT simplequery request Advance parameters 
  * 
- * return response payload
- * throw exception
+ * @returns  response payload
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy, createdDate, taskName) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -121,11 +112,9 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
 	//var endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
 	
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -135,7 +124,7 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
  * Function to make WS-HT loadTask request
  * 
  * return response payload
- * throw org.mozilla.javascript.WrappedException
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function loadTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -149,11 +138,9 @@ function loadTask(id) {
 					</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadTask';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -161,7 +148,7 @@ function loadTask(id) {
  * Function to make WS-HT getComments request
  * 
  * return response payload
- * throw org.mozilla.javascript.WrappedException
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function getComments(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -174,11 +161,9 @@ function getComments(id) {
 							</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getComments';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -187,7 +172,7 @@ function getComments(id) {
  * function to claim task
  * @param id : ID of the task to claim
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 
 function claimTask(id) {
@@ -202,11 +187,9 @@ function claimTask(id) {
 					</soapenv:Envelope>';			
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/claim';	
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -214,7 +197,7 @@ function claimTask(id) {
  * Function to make start tasks service request
  * @param id ID of the task to start progress
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function startTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -228,11 +211,9 @@ function startTask(id) {
 					</soapenv:Envelope>';		
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/start';	
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -241,7 +222,7 @@ function startTask(id) {
  * Function to make stop tasks service request
  * @param id ID of the task to stop progress
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function stopTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -255,11 +236,9 @@ function stopTask(id) {
 					</soapenv:Envelope>';						
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/stop';		
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 	
 }
@@ -269,7 +248,7 @@ function stopTask(id) {
  * Function to make release tasks service request
  * @param id ID of the task to release
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function releaseTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -283,11 +262,9 @@ function releaseTask(id) {
 					</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/release';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -295,7 +272,7 @@ function releaseTask(id) {
  * Function to make suspend tasks service request
  * @param id ID of the task to suspend
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function suspendTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -309,11 +286,9 @@ function suspendTask(id) {
 					</soapenv:Envelope>';	
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/suspend';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -322,7 +297,7 @@ function suspendTask(id) {
  * Function to make resume suspended tasks service request
  * @param id ID of the task to resume
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function resumeTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -336,11 +311,9 @@ function resumeTask(id) {
 					</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/resume';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -348,7 +321,7 @@ function resumeTask(id) {
  * Function to make fail tasks service request
  * @param id ID of the task to fail
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function failTask(id) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -363,11 +336,9 @@ function failTask(id) {
 					</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/fail';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -376,7 +347,7 @@ function failTask(id) {
  * @param id ID of the task to add comment
  * @param text text comment
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function addComment(id, text) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -391,11 +362,9 @@ function addComment(id, text) {
 					</soapenv:Envelope>';	
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/addComment';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -405,7 +374,7 @@ function addComment(id, text) {
  * @param taskId - ID of task of relates to comment
  * @param commentId - comment id  
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function deleteComment(taskId, commentId) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -420,11 +389,9 @@ function deleteComment(taskId, commentId) {
 					</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteComment';	
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
 
@@ -433,7 +400,7 @@ function deleteComment(taskId, commentId) {
  * @param id - ID of the task to assign
  * @param userName - user name of the new asignee 
  * @returns response payload from HumanTaskClientAPIAdmin service
- * @throws exception
+ * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function assignTask(id, userName) {
 	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
@@ -451,10 +418,8 @@ function assignTask(id, userName) {
 					</soapenv:Envelope>';
 	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/delegate';
 	var BPSResponse = null;
-	try {
-		BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-	} catch (e) {
-		throw e;
-	}
+
+	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
 	return BPSResponse;
 }
