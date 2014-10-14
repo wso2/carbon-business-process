@@ -47,50 +47,30 @@ public class BPMNInstanceService {
     private static Log log = LogFactory.getLog(BPMNInstanceService.class);
 
     public void startProcess(String processID) throws BPSException {
-//        try {
+
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RuntimeService runtimeService = engine.getRuntimeService();
             runtimeService.startProcessInstanceById(processID);
-//        } catch (Exception e) {
-//            String msg = "Failed to start the process: " + processID;
-//            log.error(msg, e);
-//            throw new BPSException(msg, e);
-//        }
     }
 
     public BPMNInstance[] getProcessInstances() throws BPSException {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        try {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RuntimeService runtimeService = engine.getRuntimeService();
             List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).list();
             return getTenantBPMNInstances(instances);
-
-//        } catch (Exception e) {
-//            String msg = "Failed to get process instances of tenant: " + tenantId;
-//            log.error(msg, e);
-//            throw new BPSException(msg, e);
-//        }
     }
 
     public int getInstanceCount() throws BPSException {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        try {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RuntimeService runtimeService = engine.getRuntimeService();
             List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).list();
             return instances.size();
-
-//        } catch (Exception e) {
-//            String msg = "Failed to get the number of process instances.";
-//            log.error(msg, e);
-//            throw new BPSException(msg, e);
-//        }
     }
 
     public void suspendProcessInstance(String instanceId) throws BPSException {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        try {
             RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
             List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
@@ -99,11 +79,6 @@ public class BPMNInstanceService {
                 throw new BPSException(msg);
             }
             runtimeService.suspendProcessInstanceById(instanceId);
-//        } catch (Exception e) {
-//            String msg = "Failed to get the number of process instances.";
-//            log.error(msg, e);
-//            throw new BPSException(msg, e);
-//        }
     }
 
     public void deleteProcessInstanceSet(String[] instanceIdSet) throws BPSException {
@@ -114,7 +89,6 @@ public class BPMNInstanceService {
 
     public void deleteProcessInstance(String instanceId) throws BPSException {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        try {
             RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
             List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
@@ -123,16 +97,10 @@ public class BPMNInstanceService {
                 throw new BPSException(msg);
             }
             runtimeService.deleteProcessInstance(instanceId, "Deleted by user.");
-//        } catch (Exception e) {
-//            String msg = "Failed to get the number of process instances.";
-//            log.error(msg, e);
-//            throw new BPSException(msg, e);
-//        }
     }
 
     public void activateProcessInstance(String instanceId) throws BPSException {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        try {
             RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
 
             List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
@@ -143,11 +111,6 @@ public class BPMNInstanceService {
                 throw new BPSException(msg);
             }
             runtimeService.activateProcessInstanceById(instanceId);
-//        } catch (Exception e) {
-//            String msg = "Failed to get the number of process instances.";
-//            log.error(msg, e);
-//            throw new BPSException(msg, e);
-//        }
     }
 
     public String getProcessInstanceDiagram(String instanceId) throws BPSException {

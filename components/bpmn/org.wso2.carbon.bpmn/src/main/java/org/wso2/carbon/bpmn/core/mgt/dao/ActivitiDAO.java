@@ -60,11 +60,10 @@ public class ActivitiDAO {
                 };
 
         DeploymentMetaDataModel deploymentMetaDataModel = managementService.executeCustomSql(customSqlExecution);
-	    if(log.isDebugEnabled()){
+	    if(log.isDebugEnabled()) {
 
 		    if(deploymentMetaDataModel != null) {
-			    log.debug("DeploymentDataModel exists when selecting models=" +
-			              deploymentMetaDataModel.getId());
+			    log.debug("DeploymentDataModel exists when selecting models=" + deploymentMetaDataModel.getId());
 		    }
 		    else {
 			    log.debug("DeploymentDataModel null when selecting models");
@@ -106,8 +105,8 @@ public class ActivitiDAO {
 
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
-	    if(log.isDebugEnabled()){
-		    log.debug("insertDeploymentMetaDataModel"+rowCount);
+	    if(log.isDebugEnabled()) {
+		    log.debug("insertDeploymentMetaDataModel" + rowCount);
 	    }
 
     }
@@ -128,8 +127,8 @@ public class ActivitiDAO {
 
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
-	    if(log.isDebugEnabled()){
-		    log.debug("updatetDeploymentMetaDataModel"+rowCount);
+	    if(log.isDebugEnabled()) {
+		    log.debug("updated DeploymentMetaDataModel" + rowCount);
 	    }
     }
 
@@ -150,8 +149,8 @@ public class ActivitiDAO {
 
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
-	    if(log.isDebugEnabled()){
-		    log.debug("deleteDeploymentMetaDataModel"+rowCount);
+	    if(log.isDebugEnabled()) {
+		    log.debug("deleteDeploymentMetaDataModel" + rowCount);
 	    }
 
         return rowCount;

@@ -44,6 +44,7 @@ public class BPMNDeploymentService {
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
 
     public BPMNDeployment[] getDeployments() {
+
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
         List<Deployment> deployments = tenantRepository.getDeployments();
