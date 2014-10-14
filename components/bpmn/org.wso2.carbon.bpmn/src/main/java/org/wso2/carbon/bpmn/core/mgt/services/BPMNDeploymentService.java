@@ -1,3 +1,19 @@
+/**
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.core.mgt.services;
 
 import org.activiti.engine.RepositoryService;
@@ -27,51 +43,39 @@ public class BPMNDeploymentService {
 
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
 
-    public BPMNDeployment[] getDeployments() throws BPSException {
-
+    public BPMNDeployment[] getDeployments() {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        try {
-            TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-            List<Deployment> deployments = tenantRepository.getDeployments();
-            BPMNDeployment[] bpmnDeployments = new BPMNDeployment[deployments.size()];
-            for (int i = 0; i < deployments.size(); i++) {
-                Deployment deployment = deployments.get(i);
-                BPMNDeployment bpmnDeployment = new BPMNDeployment();
-                bpmnDeployment.setDeploymentId(deployment.getId());
-                bpmnDeployment.setDeploymentName(deployment.getName());
-                bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
-                bpmnDeployments[i] = bpmnDeployment;
-            }
-            return bpmnDeployments;
-        } catch (Exception e) {
-            String msg = "Failed to get deployments.";
-            log.error(msg, e);
-            throw new BPSException(msg, e);
+        TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
+        List<Deployment> deployments = tenantRepository.getDeployments();
+        BPMNDeployment[] bpmnDeployments = new BPMNDeployment[deployments.size()];
+        for (int i = 0; i < deployments.size(); i++) {
+            Deployment deployment = deployments.get(i);
+            BPMNDeployment bpmnDeployment = new BPMNDeployment();
+            bpmnDeployment.setDeploymentId(deployment.getId());
+            bpmnDeployment.setDeploymentName(deployment.getName());
+            bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
+            bpmnDeployments[i] = bpmnDeployment;
         }
+        return bpmnDeployments;
     }
 
     public BPMNProcess[] getDeployedProcesses() throws BPSException {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        try {
-            TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-            List<ProcessDefinition> processDefinitions = tenantRepository.getDeployedProcessDefinitions();
+        TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
+        List<ProcessDefinition> processDefinitions = tenantRepository.getDeployedProcessDefinitions();
 
-            BPMNProcess[] bpmnProcesses = new BPMNProcess[processDefinitions.size()];
-            for (int i = 0; i < processDefinitions.size(); i++) {
-                ProcessDefinition def = processDefinitions.get(i);
-                BPMNProcess bpmnProcess = new BPMNProcess();
-                bpmnProcess.setProcessId(def.getId());
-                bpmnProcess.setDeploymentId(def.getDeploymentId());
-                bpmnProcess.setKey(def.getKey());
-                bpmnProcess.setVersion(def.getVersion());
-                bpmnProcesses[i] = bpmnProcess;
-            }
-            return bpmnProcesses;
-        } catch (Exception e) {
-            String msg = "Failed to get deployed processes.";
-            log.error(msg, e);
-            throw new BPSException(msg, e);
+        BPMNProcess[] bpmnProcesses = new BPMNProcess[processDefinitions.size()];
+        for (int i = 0; i < processDefinitions.size(); i++) {
+            ProcessDefinition def = processDefinitions.get(i);
+            BPMNProcess bpmnProcess = new BPMNProcess();
+            bpmnProcess.setProcessId(def.getId());
+            bpmnProcess.setDeploymentId(def.getDeploymentId());
+            bpmnProcess.setKey(def.getKey());
+            bpmnProcess.setVersion(def.getVersion());
+            bpmnProcesses[i] = bpmnProcess;
         }
+        return bpmnProcesses;
+
     }
 
     public String getProcessDiagram(String processId) throws BPSException {
@@ -84,11 +88,11 @@ public class BPMNDeploymentService {
             String diagramResourceName = processDefinition.getDiagramResourceName();
             InputStream imageStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), diagramResourceName);
             BufferedImage bufferedImage = ImageIO.read(imageStream);
-
             return encodeToString(bufferedImage, "png");
-        } catch (Exception e) {
+        }
+        catch (IOException e) {
             String msg = "Failed to create the diagram for process: " + processId;
-            log.error(msg, e);
+//            log.error(msg, e);
             throw new BPSException(msg, e);
         }
     }
@@ -105,14 +109,18 @@ public class BPMNDeploymentService {
             br = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
             StringBuilder sb = new StringBuilder();
             String line;
+
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
             return sb.toString();
-        } catch (Exception e) {
+
+        } catch (IOException e) {
+
             String msg = "Failed to create the diagram for process: " + processId;
             log.error(msg, e);
             throw new BPSException(msg, e);
+
         } finally {
             try {
                 if (br != null) {
@@ -124,13 +132,15 @@ public class BPMNDeploymentService {
         }
     }
 
-    public void undeploy(String deploymentName){
+    public void undeploy (String deploymentName ) {
+
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
         tenantRepository.undeploy(deploymentName, false);
     }
 
     private String encodeToString(BufferedImage image, String type) {
+
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
