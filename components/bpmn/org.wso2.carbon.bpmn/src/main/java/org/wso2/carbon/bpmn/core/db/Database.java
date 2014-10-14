@@ -27,6 +27,7 @@ import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 import org.wso2.carbon.bpmn.core.utils.BPMNDatabaseCreator;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /**
@@ -84,7 +85,6 @@ public class Database {
                     bpmnDatabaseCreator.createRegistryDatabase();
                 } catch (Exception e) {
                     String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
-                    log.error(errMsg, e);
                     throw new BPMNMetaDataTableCreationException(errMsg, e);
                 }
             } else {
@@ -120,17 +120,15 @@ public class Database {
                 log.debug("BPMN Activiti initialization using external DataSource " +
                         jndiDataSourceName);
             }
-
-        } catch (Exception e) {
+        } catch (NamingException e) {
             String errorMsg = "Failed to resolved external DataSource at " +
                     jndiDataSourceName;
-            log.error(errorMsg, e);
             throw new DatabaseConfigurationException(errorMsg, e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T lookupInJndi(String objName) throws Exception {
+    private <T> T lookupInJndi(String objName) throws NamingException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         InitialContext ctx = null;
@@ -144,7 +142,7 @@ public class Database {
                 if (ctx != null) {
                     try {
                         ctx.close();
-                    } catch (Exception ex1) {
+                    } catch (NamingException ex1) {
                         log.error("Error closing JNDI connection.", ex1);
                     }
                 }

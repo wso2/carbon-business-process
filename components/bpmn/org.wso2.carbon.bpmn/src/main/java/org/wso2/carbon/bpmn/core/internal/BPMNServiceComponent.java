@@ -27,6 +27,7 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
+import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 /**
@@ -38,41 +39,43 @@ public class BPMNServiceComponent {
 
 	private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
 
-	protected void activate(ComponentContext ctxt) {
-		log.info("Initializing the BPMN core component...");
-		try {
-			BPMNServerHolder holder = BPMNServerHolder.getInstance();
-			ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
-			holder.setEngine(activitiEngineBuilder.buildEngine());
-			holder.setTenantManager(new TenantManager());
+    protected void activate(ComponentContext ctxt) {
+        log.info("Initializing the BPMN core component...");
+        try {
+            BPMNServerHolder holder = BPMNServerHolder.getInstance();
+            ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
+            holder.setEngine(activitiEngineBuilder.buildEngine());
+            holder.setTenantManager(new TenantManager());
 
-			DataSourceHandler dataSourceHandler = new DataSourceHandler();
-			dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-			dataSourceHandler.closeDataSource();
-		} catch (BPMNMetaDataTableCreationException e) {
-			log.error("Could not create BPMN checksum table", e);
-		} catch (Throwable e) {
-			log.error("Failed to initialize the BPMN core component.", e);
-		}
-	}
+            DataSourceHandler dataSourceHandler = new DataSourceHandler();
+            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+            dataSourceHandler.closeDataSource();
+        } catch (BPMNMetaDataTableCreationException e) {
+            log.error("Could not create BPMN checksum table", e);
+        } catch (DatabaseConfigurationException e) {
+            log.error("Could not create BPMN checksum table", e);
+        }catch (Throwable e) {
+            log.error("Failed to initialize the BPMN core component.", e);
+        }
+    }
 
 	protected void deactivate(ComponentContext ctxt) {
 		log.info("Stopping the BPMN core component...");
 		ProcessEngines.destroy();
 	}
 
-	protected void setRegistryService(RegistryService registrySvc) {
-		if (log.isDebugEnabled()) {
-			log.debug("RegistryService bound to the BPMN component");
-		}
-		BPMNServerHolder.getInstance().setRegistryService(registrySvc);
-	}
+    protected void setRegistryService(RegistryService registrySvc) {
+        if (log.isDebugEnabled()) {
+            log.debug("RegistryService bound to the BPMN component");
+        }
+        BPMNServerHolder.getInstance().setRegistryService(registrySvc);
+    }
 
-	public void unsetRegistryService(RegistryService registryService) {
-		if (log.isDebugEnabled()) {
-			log.debug("RegistryService unbound from the BPMN component");
-		}
-		BPMNServerHolder.getInstance().unsetRegistryService(registryService);
-	}
+    public void unsetRegistryService(RegistryService registryService) {
+        if (log.isDebugEnabled()) {
+            log.debug("RegistryService unbound from the BPMN component");
+        }
+        BPMNServerHolder.getInstance().unsetRegistryService(registryService);
+    }
 
 }
