@@ -24,26 +24,26 @@ var appName = "WS-Humantask-Explorer"; //TODO finalize appName
  * @param id target task id
  */
 function claimTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=claim_task&tid=" +id;
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function (data) {
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;			
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/inboxtask?id=" +id;
-			} else {
-				//unsuccessful
+    var requestUrl = "/" + appName + "/action?type=claim_task&tid=" + id;
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Claim task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-	});
+        }
+    });
 }
 
 /**
@@ -51,26 +51,26 @@ function claimTask(id) {
  * @param id target task id
  */
 function startTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=start_task&tid=" +id;
-	$.ajax({		
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function (data) {
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;					
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			} else {
-				//unsuccessful
+    var requestUrl = "/" + appName + "/action?type=start_task&tid=" + id;
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Start task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 /**
@@ -78,29 +78,29 @@ function startTask(id) {
  * @param id task id
  */
 function stopTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=stop_task&tid=" +id;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function (data) {
-			
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
+    var requestUrl = "/" + appName + "/action?type=stop_task&tid=" + id;
 
-			} else {
-				//unsuccessful
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Stop task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 /**
@@ -108,28 +108,28 @@ function stopTask(id) {
  * @param id task id
  */
 function releaseTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=release_task&tid=" +id;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function (data) {
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
+    var requestUrl = "/" + appName + "/action?type=release_task&tid=" + id;
 
-			} else {
-				//unsuccessful
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/taskview?id=" + id;
+
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Release task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 /**
@@ -137,28 +137,28 @@ function releaseTask(id) {
  * @param id task id
  */
 function suspendTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=suspend_task&tid=" +id;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function (data) {
+    var requestUrl = "/" + appName + "/action?type=suspend_task&tid=" + id;
 
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			} else {
-				//unsuccessful
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Suspend task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 
@@ -167,28 +167,28 @@ function suspendTask(id) {
  * @param id task id
  */
 function resumeTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=resume_task&tid=" +id;
+    var requestUrl = "/" + appName + "/action?type=resume_task&tid=" + id;
 
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function(data){
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
 
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			} else {
-				//unsuccessful
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Resume task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 
@@ -197,28 +197,28 @@ function resumeTask(id) {
  * @param id task ID
  */
 function failTask(id) {
-	var requestUrl = "/"+ appName +"/action?type=fail_task&tid=" +id;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function(data) {
+    var requestUrl = "/" + appName + "/action?type=fail_task&tid=" + id;
 
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;	
-			if (success === 'true') {
-				//successful
-				window.location=httpUrl+"/"+ appName +"/inboxtask?id="+id;
-			} else {
-				//unsuccessful
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Fail task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 /**
@@ -226,55 +226,55 @@ function failTask(id) {
  * @param id task id
  */
 function updateComments(id) {
-	$('#commentTab').attr("class","active");
-	$('#historyTab').attr("class","");
-	$('#attachmentTab').attr("class","");
+    $('#commentTab').attr("class", "active");
+    $('#historyTab').attr("class", "");
+    $('#attachmentTab').attr("class", "");
 
-	$('#commentList').css("display","block");
-	$('#historyList').css("display","none");
-	$('#AttchmentsList').css("display","none");
-	
-	$('#addComment').css("display","block");
+    $('#commentList').css("display", "block");
+    $('#historyList').css("display", "none");
+    $('#AttchmentsList').css("display", "none");
 
-	var requestUrl = "/" +appName +"/update?type=update_comments&tid=" +id;
+    $('#addComment').css("display", "block");
 
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function(data){
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;		
-			if (success === 'true') {
-				//successful
-				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
-				var commentList = data.firstChild.getElementsByTagNameNS('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803','comment');				
-				var commentViewList;
+    var requestUrl = "/" + appName + "/update?type=update_comments&tid=" + id;
 
-				for (var i = 0; i < commentList.length; i++) {
-					var dateInfo = new Date(commentList[i].getElementsByTagNameNS(ns1NS,'lastModifiedTime')[0].textContent);
-					
-					commentViewList = commentViewList + '<li class="list-group-item" id="comment_' + commentList[i].getElementsByTagNameNS(ns1NS,'id')[0].textContent +'">\
-																<div>'+commentList[i].getElementsByTagNameNS(ns1NS,'addedBy')[0].textContent +' added a comment - \
-																	<time>'+dateInfo +'</time>\
-																	<a href="#additionalInfoSection" onclick="deleteComment('+id +','+commentList[i].getElementsByTagNameNS(ns1NS,'id')[0].textContent +')">\
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
+                var commentList = data.firstChild.getElementsByTagNameNS('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803', 'comment');
+                var commentViewList;
+
+                for (var i = 0; i < commentList.length; i++) {
+                    var dateInfo = new Date(commentList[i].getElementsByTagNameNS(ns1NS, 'lastModifiedTime')[0].textContent);
+
+                    commentViewList = commentViewList + '<li class="list-group-item" id="comment_' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + '">\
+																<div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'addedBy')[0].textContent + ' added a comment - \
+																	<time>' + dateInfo + '</time>\
+																	<a href="#additionalInfoSection" onclick="deleteComment(' + id + ',' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + ')">\
 																		<span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>\
 																	</a>\
 																</div>\
-																<div>'+commentList[i].getElementsByTagNameNS(ns1NS,'text')[0].textContent +'</div>\
-															</li>';	
-				}
-				
-				$('#commentList').html(commentViewList);
-			} else {
-				//unsuccessful
+																<div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'text')[0].textContent + '</div>\
+															</li>';
+                }
+
+                $('#commentList').html(commentViewList);
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Update Comments task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function (response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
-	});
+    });
 }
 
 /**
@@ -282,100 +282,100 @@ function updateComments(id) {
  * @param id task id
  */
 function addComment(id) {
-	var text = document.getElementById("addCommentTextArea").value;
-	var requestUrl = "/"+ appName +"/action?type=addComment_task&tid=" +id;
-	var requestPayload = 	"<addComment><text><![CDATA["+text +"]]></text></addComment>";
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		data: requestPayload,
-		contentType: "text/xml",
-		dataType: "xml",
-		success: function(data) {
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success === 'true') {
-				//successful
+    var text = document.getElementById("addCommentTextArea").value;
+    var requestUrl = "/" + appName + "/action?type=addComment_task&tid=" + id;
+    var requestPayload = "<addComment><text><![CDATA[" + text + "]]></text></addComment>";
+
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        data: requestPayload,
+        contentType: "text/xml",
+        dataType: "xml",
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
                 $('#addCommentModal').modal('hide');
-			} else {
-				//unsuccessful
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Add Comment task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function(response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-	});
+        }
+    });
 
-	$('#addCommentModal').modal('hide');
-	$('#addCommentModal').on('hidden.bs.modal', function (e) {
-		//update comment list in ui
-		updateComments(id);
-	});
-		
+    $('#addCommentModal').modal('hide');
+    $('#addCommentModal').on('hidden.bs.modal', function (e) {
+        //update comment list in ui
+        updateComments(id);
+    });
+
 }
 
 /**
  * function to make ajax call to update history
  * @param id
  */
-function updateHistory(id) {	
-	$('#commentTab').attr("class","");
-	$('#historyTab').attr("class","active");
-	$('#attachmentTab').attr("class","");
+function updateHistory(id) {
+    $('#commentTab').attr("class", "");
+    $('#historyTab').attr("class", "active");
+    $('#attachmentTab').attr("class", "");
 
-	$('#commentList').css("display","none");
-	$('#historyList').css("display","block");
-	$('#AttchmentsList').css("display","none");
-	
-	$('#addComment').css("display","none");
-	
-	var requestUrl = "/"+ appName + "/update?type=update_history&tid=" +id;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function(data) {
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
-			if (success === 'true') {
-				//successful				
-				var historyList = data.firstChild.getElementsByTagName('event');
-				var historyViewList;
-				
-				for (var i = 0; i < historyList.length; i++) {
-					var dateInfo = new Date(historyList[i].getElementsByTagName('eventTime')[0].textContent);
-					historyViewList = historyViewList + '<li class="list-group-item">\
+    $('#commentList').css("display", "none");
+    $('#historyList').css("display", "block");
+    $('#AttchmentsList').css("display", "none");
+
+    $('#addComment').css("display", "none");
+
+    var requestUrl = "/" + appName + "/update?type=update_history&tid=" + id;
+
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                var historyList = data.firstChild.getElementsByTagName('event');
+                var historyViewList;
+
+                for (var i = 0; i < historyList.length; i++) {
+                    var dateInfo = new Date(historyList[i].getElementsByTagName('eventTime')[0].textContent);
+                    historyViewList = historyViewList + '<li class="list-group-item">\
 															<div> <b>User : </b>'
-																+historyList[i].getElementsByTagName('eventInitiator')[0].textContent
-															+'</div>\
+                        + historyList[i].getElementsByTagName('eventInitiator')[0].textContent
+                        + '</div>\
 															<div> <b>Operation : </b>'
-																+historyList[i].getElementsByTagName('eventType')[0].textContent 
-															+'</div>\
+                        + historyList[i].getElementsByTagName('eventType')[0].textContent
+                        + '</div>\
 															<div> <b>Time : </b>'
-																+'<time>' +dateInfo +'</time>' 
-															+'</div>\
+                        + '<time>' + dateInfo + '</time>'
+                        + '</div>\
 															<div> <b>Old State : </b>'
-																+historyList[i].getElementsByTagName('oldState')[0].textContent 
-															+'</div>\
+                        + historyList[i].getElementsByTagName('oldState')[0].textContent
+                        + '</div>\
 															<div> <b>New State : </b>'
-																+historyList[i].getElementsByTagName('newState')[0].textContent 
-															+'</div>\
+                        + historyList[i].getElementsByTagName('newState')[0].textContent
+                        + '</div>\
 														</li>';
-				}
-				$('#historyList').html(historyViewList);
-			} else {
-				//unsuccessful
+                }
+                $('#historyList').html(historyViewList);
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Update History task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function(response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-	});
+        }
+    });
 }
 
 /**
@@ -383,63 +383,63 @@ function updateHistory(id) {
  * @param id task id
  */
 function updateAttachments(id) {
-	$('#commentTab').attr("class","");
-	$('#historyTab').attr("class","");
-	$('#attachmentTab').attr("class","active");
+    $('#commentTab').attr("class", "");
+    $('#historyTab').attr("class", "");
+    $('#attachmentTab').attr("class", "active");
 
-	$('#commentList').css("display","none");
-	$('#historyList').css("display","none");
-	$('#AttchmentsList').css("display","block");
-	
-	$('#addComment').css("display","none");
-	
-	var requestUrl = "/"+ appName + "/update?type=update_attachments&tid=" +id;
+    $('#commentList').css("display", "none");
+    $('#historyList').css("display", "none");
+    $('#AttchmentsList').css("display", "block");
 
-	$.ajax({
-		type:'POST',
-		url: httpUrl + requestUrl,
-		success: function(data) {
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+    $('#addComment').css("display", "none");
 
-			if (success === 'true') {
-				//successful				
-				var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
-				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
-				var attachmentList = data.firstChild.getElementsByTagNameNS(ns2NS,'info');
-				
-				var attachmentViewList = '';
-				for (var i = 0; i < attachmentList.length; i++) {					
-					var dateInfo = new Date(attachmentList[i].getElementsByTagNameNS(ns1NS,'attachedTime')[0].textContent);
-					
-					attachmentViewList = attachmentViewList + 	'<li class="list-group-item" id="attachment_' + attachmentList[i].getElementsByTagNameNS(ns1NS,'identifier')[0].textContent +'">'
-																		+'<div>' 
-																		+attachmentList[i].getElementsByTagNameNS(ns1NS,'name')[0].textContent 
-																		+'<a href="' +attachmentList[i].getElementsByTagNameNS(ns1NS,'identifier')[0].textContent 
-																						+'" class="btn btn-link btn-xs" role="button" style="float:right;">'
-																	      	+'Download'
-																	   	+'</a>'
-																	+'</div>'
-																	+'<div style="color:#B0B0B0;">' 
-																		+'added by '+attachmentList[i].getElementsByTagNameNS(ns1NS,'attachedBy')[0].textContent 
-																		+' on <time>'+dateInfo +'</time>'
-																	+'</div>'
-																+'</li>';	
-				}
+    var requestUrl = "/" + appName + "/update?type=update_attachments&tid=" + id;
 
-				$('#AttchmentsList').html(attachmentViewList);
-			} else {
-				//unsuccessful
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+
+            if (success === 'true') {
+                //successful
+                var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
+                var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
+                var attachmentList = data.firstChild.getElementsByTagNameNS(ns2NS, 'info');
+
+                var attachmentViewList = '';
+                for (var i = 0; i < attachmentList.length; i++) {
+                    var dateInfo = new Date(attachmentList[i].getElementsByTagNameNS(ns1NS, 'attachedTime')[0].textContent);
+
+                    attachmentViewList = attachmentViewList + '<li class="list-group-item" id="attachment_' + attachmentList[i].getElementsByTagNameNS(ns1NS, 'identifier')[0].textContent + '">'
+                        + '<div>'
+                        + attachmentList[i].getElementsByTagNameNS(ns1NS, 'name')[0].textContent
+                        + '<a href="' + attachmentList[i].getElementsByTagNameNS(ns1NS, 'identifier')[0].textContent + '"'
+                        + 'class="btn btn-link btn-xs" role="button" style="float:right;">'
+                        + 'Download'
+                        + '</a>'
+                        + '</div>'
+                        + '<div style="color:#B0B0B0;">'
+                        + 'added by ' + attachmentList[i].getElementsByTagNameNS(ns1NS, 'attachedBy')[0].textContent
+                        + ' on <time>' + dateInfo + '</time>'
+                        + '</div>'
+                        + '</li>';
+                }
+
+                $('#AttchmentsList').html(attachmentViewList);
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Update Attachements task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function(response){
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-		
-	});
-	
+        }
+
+    });
+
 }
 
 
@@ -449,35 +449,35 @@ function updateAttachments(id) {
  * @param commentId comment id
  */
 function deleteComment(id, commentId) {
-	var requestUrl = "/"+ appName + "/action?type=deleteComment&tid=" +id +"&commentId=" +commentId;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function(data){		
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+    var requestUrl = "/" + appName + "/action?type=deleteComment&tid=" + id + "&commentId=" + commentId;
 
-			if (success === 'true') {
-				//successful
-				var commentElementId = "comment_" + commentId;
-				var element = document.getElementById(commentElementId);
-				if (element != null) {
-					element.parentNode.removeChild(element);
-				} else {
-                    $('#InfoErrMsg').html("ERROR : element " +commentElementId +" not found. Please refresh the page");
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+
+            if (success === 'true') {
+                //successful
+                var commentElementId = "comment_" + commentId;
+                var element = document.getElementById(commentElementId);
+                if (element != null) {
+                    element.parentNode.removeChild(element);
+                } else {
+                    $('#InfoErrMsg').html("ERROR : element " + commentElementId + " not found. Please refresh the page");
                     $('#additionalInfoErr').show();
-				}
-			} else {
-				//unsuccessful
+                }
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Delete Comment task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function(response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-	});
+        }
+    });
 }
 
 /**
@@ -485,37 +485,37 @@ function deleteComment(id, commentId) {
  * @param id task id
  */
 function assignTask(id) {
-	var assignee = document.getElementById("assignableUserList").value;
-	var requestUrl = "/"+ appName +"/action?type=assign_task&tid=" +id +"&assignee=" +assignee;
-	
-	$.ajax({
-		
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		dataType: "xml",
-		success: function(data){
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+    var assignee = document.getElementById("assignableUserList").value;
+    var requestUrl = "/" + appName + "/action?type=assign_task&tid=" + id + "&assignee=" + assignee;
 
-			if (success === 'true') {
-				//successful
-				$('#assignTaskModal').modal('hide');
-				//redirect to task view
-				window.location=httpUrl+"/"+ appName +"/taskview?id="+id;
-				
-			} else {
-				//unsuccessful
+    $.ajax({
+
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        dataType: "xml",
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+
+            if (success === 'true') {
+                //successful
+                $('#assignTaskModal').modal('hide');
+                //redirect to task view
+                window.location = httpUrl + "/" + appName + "/taskview?id=" + id;
+
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Assign task");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function(response){
+        error: function (response) {
             $('#assignTaskModal').modal('hide');
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-		
-	});
-	
+        }
+
+    });
+
 }
 
 /**
@@ -523,49 +523,49 @@ function assignTask(id) {
  * @param id task id
  */
 function assignTaskModalUpdate(id) {
-	var requestUrl = "/"+ appName +"/update?type=update_assignableUsers&tid=" +id;
-	
-	$.ajax({
-		type: 'POST',
-		url: httpUrl + requestUrl,
-		success: function(data) {
+    var requestUrl = "/" + appName + "/update?type=update_assignableUsers&tid=" + id;
 
-			var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
 
-			if (success === 'true') {
-				//successful
-				var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
-				var userList = data.firstChild.getElementsByTagNameNS(ns2NS ,'user');
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+
+            if (success === 'true') {
+                //successful
+                var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
+                var userList = data.firstChild.getElementsByTagNameNS(ns2NS, 'user');
 
                 var userListDisplay = '';
-				if (userList.length > 0) {
-					for (var i = 0; i < userList.length; i++) {	
-						userListDisplay = userListDisplay + '<option value="'+userList[i].textContent +'">'+userList[i].textContent +'</option>';
-					}
-					
-					$('#assignableUserList').html(userListDisplay);
-					$('#taskAssignBtn').removeAttr('disabled');
-					$('#userUnavailableAlert').hide();
-					
-				} else {
-					//no users available to assign
-					$('#assignableUserList').html(userListDisplay);
-					$('#taskAssignBtn').attr('disabled','disabled');
-					$('#userUnavailableAlert').show();
-				}
-				//show modal
-				$('#assignTaskModal').modal();
-			} else {
-				//unsuccessful
+                if (userList.length > 0) {
+                    for (var i = 0; i < userList.length; i++) {
+                        userListDisplay = userListDisplay + '<option value="' + userList[i].textContent + '">' + userList[i].textContent + '</option>';
+                    }
+
+                    $('#assignableUserList').html(userListDisplay);
+                    $('#taskAssignBtn').removeAttr('disabled');
+                    $('#userUnavailableAlert').hide();
+
+                } else {
+                    //no users available to assign
+                    $('#assignableUserList').html(userListDisplay);
+                    $('#taskAssignBtn').attr('disabled', 'disabled');
+                    $('#userUnavailableAlert').show();
+                }
+                //show modal
+                $('#assignTaskModal').modal();
+            } else {
+                //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to AssignTask Modal Update Failed");
                 $('#additionalInfoErr').show();
-			}
+            }
         },
-        error:function(response) {
+        error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
-    	}
-	});	
-	
+        }
+    });
+
 }
 
