@@ -99,9 +99,9 @@ public class TenantRepository {
             try {
                 checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
             } catch (IOException e) {
-                log.error("Checksum genration failed for IO operation");
+                log.error("Checksum genration failed for IO operation",e);
             } catch (NoSuchAlgorithmException e) {
-                log.error("Checksum genration Algorithm not found");
+                log.error("Checksum genration Algorithm not found",e);
             }
 
             DeploymentMetaDataModel deploymentMetaDataModel =
