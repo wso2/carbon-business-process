@@ -18,7 +18,9 @@
  */
 
 	var log = new Log();
-	log.debug("START : allTaskPoolView");
+    if (log.isDebugEnabled()) {
+        log.debug("START : allTaskPoolView");
+    }
 %>
 <div class="row">
 	<ol class="breadcrumb">
@@ -167,5 +169,7 @@
 	<%}%>
 </div>
 <%
-	log.debug("START : allTaskPoolView");
+    if (log.isDebugEnabled()) {
+        log.debug("START : allTaskPoolView");
+    }
 %>

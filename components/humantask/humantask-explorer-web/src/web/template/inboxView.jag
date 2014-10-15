@@ -18,7 +18,9 @@
  */
 
 	var log = new Log();
-	log.debug("START : inboxView");
+    if (log.isDebugEnabled()) {
+        log.debug("START : inboxView");
+    }
 %>
 <div class="row">
 	<ol class="breadcrumb">
@@ -107,5 +109,7 @@
 </div>
 
 <%
-	log.debug("END : inboxView");
+    if (log.isDebugEnabled()) {
+        log.debug("END : inboxView");
+    }
 %>
