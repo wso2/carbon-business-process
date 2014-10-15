@@ -46,13 +46,13 @@
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				responseMsg =  '<update_commentsResponse>\
+				responseMsg = '<update_commentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getCommentsResponse +'</data>\
 									</update_commentsResponse>';
 				
 			} else {
-				responseMsg =  '<update_commentsResponse>\
+				responseMsg = '<update_commentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_commentsResponse>';
@@ -73,13 +73,13 @@
 			
 			if (resultCheck.length() > 0) {
 				//history retrieval success
-				responseMsg =  '<update_historyResponse>\
+				responseMsg = '<update_historyResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::loadTaskEventsResponse +'</data>\
 									</update_historyResponse>';
 				
 			} else {
-				responseMsg =  '<update_historyResponse>\
+				responseMsg = '<update_historyResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_historyResponse>';
@@ -127,12 +127,12 @@
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				responseMsg =  '<update_assignableUsersResponse>\
+				responseMsg = '<update_assignableUsersResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAssignableUserListResponse +'</data>\
 									</update_assignableUsersResponse>';			
 			} else {
-				responseMsg =  '<update_assignableUsersResponse>\
+				responseMsg = '<update_assignableUsersResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_assignableUsersResponse>';
@@ -165,12 +165,12 @@
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
-				responseMsg =  '<update_attachmentsResponse>\
+				responseMsg = '<update_attachmentsResponse>\
 										<success>true</success>\
 										<data>' +result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse +'</data>\
 									</update_attachmentsResponse>';			
 			} else {
-				responseMsg =  '<update_attachmentsResponse>\
+				responseMsg = '<update_attachmentsResponse>\
 										<success>false</success>\
 										<data>' +result.soapenvNS::Body +'</data>\
 									</update_attachmentsResponse>';
@@ -203,7 +203,7 @@
 
 	} catch (e) {
 		log.error(e);
-		responseMsg =  '<fault_Response>\
+		responseMsg = '<fault_Response>\
 								<success>false</success>\
 								<data>' +e.message +'</data>\
 							</fault_Response>';
