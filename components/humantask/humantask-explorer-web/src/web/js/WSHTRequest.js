@@ -23,9 +23,9 @@
  * @param sessionCookie session cookie
  */
 function initHTServerInfo(url, sessionCookie) {
-	this.URL = url;
-	this.endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
-	this.cookie = sessionCookie;
+    this.URL = url;
+    this.endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
+    this.cookie = sessionCookie;
 }
 
 /*
@@ -35,17 +35,17 @@ function initHTServerInfo(url, sessionCookie) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
-	var BPSResponse;
-	var httpClient = new XMLHttpRequest();
-	httpClient.open('POST', endPoint, false);
-	httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
-	httpClient.setRequestHeader('SOAPAction', soapAction);
-	httpClient.setRequestHeader('Content-Type','text/xml');
+    var BPSResponse;
+    var httpClient = new XMLHttpRequest();
+    httpClient.open('POST', endPoint, false);
+    httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
+    httpClient.setRequestHeader('SOAPAction', soapAction);
+    httpClient.setRequestHeader('Content-Type', 'text/xml');
 
-	httpClient.send(payload);
-	BPSResponse = httpClient.responseText;
+    httpClient.send(payload);
+    BPSResponse = httpClient.responseText;
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 
@@ -56,29 +56,29 @@ function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 									xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:simpleQuery>\
 					         <ns:simpleQueryInput>\
-					            <ns1:status>' +status +'</ns1:status>\
-					            <ns1:pageSize>' +pageSize +'</ns1:pageSize>\
-					            <ns1:pageNumber>'+pageNumber +'</ns1:pageNumber>\
-					            <ns1:simpleQueryCategory>'+queryCategory +'</ns1:simpleQueryCategory>\
-					            <ns1:queryOrder>' +queryOrder +'</ns1:queryOrder>\
-					            <ns1:queryOrderBy>' +queryOrderBy +'</ns1:queryOrderBy>\
+					            <ns1:status>' + status + '</ns1:status>\
+					            <ns1:pageSize>' + pageSize + '</ns1:pageSize>\
+					            <ns1:pageNumber>' + pageNumber + '</ns1:pageNumber>\
+					            <ns1:simpleQueryCategory>' + queryCategory + '</ns1:simpleQueryCategory>\
+					            <ns1:queryOrder>' + queryOrder + '</ns1:queryOrder>\
+					            <ns1:queryOrderBy>' + queryOrderBy + '</ns1:queryOrderBy>\
 					         </ns:simpleQueryInput>\
 					      </ns:simpleQuery>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
-	var BPSResponse;
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
+    var BPSResponse;
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
 }
 
 /**
@@ -88,34 +88,34 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy, createdDate, taskName) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 							xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 							xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
 						<soapenv:Body>\
 							<ns:simpleQuery>\
 								<ns:simpleQueryInput>\
-									<ns1:status>' +status +'</ns1:status>\
-									<ns1:createdDate>' +createdDate +'</ns1:createdDate>\
+									<ns1:status>' + status + '</ns1:status>\
+									<ns1:createdDate>' + createdDate + '</ns1:createdDate>\
 									<ns1:undatedDate></ns1:undatedDate>\
-									<ns1:taskName>' +taskName +'</ns1:taskName>\
-									<ns1:pageSize>' +pageSize +'</ns1:pageSize>\
-									<ns1:pageNumber>' +pageNumber +'</ns1:pageNumber>\
-									<ns1:simpleQueryCategory>' +queryCategory +'</ns1:simpleQueryCategory>\
-									<ns1:queryOrder>' +queryOrder +'</ns1:queryOrder>\
-									<ns1:queryOrderBy>' +queryOrderBy +'</ns1:queryOrderBy>\
+									<ns1:taskName>' + taskName + '</ns1:taskName>\
+									<ns1:pageSize>' + pageSize + '</ns1:pageSize>\
+									<ns1:pageNumber>' + pageNumber + '</ns1:pageNumber>\
+									<ns1:simpleQueryCategory>' + queryCategory + '</ns1:simpleQueryCategory>\
+									<ns1:queryOrder>' + queryOrder + '</ns1:queryOrder>\
+									<ns1:queryOrderBy>' + queryOrderBy + '</ns1:queryOrderBy>\
 								</ns:simpleQueryInput>\
 							</ns:simpleQuery>\
 						</soapenv:Body>\
 					</soapenv:Envelope>';
-	
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
-	//var endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
-	
-	var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
+    //var endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
 
-	return BPSResponse;
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
 }
 
 
@@ -127,21 +127,21 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function loadTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:loadTask>\
-					         <ns:identifier>'+id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:loadTask>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadTask';
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadTask';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -151,20 +151,20 @@ function loadTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function getComments(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 								<soapenv:Body>\
 								<ns:getComments>\
-								 <ns:identifier>'+id +'</ns:identifier>\
+								 <ns:identifier>' + id + '</ns:identifier>\
 								</ns:getComments>\
 								</soapenv:Body>\
 							</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getComments';
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getComments';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 
@@ -176,21 +176,21 @@ function getComments(id) {
  */
 
 function claimTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:claim>\
-					         <ns:identifier>' +id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:claim>\
 					   </soapenv:Body>\
-					</soapenv:Envelope>';			
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/claim';	
-	var BPSResponse = null;
+					</soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/claim';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -200,21 +200,21 @@ function claimTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function startTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 						xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:start>\
-					         <ns:identifier>' +id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:start>\
 					   </soapenv:Body>\
-					</soapenv:Envelope>';		
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/start';	
-	var BPSResponse = null;
+					</soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/start';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 
@@ -225,22 +225,22 @@ function startTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function stopTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 								xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:stop>\
-					         <ns:identifier>' +id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:stop>\
 					   </soapenv:Body>\
-					</soapenv:Envelope>';						
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/stop';		
-	var BPSResponse = null;
+					</soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/stop';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
-	
+    return BPSResponse;
+
 }
 
 
@@ -251,21 +251,21 @@ function stopTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function releaseTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:release>\
-					         <ns:identifier>' +id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:release>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/release';
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/release';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -275,21 +275,21 @@ function releaseTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function suspendTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 										xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:suspend>\
-					         <ns:identifier>' +id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:suspend>\
 					   </soapenv:Body>\
-					</soapenv:Envelope>';	
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/suspend';
-	var BPSResponse = null;
+					</soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/suspend';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 
@@ -300,21 +300,21 @@ function suspendTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function resumeTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 									xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:resume>\
-					         <ns:identifier>' +id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:resume>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/resume';
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/resume';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -324,22 +324,22 @@ function resumeTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function failTask(id) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 											 xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 											 xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:fail>\
-					         <ns:identifier>'+id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					      </ns:fail>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/fail';
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/fail';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -350,22 +350,22 @@ function failTask(id) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function addComment(id, text) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 								xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:addComment>\
-					         <ns:identifier>'+id +'</ns:identifier>\
-					         <ns:text>'+text +'</ns:text>\
+					         <ns:identifier>' + id + '</ns:identifier>\
+					         <ns:text>' + text + '</ns:text>\
 					      </ns:addComment>\
 					   </soapenv:Body>\
-					</soapenv:Envelope>';	
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/addComment';
-	var BPSResponse = null;
+					</soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/addComment';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -377,22 +377,22 @@ function addComment(id, text) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function deleteComment(taskId, commentId) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 						xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:deleteComment>\
-					         <ns:taskIdentifier>'+taskId +'</ns:taskIdentifier>\
-					         <ns:commentIdentifier>'+commentId +'</ns:commentIdentifier>\
+					         <ns:taskIdentifier>' + taskId + '</ns:taskIdentifier>\
+					         <ns:commentIdentifier>' + commentId + '</ns:commentIdentifier>\
 					      </ns:deleteComment>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteComment';	
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/deleteComment';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
 
 /**
@@ -403,23 +403,23 @@ function deleteComment(taskId, commentId) {
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
 function assignTask(id, userName) {
-	var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
 							xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
 							xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
 					   <soapenv:Header/>\
 					   <soapenv:Body>\
 					      <ns:delegate>\
-					         <ns:identifier>'+id +'</ns:identifier>\
+					         <ns:identifier>' + id + '</ns:identifier>\
 					         <ns:organizationalEntity>\
-					            <ns1:user>'+userName +'</ns1:user>\
+					            <ns1:user>' + userName + '</ns1:user>\
 					         </ns:organizationalEntity>\
 					      </ns:delegate>\
 					   </soapenv:Body>\
 					</soapenv:Envelope>';
-	var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/delegate';
-	var BPSResponse = null;
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/delegate';
+    var BPSResponse = null;
 
-	BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
 
-	return BPSResponse;
+    return BPSResponse;
 }
