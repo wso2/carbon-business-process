@@ -90,7 +90,9 @@
             session.put('BPSSessionCookie' , cookie);
             return true;
         } else {
-            log.debug('Login in to BPS Failed');
+            if (log.isDebugEnabled()) {
+                log.debug('Login in to BPS Failed');
+            }
             return false;
         }
 
