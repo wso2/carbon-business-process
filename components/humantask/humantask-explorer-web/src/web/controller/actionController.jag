@@ -30,8 +30,6 @@
     if (log.isDebugEnabled()) {
         log.debug('Task id : ' + taskId + '  Task action : ' + actionType);
     }
-	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
-	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
 
     var responseMsg;
 	try {
@@ -39,7 +37,7 @@
 			//claim specified task
 
             var result = new XML(htRequest.claimTask(taskId));
-            var resultCheck = result.soapenvNS::Body.ns2NS::claimResponse;
+            var resultCheck = result.SOAPENV_NS::Body.NS2_NS::claimResponse;
 
             if (resultCheck.length() > 0) {
                 //claiming success
@@ -73,7 +71,7 @@
 		} else if (actionType === 'start_task') {
 
 			var result =  new XML(htRequest.startTask(taskId));
-			var resultCheck = result.soapenvNS::Body.ns2NS::startResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::startResponse;
 					
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -107,7 +105,7 @@
 			
 		} else if (actionType === 'stop_task') {
 			var result = new XML(htRequest.stopTask(taskId));
-			var resultCheck = result.soapenvNS::Body.ns2NS::stopResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::stopResponse;
 			
 			if (resultCheck.length() > 0) {
 				//stop successfull
@@ -142,7 +140,7 @@
 			
 		} else if (actionType === 'release_task') {
 			var result = new XML(htRequest.releaseTask(taskId));
-			var resultCheck = result.soapenvNS::Body.ns2NS::releaseResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::releaseResponse;
 			
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -178,7 +176,7 @@
 			
 		} else if (actionType === 'suspend_task') {
 			var result = new XML(htRequest.suspendTask(taskId));
-			var resultCheck = result.soapenvNS::Body.ns2NS::suspendResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::suspendResponse;
 					
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -213,7 +211,7 @@
 			
 		} else if (actionType === 'resume_task') {
 			var result = new XML(htRequest.resumeTask(taskId));
-			var resultCheck = result.soapenvNS::Body.ns2NS::resumeResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::resumeResponse;
 			
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -249,7 +247,7 @@
 				*/
 		} else if (actionType === 'fail_task') {
 			var result = new XML(htRequest.failTask(taskId));
-			var resultCheck = result.soapenvNS::Body.ns2NS::failResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::failResponse;
 			
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -290,7 +288,7 @@
 
 			//need to rewrap text content by CDATA 
 			var result = new XML(htRequest.addComment(taskId, '<![CDATA[' +requestPayload.text +']]>'));
-			var resultCheck = result.soapenvNS::Body.ns2NS::addCommentResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::addCommentResponse;
 			
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -326,7 +324,7 @@
 			 */
 		} else if (actionType === "deleteComment") {
 			var result = new XML(htRequest.deleteComment(taskId, request.getParameter('commentId')));
-			var resultCheck = result.soapenvNS::Body.ns2NS::deleteCommentResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::deleteCommentResponse;
 			
 			if (resultCheck.length() > 0) {
 				//start successfull
@@ -350,7 +348,7 @@
 		} else if (actionType === "assign_task") {
 			var userName = request.getParameter('assignee');
 			var result = new XML(htRequest.assignTask(taskId, userName));
-			var resultCheck = result.soapenvNS::Body.ns2NS::delegateResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::delegateResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
@@ -360,7 +358,7 @@
 			} else {
 				responseMsg =  '<assign_taskResponse>\
 										<success>false</success>\
-										<data>' +result.soapenvNS::Body +'</data>\
+										<data>' +result.SOAPENV_NS::Body +'</data>\
 									</assign_taskResponse>';
 			} 
 	
@@ -394,7 +392,8 @@
 			response.content = responseMsg;
 		}
 	} catch(e) {
-		log.error(e);
+		log.error('Error occured while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
+        log.error(e);
 		var responseMsg =  '<fault_taskResponse>\
 								<success>false</success>\
 								<data>' +e.message +'</data>\

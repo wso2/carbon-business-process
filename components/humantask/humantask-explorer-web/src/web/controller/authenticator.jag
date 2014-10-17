@@ -29,7 +29,9 @@
 	} else {
 		try {
 			var authSuccess = HTTPAuthenticate(username, password, 'localhost');
-		} catch (Exception) {
+		} catch (e) {
+            log.error('Error occured while connecting to the back-end BPS AuthenticationAdmin service : ');
+            log.error(e);
 			var authSuccess = false;
 		}
 	}
