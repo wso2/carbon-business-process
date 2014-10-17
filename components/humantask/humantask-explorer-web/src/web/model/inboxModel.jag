@@ -37,7 +37,7 @@
 	if (statusQuery == null) {
 		statusQuery = "";
 	}
-	
+
 	var pageSize = 10;
 	var pageNumber = pagination - 1;
 	var queryOrder = 'DESCENDING';
