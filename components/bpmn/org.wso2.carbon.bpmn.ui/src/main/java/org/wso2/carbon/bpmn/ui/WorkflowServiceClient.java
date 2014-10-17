@@ -136,27 +136,54 @@ public class WorkflowServiceClient {
         return processes.toArray(new BPMNProcess[processes.size()]);
     }
 
-    public String getProcessDiagram(String processId) throws Exception {
+    public String getProcessDiagram(String processId) {
+        ByteArrayOutputStream baos = null;
+        String dataUri = null;
+        try {
         String imageString = deploymentServiceStub.getProcessDiagram(processId);
         BufferedImage bufferedImage = decodeToImage(imageString);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "png", baos );
         baos.flush();
-        String dataUri = "data:image/png;base64," +
+        dataUri = "data:image/png;base64," +
                 DatatypeConverter.printBase64Binary(baos.toByteArray());
-        baos.close();
+        }catch (IOException e) {
+            log.error("IO error while writing image " + e);
+        } catch (Exception e) {
+            //TODO Fix skeleton and rename above exception to correct type
+            log.error(" Error while obtaining the process diagram " + e);
+        } finally {
+            if(baos != null ){
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    log.error("Error occurred while closing io stream " + e);
+                }
+            }
+        }
         return dataUri;
     }
 
     public String getProcessInstanceDiagram(String instanceId) throws Exception {
+        ByteArrayOutputStream baos = null;
+        String dataUri;
+        try{
         String imageString = instanceServiceStub.getProcessInstanceDiagram(instanceId);
         BufferedImage bufferedImage = decodeToImage(imageString);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "png", baos );
         baos.flush();
-        String dataUri = "data:image/png;base64," +
+        dataUri = "data:image/png;base64," +
                 DatatypeConverter.printBase64Binary(baos.toByteArray());
-        baos.close();
+        }finally {
+            if (baos != null) {
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    log.error("IO error occurred while closing the stream " + e);
+                }
+            }
+        }
         return dataUri;
     }
 
