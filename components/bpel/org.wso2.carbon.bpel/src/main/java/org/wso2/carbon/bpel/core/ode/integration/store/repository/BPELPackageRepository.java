@@ -540,7 +540,7 @@ public class BPELPackageRepository {
             Collection collection = configRegistry.newCollection();
             configRegistry.put(collectionLocation, collection);
         } catch (RegistryException e) {
-            e.printStackTrace();
+           log.error("error occurred while deploying BPEl package to registry", e);
         }
     }
 
