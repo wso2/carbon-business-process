@@ -172,7 +172,7 @@ public class WorkflowServiceClient {
                 try {
                     bis.close();
                 } catch (IOException e) {
-                    log.error("Error occurred while closing the output stream", e);
+                    log.error("Error occurred while closing the input stream", e);
                 }
             }
         }
