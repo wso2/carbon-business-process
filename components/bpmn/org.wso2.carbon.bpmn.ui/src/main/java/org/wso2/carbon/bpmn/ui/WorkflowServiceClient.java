@@ -175,17 +175,24 @@ public class WorkflowServiceClient {
     }
 
     private BufferedImage decodeToImage(String imageString) {
-
         BufferedImage image = null;
+        ByteArrayInputStream bis = null;
         byte[] imageByte;
         try {
             BASE64Decoder decoder = new BASE64Decoder();
             imageByte = decoder.decodeBuffer(imageString);
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
-            bis.close();
         } catch (IOException e) {
-            log.error("IO operation failed when trying to decode the buffered image");
+            log.error("IO operation failed when trying to decode the buffered image", e);
+        } finally {
+            if(bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    log.error("Error occurred while closing the output stream", e);
+                }
+            }
         }
         return image;
     }
