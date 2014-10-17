@@ -27,12 +27,8 @@
         log.debug('Task Id : ' + taskId);
         log.debug('Update Type : ' + updateType);
     }
-	
-	var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
-	var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
 
     var responseMsg;
-
 	try {
 		if (updateType === 'update_comments') {
 			//update comments
@@ -41,19 +37,19 @@
                 log.debug('COMMENTS RESPONSE: ' + result);
             }
 	
-			var resultCheck = result.soapenvNS::Body.ns2NS::getCommentsResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::getCommentsResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				responseMsg = '<update_commentsResponse>\
 										<success>true</success>\
-										<data>' +result.soapenvNS::Body.ns2NS::getCommentsResponse +'</data>\
+										<data>' +result.SOAPENV_NS::Body.NS2_NS::getCommentsResponse +'</data>\
 									</update_commentsResponse>';
 				
 			} else {
 				responseMsg = '<update_commentsResponse>\
 										<success>false</success>\
-										<data>' +result.soapenvNS::Body +'</data>\
+										<data>' +result.SOAPENV_NS::Body +'</data>\
 									</update_commentsResponse>';
 			} 
 	
@@ -68,19 +64,19 @@
                 log.debug('HISTORY RESPONSE: ' + result);
             }
 	
-			var resultCheck = result.soapenvNS::Body.ns2NS::loadTaskEventsResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::loadTaskEventsResponse;
 			
 			if (resultCheck.length() > 0) {
 				//history retrieval success
 				responseMsg = '<update_historyResponse>\
 										<success>true</success>\
-										<data>' +result.soapenvNS::Body.ns2NS::loadTaskEventsResponse +'</data>\
+										<data>' +result.SOAPENV_NS::Body.NS2_NS::loadTaskEventsResponse +'</data>\
 									</update_historyResponse>';
 				
 			} else {
 				responseMsg = '<update_historyResponse>\
 										<success>false</success>\
-										<data>' +result.soapenvNS::Body +'</data>\
+										<data>' +result.SOAPENV_NS::Body +'</data>\
 									</update_historyResponse>';
 			} 
 	
@@ -122,18 +118,18 @@
             if (log.isDebugEnabled()) {
                 log.debug('RESULT : ' + result);
             }
-			var resultCheck = result.soapenvNS::Body.ns2NS::getAssignableUserListResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::getAssignableUserListResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				responseMsg = '<update_assignableUsersResponse>\
 										<success>true</success>\
-										<data>' +result.soapenvNS::Body.ns2NS::getAssignableUserListResponse +'</data>\
+										<data>' +result.SOAPENV_NS::Body.NS2_NS::getAssignableUserListResponse +'</data>\
 									</update_assignableUsersResponse>';			
 			} else {
 				responseMsg = '<update_assignableUsersResponse>\
 										<success>false</success>\
-										<data>' +result.soapenvNS::Body +'</data>\
+										<data>' +result.SOAPENV_NS::Body +'</data>\
 									</update_assignableUsersResponse>';
 			} 
 	
@@ -160,18 +156,18 @@
             if (log.isDebugEnabled()) {
                 log.debug('RESULT : ' + result);
             }
-			var resultCheck = result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse;
+			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::getAttachmentInfosResponse;
 			
 			if (resultCheck.length() > 0) {
 				//comment retrieval success
 				responseMsg = '<update_attachmentsResponse>\
 										<success>true</success>\
-										<data>' +result.soapenvNS::Body.ns2NS::getAttachmentInfosResponse +'</data>\
+										<data>' +result.SOAPENV_NS::Body.NS2_NS::getAttachmentInfosResponse +'</data>\
 									</update_attachmentsResponse>';			
 			} else {
 				responseMsg = '<update_attachmentsResponse>\
 										<success>false</success>\
-										<data>' +result.soapenvNS::Body +'</data>\
+										<data>' +result.SOAPENV_NS::Body +'</data>\
 									</update_attachmentsResponse>';
 			} 
 			
@@ -201,7 +197,8 @@
 	
 
 	} catch (e) {
-		log.error(e);
+		log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
+        log.error(e);
 		responseMsg = '<fault_Response>\
 								<success>false</success>\
 								<data>' +e.message +'</data>\

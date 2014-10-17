@@ -27,8 +27,8 @@
 <div class="row">
 	<div class="panel panel-primary">
 	  <div class="panel-heading">
-	  		Task Abstract : <%=taskAbstract.ns1NS::presentationName.text()%>
-	  		<%if (taskAbstract.ns1NS::status.text() == "READY" || taskAbstract.ns1NS::status.text() == "CREATED") {%>
+	  		Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
+	  		<%if (taskAbstract.NS1_NS::status.text() == "READY" || taskAbstract.NS1_NS::status.text() == "CREATED") {%>
 	  			<span><button  onclick="claimTask(<%=id%>)" class="btn btn-xs btn-danger" style="float:right;">Claim</button></span>
 	  		<%}%>
 	  </div>
@@ -36,24 +36,24 @@
 	    <tbody>
 	    	<tr>
 	    		<th>Subject</th>
-				<td colspan='2'><%=taskAbstract.ns1NS::presentationSubject.text()%></td>
+				<td colspan='2'><%=taskAbstract.NS1_NS::presentationSubject.text()%></td>
 	    	</tr>
 	    	<tr>
 	    		<th>Description</th>
-				<td colspan='2'><%=taskAbstract.ns1NS::presentationDescription.text()%></td>
+				<td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
 	    	</tr>
 	    	<tr>	
 	    		<th>Summary</th>
 				<td colspan='1'>
-					<p><small><b>Type : </b><%=taskAbstract.ns1NS::taskType.text()%></small></p>
-					<p><small><b>Owner : </b><%=taskAbstract.ns1NS::actualOwner.text()%></small></p>
-					<p><small><b>Created Time &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.ns1NS::createdTime.text()%></small></p>
-					<p><small><b>Activation Time: </b><%=taskAbstract.ns1NS::activationTime.text()%></small></p>
-					<p><small><b>Last Modified &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.ns1NS::updatedTime.text()%></small></p>
+					<p><small><b>Type : </b><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
+					<p><small><b>Owner : </b><%=taskAbstract.NS1_NS::actualOwner.text()%></small></p>
+					<p><small><b>Created Time &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.NS1_NS::createdTime.text()%></small></p>
+					<p><small><b>Activation Time: </b><%=taskAbstract.NS1_NS::activationTime.text()%></small></p>
+					<p><small><b>Last Modified &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.NS1_NS::updatedTime.text()%></small></p>
 				</td>
 				<td colspan='1'>
-					<p><small><b>Status : </b><%=taskAbstract.ns1NS::status.text()%></small></p>
-					<p><small><b>Priority : </b><%=taskAbstract.ns1NS::priority.text()%></small></p>
+					<p><small><b>Status : </b><%=taskAbstract.NS1_NS::status.text()%></small></p>
+					<p><small><b>Priority : </b><%=taskAbstract.NS1_NS::priority.text()%></small></p>
 				</td>	
 	    	</tr>
 	    </tbody>
@@ -90,15 +90,15 @@
 	<ul class="list-group" id="commentList">
 		<%for (var i=0; i < commentList.length(); i++){%>
 			<li class="list-group-item">
-				<div><%=commentList[i].ns1NS::addedBy.text()%> added a comment - 
+				<div><%=commentList[i].NS1_NS::addedBy.text()%> added a comment -
 					<time id="time">
 						<script>
-							var d = new Date("<%=commentList[i].ns1NS::addedTime.text()%>");
+							var d = new Date("<%=commentList[i].NS1_NS::addedTime.text()%>");
 							document.write(d);
 						</script>
 					</time>
 				</div>
-				<div><%=commentList[i].ns1NS::text.text()%></div>
+				<div><%=commentList[i].NS1_NS::text.text()%></div>
 			</li>
 		<%}%>
 	</ul>

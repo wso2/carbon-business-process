@@ -30,7 +30,7 @@
 
 		if (taskAbstract != null) {
 			var user = session.get('userName');
-			if (user == taskAbstract.ns1NS::actualOwner.text()) {
+			if (user == taskAbstract.NS1_NS::actualOwner.text()) {
 				include("/template/inboxTaskView.jag");			
 			} else {			
 				include("/template/taskView.jag");

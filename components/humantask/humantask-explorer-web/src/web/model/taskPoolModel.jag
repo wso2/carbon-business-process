@@ -42,16 +42,12 @@
         if (log.isDebugEnabled()) {
             log.debug('simpleQueryBasic BPS RESPONSE : ' + BPSResponseXML);
         }
-
-		var soapenvNS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
-		var ns1NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
-		var ns2NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
-		var rowNS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
 		
-		taskXMLList = BPSResponseXML..soapenvNS::Body.ns2NS::simpleQueryResponse.ns2NS::taskSimpleQueryResultSet.rowNS::row;
-		paginatePageCount =  parseInt(BPSResponseXML..soapenvNS::Body.ns2NS::simpleQueryResponse.ns2NS::taskSimpleQueryResultSet.ns1NS::pages);
+		taskXMLList = BPSResponseXML..SOAPENV_NS::Body.NS2_NS::simpleQueryResponse.NS2_NS::taskSimpleQueryResultSet.NS1_NS::row;
+		paginatePageCount =  parseInt(BPSResponseXML..SOAPENV_NS::Body.NS2_NS::simpleQueryResponse.NS2_NS::taskSimpleQueryResultSet.NS1_NS::pages);
 	} catch(e) {
-		log.error(e);
+		log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
+        log.error(e);
 		response.sendRedirect('login');
 	}
 %>

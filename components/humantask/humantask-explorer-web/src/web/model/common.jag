@@ -38,4 +38,9 @@
         }
 	}
 
+    //ws-humantask namespaces
+    var SOAPENV_NS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
+    var NS2_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
+    var NS1_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
+
 %>
