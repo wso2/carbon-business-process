@@ -533,15 +533,11 @@ public class BPELPackageRepository {
      */
 
     private void createCollectionWithBPELPackageWithoutContentForCurrentVersion(
-            BPELDeploymentContext deploymentContext){
+            BPELDeploymentContext deploymentContext) throws RegistryException{
 
-        try {
-            String collectionLocation = BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
-            Collection collection = configRegistry.newCollection();
-            configRegistry.put(collectionLocation, collection);
-        } catch (RegistryException e) {
-           log.error("error occurred while deploying BPEl package to registry", e);
-        }
+        String collectionLocation = BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
+        Collection collection = configRegistry.newCollection();
+        configRegistry.put(collectionLocation, collection);
     }
 
     private boolean isDUCollectionIsThere(BPELDeploymentContext deploymentContext)

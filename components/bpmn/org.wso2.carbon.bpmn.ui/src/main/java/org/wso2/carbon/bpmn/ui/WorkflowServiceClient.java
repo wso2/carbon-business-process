@@ -4,6 +4,8 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
@@ -17,6 +19,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,7 @@ public class WorkflowServiceClient {
 
     BPMNInstanceServiceStub instanceServiceStub = null;
     BPMNDeploymentServiceStub deploymentServiceStub = null;
-
+    private static Log log = LogFactory.getLog(WorkflowServiceClient.class);
     public WorkflowServiceClient(String cookie,
                                  String backendServerURL,
                                  ConfigurationContext configContext) throws AxisFault {
@@ -165,8 +168,8 @@ public class WorkflowServiceClient {
             ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
             bis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("IO operation failed when trying to decode the buffered image");
         }
         return image;
     }
