@@ -19,10 +19,14 @@ package org.wso2.carbon.unifiedendpoint.core;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.*;
 
 public class SerializerTest {
+    private static Log log = LogFactory.getLog(SerializerTest.class);
     public static void main(String[] args) {
 
 
@@ -116,9 +120,12 @@ public class SerializerTest {
             UnifiedEndpoint uep = factory.createEndpoint(AXIOMUtil.stringToOM(s));
 
             System.out.println("uep add " + uep.getAddress());
+        } catch (AxisFault axisFault) {
+            log.error("Failed to process the uep-test.xml. Caused by axis2 fault", axisFault);
+        } catch (XMLStreamException e) {
+            log.error("Failed to process the uep-test.xml. Caused by xml streaming exception", e);
         }
-        catch (Exception e) {
-        }
+
     }
 
 
@@ -138,11 +145,13 @@ public class SerializerTest {
             }
             s = sb.toString();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-
+        } catch (FileNotFoundException e) {
+            String errMsg = "File not found in the path "+ filePath;
+            log.error(errMsg, e);
+        } catch (IOException e) {
+            String errMsg = "IO operation failed for "+ filePath;
+            log.error(errMsg, e);
         }
-
         return s;
     }
 
