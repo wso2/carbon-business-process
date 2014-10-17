@@ -159,7 +159,6 @@ public class WorkflowServiceClient {
     }
 
     private BufferedImage decodeToImage(String imageString) {
-
         BufferedImage image = null;
         ByteArrayInputStream bis = null;
         byte[] imageByte;
