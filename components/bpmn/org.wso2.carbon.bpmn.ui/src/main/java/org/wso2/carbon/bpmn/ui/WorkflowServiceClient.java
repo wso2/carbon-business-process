@@ -11,6 +11,7 @@ import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
 import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceStub;
 import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceStub;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.xml.XMLPrettyPrinter;
 import sun.misc.BASE64Decoder;
 
@@ -158,7 +159,7 @@ public class WorkflowServiceClient {
         deploymentServiceStub.undeploy(deploymentName);
     }
 
-    private BufferedImage decodeToImage(String imageString) {
+    private BufferedImage decodeToImage(String imageString) throws IOException{
         BufferedImage image = null;
         ByteArrayInputStream bis = null;
         byte[] imageByte;
@@ -167,8 +168,6 @@ public class WorkflowServiceClient {
             imageByte = decoder.decodeBuffer(imageString);
             bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
-        } catch (IOException e) {
-            log.error("IO operation failed when trying to decode the buffered image", e);
         } finally {
             if(bis != null) {
                 try {
