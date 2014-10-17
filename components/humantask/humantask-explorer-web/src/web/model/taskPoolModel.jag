@@ -18,16 +18,16 @@
  */
 
 	var log = new Log();
-	
+
 	//initialize BPS HT service request creator
 	var htRequest = require ('/js/WSHTRequest.js');
 	htRequest.initHTServerInfo(BPSUrl, session.get('BPSSessionCookie'));
-	
+
 	var pagination = request.getParameter("pagination");
 	if (pagination == null || pagination === "") {
 		pagination = 1;
 	}
-	
+
 	var pageSize = 10;
 	var pageNumber = pagination - 1;
 	var queryOrder = 'DESCENDING';
@@ -37,17 +37,17 @@
 	try {
 		var taskXMLList = null;
 		var paginatePageCount = 0;
-		var BPSResponseXML = new XML(htRequest.simpleQueryBasic("", pageSize, pageNumber, queryCategory, 
-																					queryOrder, queryOrderBy));
-        if (log.isDebugEnabled()) {
-            log.debug('simpleQueryBasic BPS RESPONSE : ' + BPSResponseXML);
-        }
-		
+		var BPSResponseXML = new XML(htRequest.simpleQueryBasic("", pageSize, pageNumber, queryCategory,
+																queryOrder, queryOrderBy));
+		if (log.isDebugEnabled()) {
+			log.debug('simpleQueryBasic BPS RESPONSE : ' + BPSResponseXML);
+		}
+
 		taskXMLList = BPSResponseXML..SOAPENV_NS::Body.NS2_NS::simpleQueryResponse.NS2_NS::taskSimpleQueryResultSet.NS1_NS::row;
 		paginatePageCount =  parseInt(BPSResponseXML..SOAPENV_NS::Body.NS2_NS::simpleQueryResponse.NS2_NS::taskSimpleQueryResultSet.NS1_NS::pages);
 	} catch(e) {
 		log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
-        log.error(e);
+		log.error(e);
 		response.sendRedirect('login');
 	}
 %>
