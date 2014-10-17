@@ -169,7 +169,7 @@ public class WorkflowServiceClient {
             image = ImageIO.read(bis);
             bis.close();
         } catch (IOException e) {
-            log.error("IO operation failed when trying to decode the buffered image");
+            log.error("IO operation failed when trying to decode the buffered image", e);
         }
         return image;
     }
