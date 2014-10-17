@@ -11,7 +11,6 @@ import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
 import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceStub;
 import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceStub;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.xml.XMLPrettyPrinter;
 import sun.misc.BASE64Decoder;
 
