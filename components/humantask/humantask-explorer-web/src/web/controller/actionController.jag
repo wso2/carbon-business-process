@@ -35,7 +35,6 @@
 	try {
 		if (actionType === 'claim_task') {
 			//claim specified task
-
 			var result = new XML(htRequest.claimTask(taskId));
 			var resultCheck = result.SOAPENV_NS::Body.NS2_NS::claimResponse;
 
@@ -155,14 +154,14 @@
 
 			/*
 			 * SAMPLE SUCCESS RESPONSE
-			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-			   <soapenv:Body>
-				  <ns2:releaseResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
-			   </soapenv:Body>
-			</soapenv:Envelope>
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				   <soapenv:Body>
+					  <ns2:releaseResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+				   </soapenv:Body>
+				</soapenv:Envelope>
 
-			   SAMPLE FAILURE RESPONSE
-			   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				SAMPLE FAILURE RESPONSE
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				   <soapenv:Body>
 					  <soapenv:Fault>
 						 <faultcode>soapenv:Server</faultcode>
@@ -172,7 +171,7 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 
-				*/
+			*/
 
 		} else if (actionType === 'suspend_task') {
 			var result = new XML(htRequest.suspendTask(taskId));
@@ -190,15 +189,15 @@
 			response.content = responseMsg;
 
 			/*
-			 * SAMPLE SUCCESS RESPONSE
-			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-			   <soapenv:Body>
-				  <ns2:suspendResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
-			   </soapenv:Body>
-			</soapenv:Envelope>
+				SAMPLE SUCCESS RESPONSE
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				   <soapenv:Body>
+					  <ns2:suspendResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+				   </soapenv:Body>
+				</soapenv:Envelope>
 
-			   SAMPLE FAILURE RESPONSE
-			   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				SAMPLE FAILURE RESPONSE
+			   	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				   <soapenv:Body>
 					  <soapenv:Fault>
 						 <faultcode>soapenv:Server</faultcode>
@@ -207,7 +206,7 @@
 					  </soapenv:Fault>
 				   </soapenv:Body>
 				</soapenv:Envelope>
-				*/
+			*/
 
 		} else if (actionType === 'resume_task') {
 			var result = new XML(htRequest.resumeTask(taskId));
@@ -260,14 +259,13 @@
 
 			/*
 			 * SAMPLE SUCCESS RESPONSE
-			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-			   <soapenv:Body>
-				  <ns2:failResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
-			   </soapenv:Body>
-			</soapenv:Envelope>
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				   <soapenv:Body>
+					  <ns2:failResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+				   </soapenv:Body>
+				</soapenv:Envelope>
 
 			   SAMPLE FAILURE RESPONSE
-
 			   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				   <soapenv:Body>
 					  <soapenv:Fault>
@@ -278,7 +276,7 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 
-				*/
+			*/
 		} else if (actionType === "addComment_task") {
 			//format of request : <addComment><text>Comment</text></addComment>
 			//the Comment contains text data wrapped by <![CDATA[ text content ]]
@@ -300,25 +298,25 @@
 			response.content = responseMsg;
 
 			/*
-			 SAMPLE SUCCESS RESPONSE
-			 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				 SAMPLE SUCCESS RESPONSE
+				 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+					   <soapenv:Body>
+						  <ns2:addCommentResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+							 <ns2:commentID>11051</ns2:commentID>
+						  </ns2:addCommentResponse>
+					   </soapenv:Body>
+				 </soapenv:Envelope>
+
+				SAMPLE FAILED RESPONSE
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				   <soapenv:Body>
-					  <ns2:addCommentResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
-						 <ns2:commentID>11051</ns2:commentID>
-					  </ns2:addCommentResponse>
+					  <soapenv:Fault>
+						 <faultcode>soapenv:Server</faultcode>
+						 <faultstring>Task lookup failed for task id 825 invalid task id provide</faultstring>
+						 <detail/>
+					  </soapenv:Fault>
 				   </soapenv:Body>
 				</soapenv:Envelope>
-
-			SAMPLE FAILED RESPONSE
-			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-			   <soapenv:Body>
-				  <soapenv:Fault>
-					 <faultcode>soapenv:Server</faultcode>
-					 <faultstring>Task lookup failed for task id 825 invalid task id provide</faultstring>
-					 <detail/>
-				  </soapenv:Fault>
-			   </soapenv:Body>
-			</soapenv:Envelope>
 			 */
 		} else if (actionType === "deleteComment") {
 			var result = new XML(htRequest.deleteComment(taskId, request.getParameter('commentId')));
@@ -336,11 +334,11 @@
 			response.content = responseMsg;
 
 			/* SAMPLE SUCCESS :
-			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-			   <soapenv:Body>
-				  <ns2:deleteCommentResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
-			   </soapenv:Body>
-			</soapenv:Envelope>
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				   <soapenv:Body>
+					  <ns2:deleteCommentResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+				   </soapenv:Body>
+				</soapenv:Envelope>
 			*/
 
 		} else if (actionType === "assign_task") {
@@ -371,7 +369,7 @@
 				   </soapenv:Body>
 				</soapenv:Envelope>
 			 * SAMPLE FAILURE:
-			 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				   <soapenv:Body>
 					  <soapenv:Fault>
 						 <faultcode>soapenv:Server</faultcode>
@@ -380,7 +378,7 @@
 					  </soapenv:Fault>
 				   </soapenv:Body>
 				</soapenv:Envelope>
-				*/
+			*/
 		} else {
 			responseMsg = '<unknownTaskResponse>\
 								<success>false</success>\
@@ -392,9 +390,9 @@
 	} catch(e) {
 		log.error('Error occured while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
 		log.error(e);
-		var responseMsg =  '<fault_taskResponse>\
+		var responseMsg = '<fault_taskResponse>\
 								<success>false</success>\
-								<data>' +e.message +'</data>\
+								<data>' + e.message + '</data>\
 							</fault_taskResponse>';
 		response.contentType = 'text/xml';
 		response.content = responseMsg;
