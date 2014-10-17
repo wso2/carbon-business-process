@@ -19,18 +19,24 @@ package org.wso2.carbon.unifiedendpoint.core;
 
 import java.io.File;
 
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.registry.core.Comment;
 import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.ws.client.registry.WSRegistryServiceClient;
+
+import javax.xml.stream.XMLStreamException;
 
 
 public class UEPSimpleRegistryClient {
 
     private String cookie = null;
     private static ConfigurationContext configContext = null;
-
+    private static Log log = LogFactory.getLog(UEPSimpleRegistryClient.class);
     //private static final String CARBON_HOME = ".." + File.separator + ".." + File.separator;
 
     //private static final String CARBON_HOME = "/home/kasun/development/wso2/wso2-distrns/wso2esb-4.0.0-SNAPSHOT/" ;
@@ -55,9 +61,10 @@ public class UEPSimpleRegistryClient {
             registry = new WSRegistryServiceClient(serverURL, "admin", "admin", configContext);
 //            registry.addSecurityOptions(policyPath, CARBON_HOME + "/resources/security/wso2carbon.jks");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed to authenticate the client. Caused by: " + e.getMessage());
+        }catch (AxisFault axisFault) {
+            log.error("Failed to initialize WSRegistryServiceClient due  axis2 fault", axisFault);
+        } catch (RegistryException e) {
+            log.error("Failed to initialize WSRegistryServiceClient due  registry error", e);
         }
         return registry;
     }

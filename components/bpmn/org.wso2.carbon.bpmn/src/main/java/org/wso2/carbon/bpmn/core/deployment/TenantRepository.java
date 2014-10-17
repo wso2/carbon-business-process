@@ -42,7 +42,9 @@ import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -84,77 +86,84 @@ public class TenantRepository {
 	 * @throws DeploymentException if deployment fails
 	 */
 	public boolean deploy(BPMNDeploymentContext deploymentContext) throws DeploymentException {
-		ZipInputStream archiveStream = null;
+        ZipInputStream archiveStream = null;
 
-		try {
+        try {
 
-			String deploymentName =
-					FilenameUtils.getBaseName(deploymentContext.getBpmnArchive().getName());
+            String deploymentName =
+                    FilenameUtils.getBaseName(deploymentContext.getBpmnArchive().getName());
 
-			// Compare the checksum of the BPMN archive with the currently available checksum in the registry
-			// to determine whether this is a new deployment.
-			String checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
+            // Compare the checksum of the BPMN archive with the currently available checksum in the registry
+            // to determine whether this is a new deployment.
+            String checksum = "";
+            try {
+                checksum = Utils.getMD5Checksum(deploymentContext.getBpmnArchive());
+            } catch (IOException e) {
+                log.error("Checksum genration failed for IO operation",e);
+            } catch (NoSuchAlgorithmException e) {
+                log.error("Checksum genration Algorithm not found",e);
+            }
 
-			DeploymentMetaDataModel deploymentMetaDataModel =
-					activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
+            DeploymentMetaDataModel deploymentMetaDataModel =
+                    activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
 
-			if (log.isDebugEnabled()) {
-				log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
-				log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
-			}
+            if (log.isDebugEnabled()) {
+                log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
+                log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
+            }
 
-			if (deploymentMetaDataModel != null) {
-				if (checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
-					return false;
-				}
-			}
+            if (deploymentMetaDataModel != null) {
+                if (checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
+                    return false;
+                }
+            }
 
-			ProcessEngineImpl engine =
-					(ProcessEngineImpl) BPMNServerHolder.getInstance().getEngine();
+            ProcessEngineImpl engine =
+                    (ProcessEngineImpl) BPMNServerHolder.getInstance().getEngine();
 
-			RepositoryService repositoryService = engine.getRepositoryService();
-			DeploymentBuilder deploymentBuilder =
-					repositoryService.createDeployment().tenantId(tenantId.toString()).
-							name(deploymentName);
-			archiveStream =
-					new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
-			deploymentBuilder.addZipInputStream(archiveStream);
-			Deployment deployment = deploymentBuilder.deploy();
+            RepositoryService repositoryService = engine.getRepositoryService();
+            DeploymentBuilder deploymentBuilder =
+                    repositoryService.createDeployment().tenantId(tenantId.toString()).
+                            name(deploymentName);
+            try {
+                archiveStream =
+                        new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+            } catch (FileNotFoundException e) {
+                String errMsg = "Archive stream not found for BPMN repsoitory";
+                throw new DeploymentException(errMsg, e);
+            }
 
-			if (deploymentMetaDataModel == null) {
+            deploymentBuilder.addZipInputStream(archiveStream);
+            Deployment deployment = deploymentBuilder.deploy();
 
-				deploymentMetaDataModel = new DeploymentMetaDataModel();
-				deploymentMetaDataModel.setPackageName(deploymentName);
-				deploymentMetaDataModel.setCheckSum(checksum);
-				deploymentMetaDataModel.setTenantID(tenantId.toString());
-				deploymentMetaDataModel.setId(deployment.getId());
+            if (deploymentMetaDataModel == null) {
 
-				//call for insertion
-				this.activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
-			} else {
-				//call for update
-				deploymentMetaDataModel.setCheckSum(checksum);
-				this.activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
-			}
+                deploymentMetaDataModel = new DeploymentMetaDataModel();
+                deploymentMetaDataModel.setPackageName(deploymentName);
+                deploymentMetaDataModel.setCheckSum(checksum);
+                deploymentMetaDataModel.setTenantID(tenantId.toString());
+                deploymentMetaDataModel.setId(deployment.getId());
 
-		} catch (Exception e) {
-			String errorMessage =
-					"Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
-			log.error(errorMessage, e);
-			throw new DeploymentException(errorMessage, e);
-		} finally {
-			if (archiveStream != null) {
-				try {
-					archiveStream.close();
-				} catch (IOException e) {
-					log.error("Could not close archive stream", e);
-					throw new DeploymentException("Could not close archive stream", e);
-				}
-			}
-		}
+                //call for insertion
+                this.activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
+            } else {
+                //call for update
+                deploymentMetaDataModel.setCheckSum(checksum);
+                this.activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
+            }
 
-		return true;
-	}
+        } finally {
+            if (archiveStream != null) {
+                try {
+                    archiveStream.close();
+                } catch (IOException e) {
+                    log.error("Could not close archive stream", e);
+                }
+            }
+        }
+
+        return true;
+    }
 
 	/**
 	 * Undeploys a BPMN package.
@@ -162,80 +171,68 @@ public class TenantRepository {
 	 *
 	 * @param deploymentName package name to be undeployed
 	 * @param force          forceful deletion of package
-	 * @throws BPSException Throws if the deployment fails
 	 */
 
-	public void undeploy(String deploymentName, boolean force) throws BPSException {
+	public void undeploy(String deploymentName, boolean force) {
 
-		DeploymentMetaDataModel deploymentMetaDataModel = null;
-		SqlSession sqlSession = null;
-		try {
-			// Remove the deployment from the tenant's registry
-			deploymentMetaDataModel = activitiDAO
-					.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
+        DeploymentMetaDataModel deploymentMetaDataModel;
+        SqlSession sqlSession = null;
+        try {
+            // Remove the deployment from the tenant's registry
+            deploymentMetaDataModel = activitiDAO
+                    .selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
 
-			if ((deploymentMetaDataModel == null) && !force) {
-				String msg = "Deployment: " + deploymentName + " does not exist.";
-				log.warn(msg);
-				return;
-			}
+            if ((deploymentMetaDataModel == null) && !force) {
+                String msg = "Deployment: " + deploymentName + " does not exist.";
+                log.warn(msg);
+                return;
+            }
 
-			ProcessEngineImpl engine = (ProcessEngineImpl) BPMNServerHolder.getInstance().getEngine();
+            ProcessEngineImpl engine = (ProcessEngineImpl) BPMNServerHolder.getInstance().getEngine();
 
-			DbSqlSessionFactory dbSqlSessionFactory =
-					(DbSqlSessionFactory) engine.getProcessEngineConfiguration().
-					                            getSessionFactories().get(DbSqlSession.class);
+            DbSqlSessionFactory dbSqlSessionFactory =
+                    (DbSqlSessionFactory) engine.getProcessEngineConfiguration().
+                            getSessionFactories().get(DbSqlSession.class);
 
-			SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
-			sqlSession = sqlSessionFactory.openSession();
-			DeploymentMapper deploymentMapper = sqlSession.getMapper(DeploymentMapper.class);
-			int rowCount = deploymentMapper.deleteDeploymentMetaData(deploymentMetaDataModel);
+            SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+            sqlSession = sqlSessionFactory.openSession();
+            DeploymentMapper deploymentMapper = sqlSession.getMapper(DeploymentMapper.class);
+            int rowCount = deploymentMapper.deleteDeploymentMetaData(deploymentMetaDataModel);
 
-			if (log.isDebugEnabled()) {
-				log.debug("Total row count deleted=" + rowCount);
-			}
+            if (log.isDebugEnabled()) {
+                log.debug("Total row count deleted=" + rowCount);
+            }
 
-			// Remove the deployment archive from the tenant's deployment folder
-			File deploymentArchive = new File(repoFolder, deploymentName + ".bar");
-			FileUtils.deleteQuietly(deploymentArchive);
+            // Remove the deployment archive from the tenant's deployment folder
+            File deploymentArchive = new File(repoFolder, deploymentName + ".bar");
+            FileUtils.deleteQuietly(deploymentArchive);
 
-			// Delete all versions of this package from the Activiti engine.
-			RepositoryService repositoryService = engine.getRepositoryService();
-			List<Deployment> deployments =
-					repositoryService.createDeploymentQuery().
-							deploymentTenantId(tenantId.toString())
-					                 .deploymentName(deploymentName).list();
-			for (Deployment deployment : deployments) {
-				repositoryService.deleteDeployment(deployment.getId());
-			}
+            // Delete all versions of this package from the Activiti engine.
+            RepositoryService repositoryService = engine.getRepositoryService();
+            List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).
+                                           deploymentName(deploymentName).list();
+            for (Deployment deployment : deployments) {
+                repositoryService.deleteDeployment(deployment.getId());
+            }
 
-			//commit metadata
-			sqlSession.commit();
-		} catch (Exception e) {
-			String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " +
-			             tenantId;
-			log.error(msg, e);
-
-			if (sqlSession != null)
-				sqlSession.rollback();
-			throw new BPSException(msg, e);
-		} finally {
-			if (sqlSession != null) {
-				sqlSession.close();
-			}
-		}
+            //commit metadata
+            sqlSession.commit();
+        } finally {
+            if (sqlSession != null) {
+                sqlSession.close();
+            }
+        }
 
 	}
 
-	public List<Deployment> getDeployments() throws BPSException {
+    public List<Deployment> getDeployments() /*throws BPSException*/ {
 
-		ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-		List<Deployment> tenantDeployments =
-				engine.getRepositoryService().createDeploymentQuery()
-				      .deploymentTenantId(tenantId.toString()).list();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        List<Deployment> tenantDeployments = engine.getRepositoryService().createDeploymentQuery().
+                                                deploymentTenantId(tenantId.toString()).list();
 
-		return tenantDeployments;
-	}
+        return tenantDeployments;
+    }
 
 	public List<ProcessDefinition> getDeployedProcessDefinitions() throws BPSException {
 
@@ -257,98 +254,86 @@ public class TenantRepository {
 	 * (3) If a package is only in the deployment folder, it is a new deployment. This will be handled by the deployer.
 	 * (4) If a package is in the deployment folder AND it is in either registry or Activiti DB (but not both), then it is an inconsistent deployment. This will be undeployed.
 	 *
-	 * @throws BPSException //TThrows exception if the fix deployment failed
-	 */
-	public void fixDeployments() throws BPSException {
+	 *
+     * */
+    public void fixDeployments() {
 
-		// get all deployments in the deployment folder
-		List<String> fileArchiveNames = new ArrayList<String>();
-		File[] fileDeployments = repoFolder.listFiles();
-		if(fileDeployments != null){
-			for (File fileDeployment : fileDeployments) {
-				String deploymentName = FilenameUtils.getBaseName(fileDeployment.getName());
-				fileArchiveNames.add(deploymentName);
-			}
-		}else{
-			log.error("File deployments returned null for tenant"+tenantId);
-		}
+        // get all deployments in the deployment folder
+        List<String> fileArchiveNames = new ArrayList<String>();
+        File[] fileDeployments = repoFolder.listFiles();
+        if (fileDeployments != null) {
+            for (File fileDeployment : fileDeployments) {
+                String deploymentName = FilenameUtils.getBaseName(fileDeployment.getName());
+                fileArchiveNames.add(deploymentName);
+            }
+        } else {
+            log.error("File deployments returned null for tenant" + tenantId);
+        }
 
 
-		// get all deployments in the Activiti DB
-		List<String> activitiDeploymentNames = new ArrayList<String>();
-		ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-		RepositoryService repositoryService = engine.getRepositoryService();
-		List<Deployment> tenantDeployments =
-				repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString())
-				                 .list();
-		for (Deployment deployment : tenantDeployments) {
-			String deploymentName = deployment.getName();
-			activitiDeploymentNames.add(deploymentName);
-		}
+        // get all deployments in the Activiti DB
+        List<String> activitiDeploymentNames = new ArrayList<String>();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RepositoryService repositoryService = engine.getRepositoryService();
+        List<Deployment> tenantDeployments =
+                repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString())
+                        .list();
+        for (Deployment deployment : tenantDeployments) {
+            String deploymentName = deployment.getName();
+            activitiDeploymentNames.add(deploymentName);
+        }
 
-		// get all deployments in the registry
-		List<String> metaDataDeploymentNames = new ArrayList<String>();
-		List<DeploymentMetaDataModel> deploymentMetaDataModelList =
-				activitiDAO.selectAllDeploymentModel();
+        // get all deployments in the registry
+        List<String> metaDataDeploymentNames = new ArrayList<String>();
+        List<DeploymentMetaDataModel> deploymentMetaDataModelList =
+                activitiDAO.selectAllDeploymentModel();
 
-		int deploymentMetaDataModelListSize = deploymentMetaDataModelList.size();
+        int deploymentMetaDataModelListSize = deploymentMetaDataModelList.size();
 
-		try {
-			for (int i = 0; i < deploymentMetaDataModelListSize; i++) {
-				DeploymentMetaDataModel deploymentMetaDataModel =
-						deploymentMetaDataModelList.get(i);
+        for (int i = 0; i < deploymentMetaDataModelListSize; i++) {
+            DeploymentMetaDataModel deploymentMetaDataModel =
+                    deploymentMetaDataModelList.get(i);
 
-				if (deploymentMetaDataModel != null) {
-					String deploymentMetadataName = deploymentMetaDataModel.getPackageName();
-					metaDataDeploymentNames.add(deploymentMetadataName);
-				}
-			}
-		} catch (Exception ex) {
-			String msg = "Failed to obtain all  deploymentMetaDataModel size: " +
-			             deploymentMetaDataModelListSize;
-			log.error(msg, ex);
-			throw new BPSException(msg, ex);
-		}
+            if (deploymentMetaDataModel != null) {
+                String deploymentMetadataName = deploymentMetaDataModel.getPackageName();
+                metaDataDeploymentNames.add(deploymentMetadataName);
+            }
+        }
 
-		// construct the union of all deployments
-		Set<String> allDeploymentNames = new HashSet<String>();
-		allDeploymentNames.addAll(fileArchiveNames);
-		allDeploymentNames.addAll(activitiDeploymentNames);
-		allDeploymentNames.addAll(metaDataDeploymentNames);
+        // construct the union of all deployments
+        Set<String> allDeploymentNames = new HashSet<String>();
+        allDeploymentNames.addAll(fileArchiveNames);
+        allDeploymentNames.addAll(activitiDeploymentNames);
+        allDeploymentNames.addAll(metaDataDeploymentNames);
 
-		for (String deploymentName : allDeploymentNames) {
-			try {
-				if (!(fileArchiveNames.contains(deploymentName))) {
-					if (log.isDebugEnabled()) {
-						log.debug(deploymentName +
-						          " has been removed from the deployment folder. Undeploying the package...");
-					}
-					undeploy(deploymentName, true);
-				} else {
-					if (activitiDeploymentNames.contains(deploymentName) &&
-					    !metaDataDeploymentNames.contains(deploymentName)) {
-						if (log.isDebugEnabled()) {
-							log.debug(deploymentName +
-							          " is missing in the registry. Undeploying the package to avoid inconsistencies...");
-						}
-						undeploy(deploymentName, true);
-					}
+        for (String deploymentName : allDeploymentNames) {
 
-					if (!activitiDeploymentNames.contains(deploymentName) &&
-					    metaDataDeploymentNames.contains(deploymentName)) {
-						if (log.isDebugEnabled()) {
-							log.debug(deploymentName +
-							          " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
-						}
-						undeploy(deploymentName, true);
-					}
-				}
-			} catch (BPSException e) {
-				String msg = "Failed undeploy inconsistent deployment: " + deploymentName;
-				log.error(msg, e);
-				throw new BPSException(msg, e);
-			}
-		}
-	}
+            if (!(fileArchiveNames.contains(deploymentName))) {
+                if (log.isDebugEnabled()) {
+                    log.debug(deploymentName +
+                            " has been removed from the deployment folder. Undeploying the package...");
+                }
+                undeploy(deploymentName, true);
+            } else {
+                if (activitiDeploymentNames.contains(deploymentName) &&
+                        !metaDataDeploymentNames.contains(deploymentName)) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(deploymentName +
+                                " is missing in the registry. Undeploying the package to avoid inconsistencies...");
+                    }
+                    undeploy(deploymentName, true);
+                }
+
+                if (!activitiDeploymentNames.contains(deploymentName) &&
+                        metaDataDeploymentNames.contains(deploymentName)) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(deploymentName +
+                                " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
+                    }
+                    undeploy(deploymentName, true);
+                }
+            }
+        }
+    }
 }
 
