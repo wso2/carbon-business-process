@@ -201,7 +201,7 @@ public class WorkflowServiceClient {
         deploymentServiceStub.undeploy(deploymentName);
     }
 
-    private BufferedImage decodeToImage(String imageString) {
+    private BufferedImage decodeToImage(String imageString) throws IOException{
         BufferedImage image = null;
         ByteArrayInputStream bis = null;
         byte[] imageByte;
@@ -210,14 +210,12 @@ public class WorkflowServiceClient {
             imageByte = decoder.decodeBuffer(imageString);
             bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
-        } catch (IOException e) {
-            log.error("IO operation failed when trying to decode the buffered image", e);
         } finally {
             if(bis != null) {
                 try {
                     bis.close();
                 } catch (IOException e) {
-                    log.error("Error occurred while closing the output stream", e);
+                    log.error("Error occurred while closing the input stream", e);
                 }
             }
         }
