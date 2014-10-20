@@ -17,17 +17,17 @@
  * under the License.
  */
 
-	var authSuccess = session.get("authSuccess");
-	if (!authSuccess) {
-		response.sendRedirect("login");
-	} else {
-		include("/model/common.jag");
-		include("/model/taskPoolModel.jag");
-		include("/template/partials/header.jag");
-		include("/template/partials/navigation.jag");
-		if (taskXMLList != null) {
-			include("/template/taskPoolView.jag");
-		}
-		include("/template/partials/footer.jag");
-	}
+    var authSuccess = session.get("authSuccess");
+    if (!authSuccess) {
+        response.sendRedirect("login");
+    } else {
+        include("/model/common.jag");
+        include("/model/taskPoolModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+        if (taskXMLList != null) {
+            include("/template/taskPoolView.jag");
+        }
+        include("/template/partials/footer.jag");
+    }
 %>

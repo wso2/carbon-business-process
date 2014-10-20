@@ -17,45 +17,45 @@
  * under the License.
  */
 
-	include("/model/common.jag");
+    include("/model/common.jag");
 
-	var log = new Log();
+    var log = new Log();
 
-	session.put("authSuccess" ,false);
-	//send logout message to BPS
-	var payload ='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
-									xmlns:aut="http://authentication.services.core.carbon.wso2.org">\
-					   <soapenv:Body>\
-						  <aut:logout/>\
-					   </soapenv:Body>\
-					</soapenv:Envelope>';
+    session.put("authSuccess" ,false);
+    //send logout message to BPS
+    var payload ='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                                    xmlns:aut="http://authentication.services.core.carbon.wso2.org">\
+                       <soapenv:Body>\
+                          <aut:logout/>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
 
-	var BPSSessionCookie = session.get('BPSSessionCookie');
-	var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
-	var soapAction = 'urn:logout';
+    var BPSSessionCookie = session.get('BPSSessionCookie');
+    var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
+    var soapAction = 'urn:logout';
 
-	var httpClient = new XMLHttpRequest();
-	httpClient.open('POST', endPoint, false);
-	httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
-	httpClient.setRequestHeader('SOAPAction', soapAction);
-	httpClient.setRequestHeader('Content-Type','text/xml');
+    var httpClient = new XMLHttpRequest();
+    httpClient.open('POST', endPoint, false);
+    httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
+    httpClient.setRequestHeader('SOAPAction', soapAction);
+    httpClient.setRequestHeader('Content-Type','text/xml');
 
-	try {
-		httpClient.send(payload);
-		var BPSResponse = httpClient.responseText;
-		var responseStatus = httpClient.statusText;
-		if (httpClient.statusText.valueOf() === "Accepted") {
-			if (log.isDebugEnabled()) {
-				log.debug('LOGOUT SUCCESS');
-			}
-		} else {
-			log.error('LOGOUT FAILED : BPS AuthenticationAdmin service logout request failed');
-		}
-	} catch (e) {
-		log.error('Error occurred in connection while logout from AuthenticationAdmin service : ');
-		log.error(e);
-		response.sendRedirect('login');
-	}
-	response.sendRedirect("login");
+    try {
+        httpClient.send(payload);
+        var BPSResponse = httpClient.responseText;
+        var responseStatus = httpClient.statusText;
+        if (httpClient.statusText.valueOf() === "Accepted") {
+            if (log.isDebugEnabled()) {
+                log.debug('LOGOUT SUCCESS');
+            }
+        } else {
+            log.error('LOGOUT FAILED : BPS AuthenticationAdmin service logout request failed');
+        }
+    } catch (e) {
+        log.error('Error occurred in connection while logout from AuthenticationAdmin service : ');
+        log.error(e);
+        response.sendRedirect('login');
+    }
+    response.sendRedirect("login");
 
 %>

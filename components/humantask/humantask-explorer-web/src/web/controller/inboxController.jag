@@ -17,15 +17,15 @@
  * under the License.
  */
 
-	var authSuccess = session.get("authSuccess");
-	if (!authSuccess) {
-		response.sendRedirect("login");
-	} else {
-		include("/model/common.jag");
-		include("/model/inboxModel.jag");
-		include("/template/partials/header.jag");
-		include("/template/partials/navigation.jag");
-		include("/template/inboxView.jag");
-		include("/template/partials/footer.jag");
-	}
+    var authSuccess = session.get("authSuccess");
+    if (!authSuccess) {
+        response.sendRedirect("login");
+    } else {
+        include("/model/common.jag");
+        include("/model/inboxModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+        include("/template/inboxView.jag");
+        include("/template/partials/footer.jag");
+    }
 %>

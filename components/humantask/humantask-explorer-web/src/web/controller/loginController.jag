@@ -17,9 +17,9 @@
  * under the License.
  */
 
-	include("/model/common.jag");
-	include("/model/loginModel.jag");
-	include("/template/partials/header.jag");
-	include("/template/loginView.jag");
-	include("/template/partials/footer.jag");
+    include("/model/common.jag");
+    include("/model/loginModel.jag");
+    include("/template/partials/header.jag");
+    include("/template/loginView.jag");
+    include("/template/partials/footer.jag");
 %>
