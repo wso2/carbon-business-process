@@ -253,14 +253,14 @@ function updateComments(id) {
                     var dateInfo = new Date(commentList[i].getElementsByTagNameNS(ns1NS, 'lastModifiedTime')[0].textContent);
 
                     commentViewList = commentViewList + '<li class="list-group-item" id="comment_' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + '">\
-																<div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'addedBy')[0].textContent + ' added a comment - \
-																	<time>' + dateInfo + '</time>\
-																	<a href="#additionalInfoSection" onclick="deleteComment(' + id + ',' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + ')">\
-																		<span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>\
-																	</a>\
-																</div>\
-																<div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'text')[0].textContent + '</div>\
-															</li>';
+                                                                <div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'addedBy')[0].textContent + ' added a comment - \
+                                                                    <time>' + dateInfo + '</time>\
+                                                                    <a href="#additionalInfoSection" onclick="deleteComment(' + id + ',' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + ')">\
+                                                                        <span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>\
+                                                                    </a>\
+                                                                </div>\
+                                                                <div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'text')[0].textContent + '</div>\
+                                                            </li>';
                 }
 
                 $('#commentList').html(commentViewList);
@@ -347,22 +347,22 @@ function updateHistory(id) {
                 for (var i = 0; i < historyList.length; i++) {
                     var dateInfo = new Date(historyList[i].getElementsByTagName('eventTime')[0].textContent);
                     historyViewList = historyViewList + '<li class="list-group-item">\
-															<div> <b>User : </b>'
+                                                            <div> <b>User : </b>'
                         + historyList[i].getElementsByTagName('eventInitiator')[0].textContent
                         + '</div>\
-															<div> <b>Operation : </b>'
+                                                            <div> <b>Operation : </b>'
                         + historyList[i].getElementsByTagName('eventType')[0].textContent
                         + '</div>\
-															<div> <b>Time : </b>'
+                                                            <div> <b>Time : </b>'
                         + '<time>' + dateInfo + '</time>'
                         + '</div>\
-															<div> <b>Old State : </b>'
+                                                            <div> <b>Old State : </b>'
                         + historyList[i].getElementsByTagName('oldState')[0].textContent
                         + '</div>\
-															<div> <b>New State : </b>'
+                                                            <div> <b>New State : </b>'
                         + historyList[i].getElementsByTagName('newState')[0].textContent
                         + '</div>\
-														</li>';
+                                                        </li>';
                 }
                 $('#historyList').html(historyViewList);
             } else {
