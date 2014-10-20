@@ -17,24 +17,24 @@
 -->
 
 <head>
-	<meta charset="utf-8">
-	<title><%=data.title%></title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="<%=data.title%>">
-	<meta name="author" content="<%=data.author%>">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-	<!-- Custom theme -->
-	<link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8">
+    <title><%=data.title%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%=data.title%>">
+    <meta name="author" content="<%=data.author%>">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <!-- Custom theme -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="header">
-				<div class="page-header">
-					<h1><%=data.title%></h1>
-				</div>
-			</div>
-		</div>
+    <div class="container">
+        <div class="row">
+            <div class="header">
+                <div class="page-header">
+                    <h1><%=data.title%></h1>
+                </div>
+            </div>
+        </div>
