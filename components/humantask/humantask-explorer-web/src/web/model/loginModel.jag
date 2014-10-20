@@ -17,9 +17,9 @@
  * under the License.
  */
 
-var message = "";
-if (session.get("loginFailed")) {
-	message = "Username or password invalid!";
-	session.remove("loginFailed");
-}
+    var message = "";
+    if (session.get("loginFailed")) {
+        message = "Username or password invalid!";
+        session.remove("loginFailed");
+    }
 %>
