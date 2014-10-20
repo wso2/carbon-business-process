@@ -25,18 +25,18 @@
  * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
  * @return response payload
  */
-	function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
-		var BPSResponse;
-		var httpClient = new XMLHttpRequest();
-		httpClient.open('POST', endPoint, false);
-		httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
-		httpClient.setRequestHeader('SOAPAction', soapAction);
-		httpClient.setRequestHeader('Content-Type','text/xml');
+    function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
+        var BPSResponse;
+        var httpClient = new XMLHttpRequest();
+        httpClient.open('POST', endPoint, false);
+        httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
+        httpClient.setRequestHeader('SOAPAction', soapAction);
+        httpClient.setRequestHeader('Content-Type','text/xml');
 
-		httpClient.send(payload);
-		BPSResponse = httpClient.responseText;
+        httpClient.send(payload);
+        BPSResponse = httpClient.responseText;
 
-		return BPSResponse;
-	}
+        return BPSResponse;
+    }
 
 %>

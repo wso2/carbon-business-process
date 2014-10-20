@@ -36,7 +36,7 @@
         var createdDate = requestParameters.craetedDate;
         var queryOrderBy = requestParameters.queryOrderBy;
         var queryOrder = requestParameters.queryOrder;
-    
+
         //new query string for pagination
         var newQueryString = 'taskName=' +taskName +'&taskStatus=' +taskStatus +'&taskCategory=' +taskCategory
                                 +'&craetedDate=' +createdDate +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;
