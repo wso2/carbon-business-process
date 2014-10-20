@@ -18,96 +18,96 @@
  */
 %>
 <div class="row">
-	<ol class="breadcrumb">
-	  <li><a href="#">Home</a></li>
-	  <li><a href="taskpool">TaskPool</a></li>
-	  <li class="active">Task : <%=id%></li>
-	</ol>
+    <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li><a href="taskpool">TaskPool</a></li>
+        <li class="active">Task : <%=id%></li>
+    </ol>
 </div>
 <div class="row">
-	<div class="panel panel-primary">
-	  <div class="panel-heading">
-	  		Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
-	  		<%if (taskAbstract.NS1_NS::status.text() == "READY" || taskAbstract.NS1_NS::status.text() == "CREATED") {%>
-	  			<span><button  onclick="claimTask(<%=id%>)" class="btn btn-xs btn-danger" style="float:right;">Claim</button></span>
-	  		<%}%>
-	  </div>
-	  <table class="table">
-	    <tbody>
-	    	<tr>
-	    		<th>Subject</th>
-				<td colspan='2'><%=taskAbstract.NS1_NS::presentationSubject.text()%></td>
-	    	</tr>
-	    	<tr>
-	    		<th>Description</th>
-				<td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
-	    	</tr>
-	    	<tr>	
-	    		<th>Summary</th>
-				<td colspan='1'>
-					<p><small><b>Type : </b><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
-					<p><small><b>Owner : </b><%=taskAbstract.NS1_NS::actualOwner.text()%></small></p>
-					<p><small><b>Created Time &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.NS1_NS::createdTime.text()%></small></p>
-					<p><small><b>Activation Time: </b><%=taskAbstract.NS1_NS::activationTime.text()%></small></p>
-					<p><small><b>Last Modified &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.NS1_NS::updatedTime.text()%></small></p>
-				</td>
-				<td colspan='1'>
-					<p><small><b>Status : </b><%=taskAbstract.NS1_NS::status.text()%></small></p>
-					<p><small><b>Priority : </b><%=taskAbstract.NS1_NS::priority.text()%></small></p>
-				</td>	
-	    	</tr>
-	    </tbody>
-	  </table>
-	</div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
+            <%if (taskAbstract.NS1_NS::status.text() == "READY" || taskAbstract.NS1_NS::status.text() == "CREATED") {%>
+                <span><button  onclick="claimTask(<%=id%>)" class="btn btn-xs btn-danger" style="float:right;">Claim</button></span>
+            <%}%>
+        </div>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Subject</th>
+                    <td colspan='2'><%=taskAbstract.NS1_NS::presentationSubject.text()%></td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
+                </tr>
+                <tr>
+                    <th>Summary</th>
+                    <td colspan='1'>
+                        <p><small><b>Type : </b><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
+                        <p><small><b>Owner : </b><%=taskAbstract.NS1_NS::actualOwner.text()%></small></p>
+                        <p><small><b>Created Time &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.NS1_NS::createdTime.text()%></small></p>
+                        <p><small><b>Activation Time: </b><%=taskAbstract.NS1_NS::activationTime.text()%></small></p>
+                        <p><small><b>Last Modified &nbsp;&nbsp;&nbsp;: </b><%=taskAbstract.NS1_NS::updatedTime.text()%></small></p>
+                    </td>
+                    <td colspan='1'>
+                        <p><small><b>Status : </b><%=taskAbstract.NS1_NS::status.text()%></small></p>
+                        <p><small><b>Priority : </b><%=taskAbstract.NS1_NS::priority.text()%></small></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <div class="row" name="infoErrSection">
-	<div id="additionalInfoErr" class="alert alert-danger alert-dismissible" role="alert" hidden>
-	  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	  <p id="InfoErrMsg"></p>
-	</div>
+    <div id="additionalInfoErr" class="alert alert-danger alert-dismissible" role="alert" hidden>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="InfoErrMsg"></p>
+    </div>
 </div>
 <div class="row" name="additionalInfoSection">
-	<ul class="nav nav-tabs" role="tablist">
-		<li class="active" id="commentTab">
-			<a href="#additionalInfoSection" onclick="updateComments(<%=id%>)">
-				Comments
-				<span class="glyphicon glyphicon-comment"></span>
-			</a>
-		</li>
-		<li id="historyTab">
-			<a href="#additionalInfoSection" onclick="updateHistory(<%=id%>)">History</a>
-		</li>
-		<li id="attachmentTab">
-			<a href="#additionalInfoSection" onclick="updateAttachments(<%=id%>)">Attachments</a>
-		</li>
-		<li id="addComment" style="float:right;">
-			<a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
-				<span class="glyphicon glyphicon-plus"></span>
-			</a>
-		</li>
-	</ul>
-	
-	<ul class="list-group" id="commentList">
-		<%for (var i=0; i < commentList.length(); i++){%>
-			<li class="list-group-item">
-				<div><%=commentList[i].NS1_NS::addedBy.text()%> added a comment -
-					<time id="time">
-						<script>
-							var d = new Date("<%=commentList[i].NS1_NS::addedTime.text()%>");
-							document.write(d);
-						</script>
-					</time>
-				</div>
-				<div><%=commentList[i].NS1_NS::text.text()%></div>
-			</li>
-		<%}%>
-	</ul>
-	
-	<ul class="list-group" id="historyList" hidden>
-		<li class="list-group-item">not implemented !</li>
-	</ul>
-	
-	<ul class="list-group" id="AttchmentsList" hidden>
-		<li class="list-group-item">not implemented !</li>
-	</ul>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active" id="commentTab">
+            <a href="#additionalInfoSection" onclick="updateComments(<%=id%>)">
+                Comments
+                <span class="glyphicon glyphicon-comment"></span>
+            </a>
+        </li>
+        <li id="historyTab">
+            <a href="#additionalInfoSection" onclick="updateHistory(<%=id%>)">History</a>
+        </li>
+        <li id="attachmentTab">
+            <a href="#additionalInfoSection" onclick="updateAttachments(<%=id%>)">Attachments</a>
+        </li>
+        <li id="addComment" style="float:right;">
+            <a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </li>
+    </ul>
+
+    <ul class="list-group" id="commentList">
+        <%for (var i=0; i < commentList.length(); i++){%>
+            <li class="list-group-item">
+                <div><%=commentList[i].NS1_NS::addedBy.text()%> added a comment -
+                    <time id="time">
+                        <script>
+                            var d = new Date("<%=commentList[i].NS1_NS::addedTime.text()%>");
+                            document.write(d);
+                        </script>
+                    </time>
+                </div>
+                <div><%=commentList[i].NS1_NS::text.text()%></div>
+            </li>
+        <%}%>
+    </ul>
+
+    <ul class="list-group" id="historyList" hidden>
+        <li class="list-group-item">not implemented !</li>
+    </ul>
+
+    <ul class="list-group" id="AttchmentsList" hidden>
+        <li class="list-group-item">not implemented !</li>
+    </ul>
 </div>
