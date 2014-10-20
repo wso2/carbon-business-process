@@ -247,7 +247,7 @@ function updateComments(id) {
                 //successful
                 var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
                 var commentList = data.firstChild.getElementsByTagNameNS('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803', 'comment');
-                var commentViewList;
+                var commentViewList = '';
 
                 for (var i = 0; i < commentList.length; i++) {
                     var dateInfo = new Date(commentList[i].getElementsByTagNameNS(ns1NS, 'lastModifiedTime')[0].textContent);
@@ -342,7 +342,7 @@ function updateHistory(id) {
             if (success === 'true') {
                 //successful
                 var historyList = data.firstChild.getElementsByTagName('event');
-                var historyViewList;
+                var historyViewList = '';
 
                 for (var i = 0; i < historyList.length; i++) {
                     var dateInfo = new Date(historyList[i].getElementsByTagName('eventTime')[0].textContent);
