@@ -17,30 +17,30 @@
  * under the License.
  */
 
-	var log = new Log();
+    var log = new Log();
 
-	var data = {
-		title : "WS Humantask Explorer",
-		author: "WSO2 Business Process Server",
-		footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved."
-	};
+    var data = {
+        title : "WS Humantask Explorer",
+        author: "WSO2 Business Process Server",
+        footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved."
+    };
 
-	//construct backend URI (asume webapp deployed in BPS)
-	var BPSUrl = application.get('bpsURI');
-	if (BPSUrl == null || BPSUrl === "") {
-		var process = require("process");
-		var localIP = process.getProperty('carbon.local.ip');
-		var httpsPort = process.getProperty('mgt.transport.https.port');
-		BPSUrl = "https://" +localIP +":" +httpsPort;
-		application.put('bpsURI', BPSUrl);
-		if (log.isDebugEnabled()) {
-			log.debug("Back-end BPS URI :" + BPSUrl);
-		}
-	}
+    //construct backend URI (asume webapp deployed in BPS)
+    var BPSUrl = application.get('bpsURI');
+    if (BPSUrl == null || BPSUrl === "") {
+        var process = require("process");
+        var localIP = process.getProperty('carbon.local.ip');
+        var httpsPort = process.getProperty('mgt.transport.https.port');
+        BPSUrl = "https://" +localIP +":" +httpsPort;
+        application.put('bpsURI', BPSUrl);
+        if (log.isDebugEnabled()) {
+            log.debug("Back-end BPS URI :" + BPSUrl);
+        }
+    }
 
-	//ws-humantask namespaces
-	var SOAPENV_NS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
-	var NS2_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
-	var NS1_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
+    //ws-humantask namespaces
+    var SOAPENV_NS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
+    var NS2_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
+    var NS1_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
 
 %>
