@@ -50,6 +50,7 @@ public class BPELDeployer extends AbstractDeployer {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Initializing BPEL Deployer for tenant " + tenantId + ".");
+
         File bpelRepo = null;
 
         try {
@@ -60,7 +61,9 @@ public class BPELDeployer extends AbstractDeployer {
         } catch (DeploymentException e) {
             log.warn("BPEL repository creation failed.", e);
         } catch (RegistryException e) {
-            log.warn("Registry loading failed for tenant " + tenantId , e);
+            log.warn("Initialization of tenant process store failed for tenant: " +
+                     tenantId +
+                     " This can cause issues in deployment of BPEL packages.", e);
         }
 
         BPELServer bpsServer = BPELDeployerServiceComponent.getBPELServer();
