@@ -17,24 +17,24 @@
  * under the License.
  */
 
-	var authSuccess = session.get("authSuccess");
-	if (!authSuccess) {
-		response.sendRedirect("login");
-	} else {
-		include("/model/common.jag");
-		include("/model/taskModel.jag");
-		include("/template/partials/header.jag");
-		include("/template/partials/navigation.jag");
-		include("/template/modals/addCommentModal.jag");
-		
-		var user = session.get('userName');
-		if (user === taskAbstract.NS1_NS::actualOwner.text()) {
-			//This task belongs to this user
-			include("/template/inboxTaskView.jag");
-		} else {
-			//this user is not the actual owner of this task			
-			include("/template/taskView.jag");
-		}
-		include("/template/partials/footer.jag");
-	}
+    var authSuccess = session.get("authSuccess");
+    if (!authSuccess) {
+        response.sendRedirect("login");
+    } else {
+        include("/model/common.jag");
+        include("/model/taskModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+        include("/template/modals/addCommentModal.jag");
+
+        var user = session.get('userName');
+        if (user === taskAbstract.NS1_NS::actualOwner.text()) {
+            //This task belongs to this user
+            include("/template/inboxTaskView.jag");
+        } else {
+            //this user is not the actual owner of this task
+            include("/template/taskView.jag");
+        }
+        include("/template/partials/footer.jag");
+    }
 %>

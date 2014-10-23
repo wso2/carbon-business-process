@@ -15,15 +15,15 @@
  * specific language governing permissions and limitations
  * under the License. 
 -->
-		<div class="row">
-			<div class="footer">
-					<div class="well well-sm"><%=data.footer%></div>
-			</div>
-		</div>
-		<!-- javascripts -->
-		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="js/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/actions.js"></script>
-	</div>
+        <div class="row">
+            <div class="footer">
+                    <div class="well well-sm"><%=data.footer%></div>
+            </div>
+        </div>
+        <!-- javascripts -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/actions.js"></script>
+    </div>
 </body>

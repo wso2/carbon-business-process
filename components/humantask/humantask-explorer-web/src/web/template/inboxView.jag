@@ -18,87 +18,87 @@
  */
 %>
 <div class="row">
-	<ol class="breadcrumb">
-	  <li><a href="#">Home</a></li>
-	  <li class="active">Inbox</li>
-	</ol>
+    <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li class="active">Inbox</li>
+    </ol>
 </div>
 <div class="row">	
-	<div class="panel panel-primary">
-	  <!-- Default panel contents -->
-	  <div class="panel-heading">Inbox</div>
+    <div class="panel panel-primary">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Inbox</div>
 
-	  <div class="panel-body">
-	  		<div class="col-sm-2 col-md-2 col-lg-2 sidebar">
-	          <ul class="nav nav-sidebar nav-pills nav-stacked">
-	          	<%
-	          		function updateActiveStatusNavTab(status, button){
-	          			if (status != button) {
-	          				return "";
-	          			}
-	          			return "class=\"active\"";
-	          		}
-	          	%>
-	            <li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="inbox?status_query=RESERVED">Reserved</a></li>
-	            <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="inbox?status_query=IN_PROGRESS">In Progress</a></li>
-	            <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="inbox?status_query=SUSPENDED">Suspended</a></li>
-	            <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="inbox?status_query=COMPLETED">Completed</a></li>
-	            <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="inbox?status_query=FAILED">Failed</a></li>
-	          </ul>
-	        </div>
+        <div class="panel-body">
+            <div class="col-sm-2 col-md-2 col-lg-2 sidebar">
+              <ul class="nav nav-sidebar nav-pills nav-stacked">
+                <%
+                    function updateActiveStatusNavTab(status, button){
+                        if (status != button) {
+                            return "";
+                        }
+                        return "class=\"active\"";
+                    }
+                %>
+                <li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="inbox?status_query=RESERVED">Reserved</a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="inbox?status_query=IN_PROGRESS">In Progress</a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="inbox?status_query=SUSPENDED">Suspended</a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="inbox?status_query=COMPLETED">Completed</a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="inbox?status_query=FAILED">Failed</a></li>
+              </ul>
+            </div>
 
-	        <div class="col-sm-10 col-md-10 col-lg-10 main">
-			    <!-- Table -->
-			  	<table class="table">
-				    <thead>
-				    	<tr>
-				    		<th>ID</th>
-				    		<th>Type</th>
-				    		<th>Task Name</th>
-				    		<th>Subject</th>
-				    		<th>Status</th>
-				    		<th>Priority</th>
-				    	</tr>
-				    </thead>
-				    <tbody>
-				    	<% 
-				    	if (taskXMLList != null) {
-				    		for(var i=0; i<taskXMLList.length(); i++){ %>
-				    	<tr style="cursor:pointer;" onclick="window.location='inboxtask?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
-				    		onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-				    		<td><%=taskXMLList[i].NS1_NS::id.toString()%></td>
-				    		<td><%=taskXMLList[i].NS1_NS::taskType.text()%></td>
-							<td><%=taskXMLList[i].NS1_NS::presentationName.text()%></td>
-							<td><%=taskXMLList[i].NS1_NS::presentationSubject%></td>
-							<td><%=taskXMLList[i].NS1_NS::status%></td>
-							<td><%=taskXMLList[i].NS1_NS::priority%></td>
-				    	</tr>
-				    	<% 	
-							}
-				    	}
-				    	%>
-				    </tbody>
-				</table>
-			</div>
-	  </div>
-	</div>
-	<ul class="pagination">
-		<% if (pagination != 1) { %>
-			<li><a href="inbox?pagination=<%=pagination-1%>">&laquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&laquo;</a></li>			
-		<% } %>
-		<% for(var i = 1; i<=paginatePageCount; i++){ 
-				if (pagination == i) { %>
-					<li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% }else { %>
-					<li><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% } %>
-		<% } %>
-		<% if (pagination != paginatePageCount) { %>
-			<li><a href="inbox?pagination=<%=pagination+1%>">&raquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&raquo;</a></li>			
-		<% } %>
-	</ul>
+            <div class="col-sm-10 col-md-10 col-lg-10 main">
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Task Name</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%
+                        if (taskXMLList != null) {
+                            for(var i=0; i<taskXMLList.length(); i++){ %>
+                        <tr style="cursor:pointer;" onclick="window.location='inboxtask?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
+                            onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                            <td><%=taskXMLList[i].NS1_NS::id.toString()%></td>
+                            <td><%=taskXMLList[i].NS1_NS::taskType.text()%></td>
+                            <td><%=taskXMLList[i].NS1_NS::presentationName.text()%></td>
+                            <td><%=taskXMLList[i].NS1_NS::presentationSubject%></td>
+                            <td><%=taskXMLList[i].NS1_NS::status%></td>
+                            <td><%=taskXMLList[i].NS1_NS::priority%></td>
+                        </tr>
+                        <%
+                            }
+                        }
+                        %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <ul class="pagination">
+        <% if (pagination != 1) { %>
+            <li><a href="inbox?pagination=<%=pagination-1%>">&laquo;</a></li>
+        <% } else { %>
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        <% } %>
+        <% for(var i = 1; i<=paginatePageCount; i++){
+                if (pagination == i) { %>
+                    <li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+            <% }else { %>
+                    <li><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+            <% } %>
+        <% } %>
+        <% if (pagination != paginatePageCount) { %>
+            <li><a href="inbox?pagination=<%=pagination+1%>">&raquo;</a></li>
+        <% } else { %>
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        <% } %>
+    </ul>
 </div>

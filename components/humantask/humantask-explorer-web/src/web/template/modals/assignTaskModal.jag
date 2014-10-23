@@ -18,38 +18,38 @@
 	 
 <!-- Modal to assign task to assignable user -->
 <div class="modal fade" id="assignTaskModal" tabindex="-1" role="dialog" 
-   aria-labelledby="assignTaskModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" 
-				   data-dismiss="modal" aria-hidden="true">
-				      &times;
-				</button>
-				<h4 class="modal-title" id="assignTaskModalLabel">
-				   Assign Task
-				</h4>
-			</div>
-			
-			<div class="modal-body">
-				<label>Select User</label>
-				<div class="alert alert-danger" role="alert" id="userUnavailableAlert" style="display: none;">
-					No Assignable Users Found in the System .. !
-				</div>
-				<div class="input-group">
-				 	<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-				  	<select id="assignableUserList" name="user" class="form-control">
-						<option value="" selected></option>
-					</select>
-				</div>
-				
-				
-			</div>
-			
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary" onclick="assignTask(<%=id%>)" id="taskAssignBtn">Assign</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div>
+    aria-labelledby="assignTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                   data-dismiss="modal" aria-hidden="true">
+                      &times;
+                </button>
+                <h4 class="modal-title" id="assignTaskModalLabel">
+                   Assign Task
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <label>Select User</label>
+                <div class="alert alert-danger" role="alert" id="userUnavailableAlert" style="display: none;">
+                    No Assignable Users Found in the System .. !
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <select id="assignableUserList" name="user" class="form-control">
+                        <option value="" selected></option>
+                    </select>
+                </div>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="assignTask(<%=id%>)" id="taskAssignBtn">Assign</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
 </div><!-- /.modal -->
