@@ -20,20 +20,15 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.deployment.AbstractDeployer;
 import org.apache.axis2.deployment.DeploymentException;
 import org.apache.axis2.deployment.repository.util.DeploymentFileData;
-import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.HumanTaskServer;
-import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
-import org.wso2.carbon.humantask.core.deployment.ArchiveBasedHumanTaskDeploymentUnitBuilder;
-import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
-import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
 import org.wso2.carbon.humantask.core.store.HumanTaskStore;
 import org.wso2.carbon.humantask.deployer.internal.HumanTaskDeployerServiceComponent;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -49,12 +44,15 @@ public class HumanTaskDeployer extends AbstractDeployer {
     public void init(ConfigurationContext configurationContext) {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Initializing HumanTask Deployer for tenant " + tenantId + ".");
-        HumanTaskDeployerServiceComponent.getTenantRegistryLoader().
-                loadTenantRegistry(tenantId);
+
         try {
+            HumanTaskDeployerServiceComponent.getTenantRegistryLoader().
+                    loadTenantRegistry(tenantId);
             createHumanTaskRepository(configurationContext);
         } catch (DeploymentException e) {
             log.warn(String.format("Human Task Repository creation failed for tenant id [%d]", tenantId), e);
+        } catch (RegistryException e) {
+            log.warn("Initializing HumanTask Deployer failed for tenant " + tenantId);
         }
         HumanTaskServer humantaskServer = HumanTaskDeployerServiceComponent.getHumanTaskServer();
         humanTaskStore = humantaskServer.getTaskStoreManager().
@@ -86,18 +84,18 @@ public class HumanTaskDeployer extends AbstractDeployer {
      * @throws DeploymentException :
      */
     public void undeploy(String htArchiveFile) throws DeploymentException {
-            File humanTaskArchiveFile = new File(htArchiveFile);
-            if(humanTaskArchiveFile.exists()){
+        File humanTaskArchiveFile = new File(htArchiveFile);
+        if (humanTaskArchiveFile.exists()) {
             // By default, axis2 deployer will try to un deploy the existing archive before trying to deploy the new
             // archive for update of the existing archive resulting in undeploy method being called before deploy method
             // However, for human task scenario, since we support task versioning, we should not undeploy for update
-                if(log.isTraceEnabled()) {
-                    log.trace("Human task package was updated, hence no need to undeploy the HumanTask package  ");
-                }
-                return;
+            if (log.isTraceEnabled()) {
+                log.trace("Human task package was updated, hence no need to undeploy the HumanTask package  ");
             }
-            String unDeployedPackageName = FilenameUtils.removeExtension(humanTaskArchiveFile.getName());
-            humanTaskStore.unDeploy(unDeployedPackageName);
+            return;
+        }
+        String unDeployedPackageName = FilenameUtils.removeExtension(humanTaskArchiveFile.getName());
+        humanTaskStore.unDeploy(unDeployedPackageName);
     }
 
     private void createHumanTaskRepository(ConfigurationContext configCtx) throws DeploymentException {
@@ -112,7 +110,7 @@ public class HumanTaskDeployer extends AbstractDeployer {
             boolean status = humanTaskRepo.mkdir();
             if (!status) {
                 throw new DeploymentException("Failed to create HumanTask repository directory " +
-                        humanTaskRepo.getAbsolutePath() + ".");
+                                              humanTaskRepo.getAbsolutePath() + ".");
             }
         }
     }

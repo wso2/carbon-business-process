@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,20 +27,30 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSException;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.registry.api.RegistryException;
-import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 
-/*
-Deployer for BPMN packages. There is a separate deployer for each tenant.
+/**
+ * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
+ * under repository/deployment/server directory. Currently associated file extension is .bar.
+ * Separate deployer instance is created for each tenant.
+ * Activiti Engine versions same package if deployed twice. In order to overcome this issue,
+ * we are using an additional table which will keep track of the deployed package's md5sum in-order to
+ * identify the deployment of a new package.
+ *
  */
+
 public class BPMNDeployer extends AbstractDeployer {
 
     private static Log log = LogFactory.getLog(BPMNDeployer.class);
     private TenantRepository tenantRepository = null;
 
+	/**
+	 * Initializes the deployment per tenant
+	 *
+	 * @param configurationContext axis2 configurationContext
+	 */
     @Override
     public void init(ConfigurationContext configurationContext) {
 
@@ -51,23 +61,30 @@ public class BPMNDeployer extends AbstractDeployer {
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
             tenantRepository.setRepoFolder(tenantRepoFolder);
 
-            // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
-            // Only master node can fix deployment issues in BPMN packages
-            if (!isServerReadOnly()) {
+             if (!CarbonUtils.isWorkerNode()) {
                 tenantRepository.fixDeployments();
             }
-        } catch (BPSException e) {
-            String msg = "Failed to create a tenant store for tenant: " + tenantId;
+        }  catch (BPSException e) {
+            String msg = "Tenant Error: " + tenantId;
             log.error(msg, e);
         }
     }
 
+	/**
+	 * Deploys a given bpmn package in acitiviti bpmn engine.
+	 * @param deploymentFileData Provide information about the deployment file
+	 * @throws DeploymentException On failure , deployment exception is thrown
+	 */
+
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
 
-        // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
-        boolean isMasterServer = !isServerReadOnly();
-        // Worker nodes cannot deploy BPMN packages
-        if (!isMasterServer) {
+	    // Deployment logic is dependent on whether a given node is a worker node or not.Since process
+	    // information is shared though a persistence db and process is stored into the database, there
+	    // is no need to deploy process in worker nodes.
+
+        boolean isWorkerNode = CarbonUtils.isWorkerNode();
+        // Worker nodes cannot deploy BPMN packages, hence return
+        if (isWorkerNode) {
             return;
         }
 
@@ -76,24 +93,31 @@ public class BPMNDeployer extends AbstractDeployer {
         try {
             BPMNDeploymentContext deploymentContext = new BPMNDeploymentContext(tenantId);
             deploymentContext.setBpmnArchive(deploymentFileData.getFile());
-            tenantRepository.deploy(deploymentContext);
+            boolean deployed = tenantRepository.deploy(deploymentContext);
 
-        } catch (Exception e) {
+	        log.info( "Deployment Status " + deploymentFileData.getFile() + " deployed = " + deployed );
+
+        } catch (DeploymentException e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentFileData.getAbsolutePath();
-            log.error(errorMessage, e);
             throw new DeploymentException(errorMessage, e);
         }
     }
 
+	/**
+	 * Undeployment operation for Bpmn Deployer
+	 *
+	 * @param bpmnArchivePath        archivePatch
+	 * @throws DeploymentException   Deployment failure will result in this exception
+	 */
+
     public void undeploy(String bpmnArchivePath) throws DeploymentException {
 
-        // Currently using the registry read/write mount property to determine whether this node is a master node or a slave node.
-        boolean isMasterServer = !isServerReadOnly();
-
-        //worker nodes cannot un deploy BPMN packages
-        if (!isMasterServer) {
-            return;
-        }
+	    // Worker nodes does not perform any action related to bpmn undeployment, manager node takes
+	    // care of all deployment/ undeployment actions
+	    boolean isWorkerNode = CarbonUtils.isWorkerNode();
+	    if (isWorkerNode) {
+		    return;
+	    }
         File bpmnArchiveFile = new File(bpmnArchivePath);
         if (bpmnArchiveFile.exists()) {
             if (log.isTraceEnabled()) {
@@ -102,25 +126,25 @@ public class BPMNDeployer extends AbstractDeployer {
             }
             return;
         }
+
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
-        try {
-            String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
-            tenantRepository.undeploy(deploymentName, true);
+        String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
+        tenantRepository.undeploy(deploymentName, true);
 
-        } catch (Exception e) {
-            String errorMessage = "Failed to undeploy the archive: " + bpmnArchivePath;
-            log.error(errorMessage, e);
-            throw new DeploymentException(errorMessage, e);
-        }
 
     }
 
+	/**
+	 *
+	 * @param configurationContext axis2 configurationContext
+	 * @return                     bpmn repo file
+	 * @throws BPSException        repo creation failure will result in this xception
+	 */
     private File createTenantRepo(ConfigurationContext configurationContext) throws BPSException {
         String axisRepoPath = configurationContext.getAxisConfiguration().getRepository().getPath();
         if (CarbonUtils.isURL(axisRepoPath)) {
             String msg = "URL Repositories are not supported: " + axisRepoPath;
-            log.error(msg);
             throw new BPSException(msg);
         }
         File tenantsRepository = new File(axisRepoPath);
@@ -130,7 +154,6 @@ public class BPMNDeployer extends AbstractDeployer {
             boolean status = bpmnRepo.mkdir();
             if (!status) {
                 String msg = "Failed to create BPMN repository folder " + bpmnRepo.getAbsolutePath() + ".";
-                log.error(msg);
                 throw new BPSException(msg);
             }
         }
@@ -144,17 +167,4 @@ public class BPMNDeployer extends AbstractDeployer {
     @Override
     public void setExtension(String s) {
     }
-
-    private boolean isServerReadOnly() {
-        try {
-            RegistryContext registryContext = BPMNServerHolder.getInstance().getRegistryService().getConfigSystemRegistry().getRegistryContext();
-            if (registryContext.isReadOnly()) {
-                return true;
-            }
-        } catch (RegistryException e) {
-            log.error("Error while reading registry status");
-        }
-        return false;
-    }
-
 }

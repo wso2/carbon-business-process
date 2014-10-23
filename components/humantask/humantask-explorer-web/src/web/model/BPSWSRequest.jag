@@ -1,0 +1,42 @@
+<%
+/*
+ * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+/**
+ * 
+ * @param endPoint back-end url
+ * @param soapAction soap action
+ * @param BPSSessionCookie session cookie
+ * @param payload http request payload
+ * @throws {org.mozilla.javascript.WrappedException}  if connection error occurred
+ * @return response payload
+ */
+    function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
+        var BPSResponse;
+        var httpClient = new XMLHttpRequest();
+        httpClient.open('POST', endPoint, false);
+        httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
+        httpClient.setRequestHeader('SOAPAction', soapAction);
+        httpClient.setRequestHeader('Content-Type','text/xml');
+
+        httpClient.send(payload);
+        BPSResponse = httpClient.responseText;
+
+        return BPSResponse;
+    }
+
+%>

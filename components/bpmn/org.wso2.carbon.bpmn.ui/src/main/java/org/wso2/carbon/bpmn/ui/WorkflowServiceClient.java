@@ -1,9 +1,27 @@
+/*
+ * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.ui;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
@@ -17,6 +35,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +45,7 @@ public class WorkflowServiceClient {
 
     BPMNInstanceServiceStub instanceServiceStub = null;
     BPMNDeploymentServiceStub deploymentServiceStub = null;
-
+    private static Log log = LogFactory.getLog(WorkflowServiceClient.class);
     public WorkflowServiceClient(String cookie,
                                  String backendServerURL,
                                  ConfigurationContext configContext) throws AxisFault {
@@ -117,27 +136,54 @@ public class WorkflowServiceClient {
         return processes.toArray(new BPMNProcess[processes.size()]);
     }
 
-    public String getProcessDiagram(String processId) throws Exception {
+    public String getProcessDiagram(String processId) {
+        ByteArrayOutputStream baos = null;
+        String dataUri = null;
+        try {
         String imageString = deploymentServiceStub.getProcessDiagram(processId);
         BufferedImage bufferedImage = decodeToImage(imageString);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "png", baos );
         baos.flush();
-        String dataUri = "data:image/png;base64," +
+        dataUri = "data:image/png;base64," +
                 DatatypeConverter.printBase64Binary(baos.toByteArray());
-        baos.close();
+        }catch (IOException e) {
+            log.error("IO error while writing image " + e);
+        } catch (Exception e) {
+            //TODO Fix skeleton and rename above exception to correct type
+            log.error(" Error while obtaining the process diagram " + e);
+        } finally {
+            if(baos != null ){
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    log.error("Error occurred while closing io stream " + e);
+                }
+            }
+        }
         return dataUri;
     }
 
     public String getProcessInstanceDiagram(String instanceId) throws Exception {
+        ByteArrayOutputStream baos = null;
+        String dataUri;
+        try{
         String imageString = instanceServiceStub.getProcessInstanceDiagram(instanceId);
         BufferedImage bufferedImage = decodeToImage(imageString);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos = new ByteArrayOutputStream();
         ImageIO.write( bufferedImage, "png", baos );
         baos.flush();
-        String dataUri = "data:image/png;base64," +
+        dataUri = "data:image/png;base64," +
                 DatatypeConverter.printBase64Binary(baos.toByteArray());
-        baos.close();
+        }finally {
+            if (baos != null) {
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    log.error("IO error occurred while closing the stream " + e);
+                }
+            }
+        }
         return dataUri;
     }
 
@@ -155,18 +201,23 @@ public class WorkflowServiceClient {
         deploymentServiceStub.undeploy(deploymentName);
     }
 
-    private BufferedImage decodeToImage(String imageString) {
-
+    private BufferedImage decodeToImage(String imageString) throws IOException{
         BufferedImage image = null;
+        ByteArrayInputStream bis = null;
         byte[] imageByte;
         try {
             BASE64Decoder decoder = new BASE64Decoder();
             imageByte = decoder.decodeBuffer(imageString);
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
-            bis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            if(bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    log.error("Error occurred while closing the input stream", e);
+                }
+            }
         }
         return image;
     }

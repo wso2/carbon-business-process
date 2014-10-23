@@ -28,6 +28,7 @@ import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStore;
 import org.wso2.carbon.bpel.deployer.internal.BPELDeployerServiceComponent;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -50,15 +51,21 @@ public class BPELDeployer extends AbstractDeployer {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Initializing BPEL Deployer for tenant " + tenantId + ".");
 
-        BPELDeployerServiceComponent.getTenantRegistryLoader().
-                loadTenantRegistry(tenantId);
-
         File bpelRepo = null;
+
         try {
+            BPELDeployerServiceComponent.getTenantRegistryLoader().
+                    loadTenantRegistry(tenantId);
+
             bpelRepo = createBPELRepository(configurationContext);
         } catch (DeploymentException e) {
             log.warn("BPEL repository creation failed.", e);
+        } catch (RegistryException e) {
+            log.warn("Initialization of tenant process store failed for tenant: " +
+                     tenantId +
+                     " This can cause issues in deployment of BPEL packages.", e);
         }
+
         BPELServer bpsServer = BPELDeployerServiceComponent.getBPELServer();
         tenantProcessStore = bpsServer.getMultiTenantProcessStore().
                 createProcessStoreForTenant(configurationContext);

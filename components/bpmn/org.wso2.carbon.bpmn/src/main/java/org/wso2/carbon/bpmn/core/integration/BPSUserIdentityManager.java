@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.wso2.carbon.bpmn.core.integration;
 
 import org.activiti.engine.identity.Group;
@@ -113,7 +114,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 if (tenantInfoBean != null) {
                     tenantId = tenantInfoBean.getTenantId();
                 } else {
-                    throw new Exception("Could not find tenant on given tenant id");
+                    return false;
                 }
             }
             if (log.isDebugEnabled()) {
@@ -128,7 +129,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
     }
 
     @Override
-    public List<User> findPotentialStarterUsers(String proceDefId) {
+    public List<User> findPotentialStarterUsers(String processDefId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
         throw new UnsupportedOperationException(msg);
     }

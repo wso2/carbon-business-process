@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,12 @@ package org.wso2.carbon.bpmn.core;
 
 import java.io.File;
 
+/**
+ *
+ * Class to store the static final variables of BPMN
+ *
+ */
+
 public class BPMNConstants {
 
     public static final String ACTIVITI_CONFIGURATION_FILE_NAME = "activiti.xml";
@@ -28,5 +34,7 @@ public class BPMNConstants {
 
     public static final String BPMN_PACKAGE_EXTENSION = "bar";
     public static final String BPMN_PACKAGE_TEMP_DIRECTORY = File.separator + "tmp" + File.separator + "bpmnuploads";
-    public static final int SUPER_TENANT_ID = -1234;
+    public static final int    SUPER_TENANT_ID = -1234;
+
+	public static final String BPS_BPMN_DEPLOYMENT_METADATA_TABLE = "BPS_BPMN_DEPLOYMENT_METADATA";
 }

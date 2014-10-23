@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+
 package org.wso2.carbon.bpmn.core.internal;
 
 import org.activiti.engine.ProcessEngines;
@@ -21,10 +23,11 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
+import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
+import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 import org.wso2.carbon.registry.core.service.RegistryService;
-
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
@@ -33,7 +36,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
  */
 public class BPMNServiceComponent {
 
-    private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
+	private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN core component...");
@@ -42,16 +45,23 @@ public class BPMNServiceComponent {
             ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
             holder.setEngine(activitiEngineBuilder.buildEngine());
             holder.setTenantManager(new TenantManager());
-        } catch (BPSException e) {
-            String msg = "Failed to initialize the BPMN core component.";
-            log.error(msg, e);
+
+            DataSourceHandler dataSourceHandler = new DataSourceHandler();
+            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+            dataSourceHandler.closeDataSource();
+        } catch (BPMNMetaDataTableCreationException e) {
+            log.error("Could not create BPMN checksum table", e);
+        } catch (DatabaseConfigurationException e) {
+            log.error("Could not create BPMN checksum table", e);
+        }catch (Throwable e) {
+            log.error("Failed to initialize the BPMN core component.", e);
         }
     }
 
-    protected void deactivate(ComponentContext ctxt) {
-        log.info("Stopping the BPMN core component...");
-        ProcessEngines.destroy();
-    }
+	protected void deactivate(ComponentContext ctxt) {
+		log.info("Stopping the BPMN core component...");
+		ProcessEngines.destroy();
+	}
 
     protected void setRegistryService(RegistryService registrySvc) {
         if (log.isDebugEnabled()) {
