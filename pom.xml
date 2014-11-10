@@ -1001,7 +1001,7 @@
             <dependency>
                 <groupId>org.activiti.wso2</groupId>
                 <artifactId>activiti-rest</artifactId>
-                <version>${org.activiti.wso2.version}</version>
+                <version>${org.activiti.rest.wso2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -1432,7 +1432,9 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.16-wso2v1</org.activiti.wso2.version>
+        <org.activiti.wso2.version>5.16-wso2v2</org.activiti.wso2.version>
+        <org.activiti.rest.wso2.version>5.16-wso2v1</org.activiti.rest.wso2.version>
+
     </properties>
 
     <distributionManagement>
