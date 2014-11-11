@@ -74,21 +74,21 @@ public class Database {
 	 * @throws org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException
 	 */
     private void createActivitiMetaDataTable() throws BPMNMetaDataTableCreationException {
-            BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
-	        String bpmnDeploymentMetaDataQuery = "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
+        BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
+        String bpmnDeploymentMetaDataQuery = "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
 
-            if (!bpmnDatabaseCreator.isDatabaseStructureCreated(bpmnDeploymentMetaDataQuery)) {
-                try {
-                    bpmnDatabaseCreator.createRegistryDatabase();
-                } catch (Exception e) {
-                    String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
-                    throw new BPMNMetaDataTableCreationException(errMsg, e);
-                }
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
-                }
+        if (!bpmnDatabaseCreator.isDatabaseStructureCreated(bpmnDeploymentMetaDataQuery)) {
+            try {
+                bpmnDatabaseCreator.createRegistryDatabase();
+            } catch (Exception e) {
+                String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
+                throw new BPMNMetaDataTableCreationException(errMsg, e);
             }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
+            }
+        }
     }
 
 
