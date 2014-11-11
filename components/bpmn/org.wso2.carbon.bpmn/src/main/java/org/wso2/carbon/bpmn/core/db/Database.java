@@ -68,13 +68,12 @@ public class Database {
     }
 
 	/**
-	 * during the -Dsetup option this method will create BPS_BPMN_DEPLOYMENT_METADATA table
+	 * during the start up of the server this method will create BPS_BPMN_DEPLOYMENT_METADATA table
 	 * if it doesn't exist in the activiti database.
 	 *
 	 * @throws org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException
 	 */
     private void createActivitiMetaDataTable() throws BPMNMetaDataTableCreationException {
-      //  if (System.getProperty("setup") != null) {
             BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
 	        String bpmnDeploymentMetaDataQuery = "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
 
@@ -90,7 +89,6 @@ public class Database {
                     log.debug("BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
                 }
             }
-        //}
     }
 
 
