@@ -42,7 +42,9 @@ public class Database {
     private boolean started;
 
     /**
-     * @return The Human Task DataSource..
+     * Obtains the DataSource object of activiti database
+     *
+     * @return The BPMN DataSource..
      */
 
     public synchronized DataSource getDataSource() {
@@ -52,12 +54,19 @@ public class Database {
         return this.dataSource;
     }
 
+    /**
+     * Constructor for initializing the database class which connects and manages the activiti engine database
+     * @param jndiDataSourceName activiti's JNDI datasource name
+     */
     public Database(String jndiDataSourceName) {
         this.jndiDataSourceName = jndiDataSourceName;
     }
 
     /**
      * Database initialization logic.
+     *
+     * @throws DatabaseConfigurationException Error in activiti db configuration
+     * @throws BPMNMetaDataTableCreationException Error on creating BPMNMetaDataTable inside activiti DB
      */
     public synchronized void init() throws DatabaseConfigurationException,
                                            BPMNMetaDataTableCreationException {
@@ -103,11 +112,20 @@ public class Database {
         this.started = false;
     }
 
+    /**
+     * Initializes the data source
+     *
+     * @throws DatabaseConfigurationException - throws when database configuration failed
+     */
     private void initDataSource() throws DatabaseConfigurationException {
-        //Note : We can improve this to consider internal/external databases.
         initExternalDb();
     }
 
+    /**
+     * Initializes the activiti db
+     *
+     * @throws DatabaseConfigurationException - throws when database configuration failed
+     */
     private void initExternalDb() throws DatabaseConfigurationException {
         try {
             this.dataSource = lookupInJndi(jndiDataSourceName);
@@ -123,6 +141,14 @@ public class Database {
         }
     }
 
+    /**
+     * Performs lookup of JNDI datasource name
+     *
+     * @param objName       Lookup jndi data source name
+     * @param <T>           Lookup object type
+     * @return              DataSource object
+     * @throws NamingException   Throws exception when lookup naming failed
+     */
     @SuppressWarnings("unchecked")
     private <T> T lookupInJndi(String objName) throws NamingException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
