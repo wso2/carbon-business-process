@@ -39,7 +39,7 @@ public class BPMNDatabaseCreator extends DatabaseCreator {
 	 * This points the following path <CARBON_HOME>/dbscripts/bps/bpmn/checksum/create
 	 *
 	 * @param databaseType  based on the database type, the script to be called will differ ( Ex. mysql.s
-	 * @return
+	 * @return The db script location
 	 */
 
     protected String getDbScriptLocation(String databaseType){
