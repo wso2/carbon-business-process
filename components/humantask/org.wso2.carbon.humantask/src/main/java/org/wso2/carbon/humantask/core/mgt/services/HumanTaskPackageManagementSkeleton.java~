@@ -165,11 +165,7 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
 
             taskInfo.setDefinitionInfo(fillTaskDefinitionInfo(taskConf));
         }
-       //TODO:delete TaskType tt=taskInfo.getTaskType();
-        //taskInfo.getTaskType()
-        //String tt=taskInfo.getTaskType().toString()   ;
-        //TaskType.NOTIFICATION
-        //if(TaskType.NOTIFICATION==taskInfo.getTaskType());
+
         return taskInfo;
     }
 
@@ -195,12 +191,10 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
                 response.setCallbackServiceName(((TaskConfiguration)taskConf).getCallbackServiceName());
                 response.setCallbackPortName(((TaskConfiguration)taskConf).getCallbackPortName());
 
-            }
-           else if(taskConf.getConfigurationType() == HumanTaskBaseConfiguration.ConfigurationType.NOTIFICATION){
-                response.setTaskName(((NotificationConfiguration)taskConf).getName());
+            } else {
                 response.setServiceName(taskConf.getServiceName());
                 response.setPortName(taskConf.getPortName());
-           }
+            }
 
         }
        return response;

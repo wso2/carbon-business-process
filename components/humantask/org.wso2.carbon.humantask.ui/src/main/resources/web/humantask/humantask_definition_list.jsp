@@ -10,6 +10,7 @@
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.UndeployStatus_type0" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskStatusType" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~

@@ -67,7 +67,7 @@
     <message name="listTasksInPackageResponse">
         <part name="part" element="ns:tasksInPackage"/>
     </message>
-	<message name="packageManagementException">
+    <message name="packageManagementException">
         <part name="part" element="ns:packageManagementException"/>
     </message>
     <message name="getTaskInfoRequest">
@@ -83,6 +83,12 @@
         <part name="part" element="ns:downloadHumanTaskPackageArchiveResponse" />
     </message>
 
+    <wsdl:message name="getTaskConfigInfoRequest">
+        <wsdl:part name="getTaskConfigInfoRequest" element="ns:taskConfigInfo"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getTaskConfigInfoResponse">
+        <wsdl:part name="getTaskConfigInfoResponse" element="ns:taskConfigInfoResponse"></wsdl:part>
+    </wsdl:message>
     <portType name="HumanTaskPackageManagementPortType">
         <operation name="undeployHumanTaskPackage">
             <input message="tns:undeployHumanTaskPackageRequest"/>
@@ -92,17 +98,17 @@
         <operation name="listDeployedPackagesPaginated">
             <input message="tns:listDeployedPackagesPaginatedRequest"/>
             <output message="tns:listDeployedPackagesPaginatedResponse"/>
-	    <fault name="packageManagementException" message="tns:packageManagementException"/>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
         </operation>
         <operation name="listDeployedTaskDefinitionsPaginated">
             <input message="tns:listDeployedTaskDefinitionsPaginatedRequest"/>
             <output message="tns:listDeployedTaskDefinitionsPaginatedResponse"/>
-	    <fault name="packageManagementException" message="tns:packageManagementException"/>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
         </operation>
         <operation name="listTasksInPackage">
             <input message="tns:listTasksInPackageRequest"/>
             <output message="tns:listTasksInPackageResponse"/>
-	    <fault name="packageManagementException" message="tns:packageManagementException"/>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
         </operation>
         <operation name="getTaskInfo">
             <input message="tns:getTaskInfoRequest"/>
@@ -114,6 +120,11 @@
             <output message="tns:downloadHumanTaskPackageResponse"/>
             <fault name="packageManagementException" message="tns:packageManagementException"/>
         </operation>
+        <wsdl:operation name="getTaskConfigInfo">
+            <wsdl:input message="tns:getTaskConfigInfoRequest"></wsdl:input>
+            <wsdl:output message="tns:getTaskConfigInfoResponse"></wsdl:output>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </wsdl:operation>
     </portType>
     <binding name="HumanTaskPackageManagementSOAPBinding" type="tns:HumanTaskPackageManagementPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -125,7 +136,7 @@
             <output>
                 <soap:body use="literal"/>
             </output>
-	    <fault name="packageManagementException">
+            <fault name="packageManagementException">
                 <soap:fault name="packageManagementException" use="literal"/>
             </fault>
         </operation>
@@ -137,7 +148,7 @@
             <output>
                 <soap:body use="literal"/>
             </output>
-	    <fault name="packageManagementException">
+            <fault name="packageManagementException">
                 <soap:fault name="packageManagementException" use="literal"/>
             </fault>
         </operation>
@@ -149,7 +160,7 @@
             <output>
                 <soap:body use="literal"/>
             </output>
-	    <fault name="packageManagementException">
+            <fault name="packageManagementException">
                 <soap:fault name="packageManagementException" use="literal"/>
             </fault>
         </operation>
@@ -179,6 +190,19 @@
         </operation>
         <operation name="downloadHumanTaskPackage">
             <soap:operation soapAction="urn:downloadHumanTaskPackage" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <!--New Element-->
+        <operation name="getTaskConfigInfo">
+            <soap:operation soapAction="urn:getTaskConfigInfo" style="document"/>
             <input>
                 <soap:body use="literal"/>
             </input>

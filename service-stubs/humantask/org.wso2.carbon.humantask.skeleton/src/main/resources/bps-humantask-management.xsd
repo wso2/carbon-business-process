@@ -234,4 +234,24 @@
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
+    <!--New Element taskConfigInfo"-->
+    <xsd:element name="taskConfigInfo">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="taskId" type="xsd:QName"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <!--New Element taskConfigInfoResponse-->
+    <xsd:element name="taskConfigInfoResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="TaskName" type="xsd:QName"/>
+                <xsd:element name="ServiceName" type="xsd:QName"/>
+                <xsd:element name="PortName" type="xsd:string"/>
+                <xsd:element name="CallbackServiceName" type="xsd:QName" minOccurs="0"/>
+                <xsd:element name="CallbackPortName" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
 </xsd:schema>

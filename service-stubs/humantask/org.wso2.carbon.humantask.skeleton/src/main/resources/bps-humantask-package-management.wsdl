@@ -82,7 +82,14 @@
     <message name="downloadHumanTaskPackageResponse">
         <part name="part" element="ns:downloadHumanTaskPackageArchiveResponse" />
     </message>
-
+    <!-- New message getTaskConfigReq -->
+    <wsdl:message name="getTaskConfigInfoRequest">
+    	<wsdl:part name="getTaskConfigInfoRequest" element="ns:taskConfigInfo"></wsdl:part>
+    </wsdl:message>
+    <!-- New message getTaskConfigRep -->
+    <wsdl:message name="getTaskConfigInfoResponse">
+    	<wsdl:part name="getTaskConfigInfoResponse" element="ns:taskConfigInfoResponse"></wsdl:part>
+    </wsdl:message>
     <portType name="HumanTaskPackageManagementPortType">
         <operation name="undeployHumanTaskPackage">
             <input message="tns:undeployHumanTaskPackageRequest"/>
@@ -114,6 +121,12 @@
             <output message="tns:downloadHumanTaskPackageResponse"/>
             <fault name="packageManagementException" message="tns:packageManagementException"/>
         </operation>
+        <!-- New operation getTaskConfig for port type -->
+        <wsdl:operation name="getTaskConfigInfo">
+        	<wsdl:input message="tns:getTaskConfigInfoRequest"></wsdl:input>
+        	<wsdl:output message="tns:getTaskConfigInfoResponse"></wsdl:output>
+            <fault name="packageManagementException" message="tns:packageManagementException"/>
+        </wsdl:operation>
     </portType>
     <binding name="HumanTaskPackageManagementSOAPBinding" type="tns:HumanTaskPackageManagementPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -179,6 +192,19 @@
         </operation>
         <operation name="downloadHumanTaskPackage">
             <soap:operation soapAction="urn:downloadHumanTaskPackage" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="packageManagementException">
+                <soap:fault name="packageManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <!--New operation getTaskConfig for binding-->
+        <operation name="getTaskConfigInfo">
+            <soap:operation soapAction="urn:getTaskConfigInfo" style="document"/>
             <input>
                 <soap:body use="literal"/>
             </input>
