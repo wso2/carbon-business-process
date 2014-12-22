@@ -222,7 +222,7 @@
                                                 </script>
                                             </td>
                                         </tr>
-                                         <%-- If else addition--%>
+                                         
                                          <% if(taskInfoType.getTaskType().toString() == "TASK") {
                                           String callBackServiceName = taskConfigInfoResponse.getCallbackServiceName().toString();
                                           String callBackPortName = taskConfigInfoResponse.getCallbackPortName();

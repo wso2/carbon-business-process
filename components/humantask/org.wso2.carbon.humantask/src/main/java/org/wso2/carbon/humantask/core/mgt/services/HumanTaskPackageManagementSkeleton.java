@@ -165,11 +165,7 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
 
             taskInfo.setDefinitionInfo(fillTaskDefinitionInfo(taskConf));
         }
-       //TODO:delete TaskType tt=taskInfo.getTaskType();
-        //taskInfo.getTaskType()
-        //String tt=taskInfo.getTaskType().toString()   ;
-        //TaskType.NOTIFICATION
-        //if(TaskType.NOTIFICATION==taskInfo.getTaskType());
+
         return taskInfo;
     }
 

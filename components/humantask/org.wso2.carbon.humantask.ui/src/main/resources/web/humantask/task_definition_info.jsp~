@@ -5,9 +5,11 @@
 <%@ page import="javax.xml.namespace.QName" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskInfoType" %>
 <%@ page import="org.wso2.carbon.humantask.ui.clients.HumanTaskPackageManagementServiceClient" %>
-<%-- Import  TaskConfigInfo Class--%>
+<%-- Import  TaskConfigInfo Classes--%>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfo" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
+<%-- Import  Types Classes--%>
+<%@ page import="org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskType" %>
 <%@ page import="org.apache.http.HttpStatus" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
@@ -57,7 +59,8 @@
 
     QName taskId = QName.valueOf(taskDefId);
     TaskInfoType taskInfoType = null;
-    TaskConfigInfo taskConfigInfo = null;
+    TaskConfigInfoResponse taskConfigInfoResponse = null;
+
 
     String taskDefPrettyPrinted = null;
 
@@ -157,7 +160,7 @@
         </div>
     </div>
 
-    <%-- Edited : Add New Div section for the configuration--%>
+    <%-- Display configuration information--%>
     <div id="configInfo">
 
                 <div id="workArea">
@@ -168,14 +171,14 @@
                     <div id="humantask-task-configuration-dashboard">
                         <%
 
-                            TaskConfigInfoResponse taskConfigInfoResponse = serviceClient.getTaskConfigInfo(taskId);
-			                String serviceName = taskConfigInfoResponse.getServiceName().toString();
+                            taskInfoType = serviceClient.getTaskInfo(taskId);
+                            taskConfigInfoResponse = serviceClient.getTaskConfigInfo(taskId);
+                            String serviceName = taskConfigInfoResponse.getServiceName().toString();
 			                String portName = taskConfigInfoResponse.getPortName();
-			                String callBackServiceName = taskConfigInfoResponse.getCallbackServiceName().toString();
-			                String callBackPortName = taskConfigInfoResponse.getCallbackPortName();
+
 
                         %>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                        <table width="5%" cellspacing="0" cellpadding="0" border="0">
 
                             <tr>
                                 <td colspan="3">&nbsp;</td>
@@ -184,17 +187,20 @@
                             <tr>
                                 <td colspan="3">
                                     <table class="styledLeft" id="taskConfigurationTable"
-                                           style="margin-left: 0px;" width="100%">
+                                           style="margin-left: 0px;" width="5%">
                                         <thead>
                                         <tr>
+                                        <% if(taskInfoType.getTaskType().toString() == "TASK") { %>
                                             <th align="left">Task Configuration:</th>
+                                        <% } else { %>
+                                            <th align="left">Notification Configuration:</th>
+                                        <% } %>
                                         </tr>
                                         </thead>
                                         <tr>
                                             <td>
                                                 <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
-                                                <%=serviceName%>
+                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Service Name: <%=serviceName%>
                                                 </pre>
                                                 <script type="text/javascript">
                                                     jQuery(document).ready(function() {
@@ -207,8 +213,7 @@
                                         <tr>
                                             <td>
                                                 <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
-                                                <%=portName%>
+                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Port Name: <%=portName%>
                                                 </pre>
                                                 <script type="text/javascript">
                                                     jQuery(document).ready(function() {
@@ -217,11 +222,16 @@
                                                 </script>
                                             </td>
                                         </tr>
+                                         
+                                         <% if(taskInfoType.getTaskType().toString() == "TASK") {
+                                          String callBackServiceName = taskConfigInfoResponse.getCallbackServiceName().toString();
+                                          String callBackPortName = taskConfigInfoResponse.getCallbackPortName();
+
+                                          %>
                                          <tr>
                                             <td>
                                                 <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
-                                                <%=callBackServiceName%>
+                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Callback Service Name: <%=callBackServiceName%>
                                                 </pre>
                                                 <script type="text/javascript">
                                                      jQuery(document).ready(function() {
@@ -233,8 +243,7 @@
                                          <tr>
                                             <td>
                                                 <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
-                                                <%=callBackPortName%>
+                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Callback Port Name: <%=callBackPortName%>
                                                 </pre>
                                                 <script type="text/javascript">
                                                       jQuery(document).ready(function() {
@@ -243,6 +252,7 @@
                                                 </script>
                                             </td>
                                          </tr>
+                                         <% } %>
 
                                     </table>
                                 </td>
