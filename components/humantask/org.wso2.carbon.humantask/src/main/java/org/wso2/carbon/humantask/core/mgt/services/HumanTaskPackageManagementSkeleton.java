@@ -47,6 +47,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import javax.wsdl.Definition;
+
+
 /**
  * The human task package management service skeleton.
  */
@@ -186,7 +189,9 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
 
             if(taskConf.getConfigurationType() == HumanTaskBaseConfiguration.ConfigurationType.TASK) {
                 response.setTaskName(taskConf.getName());
+
                 response.setServiceName(taskConf.getServiceName());
+
                 response.setPortName(taskConf.getPortName());
                 response.setCallbackServiceName(((TaskConfiguration)taskConf).getCallbackServiceName());
                 response.setCallbackPortName(((TaskConfiguration)taskConf).getCallbackPortName());
@@ -196,6 +201,7 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
                 response.setTaskName(((NotificationConfiguration)taskConf).getName());
                 response.setServiceName(taskConf.getServiceName());
                 response.setPortName(taskConf.getPortName());
+               // Definition wsdl = taskConf.getWSDL();
            }
 
         }

@@ -10,10 +10,15 @@
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
 <%-- Import  Types Classes--%>
 <%@ page import="org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskType" %>
+
 <%@ page import="org.apache.http.HttpStatus" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%-- Imports for WSDLs --%>
+<%@ page import="org.wso2.carbon.service.mgt.ui.ServiceAdminClient" %>
+<%@ page import="org.wso2.carbon.service.mgt.stub.types.carbon.ServiceMetaData"%>
+
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
@@ -48,6 +53,8 @@
     boolean isAuthorizedToManageProcesses = true; // TODO - set permissions
 
     HumanTaskPackageManagementServiceClient serviceClient;
+    ServiceAdminClient serviceAdminClient;
+    ServiceMetaData serviceMetaData;
 
     String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
     ConfigurationContext configContext =
@@ -61,17 +68,25 @@
     TaskInfoType taskInfoType = null;
     TaskConfigInfoResponse taskConfigInfoResponse = null;
 
-
     String taskDefPrettyPrinted = null;
 
 
     try {
         serviceClient = new HumanTaskPackageManagementServiceClient(cookie, backendServerURL,
                                                                     configContext);
+
+        serviceAdminClient = new ServiceAdminClient(cookie, backendServerURL, configContext,
+                                                                    request.getLocale());
+
+
     } catch (Exception e) {
         response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
         session.setAttribute(CarbonUIMessage.ID, uiMsg);
+
+
+
+
 %>
 <jsp:include page="../admin/error.jsp"/>
 <%
@@ -163,108 +178,85 @@
     <%-- Display configuration information--%>
     <div id="configInfo">
 
-                <div id="workArea">
+         <div id="workArea">
+             <%
+                 if (isAuthorizedToMonitor || isAuthorizedToManageProcesses) {
+             %>
+         <div id="humantask-task-configuration-dashboard">
+             <%
+                 taskInfoType = serviceClient.getTaskInfo(taskId);
+                 taskConfigInfoResponse = serviceClient.getTaskConfigInfo(taskId);
+                 String serviceName = taskConfigInfoResponse.getServiceName().toString();
+                 String portName = taskConfigInfoResponse.getPortName();
+                 String serviceNameLocalPart =  taskConfigInfoResponse.getServiceName().getLocalPart();
+                 serviceMetaData = serviceAdminClient.getServiceData(serviceNameLocalPart);
+             %>
 
-                    <%
-                        if (isAuthorizedToMonitor || isAuthorizedToManageProcesses) {
-                    %>
-                    <div id="humantask-task-configuration-dashboard">
-                        <%
+             <table width="16%" cellspacing="1" cellpadding="1" border="1">
+                 <tr>
+                     <td colspan="4">&nbsp;</td>
+                 </tr>
+                 <tr>
+                     <td colspan="4">
 
-                            taskInfoType = serviceClient.getTaskInfo(taskId);
-                            taskConfigInfoResponse = serviceClient.getTaskConfigInfo(taskId);
-                            String serviceName = taskConfigInfoResponse.getServiceName().toString();
-			                String portName = taskConfigInfoResponse.getPortName();
+                     <table class="styledLeft" id="taskConfigurationTable" style="margin-left: 0px;" width="16%">
 
+                         <thead>
+                             <tr>
+                                 <% if(taskInfoType.getTaskType().toString() == "TASK") { %>
+                                 <th align="left" colspan="4">Task Configuration:</th>
+                                 <% } else { %>
+                                 <th align="left" colspan="4">Notification Configuration:</th>
+                                 <% } %>
+                             </tr>
+                         </thead>
 
-                        %>
-                        <table width="5%" cellspacing="0" cellpadding="0" border="0">
+                             <tr>
+                                 <td style="height: 1em"> <strong> <center> Task Name </center> </strong>
+                                 </td>
+                                 <td style="height: 1em"> <strong> <center> Service Name </center> </strong>
+                                 </td>
+                                 <td style="height: 1em"> <strong> <center> Port Name </center> </strong>
+                                 </td>
+                                 <td style="height: 1em"> <strong> <center> WSDL Link </center> </strong>
+                                 </td>
+                             </tr>
 
-                            <tr>
-                                <td colspan="3">&nbsp;</td>
-                            </tr>
+                             <tr>
+                                  <td style="height: 2em"> Task Service
+                                  </td>
+                                  <td style="height: 2em"> <%=serviceName%>
+                                  </td>
+                                  <td style="height: 2em"> <%=portName%>
+                                  </td>
+                                  <td style="height: 2em"> <a href="<%=serviceMetaData.getWsdlURLs()[0]%>" class="icon-link" style="background-image:url(images/wsdl.gif);" target="_blank"> WSDL </a>
+                                  </td>
+                             </tr>
 
-                            <tr>
-                                <td colspan="3">
-                                    <table class="styledLeft" id="taskConfigurationTable"
-                                           style="margin-left: 0px;" width="5%">
-                                        <thead>
-                                        <tr>
-                                        <% if(taskInfoType.getTaskType().toString() == "TASK") { %>
-                                            <th align="left">Task Configuration:</th>
-                                        <% } else { %>
-                                            <th align="left">Notification Configuration:</th>
-                                        <% } %>
-                                        </tr>
-                                        </thead>
-                                        <tr>
-                                            <td>
-                                                <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Service Name: <%=serviceName%>
-                                                </pre>
-                                                <script type="text/javascript">
-                                                    jQuery(document).ready(function() {
-                                                        document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
-                                                    });
-                                                </script>
-                                            </td>
+                                  <%  if(taskInfoType.getTaskType().toString() == "TASK") {
+                                    String callBackServiceName = taskConfigInfoResponse.getCallbackServiceName().toString();
+                                    String callBackPortName = taskConfigInfoResponse.getCallbackPortName();
+                                  %>
+                             <tr>
+					              <td style="height: 2em"> Task Callback Service
+                                  </td>
+					              <td style="height: 2em"> <%=callBackServiceName%>
+                                  </td>
+					              <td style="height: 2em"> <%=callBackPortName%>
+                                  </td>
+					              <td style="height: 2em"> <a href="<%=serviceMetaData.getWsdlURLs()[0]%>" class="icon-link" style="background-image:url(images/wsdl.gif);" target="_blank"> WSDL </a>
+                                  </td>
+				             </tr>
+				                  <% } %>
 
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Port Name: <%=portName%>
-                                                </pre>
-                                                <script type="text/javascript">
-                                                    jQuery(document).ready(function() {
-                                                         document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
-                                                    });
-                                                </script>
-                                            </td>
-                                        </tr>
-                                         
-                                         <% if(taskInfoType.getTaskType().toString() == "TASK") {
-                                          String callBackServiceName = taskConfigInfoResponse.getCallbackServiceName().toString();
-                                          String callBackPortName = taskConfigInfoResponse.getCallbackPortName();
-
-                                          %>
-                                         <tr>
-                                            <td>
-                                                <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Callback Service Name: <%=callBackServiceName%>
-                                                </pre>
-                                                <script type="text/javascript">
-                                                     jQuery(document).ready(function() {
-                                                          document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
-                                                     });
-                                                </script>
-                                            </td>
-                                         </tr>
-                                         <tr>
-                                            <td>
-                                                <!--?prettify lang=html linenums=true?-->
-                                                <pre class="prettyprint linenums" style="height: 5em" width="100px">Callback Port Name: <%=callBackPortName%>
-                                                </pre>
-                                                <script type="text/javascript">
-                                                      jQuery(document).ready(function() {
-                                                          document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
-                                                      });
-                                                </script>
-                                            </td>
-                                         </tr>
-                                         <% } %>
-
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">&nbsp;</td>
-                            </tr>
-
-                        </table>
-
-
-                    </div>
+                     </table>
+                     </td>
+                 </tr>
+                 <tr>
+                 <td colspan="4">&nbsp;</td>
+                 </tr>
+             </table>
+         </div>
 
                     <%
                     } else {
@@ -275,16 +267,5 @@
                     %>
                 </div>
     </div>
-
-
-
-    <script type="text/javascript">
-        editAreaLoader.init({
-                                id : "xmlPay"        // textarea id
-                                ,syntax: "xml"            // syntax to be uses for highgliting
-                                ,start_highlight: true        // to display with highlight mode on start-up
-                                ,is_editable: false
-                            });
-    </script>
 
 </fmt:bundle>
