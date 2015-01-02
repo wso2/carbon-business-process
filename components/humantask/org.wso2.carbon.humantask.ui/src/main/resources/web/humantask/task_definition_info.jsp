@@ -10,7 +10,6 @@
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
 <%-- Import  Types Classes--%>
 <%@ page import="org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskType" %>
-
 <%@ page import="org.apache.http.HttpStatus" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>

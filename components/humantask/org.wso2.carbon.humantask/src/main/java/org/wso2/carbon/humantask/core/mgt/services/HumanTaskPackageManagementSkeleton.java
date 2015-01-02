@@ -201,7 +201,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
                 response.setTaskName(((NotificationConfiguration)taskConf).getName());
                 response.setServiceName(taskConf.getServiceName());
                 response.setPortName(taskConf.getPortName());
-               // Definition wsdl = taskConf.getWSDL();
            }
 
         }
