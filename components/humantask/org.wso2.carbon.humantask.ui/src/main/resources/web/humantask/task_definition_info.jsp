@@ -8,8 +8,6 @@
 <%-- Import  TaskConfigInfo Classes--%>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfo" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
-<%-- Import  Types Classes--%>
-<%@ page import="org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskType" %>
 <%@ page import="org.apache.http.HttpStatus" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
@@ -174,7 +172,7 @@
         </div>
     </div>
 
-    <%-- Display configuration information--%>
+    <%-- Display configuration information --%>
     <div id="configInfo">
 
          <div id="workArea">

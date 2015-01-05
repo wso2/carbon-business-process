@@ -82,10 +82,11 @@
     <message name="downloadHumanTaskPackageResponse">
         <part name="part" element="ns:downloadHumanTaskPackageArchiveResponse" />
     </message>
-
+    <!-- New message getTaskConfigReq -->
     <wsdl:message name="getTaskConfigInfoRequest">
         <wsdl:part name="getTaskConfigInfoRequest" element="ns:taskConfigInfo"></wsdl:part>
     </wsdl:message>
+    <!-- New message getTaskConfigRep -->
     <wsdl:message name="getTaskConfigInfoResponse">
         <wsdl:part name="getTaskConfigInfoResponse" element="ns:taskConfigInfoResponse"></wsdl:part>
     </wsdl:message>
@@ -120,6 +121,7 @@
             <output message="tns:downloadHumanTaskPackageResponse"/>
             <fault name="packageManagementException" message="tns:packageManagementException"/>
         </operation>
+        <!-- New operation getTaskConfig for port type -->
         <wsdl:operation name="getTaskConfigInfo">
             <wsdl:input message="tns:getTaskConfigInfoRequest"></wsdl:input>
             <wsdl:output message="tns:getTaskConfigInfoResponse"></wsdl:output>
@@ -200,7 +202,7 @@
                 <soap:fault name="packageManagementException" use="literal"/>
             </fault>
         </operation>
-        <!--New Element-->
+        <!--New operation getTaskConfig for binding-->
         <operation name="getTaskConfigInfo">
             <soap:operation soapAction="urn:getTaskConfigInfo" style="document"/>
             <input>
