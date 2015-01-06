@@ -167,9 +167,9 @@ public class HumanTaskPackageManagementServiceClient {
 
 
     /**
-     * New method for configuration information
+     * Return the task configuration information for a given task ID
      * @param taskId
-     * @return   TaskConfigInfoResponse
+     * @return   TaskConfigInfoResponse object
      * @throws PackageManagementException
      * @throws RemoteException
      */
