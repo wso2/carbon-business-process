@@ -173,7 +173,7 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
     }
 
     /**
-     * New method for Configuration Information
+     * Check the configuration type and return the configuration information for a given task ID
      * @param taskId
      * @return  TaskConfigInfoResponse response
      * @throws  PackageManagementException
