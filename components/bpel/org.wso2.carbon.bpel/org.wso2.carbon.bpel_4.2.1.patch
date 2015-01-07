@@ -1,0 +1,214 @@
+Index: src/main/java/org/wso2/carbon/bpel/core/ode/integration/mgt/services/InstanceManagementServiceSkeleton.java
+===================================================================
+--- src/main/java/org/wso2/carbon/bpel/core/ode/integration/mgt/services/InstanceManagementServiceSkeleton.java	(revision 23868)
++++ src/main/java/org/wso2/carbon/bpel/core/ode/integration/mgt/services/InstanceManagementServiceSkeleton.java	(working copy)
+@@ -80,39 +80,7 @@
+ import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityStateAndEventDocumentBuilder;
+ import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementException;
+ import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementServiceSkeletonInterface;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Action_type1;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivitiesWithEvents_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Activities_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityInfoWithEventsType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityLifeCycleEventsListType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityLifeCycleEventsType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityStatusType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ChildrenWithEvents_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Children_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationPropertyType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationSet_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationSets_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Data_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EventInfo;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EventInfoList;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailureInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailuresInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FaultInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceInfoWithEventsType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceStatus;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceSummaryE;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.LimitedInstanceInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.PaginatedInstanceList;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeInfoWithEventsType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeStatusType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Value_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariableInfoType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariableRefType;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariablesWithEvents_type0;
+-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Variables_type0;
++import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
+ import org.wso2.carbon.context.CarbonContext;
+ import org.wso2.carbon.core.AbstractAdmin;
+ 
+@@ -308,7 +276,55 @@
+         return instanceList;
+     }
+ 
++
+     /**
++     * Get Failed Activities for give instance id.
++     * @param instanceID
++     * @return
++     * @throws InstanceManagementException
++     */
++    @Override
++    public ActivityRecoveryInfoType[] getFailedActivitiesForInstance(final long instanceID) throws InstanceManagementException {
++        try {
++            isOperationIsValidForTheCurrentTenant(instanceID);
++        } catch (IllegalAccessException ex) {
++            handleError(ex);
++        }
++        ActivityRecoveryInfoType[] activityRecoveryInfoTypes = null;
++        try {
++            BpelDatabase bpelDb = bpelServer.getODEBPELServer().getBpelDb();
++            Object result = bpelDb.exec(new BpelDatabase.Callable<Object>() {
++                public Object run(BpelDAOConnection conn) throws InstanceManagementException {
++                    ProcessInstanceDAO instance = conn.getInstance(instanceID);
++                    Collection<ActivityRecoveryDAO> activityRecoveries = instance.getActivityRecoveries();
++                    return activityRecoveries;
++                }
++            });
++            ArrayList<ActivityRecoveryDAO> activityRecoveryDAOs = (ArrayList<ActivityRecoveryDAO>) result;
++            if (activityRecoveryDAOs != null) {
++                activityRecoveryInfoTypes = new ActivityRecoveryInfoType[activityRecoveryDAOs.size()];
++                for (int i = 0; i < activityRecoveryDAOs.size(); i++) {
++
++                    ActivityRecoveryDAO activityRecovery = activityRecoveryDAOs.get(i);
++                    ActivityRecoveryInfoType info = new ActivityRecoveryInfoType();
++                    info.setActions(activityRecovery.getActions());
++                    info.setActivityID(activityRecovery.getActivityId());
++                    info.setDateTime(String.valueOf(activityRecovery.getDateTime()));
++                    info.setInstanceID(instanceID);
++                    info.setReason(activityRecovery.getReason());
++                    info.setRetires(activityRecovery.getRetries());
++                    activityRecoveryInfoTypes[i] = info;
++                }
++            }
++        } catch (Exception e) {
++            String errMsg = "Error occurred while retrieving failed activity information for instance id " +
++                    instanceID;
++            log.error(errMsg, e);
++            throw new InstanceManagementException(errMsg, e);
++        }
++        return activityRecoveryInfoTypes;
++    }
++    /**
+      * Get long running instances with duration
+      *
+      * @param limit The maximum number of instances to be fetched
+Index: src/main/resources/META-INF/instance_mgt.wsdl
+===================================================================
+--- src/main/resources/META-INF/instance_mgt.wsdl	(revision 23868)
++++ src/main/resources/META-INF/instance_mgt.wsdl	(working copy)
+@@ -125,6 +125,13 @@
+         <part name="part"  element="ns:instanceManagementException" />
+     </message>
+ 
++    <message name="getFailedActivitiesForInstanceRequest">
++        <part name="part" element="ns:getFailedActivitiesForInstance"/>
++    </message>
++    <message name="getFailedActivitiesForInstanceResponse">
++        <part name="part" element="ns:getFailedActivitiesForInstanceResponse"/>
++    </message>
++
+     <portType name="InstanceManagementPortType">
+         <operation name="getPaginatedInstanceList">
+             <input message="tns:getPaginatedInstanceListRequest"/>
+@@ -198,6 +205,11 @@
+             <output message="tns:getInstanceSummaryResponse"/>
+ 	        <fault name="instanceManagementException" message="tns:instanceManagementException" />
+         </operation>
++        <operation name="getFailedActivitiesForInstance">
++            <input message="tns:getFailedActivitiesForInstanceRequest"/>
++            <output message="tns:getFailedActivitiesForInstanceResponse" />
++            <fault name="instanceManagementException" message="tns:instanceManagementException" />
++        </operation>
+     </portType>
+     <binding name="InstanceManagementSOAPBinding" type="tns:InstanceManagementPortType">
+         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+@@ -367,6 +379,18 @@
+                 <soap:fault name="instanceManagementException" use="literal"/>
+             </fault>
+         </operation>
++        <operation name="getFailedActivitiesForInstance">
++            <soap:operation soapAction="urn:getFailedActivitiesForInstance"/>
++            <input>
++                <soap:body use="literal"/>
++            </input>
++            <output>
++                <soap:body use="literal"/>
++            </output>
++            <fault name="instanceManagementException">
++                <soap:fault name="instanceManagementException" use="literal"/>
++            </fault>
++        </operation>
+     </binding>
+ 
+     <service name="InstanceManagementService">
+Index: src/main/resources/META-INF/bps_management.xsd
+===================================================================
+--- src/main/resources/META-INF/bps_management.xsd	(revision 23868)
++++ src/main/resources/META-INF/bps_management.xsd	(working copy)
+@@ -1007,6 +1007,32 @@
+         </xsd:complexType>
+     </xsd:element>
+ 
++    <xsd:complexType name="activityRecoveryInfoType">
++        <xsd:sequence>
++            <xsd:element name="instanceID" type="xsd:long"/>
++            <xsd:element name="activityID" type="xsd:long"/>
++            <xsd:element name="dateTime" type="xsd:string"/>
++            <xsd:element name="reason" type="xsd:string"/>
++            <xsd:element name="retires" type="xsd:int"/>
++            <xsd:element name="actions" type="xsd:string"/>
++        </xsd:sequence>
++    </xsd:complexType>
++
++    <xsd:complexType name="activityRecoveryResultType">
++        <xsd:sequence>
++            <xsd:element name="activityRecoveryInfo" type="tns:activityRecoveryInfoType" minOccurs="0" maxOccurs="unbounded" />
++        </xsd:sequence>
++    </xsd:complexType>
++
++    <xsd:complexType name="failedActivitiesForInstanceType">
++        <xsd:sequence>
++            <xsd:element name="instanceID" type="xsd:long" />
++        </xsd:sequence>
++    </xsd:complexType>
++
++    <xsd:element name="getFailedActivitiesForInstance" type="tns:failedActivitiesForInstanceType" />
++    <xsd:element name="getFailedActivitiesForInstanceResponse" type="tns:activityRecoveryResultType" />
++
+     <!-- Deployment management -->
+     <xsd:element name="undeployBPELPackage">
+         <xsd:complexType>
+Index: src/main/resources/META-INF/services.xml
+===================================================================
+--- src/main/resources/META-INF/services.xml	(revision 23868)
++++ src/main/resources/META-INF/services.xml	(working copy)
+@@ -429,6 +429,22 @@
+                 /permission/admin/manage/bpel/instances
+             </parameter>
+         </operation>
++        <operation name="getFailedActivitiesForInstance" mep="http://www.w3.org/ns/wsdl/in-out"
++                   namespace="http://wso2.org/bps/management/wsdl/InstanceManagement">
++            <actionMapping>urn:getFailedActivitiesForInstance</actionMapping>
++            <faultActionMapping faultName="instanceManagementException">
++                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getFailedActivitiesForInstance/Fault/instanceManagementException
++            </faultActionMapping>
++            <faultActionMapping faultName="InstanceManagementException">
++                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getFailedActivitiesForInstance/Fault/instanceManagementException
++            </faultActionMapping>
++            <faultActionMapping faultName="InstanceManagementException_Exception">
++                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getFailedActivitiesForInstance/Fault/instanceManagementException
++            </faultActionMapping>
++            <parameter name="AuthorizationAction" locked="true">
++                /permission/admin/manage/bpel/instances
++            </parameter>
++        </operation>
+         <operation name="terminateInstance" mep="http://www.w3.org/ns/wsdl/robust-in-only"
+                    namespace="http://wso2.org/bps/management/wsdl/InstanceManagement">
+             <actionMapping>urn:terminateInstance</actionMapping>
