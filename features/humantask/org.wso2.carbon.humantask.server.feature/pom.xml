@@ -204,7 +204,7 @@
                                 <importBundleDef>asm.wso2:asm:3.1.wso2v1</importBundleDef>
                             </importBundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
