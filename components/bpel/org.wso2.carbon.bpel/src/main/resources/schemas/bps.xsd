@@ -82,7 +82,7 @@
                     <xsd:attribute name="value" type="xsd:int"/>
                 </xsd:complexType>
             </xsd:element>
-            <xsd:element name="KeepAlive">
+            <xsd:element name="connectionKeepAlive" minOccurs="0">
                 <xsd:complexType>
                     <xsd:attribute name="value" type="xsd:boolean"/>
                 </xsd:complexType>

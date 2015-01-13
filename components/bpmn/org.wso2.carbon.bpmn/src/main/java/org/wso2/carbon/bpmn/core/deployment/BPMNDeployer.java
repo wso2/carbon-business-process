@@ -89,13 +89,14 @@ public class BPMNDeployer extends AbstractDeployer {
         }
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Deploying BPMN archive " + deploymentFileData.getFile().getName() + " for tenant: " + tenantId);
+        log.info("Deploying BPMN archive " + deploymentFileData.getFile().getName() +
+                 " for tenant: " + tenantId);
         try {
             BPMNDeploymentContext deploymentContext = new BPMNDeploymentContext(tenantId);
             deploymentContext.setBpmnArchive(deploymentFileData.getFile());
-            boolean deployed = tenantRepository.deploy(deploymentContext);
+            tenantRepository.deploy(deploymentContext);
 
-	        log.info( "Deployment Status " + deploymentFileData.getFile() + " deployed = " + deployed );
+	        //log.info( "Deployment Status " + deploymentFileData.getFile() + " deployed = " + deployed );
 
         } catch (DeploymentException e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentFileData.getAbsolutePath();
@@ -130,8 +131,12 @@ public class BPMNDeployer extends AbstractDeployer {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
         String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
-        tenantRepository.undeploy(deploymentName, true);
-
+        try {
+           tenantRepository.undeploy(deploymentName, true);
+        } catch (BPSException be) {
+            String errorMsg = "Error un deploying BPMN Package " + deploymentName;
+            throw new DeploymentException(errorMsg, be);
+        }
 
     }
 

@@ -587,7 +587,9 @@ public class BPELServerConfiguration {
                     getValue();
             this.maxTotalConnections = multiThreadedConManagerConfig.getMaxTotalConnections().
                     getValue();
-            this.keepAlive = multiThreadedConManagerConfig.getKeepAlive().getValue();
+            if(multiThreadedConManagerConfig.getConnectionKeepAlive() != null) {
+                this.keepAlive = multiThreadedConManagerConfig.getConnectionKeepAlive().getValue();
+            }
         }
     }
 

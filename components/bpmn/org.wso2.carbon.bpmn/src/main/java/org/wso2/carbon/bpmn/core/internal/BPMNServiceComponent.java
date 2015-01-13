@@ -46,13 +46,13 @@ public class BPMNServiceComponent {
             holder.setEngine(activitiEngineBuilder.buildEngine());
             holder.setTenantManager(new TenantManager());
 
-            DataSourceHandler dataSourceHandler = new DataSourceHandler();
-            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-            dataSourceHandler.closeDataSource();
-        } catch (BPMNMetaDataTableCreationException e) {
-            log.error("Could not create BPMN checksum table", e);
-        } catch (DatabaseConfigurationException e) {
-            log.error("Could not create BPMN checksum table", e);
+//            DataSourceHandler dataSourceHandler = new DataSourceHandler();
+//            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+//            dataSourceHandler.closeDataSource();
+//        } catch (BPMNMetaDataTableCreationException e) {
+//            log.error("Could not create BPMN checksum table", e);
+//        } catch (DatabaseConfigurationException e) {
+//            log.error("Could not create BPMN checksum table", e);
         }catch (Throwable e) {
             log.error("Failed to initialize the BPMN core component.", e);
         }

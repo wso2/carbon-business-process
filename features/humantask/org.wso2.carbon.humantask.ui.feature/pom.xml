@@ -77,12 +77,12 @@
                             </adviceFile>
                             <bundles>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.ui:${carbon.platform.version}</bundleDef>
-				<bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.stub:${carbon.platform.version}</bundleDef>
-				<bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt.stub:${carbon.platform.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.stub:${carbon.platform.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt.stub:${carbon.platform.version}</bundleDef>
                                 <bundleDef>com.googlecode.json-simple.wso2:json-simple</bundleDef>
                             </bundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.ui:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.core.ui:${carbon.kernel.version}</importFeatureDef>
                              </importFeatures>
                         </configuration>
                     </execution>

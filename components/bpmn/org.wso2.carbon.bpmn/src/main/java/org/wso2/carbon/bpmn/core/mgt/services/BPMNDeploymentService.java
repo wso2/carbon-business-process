@@ -19,6 +19,7 @@ package org.wso2.carbon.bpmn.core.mgt.services;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
@@ -27,7 +28,6 @@ import org.wso2.carbon.bpmn.core.deployment.TenantRepository;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
 import org.wso2.carbon.context.CarbonContext;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -133,7 +133,7 @@ public class BPMNDeploymentService {
         }
     }
 
-    public void undeploy (String deploymentName ) {
+    public void undeploy (String deploymentName ) throws BPSException{
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
@@ -147,8 +147,7 @@ public class BPMNDeploymentService {
         try {
             ImageIO.write(image, type, bos);
             byte[] imageBytes = bos.toByteArray();
-            BASE64Encoder encoder = new BASE64Encoder();
-            imageString = encoder.encode(imageBytes);
+            imageString = Base64Utils.encode(imageBytes);
         } catch (IOException e) {
             log.error("Could not write image data", e);
         } finally {
