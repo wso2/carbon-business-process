@@ -26,16 +26,17 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>attachment-mgt</artifactId>
-    <groupId>org.wso2.carbon</groupId>
+    <artifactId>application-mgt</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2 Carbon - Attachment Management Aggregator Module</name>
-    <description>A custom wso2 products or solution</description>
+    <name>WSO2 Carbon - Application Management - Aggregator Module</name>
+    <description>Manages Carbon Applications</description>
     <url>http://wso2.org</url>
 
     <modules>
-        <module>org.wso2.carbon.attachment.mgt</module>
-        <!--<module>org.wso2.carbon.attachment.mgt.ui</module>-->
+        <module>org.wso2.carbon.application.mgt.bpel</module>
+        <module>org.wso2.carbon.application.mgt.bpel.ui</module>
+        <module>org.wso2.carbon.application.mgt.humantask</module>
+        <module>org.wso2.carbon.application.mgt.humantask.ui</module>
     </modules>
 
         <dependencies>
@@ -53,24 +54,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.wso2.carbon</groupId>-->
-                <!--<artifactId>org.wso2.carbon.datasource</artifactId>-->
-                <!--<exclusions>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>net.sf.saxon</groupId>-->
-                        <!--<artifactId>saxon</artifactId>-->
-                    <!--</exclusion>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>net.sf.saxon</groupId>-->
-                        <!--<artifactId>saxon-dom</artifactId>-->
-                    <!--</exclusion>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>net.sf.saxon</groupId>-->
-                        <!--<artifactId>saxon-xqj</artifactId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.core</artifactId>
@@ -85,21 +68,4 @@
                 <!-- We don't need an orbit bundle, since this is a bundle -->
             </dependency>
         </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <forkMode>pertest</forkMode>
-                    <argLine>-enableassertions</argLine>
-                    <excludes>
-                        <!-- uncomment and fix following tests. -->
-                        <exclude>**/AttachmentMgtDAOBasicOperationsTest.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-</project>	
+</project>

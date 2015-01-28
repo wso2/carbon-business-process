@@ -39,7 +39,10 @@
         <module>service-stubs/humantask</module>
         <module>service-stubs/unified-endpoint</module>
         <module>service-stubs/bpmn</module>
+        <module>service-stubs/application-mgt</module>
+        <module>components/application-deployers</module>
         <module>components/attachment-mgt</module>
+        <module>components/application-mgt</module>
         <module>components/common</module>
         <module>components/unified-endpoint</module>
         <module>components/bpel</module>
@@ -50,6 +53,7 @@
         <module>features/bpel</module>
         <module>features/bpmn</module>
         <module>features/humantask</module>
+        <module>features/application-mgt</module>
     </modules>
 
     <dependencyManagement>
@@ -117,6 +121,11 @@
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.operation.mgt.stub</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.bpel.stub</artifactId>
                 <version>${carbon.platform.version}</version>
             </dependency>
             <dependency>
@@ -250,14 +259,36 @@
                 <artifactId>org.wso2.carbon.repomanager.axis2</artifactId>
                 <version>${carbon.platform.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.humantask.ui</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.humantask.stub</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.humantask</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.axis2.wso2</groupId>
                 <artifactId>axis2</artifactId>
                 <version>${orbit.version.axis2}</version>
             </dependency>
-
-
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.bpel.ui</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.bpel</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.h2database.wso2</groupId>
                 <artifactId>h2-database-engine</artifactId>
@@ -621,6 +652,11 @@
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.ndatasource.core</artifactId>
                 <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.deployer.humantask</artifactId>
+                <version>${carbon.platform.version}</version>
             </dependency>
             <!--<dependency>-->
                 <!--<groupId>org.wso2.carbon</groupId>-->
@@ -1034,6 +1070,30 @@
                 <groupId>org.activiti.wso2</groupId>
                 <artifactId>activiti-rest</artifactId>
                 <version>${org.activiti.wso2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.bpel.server.feature</artifactId>
+                <version>${carbon.platform.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.bpel.ui.feature</artifactId>
+                <version>${carbon.platform.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.humantask.server.feature</artifactId>
+                <version>${carbon.platform.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.application.mgt.humantask.ui.feature</artifactId>
+                <version>${carbon.platform.version}</version>
+                <type>zip</type>
             </dependency>
 
             <!--dependency>
