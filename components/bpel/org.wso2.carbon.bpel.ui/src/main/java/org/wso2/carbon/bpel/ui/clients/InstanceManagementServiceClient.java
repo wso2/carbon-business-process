@@ -191,6 +191,8 @@ public class InstanceManagementServiceClient {
         }
     }
 
+
+
     public InstanceSummaryE getInstanceSummary()
             throws RemoteException, InstanceManagementException {
         try {

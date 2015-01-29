@@ -280,9 +280,6 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
 
     /**
      * Get Failed Activities for give instance id.
-     *
-     *
-     *
      * @param instanceID
      * @return
      * @throws InstanceManagementException
@@ -327,12 +324,8 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
             throw new InstanceManagementException(errMsg, e);
         }
 
-        //existing return object
-        //return  activityRecoveryInfoTypes;
-
         ActivityRecoveryResultType resultType = new ActivityRecoveryResultType();
         resultType.setActivityRecoveryInfo(activityRecoveryInfoTypes);
-        //ActivityRecoveryInfoType[] acr=resultType.getActivityRecoveryInfo();
         return resultType;
 
 
@@ -340,51 +333,36 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
 
     /**
      * Get all failed activities for BPEL processes
-     *
-     *
-     *
-     *
      * @param page
-     * @return
+     * @return failed activity list for a given page
      * @throws InstanceManagementException
      */
-
     @Override
     public ActivityRecoveryResultType getFailedActivities(final int page) throws InstanceManagementException {
 
         ActivityRecoveryInfoType[] activityRecoveryInfoTypes = null;
-        //final PaginatedInstanceList instanceList = new PaginatedInstanceList();
         final ActivityRecoveryResultType instanceList = new ActivityRecoveryResultType();
 
         try {
             BpelDatabase bpelDb = bpelServer.getODEBPELServer().getBpelDb();
             Object result = bpelDb.exec(new BpelDatabase.Callable<Object>() {
                 public Object run(BpelDAOConnection conn) throws InstanceManagementException {
-                    //pagination
+
                     int pageNum = page;
                     if (pageNum < 0 || pageNum == Integer.MAX_VALUE) {
                         pageNum = 0;
                     }
                     int startIndexOfCurrentPage = pageNum * BPELConstants.ITEMS_PER_PAGE;
-                   // int endIndexOfCurrentPage = (pageNum + 1) * BPELConstants.ITEMS_PER_PAGE;  //not used..
                     int instanceListSize = Integer.valueOf((String) conn.getCountOfAllFailedActivities());
 
                     int pages = (int) Math.ceil((double) instanceListSize / BPELConstants.ITEMS_PER_PAGE);
                     instanceList.setPages(pages);
-                    // instanceList.setPages(pages);
 
-                    //failed activities
                     List<ActivityRecoveryDAO> allActivityRecoveries = conn.getFailedActivities(startIndexOfCurrentPage,BPELConstants.ITEMS_PER_PAGE);
                     return allActivityRecoveries;
-
-
-
-
-
                 }
             });
 
-            //instance code
             List<ActivityRecoveryDAO> activityRecoveryDAOs = (List<ActivityRecoveryDAO>) result;
             if (activityRecoveryDAOs != null) {
                 activityRecoveryInfoTypes = new ActivityRecoveryInfoType[activityRecoveryDAOs.size()];
@@ -410,10 +388,6 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
             throw new InstanceManagementException(errMsg, e);
         }
 
-       // ActivityRecoveryResultType resultType = new ActivityRecoveryResultType();
-       // resultType.setActivityRecoveryInfo(activityRecoveryInfoTypes);
-
-        //return resultType;
         return instanceList;
     }
 
