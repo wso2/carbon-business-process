@@ -1021,6 +1021,8 @@
     <xsd:complexType name="activityRecoveryResultType">
         <xsd:sequence>
             <xsd:element name="activityRecoveryInfo" type="tns:activityRecoveryInfoType" minOccurs="0" maxOccurs="unbounded" />
+            <!--New attribute to support get all failure activities-->
+            <xsd:element name="pages" type="xsd:int"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -1030,8 +1032,19 @@
         </xsd:sequence>
     </xsd:complexType>
 
+    <!--Complex type for get failure activities request-->
+    <xsd:complexType name="failedActivitiesType">
+        <xsd:sequence>
+            <xsd:element name="page" type="xsd:int" />
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:element name="getFailedActivitiesForInstance" type="tns:failedActivitiesForInstanceType" />
     <xsd:element name="getFailedActivitiesForInstanceResponse" type="tns:activityRecoveryResultType" />
+
+    <!-- Elements for get failure activities -->
+    <xsd:element name="getFailedActivities" type="tns:failedActivitiesType" />
+    <xsd:element name="getFailedActivitiesResponse" type="tns:activityRecoveryResultType" />
 
     <!-- Deployment management -->
     <xsd:element name="undeployBPELPackage">

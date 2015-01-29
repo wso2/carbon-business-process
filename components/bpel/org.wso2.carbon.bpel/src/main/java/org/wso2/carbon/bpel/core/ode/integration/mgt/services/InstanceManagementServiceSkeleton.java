@@ -80,6 +80,7 @@ import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityLifeCycleEventsDo
 import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityStateAndEventDocumentBuilder;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementException;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementServiceSkeletonInterface;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityRecoveryInfoType;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
@@ -279,12 +280,15 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
 
     /**
      * Get Failed Activities for give instance id.
+     *
+     *
+     *
      * @param instanceID
      * @return
      * @throws InstanceManagementException
      */
     @Override
-    public ActivityRecoveryInfoType[] getFailedActivitiesForInstance(final long instanceID) throws InstanceManagementException {
+    public ActivityRecoveryResultType getFailedActivitiesForInstance(final long instanceID) throws InstanceManagementException {
         try {
             isOperationIsValidForTheCurrentTenant(instanceID);
         } catch (IllegalAccessException ex) {
@@ -322,8 +326,97 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
             log.error(errMsg, e);
             throw new InstanceManagementException(errMsg, e);
         }
-        return activityRecoveryInfoTypes;
+
+        //existing return object
+        //return  activityRecoveryInfoTypes;
+
+        ActivityRecoveryResultType resultType = new ActivityRecoveryResultType();
+        resultType.setActivityRecoveryInfo(activityRecoveryInfoTypes);
+        //ActivityRecoveryInfoType[] acr=resultType.getActivityRecoveryInfo();
+        return resultType;
+
+
     }
+
+    /**
+     * Get all failed activities for BPEL processes
+     *
+     *
+     *
+     *
+     * @param page
+     * @return
+     * @throws InstanceManagementException
+     */
+
+    @Override
+    public ActivityRecoveryResultType getFailedActivities(final int page) throws InstanceManagementException {
+
+        ActivityRecoveryInfoType[] activityRecoveryInfoTypes = null;
+        //final PaginatedInstanceList instanceList = new PaginatedInstanceList();
+        final ActivityRecoveryResultType instanceList = new ActivityRecoveryResultType();
+
+        try {
+            BpelDatabase bpelDb = bpelServer.getODEBPELServer().getBpelDb();
+            Object result = bpelDb.exec(new BpelDatabase.Callable<Object>() {
+                public Object run(BpelDAOConnection conn) throws InstanceManagementException {
+                    //pagination
+                    int pageNum = page;
+                    if (pageNum < 0 || pageNum == Integer.MAX_VALUE) {
+                        pageNum = 0;
+                    }
+                    int startIndexOfCurrentPage = pageNum * BPELConstants.ITEMS_PER_PAGE;
+                   // int endIndexOfCurrentPage = (pageNum + 1) * BPELConstants.ITEMS_PER_PAGE;  //not used..
+                    int instanceListSize = Integer.valueOf((String) conn.getCountOfAllFailedActivities());
+
+                    int pages = (int) Math.ceil((double) instanceListSize / BPELConstants.ITEMS_PER_PAGE);
+                    instanceList.setPages(pages);
+                    // instanceList.setPages(pages);
+
+                    //failed activities
+                    List<ActivityRecoveryDAO> allActivityRecoveries = conn.getFailedActivities(startIndexOfCurrentPage,BPELConstants.ITEMS_PER_PAGE);
+                    return allActivityRecoveries;
+
+
+
+
+
+                }
+            });
+
+            //instance code
+            List<ActivityRecoveryDAO> activityRecoveryDAOs = (List<ActivityRecoveryDAO>) result;
+            if (activityRecoveryDAOs != null) {
+                activityRecoveryInfoTypes = new ActivityRecoveryInfoType[activityRecoveryDAOs.size()];
+                for (int i = 0; i < activityRecoveryDAOs.size(); i++) {
+
+                    ActivityRecoveryDAO activityRecovery = activityRecoveryDAOs.get(i);
+                    ActivityRecoveryInfoType info = new ActivityRecoveryInfoType();
+                    info.setActions(activityRecovery.getActions());
+                    info.setActivityID(activityRecovery.getActivityId());
+                    info.setDateTime(String.valueOf(activityRecovery.getDateTime()));
+                    info.setInstanceID(activityRecovery.getInstanceId());
+                    info.setReason(activityRecovery.getReason());
+                    info.setRetires(activityRecovery.getRetries());
+                    activityRecoveryInfoTypes[i] = info;
+
+                }
+                instanceList.setActivityRecoveryInfo(activityRecoveryInfoTypes);
+            }
+        }
+        catch (Exception e) {
+            String errMsg = "Error occurred while retrieving failed activity information";
+            log.error(errMsg, e);
+            throw new InstanceManagementException(errMsg, e);
+        }
+
+       // ActivityRecoveryResultType resultType = new ActivityRecoveryResultType();
+       // resultType.setActivityRecoveryInfo(activityRecoveryInfoTypes);
+
+        //return resultType;
+        return instanceList;
+    }
+
     /**
      * Get long running instances with duration
      *

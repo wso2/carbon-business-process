@@ -132,6 +132,14 @@
         <part name="part" element="ns:getFailedActivitiesForInstanceResponse"/>
     </message>
 
+    <!--New message for getFailedActivities-->
+    <message name="getFailedActivitiesRequest">
+        <part name="part" element="ns:getFailedActivities"/>
+    </message>
+    <message name="getFailedActivitiesResponse">
+        <part name="part" element="ns:getFailedActivitiesResponse"/>
+    </message>
+
     <portType name="InstanceManagementPortType">
         <operation name="getPaginatedInstanceList">
             <input message="tns:getPaginatedInstanceListRequest"/>
@@ -208,6 +216,12 @@
         <operation name="getFailedActivitiesForInstance">
             <input message="tns:getFailedActivitiesForInstanceRequest"/>
             <output message="tns:getFailedActivitiesForInstanceResponse" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
+        <!--New port type operation for getFailedActivities-->
+        <operation name="getFailedActivities">
+            <input message="tns:getFailedActivitiesRequest"/>
+            <output message="tns:getFailedActivitiesResponse" />
             <fault name="instanceManagementException" message="tns:instanceManagementException" />
         </operation>
     </portType>
@@ -381,6 +395,19 @@
         </operation>
         <operation name="getFailedActivitiesForInstance">
             <soap:operation soapAction="urn:getFailedActivitiesForInstance"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <!--New operation for getFailedActivities-->
+        <operation name="getFailedActivities">
+            <soap:operation soapAction="urn:getFailedActivities"/>
             <input>
                 <soap:body use="literal"/>
             </input>

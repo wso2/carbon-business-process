@@ -677,7 +677,8 @@
                             <%
                                 if (isAuthenticatedForInstanceManagement && instanceInfo.getStatus().getValue().toUpperCase().equals("ACTIVE")) {
                                     try {
-                                        ActivityRecoveryInfoType[] failedActivities = client.getFailedActivities(Long.parseLong(instanceId));
+                                        ActivityRecoveryResultType resultTypeFailedActivities = client.getFailedActivities(Long.parseLong(instanceId));
+                                        ActivityRecoveryInfoType[] failedActivities= resultTypeFailedActivities.getActivityRecoveryInfo();
                                         if (failedActivities != null && failedActivities.length > 0) {
                                             ActivityRecoveryInfoType failedActivity;
                             %>

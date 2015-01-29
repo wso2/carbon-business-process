@@ -178,7 +178,7 @@ public class InstanceManagementServiceClient {
         }
     }
 
-    public ActivityRecoveryInfoType[] getFailedActivities(long iid) throws RemoteException, InstanceManagementException {
+    public ActivityRecoveryResultType getFailedActivities(long iid) throws RemoteException, InstanceManagementException {
 
         try {
             return stub.getFailedActivitiesForInstance(iid);
