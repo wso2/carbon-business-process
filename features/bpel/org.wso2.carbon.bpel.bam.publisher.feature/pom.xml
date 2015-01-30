@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
     	<artifactId>bpel-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
@@ -36,7 +36,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
         </dependency>
     </dependencies>
@@ -64,13 +64,13 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.bam.publisher</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.bam.publisher</bundleDef>
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.bpel</importFeatureDef>
-			 	                <importFeatureDef>org.wso2.carbon.databridge.agent.thrift.server:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.databridge.commons.thrift.server:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.databridge.commons.server:${carbon.platform.version}</importFeatureDef>
+			 	                <importFeatureDef>org.wso2.carbon.databridge.agent.thrift.server:${carbon.commons.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.databridge.commons.thrift.server:${carbon.commons.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.databridge.commons.server:${carbon.commons.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

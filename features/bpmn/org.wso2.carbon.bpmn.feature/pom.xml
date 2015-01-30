@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -11,7 +11,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <version>4.3.0-SNAPSHOT</version>
-    <groupId>org.wso2.carbon</groupId>
     <artifactId>org.wso2.carbon.bpmn.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - BPMN Feature</name>
@@ -22,12 +21,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.server.feature</artifactId>
             <type>zip</type>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.ui.feature</artifactId>
             <type>zip</type>
         </dependency>
@@ -54,10 +53,10 @@
                             </importFeatures>
                             <includedFeatures>
                                 <includedFeatureDef>
-                                    org.wso2.carbon:org.wso2.carbon.bpmn.server.feature:${carbon.platform.version}
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.server.feature:${carbon.platform.version}
                                 </includedFeatureDef>
                                 <includedFeatureDef>
-                                    org.wso2.carbon:org.wso2.carbon.bpmn.ui.feature:${carbon.platform.version}
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui.feature:${carbon.platform.version}
                                 </includedFeatureDef>
                             </includedFeatures>
                         </configuration>

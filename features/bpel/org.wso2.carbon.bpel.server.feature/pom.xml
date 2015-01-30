@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
     	<artifactId>bpel-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
@@ -40,23 +40,23 @@
             <artifactId>h2-database-engine</artifactId>
         </dependency>
 	<dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.skeleton</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.deployer</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.b4p</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.cluster.notifier</artifactId>
         </dependency>
         <dependency>
@@ -190,11 +190,11 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.deployer</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.cluster.notifier</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.b4p</bundleDef>
-				<bundleDef>org.wso2.carbon:org.wso2.carbon.bpel.skeleton</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.deployer</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.cluster.notifier</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.b4p</bundleDef>
+				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.skeleton</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.apache.ode.wso2:ode</importBundleDef>
@@ -222,14 +222,14 @@
                                 <importBundleDef>antlr.wso2:antlr</importBundleDef>
                                 <importBundleDef>rhino.wso2:js</importBundleDef>
                                 <importBundleDef>org.springframework.ws.wso2:spring.framework:${orbit.version.spring}</importBundleDef>
-                                <importBundleDef>org.wso2.carbon:org.wso2.carbon.bpel.common</importBundleDef>
+                                <importBundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.common</importBundleDef>
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.unifiedendpoint.server:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.platform.version}</importFeatureDef>
-                		<importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.commons.version}</importFeatureDef>
+                		        <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

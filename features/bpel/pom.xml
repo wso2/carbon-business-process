@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>carbon-business-process</artifactId>
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
@@ -41,35 +41,35 @@
 
         <dependencies>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.b4p</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.deployer</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.cluster.notifier</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.ui</artifactId>
             </dependency>
 	    <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.stub</artifactId>
             </dependency>
 	    <dependency>
-                <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.skeleton</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
             </dependency>
             <!--dependency>
@@ -78,7 +78,7 @@
                 <version>${wso2carbon.version.bpel}</version>
             </dependency-->
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.bam.publisher.skeleton</artifactId>
             </dependency>
             <!--dependency>
@@ -87,7 +87,7 @@
                 <version>${wso2carbon.version.bpel}</version>
             </dependency-->
 	    <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.common</artifactId>
             </dependency>
             <dependency>
@@ -213,7 +213,7 @@
                 <artifactId>batik</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
             </dependency>
             <dependency>
@@ -225,11 +225,11 @@
                 <artifactId>spring.framework</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                <groupId>org.wso2.carbon.commons</groupId>
                 <artifactId>org.wso2.carbon.statistics.ui</artifactId>
             </dependency>
              <dependency>
-                <groupId>org.wso2.carbon</groupId>
+                 <groupId>org.wso2.carbon.commons</groupId>
                 <artifactId>org.wso2.carbon.statistics</artifactId>
             </dependency>
         </dependencies>
