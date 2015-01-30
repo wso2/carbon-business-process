@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
     	<artifactId>humantask-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
@@ -36,23 +36,23 @@
 
     <dependencies>
 	<dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
         </dependency>
 	<dependency>
-            <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask</artifactId>
         </dependency>
 		<dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.deployer</artifactId>
         </dependency>
 	<dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.cleanup.scheduler</artifactId>
         </dependency>
 	<dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.coordination.module</artifactId>
         </dependency>
         <dependency>
@@ -60,7 +60,7 @@
             <artifactId>h2-database-engine</artifactId>
         </dependency>
 	    <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.common</artifactId>
        </dependency>
     </dependencies>
@@ -180,11 +180,11 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.deployer:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.skeleton:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.coordination.module:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.deployer:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.coordination.module:${carbon.platform.version}</bundleDef>
                                 <bundleDef>org.apache.openjpa.wso2:openjpa:2.2.0.wso2v2</bundleDef>
                             </bundles>
                             <importBundles>
@@ -195,8 +195,8 @@
                                 <importBundleDef>org.apache.geronimo.components.wso2:geronimo-transaction</importBundleDef>
                                 <importBundleDef>org.apache.ws.commons.axiom.wso2:axiom</importBundleDef>
                                 <importBundleDef>hsqldb.wso2:hsqldb</importBundleDef>
-                                <importBundleDef>org.wso2.carbon:org.wso2.carbon.bpel.common</importBundleDef>
-                                <importBundleDef>org.wso2.carbon:org.wso2.carbon.unifiedendpoint.core</importBundleDef>
+                                <importBundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.common</importBundleDef>
+                                <importBundleDef>org.wso2.carbon.business-process:org.wso2.carbon.unifiedendpoint.core</importBundleDef>
                                 <importBundleDef>org.apache.ode.wso2:ode:${orbit.ode.version}</importBundleDef>
                                 <importBundleDef>net.sf.saxon.wso2:saxon.he</importBundleDef>
                                 <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec</importBundleDef>
@@ -205,8 +205,8 @@
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.deployment.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.commons.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>

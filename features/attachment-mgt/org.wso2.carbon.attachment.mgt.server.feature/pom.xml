@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-		<groupId>org.wso2.carbon</groupId>
+		<groupId>org.wso2.carbon.business-process</groupId>
 		<artifactId>attachment-mgt-feature</artifactId>
 		<version>4.3.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
@@ -19,11 +19,11 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.wso2.carbon</groupId>
+			<groupId>org.wso2.carbon.business-process</groupId>
 			<artifactId>org.wso2.carbon.attachment.mgt</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.wso2.carbon</groupId>
+			<groupId>org.wso2.carbon.business-process</groupId>
 			<artifactId>org.wso2.carbon.attachment.mgt.skeleton</artifactId>
 		</dependency>
 		<dependency>
@@ -150,8 +150,8 @@
 								</properties>
 							</adviceFile>
 							<bundles>
-								<bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt:${wso2carbon.attachment.mgt.version}</bundleDef>
-								<bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt.skeleton:${wso2carbon.attachment.mgt.version}</bundleDef>
+								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt:${carbon.platform.version}</bundleDef>
+								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.skeleton:${carbon.platform.version}</bundleDef>
 							</bundles>
 
 							<importFeatures>

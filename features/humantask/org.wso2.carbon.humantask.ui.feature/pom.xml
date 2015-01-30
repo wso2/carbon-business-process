@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
     	<artifactId>humantask-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
@@ -40,15 +40,15 @@
             <artifactId>json-simple</artifactId>
         </dependency>
 	    <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.stub</artifactId>
         </dependency>
 	<dependency>
-		<groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
 		<artifactId>org.wso2.carbon.attachment.mgt.stub</artifactId>
 	</dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.ui</artifactId>
         </dependency>
     </dependencies>
@@ -76,9 +76,9 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.ui:${carbon.platform.version}</bundleDef>
-				                <bundleDef>org.wso2.carbon:org.wso2.carbon.humantask.stub:${carbon.platform.version}</bundleDef>
-				                <bundleDef>org.wso2.carbon:org.wso2.carbon.attachment.mgt.stub:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.ui:${carbon.platform.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.stub:${carbon.platform.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.stub:${carbon.platform.version}</bundleDef>
                                 <bundleDef>com.googlecode.json-simple.wso2:json-simple</bundleDef>
                             </bundles>
                             <importFeatures>

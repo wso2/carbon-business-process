@@ -4,7 +4,7 @@
 
 
     <parent>
-        <groupId>org.wso2.carbon</groupId>
+        <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -20,11 +20,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
         </dependency>
         <dependency>
@@ -154,8 +154,8 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpmn</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.bpmn.rest</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn.rest</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.activiti.wso2:activiti-engine</importBundleDef>
