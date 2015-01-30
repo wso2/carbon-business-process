@@ -150,8 +150,8 @@
 								</properties>
 							</adviceFile>
 							<bundles>
-								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt:${carbon.platform.version}</bundleDef>
-								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.skeleton:${carbon.platform.version}</bundleDef>
+								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt:${carbon.business-process.version}</bundleDef>
+								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.skeleton:${carbon.business-process.version}</bundleDef>
 							</bundles>
 
 							<importFeatures>

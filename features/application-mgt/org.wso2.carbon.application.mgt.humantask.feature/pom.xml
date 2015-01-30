@@ -71,8 +71,8 @@
                                 <importFeatureDef>org.wso2.carbon.commons:org.wso2.carbon.application.mgt:${carbon.commons.version}</importFeatureDef>
                             </importFeatures>
                             <includedFeatures>
-                                <includedFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.server.feature:${carbon.platform.version}</includedFeatureDef>
-                                <includedFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.ui.feature:${carbon.platform.version}</includedFeatureDef>
+                                <includedFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.server.feature:${carbon.business-process.version}</includedFeatureDef>
+                                <includedFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.ui.feature:${carbon.business-process.version}</includedFeatureDef>
                             </includedFeatures>
                         </configuration>
                     </execution>

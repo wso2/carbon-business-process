@@ -73,13 +73,13 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask:${carbon.platform.version}</bundleDef>
-				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask:${carbon.business-process.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.business-process.version}</bundleDef>
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon:org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.humantask:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.humantask:${carbon.business-process.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.server:${carbon.business-process.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

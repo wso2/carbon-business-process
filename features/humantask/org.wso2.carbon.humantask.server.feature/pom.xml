@@ -180,11 +180,11 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.deployer:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.coordination.module:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.deployer:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.coordination.module:${carbon.business-process.version}</bundleDef>
                                 <bundleDef>org.apache.openjpa.wso2:openjpa:2.2.0.wso2v2</bundleDef>
                             </bundles>
                             <importBundles>
@@ -207,7 +207,7 @@
                                 <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.deployment.version}</importFeatureDef>
                                 <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.commons.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.business-process.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

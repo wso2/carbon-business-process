@@ -70,8 +70,8 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.ui:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.stub:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.ui:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask.stub:${carbon.business-process.version}</bundleDef>
                             </bundles>
                             <importFeatures>
                             </importFeatures>

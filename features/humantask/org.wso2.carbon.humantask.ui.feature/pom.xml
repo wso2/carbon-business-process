@@ -76,9 +76,9 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.ui:${carbon.platform.version}</bundleDef>
-				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.stub:${carbon.platform.version}</bundleDef>
-				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.stub:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.ui:${carbon.business-process.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.stub:${carbon.business-process.version}</bundleDef>
+				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.stub:${carbon.business-process.version}</bundleDef>
                                 <bundleDef>com.googlecode.json-simple.wso2:json-simple</bundleDef>
                             </bundles>
                             <importFeatures>
