@@ -53,10 +53,10 @@
                             </importFeatures>
                             <includedFeatures>
                                 <includedFeatureDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.server.feature:${carbon.platform.version}
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.server.feature:${carbon.business-process.version}
                                 </includedFeatureDef>
                                 <includedFeatureDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui.feature:${carbon.platform.version}
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui.feature:${carbon.business-process.version}
                                 </includedFeatureDef>
                             </includedFeatures>
                         </configuration>

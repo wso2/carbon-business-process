@@ -71,13 +71,13 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.bpel:${carbon.platform.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.skeleton:${carbon.platform.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.bpel:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.skeleton:${carbon.business-process.version}</bundleDef>
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon:org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.bpel:${carbon.platform.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.server:${carbon.platform.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.bpel:${carbon.business-process.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.server:${carbon.business-process.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>
