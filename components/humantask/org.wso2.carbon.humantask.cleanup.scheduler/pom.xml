@@ -69,7 +69,7 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.cleanup.scheduler.internal,
-                            org.wso2.carbon.humantask.cleanup.scheduler.*; version="${project.version}",
+                            org.wso2.carbon.humantask.cleanup.scheduler.*; version="${carbon.business-process.exp.pkg.version}",
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.humantask.cleanup.scheduler,

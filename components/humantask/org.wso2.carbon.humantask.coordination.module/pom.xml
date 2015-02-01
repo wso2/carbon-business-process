@@ -50,7 +50,7 @@
                         <Private-Package>org.wso2.carbon.humantask.coordination.module.internal</Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.coordination.module.internal.*,
-                            org.wso2.carbon.humantask.coordination.module.*; version="${project.version}",
+                            org.wso2.carbon.humantask.coordination.module.*; version="${carbon.business-process.exp.pkg.version}",
                         </Export-Package>
                         <Import-Package>
                              org.apache.axis2.*; version="${axis2.osgi.version.range}",

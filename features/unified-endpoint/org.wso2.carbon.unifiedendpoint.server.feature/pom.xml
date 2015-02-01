@@ -39,10 +39,6 @@
             <groupId>org.wso2.carbon.business-process</groupId>
 	        <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
 	    </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.business-process</groupId>
-	        <artifactId>org.wso2.carbon.unifiedendpoint.service</artifactId>
-	    </dependency>
     </dependencies>
     
     <build>
@@ -69,12 +65,7 @@
                             </adviceFile>
                             <bundles>
                                 <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.unifiedendpoint.core</bundleDef>
-                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.unifiedendpoint.service</bundleDef-->
                             </bundles>
-                            <!--<importFeatures>
-                                <importFeatureDef>org.apache.synapse.wso2:${synapse.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.mediation.initializer.server:${mediation.initializer.feature.version}</importFeatureDef>
-                            </importFeatures>-->
                         </configuration>
                     </execution>
                 </executions>

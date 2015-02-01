@@ -310,7 +310,7 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpel.b4p.internal,
-                            org.wso2.carbon.bpel.b4p.*; version="${project.version}"
+                            org.wso2.carbon.bpel.b4p.*; version="${carbon.business-process.exp.pkg.version}"
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.b4p.*,

@@ -28,7 +28,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.unifiedendpoint.stub</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Unified Endpoint Stub</name>
@@ -47,7 +46,7 @@
                         <Private-Package>
                         </Private-Package>
                         <Export-Package>
-                            org.wso2.carbon.unifiedendpoint.stub.*;version="${carbon.platform.package.export.version}"
+                            org.wso2.carbon.unifiedendpoint.stub.*;version="${carbon.business-process.exp.pkg.version}"
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.unifiedendpoint.stub.*

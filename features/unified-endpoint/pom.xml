@@ -34,8 +34,8 @@
 
     <modules>
         <module>org.wso2.carbon.unifiedendpoint.server.feature</module>
-        <module>org.wso2.carbon.unifiedendpoint.ui.feature</module>
-        <module>org.wso2.carbon.unifiedendpoint.feature</module>
+        <!--module>org.wso2.carbon.unifiedendpoint.ui.feature</module>
+        <module>org.wso2.carbon.unifiedendpoint.feature</module-->
     </modules>
 
         <dependencies>
@@ -43,14 +43,14 @@
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.service</artifactId>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.ui</artifactId>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.stub</artifactId>

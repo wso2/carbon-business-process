@@ -140,38 +140,12 @@
                 <version>${carbon.deployment.version}</version>
                 <type>zip</type>
             </dependency>
-           <!-- <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.throttle.server.feature</artifactId>
-                <version>${carbon.business-process.version}</version>
-                <type>zip</type>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.throttle.ui.feature</artifactId>
-                <version>${carbon.business-process.version}</version>
-                <type>zip</type>
-            </dependency>-->
-            <dependency>
-                <groupId>org.wso2.carbon.identity</groupId>
-                <artifactId>org.wso2.carbon.security.mgt.ui.feature</artifactId>
-                <version>${carbon.identity.version}</version>
-                <type>zip</type>
-            </dependency>
-
-            <!-- carbon-qos is going to be reomved -->
-<!--            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.caching.ui.feature</artifactId>
-                <version>${carbon.business-process.version}</version>
-                <type>zip</type>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.rm.ui.feature</artifactId>
-                <version>${carbon.business-process.version}</version>
-                <type>zip</type>
-            </dependency-->
+            <!--<dependency>-->
+                <!--<groupId>org.wso2.carbon.identity</groupId>-->
+                <!--<artifactId>org.wso2.carbon.security.mgt.ui.feature</artifactId>-->
+                <!--<version>${carbon.identity.version}</version>-->
+                <!--<type>zip</type>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.security.mgt</artifactId>
@@ -215,12 +189,6 @@
                 <version>${carbon.deployment.version}</version>
                 <type>zip</type>
             </dependency>
-<!--            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.caching.server.feature</artifactId>
-                <version>${carbon.business-process.version}</version>
-                <type>zip</type>
-            </dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon.deployment</groupId>
                 <artifactId>org.wso2.carbon.service.mgt.server.feature</artifactId>
@@ -233,13 +201,6 @@
                 <version>${carbon.deployment.version}</version>
                 <type>zip</type>
             </dependency>
-<!--            <dependency>
-                <groupId>org.wso2.carbon.deployment</groupId>
-                <artifactId>org.wso2.carbon.rm.server.feature</artifactId>
-                &lt;!&ndash;version>${project.parent.version}</version&ndash;&gt;
-                <version>${carbon.deployment.version}</version>
-                <type>zip</type>
-            </dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.security.mgt.server.feature</artifactId>
@@ -573,11 +534,11 @@
             </dependency>
             <!-- end of common dependencies-->
 
-            <dependency>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.8</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>build-helper-maven-plugin</artifactId>-->
+                <!--<version>1.8</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>org.wso2.carbon.commons</groupId>
@@ -601,6 +562,7 @@
                 <artifactId>org.wso2.carbon.authenticator.stub</artifactId>
                 <version>${carbon.kernel.version}</version>
             </dependency>
+
             <!--For BPS -->
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
@@ -1098,67 +1060,6 @@
                 <type>zip</type>
             </dependency>
 
-            <!--dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-engine</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-bpmn-converter</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-process-validation</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-image-generator</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-common-rest</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-json-converter</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-simple-workflow</artifactId>
-                <version>${org.activiti.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet.ext.fileupload</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>3.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>4.0.6.RELEASE</version>
-            </dependency-->
-
-            <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-email</artifactId>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-lang3</artifactId>-->
-            <!--</dependency>-->
-
         </dependencies>
     </dependencyManagement>
 
@@ -1187,7 +1088,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!--<version>2.3.1</version>-->
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <source>1.6</source>
@@ -1217,15 +1117,11 @@
                     <extensions>true</extensions>
                     <configuration>
                         <obrRepository>NONE</obrRepository>
-                        <!--<instructions>
-                          <_include>-osgi.bnd</_include>
-                        </instructions>-->
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <!--<version>2.1.2</version>-->
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -1393,11 +1289,8 @@
         <carbon.business-process.version>4.3.0-SNAPSHOT</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.3.0,4.4.0)</carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>4.3.0</carbon.business-process.exp.pkg.version>
-        <!--<wso2carbon.attachment.mgt.version>4.3.0-SNAPSHOT</wso2carbon.attachment.mgt.version>-->
-        <previous.version>4.2.0</previous.version>
 
         <version.jettison>1.3.4</version.jettison>
-        <wso2carbon.version>4.3.0-SNAPSHOT</wso2carbon.version>
 
         <orbit.version.axis2>1.6.1.wso2v11</orbit.version.axis2>
         <axis2.wso2.version.aar.plugin>1.6.2</axis2.wso2.version.aar.plugin>
@@ -1407,10 +1300,9 @@
         <carbon.kernel.version>4.3.0</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.3.0, 4.4.0)</carbon.kernel.imp.pkg.version>
 
-
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.3.1</carbon.commons.version>
-        <carbon.commons.imp.pkg.version>[4.3.1, 4.4.0)</carbon.commons.imp.pkg.version>
+        <carbon.commons.version>4.3.2</carbon.commons.version>
+        <carbon.commons.imp.pkg.version>[4.3.2, 4.4.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
         <carbon.identity.version>4.3.0</carbon.identity.version>
@@ -1428,16 +1320,10 @@
         <carbon.mediation.version>4.3.0</carbon.mediation.version>
         <carbon.mediation.imp.pkg.version>[4.3.0, 4.4.0)</carbon.mediation.imp.pkg.version>
 
-        <!-- Carbon platform version comes here-->
-       <!-- <carbon.business-process.version>4.3.0-SNAPSHOT</carbon.business-process.version>-->
-        <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
-        <carbon.platform.package.export.version>4.3.0-SNAPSHOT</carbon.platform.package.export.version>
-        <carbon.platform.package.import.version.range>[4.3.0.SNAPSHOT, 4.4.0)</carbon.platform.package.import.version.range>
-        <!-- Stratos Version -->
-        <stratos.version>2.3.0-SNAPSHOT</stratos.version>
+        <!--&lt;!&ndash; Stratos Version &ndash;&gt;-->
+        <!--<stratos.version>2.3.0-SNAPSHOT</stratos.version>-->
 
         <!-- Axiom Version -->
-
 
         <axiom.wso2.version>1.2.11.wso2v5</axiom.wso2.version>
         <orbit.version.axiom>1.2.11.wso2v5</orbit.version.axiom>

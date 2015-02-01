@@ -110,10 +110,10 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.core.*; version=${project.version},
-                            org.wso2.carbon.bpmn.core.mgt.*; version=${project.version},
-                            org.wso2.carbon.bpmn.core.mgt.model.*; version=${project.version},
-                            org.wso2.carbon.bpmn.core.deployment.*; version=${project.version},
+                            org.wso2.carbon.bpmn.core.*; version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.mgt.*; version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.mgt.model.*; version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.deployment.*; version=${carbon.business-process.exp.pkg.version},
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,

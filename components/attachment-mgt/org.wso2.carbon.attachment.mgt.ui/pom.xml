@@ -28,7 +28,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.attachment.mgt.ui</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Attachment Management UI Component</name>
@@ -59,14 +58,14 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.attachment.mgt.ui.*;version="${carbon.platform.package.export.version}"
+                            org.wso2.carbon.attachment.mgt.ui.*;version="${carbon.business-process.exp.pkg.version}"
                         </Export-Package>
                         <Import-Package>
                             javax.servlet.*;version="${imp.pkg.version.javax.servlet}",
                             javax.xml.namespace; version=0.0.0,
                             javax.xml.transform.*; version=0.0.0,
                             org.w3c.dom.*;version="0.0.0",
-                            org.wso2.carbon.attachment.mgt.stub.*;version="${carbon.platform.package.import.version.range}",
+                            org.wso2.carbon.attachment.mgt.stub.*;version="${carbon.business-process.imp.pkg.version}",
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
