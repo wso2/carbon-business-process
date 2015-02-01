@@ -140,12 +140,6 @@
                 <version>${carbon.deployment.version}</version>
                 <type>zip</type>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon.identity</groupId>-->
-            <!--<artifactId>org.wso2.carbon.security.mgt.ui.feature</artifactId>-->
-            <!--<version>${carbon.identity.version}</version>-->
-            <!--<type>zip</type>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.security.mgt</artifactId>
@@ -322,8 +316,6 @@
                 <artifactId>json-simple</artifactId>
                 <version>1.1.wso2v1</version>
             </dependency>
-
-
             <!-- Feature related dependencies -->
             <dependency>
                 <groupId>org.springframework.ws.wso2</groupId>
@@ -467,11 +459,6 @@
                 <artifactId>spring-web</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            <!--            <dependency>
-                            <groupId>org.wso2.carbon.webapp.ext</groupId>
-                            <artifactId>carbon-cxf</artifactId>
-                            <version>${carbon.cxf.webapp.ext}</version>
-                        </dependency>-->
 
             <!-- Apache OpenJPA dependancies-->
             <dependency>
@@ -533,12 +520,6 @@
                 <version>${commons-logging.version}</version>
             </dependency>
             <!-- end of common dependencies-->
-
-            <!--<dependency>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>build-helper-maven-plugin</artifactId>-->
-            <!--<version>1.8</version>-->
-            <!--</dependency>-->
 
             <dependency>
                 <groupId>org.wso2.carbon.commons</groupId>
@@ -607,11 +588,6 @@
                 <artifactId>geronimo-connector</artifactId>
                 <version>${geronimo.transaction.version}</version>
             </dependency>
-            <!--dependency>
-                <groupId>org.apache.geronimo.specs.wso2</groupId>
-                <artifactId>geronimo-ejb_2.1_spec</artifactId>
-                <version>${geronimo-ejb_2.1_spec.version}</version>
-            </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.ndatasource.core</artifactId>
@@ -622,11 +598,6 @@
                 <artifactId>org.wso2.carbon.application.deployer.humantask</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon</groupId>-->
-            <!--<artifactId>org.wso2.carbon.datasource.ui</artifactId>-->
-            <!--<version>${carbon.business-process.version}</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.apache.xmlbeans.wso2</groupId>
                 <artifactId>xmlbeans</artifactId>
@@ -822,26 +793,11 @@
                 <artifactId>synapse-core</artifactId>
                 <version>${synapse.version}</version>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon.mediation</groupId>-->
-            <!--<artifactId>org.wso2.carbon.mediation.initializer</artifactId>-->
-            <!--<version>${carbon.mediation.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon.mediation</groupId>-->
-            <!--<artifactId>org.wso2.carbon.mediation.dependency.mgt</artifactId>-->
-            <!--<version>${carbon.mediation.version}</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon.registry</groupId>
                 <artifactId>org.wso2.carbon.registry.ws.client</artifactId>
                 <version>${carbon.registry.version}</version>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon.mediation</groupId>-->
-            <!--<artifactId>org.wso2.carbon.sequences.ui</artifactId>-->
-            <!--<version>${carbon.mediation.version}</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.securevault</artifactId>
