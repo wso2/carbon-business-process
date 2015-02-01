@@ -1,45 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.wso2.carbon.business-process</groupId>
-		<artifactId>attachment-mgt-feature</artifactId>
-		<version>4.3.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.wso2.carbon.business-process</groupId>
+        <artifactId>attachment-mgt-feature</artifactId>
+        <version>4.3.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<version>4.3.0-SNAPSHOT</version>
-	<artifactId>org.wso2.carbon.attachment.mgt.server.feature</artifactId>
-	<packaging>pom</packaging>
-	<name>WSO2 Carbon - Attachment Management Server - Core Feature</name>
-	<url>http://wso2.org</url>
-	<description>This feature contains the core bundles required for Back-end Attachment Management Server functionality</description>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.wso2.carbon.attachment.mgt.server.feature</artifactId>
+    <packaging>pom</packaging>
+    <name>WSO2 Carbon - Attachment Management Server - Core Feature</name>
+    <url>http://wso2.org</url>
+    <description>This feature contains the core bundles required for Back-end Attachment Management
+        Server functionality
+    </description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.wso2.carbon.business-process</groupId>
-			<artifactId>org.wso2.carbon.attachment.mgt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon.business-process</groupId>
-			<artifactId>org.wso2.carbon.attachment.mgt.skeleton</artifactId>
-		</dependency>
-		<dependency>
-            		<groupId>com.h2database.wso2</groupId>
-            		<artifactId>h2-database-engine</artifactId>
-        	</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.attachment.mgt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.attachment.mgt.skeleton</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database.wso2</groupId>
+            <artifactId>h2-database-engine</artifactId>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>			
-			<plugin>
+    <build>
+        <plugins>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
-		    <execution>
+                    <execution>
                         <id>clean-bpel-h2-database</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -66,7 +68,7 @@
                                 <echo
                                         message="########### Create Attachment Mgt Database ##############"/>
 
-				                <sql
+                                <sql
                                         driver="org.h2.Driver"
                                         url="jdbc:h2:${basedir}/resources/conf/jpadb;create=true"
                                         userid="wso2carbon" password="wso2carbon" autocommit="true"
@@ -79,8 +81,8 @@
                                 </sql>
                                 <echo
                                         message="##################### END ############################"/>
-				<echo message="********Version of H2: "/>  
-  				<echo>${orbit.version.h2.engine}</echo> 
+                                <echo message="********Version of H2: "/>
+                                <echo>${orbit.version.h2.engine}</echo>
                             </tasks>
                         </configuration>
                     </execution>
@@ -100,67 +102,75 @@
                     </execution>
                 </executions>
             </plugin>
-	    <plugin>
-		        <artifactId>maven-resources-plugin</artifactId>
-		        <executions>
-		            <execution>
-		                <id>2-copy-resources</id>
-		                <!--phase>generate-resources</phase-->
-		                <phase>package</phase>
-		                <goals>
-		                    <goal>copy-resources</goal>
-		                </goals>
-		                <configuration>
-		                    <outputDirectory>src/main/resources</outputDirectory>
-		                    <resources>
-		                        <resource>
-		                            <directory>resources</directory>
-		                            <includes>
-		                                <include>conf/attachment-management.xml</include>                                   
-		                                <include>conf/bps-datasources.xml</include>
-						<include>conf/jpadb.h2.db</include>
-						<include>**/*.sql</include>
-		                                <include>p2.inf</include>
-		                                <include>build.properties</include>
-		                            </includes>
-		                        </resource>
-		                    </resources>
-		                </configuration>
-		            </execution>
-		        </executions>
-		    </plugin>
-			<plugin>
-				<groupId>org.wso2.maven</groupId>
-				<artifactId>carbon-p2-plugin</artifactId>
-				<version>${carbon.p2.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>3-p2-feature-generation</id>
-						<phase>package</phase>
-						<goals>
-							<goal>p2-feature-gen</goal>
-						</goals>
-						<configuration>
-							<id>org.wso2.carbon.attachment.mgt.server</id>
-							<propertiesFile>../feature.properties</propertiesFile>
-							<adviceFile>
-								<properties>
-									<propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
-									<propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
-								</properties>
-							</adviceFile>
-							<bundles>
-								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt:${carbon.business-process.version}</bundleDef>
-								<bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.skeleton:${carbon.business-process.version}</bundleDef>
-							</bundles>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>2-copy-resources</id>
+                        <!--phase>generate-resources</phase-->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>conf/attachment-management.xml</include>
+                                        <include>conf/bps-datasources.xml</include>
+                                        <include>conf/jpadb.h2.db</include>
+                                        <include>**/*.sql</include>
+                                        <include>p2.inf</include>
+                                        <include>build.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wso2.maven</groupId>
+                <artifactId>carbon-p2-plugin</artifactId>
+                <version>${carbon.p2.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>3-p2-feature-generation</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-feature-gen</goal>
+                        </goals>
+                        <configuration>
+                            <id>org.wso2.carbon.attachment.mgt.server</id>
+                            <propertiesFile>../feature.properties</propertiesFile>
+                            <adviceFile>
+                                <properties>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:server
+                                    </propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
+                                    </propertyDef>
+                                </properties>
+                            </adviceFile>
+                            <bundles>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt:${carbon.business-process.version}
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.skeleton:${carbon.business-process.version}
+                                </bundleDef>
+                            </bundles>
 
-							<importFeatures>
-								<importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-							</importFeatures>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                            <importFeatures>
+                                <importFeatureDef>
+                                    org.wso2.carbon.core.server:${carbon.kernel.version}
+                                </importFeatureDef>
+                            </importFeatures>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

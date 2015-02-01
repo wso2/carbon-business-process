@@ -27,7 +27,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.bpmn</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - BPMN Core Component</name>
     <url>http://wso2.org</url>
@@ -110,10 +109,14 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.core.*; version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.mgt.*; version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.mgt.model.*; version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.deployment.*; version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.*;
+                            version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.mgt.*;
+                            version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.mgt.model.*;
+                            version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.core.deployment.*;
+                            version=${carbon.business-process.exp.pkg.version},
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,

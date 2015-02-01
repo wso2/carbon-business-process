@@ -23,17 +23,18 @@
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>application-mgt-features</artifactId>
         <version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.application.mgt.humantask.server.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - HumanTask Application Management Server Feature</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the core bundles required for Back-end HumanTask Application Management functionality</description>
-    
+    <description>This feature contains the core bundles required for Back-end HumanTask Application
+        Management functionality
+    </description>
+
     <dependencies>
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
@@ -44,12 +45,12 @@
             <artifactId>org.wso2.carbon.bpel</artifactId>
             <version>${wso2carbon.version}</version>
         </dependency-->
-	    <dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -68,18 +69,30 @@
                             <propertiesFile>../../../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
-                                    <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
-                                    <propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:server
+                                    </propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
+                                    </propertyDef>
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask:${carbon.business-process.version}</bundleDef>
-				                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.application.mgt.humantask:${carbon.business-process.version}
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.business-process.version}
+                                </bundleDef>
                             </bundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon:org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.humantask:${carbon.business-process.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.server:${carbon.business-process.version}</importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon:org.wso2.carbon.core.server:${carbon.kernel.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.humantask:${carbon.business-process.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask.server:${carbon.business-process.version}
+                                </importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>
@@ -87,7 +100,7 @@
             </plugin>
         </plugins>
     </build>
-	<properties>
-		<wso2carbon.version.4.3.0-SNAPSHOT>4.3.0-SNAPSHOT</wso2carbon.version.4.3.0-SNAPSHOT>
-	</properties>
+    <properties>
+        <wso2carbon.version.4.3.0-SNAPSHOT>4.3.0-SNAPSHOT</wso2carbon.version.4.3.0-SNAPSHOT>
+    </properties>
 </project>

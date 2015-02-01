@@ -14,18 +14,18 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel</artifactId>
-       <version>4.3.0-SNAPSHOT</version>
+        <version>4.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.bpel.ui</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - BPEL UI</name>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.apache.ode.wso2</groupId>
             <artifactId>ode</artifactId>
-	    <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.batik.wso2</groupId>
@@ -93,7 +93,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                
+
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -110,7 +110,8 @@
                             org.w3c.dom.*;version="0.0.0",
                             org.apache.batik.*,
                             org.json.simple.*,
-                            org.wso2.carbon.bpel.stub.*; version="${carbon.platform.package.import.version.range}",
+                            org.wso2.carbon.bpel.stub.*;
+                            version="${carbon.platform.package.import.version.range}",
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Embed-Dependency>org.wso2.carbon.bpel.stub;scope=compile|runtime;inline=true</Embed-Dependency>-->

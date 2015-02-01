@@ -23,7 +23,7 @@
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask</artifactId>
         <version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -343,7 +343,8 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.core.internal,
-                            org.wso2.carbon.humantask.core.*; version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.humantask.core.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                         </Export-Package>
                         <Import-Package>
                             org.wso2.carbon.humantask.client.api.*;
@@ -352,7 +353,8 @@
                             version="${carbon.business-process.imp.pkg.version}",
                             org.wso2.carbon.humantask.skeleton.protocol.mgt.services.*;
                             version="${carbon.business-process.imp.pkg.version}",
-                            org.wso2.carbon.bpel.common.*; version="${carbon.business-process.imp.pkg.version}}",
+                            org.wso2.carbon.bpel.common.*;
+                            version="${carbon.business-process.imp.pkg.version}}",
                             org.apache.axis2.*; version="${axis2.osgi.version.range}",
                             *;resolution:=optional
                         </Import-Package>

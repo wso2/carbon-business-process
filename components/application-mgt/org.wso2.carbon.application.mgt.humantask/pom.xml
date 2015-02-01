@@ -30,7 +30,8 @@
     <artifactId>org.wso2.carbon.application.mgt.humantask</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - HumanTask Applications BE</name>
-    <description>org.wso2.carbon.application.mgt.humantask provides the carbon app mgt functionalities specific to
+    <description>org.wso2.carbon.application.mgt.humantask provides the carbon app mgt
+        functionalities specific to
         humantask artifacts
     </description>
     <url>http://wso2.org</url>
@@ -74,7 +75,8 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>org.wso2.carbon.application.mgt.humantask.internal</Private-Package>
+                        <Private-Package>org.wso2.carbon.application.mgt.humantask.internal
+                        </Private-Package>
                         <Import-Package>
                             org.wso2.carbon.application.deployer.*,
                             org.wso2.carbon.humantask.skeleton.mgt.services.*;

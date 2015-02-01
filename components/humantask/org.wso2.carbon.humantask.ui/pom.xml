@@ -14,18 +14,18 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask</artifactId>
         <version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.humantask.ui</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - HumanTask UI</name>
@@ -61,7 +61,7 @@
             <groupId>com.googlecode.json-simple.wso2</groupId>
             <artifactId>json-simple</artifactId>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.logging</artifactId>
         </dependency>
@@ -92,7 +92,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                
+
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -101,13 +101,14 @@
                         <Export-Package>
                             org.wso2.carbon.humantask.ui.*
                         </Export-Package>
-			<Import-Package>
+                        <Import-Package>
                             javax.servlet.*;version="${imp.pkg.version.javax.servlet}",
                             javax.xml.namespace; version=0.0.0,
                             javax.xml.transform.*; version=0.0.0,
                             org.w3c.dom.*;version="0.0.0",
                             org.json.simple.*,
-                            org.wso2.carbon.humantask.stub.*; version="${carbon.platform.package.import.version.range}",
+                            org.wso2.carbon.humantask.stub.*;
+                            version="${carbon.platform.package.import.version.range}",
                             *;resolution:=optional
                         </Import-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>
@@ -117,7 +118,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
 
 

@@ -28,21 +28,20 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.attachment.mgt</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Attachment Management BE Component</name>
     <description>org.wso2.carbon.attachment.mgt provides the back-end functionality</description>
     <url>http://wso2.org</url>
 
-	<repositories>
-           <repository>
-               <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
-               <id>eclipselink</id>
-               <layout>default</layout>
-               <name>Repository for library EclipseLink (JPA 2.0)</name>
-           </repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
+            <id>eclipselink</id>
+            <layout>default</layout>
+            <name>Repository for library EclipseLink (JPA 2.0)</name>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>

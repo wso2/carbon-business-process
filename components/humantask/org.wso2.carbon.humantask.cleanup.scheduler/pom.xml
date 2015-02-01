@@ -23,11 +23,10 @@
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask</artifactId>
         <version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.humantask.cleanup.scheduler</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - HumanTask Cleanup SchedulerComponent</name>
@@ -69,7 +68,8 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.cleanup.scheduler.internal,
-                            org.wso2.carbon.humantask.cleanup.scheduler.*; version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.humantask.cleanup.scheduler.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.humantask.cleanup.scheduler,

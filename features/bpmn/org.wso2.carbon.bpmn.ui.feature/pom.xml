@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
@@ -11,12 +12,13 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.bpmn.ui.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - BPMN UI Feature</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the bundles required for Front-end BPMN Server functionality</description>
+    <description>This feature contains the bundles required for Front-end BPMN Server
+        functionality
+    </description>
 
     <dependencies>
         <dependency>
@@ -47,16 +49,23 @@
                             <propertiesFile>../feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
-                                    <propertyDef>org.wso2.carbon.p2.category.type:console</propertyDef>
-                                    <propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:console
+                                    </propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
+                                    </propertyDef>
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn.stub</bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.stub
+                                </bundleDef>
                             </bundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.ui:${carbon.kernel.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.carbon.core.ui:${carbon.kernel.version}
+                                </importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

@@ -23,9 +23,8 @@
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.humantask.coordination.module</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Human Task Coordination Handler Module</name>
@@ -34,7 +33,7 @@
 
     <build>
         <plugins>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
             </plugin>
@@ -47,13 +46,15 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>org.wso2.carbon.humantask.coordination.module.internal</Private-Package>
+                        <Private-Package>org.wso2.carbon.humantask.coordination.module.internal
+                        </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.coordination.module.internal.*,
-                            org.wso2.carbon.humantask.coordination.module.*; version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.humantask.coordination.module.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                         </Export-Package>
                         <Import-Package>
-                             org.apache.axis2.*; version="${axis2.osgi.version.range}",
+                            org.apache.axis2.*; version="${axis2.osgi.version.range}",
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>

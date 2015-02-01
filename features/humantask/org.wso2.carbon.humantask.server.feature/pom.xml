@@ -21,37 +21,38 @@
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
-    	<artifactId>humantask-feature</artifactId>
+        <artifactId>humantask-feature</artifactId>
         <version>4.3.0-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>4.3.0-SNAPSHOT</version>
     <artifactId>org.wso2.carbon.humantask.server.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - HumanTask Core Feature</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the core bundles required for Back-end HumanTask functionality</description>
+    <description>This feature contains the core bundles required for Back-end HumanTask
+        functionality
+    </description>
 
     <dependencies>
-	<dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
         </dependency>
-	<dependency>
-        <groupId>org.wso2.carbon.business-process</groupId>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask</artifactId>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.deployer</artifactId>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.cleanup.scheduler</artifactId>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.humantask.coordination.module</artifactId>
         </dependency>
@@ -59,15 +60,15 @@
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
         </dependency>
-	    <dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpel.common</artifactId>
-       </dependency>
+        </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
-	    <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.1</version>
@@ -80,7 +81,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-				                <delete file="resources/conf/jpadb.h2.db"/>
+                                <delete file="resources/conf/jpadb.h2.db"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -115,7 +116,7 @@
                             </tasks>
                         </configuration>
                     </execution>
-		            <execution>
+                    <execution>
                         <id>clean_target</id>
                         <phase>install</phase>
                         <configuration>
@@ -131,7 +132,7 @@
                     </execution>
                 </executions>
             </plugin>
-	        <plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
@@ -175,39 +176,72 @@
                             <propertiesFile>../../../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
-                                    <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
-                                    <propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:server
+                                    </propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
+                                    </propertyDef>
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask:${carbon.business-process.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.deployer:${carbon.business-process.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.business-process.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.business-process.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.humantask.coordination.module:${carbon.business-process.version}</bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask:${carbon.business-process.version}
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask.deployer:${carbon.business-process.version}
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask.skeleton:${carbon.business-process.version}
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask.cleanup.scheduler:${carbon.business-process.version}
+                                </bundleDef>
+                                <bundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.humantask.coordination.module:${carbon.business-process.version}
+                                </bundleDef>
                                 <bundleDef>org.apache.openjpa.wso2:openjpa:2.2.0.wso2v2</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.apache.openjpa:openjpa</importBundleDef>
-                                <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec</importBundleDef>
+                                <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec
+                                </importBundleDef>
                                 <importBundleDef>org.apache.xmlbeans.wso2:xmlbeans</importBundleDef>
-                                <importBundleDef>org.apache.geronimo.components.wso2:geronimo-connector</importBundleDef>
-                                <importBundleDef>org.apache.geronimo.components.wso2:geronimo-transaction</importBundleDef>
-                                <importBundleDef>org.apache.ws.commons.axiom.wso2:axiom</importBundleDef>
+                                <importBundleDef>
+                                    org.apache.geronimo.components.wso2:geronimo-connector
+                                </importBundleDef>
+                                <importBundleDef>
+                                    org.apache.geronimo.components.wso2:geronimo-transaction
+                                </importBundleDef>
+                                <importBundleDef>org.apache.ws.commons.axiom.wso2:axiom
+                                </importBundleDef>
                                 <importBundleDef>hsqldb.wso2:hsqldb</importBundleDef>
-                                <importBundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpel.common</importBundleDef>
-                                <importBundleDef>org.wso2.carbon.business-process:org.wso2.carbon.unifiedendpoint.core</importBundleDef>
-                                <importBundleDef>org.apache.ode.wso2:ode:${orbit.ode.version}</importBundleDef>
+                                <importBundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpel.common
+                                </importBundleDef>
+                                <importBundleDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.unifiedendpoint.core
+                                </importBundleDef>
+                                <importBundleDef>org.apache.ode.wso2:ode:${orbit.ode.version}
+                                </importBundleDef>
                                 <importBundleDef>net.sf.saxon.wso2:saxon.he</importBundleDef>
-                                <importBundleDef>org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec</importBundleDef>
+                                <importBundleDef>
+                                    org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec
+                                </importBundleDef>
                                 <importBundleDef>net.sourceforge.serp.wso2:serp</importBundleDef>
                                 <importBundleDef>asm.wso2:asm:3.1.wso2v1</importBundleDef>
                             </importBundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.service.mgt.server:${carbon.deployment.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.system.statistics.server:${carbon.commons.version}</importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.attachment.mgt.server:${carbon.business-process.version}</importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.core.server:${carbon.kernel.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.service.mgt.server:${carbon.deployment.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.system.statistics.server:${carbon.commons.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.attachment.mgt.server:${carbon.business-process.version}
+                                </importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

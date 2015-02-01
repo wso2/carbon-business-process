@@ -33,7 +33,8 @@
                         <configuration>
                             <tasks>
                                 <path id="wsdl2java.classpath">
-			 <pathelement location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/${orbit.version.axiom}/axiom-${orbit.version.axiom}.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/${orbit.version.axiom}/axiom-${orbit.version.axiom}.jar"/>
                                     <pathelement
                                             location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/${orbit.version.axis2}/axis2-client-${orbit.version.axis2}.jar"/>
                                     <pathelement
@@ -77,14 +78,15 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                
+
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.bpel.bam.publisher.skeleton.*; version="${carbon.business-process.exp.pkg.version}"
+                            org.wso2.carbon.bpel.bam.publisher.skeleton.*;
+                            version="${carbon.business-process.exp.pkg.version}"
                         </Export-Package>
                         <_nouse>true</_nouse>
                         <DynamicImport-Package>*</DynamicImport-Package>
