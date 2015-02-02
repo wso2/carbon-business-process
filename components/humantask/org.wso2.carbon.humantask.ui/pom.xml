@@ -108,7 +108,7 @@
                             org.w3c.dom.*;version="0.0.0",
                             org.json.simple.*,
                             org.wso2.carbon.humantask.stub.*;
-                            version="${carbon.platform.package.import.version.range}",
+                            version="${carbon.business-process.imp.pkg.version}",
                             *;resolution:=optional
                         </Import-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>
