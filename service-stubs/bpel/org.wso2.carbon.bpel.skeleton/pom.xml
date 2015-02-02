@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel-stub</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -35,25 +35,25 @@
                                     <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/${orbit.version.axis2}/axis2-${orbit.version.axis2}.jar" />
                                 </path>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/process_mgt.wsdl -uw -ss -ssi -o target/generated-code -p org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services                                     -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types,http://wso2.org/bps/management/wsdl/ProcessManagement=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services" />
+                                    <arg line="-uri src/main/resources/process_mgt.wsdl -uw -ss -ssi -o target/generated-code -p org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types,http://wso2.org/bps/management/wsdl/ProcessManagement=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services" />
                                     <classpath refid="maven.dependency.classpath" />
                                     <classpath refid="maven.compile.classpath" />
                                     <classpath refid="maven.runtime.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/instance_mgt.wsdl -uw -ss -ssi -o target/generated-code -p org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services                                 -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types,http://wso2.org/bps/management/wsdl/InstanceManagement=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services" />
+                                    <arg line="-uri src/main/resources/instance_mgt.wsdl -uw -ss -ssi -o target/generated-code -p org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types,http://wso2.org/bps/management/wsdl/InstanceManagement=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services" />
                                     <classpath refid="maven.dependency.classpath" />
                                     <classpath refid="maven.compile.classpath" />
                                     <classpath refid="maven.runtime.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/package_mgt.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services                                 -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types,http://wso2.org/bps/management/wsdl/BPELPackageManagement=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services" />
+                                    <arg line="-uri src/main/resources/package_mgt.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types,http://wso2.org/bps/management/wsdl/BPELPackageManagement=org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services" />
                                     <classpath refid="maven.dependency.classpath" />
                                     <classpath refid="maven.compile.classpath" />
                                     <classpath refid="maven.runtime.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/coordination/RegistrationService.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.bpel.skeleton.b4p.coordination                                 -ns2p http://docs.oasis-open.org/ws-tx/wscoor/2006/06=org.wso2.carbon.bpel.skeleton.b4p.coordination,http://schemas.xmlsoap.org/ws/2004/08/addressing=org.wso2.carbon.bpel.skeleton.b4p.coordination.addressing" />
+                                    <arg line="-uri src/main/resources/coordination/RegistrationService.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.bpel.skeleton.b4p.coordination -ns2p http://docs.oasis-open.org/ws-tx/wscoor/2006/06=org.wso2.carbon.bpel.skeleton.b4p.coordination,http://schemas.xmlsoap.org/ws/2004/08/addressing=org.wso2.carbon.bpel.skeleton.b4p.coordination.addressing" />
                                     <classpath refid="maven.dependency.classpath" />
                                     <classpath refid="maven.compile.classpath" />
                                     <classpath refid="maven.runtime.classpath" />
@@ -66,8 +66,7 @@
                                       tofile="src/main/resources/META-INF/bps_management.xsd"
                                       verbose="true"
                                       overwrite="true" />
-                                <copy file="target/generated-code/resources/ProcessManagementService.wsdl" tofile="src/main/resources/META-INF/ProcessManagementService.wsdl"
-                                      verbose="true"
+                                <copy file="target/generated-code/resources/ProcessManagementService.wsdl" tofile="src/main/resources/META-INF/ProcessManagementService.wsdl" verbose="true"
                                       overwrite="true"/-->
                                 <!--<copy file="target/generated-code/resources/ProcessManagementService.wsdl"-->
                                 <!--tofile="src/main/resources/META-INF/InstanceManagementService.wsdl"-->

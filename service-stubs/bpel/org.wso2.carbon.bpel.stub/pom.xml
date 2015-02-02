@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel-stub</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -53,19 +53,19 @@
                                     <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/${orbit.version.axis2}/axis2-${orbit.version.axis2}.jar" />
                                 </path>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/BPELUploader.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.upload                                     -ns2p http://services.deployer.bpel.carbon.wso2.org=org.wso2.carbon.bpel.stub.upload,http://types.services.deployer.bpel.carbon.wso2.org/xsd=org.wso2.carbon.bpel.stub.upload.types" />
+                                    <arg line="-uri src/main/resources/BPELUploader.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.upload -ns2p http://services.deployer.bpel.carbon.wso2.org=org.wso2.carbon.bpel.stub.upload,http://types.services.deployer.bpel.carbon.wso2.org/xsd=org.wso2.carbon.bpel.stub.upload.types" />
                                     <classpath refid="wsdl2java.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/process_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt                                     -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/ProcessManagement=org.wso2.carbon.bpel.stub.mgt" />
+                                    <arg line="-uri src/main/resources/process_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/ProcessManagement=org.wso2.carbon.bpel.stub.mgt" />
                                     <classpath refid="wsdl2java.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/instance_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt                                     -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/InstanceManagement=org.wso2.carbon.bpel.stub.mgt" />
+                                    <arg line="-uri src/main/resources/instance_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/InstanceManagement=org.wso2.carbon.bpel.stub.mgt" />
                                     <classpath refid="wsdl2java.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/package_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt                                     -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/BPELPackageManagement=org.wso2.carbon.bpel.stub.mgt" />
+                                    <arg line="-uri src/main/resources/package_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/BPELPackageManagement=org.wso2.carbon.bpel.stub.mgt" />
                                     <classpath refid="wsdl2java.classpath" />
                                 </java>
                             </tasks>
