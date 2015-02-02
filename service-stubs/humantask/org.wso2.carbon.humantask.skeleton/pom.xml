@@ -16,12 +16,15 @@
  ~ specific language governing permissions and limitations
  ~ under the License.
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask-stub</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -48,32 +51,44 @@
                         <configuration>
                             <tasks>
                                 <path id="wsdl2java.classpath">
-                                    <pathelement location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/${orbit.version.axiom}/axiom-${orbit.version.axiom}.jar" />
-                                    <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/${orbit.version.axis2}/axis2-client-${orbit.version.axis2}.jar" />
-                                    <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/${orbit.version.axis2}/axis2-${orbit.version.axis2}.jar" />
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/${orbit.version.axiom}/axiom-${orbit.version.axiom}.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/${orbit.version.axis2}/axis2-client-${orbit.version.axis2}.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/axis2/wso2/axis2/${orbit.version.axis2}/axis2-${orbit.version.axis2}.jar"/>
                                 </path>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/ws-humantask-api.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.humantask.client.api                                     -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803=org.wso2.carbon.humantask.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.client.api.types,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.client.api.types" />
+                                    <arg line="-uri src/main/resources/ws-humantask-api.wsdl -uw -ss -ssi -sd
+                                    -o target/generated-code -p org.wso2.carbon.humantask.client.api
+                                    -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803=org.wso2.carbon.humantask.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.client.api.types,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.client.api.types"/>
 
-                                    <classpath refid="maven.dependency.classpath" />
-                                    <classpath refid="maven.compile.classpath" />
-                                    <classpath refid="maven.runtime.classpath" />
+                                    <classpath refid="maven.dependency.classpath"/>
+                                    <classpath refid="maven.compile.classpath"/>
+                                    <classpath refid="maven.runtime.classpath"/>
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/bps-humantask-package-management.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.humantask.skeleton.mgt.services                                     -ns2p http://wso2.org/bps/humantask/management/schema=org.wso2.carbon.humantask.skeleton.mgt.services.types,http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement=org.wso2.carbon.humantask.skeleton.mgt.services" />
-                                    <classpath refid="maven.dependency.classpath" />
-                                    <classpath refid="maven.compile.classpath" />
-                                    <classpath refid="maven.runtime.classpath" />
+                                    <arg line="-uri src/main/resources/bps-humantask-package-management.wsdl -uw -ss -ssi -sd
+                                    -o target/generated-code -p org.wso2.carbon.humantask.skeleton.mgt.services
+                                    -ns2p http://wso2.org/bps/humantask/management/schema=org.wso2.carbon.humantask.skeleton.mgt.services.types,http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement=org.wso2.carbon.humantask.skeleton.mgt.services"/>
+                                    <classpath refid="maven.dependency.classpath"/>
+                                    <classpath refid="maven.compile.classpath"/>
+                                    <classpath refid="maven.runtime.classpath"/>
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/ws-humantask-protocol.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.humantask.skeleton.protocol.mgt.services                                     -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803=org.wso2.carbon.humantask.skeleton.protocol.mgt.services" />
-                                    <classpath refid="maven.dependency.classpath" />
-                                    <classpath refid="maven.compile.classpath" />
-                                    <classpath refid="maven.runtime.classpath" />
+                                    <arg line="-uri src/main/resources/ws-humantask-protocol.wsdl -uw -ss -ssi -sd
+                                    -o target/generated-code -p org.wso2.carbon.humantask.skeleton.protocol.mgt.services
+                                    -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803=org.wso2.carbon.humantask.skeleton.protocol.mgt.services"/>
+                                    <classpath refid="maven.dependency.classpath"/>
+                                    <classpath refid="maven.compile.classpath"/>
+                                    <classpath refid="maven.runtime.classpath"/>
                                 </java>
-                                <delete file="target/generated-code/src/org/wso2/carbon/humantask/client/api/HumanTaskClientAPIAdminSkeleton.java" verbose="true" failonerror="true" />
-                                <delete file="/target/generated-code/src/org/wso2/carbon/humantask/skeleton/mgt/services/HumanTaskPackageManagementSkeleton.java" verbose="true" failonerror="true" />
-                                <delete file="/target/generated-code/src/org/wso2/carbon/humantask/skeleton/protocol/mgt/services/HumanTaskProtocolHandlerSkeleton.java" verbose="true" failonerror="true" />
+                                <delete file="target/generated-code/src/org/wso2/carbon/humantask/client/api/HumanTaskClientAPIAdminSkeleton.java"
+                                        verbose="true" failonerror="true"/>
+                                <delete file="/target/generated-code/src/org/wso2/carbon/humantask/skeleton/mgt/services/HumanTaskPackageManagementSkeleton.java"
+                                        verbose="true" failonerror="true"/>
+                                <delete file="/target/generated-code/src/org/wso2/carbon/humantask/skeleton/protocol/mgt/services/HumanTaskProtocolHandlerSkeleton.java"
+                                        verbose="true" failonerror="true"/>
                             </tasks>
                         </configuration>
                     </execution>
