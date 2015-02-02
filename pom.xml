@@ -15,15 +15,13 @@
 *  limitations under the License.
 */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.business-process</groupId>
     <artifactId>carbon-business-process</artifactId>
     <packaging>pom</packaging>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.3.1-SNAPSHOT</version>
     <name>WSO2 Carbon Business Process Aggregator Pom</name>
     <url>http://wso2.org</url>
 
@@ -1267,7 +1265,7 @@
 
     <properties>
 
-        <carbon.business-process.version>4.3.0-SNAPSHOT</carbon.business-process.version>
+        <carbon.business-process.version>4.3.1-SNAPSHOT</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.3.0,4.4.0)
         </carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>4.3.0</carbon.business-process.exp.pkg.version>

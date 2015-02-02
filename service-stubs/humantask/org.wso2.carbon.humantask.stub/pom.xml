@@ -16,14 +16,12 @@
  ~ specific language governing permissions and limitations
  ~ under the License.
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask-stub</artifactId>
-        <version>4.3.0-SNAPSHOT</version>
+        <version>4.3.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -50,28 +48,22 @@
                         <configuration>
                             <tasks>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/HumanTaskUploader.wsdl -u -uw
-                                    -o target/generated-code -p org.wso2.carbon.humantask.stub.upload
-                                    -ns2p http://services.deployer.humantask.carbon.wso2.org=org.wso2.carbon.humantask.stub.upload,http://services.deployer.humantask.carbon.wso2.org/xsd=org.wso2.carbon.humantask.stub.upload.types"/>
-                                    <classpath refid="maven.dependency.classpath"/>
-                                    <classpath refid="maven.compile.classpath"/>
-                                    <classpath refid="maven.runtime.classpath"/>
+                                    <arg line="-uri src/main/resources/HumanTaskUploader.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.humantask.stub.upload -ns2p http://services.deployer.humantask.carbon.wso2.org=org.wso2.carbon.humantask.stub.upload,http://services.deployer.humantask.carbon.wso2.org/xsd=org.wso2.carbon.humantask.stub.upload.types" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/bps-humantask-package-management.wsdl -u -uw
-                                    -o target/generated-code -p org.wso2.carbon.humantask.stub.mgt
-                                    -ns2p http://wso2.org/bps/humantask/management/schema=org.wso2.carbon.humantask.stub.mgt.types,http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement=org.wso2.carbon.humantask.stub.mgt"/>
-                                    <classpath refid="maven.dependency.classpath"/>
-                                    <classpath refid="maven.compile.classpath"/>
-                                    <classpath refid="maven.runtime.classpath"/>
+                                    <arg line="-uri src/main/resources/bps-humantask-package-management.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.humantask.stub.mgt -ns2p http://wso2.org/bps/humantask/management/schema=org.wso2.carbon.humantask.stub.mgt.types,http://wso2.org/bps/management/wsdl/HumanTaskPackageManagement=org.wso2.carbon.humantask.stub.mgt" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
                                 </java>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/ws-humantask-api.wsdl -u -uw
-                                    -o target/generated-code -p org.wso2.carbon.humantask.stub.ui.task.client.api
-                                    -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.stub.ui.task.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803=org.wso2.carbon.humantask.stub.ui.task.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.stub.ui.task.client.api.types,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.stub.ui.task.client.api.types"/>
-                                    <classpath refid="maven.dependency.classpath"/>
-                                    <classpath refid="maven.compile.classpath"/>
-                                    <classpath refid="maven.runtime.classpath"/>
+                                    <arg line="-uri src/main/resources/ws-humantask-api.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.humantask.stub.ui.task.client.api -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.stub.ui.task.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803=org.wso2.carbon.humantask.stub.ui.task.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.stub.ui.task.client.api.types,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.stub.ui.task.client.api.types" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
                                 </java>
                             </tasks>
                         </configuration>
