@@ -59,7 +59,7 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <delete file="target/${project.artifactId}-${project.version}.jar"/>
+                                <delete file="target/${project.artifactId}-${carbon.business-process.version}.jar"/>
                                 <delete dir="target/archive-tmp"/>
                                 <delete dir="target/maven-archiver"/>
                                 <delete dir="target/surefire"/>

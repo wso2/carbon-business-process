@@ -63,9 +63,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.multitenancy</groupId>
             <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
-            <version>4.3.0-SNAPSHOT</version>
         </dependency>
 
 

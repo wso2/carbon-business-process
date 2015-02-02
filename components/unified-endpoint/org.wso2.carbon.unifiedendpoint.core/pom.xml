@@ -86,7 +86,7 @@
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
+                        <Axis2Module>${project.artifactId}-${carbon.business-process.version}</Axis2Module>
                     </instructions>
                 </configuration>
             </plugin>

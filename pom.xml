@@ -1016,6 +1016,12 @@
                 <type>zip</type>
             </dependency>
 
+            <dependency>
+                <groupId>org.wso2.carbon.multitenancy</groupId>
+                <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
+                <version>${carbon.multitenancy.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -1053,6 +1059,18 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <preparationGoals>clean install</preparationGoals>
+                        <autoVersionSubmodules>false</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
@@ -1115,6 +1133,13 @@
             </plugins>
         </pluginManagement>
     </build>
+
+     <scm>
+        <url>https://github.com/wso2/carbon-business-process.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/carbon-business-process.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/carbon-business-process.git</connection>
+        <tag>HEAD</tag>
+    </scm>
 
     <!--|
         | List of repositories for all the various dependencies,
@@ -1277,8 +1302,9 @@
         <carbon.mediation.version>4.3.0</carbon.mediation.version>
         <carbon.mediation.imp.pkg.version>[4.3.0, 4.4.0)</carbon.mediation.imp.pkg.version>
 
-        <!--&lt;!&ndash; Stratos Version &ndash;&gt;-->
-        <!--<stratos.version>2.3.0-SNAPSHOT</stratos.version>-->
+        <!-- Carbon Multi-tenancy version-->
+        <carbon.multitenancy.version>4.3.0</carbon.multitenancy.version>
+        <carbon.multitenancy.imp.pkg.version>[4.3.0, 4.4.0)</carbon.multitenancy.imp.pkg.version>
 
         <!-- Axiom Version -->
 
@@ -1492,9 +1518,11 @@
         <org.activiti.wso2.version>5.16-wso2v1</org.activiti.wso2.version>
         <org.activiti.version>5.16</org.activiti.version>
         <restlet.version>2.2.1</restlet.version>
+
+	<project.scm.id>wso2-scm-server</project.scm.id>
     </properties>
 
-    <distributionManagement>
+    <!--distributionManagement>
 
         <repository>
             <id>wso2.releases</id>
@@ -1509,6 +1537,6 @@
             <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
 
-    </distributionManagement>
+    </distributionManagement-->
 
 </project>

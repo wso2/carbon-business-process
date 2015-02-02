@@ -256,7 +256,7 @@
                                     org.wso2.carbon.core.server:${carbon.kernel.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.service.mgt.server:${carbon.platform.version}
+                                    org.wso2.carbon.service.mgt.server:${carbon.deployment.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.unifiedendpoint.server:${carbon.business-process.version}

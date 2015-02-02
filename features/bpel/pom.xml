@@ -72,20 +72,11 @@
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
             </dependency>
-            <!--dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher.ui</artifactId>
-                <version>${wso2carbon.version.bpel}</version>
-            </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.bam.publisher.skeleton</artifactId>
             </dependency>
-            <!--dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher.stub</artifactId>
-                <version>${wso2carbon.version.bpel}</version>
-            </dependency-->
+
 	    <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpel.common</artifactId>
@@ -124,10 +115,7 @@
                 <groupId>org.apache.geronimo.components.wso2</groupId>
                 <artifactId>geronimo-connector</artifactId>
             </dependency>
-            <!--dependency>
-                <groupId>org.apache.geronimo.specs.wso2</groupId>
-                <artifactId>geronimo-ejb_2.1_spec</artifactId>
-            </dependency-->
+
             <dependency>
                 <groupId>org.apache.geronimo.specs.wso2</groupId>
                 <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
@@ -168,10 +156,6 @@
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.ndatasource.core</artifactId>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.wso2.carbon</groupId>-->
-                <!--<artifactId>org.wso2.carbon.datasource.ui</artifactId>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.apache.ode.wso2</groupId>
                 <artifactId>xalan</artifactId>
