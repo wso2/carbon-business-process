@@ -46,6 +46,7 @@
         <module>components/bpel</module>
         <module>components/humantask</module>
         <module>components/bpmn</module>
+        <module>features/application-deployers</module>
         <module>features/unified-endpoint</module>
         <module>features/attachment-mgt</module>
         <module>features/bpel</module>
@@ -714,6 +715,11 @@
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.application.deployer.bpel</artifactId>
+                <version>${carbon.business-process.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.business-process</groupId>
+                <artifactId>org.wso2.carbon.application.deployer.bpmn</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
