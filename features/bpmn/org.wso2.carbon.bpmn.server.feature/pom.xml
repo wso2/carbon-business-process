@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
-        <version>4.3.0-SNAPSHOT</version>
+        <version>4.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -51,7 +49,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete file="resources/conf/activiti.h2.db"/>
+                                <delete file="resources/conf/activiti.h2.db" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -64,30 +62,21 @@
                         <configuration>
                             <tasks>
                                 <path id="h2.classpath">
-                                    <path refid="maven.compile.classpath"/>
+                                    <path refid="maven.compile.classpath" />
                                 </path>
 
-                                <echo
-                                        message="########### Create Activiti Database ##############"/>
+                                <echo message="########### Create Activiti Database ##############" />
 
-                                <sql
-                                        driver="org.h2.Driver"
-                                        url="jdbc:h2:${basedir}/resources/conf/activiti;create=true"
-                                        userid="wso2carbon" password="wso2carbon" autocommit="true"
-                                        onerror="continue">
+                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/resources/conf/activiti;create=true" userid="wso2carbon" password="wso2carbon" autocommit="true" onerror="continue">
                                     <classpath>
-                                        <path refid="h2.classpath"/>
+                                        <path refid="h2.classpath" />
                                     </classpath>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql"/>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql"/>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql"/>
+                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql" />
+                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql" />
+                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql" />
                                 </sql>
-                                <echo
-                                        message="##################### END ############################"/>
-                                <echo message="********Version of H2: "/>
+                                <echo message="##################### END ############################" />
+                                <echo message="********Version of H2: " />
                                 <echo>${orbit.version.h2.engine}</echo>
                             </tasks>
                         </configuration>
@@ -97,9 +86,9 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <delete dir="src/main/resources"/>
-                                <delete dir="src/main"/>
-                                <delete dir="src"/>
+                                <delete dir="src/main/resources" />
+                                <delete dir="src/main" />
+                                <delete dir="src" />
                             </tasks>
                         </configuration>
                         <goals>
