@@ -1287,15 +1287,15 @@
         <carbon.kernel.imp.pkg.version>[4.3.0, 4.4.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.3.2</carbon.commons.version>
-        <carbon.commons.imp.pkg.version>[4.3.2, 4.4.0)</carbon.commons.imp.pkg.version>
+        <carbon.commons.version>4.3.4</carbon.commons.version>
+        <carbon.commons.imp.pkg.version>[4.3.0, 4.4.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.version>4.3.0</carbon.identity.version>
+        <carbon.identity.version>4.3.2</carbon.identity.version>
         <carbon.identity.imp.pkg.version>[4.3.0, 4.4.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
-        <carbon.deployment.version>4.3.0</carbon.deployment.version>
+        <carbon.deployment.version>4.3.1</carbon.deployment.version>
         <carbon.deployment.imp.pkg.version>[4.3.0, 4.4.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
@@ -1307,7 +1307,7 @@
         <carbon.mediation.imp.pkg.version>[4.3.0, 4.4.0)</carbon.mediation.imp.pkg.version>
 
         <!-- Carbon Multi-tenancy version-->
-        <carbon.multitenancy.version>4.3.0</carbon.multitenancy.version>
+        <carbon.multitenancy.version>4.3.3</carbon.multitenancy.version>
         <carbon.multitenancy.imp.pkg.version>[4.3.0, 4.4.0)</carbon.multitenancy.imp.pkg.version>
 
         <!-- Axiom Version -->
