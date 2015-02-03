@@ -101,10 +101,8 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.humantask.stub.*;
-                            version="${carbon.business-process.exp.pkg.version}",
-                            org.wso2.carbon.humantask.stub.ui.task.*;
-                            version="${carbon.business-process.exp.pkg.version}"
+                            org.wso2.carbon.humantask.stub.*,
+                            org.wso2.carbon.humantask.stub.ui.task.*
                         </Export-Package>
                         <_nouse>true</_nouse>
                         <Import-Package>

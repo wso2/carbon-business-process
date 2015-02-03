@@ -165,7 +165,7 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpel.core.internal,
-                            org.wso2.carbon.bpel.core.*; version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.bpel.core.*
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.core,

@@ -111,12 +111,9 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.humantask.client.api.*;
-                            version="${carbon.business-process.exp.pkg.version}",
-                            org.wso2.carbon.humantask.skeleton.protocol.mgt.services.*;
-                            version="${carbon.business-process.exp.pkg.version}",
-                            org.wso2.carbon.humantask.skeleton.mgt.services.*;
-                            version="${carbon.business-process.exp.pkg.version}"
+                            org.wso2.carbon.humantask.client.api.*,
+                            org.wso2.carbon.humantask.skeleton.protocol.mgt.services.*,
+                            org.wso2.carbon.humantask.skeleton.mgt.services.*
                         </Export-Package>
                         <_nouse>true</_nouse>
                         <Import-Package>

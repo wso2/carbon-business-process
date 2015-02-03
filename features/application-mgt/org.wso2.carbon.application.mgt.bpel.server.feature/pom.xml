@@ -82,13 +82,13 @@
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>
-                                    org.wso2.carbon:org.wso2.carbon.core.server:${carbon.kernel.version}
+                                    org.wso2.carbon.core.server:${carbon.kernel.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.application.deployer.bpel:${carbon.business-process.version}
+                                    org.wso2.carbon.application.deployer.bpel
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.bpel.server:${carbon.business-process.version}
+                                    org.wso2.carbon.bpel.server
                                 </importFeatureDef>
                             </importFeatures>
                         </configuration>

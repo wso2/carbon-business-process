@@ -189,7 +189,6 @@
                                 <bundleDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.humantask.coordination.module:${carbon.business-process.version}
                                 </bundleDef>
-                                <bundleDef>org.apache.openjpa.wso2:openjpa:2.2.0.wso2v2</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.apache.openjpa:openjpa</importBundleDef>
@@ -218,7 +217,7 @@
                                     org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec
                                 </importBundleDef>
                                 <importBundleDef>net.sourceforge.serp.wso2:serp</importBundleDef>
-                                <importBundleDef>asm.wso2:asm:3.1.wso2v1</importBundleDef>
+                                <importBundleDef>asm.wso2:asm:${asm.wso2.version}</importBundleDef>
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>

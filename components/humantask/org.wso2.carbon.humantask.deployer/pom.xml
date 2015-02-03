@@ -74,12 +74,11 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.deployer.internal,
-                            org.wso2.carbon.humantask.deployer.*;
-                            version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.humantask.deployer.*
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.humantask.deployer,
-                            org.wso2.carbon.humantask.core.*,version="${carbon.business-process.imp.pkg.version}"
+                            org.wso2.carbon.humantask.core.*,
                             org.apache.axis2.*; version="${axis2.osgi.version.range}",
                             *;resolution:=optional
                         </Import-Package>
