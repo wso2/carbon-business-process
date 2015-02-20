@@ -28,6 +28,7 @@ import java.util.Map;
  * Serialize unified EP.
  */
 public class UnifiedEndpointSerializer {
+
     private static Log log = LogFactory.getLog(UnifiedEndpointSerializer.class);
     private OMFactory omFactory;
 
@@ -86,10 +87,10 @@ public class UnifiedEndpointSerializer {
         try {
             /*Creating OM Element for the given  Unified EPR instance */
             unifiedEPRElement = EndpointReferenceHelper.toOM(omFactory, unifiedEndpoint,
-                    new QName(UnifiedEndpointConstants.WSA_NS,
-                            UnifiedEndpointConstants.UNIFIED_EPR,
-                            UnifiedEndpointConstants.WSA_NS_PREFIX),
-                    UnifiedEndpointConstants.WSA_NS);
+                                                             new QName(UnifiedEndpointConstants.WSA_NS,
+                                                                       UnifiedEndpointConstants.UNIFIED_EPR,
+                                                                       UnifiedEndpointConstants.WSA_NS_PREFIX),
+                                                             UnifiedEndpointConstants.WSA_NS);
 
         } catch (AxisFault e) {
             log.error("Invalid UEP Instance.");
@@ -140,23 +141,24 @@ public class UnifiedEndpointSerializer {
         return discoveryElem;
     }
 
-    public OMElement serializeUnifiedEndpointMessageOutput(UnifiedEndpointMessageOutput unifiedEndpointMessageOutput) {
+    public OMElement serializeUnifiedEndpointMessageOutput(
+            UnifiedEndpointMessageOutput unifiedEndpointMessageOutput) {
 
         OMElement messageOutputElem = omFactory.createOMElement(UnifiedEndpointConstants.MESSAGE_OUTPUT, null);
 
         if (unifiedEndpointMessageOutput.getFormat() != null) {
             messageOutputElem.addAttribute(UnifiedEndpointConstants.MESSAGE_OUTPUT_FORMAT,
-                    unifiedEndpointMessageOutput.getFormat(), null);
+                                           unifiedEndpointMessageOutput.getFormat(), null);
         }
 
         if (unifiedEndpointMessageOutput.getOptimize() != null) {
             messageOutputElem.addAttribute(UnifiedEndpointConstants.MESSAGE_OUTPUT_OPTIMIZE,
-                    unifiedEndpointMessageOutput.getOptimize(), null);
+                                           unifiedEndpointMessageOutput.getOptimize(), null);
         }
 
         if (unifiedEndpointMessageOutput.getCharSetEncoding() != null) {
             messageOutputElem.addAttribute(UnifiedEndpointConstants.MESSAGE_OUTPUT_CHARSET,
-                    unifiedEndpointMessageOutput.getCharSetEncoding(), null);
+                                           unifiedEndpointMessageOutput.getCharSetEncoding(), null);
         }
 
         return messageOutputElem;
@@ -170,7 +172,7 @@ public class UnifiedEndpointSerializer {
                 Map<String, String> transportProperties = unifiedEndpoint.getTransport().getTransportProperties();
                 transportsElem = omFactory.createOMElement(UnifiedEndpointConstants.TRANSPORT, null);
                 transportsElem.addAttribute(UnifiedEndpointConstants.TRANSPORT_OPTIONS_TYPE,
-                        unifiedEndpoint.getTransport().getTransportType(),null);
+                                            unifiedEndpoint.getTransport().getTransportType(), null);
 
                 for (Map.Entry<String, String> entry : transportProperties.entrySet()) {
                     OMElement transportPropertyElem = omFactory.createOMElement(entry.getKey(), null);
@@ -198,17 +200,6 @@ public class UnifiedEndpointSerializer {
                 timeoutPropertyElem.addChild(timeoutPropertyText);
                 timeOutElem.addChild(timeoutPropertyElem);
             }
-
-
-            /*timeOutElem = omFactory.createOMElement(UnifiedEndpointConstants.TIMEOUT, null);
-
-            OMElement durationElem = omFactory.createOMElement(UnifiedEndpointConstants.TIMEOUT_DURATION, null);
-            durationElem.addChild(omFactory.createOMText(String.valueOf(unifiedEndpoint.getTimeoutDuration())));
-            timeOutElem.addChild(durationElem);
-
-            OMElement timeoutActionElem = omFactory.createOMElement(UnifiedEndpointConstants.TIMEOUT_ACTION, null);
-            timeoutActionElem.addChild(omFactory.createOMText(unifiedEndpoint.getTimeoutAction()));
-            timeOutElem.addChild(timeoutActionElem);*/
         }
         return timeOutElem;
     }
@@ -235,7 +226,7 @@ public class UnifiedEndpointSerializer {
         /*MarkForSuspensionOnFailure*/
         /*ToDO ? : MarkForSuspensionOnFailure must have RetriesBeforeSuspension & RetryDelay*/
         if ((unifiedEndpoint.getRetriesBeforeSuspension() != -1)
-                && (unifiedEndpoint.getRetryDelay() != -1)) {
+            && (unifiedEndpoint.getRetryDelay() != -1)) {
 
             OMElement markForSuspensionOnFailureElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION, null);
 
@@ -265,8 +256,8 @@ public class UnifiedEndpointSerializer {
         /*SuspendOnFailure*/
         /*ToDO ? : SuspendOnFailure must have InitialDuration, ProgressionFac & MaxDuration*/
         if ((unifiedEndpoint.getInitialDuration() != -1)
-                && (unifiedEndpoint.getProgressionFactor() != 0)
-                && (unifiedEndpoint.getMaximumDuration() != -1)) {
+            && (unifiedEndpoint.getProgressionFactor() != 0)
+            && (unifiedEndpoint.getMaximumDuration() != -1)) {
             OMElement suspendOnFailureElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE, null);
 
             OMElement initialDurationElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_INITIAL_DURATION, null);
@@ -322,7 +313,7 @@ public class UnifiedEndpointSerializer {
 
             /*isSeparate Listener*/
             addressingEnabledElem.addAttribute(UnifiedEndpointConstants.QOS_ENABLE_ADDRESSING_SEPARATE_LISTENER,
-                    Boolean.toString(unifiedEndpoint.isSeparateListener()), null);
+                                               Boolean.toString(unifiedEndpoint.isSeparateListener()), null);
             qosElem.addChild(addressingEnabledElem);
 
             //replyTo address
@@ -349,7 +340,8 @@ public class UnifiedEndpointSerializer {
         return qosElem;
     }
 
-    public OMElement serializeUnifiedEndpointCluster(UnifiedEndpointCluster unifiedEndpointCluster) {
+    public OMElement serializeUnifiedEndpointCluster(
+            UnifiedEndpointCluster unifiedEndpointCluster) {
         OMElement clusterElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER, null);
 
         OMElement membershipElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_MEMBERSHIP, null);
@@ -357,13 +349,13 @@ public class UnifiedEndpointSerializer {
             membershipElem.addAttribute(UnifiedEndpointConstants.CLUSTER_MEMBERSHIP_HANDLER, unifiedEndpointCluster.getMembershipHandler(), null);
 
             if (unifiedEndpointCluster.getClusteredUnifiedEndpointList() != null
-                    && !unifiedEndpointCluster.getClusteredUnifiedEndpointList().isEmpty()) {
+                && !unifiedEndpointCluster.getClusteredUnifiedEndpointList().isEmpty()) {
                 for (UnifiedEndpoint uEP : unifiedEndpointCluster.getClusteredUnifiedEndpointList()) {
                     membershipElem.addChild(serializeUnifiedEndpoint(uEP));
                 }
             }
             if (unifiedEndpointCluster.getClusteredEndpointUrlList() != null
-                    && !unifiedEndpointCluster.getClusteredEndpointUrlList().isEmpty()) {
+                && !unifiedEndpointCluster.getClusteredEndpointUrlList().isEmpty()) {
                 for (String uEPUrl : unifiedEndpointCluster.getClusteredEndpointUrlList()) {
                     OMElement memberElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_MEMBER, null);
                     memberElem.addAttribute(UnifiedEndpointConstants.CLUSTER_MEMBER_URL, uEPUrl, null);

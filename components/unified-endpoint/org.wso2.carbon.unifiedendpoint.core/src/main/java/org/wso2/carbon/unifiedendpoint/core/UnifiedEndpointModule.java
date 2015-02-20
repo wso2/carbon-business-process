@@ -31,6 +31,7 @@ import org.apache.neethi.Policy;
  * Axis2 Module to be engaged to use UEP. This contains UnifiedEndpointHandler.
  */
 public class UnifiedEndpointModule implements Module{
+
     private static Log log = LogFactory.getLog(UnifiedEndpointModule.class);
 
     public void init(ConfigurationContext configurationContext, AxisModule axisModule) throws AxisFault {

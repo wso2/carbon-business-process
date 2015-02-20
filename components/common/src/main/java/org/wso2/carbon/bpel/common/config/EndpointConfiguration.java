@@ -38,7 +38,7 @@ import java.io.File;
  * The configuration for endpoints used by BPEL processes.
  * The main usage is to create/configure operation clients to invoke external services
  *
- * @see EndpointConfigBuilder
+ * @link EndpointConfiguration
  */
 public class EndpointConfiguration {
 
@@ -123,19 +123,21 @@ public class EndpointConfiguration {
                     unifiedEndpoint = uepFactory.createEndpoint(uepOM);
                 } else {
                     String uepConfPath = unifiedEndPointReference;
+
                     if (!uepConfPath.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG) &&
                         !uepConfPath.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG) &&
                         !uepConfPath.startsWith(UnifiedEndpointConstants.VIRTUAL_REG)) {
+
                         if (uepConfPath.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
                             uepConfPath = uepConfPath.substring(UnifiedEndpointConstants.VIRTUAL_FILE.
                                     length());
                         }
-                        if (isAbsoutePath(uepConfPath)) {
+                        if (isAbsolutePath(uepConfPath)) {
                             uepConfPath = UnifiedEndpointConstants.VIRTUAL_FILE + uepConfPath;
                         } else {
                             uepConfPath = getAbsolutePath(basePath, uepConfPath);
                         }
-                        unifiedEndpoint = uepFactory.createVirtualEndpoint(uepConfPath);
+                        unifiedEndpoint = uepFactory.createVirtualEndpointFromFilePath(uepConfPath);
                     } else {
                         OMElement endpointElement = getEndpointElementFromRegistry(uepConfPath);
                         unifiedEndpoint = uepFactory.createEndpoint(endpointElement);
@@ -154,7 +156,7 @@ public class EndpointConfiguration {
                 if (secPolicyKey.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
                     String secPolicyLocation = secPolicyKey.substring(
                             UnifiedEndpointConstants.VIRTUAL_FILE.length());
-                    if (!isAbsoutePath(secPolicyLocation)) {
+                    if (!isAbsolutePath(secPolicyLocation)) {
                         secPolicyKey = getAbsolutePath(basePath,
                                                        secPolicyLocation);
                     } else {
@@ -170,7 +172,6 @@ public class EndpointConfiguration {
 
     private OMElement getEndpointElementFromRegistry(String uepConfPath) throws AxisFault {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        int tenantId = CarbonContext.getCurrentContext().getTenantId();
         RegistryService registryService = BPELCommonServiceComponent.getRegistryService();
         Registry registry = null;
         OMElement uepOMContent = null;
@@ -245,7 +246,7 @@ public class EndpointConfiguration {
         return UnifiedEndpointConstants.VIRTUAL_FILE + basePath + File.separator + filePath;
     }
 
-    public static boolean isAbsoutePath(String filePath) {
+    public static boolean isAbsolutePath(String filePath) {
         return filePath.startsWith("/") ||
                (filePath.length() > 1 && filePath.charAt(1) == ':');
     }

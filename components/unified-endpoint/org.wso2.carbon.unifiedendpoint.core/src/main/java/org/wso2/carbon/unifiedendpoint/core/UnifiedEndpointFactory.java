@@ -22,6 +22,7 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.securevault.SecretResolver;
@@ -29,8 +30,7 @@ import org.wso2.securevault.SecretResolverFactory;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
@@ -46,7 +46,7 @@ public class UnifiedEndpointFactory {
     public UnifiedEndpointFactory() {
     }
 
-    public UnifiedEndpoint createVirtualEndpoint(String logicalName) {
+    public UnifiedEndpoint createVirtualEndpointFromFilePath(String logicalName) {
         UnifiedEndpoint realUEP = null;
         if (logicalName.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
             String filePath = logicalName.replaceFirst(UnifiedEndpointConstants.VIRTUAL_FILE, "");
@@ -63,51 +63,13 @@ public class UnifiedEndpointFactory {
                 log.error(e.getLocalizedMessage(), e);
             }
 
-        } else if (logicalName.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG)) {
-            try {
-                String regPath = logicalName.replaceFirst(UnifiedEndpointConstants.VIRTUAL_GOV_REG, "");
-                RemoteRegistryClient remoteRegistryClient = new RemoteRegistryClient();
-                String content = remoteRegistryClient.getResourceContent(regPath);
-                OMElement regEPElement = AXIOMUtil.stringToOM(content);
-                realUEP = createEndpoint(regEPElement);
-            } catch (Exception e) {
-                log.error(e.getLocalizedMessage(), e);
-            }
         }
         return realUEP;
     }
 
     private OMElement getOmFromFile(String filePath) throws XMLStreamException, IOException {
-        String xmlStr = "";
-        FileReader fr = new FileReader(filePath);
-        BufferedReader br = new BufferedReader(fr);
-        StringBuffer sb = new StringBuffer();
-        try {
-            String eachLine = br.readLine();
-
-            while (eachLine != null) {
-                sb.append(eachLine);
-                eachLine = br.readLine();
-            }
-            xmlStr = sb.toString();
-        } catch (IOException ioe) {
-            log.error(ioe.getLocalizedMessage(), ioe);
-        } finally {
-            br.close();
-        }
-        return AXIOMUtil.stringToOM(xmlStr);
-    }
-
-    public UnifiedEndpoint createEndpoint(String uepString) {
-        UnifiedEndpoint uep = null;
-        try {
-            uep = createEndpoint(AXIOMUtil.stringToOM(uepString));
-        } catch (XMLStreamException e) {
-            log.error("Invalid XML String");
-        } catch (AxisFault axisFault) {
-            log.error("Invalid Unified Endpoint Configuration");
-        }
-        return uep;
+        String xmlString = FileUtils.readFileToString(new File(filePath), "UTF-8");
+        return AXIOMUtil.stringToOM(xmlString);
     }
 
     public UnifiedEndpoint createEndpoint(OMElement uEPConfigEle) throws AxisFault {
@@ -122,7 +84,6 @@ public class UnifiedEndpointFactory {
                 unifiedEndpoint.setUepId(idElem.getText());
             } else {
                 log.error("UEP Configuration violation: " + UnifiedEndpointConstants.METADATA_ID_Q + " not found");
-                //TODO handle exception or do we need to create a id by a UUID?
             }
 
             /** Discovery */
@@ -149,7 +110,7 @@ public class UnifiedEndpointFactory {
             if (metadataElem.getFirstChildWithName(
                     UnifiedEndpointConstants.MESSAGE_OUTPUT_Q) != null) {
                 extractMessageOutPutConfig(unifiedEndpoint,
-                        metadataElem.getFirstChildWithName(UnifiedEndpointConstants.MESSAGE_OUTPUT_Q));
+                                           metadataElem.getFirstChildWithName(UnifiedEndpointConstants.MESSAGE_OUTPUT_Q));
             }
 
             /** Transport */
@@ -160,33 +121,44 @@ public class UnifiedEndpointFactory {
                 if (metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
                         UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_USERNAME_Q) != null) {
 
-                    unifiedEndpoint.setAuthorizationUserName(metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
+                    unifiedEndpoint.setAuthorizationUserName(metadataElem.getFirstChildWithName(
+                            UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
                             UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_USERNAME_Q).getText());
 
-            }
+                }
 
                 if (metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
                         UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_PASSWORD_Q) != null) {
 
-                    OMElement transport_auth_password = metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
+                    OMElement transport_auth_password = metadataElem.getFirstChildWithName(
+                            UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
                             UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_PASSWORD_Q);
                     String secretAlias = transport_auth_password.getAttributeValue(
-                            new QName(UnifiedEndpointConstants.SECURE_VAULT_NS, UnifiedEndpointConstants.SECRET_ALIAS_ATTR_NAME));
+                            new QName(UnifiedEndpointConstants.SECURE_VAULT_NS,
+                                      UnifiedEndpointConstants.SECRET_ALIAS_ATTR_NAME));
+
                     if (secretAlias != null && secretAlias.trim().length() > 0) {
                         secretAlias = secretAlias.trim();
-                        SecretResolver secretResolver = SecretResolverFactory.create(metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q), false);
+                        SecretResolver secretResolver = SecretResolverFactory.create(metadataElem.getFirstChildWithName(
+                                UnifiedEndpointConstants.TRANSPORT_Q), false);
                         /* Setting the secured password */
-                        if (secretResolver != null && secretResolver.isInitialized() && secretResolver.isTokenProtected(secretAlias)) {
+                        if (secretResolver != null && secretResolver.isInitialized() &&
+                            secretResolver.isTokenProtected(secretAlias)) {
+
                             String adminPassword = secretResolver.resolve(secretAlias);
                             unifiedEndpoint.setAuthorizationPassword(adminPassword);
+
                         } else {
                             /* If secure vault is not configured properly, Reading plain text password */
-                            unifiedEndpoint.setAuthorizationPassword(metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
+                            unifiedEndpoint.setAuthorizationPassword(metadataElem.getFirstChildWithName(
+                                    UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
                                     UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_PASSWORD_Q).getText());
                         }
                     } else {
-                        unifiedEndpoint.setAuthorizationPassword(metadataElem.getFirstChildWithName(UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
-                                UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_PASSWORD_Q).getText());
+                        unifiedEndpoint.setAuthorizationPassword(
+                                metadataElem.getFirstChildWithName(
+                                        UnifiedEndpointConstants.TRANSPORT_Q).getFirstChildWithName(
+                                        UnifiedEndpointConstants.TRANSPORT_AUTHORIZATION_PASSWORD_Q).getText());
                     }
                 }
             }
@@ -194,7 +166,7 @@ public class UnifiedEndpointFactory {
             /** Monitoring */
             if (metadataElem.getFirstChildWithName(UnifiedEndpointConstants.MONITORING_Q) != null) {
                 extractMetadataMonitoringConfig(unifiedEndpoint,
-                        metadataElem.getFirstChildWithName(UnifiedEndpointConstants.MONITORING_Q));
+                                                metadataElem.getFirstChildWithName(UnifiedEndpointConstants.MONITORING_Q));
             }
 
             /** ErrorHandling */
@@ -265,7 +237,7 @@ public class UnifiedEndpointFactory {
         while (timeoutPropertiesIterator.hasNext()) {
             OMElement timeoutPropertyElem = (OMElement) timeoutPropertiesIterator.next();
             unifiedEndpointTimeout.addTimeOutProperty(timeoutPropertyElem.getLocalName(),
-                    timeoutPropertyElem.getText());
+                                                      timeoutPropertyElem.getText());
         }
         unifiedEndpoint.setTimeout(unifiedEndpointTimeout);
     }
@@ -451,7 +423,8 @@ public class UnifiedEndpointFactory {
                                 UnifiedEndpointConstants.QOS_ENABLE_ADDRESSING_SEPARATE_LISTENER_Q)));
             }
             if (enableAddressingElem.getFirstChildWithName(UnifiedEndpointConstants.QOS_ADDRESSING_REPLY_TO_Q) != null) {
-                URI replyToAddress = URI.create(enableAddressingElem.getFirstChildWithName(UnifiedEndpointConstants.QOS_ADDRESSING_REPLY_TO_Q).getText().trim());
+                URI replyToAddress = URI.create(enableAddressingElem.getFirstChildWithName(
+                        UnifiedEndpointConstants.QOS_ADDRESSING_REPLY_TO_Q).getText().trim());
                 unifiedEndpoint.setReplyToAddress(replyToAddress);
             }
         }
@@ -507,7 +480,7 @@ public class UnifiedEndpointFactory {
             while (memberIterator.hasNext()) {
                 OMElement memberElem = (OMElement) memberIterator.next();
                 if (memberElem != null
-                        && memberElem.getAttributeValue(UnifiedEndpointConstants.CLUSTER_MEMBER_URL_Q) != null) {
+                    && memberElem.getAttributeValue(UnifiedEndpointConstants.CLUSTER_MEMBER_URL_Q) != null) {
                     uEPCluster.addClusteredEndpointUrlList(memberElem.getAttributeValue(
                             UnifiedEndpointConstants.CLUSTER_MEMBER_URL_Q));
                 }

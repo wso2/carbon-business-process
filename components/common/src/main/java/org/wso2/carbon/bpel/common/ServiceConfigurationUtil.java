@@ -102,7 +102,7 @@ public class ServiceConfigurationUtil {
                 serviceDescriptionLocation = serviceDescriptionLocation.substring(UnifiedEndpointConstants.VIRTUAL_FILE.
                         length());
             }
-            if (EndpointConfiguration.isAbsoutePath(serviceDescriptionLocation)) {
+            if (EndpointConfiguration.isAbsolutePath(serviceDescriptionLocation)) {
                 serviceDescriptionLocation = UnifiedEndpointConstants.VIRTUAL_FILE + serviceDescriptionLocation;
             } else {
                 serviceDescriptionLocation =

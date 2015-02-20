@@ -31,12 +31,14 @@ import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
+import sun.awt.CharsetString;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 
 /**
@@ -109,7 +111,7 @@ public class BAMServerProfileBuilder {
         File file = new File(location);
         if(file.exists()) {
             try {
-                String profileFileContent = FileUtils.readFileToString(file);
+                String profileFileContent = FileUtils.readFileToString(file , "UTF-8");
                 OMElement resourceElement = new StAXOMBuilder(new ByteArrayInputStream(profileFileContent.getBytes())).getDocumentElement();
                 processBAMServerProfileName(resourceElement, bamServerProfile);
                 processCredentialElement(resourceElement, bamServerProfile);
