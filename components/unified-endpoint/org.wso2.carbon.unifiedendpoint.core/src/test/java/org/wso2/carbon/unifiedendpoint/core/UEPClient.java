@@ -32,33 +32,33 @@ public class UEPClient {
 
     public static void main(String[] args) throws Exception {
 
-        ConfigurationContext myConfigContext = ConfigurationContextFactory.createConfigurationContextFromFileSystem(AXIS2_REPO, AXIS2_XML_PATH);
-
-        myConfigContext.getAxisConfiguration().getModules();
-
-        ServiceClient serviceClient = new ServiceClient(myConfigContext, null);
-        Options opts = new Options();
-        serviceClient.engageModule("addressing");
-
-
-
-
-        UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
-        
-        /*UnifiedEndpoint myUniEP = uepFactory.createEndpoint(SerializerTest.readString("/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml"));*/
-        //UnifiedEndpoint myUniEP = uepFactory.createEndpoint(SerializerTest.readString("/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml"));
-
-        //UnifiedEndpoint myUniEP = uepFactory.createVirtualEndpoint("file:/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml");
-
-        UnifiedEndpoint myUniEP = uepFactory.createVirtualEndpoint("gov:uep1");
-
-        opts.setTo(myUniEP);
-        opts.setAction("urn:getQuote");
-        serviceClient.setOptions(opts);
-
-
-        OMElement res = serviceClient.sendReceive(createPayLoad());
-        System.out.println(res);
+//        ConfigurationContext myConfigContext = ConfigurationContextFactory.createConfigurationContextFromFileSystem(AXIS2_REPO, AXIS2_XML_PATH);
+//
+//        myConfigContext.getAxisConfiguration().getModules();
+//
+//        ServiceClient serviceClient = new ServiceClient(myConfigContext, null);
+//        Options opts = new Options();
+//        serviceClient.engageModule("addressing");
+//
+//
+//
+//
+//        UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
+//
+//        /*UnifiedEndpoint myUniEP = uepFactory.createEndpoint(SerializerTest.readString("/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml"));*/
+//        //UnifiedEndpoint myUniEP = uepFactory.createEndpoint(SerializerTest.readString("/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml"));
+//
+//        //UnifiedEndpoint myUniEP = uepFactory.createVirtualEndpoint("file:/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml");
+//
+//        UnifiedEndpoint myUniEP = uepFactory.createVirtualEndpoint("gov:uep1");
+//
+//        opts.setTo(myUniEP);
+//        opts.setAction("urn:getQuote");
+//        serviceClient.setOptions(opts);
+//
+//
+//        OMElement res = serviceClient.sendReceive(createPayLoad());
+//        System.out.println(res);
     }
 
     public static OMElement createPayLoad() {

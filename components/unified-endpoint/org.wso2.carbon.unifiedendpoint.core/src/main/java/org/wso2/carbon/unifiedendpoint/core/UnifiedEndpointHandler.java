@@ -43,11 +43,12 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * Axis2 Handler that should be invoked when using Unified EP. This handler shoule be included in
+ * Axis2 Handler that should be invoked when using Unified EP. This handler should be included in
  * UEPModule
  */
 public class UnifiedEndpointHandler extends AbstractHandler {
-    static private Log log = LogFactory.getLog(UnifiedEndpointHandler.class);
+
+    private static Log log = LogFactory.getLog(UnifiedEndpointHandler.class);
 
     public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
         if (log.isDebugEnabled()) {
@@ -65,27 +66,31 @@ public class UnifiedEndpointHandler extends AbstractHandler {
         return InvocationResponse.CONTINUE;
     }
 
-    private void handleMessageOutput(UnifiedEndpoint uep, MessageContext msgContext) throws AxisFault {
+    private void handleMessageOutput(UnifiedEndpoint uep, MessageContext msgContext)
+            throws AxisFault {
         /*UEP MessageOutput*/
         UnifiedEndpointMessageOutput uepMessageOutput = uep.getMessageOutput();
         if (uepMessageOutput != null) {
             /*Format*/
             String uepMessageOutputFormat = uepMessageOutput.getFormat();
             if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_POX)) {
+
                 msgContext.setDoingREST(true);
                 msgContext.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
-                        org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_APPLICATION_XML);
+                                       org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_APPLICATION_XML);
+
             } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_GET)) {
                 msgContext.setDoingREST(true);
                 msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
-                        Constants.Configuration.HTTP_METHOD_GET);
+                                       Constants.Configuration.HTTP_METHOD_GET);
                 msgContext.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
-                        org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_X_WWW_FORM);
+                                       org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_X_WWW_FORM);
+
             } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_SOAP11)) {
                 msgContext.setDoingREST(false);
                 msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
                 msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
-                        Constants.Configuration.HTTP_METHOD_POST);
+                                       Constants.Configuration.HTTP_METHOD_POST);
 
                 if (msgContext.getSoapAction() == null && msgContext.getWSAAction() != null) {
                     msgContext.setSoapAction(msgContext.getWSAAction());
@@ -97,7 +102,7 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 msgContext.setDoingREST(false);
                 msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
                 msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
-                        Constants.Configuration.HTTP_METHOD_POST);
+                                       Constants.Configuration.HTTP_METHOD_POST);
                 if (msgContext.getSoapAction() == null && msgContext.getWSAAction() != null) {
                     msgContext.setSoapAction(msgContext.getWSAAction());
                 }
@@ -108,7 +113,6 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
                 msgContext.setDoingREST(true);
             } else {
-                /*ToDo*/
                 processHttpGetMethod(msgContext, msgContext);
             }
 
@@ -116,25 +120,25 @@ public class UnifiedEndpointHandler extends AbstractHandler {
             if (uepMessageOutput.getOptimize().equals(UnifiedEndpointConstants.OPTIMIZE_MTOM)) {
                 msgContext.setDoingMTOM(true);
                 msgContext.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_MTOM,
-                        org.apache.axis2.Constants.VALUE_TRUE);
+                                       org.apache.axis2.Constants.VALUE_TRUE);
             } else if (uepMessageOutput.getOptimize().equals(UnifiedEndpointConstants.OPTIMIZE_SWA)) {
                 msgContext.setDoingSwA(true);
                 msgContext.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_SWA,
-                        org.apache.axis2.Constants.VALUE_TRUE);
+                                       org.apache.axis2.Constants.VALUE_TRUE);
             }
 
             /*Charset*/
             if (uepMessageOutput.getCharSetEncoding() != null) {
                 msgContext.setProperty(Constants.Configuration.CHARACTER_SET_ENCODING,
-                        uepMessageOutput.getCharSetEncoding());
+                                       uepMessageOutput.getCharSetEncoding());
             }
 
              /**/
             if (uep.getAddress() != null) {
                 if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_REST)
-                        && msgContext.getProperty(NhttpConstants.REST_URL_POSTFIX) != null) {
+                    && msgContext.getProperty(NhttpConstants.REST_URL_POSTFIX) != null) {
                     msgContext.setTo(new EndpointReference(uep.getAddress() +
-                            msgContext.getProperty(NhttpConstants.REST_URL_POSTFIX)));
+                                                           msgContext.getProperty(NhttpConstants.REST_URL_POSTFIX)));
                 } else {
                     msgContext.setTo(new EndpointReference(uep.getAddress()));
                 }
@@ -145,45 +149,44 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 msgContext.getOptions().setUseSeparateListener(true);
             }
         } else {
-            /*ToDo*/
             processHttpGetMethod(msgContext, msgContext);
         }
 
         if (msgContext.isDoingREST() && HTTPConstants.MEDIA_TYPE_X_WWW_FORM.equals(
                 msgContext.getProperty(Constants.Configuration.MESSAGE_TYPE))) {
             if (msgContext.getProperty(WSDL2Constants.ATTR_WHTTP_LOCATION) == null
-                    && msgContext.getEnvelope().getBody().getFirstElement() != null) {
+                && msgContext.getEnvelope().getBody().getFirstElement() != null) {
                 msgContext.setProperty(WSDL2Constants.ATTR_WHTTP_LOCATION,
-                        msgContext.getEnvelope().getBody().getFirstElement()
-                                .getQName().getLocalPart());
+                                       msgContext.getEnvelope().getBody().getFirstElement()
+                                               .getQName().getLocalPart());
             }
         }
     }
 
     private static void processHttpGetMethod(MessageContext originalInMsgCtx,
                                              MessageContext axisOutMsgCtx) {
-          /*ToDO*/
+
     }
 
     private void handleAddressing(UnifiedEndpoint uep, MessageContext msgContext) {
         String addressingVersion = uep.getAddressingVersion();
         if (uep.isAddressingEnabled()) {
             if (addressingVersion != null
-                    && UnifiedEndpointConstants.ADDRESSING_VERSION_SUBMISSION.equals(addressingVersion)) {
+                && UnifiedEndpointConstants.ADDRESSING_VERSION_SUBMISSION.equals(addressingVersion)) {
                 msgContext.setProperty(AddressingConstants.WS_ADDRESSING_VERSION,
-                        AddressingConstants.Submission.WSA_NAMESPACE);
+                                       AddressingConstants.Submission.WSA_NAMESPACE);
             } else if (addressingVersion != null
-                    && UnifiedEndpointConstants.ADDRESSING_VERSION_FINAL.equals(addressingVersion)) {
+                       && UnifiedEndpointConstants.ADDRESSING_VERSION_FINAL.equals(addressingVersion)) {
                 msgContext.setProperty(AddressingConstants.WS_ADDRESSING_VERSION,
-                        AddressingConstants.Final.WSA_NAMESPACE);
+                                       AddressingConstants.Final.WSA_NAMESPACE);
             }
 
             msgContext.setProperty(AddressingConstants.DISABLE_ADDRESSING_FOR_OUT_MESSAGES, Boolean.FALSE);
 
             //Adding ReplyTo address
-	    if (uep.getReplyToAddress() != null) {
-            	msgContext.getOptions().setReplyTo(new EndpointReference(uep.getReplyToAddress().toString()));
-	    }
+            if (uep.getReplyToAddress() != null) {
+                msgContext.getOptions().setReplyTo(new EndpointReference(uep.getReplyToAddress().toString()));
+            }
         } else {
             msgContext.setProperty(AddressingConstants.DISABLE_ADDRESSING_FOR_OUT_MESSAGES, Boolean.TRUE);
         }
@@ -205,18 +208,19 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 // following line is commented out for that reason.
                 //msgContext.setProperty(HTTPConstants.HTTP_HEADERS,uepTransport.getTransportProperties());
 
-                for(String key : uepTransport.getTransportProperties().keySet()) {
+                for (String key : uepTransport.getTransportProperties().keySet()) {
                     String trimmedKey = key.trim();
                     String trimmedValue = uepTransport.getTransportProperties().get(trimmedKey)
                             .trim();
-                    if (trimmedKey.equals("FORCE_HTTP_1.0") || trimmedKey.equals("authorization-username") || trimmedKey.equals("authorization-password")) {
+                    if (trimmedKey.equals("FORCE_HTTP_1.0") || trimmedKey.equals("authorization-username") ||
+                        trimmedKey.equals("authorization-password")) {
                         if (trimmedKey.equals("FORCE_HTTP_1.0")) {
                             if (trimmedValue.equals("true")) {
                                 //If the "FORCE_HTTP_1.0" key value is "true" -> "HTTPConstants.CHUNKED" key value is "false"
                                 msgContext.getOptions().setProperty(HTTPConstants.CHUNKED, false);
                             } else {
                                 log.warn("Wrong parameter value: \"" + trimmedValue + "\" for the key: " +
-                                        trimmedKey);
+                                         trimmedKey);
                             }
                         }
                     } else {
@@ -250,9 +254,9 @@ public class UnifiedEndpointHandler extends AbstractHandler {
     private void handleSecurity(UnifiedEndpoint uep, MessageContext msgContext) throws AxisFault {
         if (uep.isSecurityEnabled()) {
             msgContext.getAxisService().engageModule(msgContext.getAxisService().
-                                                getAxisConfiguration().getModule("rampart"));
+                    getAxisConfiguration().getModule("rampart"));
             msgContext.getAxisService().getPolicySubject().attachPolicy(
-                                                loadPolicy(uep.getWsSecPolicyKey(),msgContext));
+                    loadPolicy(uep.getWsSecPolicyKey(), msgContext));
         }
     }
 
@@ -263,7 +267,7 @@ public class UnifiedEndpointHandler extends AbstractHandler {
 
     private Policy loadPolicy(String path, MessageContext msgContext) throws AxisFault {
         Policy policyDoc = null;
-        if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE))  {
+        if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
             path = path.replaceFirst(UnifiedEndpointConstants.VIRTUAL_FILE, "");
             try {
                 InputStream policyStream = UnifiedEndpointUtils.getFileInputStream(path);
@@ -278,8 +282,8 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 throw new AxisFault(errMsg, e);
             }
         } else if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG)) {
-	        Registry reg = CarbonContext.getThreadLocalCarbonContext().
-			        getRegistry(RegistryType.SYSTEM_GOVERNANCE);
+            Registry reg = CarbonContext.getThreadLocalCarbonContext().
+                    getRegistry(RegistryType.SYSTEM_GOVERNANCE);
             path = path.substring(UnifiedEndpointConstants.VIRTUAL_GOV_REG.length());
             try {
                 if (reg.resourceExists(path)) {
@@ -292,7 +296,7 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 throw new AxisFault(errMsg, e);
             }
         } else if (path.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG)) {
-	        Registry reg = CarbonContext.getThreadLocalCarbonContext().
+            Registry reg = CarbonContext.getThreadLocalCarbonContext().
                     getRegistry(RegistryType.SYSTEM_CONFIGURATION);
             path = path.substring(UnifiedEndpointConstants.VIRTUAL_CONF_REG.length());
             try {

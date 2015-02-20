@@ -70,7 +70,6 @@ public final class UnifiedEndpointConstants {
     public static final String TRANSPORT_OPTIONS_PROXY_USER = "user";
     public static final String TRANSPORT_OPTIONS_PROXY_PWD = "password";
 
-
     public static final String TIMEOUT = "timeout";
     public static final String TIMEOUT_DURATION = "duration";
     public static final String TIMEOUT_ACTION = "action";
@@ -137,27 +136,10 @@ public final class UnifiedEndpointConstants {
     public final static QName MESSAGE_OUTPUT_FORMAT_Q = new QName(null, MESSAGE_OUTPUT_FORMAT);
     public final static QName MESSAGE_OUTPUT_OPTIMIZE_Q = new QName(null, MESSAGE_OUTPUT_OPTIMIZE);
     public final static QName MESSAGE_OUTPUT_CHARSET_Q = new QName(null, MESSAGE_OUTPUT_CHARSET);
-    public static final QName TRANSPORT_OPTIONS_Q = new QName(null, TRANSPORT_OPTIONS);
     public final static QName TRANSPORT_OPTIONS_TYPE_Q = new QName(null, TRANSPORT_OPTIONS_TYPE);
-    public final static QName TRANSPORT_OPTIONS_VALUE_Q = new QName(null, TRANSPORT_OPTIONS_VALUE);
-    public static final QName TRANSPORT_OPTIONS_REQUEST_CHUNK_Q = new QName(null, TRANSPORT_OPTIONS_REQUEST_CHUNK);
-    public static final QName TRANSPORT_OPTIONS_PROTOCOL_VERSION_Q = new QName(null, TRANSPORT_OPTIONS_PROTOCOL_VERSION);
-    public static final QName TRANSPORT_OPTIONS_REQUEST_GZIP_Q = new QName(null, TRANSPORT_OPTIONS_REQUEST_GZIP);
-    public static final QName TRANSPORT_OPTIONS_ACCEPT_GZIP_Q = new QName(null, TRANSPORT_OPTIONS_ACCEPT_GZIP);
-    public static final QName TRANSPORT_OPTIONS_CONNECTION_TIMEOUT_Q = new QName(null, TRANSPORT_OPTIONS_CONNECTION_TIMEOUT);
-    public static final QName TRANSPORT_OPTIONS_SOCKET_TIMEOUT_Q = new QName(null, TRANSPORT_OPTIONS_SOCKET_TIMEOUT);
-    public static final QName TRANSPORT_OPTIONS_PROTOCOL_MAX_REDIRECTS_Q = new QName(null, TRANSPORT_OPTIONS_PROTOCOL_MAX_REDIRECTS);
-    public static final QName TRANSPORT_OPTIONS_PROXY_Q = new QName(null, TRANSPORT_OPTIONS_PROXY);
-    public static final QName TRANSPORT_OPTIONS_PROXY_HOST_Q = new QName(null, TRANSPORT_OPTIONS_PROXY_HOST);
-    public static final QName TRANSPORT_OPTIONS_PROXY_PORT_Q = new QName(null, TRANSPORT_OPTIONS_PROXY_PORT);
-    public static final QName TRANSPORT_OPTIONS_PROXY_DOMAIN_Q = new QName(null, TRANSPORT_OPTIONS_PROXY_DOMAIN);
-    public static final QName TRANSPORT_OPTIONS_PROXY_USER_Q = new QName(null, TRANSPORT_OPTIONS_PROXY_USER);
-    public static final QName TRANSPORT_OPTIONS_PROXY_PWD_Q = new QName(null, TRANSPORT_OPTIONS_PROXY_PWD);
     public static final QName TRANSPORT_AUTHORIZATION_USERNAME_Q = new QName(null, TRANSPORT_AUTHORIZATION_USERNAME);
     public static final QName TRANSPORT_AUTHORIZATION_PASSWORD_Q = new QName(null, TRANSPORT_AUTHORIZATION_PASSWORD);
     public static final QName TIMEOUT_Q = new QName(null, TIMEOUT);
-    public static final QName TIMEOUT_DURATION_Q = new QName(null, TIMEOUT_DURATION);
-    public static final QName TIMEOUT_ACTION_Q = new QName(null, TIMEOUT_ACTION);
 
     public static final String SECURE_VAULT_NS = "http://org.wso2.securevault/configuration";
     public static final String SECRET_ALIAS_ATTR_NAME = "secretAlias";
@@ -201,9 +183,7 @@ public final class UnifiedEndpointConstants {
     public static final QName CLUSTER_MEMBERSHIP_HANDLER_Q = new QName(null, CLUSTER_MEMBERSHIP_HANDLER);
     public static final QName CLUSTER_MEMBER_Q = new QName(null, CLUSTER_MEMBER);
     public static final QName CLUSTER_MEMBER_URL_Q = new QName(null, CLUSTER_MEMBER_URL);
-    public static final QName CLUSTER_PROPERTIES_Q = new QName(null, CLUSTER_PROPERTIES);
-    public static final QName CLUSTER_PROPERTY_Q = new QName(null, CLUSTER_PROPERTY);
-    public static final QName CLUSTER_LOAD_BALANCE_Q = new QName(null, CLUSTER_LOAD_BALANCE);   
+    public static final QName CLUSTER_LOAD_BALANCE_Q = new QName(null, CLUSTER_LOAD_BALANCE);
     public static final QName CLUSTER_LOAD_BALANCE_ALGORITHM_Q = new QName(null, CLUSTER_LOAD_BALANCE_ALGORITHM);
     public static final QName CLUSTER_LOAD_BALANCE_POLICY_Q = new QName(null, CLUSTER_LOAD_BALANCE_POLICY);
 
@@ -230,7 +210,4 @@ public final class UnifiedEndpointConstants {
     public static final String VIRTUAL_REG = "reg:";    
     public static final String VIRTUAL_GOV_REG = "gov:";
     public static final String VIRTUAL_CONF_REG = "conf:";
-
-
-    public static final String RAMPART_POLICY = "rampartPolicy";
 }

@@ -820,7 +820,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                 String location = bamServerProfile.getLocation();
 
                 if (location.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
-                    if (!EndpointConfiguration.isAbsoutePath(
+                    if (!EndpointConfiguration.isAbsolutePath(
                             location.substring(UnifiedEndpointConstants.VIRTUAL_FILE.length()))) {
                         location = EndpointConfiguration.getAbsolutePath(
                                 du.getDeployDir().getAbsolutePath(),
@@ -829,7 +829,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                 } else if((!location.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG) &&
                         !location.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG) &&
                         !location.startsWith(UnifiedEndpointConstants.VIRTUAL_REG))) {
-                    if(EndpointConfiguration.isAbsoutePath(location)){
+                    if(EndpointConfiguration.isAbsolutePath(location)){
                         location = UnifiedEndpointConstants.VIRTUAL_FILE + location;
                     }else {
                         location = EndpointConfiguration.getAbsolutePath(du.getDeployDir().getAbsolutePath(), location);
