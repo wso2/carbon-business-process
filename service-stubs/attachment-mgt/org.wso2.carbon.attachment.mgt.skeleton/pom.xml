@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>attachment-mgt-stub</artifactId>
-        <version>4.3.1-SNAPSHOT</version>
+        <version>4.3.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -35,7 +35,7 @@
                                     <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/${orbit.version.axis2}/axis2-${orbit.version.axis2}.jar" />
                                 </path>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/AttachmentMgtService.wsdl -uw -ss -ssi -o target/generated-code -p org.wso2.carbon.attachment.mgt.skeleton                                      -ns2p http://www.wso2.org/carbon/bussiness/processes/AttachmentMgtService/=org.wso2.carbon.attachment.mgt.skeleton.types" />
+                                    <arg line="-uri src/main/resources/AttachmentMgtService.wsdl -uw -ss -ssi -o target/generated-code -p org.wso2.carbon.attachment.mgt.skeleton -ns2p http://www.wso2.org/carbon/bussiness/processes/AttachmentMgtService/=org.wso2.carbon.attachment.mgt.skeleton.types" />
                                     <classpath refid="wsdl2java.classpath" />
                                 </java>
                             </tasks>
