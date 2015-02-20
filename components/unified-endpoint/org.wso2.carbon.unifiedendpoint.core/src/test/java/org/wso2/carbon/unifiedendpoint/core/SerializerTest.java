@@ -17,23 +17,15 @@
 package org.wso2.carbon.unifiedendpoint.core;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.util.AXIOMUtil;
-import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.*;
 
 public class SerializerTest {
     private static Log log = LogFactory.getLog(SerializerTest.class);
+
     public static void main(String[] args) {
-
-
         uepSerializerTests();
-        //virtualTest();
-
-
     }
 
 
@@ -84,81 +76,6 @@ public class SerializerTest {
         /*Serialize*/
         UnifiedEndpointSerializer uepSerializer = new UnifiedEndpointSerializer();
         OMElement elem = uepSerializer.serializeUnifiedEndpoint(uep);
-        //System.out.println("OMSTR ... " + elem.toString());
 
-/*
-        try {
-            FileWriter fileWriter = new FileWriter("/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml");
-            fileWriter.write(elem.toString());
-            fileWriter.close();
-        } catch (IOException e) {
-
-        }
-
-        System.out.println("Serialized Elem : " + elem.toString());*/
-
-
-        /*Factory Test*/
-        UnifiedEndpointFactory unifiedEndpointFactory = new UnifiedEndpointFactory();
-        try {
-            UnifiedEndpoint myEP = unifiedEndpointFactory.createEndpoint(elem);
-            System.out.println("NEW EP : " + myEP.getTransport().getTransportProperties());
-
-        } catch (AxisFault f) {
-
-        }
-
-    }
-
-    public static void virtualTest() {
-        String s = readString("/home/kasun/development/wso2/wso2svn/trunk/components/unified-endpoint/org.wso2.carbon.unifiedendpoint.core/src/main/resources/uep-test.xml");
-
-        try {
-            System.out.println("OM Str -" + AXIOMUtil.stringToOM(s));
-
-            UnifiedEndpointFactory factory = new UnifiedEndpointFactory();
-            UnifiedEndpoint uep = factory.createEndpoint(AXIOMUtil.stringToOM(s));
-
-            System.out.println("uep add " + uep.getAddress());
-        } catch (AxisFault axisFault) {
-            log.error("Failed to process the uep-test.xml. Caused by axis2 fault", axisFault);
-        } catch (XMLStreamException e) {
-            log.error("Failed to process the uep-test.xml. Caused by xml streaming exception", e);
-        }
-
-    }
-
-
-    public static String readString(String filePath) {
-        String s = "";
-        try {
-            FileReader fr = new FileReader(filePath);
-            BufferedReader br = new BufferedReader(fr);
-
-            StringBuffer sb = new StringBuffer();
-            String eachLine = br.readLine();
-
-            while (eachLine != null) {
-                sb.append(eachLine);
-                sb.append("\n");
-                eachLine = br.readLine();
-            }
-            s = sb.toString();
-
-        } catch (FileNotFoundException e) {
-            String errMsg = "File not found in the path "+ filePath;
-            log.error(errMsg, e);
-        } catch (IOException e) {
-            String errMsg = "IO operation failed for "+ filePath;
-            log.error(errMsg, e);
-        }
-        return s;
-    }
-
-
-    public static void omTest() {
-
-
-        
     }
 }
