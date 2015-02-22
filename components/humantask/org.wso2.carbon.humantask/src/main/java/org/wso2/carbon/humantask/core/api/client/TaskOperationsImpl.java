@@ -512,30 +512,24 @@ public class TaskOperationsImpl extends AbstractAdmin
      * @throws IllegalAccessFault
      */
     public TTaskAbstract loadTask(URI taskIdURI) throws IllegalAccessFault {
-//        try {
-        final Long taskId = validateTaskId(taskIdURI);
-//            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-//                    execTransaction(new Callable<TaskDAO>() {
-//                        public TaskDAO call() throws Exception {
-//                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
-//                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
-//                            TaskDAO task = daoConn.getTask(taskId);
-//                            validateTaskTenant(task);
-//                            return task;
-//                        }
-//                    });
-//            return TransformerUtils.transformTask(task, getCaller());
-//        }  catch (Exception ex) {
-//            log.error(ex);
-//            throw new IllegalAccessFault(ex);
-//        }
+        try {
+            final Long taskId = validateTaskId(taskIdURI);
+            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                    execTransaction(new Callable<TaskDAO>() {
+                        public TaskDAO call() throws Exception {
+                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+                            TaskDAO task = daoConn.getTask(taskId);
+                            validateTaskTenant(task);
+                            return task;
+                        }
+                    });
+            return TransformerUtils.transformTask(task, getCaller());
+        }  catch (Exception ex) {
+            log.error("Error occurred while load task.",ex);
+            throw new IllegalAccessFault(ex);
+        }
 
-        // New Logic
-        HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
-        HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
-        TaskDAO task = daoConn.getTask(taskId);
-        validateTaskTenant(task);
-        return TransformerUtils.transformTask(task, getCaller());
     }
 
 
