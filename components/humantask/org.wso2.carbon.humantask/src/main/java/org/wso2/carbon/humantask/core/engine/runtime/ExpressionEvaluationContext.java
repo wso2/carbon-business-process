@@ -53,6 +53,15 @@ public class ExpressionEvaluationContext implements EvaluationContext {
     }
 
     /**
+     * Return the output message of the task
+     * @return
+     */
+    @Override
+    public MessageDAO getOutput() {
+        return task.getOutputMessage();
+    }
+
+    /**
      * Return generic human role of give type
      *
      * @param ghrType generic human role type
@@ -60,7 +69,7 @@ public class ExpressionEvaluationContext implements EvaluationContext {
      */
     @Override
     public GenericHumanRoleDAO getGenericHumanRole(GenericHumanRoleDAO.GenericHumanRoleType ghrType) {
-        return null; //TODO - implement me
+        return task.getGenericHumanRole(ghrType);
     }
 
     /**
@@ -83,5 +92,23 @@ public class ExpressionEvaluationContext implements EvaluationContext {
     @Override
     public Node getRootNode() throws Exception {
         return task.getInputMessage().getBodyData();
+    }
+
+    /**
+     * Return HumanTaskBaseConfiguration
+     * @return : HumanTaskBaseConfiguration
+     */
+    @Override
+    public HumanTaskBaseConfiguration getTaskConfig() {
+        return this.taskConfig;
+    }
+
+    /**
+     * Return TaskDAO
+     * @return : TaskDAO
+     */
+    @Override
+    public TaskDAO getTask() {
+        return this.task;
     }
 }

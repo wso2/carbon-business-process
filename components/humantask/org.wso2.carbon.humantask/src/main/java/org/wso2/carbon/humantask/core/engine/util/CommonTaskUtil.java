@@ -22,9 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wso2.carbon.humantask.TDeadline;
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TPriorityExpr;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.api.event.TaskEventInfo;
 import org.wso2.carbon.humantask.core.dao.TaskEventType;
@@ -34,6 +32,7 @@ import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Deadline;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.GenericHumanRole;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
+import org.wso2.carbon.humantask.core.engine.runtime.ExpressionEvaluationContext;
 import org.wso2.carbon.humantask.core.engine.runtime.api.EvaluationContext;
 import org.wso2.carbon.humantask.core.engine.runtime.api.ExpressionLanguageRuntime;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
@@ -301,6 +300,70 @@ public final class CommonTaskUtil {
         }
         return presentationDescriptionDAO;
     }
+
+    /**
+     * Get Rendering types.
+     * @param task : task entity class
+     * @param taskConfiguration : HumanTask base configuration
+     * @return : available task renderings QNames.
+     */
+    public static QName[] getRenderingTypes(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration) {
+        TRenderings renderings = taskConfiguration.getRenderings();
+        List<QName> renderingQNames = new ArrayList<QName>();
+        if (renderings != null && renderings.getRenderingArray() != null && renderings.getRenderingArray().length > 0) {
+            for(TRendering rendering: renderings.getRenderingArray()){
+                renderingQNames.add(rendering.getType());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns renderings elements for given rendering types.
+     * @param task  : TaskDAO
+     * @param taskConfiguration : HumanTask base configuration
+     * @param renderingTypes    : List<QName> with rendering types.
+     * @return
+     */
+    public static Map<QName, String> getRenderings(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration,List<QName> renderingTypes) {
+
+        Map<QName, String> processedRenderings = new HashMap<QName, String>();
+        String htdPrefix = taskConfiguration.getNamespaceContext().getPrefix(HumanTaskConstants.HTD_NAMESPACE) + ":";
+        EvaluationContext evalCtx = new ExpressionEvaluationContext(task, taskConfiguration);
+
+        if (renderingTypes != null && renderingTypes.size() > 0) {
+
+            String expressionLanguage = taskConfiguration.getExpressionLanguage();
+            ExpressionLanguageRuntime expLangRuntime = HumanTaskServiceComponent.getHumanTaskServer()
+                    .getTaskEngine().getExpressionLanguageRuntime(expressionLanguage);
+            for (QName type : renderingTypes) {
+                TRendering rendering = taskConfiguration.getRendering(type);
+                if (rendering != null) {
+                    // Replace Presentation params with values.
+                    // Do not trim, to avoid malformed html. Renderings elements can contains html elements.
+                    String processedString = replaceUsingPresentationParams(task.getPresentationParameters(),
+                            rendering.newCursor().getTextValue());
+                    // Evaluating xpaths with $ $ marks..
+                    String[] split = processedString.split("$");
+                    if (split != null && split.length > 0) {
+                        StringBuilder sm = new StringBuilder();
+                        for (String s : split) {
+                            if (s.contains(htdPrefix)) {
+                                String value = expLangRuntime.evaluateAsString(s, evalCtx);
+                                sm.append(value);
+                            } else {
+                                sm.append(s);
+                            }
+                        }
+                        processedString = sm.toString();
+                    }
+                    processedRenderings.put(type, processedString);
+                }
+            }
+        }
+        return processedRenderings;
+    }
+
 
     /**
      * Nominates the given task to a matching actual owner, if there's only 1 user in the potential owners list. In that case

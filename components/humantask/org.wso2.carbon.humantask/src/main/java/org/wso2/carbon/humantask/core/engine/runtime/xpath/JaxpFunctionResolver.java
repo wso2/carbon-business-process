@@ -24,12 +24,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
+import org.wso2.carbon.humantask.core.dao.GenericHumanRoleDAO;
 import org.wso2.carbon.humantask.core.dao.MessageDAO;
+import org.wso2.carbon.humantask.core.dao.OrganizationalEntityDAO;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.runtime.api.EvaluationContext;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.integration.CarbonUserManagerBasedPeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServerHolder;
+import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
+import org.wso2.carbon.humantask.core.store.HumanTaskStore;
+import org.wso2.carbon.humantask.core.store.TaskConfiguration;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
 import org.wso2.carbon.humantask.core.utils.HTNameSpaces;
 
@@ -67,45 +72,49 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             throw new NullPointerException("Undeclared namespace for " + functionName);
         } else if (HTNameSpaces.HTD_NS.equals(functionName.getNamespaceURI())) {
             String localPart = functionName.getLocalPart();
-            if (XPath2Constants.FUNCTION_GET_POTENTIAL_OWNERS.equals(localPart)) {
+            String errMsg = "This operation is not currently supported in this version of WSO2 BPS.";
+
+            if (XPath2Constants.FUNCTION_GET_INPUT.equals(localPart)) {
+                return new GetInput();
+
+            } else if (XPath2Constants.FUNCTION_GET_OUTPUT.equals(localPart)) {
+                return new GetOutput();
+
+            } else if (XPath2Constants.FUNCTION_GET_POTENTIAL_OWNERS.equals(localPart)) {
                 return new GetPotentialOwners();
+
+            } else if (XPath2Constants.FUNCTION_GET_ACTUAL_OWNER.equals(localPart)) {
+                return new GetActualOwner();
+
+            } else if (XPath2Constants.FUNCTION_GET_BUSINESS_ADMINISTRATORS.equals(localPart)) {
+                return new GetBusinessAdministrators();
+
+            } else if (XPath2Constants.FUNCTION_GET_EXCLUDED_OWNERS.equals(localPart)) {
+                return new GetExcludedOwners();
+
+            } else if (XPath2Constants.FUNCTION_GET_TASK_INITIATOR.equals(localPart)) {
+                return new GetTaskInitiator();
+
+            } else if (XPath2Constants.FUNCTION_GET_TASK_PRIORITY.equals(localPart)) {
+                return new GetTaskPriority();
+
+            } else if (XPath2Constants.FUNCTION_GET_TASK_STAKEHOLDERS.equals(localPart)) {
+                return new GetTaskStakeholders();
+
+            } else if (XPath2Constants.FUNCTION_GET_LOGICAL_PEOPLE_GROUP.equals(localPart)) {
+                throw new UnsupportedOperationException(errMsg);
+
+            } else if (XPath2Constants.FUNCTION_INTERSECT.equals(localPart)) {
+                return new Intersect();
+
+            } else if (XPath2Constants.FUNCTION_UNION.equals(localPart)) {
+                return new Union();
+
+            } else if (XPath2Constants.FUNCTION_EXCEPT.equals(localPart)) {
+                return new Except();
+
             } else {
-                String errMsg = "This operation is not currently supported in this version of WSO2 BPS.";
-                if (XPath2Constants.FUNCTION_GET_ACTUAL_OWNER.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_GET_BUSINESS_ADMINISTRATORS.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_GET_EXCLUDED_OWNERS.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_GET_INPUT.equals(localPart)) {
-                    return new GetInput();
-                } else if (XPath2Constants.FUNCTION_GET_TASK_INITIATOR.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_GET_TASK_PRIORITY.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_GET_TASK_STAKEHOLDERS.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_GET_LOGICAL_PEOPLE_GROUP.equals(localPart)) {
-                    throw new UnsupportedOperationException(errMsg);
-
-                } else if (XPath2Constants.FUNCTION_INTERSECT.equals(localPart)) {
-                    return new Intersect();
-
-                } else if (XPath2Constants.FUNCTION_UNION.equals(localPart)) {
-                    return new Union();
-
-                } else if (XPath2Constants.FUNCTION_EXCEPT.equals(localPart)) {
-                    return new Except();
-
-                } else {
-                    throw new IllegalArgumentException("Unknown Human Task Function: " + localPart);
-                }
+                throw new IllegalArgumentException("Unknown Human Task Function: " + localPart);
             }
 
         }
@@ -117,6 +126,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         peopleQueryEvaluator = HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getPeopleQueryEvaluator();
     }
 
+    /**
+     * Returns the part of the task’s input message.
+     */
     public class GetInput implements XPathFunction {
         public Object evaluate(List args) throws XPathFunctionException {
             MessageDAO inputMsg = evalCtx.getInput();
@@ -146,12 +158,237 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         }
     }
 
-    public static class GetPotentialOwners implements XPathFunction {
+    /**
+     * Returns the part of the task's output message.
+     * Note: When User completes a task, taskoutput is saved with part name "message". But When user calls setOutput,
+     * user can specify their own part name.
+     */
+    public class GetOutput implements XPathFunction {
         public Object evaluate(List args) throws XPathFunctionException {
-            return null;
+            MessageDAO outputMsg = evalCtx.getOutput();
+            String partName = (String) args.get(0);
+            Node matchingElement = null;
+            if (StringUtils.isNullOrEmpty(partName)) {
+                throw new HumanTaskRuntimeException("The getOutput function should be provided with" +
+                        " the part name");
+            }
+
+            if (outputMsg.getBodyData().hasChildNodes()) {
+                NodeList nodeList = outputMsg.getBodyData().getChildNodes();
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    if (partName.trim().equals(nodeList.item(i).getNodeName())) {
+                        matchingElement = nodeList.item(i);
+                    }
+                }
+            }
+
+            if (matchingElement == null || matchingElement.getFirstChild() == null) {
+                throw new HumanTaskRuntimeException("Cannot find a matching Element for " +
+                        "expression evaluation: getOutput");
+            }
+
+            return matchingElement.getFirstChild();
         }
     }
 
+    /**
+     * Returns the potential owners of the task. It MUST evaluate to an empty htt:organizationalEntity in case of an
+     * error. If the task name is not present the current task MUST be considered.
+     */
+    public class GetPotentialOwners implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            GenericHumanRoleDAO potentialOwners = null;
+            if (args.size() == 0) {
+                // Case 1: consider current Task.
+                potentialOwners = evalCtx.getGenericHumanRole(
+                        GenericHumanRoleDAO.GenericHumanRoleType.POTENTIAL_OWNERS);
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getPotentialOwners(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getPotentialOwners() instead.");
+                    // We can evaluate only role based and literal based people assignments only. expression based
+                    // people eval will not work here.
+                    // Also we can obtain only the HumanTaskBaseConfiguration, but without taskDAO we can't build
+                    // eval context for that task configuration.
+                }
+
+            }
+            // else is an Error case, so potentialOwners is null. createOrgEntity will generate an empty
+            // htt:organizationalEntity element in such a scenario..
+
+            return createOrgEntity(potentialOwners);
+        }
+    }
+
+    /**
+     * Returns the actual owner of the task. It MUST evaluate to an empty htt:user in case there is no actual owner.
+     * If the task name is not present the current task MUST be considered.
+     */
+    public class GetActualOwner implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            GenericHumanRoleDAO actualOwners = null;
+            String username = "";
+            if (args.size() == 0) {
+                // Case 1: consider current Task.
+                actualOwners = evalCtx.getGenericHumanRole(
+                        GenericHumanRoleDAO.GenericHumanRoleType.ACTUAL_OWNER);
+                for (OrganizationalEntityDAO oe : actualOwners.getOrgEntities()) {
+                    if (OrganizationalEntityDAO.OrganizationalEntityType.USER.equals(oe.getOrgEntityType())) {
+                        username = oe.getName();
+                        break;
+                    }
+                }
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getActualOwner(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getActualOwner() instead.");
+                }
+
+            }
+            return createHttUser(username);
+        }
+    }
+
+    /**
+     * Returns the business administrators of the task. It MUST evaluate to an empty htt:organizationalEntity in case of
+     * an error. If the task name is not present the current task MUST be considered.
+     */
+    public class GetBusinessAdministrators implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            GenericHumanRoleDAO businessAdmins = null;
+            if (args.size() == 0) {
+                // Case 1: consider current Task.
+                businessAdmins = evalCtx.getGenericHumanRole(
+                        GenericHumanRoleDAO.GenericHumanRoleType.BUSINESS_ADMINISTRATORS);
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getBusinessAdministrators(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getBusinessAdministrators() instead.");
+                }
+
+            }
+            return createOrgEntity(businessAdmins);
+        }
+    }
+
+    /**
+     * Returns the excluded owners. It MUST evaluate to an empty htt:organizationalEntity in case of an error.
+     * If the task name is not present the current task MUST be considered.
+     */
+    public class GetExcludedOwners implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            GenericHumanRoleDAO excludedOwners = null;
+            if (args.size() == 0) {
+                // Case 1: consider current Task.
+                excludedOwners = evalCtx.getGenericHumanRole(
+                        GenericHumanRoleDAO.GenericHumanRoleType.EXCLUDED_OWNERS);
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getExcludedOwners(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getExcludedOwners() instead.");
+                }
+
+            }
+            return createOrgEntity(excludedOwners);
+        }
+    }
+
+    /**
+     * Returns the initiator of the task. It MUST evaluate to an empty htt:user in case there is no initiator.
+     * <p/>
+     * If the task name is not present the current task MUST be considered.
+     */
+    public class GetTaskInitiator implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            GenericHumanRoleDAO taskInitiator = null;
+            String username = "";
+            if (args.size() == 0) {
+                // Case 1: consider current Task.
+                taskInitiator = evalCtx.getGenericHumanRole(
+                        GenericHumanRoleDAO.GenericHumanRoleType.TASK_INITIATOR);
+                for (OrganizationalEntityDAO oe : taskInitiator.getOrgEntities()) {
+                    if (OrganizationalEntityDAO.OrganizationalEntityType.USER.equals(oe.getOrgEntityType())) {
+                        username = oe.getName();
+                        break;
+                    }
+                }
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getTaskInitiator(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getTaskInitiator() instead.");
+                }
+
+            }
+            return createHttUser(username);
+        }
+    }
+
+    /**
+     * Returns the priority of the task. It MUST evaluate to “5” in case the priority is not explicitly set.
+     * If the task name is not present the current task MUST be considered.
+     */
+    public class GetTaskPriority implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            if (args.size() == 0) {
+                Integer priority = evalCtx.getTask().getPriority();
+                return priority;
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getTaskPriority(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getTaskPriority() instead.");
+                }
+            }
+            return 5;
+        }
+    }
+
+    /**
+     * Returns the stakeholders of the task. It MUST evaluate to an empty htt:organizationalEntity in case of an error.
+     * If the task name is not present the current task MUST be considered.
+     */
+    public class GetTaskStakeholders implements XPathFunction {
+        public Object evaluate(List args) throws XPathFunctionException {
+            GenericHumanRoleDAO stakeholders = null;
+            if (args.size() == 0) {
+                // Case 1: consider current Task.
+                stakeholders = evalCtx.getGenericHumanRole(
+                        GenericHumanRoleDAO.GenericHumanRoleType.STAKEHOLDERS);
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+                String taskName = (String) args.get(0);
+                if (!StringUtils.isNullOrEmpty(taskName)) {
+                    // Case 2: Getting specific task. Unsupported.
+                    log.warn("HumanTask Xpath: getTaskStakeholders(\"" + taskName + "\")"
+                            + " operation is not currently supported in this version of WSO2 BPS."
+                            + " Use getTaskStakeholders() instead.");
+                }
+
+            }
+            return createOrgEntity(stakeholders);
+        }
+    }
+
+    /**
+     * Constructs an organizationalEntity containing every user that occurs in both set1 and set2, eliminating duplicate
+     * users.
+     */
     public class Intersect implements XPathFunction {
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -173,6 +410,10 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     }
 
+    /**
+     * Constructs an organizationalEntity containing every user that occurs in either set1 or set2, eliminating
+     * duplicate users.
+     */
     public class Union implements XPathFunction {
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -192,6 +433,10 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     }
 
+    /**
+     * Constructs an organizationalEntity containing every user that occurs in set1 but not in set2.
+     * Note: TODO: This function is required to allow enforcing the separation of duties (“4-eyes principle”).
+     */
     public class Except implements XPathFunction {
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -291,16 +536,65 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         }
     }
 
-    public Node createOrgEntity(Set<String> userList) {
+    /**
+     * Create organizationalEntity Node from a given username list
+     * <p/>
+     * @param userList : User name set.
+     * @return : organizationalEntity node
+     */
+    private Node createOrgEntity(Set<String> userList) {
         Document doc = DOMUtils.newDocument();
-        Element orgEntity = doc.createElementNS(organizationalEntityQname.getNamespaceURI(), organizationalEntityQname.getLocalPart());
-        Element user = null;
-        for (String userName : userList) {
-            user = doc.createElementNS(userQname.getNamespaceURI(), userQname.getLocalPart());
-            user.setTextContent(userName);
-            orgEntity.appendChild(user);
+        Element orgEntity = doc.createElementNS(organizationalEntityQname.getNamespaceURI(),
+                organizationalEntityQname.getLocalPart());
+        if (userList != null) {
+            Element user = null;
+            for (String userName : userList) {
+                user = doc.createElementNS(userQname.getNamespaceURI(), userQname.getLocalPart());
+                user.setTextContent(userName);
+                orgEntity.appendChild(user);
+            }
         }
         return orgEntity;
+    }
+
+    /**
+     * Create organizationalEntity Node from GenericHumanRoleDAO.
+     * <p/>
+     * @param ghr : GenericHumanRoleDAO
+     * @return : organizationalEntity node
+     */
+    private Node createOrgEntity(GenericHumanRoleDAO ghr) {
+        Document doc = DOMUtils.newDocument();
+        Element orgEntity = doc.createElementNS(organizationalEntityQname.getNamespaceURI(),
+                organizationalEntityQname.getLocalPart());
+        if (ghr != null) {
+            Element userOrGroup;
+            List<OrganizationalEntityDAO> orgEntities = ghr.getOrgEntities();
+            for (OrganizationalEntityDAO oe : orgEntities) {
+                if (OrganizationalEntityDAO.OrganizationalEntityType.GROUP.equals(oe.getOrgEntityType())) {
+                    userOrGroup = doc.createElementNS(groupQname.getNamespaceURI(), groupQname.getLocalPart());
+                    userOrGroup.setTextContent(oe.getName());
+                    orgEntity.appendChild(userOrGroup);
+                } else if (OrganizationalEntityDAO.OrganizationalEntityType.USER.equals(oe.getOrgEntityType())) {
+                    userOrGroup = doc.createElementNS(userQname.getNamespaceURI(), userQname.getLocalPart());
+                    userOrGroup.setTextContent(oe.getName());
+                    orgEntity.appendChild(userOrGroup);
+                }
+            }
+        }
+        return orgEntity;
+    }
+
+    /**
+     * Creates htt:User node for given user name
+     * @param name : String username
+     * @return : htt:user node
+     */
+    private Node createHttUser(String name){
+        Document doc = DOMUtils.newDocument();
+        Element httUser = doc.createElementNS(userQname.getNamespaceURI(), userQname.getLocalPart());
+        httUser.setTextContent(name);
+        return httUser;
     }
 
 }

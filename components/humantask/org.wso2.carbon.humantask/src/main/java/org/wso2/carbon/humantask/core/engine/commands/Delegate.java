@@ -85,7 +85,7 @@ public class Delegate extends AbstractHumanTaskCommand {
             }
             task.release();
         }
-
+        // Add delegatee as a potential owner.
         GenericHumanRoleDAO potentialOwnersRole = task.getGenericHumanRole(
                 GenericHumanRoleDAO.GenericHumanRoleType.POTENTIAL_OWNERS);
 

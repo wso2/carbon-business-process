@@ -74,6 +74,7 @@ import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateEx
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
+import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -92,7 +93,14 @@ public class TaskOperationsImpl extends AbstractAdmin
 
     private static Log log = LogFactory.getLog(TaskOperationsImpl.class);
 
-    
+    /**
+     * Simple query operation allows to search tasks based on given query criteria.
+     *
+     * @param tSimpleQueryInput : Query Criteria
+     * @return : Query result
+     * @throws IllegalStateFault
+     * @throws IllegalArgumentFault
+     */
     public TTaskSimpleQueryResultSet simpleQuery(final TSimpleQueryInput tSimpleQueryInput)
             throws IllegalStateFault, IllegalArgumentFault {
 
@@ -172,7 +180,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchStop(URI[] uris) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
@@ -183,7 +191,7 @@ public class TaskOperationsImpl extends AbstractAdmin
                 "this version of WSO2 BPS.");
     }
 
-    
+
     public TTaskAbstract[] getMyTaskAbstracts(String s, String s1, String s2, TStatus[] tStatuses,
                                               String s3, String s4, String s5, int i, int i1)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault {
@@ -191,7 +199,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new TTaskAbstract[0];
     }
 
-    
+    /**
+     * Cancel/stop the processing of the task. The task returns to the Reserved state.
+     *
+     * @param taskId : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void stop(final URI taskId) throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
         try {
@@ -209,13 +225,21 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchComplete(URI[] taskIds, Object o) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+    /**
+     * Resume a suspended task.
+     *
+     * @param taskId : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void resume(final URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -235,13 +259,41 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
-    public QName[] getRenderingTypes(URI taskId) throws IllegalArgumentFault {
-        handleUnsupportedOperation();
+    /**
+     * Applies to both tasks and notifications.
+     * Returns the rendering  types available for the task or notification.
+     *
+     * @param taskIdURI : task identifier
+     * @return : Array of QNames
+     * @throws IllegalArgumentFault
+     */
+    public QName[] getRenderingTypes(URI taskIdURI) throws IllegalArgumentFault {
+        try {
+            final Long taskId = validateTaskId(taskIdURI);
+
+            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                    execTransaction(new Callable<TaskDAO>() {
+                        public TaskDAO call() throws Exception {
+
+                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+                            TaskDAO task = daoConn.getTask(taskId);
+                            validateTaskTenant(task);
+                            return task;
+                        }
+                    });
+            HumanTaskBaseConfiguration taskConfiguration = HumanTaskServiceComponent.getHumanTaskServer().
+                    getTaskStoreManager().getHumanTaskStore(task.getTenantId()).
+                    getTaskConfiguration(QName.valueOf(task.getName()));
+            QName[] types = (QName[]) taskConfiguration.getRenderingTypes().toArray();
+        } catch (Exception ex) {
+            log.error(ex);
+            throw new IllegalArgumentFault(ex);
+        }
         return new QName[0];
     }
 
-    
+
     public void setTaskCompletionDeadlineExpression(URI taskId, NCName ncName, String s)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -249,7 +301,17 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+    /**
+     * Set the data for the part of the task's output message.
+     *
+     * @param taskIdURI : task identifier
+     * @param ncName    : PartName
+     * @param o
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void setOutput(URI taskIdURI, NCName ncName, Object o)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -277,7 +339,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TTaskOperations getTaskOperations(URI taskId)
             throws IllegalOperationFault, IllegalArgumentFault {
         validateTaskId(taskId);
@@ -285,20 +347,20 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+
     public TBatchResponse[] batchRelease(URI[] taskId) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TTaskDetails getTaskDetails(URI taskId) throws IllegalArgumentFault {
         validateTaskId(taskId);
         handleUnsupportedOperation();
         return null;
     }
 
-    
+
     public void forward(URI taskId, TOrganizationalEntity tOrganizationalEntity)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -306,7 +368,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+
     public boolean isSubtask(URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -315,12 +377,20 @@ public class TaskOperationsImpl extends AbstractAdmin
         return false;
     }
 
-    
+    /**
+     * Suspend the task.
+     *
+     * @param taskId : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void suspend(final URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
 
-      try {
+        try {
             validateTaskId(taskId);
             HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                     execTransaction(new Callable<Object>() {
@@ -336,7 +406,13 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Get Potential Owners of given Task.
+     * @param taskIdURI : task identifier
+     * @return : User name List
+     * @throws IllegalStateFault
+     * @throws IllegalArgumentFault
+     */
     public TUser[] getAssignableUserList(URI taskIdURI) throws IllegalStateFault, IllegalArgumentFault {
         final int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
@@ -400,7 +476,16 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Updates the identified comment with the supplied new text.
+     * @param taskIdURI : task identifier
+     * @param commentId : comment identifier
+     * @param s : new comment in plain text.
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void updateComment(final URI taskIdURI, final URI commentId, final String s)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -420,28 +505,40 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Return Task Abstract details for give Task ID. (Custom API) Similar to getMyTaskAbstracts method in HumanTask API
+     * @param taskIdURI : task identifier
+     * @return Task Abstract
+     * @throws IllegalAccessFault
+     */
     public TTaskAbstract loadTask(URI taskIdURI) throws IllegalAccessFault {
-        try {
-            final Long taskId = validateTaskId(taskIdURI);
-            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<TaskDAO>() {
-                        public TaskDAO call() throws Exception {
-                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
-                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
-                            TaskDAO task = daoConn.getTask(taskId);
-                            validateTaskTenant(task);
-                            return task;
-                        }
-                    });
-            return TransformerUtils.transformTask(task, getCaller());
-        }  catch (Exception ex) {
-            log.error(ex);
-            throw new IllegalAccessFault(ex);
-        }
+//        try {
+        final Long taskId = validateTaskId(taskIdURI);
+//            TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+//                    execTransaction(new Callable<TaskDAO>() {
+//                        public TaskDAO call() throws Exception {
+//                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+//                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+//                            TaskDAO task = daoConn.getTask(taskId);
+//                            validateTaskTenant(task);
+//                            return task;
+//                        }
+//                    });
+//            return TransformerUtils.transformTask(task, getCaller());
+//        }  catch (Exception ex) {
+//            log.error(ex);
+//            throw new IllegalAccessFault(ex);
+//        }
+
+        // New Logic
+        HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+        HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+        TaskDAO task = daoConn.getTask(taskId);
+        validateTaskTenant(task);
+        return TransformerUtils.transformTask(task, getCaller());
     }
 
-    
+
     public TTaskDetails[] getMyTaskDetails(String s, String s1, String s2, TStatus[] tStatuses,
                                            String s3, String s4, String s5, int i, int i1)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault {
@@ -449,13 +546,13 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new TTaskDetails[0];
     }
 
-    
+
     public TBatchResponse[] batchNominate(URI[] uris) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public URI[] getSubtaskIdentifiers(URI uri)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -463,21 +560,53 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new URI[0];
     }
 
-    
+
     public String getOutcome(URI uri) throws IllegalOperationFault, IllegalArgumentFault {
         validateTaskId(uri);
         handleUnsupportedOperation();
         return null;
     }
 
-    
-    public Object getRendering(URI uri, QName qName) throws IllegalArgumentFault {
-        validateTaskId(uri);
-        handleUnsupportedOperation();
-        return null;
+    /**
+     * Returns the rendering specified by the type parameter.
+     * @param taskIdURI task identifier
+     * @param qName rendering type
+     * @return rendering string
+     * @throws IllegalArgumentFault
+     */
+    public Object getRendering(final URI taskIdURI,final QName qName) throws IllegalArgumentFault {
+        final Long taskId = validateTaskId(taskIdURI);
+        try {
+            return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                    execTransaction(new Callable<String>() {
+                        public String call() throws Exception {
+                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+                            TaskDAO task = daoConn.getTask(taskId);
+                            validateTaskTenant(task);
+                            List<QName> renderingTypes = new ArrayList<QName>();
+                            renderingTypes.add(qName);
+                            HumanTaskBaseConfiguration taskConfiguration = HumanTaskServiceComponent.getHumanTaskServer().
+                                    getTaskStoreManager().getHumanTaskStore(task.getTenantId()).
+                                    getTaskConfiguration(QName.valueOf(task.getName()));
+                            Map<QName, String> renderings = CommonTaskUtil.getRenderings(task, taskConfiguration, renderingTypes);
+                            return renderings.get(qName);
+                        }
+                    });
+        } catch (Exception e) {
+            log.error(e);
+            throw new IllegalArgumentFault(e);
+        }
     }
 
-    
+    /**
+     * Skip the task.
+     * @param taskIdURI : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void skip(URI taskIdURI) throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
         try {
@@ -495,20 +624,27 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchFail(URI[] taskIds, TFault tFault) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public void setTaskCompletionDurationExpression(URI uri, NCName ncName, String s)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
         handleUnsupportedOperation();
     }
 
-    
+    /**
+     * Start the task
+     * @param taskId : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void start(final URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -528,7 +664,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Execution of the task fails
+     * @param taskIdURI : task identifier
+     * @param tFault
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void fail(final URI taskIdURI, final TFault tFault)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -555,7 +699,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Activate the task, i.e. set the task to status Ready (Administrative Operations)
+     * @param taskIdURI : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void activate(URI taskIdURI)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -576,7 +727,16 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Add a comment to a task.
+     * @param taskIdURI : task identifier
+     * @param commentString : comment in plain text
+     * @return an identifier that can be used to later update or delete the comment.
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public URI addComment(final URI taskIdURI, final String commentString)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -604,7 +764,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+    /**
+     * Deletes the identified comment.
+     * @param taskIdURI : task identifier
+     * @param commentId : comment identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void deleteComment(final URI taskIdURI, final URI commentId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -626,7 +794,16 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Assign the task to one user and set the task to state Reserved.
+     * @param taskId : task identifier
+     * @param delegatee : organizational entity (htt:tOrganizationalEntity)
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws RecipientNotAllowedException
+     * @throws IllegalAccessFault
+     */
     public void delegate(final URI taskId, final TOrganizationalEntity delegatee)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             RecipientNotAllowedException, IllegalAccessFault {
@@ -656,7 +833,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Get all comments of a task
+     * @param taskIdURI : task identifier
+     * @return : All comments
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public TComment[] getComments(URI taskIdURI)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -678,15 +863,24 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
-    public TTaskInstanceData getTaskInstanceData(URI taskId, String s,
-                                                 TRenderingTypes[] tRenderingTypeses)
+    /**
+     * Get details of a task including rendering elements, similar to load task operation.
+     * @param taskIdentifier : task identifier
+     * @param properties : properties for getTaskInstanceData
+     * @param tRenderingTypes : rendering types.
+     * @return
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
+    public TTaskInstanceData getTaskInstanceData(URI taskIdentifier, String  properties,
+                                                 TRenderingTypes[] tRenderingTypes)
             throws IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault {
-        handleUnsupportedOperation();
+        final Long taskId = validateTaskId(taskIdentifier);
         return null;
     }
 
-    
+
     public TTaskDetails getParentTask(URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -694,19 +888,19 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+
     public TBatchResponse[] batchResume(URI[] taskIds) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TBatchResponse[] batchRemove(URI[] taskIds) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TAttachment[] getAttachment(URI taskIdentifier, URI attachmentIdentifier)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -715,7 +909,19 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new TAttachment[0];
     }
 
-    
+    /**
+     * Add attachment to a task. Returns an identifier for the attachment.
+     * @param taskIdentifier : task identifier
+     * @param name : attachment name
+     * @param accessType : access type
+     * @param contentType : content type
+     * @param attachment : attachment ID (String)
+     * @return
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public boolean addAttachment(URI taskIdentifier, String name, String accessType, String contentType, Object attachment)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
                    IllegalAccessFault {
@@ -755,7 +961,12 @@ public class TaskOperationsImpl extends AbstractAdmin
         return false;
     }
 
-    
+    /**
+     * Get attachment information for all attachments associated with the task.
+     * @param taskIdentifier : task identifier
+     * @return
+     * @throws IllegalAccessFault
+     */
     public TAttachmentInfo[] getAttachmentInfos(final URI taskIdentifier) throws IllegalAccessFault {
 
         final Long taskId = validateTaskId(taskIdentifier);
@@ -778,7 +989,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Applies to notifications only.
+     * Used by notification recipients to remove the notification permanently from their task list client.
+     * @param taskId : Notification identifier
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void remove(URI taskId)
             throws IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault {
 
@@ -804,14 +1022,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchStart(URI[] taskIds) {
 
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public URI instantiateSubtask(URI taskId, String s)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -819,7 +1037,13 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+    /**
+     * Returns authorisation parameters for given task id (Custom API)
+     * @param taskIdURI : task identifier
+     * @return
+     * @throws IllegalStateFault
+     * @throws IllegalArgumentFault
+     */
     public TTaskAuthorisationParams loadAuthorisationParams(URI taskIdURI)
             throws IllegalStateFault, IllegalArgumentFault {
 
@@ -846,7 +1070,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TTaskEventType[] getTaskHistory(URI uri, TTaskHistoryFilter tTaskHistoryFilter, int i,
                                            int i1, boolean b)
             throws IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault {
@@ -855,7 +1079,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new TTaskEventType[0];
     }
 
-    
+
     public void setTaskStartDeadlineExpression(URI uri, NCName ncName, String s)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -863,7 +1087,13 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+    /**
+     * Load all task events. (Custom API)
+     * @param taskIdURI : task identifier
+     * @return
+     * @throws IllegalArgumentFault
+     * @throws IllegalStateFault
+     */
     public TTaskEvents loadTaskEvents(URI taskIdURI)
             throws IllegalArgumentFault, IllegalStateFault {
 
@@ -890,14 +1120,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchDelegate(URI[] uris, TOrganizationalEntity tOrganizationalEntity) {
 
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TBatchResponse[] batchSetGenericHumanRole(URI[] uris, String s,
                                                      TOrganizationalEntity tOrganizationalEntity) {
 
@@ -905,7 +1135,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new TBatchResponse[0];
     }
 
-    
+
     public void setGenericHumanRole(URI uri, String s, TOrganizationalEntity tOrganizationalEntity)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -914,7 +1144,16 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+    /**
+     * Get the data for the part of the task's input message.
+     * @param taskIdURI : task identifier
+     * @param inputIdentifier : input part name
+     * @return : Input String
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public Object getInput(final URI taskIdURI, final NCName inputIdentifier)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -942,14 +1181,22 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+
     public TBatchResponse[] batchSkip(URI[] taskIds) {
 
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+    /**
+     * Execution of the task finished successfully.
+     * @param taskIdURI : task identifier
+     * @param outputStr : task outcome (String)
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void complete(final URI taskIdURI, final String outputStr)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -970,7 +1217,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Checks given task has sub tasks.
+     * @param taskId : task identifier
+     * @return : false, Since current Implementation doesn't support sub tasks.
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public boolean hasSubtasks(URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -979,13 +1234,20 @@ public class TaskOperationsImpl extends AbstractAdmin
         return false;
     }
 
-    
+
     public TBatchResponse[] batchActivate(URI[] taskIds) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+    /**
+     * Claim responsibility for a task, i.e. set the task to status Reserved
+     * @param taskIdURI : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void claim(final URI taskIdURI)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1004,26 +1266,34 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TTaskQueryResultSet query(String s, String s1, String s2, int i, int i1)
             throws IllegalStateFault, IllegalArgumentFault {
         handleUnsupportedOperation();
         return null;
     }
 
-    
+
     public TBatchResponse[] batchClaim(URI[] uris) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TBatchResponse[] batchSetPriority(URI[] uris, TPriority tPriority) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+    /**
+     * Set the fault data of the task.
+     * @param taskIdURI : task identifier
+     * @param tFault fault – contains the fault name and fault data
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void setFault(final URI taskIdURI, final TFault tFault)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1048,7 +1318,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public void suspendUntil(URI taskId, TTime suspendUntilTime)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1056,7 +1326,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+
     public void setTaskStartDurationExpression(URI taskId, NCName ncName, String s)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1064,7 +1334,13 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+    /**
+     * Returns the presentation description in the specified mime type.
+     * @param taskIdURI : task identifier
+     * @param contentTypeStr : content Type Optional, Default "text/plain"
+     * @return Task Description (String)
+     * @throws IllegalArgumentFault
+     */
     public String getTaskDescription(final URI taskIdURI, final String contentTypeStr) throws IllegalArgumentFault {
         try {
             final Long taskId = validateTaskId(taskIdURI);
@@ -1093,7 +1369,7 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public void deleteAttachment(URI taskId, URI attachmentId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1101,7 +1377,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         handleUnsupportedOperation();
     }
 
-    
+    /**
+     * Nominate an organization entity to process the task. (An Administrative Operation)
+     * @param taskIdURI : task identifier
+     * @param nomineeOrgEntity : TOrganizationalEntity
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void nominate(final URI taskIdURI, final TOrganizationalEntity nomineeOrgEntity)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1122,7 +1406,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Deletes the output data of the task.
+     * @param taskIdURI : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void deleteOutput(final URI taskIdURI)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1141,19 +1432,19 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchForward(URI[] taskIds, TOrganizationalEntity tOrganizationalEntity) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TBatchResponse[] batchSuspend(URI[] taskIds) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public TTaskDetails[] getSubtasks(URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1163,7 +1454,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         return new TTaskDetails[0];
     }
 
-    
+    /**
+     * Deletes the fault name and fault data of the task.
+     * @param taskIdURI : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void deleteFault(final URI taskIdURI)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1182,7 +1480,16 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Get the data for the part of the task's output message.
+     * @param taskIdURI : task identifier
+     * @param partNCName : part name (String)
+     * @return Task output (string)
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public Object getOutput(final URI taskIdURI, final NCName partNCName)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1218,7 +1525,14 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+    /**
+     * Release the task, i.e. set the task back to status Ready.
+     * @param taskId : task identifier
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void release(final URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1238,7 +1552,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+    /**
+     * Get the fault data of the task.
+     * @param taskIdURI : task identifier
+     * @return contains the fault name and fault data
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public TFault getFault(URI taskIdURI)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1265,7 +1587,15 @@ public class TaskOperationsImpl extends AbstractAdmin
         return null;
     }
 
-    
+    /**
+     * Change the priority of the task.
+     * @param taskIdURI : task identifier
+     * @param tPriority : The WS-HumanTask Client MUST specify the integer value of the new priority.
+     * @throws IllegalStateFault
+     * @throws IllegalOperationFault
+     * @throws IllegalArgumentFault
+     * @throws IllegalAccessFault
+     */
     public void setPriority(final URI taskIdURI, final TPriority tPriority)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
@@ -1291,13 +1621,13 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
     }
 
-    
+
     public TBatchResponse[] batchSuspendUntil(URI[] taskIds, TTime suspendUntilTime) {
         handleUnsupportedOperation();
         return new TBatchResponse[0];
     }
 
-    
+
     public URI getParentTaskIdentifier(URI taskId)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
             IllegalAccessFault {
