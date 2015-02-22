@@ -7,3 +7,7 @@ target
 *.iws
 *.ipr
 .idea
+/features/attachment-mgt/org.wso2.carbon.attachment.mgt.server.feature/resources/conf/jpadb.h2.db
+/features/bpel/org.wso2.carbon.bpel.server.feature/resources/conf/jpadb.h2.db
+/features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/conf/activiti.h2.db
+/features/humantask/org.wso2.carbon.humantask.server.feature/resources/conf/jpadb.h2.db
