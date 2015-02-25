@@ -25,7 +25,6 @@ import org.w3c.dom.NodeList;
 import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.api.event.TaskEventInfo;
-import org.wso2.carbon.humantask.core.dao.TaskEventType;
 import org.wso2.carbon.humantask.core.api.event.TaskInfo;
 import org.wso2.carbon.humantask.core.api.scheduler.Scheduler;
 import org.wso2.carbon.humantask.core.dao.*;
@@ -318,51 +317,59 @@ public final class CommonTaskUtil {
         return null;
     }
 
-    /**
-     * Returns renderings elements for given rendering types.
-     * @param task  : TaskDAO
-     * @param taskConfiguration : HumanTask base configuration
-     * @param renderingTypes    : List<QName> with rendering types.
-     * @return
-     */
-    public static Map<QName, String> getRenderings(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration,List<QName> renderingTypes) {
+	/**
+	 * Returns rendering elements for given rendering type.
+	 *
+	 * @param task              : TaskDAO
+	 * @param taskConfiguration : HumanTask base configuration
+	 * @param renderingType     : QName of the rendering type.
+	 * @return
+	 */
+	public static String getRendering(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration, QName renderingType) {
 
-        Map<QName, String> processedRenderings = new HashMap<QName, String>();
-        String htdPrefix = taskConfiguration.getNamespaceContext().getPrefix(HumanTaskConstants.HTD_NAMESPACE) + ":";
-        EvaluationContext evalCtx = new ExpressionEvaluationContext(task, taskConfiguration);
+		String htdPrefix = taskConfiguration.getNamespaceContext().getPrefix(HumanTaskConstants.HTD_NAMESPACE) + ":";
+		EvaluationContext evalCtx = new ExpressionEvaluationContext(task, taskConfiguration);
+		if (renderingType != null) {
+			String expressionLanguage = taskConfiguration.getExpressionLanguage();
+			ExpressionLanguageRuntime expLangRuntime = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine()
+			                                                                    .getExpressionLanguageRuntime(
+					                                                                    expressionLanguage);
+			TRendering rendering = taskConfiguration.getRendering(renderingType);
+			if (rendering != null) {
+				// Replace Presentation params with values.
+				// Do not trim, to avoid malformed html. Renderings elements can contains html elements.
+				String processedString = replaceUsingPresentationParams(task.getPresentationParameters(),
+				                                                        rendering.xmlText());
+				// Evaluating xpaths with $ $ marks..
+				try {
+					if(processedString.contains("$")) {
+						String[] split = processedString.split("$");
+						if (split != null && split.length > 0) {
+							StringBuilder sm = new StringBuilder();
+							for (String xpath : split) {
+								if (xpath.startsWith(htdPrefix)) {
+									String value = expLangRuntime.evaluateAsString(xpath, evalCtx);
+									sm.append(value);
+								} else {
+									// This is not a xpath. Adding $ and split content back.
+									sm.append("$").append(xpath);
+								}
+							}
+							processedString = sm.toString();
+						}
+					}
+				} catch (Exception ex) {
+					log.error("Error while evaluating rendering xpath. Please review xpath and deploy " +
+					          task.getDefinitionName() + "task again.", ex);
+				}
+				return processedString;
+			} else {
+				log.warn("Rendering type " + renderingType + "Not found for task definition.");
+			}
 
-        if (renderingTypes != null && renderingTypes.size() > 0) {
-
-            String expressionLanguage = taskConfiguration.getExpressionLanguage();
-            ExpressionLanguageRuntime expLangRuntime = HumanTaskServiceComponent.getHumanTaskServer()
-                    .getTaskEngine().getExpressionLanguageRuntime(expressionLanguage);
-            for (QName type : renderingTypes) {
-                TRendering rendering = taskConfiguration.getRendering(type);
-                if (rendering != null) {
-                    // Replace Presentation params with values.
-                    // Do not trim, to avoid malformed html. Renderings elements can contains html elements.
-                    String processedString = replaceUsingPresentationParams(task.getPresentationParameters(),
-                            rendering.newCursor().getTextValue());
-                    // Evaluating xpaths with $ $ marks..
-                    String[] split = processedString.split("$");
-                    if (split != null && split.length > 0) {
-                        StringBuilder sm = new StringBuilder();
-                        for (String s : split) {
-                            if (s.contains(htdPrefix)) {
-                                String value = expLangRuntime.evaluateAsString(s, evalCtx);
-                                sm.append(value);
-                            } else {
-                                sm.append(s);
-                            }
-                        }
-                        processedString = sm.toString();
-                    }
-                    processedRenderings.put(type, processedString);
-                }
-            }
-        }
-        return processedRenderings;
-    }
+		}
+		return "";
+	}
 
 
     /**

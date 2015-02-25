@@ -571,22 +571,21 @@ public class TaskOperationsImpl extends AbstractAdmin
     public Object getRendering(final URI taskIdURI,final QName qName) throws IllegalArgumentFault {
         final Long taskId = validateTaskId(taskIdURI);
         try {
-            return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+            String rendering =  HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                     execTransaction(new Callable<String>() {
                         public String call() throws Exception {
                             HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
                             HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
                             TaskDAO task = daoConn.getTask(taskId);
                             validateTaskTenant(task);
-                            List<QName> renderingTypes = new ArrayList<QName>();
-                            renderingTypes.add(qName);
                             HumanTaskBaseConfiguration taskConfiguration = HumanTaskServiceComponent.getHumanTaskServer().
                                     getTaskStoreManager().getHumanTaskStore(task.getTenantId()).
                                     getTaskConfiguration(QName.valueOf(task.getName()));
-                            Map<QName, String> renderings = CommonTaskUtil.getRenderings(task, taskConfiguration, renderingTypes);
-                            return renderings.get(qName);
+                            return CommonTaskUtil.getRendering(task, taskConfiguration, qName);
+
                         }
                     });
+	        return rendering;
         } catch (Exception e) {
             log.error(e);
             throw new IllegalArgumentFault(e);
