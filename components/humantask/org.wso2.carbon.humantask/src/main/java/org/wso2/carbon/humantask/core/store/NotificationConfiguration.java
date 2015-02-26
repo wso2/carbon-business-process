@@ -23,11 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
-import org.wso2.carbon.humantask.HumanInteractionsDocument;
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TNotification;
-import org.wso2.carbon.humantask.TPresentationElements;
-import org.wso2.carbon.humantask.TPriorityExpr;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
 import org.wso2.carbon.humantask.core.deployment.config.THTDeploymentConfig;
 import org.wso2.carbon.humantask.core.deployment.config.TPublish;
@@ -37,6 +33,7 @@ import org.wso2.carbon.humantask.core.utils.HumanTaskStoreUtils;
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationConfiguration extends HumanTaskBaseConfiguration {
@@ -47,6 +44,8 @@ public class NotificationConfiguration extends HumanTaskBaseConfiguration {
 
     // Configuration info of notification
     private THTDeploymentConfig.Notification notificationDeploymentConfiguration;
+
+    private List<QName> renderingTypes;
 
     public NotificationConfiguration(TNotification notification,
                                      THTDeploymentConfig.Notification notificationDeploymentConfiguration,
@@ -171,6 +170,52 @@ public class NotificationConfiguration extends HumanTaskBaseConfiguration {
     @Override
     public ConfigurationType getConfigurationType() {
         return ConfigurationType.NOTIFICATION;
+    }
+
+    /**
+     * Get all task renderings.
+     * @return
+     */
+    @Override
+    public TRenderings getRenderings() {
+        return notificationDefinition.getRenderings();
+    }
+
+    /**
+     * Get All rendering QNames
+     * @return QName List
+     */
+    @Override
+    public List<QName> getRenderingTypes() {
+        if (this.renderingTypes == null) {
+            renderingTypes = new ArrayList<QName>();
+            TRenderings renderings = getRenderings();
+            if (renderingTypes != null && renderings.getRenderingArray() != null && renderings.getRenderingArray().length > 0) {
+                for (TRendering rendering : renderings.getRenderingArray()) {
+                    renderingTypes.add(rendering.getType());
+                }
+            }
+        }
+        return renderingTypes;
+    }
+
+    /**
+     * Get specific rendering type.
+     * @param type QName of the rendering type
+     * @return
+     */
+    @Override
+    public TRendering getRendering(QName type) {
+
+        TRenderings renderings = notificationDefinition.getRenderings();
+        if (renderings != null && renderings.getRenderingArray() != null) {
+            for (TRendering rendering : renderings.getRenderingArray()) {
+                if (rendering.getType().equals(type)) {
+                    return rendering;
+                }
+            }
+        }
+        return null;
     }
 
     /**

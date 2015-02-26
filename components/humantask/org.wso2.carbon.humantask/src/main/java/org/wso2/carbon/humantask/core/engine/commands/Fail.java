@@ -21,8 +21,12 @@ import org.wso2.carbon.humantask.core.dao.EventDAO;
 import org.wso2.carbon.humantask.core.dao.GenericHumanRoleDAO;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
 import org.wso2.carbon.humantask.core.dao.TaskStatus;
+import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServerHolder;
+import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
+import org.wso2.carbon.humantask.core.store.TaskConfiguration;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +101,26 @@ public class Fail extends AbstractHumanTaskCommand {
         checkPreConditions();
         checkState();
         task.fail(faultName, faultElement);
-        processTaskEvent();
-        checkPostConditions();
+	    sendFaultProtocolMessage(task);
+	    processTaskEvent();
+	    checkPostConditions();
     }
+
+	private void sendFaultProtocolMessage(TaskDAO task) {
+		// Sending Fault Protocol Message if Coordination is enabled
+		if (HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().isHtCoordinationEnabled()) {
+
+			TaskConfiguration taskConf =
+					(TaskConfiguration) HumanTaskServiceComponent.getHumanTaskServer().getTaskStoreManager()
+					                                             .getHumanTaskStore(task.getTenantId())
+					                                             .getTaskConfiguration(QName.valueOf(task.getName()));
+			try {
+				taskConf.getCallBackService().invokeSkip(task.getId());
+			} catch (Exception e) {
+				throw new HumanTaskRuntimeException(
+						"Error occurred while sending fault protocol message to callback service", e);
+			}
+		}
+
+	}
 }

@@ -23,12 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
-import org.wso2.carbon.humantask.HumanInteractionsDocument;
-import org.wso2.carbon.humantask.TDeadline;
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TPresentationElements;
-import org.wso2.carbon.humantask.TPriorityExpr;
-import org.wso2.carbon.humantask.TTask;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.CallBackService;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
@@ -43,6 +38,7 @@ import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,6 +60,8 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
     private boolean useOneWSDL = false;
 
     private CallBackService callBackService;
+
+    private List<QName> renderingTypes;
 
     public TaskConfiguration(TTask task,
                              THTDeploymentConfig.Task taskDeploymentConfiguration,
@@ -267,6 +265,51 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
     @Override
     public ConfigurationType getConfigurationType() {
         return ConfigurationType.TASK;
+    }
+
+    /**
+     * Get all task renderings.
+     * @return
+     */
+    @Override
+    public TRenderings getRenderings() {
+        return task.getRenderings();
+    }
+
+    /**
+     * Get All rendering QNames
+     * @return QName List
+     */
+    @Override
+    public List<QName> getRenderingTypes() {
+        if (this.renderingTypes == null) {
+            renderingTypes = new ArrayList<QName>();
+            TRenderings renderings = getRenderings();
+            if (renderingTypes != null && renderings.getRenderingArray() != null && renderings.getRenderingArray().length > 0) {
+                for (TRendering rendering : renderings.getRenderingArray()) {
+                    renderingTypes.add(rendering.getType());
+                }
+            }
+        }
+        return renderingTypes;
+    }
+
+    /**
+     * Get specific rendering type.
+     * @param type QName of the rendering type
+     * @return
+     */
+    @Override
+    public TRendering getRendering(QName type) {
+        TRenderings renderings = task.getRenderings();
+        if (renderings != null && renderings.getRenderingArray() != null) {
+            for (TRendering rendering : renderings.getRenderingArray()) {
+                if (rendering.getType().equals(type)) {
+                    return rendering;
+                }
+            }
+        }
+        return null;
     }
 
     public void setCallBackService(CallBackService callBackService) {

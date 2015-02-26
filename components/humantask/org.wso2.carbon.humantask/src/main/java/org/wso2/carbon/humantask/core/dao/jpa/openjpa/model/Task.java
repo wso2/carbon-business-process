@@ -908,6 +908,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         for (GenericHumanRoleDAO role : getHumanRoles()) {
             if (type.equals(role.getType())) {
                 matchingRole = role;
+                break;
             }
         }
 
