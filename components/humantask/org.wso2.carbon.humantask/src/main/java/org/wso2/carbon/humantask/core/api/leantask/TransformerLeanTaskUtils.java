@@ -4,11 +4,8 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.databinding.ADBException;
 import org.apache.xmlbeans.XmlException;
-import org.wso2.carbon.humantask.*;
-import org.wso2.carbon.humantask.client.api.TLeanTask;
-import org.wso2.carbon.humantask.core.utils.DOMUtils;
-import org.wso2.carbon.humantask.impl.LeanTaskDocumentImpl;
-import org.wso2.carbon.humantask.impl.TLeanTaskImpl;
+import org.wso2.carbon.humantask.LeanTaskDocument;
+import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 
 import javax.xml.namespace.QName;
 

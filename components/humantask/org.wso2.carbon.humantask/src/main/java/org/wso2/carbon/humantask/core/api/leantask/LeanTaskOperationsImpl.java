@@ -7,8 +7,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlException;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.humantask.LeanTaskDocument;
-import org.wso2.carbon.humantask.client.api.TLeanTask;
 import org.wso2.carbon.humantask.client.api.leantask.*;
+import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
+import org.wso2.carbon.humantask.client.api.leantask.namespace.LeanTaskDefinitions_type0;
 import org.wso2.carbon.humantask.core.store.LeanTaskBaseConfguration;
 
 import javax.management.modelmbean.XMLParseException;
@@ -23,12 +24,6 @@ import javax.management.modelmbean.XMLParseException;
 public class LeanTaskOperationsImpl extends AbstractAdmin implements LeanTaskServiceSkeletonInterface {
 
     private static Log log = LogFactory.getLog(LeanTaskOperationsImpl.class);
-
-
-    public void createLeanTaskAsync(Object inputMessage, TLeanTask taskDefinition, NCName taskName) throws
-            IllegalArgumentFault, IllegalAccessFault {
-
-    }
 
     public NCName registerLeanTaskDefinition(TLeanTask taskDefinition0)
             throws IllegalStateFault, IllegalAccessFault {
@@ -49,8 +44,11 @@ public class LeanTaskOperationsImpl extends AbstractAdmin implements LeanTaskSer
     }
 
     public LeanTaskDefinitions_type0 listLeanTaskDefinitions() throws IllegalAccessFault {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-        return null;
+    public void createLeanTaskAsync(Object inputMessage, TLeanTask taskDefinition, NCName taskName) throws IllegalArgumentFault, IllegalAccessFault {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public NCName unregisterLeanTaskDefinition(NCName taskName2)
