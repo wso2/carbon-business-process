@@ -17,7 +17,8 @@
  */
 
 var httpUrl = window.location.protocol + "//" + window.location.host;
-var appName = "WS-Humantask-Explorer"; //TODO finalize appName
+var appName = "humantask-explorer"; //TODO finalize appName
+
 
 /**
  * function to make ajax call to claim task
@@ -568,4 +569,18 @@ function assignTaskModalUpdate(id) {
     });
 
 }
+
+/**
+ * function to submit form to specified action
+ * @param formId
+ * @param formAction
+ */
+function submitForm (formId, formAction) {
+
+    var requestUrl = "/" + appName + formAction;
+
+    document.forms.namedItem(formId).action = requestUrl;
+    document.forms.namedItem(formId).submit();
+}
+
 
