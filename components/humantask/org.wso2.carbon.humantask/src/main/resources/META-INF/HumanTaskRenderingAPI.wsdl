@@ -141,6 +141,32 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="completeTask">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="taskIdentifier" type="xsd:anyURI"></xsd:element>
+                        <xsd:element name="values"
+                                     type="tns:setOutputValuesType">
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="completeTaskResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="success" type="xsd:boolean"></xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="completeTaskFault">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="completeTaskFault"
+                                     type="xsd:string">
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
         </xsd:schema>
     </wsdl:types>
     <wsdl:message name="getRenderingsRequest">
@@ -161,6 +187,15 @@
     <wsdl:message name="setTaskOutputFault">
         <wsdl:part name="parameters" element="tns:setTaskOutputFault"/>
     </wsdl:message>
+    <wsdl:message name="completeTaskRequest">
+        <wsdl:part name="parameters" element="tns:completeTask"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="completeTaskResponse">
+        <wsdl:part name="parameters" element="tns:completeTaskResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="completeTaskFault">
+        <wsdl:part name="parameters" element="tns:completeTaskFault"></wsdl:part>
+    </wsdl:message>
     <wsdl:portType name="renderingOperations">
         <wsdl:operation name="getRenderings">
             <wsdl:input message="tns:getRenderingsRequest"/>
@@ -171,6 +206,11 @@
             <wsdl:input message="tns:setTaskOutputRequest"/>
             <wsdl:output message="tns:setTaskOutputResponse"/>
             <wsdl:fault name="setTaskOutputFault" message="tns:setTaskOutputFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="completeTask">
+            <wsdl:input message="tns:completeTaskRequest"></wsdl:input>
+            <wsdl:output message="tns:completeTaskResponse"></wsdl:output>
+            <wsdl:fault name="completeTaskFault" message="tns:completeTaskFault"></wsdl:fault>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="renderingOperationsSOAP"
@@ -203,10 +243,23 @@
                 <soap:fault use="literal" name="setTaskOutputFault" />
             </wsdl:fault>
         </wsdl:operation>
+        <wsdl:operation name="completeTask">
+            <soap:operation
+                    soapAction="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/completeTask" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="completeTaskFault">
+                <soap:fault use="literal" name="completeTaskFault" />
+            </wsdl:fault>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="HumanTaskRenderingAPI">
         <wsdl:port binding="tns:renderingOperationsSOAP" name="renderingOperationsSOAP">
-            <soap:address location="http://www.example.org/"/>
+            <soap:address location="https://www.example.org/"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
