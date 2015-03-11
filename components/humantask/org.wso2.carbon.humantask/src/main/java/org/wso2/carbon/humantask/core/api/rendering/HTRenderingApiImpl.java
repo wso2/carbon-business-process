@@ -283,8 +283,6 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
 
         //check availability of input renderings
         if (inputRenderings != null && inputRenderings.length() > 0) {
-            //TODO remove log
-            log.info(inputRenderings);
 
             //parse input renderings
             Element inputRenderingsElement = DOMUtils.stringToDOM(inputRenderings);
@@ -301,10 +299,6 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                     Element tempElement = (Element) inputElementList.item(i);
                     String label = tempElement.getElementsByTagNameNS(htRenderingNS, "label").item(0).getTextContent();
                     String value = tempElement.getElementsByTagNameNS(htRenderingNS, "value").item(0).getTextContent();
-
-                    //TODO remove logs
-                    log.info("Label:" + label);
-                    log.info("Value:" + value);
 
                     inputElements[i] = new InputElementType();
                     inputElements[i].setLabel(label);
@@ -381,11 +375,6 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                         String label = tempElement.getElementsByTagNameNS(htRenderingNS, "label").item(0).getTextContent();
                         String xpath = tempElement.getElementsByTagNameNS(htRenderingNS, "xpath").item(0).getTextContent();
                         String defaultValue = tempElement.getElementsByTagNameNS(htRenderingNS, "default").item(0).getTextContent();
-
-                        //TODO remove logs
-                        log.info("Label:" + label);
-                        log.info("xpath:" + xpath);
-                        log.info("defaultValue:" + defaultValue);
 
                         //set element data in the response message
                         outputElements[i] = new OutputElementType();
