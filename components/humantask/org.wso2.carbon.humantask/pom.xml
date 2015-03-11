@@ -113,6 +113,10 @@
             <artifactId>org.wso2.carbon.ntask.core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.predic8.wso2</groupId>
+            <artifactId>soa.model.core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
