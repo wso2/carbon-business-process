@@ -22,7 +22,8 @@
     var data = {
         title : "WS Humantask Explorer",
         author: "WSO2 Business Process Server",
-        footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved."
+        footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved.",
+        webappUrlName: "humantask-explorer"
     };
 
     //construct backend URI (asume webapp deployed in BPS)
@@ -42,5 +43,8 @@
     var SOAPENV_NS = new Namespace('http://schemas.xmlsoap.org/soap/envelope/');
     var NS2_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803');
     var NS1_NS = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803');
+    var htd = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803');
+    var rendering_NS = new Namespace('http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI');
+
 
 %>
