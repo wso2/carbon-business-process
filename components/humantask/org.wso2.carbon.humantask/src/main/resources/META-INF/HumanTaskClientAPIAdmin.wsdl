@@ -3159,7 +3159,7 @@
                 <soap:fault use="literal" name="illegalArgumentFault"/>
             </wsdl:fault>
         </wsdl:operation>
-       <wsdl:operation name="getAssignableUserList">
+        <wsdl:operation name="getAssignableUserList">
             <soap:operation
                     soapAction="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getAssignableUserList"/>
             <wsdl:input>
@@ -3322,10 +3322,10 @@
             <wsdl:output>
                 <soap:body use="literal"/>
             </wsdl:output>
-			<wsdl:fault name="illegalArgumentFault">
+            <wsdl:fault name="illegalArgumentFault">
                 <soap:fault use="literal" name="illegalArgumentFault"/>
             </wsdl:fault>
-			<wsdl:fault name="illegalOperationFault">
+            <wsdl:fault name="illegalOperationFault">
                 <soap:fault use="literal" name="illegalOperationFault"/>
             </wsdl:fault>
         </wsdl:operation>
@@ -3464,10 +3464,10 @@
             <wsdl:output>
                 <soap:body use="literal"/>
             </wsdl:output>
-			<wsdl:fault name="illegalArgumentFault">
+            <wsdl:fault name="illegalArgumentFault">
                 <soap:fault use="literal" name="illegalArgumentFault"/>
             </wsdl:fault>
-			<wsdl:fault name="illegalOperationFault">
+            <wsdl:fault name="illegalOperationFault">
                 <soap:fault use="literal" name="illegalOperationFault"/>
             </wsdl:fault>
         </wsdl:operation>

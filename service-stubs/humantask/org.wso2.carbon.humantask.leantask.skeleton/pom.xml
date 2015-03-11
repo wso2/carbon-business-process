@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+
+    <parent>
+        <groupId>org.wso2.carbon.business-process</groupId>
+        <artifactId>humantask-stub</artifactId>
+        <version>4.3.2-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.wso2.carbon.humantask.leantask.skeleton</artifactId>
+    <packaging>bundle</packaging>
+    <name>WSO2 Carbon - Lean Task Skeleton</name>
+    <url>http://wso2.org</url>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>source-code-generation</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <path id="wsdl2java.classpath">
+                                    <pathelement location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/${orbit.version.axiom}/axiom-${orbit.version.axiom}.jar" />
+                                    <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/${orbit.version.axis2}/axis2-client-${orbit.version.axis2}.jar" />
+                                    <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/${orbit.version.axis2}/axis2-${orbit.version.axis2}.jar" />
+                                </path>
+
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/ws-humantask-leantask-api.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.humantask.leantask.client.api -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/200803=org.wso2.carbon.humantask.leantask.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803=org.wso2.carbon.humantask.leantask.client.api.namespace,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.leantask.client.api.humantask,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.leantask.client.api.types,http://www.w3.org/XML/1998/namespace=org.wso2.carbon.humantask.leantask.client.api.xml"/>
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
+                                </java>
+
+                                <delete file="target/generated-code/src/org/wso2/carbon/humantask/leantask/client/api/LeanTaskClientAPIAdminSkeleton.java" verbose="true" failonerror="true" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>
+                                    target/generated-code/src
+                                </source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Export-Package>
+                            org.wso2.carbon.humantask.leantask.client.api.*,
+
+                      </Export-Package>
+                        <_nouse>true</_nouse>
+                        <Import-Package>
+                            !org.wso2.carbon.humantask.leantask.client.api.*,
+                            javax.activation.*;version="[0.0.0, 1.0.0)"
+                        </Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

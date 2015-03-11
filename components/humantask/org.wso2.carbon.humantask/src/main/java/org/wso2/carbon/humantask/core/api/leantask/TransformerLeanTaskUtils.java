@@ -4,8 +4,8 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.databinding.ADBException;
 import org.apache.xmlbeans.XmlException;
+import org.wso2.carbon.humantask.leantask.client.api.humantask.TLeanTask;
 import org.wso2.carbon.humantask.LeanTaskDocument;
-import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 
 import javax.xml.namespace.QName;
 
@@ -23,7 +23,7 @@ public class TransformerLeanTaskUtils {
         org.wso2.carbon.humantask.TLeanTask xmlbLeantask = org.wso2.carbon.humantask.TLeanTask.Factory.newInstance();
 
 
-        QName ns = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803", "taskDefinition");
+        QName ns = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803", "taskDefinition");
 
 
         OMElement taskDef = adbLeantask.getOMElement(ns, OMAbstractFactory.getOMFactory());
@@ -44,6 +44,7 @@ public class TransformerLeanTaskUtils {
 
         return document;
     }
-
-
 }
+
+
+

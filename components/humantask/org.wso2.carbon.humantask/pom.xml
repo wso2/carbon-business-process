@@ -117,6 +117,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.humantask.leantask.skeleton</artifactId>
+            <version>4.3.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -316,6 +321,7 @@
                         <Import-Package>
                             org.wso2.carbon.humantask.client.api.*;
                             version="${carbon.business-process.imp.pkg.version}",
+                            org.wso2.carbon.humantask.leantask.client.api.*,
                             org.wso2.carbon.humantask.skeleton.mgt.services.*;
                             version="${carbon.business-process.imp.pkg.version}",
                             org.wso2.carbon.humantask.skeleton.protocol.mgt.services.*;

@@ -2,7 +2,11 @@
 <!--
   Copyright (c) OASIS Open 2009. All Rights Reserved.
 -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803" targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803" elementFormDefault="qualified" blockDefault="#all">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+            targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+            elementFormDefault="qualified"
+            blockDefault="#all">
   
   <xsd:annotation>
     <xsd:documentation>
@@ -17,24 +21,17 @@
   <xsd:complexType name="tExtensibleElements">
     <xsd:sequence>
       <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
-    <xsd:anyAttribute namespace="##other" processContents="lax"/>
   </xsd:complexType>
 
   <xsd:complexType name="tDocumentation" mixed="true">
-    <xsd:sequence>
-      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
     <xsd:attribute ref="xml:lang"/>
   </xsd:complexType>
   
   <xsd:complexType name="tExtensibleMixedContentElements" mixed="true">
     <xsd:sequence>
       <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
-    <xsd:anyAttribute namespace="##other" processContents="lax"/>
   </xsd:complexType>
 
   <!-- human interactions definition -->
@@ -296,7 +293,6 @@
       <xsd:restriction base="tTaskBase">
         <xsd:sequence>
           <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="interface" type="tTaskInterface"/>
           <xsd:element name="messageSchema" type="tMessageSchema" minOccurs="0" maxOccurs="0"/>
           <xsd:element name="priority" type="tPriority-expr" minOccurs="0"/>
@@ -312,7 +308,6 @@
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:NCName" use="required"/>
         <xsd:attribute name="actualOwnerRequired" type="tBoolean" use="optional" default="yes"/>
-        <xsd:anyAttribute namespace="##other" processContents="lax"/>
       </xsd:restriction>
     </xsd:complexContent>
   </xsd:complexType>
@@ -556,7 +551,6 @@
       <xsd:restriction base="tTaskBase">
         <xsd:sequence>
           <xsd:element name="documentation" type="tDocumentation" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="interface" type="tTaskInterface" minOccurs="0" maxOccurs="0"/>
           <xsd:element name="messageSchema" type="tMessageSchema"/>
           <xsd:element name="priority" type="tPriority-expr" minOccurs="0"/>
@@ -571,7 +565,6 @@
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:NCName" use="required"/>
         <xsd:attribute name="actualOwnerRequired" type="tBoolean" use="optional" default="yes"/>
-        <xsd:anyAttribute namespace="##other" processContents="lax"/>
       </xsd:restriction>
     </xsd:complexContent>
   </xsd:complexType>

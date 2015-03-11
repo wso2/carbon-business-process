@@ -337,7 +337,7 @@
 
     <wsdl:service name="LeanTaskClientAPIAdmin">
         <wsdl:port binding="leantaskOperationsSOAP" name="leantaskOperationsPort">
-            <soap:address location="https://localhost:9443/services/LeanTaskClientAPIAdmin"/>
+            <soap:address location="http://www.example.org/"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
