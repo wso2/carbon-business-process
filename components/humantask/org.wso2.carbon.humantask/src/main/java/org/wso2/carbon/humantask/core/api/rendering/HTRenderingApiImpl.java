@@ -43,6 +43,7 @@ import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.store.TaskConfiguration;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
+import org.wso2.carbon.humantask.rendering.api.CompleteTaskFaultException;
 import org.wso2.carbon.humantask.rendering.api.GetRenderingsFaultException;
 import org.wso2.carbon.humantask.rendering.api.GetRenderingsResponse;
 import org.wso2.carbon.humantask.rendering.api.HumanTaskRenderingAPISkeletonInterface;
@@ -233,6 +234,33 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
         response.setSuccess(true);
 
         return response;
+    }
+
+    public boolean completeTask(URI taskIdentifier0, SetOutputValuesType values1)
+            throws CompleteTaskFaultException {
+
+        try {
+            setTaskOutput(taskIdentifier0, values1);
+        } catch (SetTaskOutputFaultException e) {
+            log.error("Error occured while setting task output message", e);
+            throw new CompleteTaskFaultException("Error occured while setting task output message", e);
+        }
+
+        try {
+
+            String savedOutputMsg = (String) taskOps.getOutput(taskIdentifier0, null);
+            if (savedOutputMsg != null && savedOutputMsg.length() > 0) {
+                taskOps.complete(taskIdentifier0, savedOutputMsg);
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            log.error("Error occured while completing the task", e);
+            throw new CompleteTaskFaultException("Error occured while completing the task", e);
+        }
+
     }
 
 
@@ -544,14 +572,16 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
             throws IOException, SAXException, IllegalAccessFault, IllegalArgumentFault,
                    IllegalStateFault, IllegalOperationFault, XPathExpressionException {
 
-        //Evaluate XPath
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        NamespaceResolver nsResolver = new NamespaceResolver(nsReferenceDoc);
-        xPath.setNamespaceContext(nsResolver);
-        Node result = (Node) xPath.evaluate(xPathExpression, savedOutputElement, XPathConstants.NODE);
+        if (xPathExpression.length() > 0) {
+            //Evaluate XPath
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NamespaceResolver nsResolver = new NamespaceResolver(nsReferenceDoc);
+            xPath.setNamespaceContext(nsResolver);
+            Node result = (Node) xPath.evaluate(xPathExpression, savedOutputElement, XPathConstants.NODE);
 
-        if (result != null && result.getFirstChild().hasChildNodes() == false) {
-            return result.getTextContent();
+            if (result != null && result.getFirstChild().hasChildNodes() == false) {
+                return result.getTextContent();
+            }
         }
 
         return null;
@@ -571,13 +601,15 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
     private Element updateXmlByXpath(Element xmlElement, String xPathExpression, String value,
                                      Document referanceDoc)
             throws XPathExpressionException {
-        //Evaluate XPath
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        NamespaceResolver nsResolver = new NamespaceResolver(referanceDoc);
-        xPath.setNamespaceContext(nsResolver);
+        if (xPathExpression.length() > 0) {
+            //Evaluate XPath
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NamespaceResolver nsResolver = new NamespaceResolver(referanceDoc);
+            xPath.setNamespaceContext(nsResolver);
 
-        Node result = (Node) xPath.evaluate(xPathExpression, xmlElement, XPathConstants.NODE);
-        result.setTextContent(value);
+            Node result = (Node) xPath.evaluate(xPathExpression, xmlElement, XPathConstants.NODE);
+            result.setTextContent(value);
+        }
 
         return xmlElement;
     }
