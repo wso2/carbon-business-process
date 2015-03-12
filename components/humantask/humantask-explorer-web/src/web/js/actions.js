@@ -584,3 +584,8 @@ function submitForm (formId, formAction) {
 }
 
 
+function completeTask (formId, formAction) {
+    submitForm (formId, formAction);
+}
+
+
