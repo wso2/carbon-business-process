@@ -72,16 +72,17 @@
                                     <classpath refid="maven.runtime.classpath" />
                                 </java>
 
-                                <!--<java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/ws-humantask-leantask-callbackservice.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.humantask.client.api.leantask -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/200803=org.wso2.carbon.humantask.client.api.leantask,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803=org.wso2.carbon.humantask.client.api.leantask.namespace,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.client.api.leantask.humantask,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.client.api.leantask.types,http://www.w3.org/XML/1998/namespace=org.wso2.carbon.humantask.client.api.leantask.xml" />
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/ws-humantask-leantask-api.wsdl -uw -ss -ssi -sd -o target/generated-code -p org.wso2.carbon.humantask.client.api.leantask -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/200803=org.wso2.carbon.humantask.client.api.leantask,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803=org.wso2.carbon.humantask.client.api.leantask.namespace,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.client.api.leantask.humantask,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.client.api.leantask.types,http://www.w3.org/XML/1998/namespace=org.wso2.carbon.humantask.client.api.leantask.xml" />
                                     <classpath refid="maven.dependency.classpath" />
                                     <classpath refid="maven.compile.classpath" />
                                     <classpath refid="maven.runtime.classpath" />
-                                </java> -->
+                                </java>
 
                                 <delete file="target/generated-code/src/org/wso2/carbon/humantask/client/api/HumanTaskClientAPIAdminSkeleton.java" verbose="true" failonerror="true" />
                                 <delete file="/target/generated-code/src/org/wso2/carbon/humantask/skeleton/mgt/services/HumanTaskPackageManagementSkeleton.java" verbose="true" failonerror="true" />
                                 <delete file="/target/generated-code/src/org/wso2/carbon/humantask/skeleton/protocol/mgt/services/HumanTaskProtocolHandlerSkeleton.java" verbose="true" failonerror="true" />
+                                <delete file="target/generated-code/src/org/wso2/carbon/humantask/client/api/leantask/LeanTaskClientAPIAdminSkeleton.java" verbose="true" failonerror="true" />
                             </tasks>
                         </configuration>
                     </execution>

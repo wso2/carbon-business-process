@@ -700,10 +700,13 @@
   </xsd:complexType>
   
   <xsd:complexType name="tLiteral" mixed="true">
-    <xsd:sequence>
+    <!--xsd:sequence>
       <xsd:any namespace="##any" processContents="lax"/>
     </xsd:sequence>
-    <xsd:anyAttribute namespace="##other" processContents="lax"/>
+    <xsd:anyAttribute namespace="##other" processContents="lax"/-->
+      <xsd:sequence>
+          <xsd:any processContents="skip"/>
+      </xsd:sequence>
   </xsd:complexType>
   
   <xsd:complexType name="tQuery" mixed="true">

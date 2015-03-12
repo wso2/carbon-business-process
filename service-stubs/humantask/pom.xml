@@ -34,7 +34,6 @@
     <url>http://wso2.org</url>
 
     <modules>
-        <module>org.wso2.carbon.humantask.leantask.skeleton</module>
         <module>org.wso2.carbon.humantask.skeleton</module>
         <module>org.wso2.carbon.humantask.stub</module>
     </modules>
