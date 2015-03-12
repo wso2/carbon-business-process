@@ -105,6 +105,12 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
         } catch (SAXException e) {
             log.error("Error occured while retrieving input renderings", e);
             throw new GetRenderingsFaultException("Error occured while retrieving input renderings");
+        } catch (XPathExpressionException e) {
+            log.error("Error occurred while evaluating xpath expression over user input message", e);
+            throw new GetRenderingsFaultException("Error occurred while evaluating xpath expression over user input message");
+        } catch (Exception e) {
+            log.error("Internal Error Occurred", e);
+            throw new GetRenderingsFaultException(e.getMessage());
         }
 
         //retrieve output renderings
@@ -272,7 +278,8 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
      * @throws SAXException         If the content in the input source is invalid
      */
     private InputType getRenderingInputElements(URI taskIdentifier)
-            throws IllegalArgumentFault, IOException, SAXException {
+            throws IllegalArgumentFault, IOException, SAXException, IllegalOperationFault,
+                   IllegalAccessFault, IllegalStateFault, XPathExpressionException {
 
         //TODO Chaching : check cache against task id for input renderings
         QName renderingType = new QName(htRenderingNS, "input", "wso2");
@@ -290,6 +297,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
             //retrieve input elements
             NodeList inputElementList = inputRenderingsElement.getElementsByTagNameNS(htRenderingNS, "element");
 
+            Element taskInputMsgElement = DOMUtils.stringToDOM((String) taskOps.getInput(taskIdentifier, null));
             if (inputElementList != null && inputElementList.getLength() > 0) {
 
                 int inputElementNum = inputElementList.getLength();//hold number of input element
@@ -300,6 +308,15 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                     String label = tempElement.getElementsByTagNameNS(htRenderingNS, "label").item(0).getTextContent();
                     String value = tempElement.getElementsByTagNameNS(htRenderingNS, "value").item(0).getTextContent();
 
+                    //check if the value is xpath or not
+                    //if the value starts with '/' then considered as an xpath and evaluate over received Input Message
+                    if (value.startsWith("/") && taskInputMsgElement != null) {
+                        //value represents xpath. evaluate against the input message
+                        String xpathValue = evaluateXPath(value, taskInputMsgElement, inputRenderingsElement.getOwnerDocument());
+                        if (xpathValue != null) {
+                            value = xpathValue;
+                        }
+                    }
                     inputElements[i] = new InputElementType();
                     inputElements[i].setLabel(label);
                     inputElements[i].setValue(value);
@@ -391,7 +408,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                         if (savedOutputElement != null) {
                             //resolve default value
 
-                            String savedOutMessageValue = getSavedOutDefaultValue(xpath, savedOutputElement, outputRenderingsElement.getOwnerDocument());
+                            String savedOutMessageValue = evaluateXPath(xpath, savedOutputElement, outputRenderingsElement.getOwnerDocument());
                             if (savedOutMessageValue == null) {
                                 outputElements[i].set_default(defaultValue);
                             } else {
@@ -545,7 +562,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
      * Function to evaluate xpath and retrieve String of the result
      *
      * @param xPathExpression
-     * @param savedOutputElement
+     * @param xPathExpression
      * @param nsReferenceDoc
      * @return result of the XPath expression if evaluation success, Otherwise return null
      * @throws IOException
@@ -556,8 +573,8 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
      * @throws IllegalOperationFault
      * @throws XPathExpressionException
      */
-    private String getSavedOutDefaultValue(String xPathExpression,
-                                           Element savedOutputElement, Document nsReferenceDoc)
+    private String evaluateXPath(String xPathExpression,
+                                           Element targetXmlElement, Document nsReferenceDoc)
             throws IOException, SAXException, IllegalAccessFault, IllegalArgumentFault,
                    IllegalStateFault, IllegalOperationFault, XPathExpressionException {
 
@@ -566,7 +583,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
             XPath xPath = XPathFactory.newInstance().newXPath();
             NamespaceResolver nsResolver = new NamespaceResolver(nsReferenceDoc);
             xPath.setNamespaceContext(nsResolver);
-            Node result = (Node) xPath.evaluate(xPathExpression, savedOutputElement, XPathConstants.NODE);
+            Node result = (Node) xPath.evaluate(xPathExpression, targetXmlElement, XPathConstants.NODE);
 
             if (result != null && result.getFirstChild().hasChildNodes() == false) {
                 return result.getTextContent();
