@@ -99,14 +99,13 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
-    public LeanTask createLeanTaskDef(final int tenantId, final String name, final long version,final Element leanTaskDef) throws Exception {
+    public LeanTask createLeanTaskDef(final int tenantId, final String name,final Element leanTaskDef) throws Exception {
 
 
         final LeanTask taskDef = new LeanTask();
         try {
             taskDef.setTenantID(tenantId);
             taskDef.setName(name);
-            taskDef.setVersion(version);
             taskDef.setLeanTask(leanTaskDef);
             entityManager.persist(taskDef);
 

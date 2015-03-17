@@ -39,7 +39,11 @@ public class LeanTask implements LeanTaskDAO{
 
     @Id
     @Column(name = "LEANTASK_VERSION", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long version;
+
+    @Column(name="LEANTASK_DEF_NAME",nullable = false)
+    private String leanTaskDefName;
 
     @Column(name = "LEANTASK_DEF", nullable = false, columnDefinition = "CLOB")
     @Lob
@@ -53,10 +57,15 @@ public class LeanTask implements LeanTaskDAO{
 
     public void setName(String name) {
         this.name=name;
+        this.leanTaskDefName=name;
     }
 
     public void setVersion(long version) {
         this.version=version;
+    }
+
+    public void setTaskDefName(){
+
     }
 
     public void setLeanTask(Element leanTask) {
@@ -78,4 +87,6 @@ public class LeanTask implements LeanTaskDAO{
     public Element getLeanTask() throws IOException, SAXException {
         return DOMUtils.stringToDOM(leanTaskDef);
     }
+
+    public String getTaskDefName(){return leanTaskDefName;}
 }

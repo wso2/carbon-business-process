@@ -47,6 +47,10 @@ public interface LeanTaskDAO {
      */
     void setVersion(long version);
 
+
+   void setTaskDefName();
+
+
     /**
      * set lean task definition
      * @param leanTask
@@ -76,6 +80,8 @@ public interface LeanTaskDAO {
      * @return
      */
     Element getLeanTask() throws IOException, SAXException;
+
+   String getTaskDefName();
 
 
 }

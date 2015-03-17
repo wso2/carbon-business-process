@@ -49,8 +49,7 @@ public class LeanTaskOperationsImpl extends AbstractAdmin implements LeanTaskCli
                         public Object call() throws Exception {
                             HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
                             HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
-                            final long version=daoConn.getNextVersion();
-                            daoConn.createLeanTaskDef(tenantId,name,version,e);
+                            daoConn.createLeanTaskDef(tenantId,name,e);
                             return null;
                         }
                     });
