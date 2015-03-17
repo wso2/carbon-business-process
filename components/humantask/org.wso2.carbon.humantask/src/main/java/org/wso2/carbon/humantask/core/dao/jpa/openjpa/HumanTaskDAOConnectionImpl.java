@@ -2,11 +2,13 @@ package org.wso2.carbon.humantask.core.dao.jpa.openjpa;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException;
 import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.*;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.util.HumanTaskBuilderImpl;
+import org.wso2.carbon.humantask.core.dao.jpa.openjpa.util.LeanTaskBuilderImpl;
 import org.wso2.carbon.humantask.core.dao.sql.HumanTaskJPQLQueryBuilder;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
 import org.wso2.carbon.humantask.core.engine.HumanTaskException;
@@ -96,6 +98,43 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
         return task;
     }
 
+
+    public LeanTask createLeanTaskDef(final int tenantId, final String name, final long version,final Element leanTaskDef) throws Exception {
+
+
+        final LeanTask taskDef = new LeanTask();
+        try {
+            taskDef.setTenantID(tenantId);
+            taskDef.setName(name);
+            taskDef.setVersion(version);
+            taskDef.setLeanTask(leanTaskDef);
+            entityManager.persist(taskDef);
+
+
+        }
+        catch (Exception e){
+            log.error(e);
+        }
+
+        return taskDef;
+    }
+
+    public TaskDAO createLeanTask(LeanTaskCreationContext creationContext) throws HumanTaskException{
+
+        if(log.isDebugEnabled()) {
+            log.debug("Creating task instance for lean task " + creationContext.getTaskConfiguration().getName());
+        }
+
+        LeanTaskBuilderImpl leanTaskBuilder=new LeanTaskBuilderImpl();
+        MessageDAO inputMessage =createLeanMessage(creationContext);
+        leanTaskBuilder.addTaskCreationContext(creationContext).addInputMessage(inputMessage);
+        TaskDAO task = leanTaskBuilder.build();
+
+        entityManager.persist(task);
+
+
+        return task;
+    }
     
     public TaskDAO getTask(Long taskId) {
         TaskDAO matchingTask = entityManager.find(Task.class, taskId);
@@ -134,6 +173,11 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
+    public MessageDAO createLeanMessage(LeanTaskCreationContext taskCreationContext) {
+        Message message = new Message();
+        MessageHelper msgHelper = new MessageHelper(message);
+        return msgHelper.createLeanMessage(taskCreationContext);
+    }
     
     public MessageDAO createMessage() {
         return new Message();

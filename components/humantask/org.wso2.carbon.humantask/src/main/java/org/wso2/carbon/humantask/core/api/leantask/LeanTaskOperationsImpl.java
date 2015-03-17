@@ -3,6 +3,8 @@ package org.wso2.carbon.humantask.core.api.leantask;
 import org.apache.axis2.databinding.ADBException;
 import org.apache.axis2.databinding.types.NCName;
 import org.apache.xmlbeans.XmlException;
+import org.w3c.dom.Element;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.humantask.client.api.leantask.IllegalAccessFault;
 import org.wso2.carbon.humantask.client.api.leantask.IllegalArgumentFault;
@@ -11,6 +13,11 @@ import org.wso2.carbon.humantask.client.api.leantask.LeanTaskClientAPIAdminSkele
 import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 import org.wso2.carbon.humantask.client.api.leantask.namespace.LeanTaskDefinitions_type0;
 import org.wso2.carbon.humantask.LeanTaskDocument;
+import org.wso2.carbon.humantask.core.dao.HumanTaskDAOConnection;
+import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
+import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
+
+import java.util.concurrent.Callable;
 
 
 /**
@@ -27,15 +34,34 @@ public class LeanTaskOperationsImpl extends AbstractAdmin implements LeanTaskCli
     }
 
     public NCName registerLeanTaskDefinition(TLeanTask taskDefinition) throws IllegalStateFault, IllegalAccessFault {
-        TransformerLeanTaskUtils leanTaskUtil = new TransformerLeanTaskUtils();
+
+        final String name= String.valueOf(taskDefinition.getName());
+        final int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
 
         try {
+            TransformerLeanTaskUtils leanTaskUtil = new TransformerLeanTaskUtils();
             LeanTaskDocument document = leanTaskUtil.transformLeanTask(taskDefinition);
+            final Element e=leanTaskUtil.e;
+
+            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                    execTransaction(new Callable<Object>() {
+                        public Object call() throws Exception {
+                            HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+                            HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
+                            final long version=daoConn.getNextVersion();
+                            daoConn.createLeanTaskDef(tenantId,name,version,e);
+                            return null;
+                        }
+                    });
+
         } catch (ADBException e) {
             e.printStackTrace();
         } catch (XmlException e) {
             e.printStackTrace();
-        }
+            } catch (Exception e) {
+        e.printStackTrace();
+    }
 
         return taskDefinition.getName();
     }
@@ -50,6 +76,14 @@ public class LeanTaskOperationsImpl extends AbstractAdmin implements LeanTaskCli
     }
 
     public Object createLeanTask(Object inputMessage4, TLeanTask taskDefinition5, NCName taskName6) throws IllegalArgumentFault, IllegalAccessFault {
+
+
+        if(!taskName6.equals(null)&&taskDefinition5.equals(null)){
+
+
+        }
+
+
         return inputMessage4;
     }
 

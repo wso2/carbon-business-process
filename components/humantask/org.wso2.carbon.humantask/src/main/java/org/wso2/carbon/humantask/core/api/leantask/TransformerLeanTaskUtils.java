@@ -4,10 +4,14 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.databinding.ADBException;
 import org.apache.xmlbeans.XmlException;
+import org.w3c.dom.Element;
 import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 import org.wso2.carbon.humantask.LeanTaskDocument;
+import org.wso2.carbon.humantask.core.utils.DOMUtils;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +21,8 @@ import javax.xml.namespace.QName;
  * To change this template use File | Settings | File Templates.
  */
 public class TransformerLeanTaskUtils {
+
+    static Element e;
 
     public static LeanTaskDocument transformLeanTask(TLeanTask adbLeantask) throws ADBException, XmlException {
 
@@ -38,9 +44,15 @@ public class TransformerLeanTaskUtils {
 //        xmlbLeantask.setOutcome((TQuery) adbLeantask.getOutcome());
 //        xmlbLeantask.setSearchBy((TExpression) adbLeantask.getSearchBy());
 //        xmlbLeantask.setDeadlines((TDeadlines) adbLeantask.getDeadlines());
-
         LeanTaskDocument document = LeanTaskDocument.Factory.newInstance();
         document.setLeanTask(xmlbLeantask);
+        try {
+            e = DOMUtils.stringToDOM(taskDef.toString());
+        } catch (SAXException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
         return document;
     }
