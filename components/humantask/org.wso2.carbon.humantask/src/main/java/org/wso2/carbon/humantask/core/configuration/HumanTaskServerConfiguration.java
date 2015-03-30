@@ -71,6 +71,9 @@ public class HumanTaskServerConfiguration {
 
     private boolean uiRenderingEnabled = false;
 
+    private boolean emailNotification = false;
+
+    private boolean smsNotification = false;
     //  HT-Coordination Related Properties
     private boolean htCoordinationEnabled = false;
     private boolean taskRegistrationEnabled = false;
@@ -183,6 +186,12 @@ public class HumanTaskServerConfiguration {
         }
         if(tHumanTaskServerConfig.getEnableTaskValidationBeforeDeployment()) {
             validateTaskBeforeDeployment = true;
+        }
+        if(tHumanTaskServerConfig.getEnableEMailNotification()) {
+            emailNotification = true;
+        }
+        if(tHumanTaskServerConfig.getEnableSMSNotification()) {
+            smsNotification = true;
         }
     }
 
@@ -533,5 +542,13 @@ public class HumanTaskServerConfiguration {
     public boolean getEnableTaskValidationBeforeDeployment(){
         return validateTaskBeforeDeployment;
     }
+    public boolean getEnableEMailNotification() {
+        return emailNotification;
+    }
+
+    public boolean getEnableSMSNotification() {
+        return smsNotification;
+    }
+
 
 }

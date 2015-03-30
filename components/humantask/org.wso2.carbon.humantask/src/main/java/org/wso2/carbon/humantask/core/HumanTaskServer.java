@@ -28,6 +28,7 @@ import org.wso2.carbon.humantask.core.engine.HumanTaskServerException;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.event.processor.EventProcessor;
 import org.wso2.carbon.humantask.core.scheduler.JobProcessorImpl;
+import org.wso2.carbon.humantask.core.scheduler.NotificationScheduler;
 import org.wso2.carbon.humantask.core.scheduler.SimpleScheduler;
 import org.wso2.carbon.humantask.core.store.HumanTaskStoreManager;
 import org.wso2.carbon.humantask.core.utils.GUID;
@@ -99,8 +100,29 @@ public class HumanTaskServer {
         initPeopleQueryEvaluator();
         initHumanTaskStore();
         initScheduler();
+        initNotificationScheduler();
     }
+    /**
+     * Notification scheduler initialisation.
+     */
+    private void initNotificationScheduler(){
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private int threadNumber = 0;
 
+            public Thread newThread(Runnable r) {
+                threadNumber += 1;
+                Thread t = new Thread(r, "HumanTaskServer-" + threadNumber);
+                t.setDaemon(true);
+                return t;
+            }
+        };
+        ExecutorService executorService = Executors.
+         newFixedThreadPool(serverConfig.getThreadPoolMaxSize(), threadFactory);
+        NotificationScheduler notificationScheduler = new NotificationScheduler();
+        notificationScheduler.setExecutorService(executorService);
+      //  taskEngine.setScheduler(notificationScheduler);
+
+    }
     /**
      * Scheduler initialisation.
      */
