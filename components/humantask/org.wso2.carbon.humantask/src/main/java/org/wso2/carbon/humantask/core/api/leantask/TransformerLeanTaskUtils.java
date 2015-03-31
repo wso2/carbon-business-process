@@ -5,6 +5,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.databinding.ADBException;
 import org.apache.xmlbeans.XmlException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 import org.wso2.carbon.humantask.LeanTaskDocument;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
@@ -23,6 +24,8 @@ import java.io.IOException;
 public class TransformerLeanTaskUtils {
 
     static Element e;
+    static OMElement taskDef;
+
 
     public static LeanTaskDocument transformLeanTask(TLeanTask adbLeantask) throws ADBException, XmlException {
 
@@ -32,7 +35,7 @@ public class TransformerLeanTaskUtils {
         QName ns = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803", "taskDefinition");
 
 
-        OMElement taskDef = adbLeantask.getOMElement(ns, OMAbstractFactory.getOMFactory());
+        taskDef = adbLeantask.getOMElement(ns, OMAbstractFactory.getOMFactory());
         xmlbLeantask = org.wso2.carbon.humantask.TLeanTask.Factory.parse(taskDef.toString());
         //optional
 //

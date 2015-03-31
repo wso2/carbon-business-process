@@ -99,7 +99,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
-    public LeanTask createLeanTaskDef(final int tenantId, final String name,final Element leanTaskDef) throws Exception {
+    public LeanTask createLeanTaskDef(final int tenantId, final String name,final Element leanTaskDef,final String md5sum) throws Exception {
 
 
         final LeanTask taskDef = new LeanTask();
@@ -107,6 +107,8 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
             taskDef.setTenantID(tenantId);
             taskDef.setName(name);
             taskDef.setLeanTask(leanTaskDef);
+            taskDef.setmd5sum(md5sum);
+            taskDef.setTaskStatus(TaskPackageStatus.ACTIVE);
             entityManager.persist(taskDef);
 
 
@@ -126,7 +128,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
 
         LeanTaskBuilderImpl leanTaskBuilder=new LeanTaskBuilderImpl();
         MessageDAO inputMessage =createLeanMessage(creationContext);
-        leanTaskBuilder.addTaskCreationContext(creationContext).addInputMessage(inputMessage);
+        leanTaskBuilder.addTaskCreationContext(creationContext) .addInputMessage(inputMessage);
         TaskDAO task = leanTaskBuilder.build();
 
         entityManager.persist(task);

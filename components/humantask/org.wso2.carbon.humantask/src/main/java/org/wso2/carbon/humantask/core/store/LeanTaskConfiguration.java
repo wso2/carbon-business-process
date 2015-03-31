@@ -58,7 +58,6 @@ public abstract class LeanTaskConfiguration {
     private String deploymentError = "NONE";
 
     public LeanTaskConfiguration(){}
-
     public LeanTaskConfiguration(LeanTaskDocument leanTaskObject,
                                  String leanTaskArtifactName,
                                  AxisConfiguration tenantAxisConf,

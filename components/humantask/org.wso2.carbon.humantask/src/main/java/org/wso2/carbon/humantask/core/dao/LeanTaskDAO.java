@@ -48,7 +48,7 @@ public interface LeanTaskDAO {
     void setVersion(long version);
 
 
-   void setTaskDefName();
+   void setleanTaskId(String id);
 
 
     /**
@@ -56,6 +56,24 @@ public interface LeanTaskDAO {
      * @param leanTask
      */
     void setLeanTask(Element leanTask);
+
+    /**
+     * set task status
+     * @param status
+     */
+    void setTaskStatus(TaskPackageStatus status);
+
+    /**
+     * set md5sum
+     * @param md5sum
+     */
+    void setmd5sum(String md5sum);
+
+    /**
+     * get task status
+     * @return
+     */
+    TaskPackageStatus getStatus();
 
     /**
      * get tenant id
@@ -81,7 +99,8 @@ public interface LeanTaskDAO {
      */
     Element getLeanTask() throws IOException, SAXException;
 
-   String getTaskDefName();
+   String getleanTaskId();
 
+    String getmd5sum();
 
 }
