@@ -50,4 +50,42 @@ public final class XPath2Constants {
     public static final String FUNCTION_INTERSECT = "intersect";
 
     public static final String FUNCTION_EXCEPT = "except";
+
+    public static final String FUNCTION_GET_COUNT_OF_FINISHED_SUB_TASKS = "getCountOfFinishedSubTasks";
+
+    public static final String FUNCTION_GET_COUNT_OF_SUB_TASKS = "getCountOfSubTasks";
+
+    public static final String FUNCTION_GET_COUNT_OF_SUB_TASKS_IN_STATE = "getCountOfSubTasksInState";
+
+    public static final String FUNCTION_GET_COUNT_OF_SUB_TASKS_WITH_OUTCOME = "getCountOfSubTasksWithOutcome";
+
+    public static final String FUNCTION_GET_OUTCOME = "getOutcome";
+
+    public static final String FUNCTION_GET_SUBTASK_OUTPUT = "getSubtaskOutput";
+
+    public static final String FUNCTION_GET_SUBTASK_OUTPUTS = "getSubtaskOutputs";
+
+    public static final String FUNCTION_CONCAT = "concat";
+
+    public static final String FUNCTION_CONCAT_WITH_DELIMITER = "concatWithDelimiter";
+
+    public static final String FUNCTION_LEAST_FREQUENT_OCCURENCE = "leastFrequentOccurence";
+
+    public static final String FUNCTION_MOST_FREQUENT_OCCURENCE = "mostFrequentOccurence";
+
+    public static final String FUNCTION_VOTE_ON_STRING = "voteOnString";
+
+    public static final String FUNCTION_AND = "and";
+
+    public static final String FUNCTION_OR = "or";
+
+    public static final String FUNCTION_VOTE = "vote";
+
+    public static final String FUNCTION_AVG = "avg";
+
+    public static final String FUNCTION_MAX = "max";
+
+    public static final String FUNCTION_MIN = "min";
+
+    public static final String FUNCTION_SUM = "sum";
 }
