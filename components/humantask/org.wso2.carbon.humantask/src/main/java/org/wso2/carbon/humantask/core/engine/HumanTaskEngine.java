@@ -59,7 +59,7 @@ public class HumanTaskEngine {
      * Deadline scheduler
      */
     private Scheduler scheduler;
-
+    private NotificationScheduler notificationScheduler;
 
     public HumanTaskEngine() {
         initExpressionLanguageRuntimes();
@@ -83,8 +83,8 @@ public class HumanTaskEngine {
         creationContext.setPeopleQueryEvaluator(peopleQueryEvaluator);
         TaskDAO task = getDaoConnectionFactory().getConnection().createTask(creationContext);
         creationContext.injectExpressionEvaluationContext(task);
-        NotificationScheduler notificationScheduler = new NotificationScheduler();
-        notificationScheduler.checkForNotificationTasks(taskConfiguration, creationContext, task);
+        // NotificationScheduler notificationScheduler = new NotificationScheduler();
+        // notificationScheduler.checkForNotificationTasks(taskConfiguration, creationContext, task);
         return task;
     }
 
@@ -167,6 +167,14 @@ public class HumanTaskEngine {
         this.scheduler = scheduler;
     }
 
+    public void setNotificationScheduler(NotificationScheduler scheduler) {
+        this.notificationScheduler = scheduler;
+    }
+
+    public NotificationScheduler getNotificationScheduler() {
+        return notificationScheduler;
+    }
+
 
     /**
      * @param eventProcessor
@@ -181,7 +189,6 @@ public class HumanTaskEngine {
     public EventProcessor getEventProcessor() {
         return this.eventProcessor;
     }
-
 
 
 }

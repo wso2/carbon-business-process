@@ -134,7 +134,7 @@ public final class HumanTaskConstants {
     public static final String EMAIL_TO_TAG="to";
     public static final String EMAIL_CC_TAG="cc";
     public static final String EMAIL_BCC_TAG="bcc";
-    public static final String EMAIL_SUBJECT_TAG="mailSubject";
+    public static final String EMAIL_SUBJECT_TAG="subject";
     public static final String EMAIL_OR_SMS_BODY_TAG="body";
     public static final String SMS_RECEIVER_TAG="receiver";
     public static final String RENDERING_TAG="rendering";

@@ -18,9 +18,13 @@ package org.wso2.carbon.humantask.core.scheduler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterConfiguration;
+import org.wso2.carbon.event.output.adapter.core.exception.OutputEventAdapterException;
 import org.wso2.carbon.event.output.adapter.email.EmailEventAdapter;
 import org.wso2.carbon.event.output.adapter.sms.SMSEventAdapter;
+import org.wso2.carbon.humantask.TRendering;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.TaskCreationContext;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
@@ -32,6 +36,7 @@ import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Document;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
@@ -48,16 +53,17 @@ public class NotificationScheduler {
     private boolean taskCompleted = false;
     private static EmailEventAdapter emailAdapter;
     private static SMSEventAdapter smsAdapter;
+    private NotificationScheduler notificationScheduler;
     private ExecutorService exec;
     private NotificationTask notificationTask;
     private Map<String, String> emailDynamicProperties;
     private Map<String, String> smsDynamicProperties;
 
 
-    private String prefix = "";
+    private String prefix = "htd";
     String mail_to = null;
-    String ccEmail = null;
-    String bccEmail = null;
+    //String ccEmail = null;
+    // String bccEmail = null;
     String mail_subject = null;
     String emailBody = null;
     String emailBodyTagVal = null;
@@ -70,23 +76,44 @@ public class NotificationScheduler {
         exec = executorService;
     }
 
+
     public static synchronized EmailEventAdapter getEmailEventAdapter(Map<String, String> dynamicProperties) {
         if (emailAdapter == null) {
             emailAdapter = new EmailEventAdapter(null, dynamicProperties);
-
         }
+        try {
+            emailAdapter.init();
+        } catch (OutputEventAdapterException e) {
+            e.printStackTrace();
+        }
+
         return emailAdapter;
     }
 
     public static synchronized SMSEventAdapter getSMSEventAdapter(Map<String, String> dynamicProperties) {
         if (smsAdapter == null) {
-            smsAdapter = new SMSEventAdapter(null, dynamicProperties);
+            //Need staticProperties at init()
 
+            OutputEventAdapterConfiguration configuration = new OutputEventAdapterConfiguration();
+            configuration.setName("smsNotification");
+            configuration.setType("sms");
+            configuration.setStaticProperties(dynamicProperties);
+            configuration.setMessageFormat("text");
+
+            smsAdapter = new SMSEventAdapter(configuration, dynamicProperties);
         }
+
+        try {
+            smsAdapter.init();
+        } catch (OutputEventAdapterException e) {
+            e.printStackTrace();
+        }
+
         return smsAdapter;
     }
 
     public void checkForNotificationTasks(HumanTaskBaseConfiguration taskConfiguration, TaskCreationContext creationContext, TaskDAO task) {
+
         isNotification = taskConfiguration.getConfigurationType().toString().equalsIgnoreCase("notification");
 
         if (isNotification) {
@@ -107,59 +134,46 @@ public class NotificationScheduler {
 
         if (isEmail) {
             emailDynamicProperties = getDynamicPropertiesOfEmailNotification(taskConfiguration); //get dynamic properties
-            Object message = getMessageOfEmailNotification(taskConfiguration, context, task);
-            //emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
-            notificationTask = new NotificationTask(getEmailEventAdapter(emailDynamicProperties), message, emailDynamicProperties);//make private prop and add it
+            Object message = getMessageOfEmailNotification(taskConfiguration, context, task);//get email message body
+            emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
+            notificationTask = new NotificationTask(emailAdapter, message, emailDynamicProperties);//make private prop and add it
             exec.submit(notificationTask);
-
-
-            exec.shutdown();
-            try {
-                taskCompleted = exec.awaitTermination(1, TimeUnit.MINUTES);
-                log.info("All e-mails were sent so far? {}" + taskCompleted);
-            } catch (InterruptedException e) {
-                log.error("Error during Email notification task execution", e);
-            }
-        } else if (isSMS) {
+        }
+        if (isSMS) {
             smsDynamicProperties = getDynamicPropertiesOfSmsNotification(taskConfiguration);
-            Object message = getMessageOfSmsNotification(taskConfiguration, context, task);
-            //smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
-            notificationTask = new NotificationTask(getSMSEventAdapter(smsDynamicProperties), message, smsDynamicProperties);
+            Object message = getMessageOfSmsNotification(taskConfiguration, context, task);//get sms message body
+            smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
+            notificationTask = new NotificationTask(smsAdapter, message, smsDynamicProperties);
             exec.submit(notificationTask);
 
-            exec.shutdown();
-            try {
-                taskCompleted = exec.awaitTermination(1, TimeUnit.MINUTES);
-                log.info("All sms were sent so far? {}" + taskCompleted);
-            } catch (InterruptedException e) {
-
-                log.error("Error during sms notification task execution", e);
-            }
         }
     }
 
     public Map getDynamicPropertiesOfSmsNotification(HumanTaskBaseConfiguration taskConfiguration) {
         Map<String, String> dynamicPropertiesForSms = new HashMap<String, String>();
+        //TODO:check for namespace 
+        TRendering renderingSMS = taskConfiguration.getRendering(new QName("http://wso2.org/ht/schema/renderings/", "sms"));
 
-        Document document = xmlRead(taskConfiguration.getRenderings().toString());
-        NodeList node = document.getElementsByTagName(prefix + ":"
-                + HumanTaskConstants.RENDERING_TAG);
-        for (int i = 0; i < node.getLength(); i++) {
-            if ((node.item(i).getAttributes().getNamedItem("type").getTextContent())
-                    .equals(HumanTaskConstants.RENDERING_TYPE_SMS)) {
-                Document doc = xmlRead(taskConfiguration.getRenderings().getRenderingArray(i)
-                        .toString());
-                smsReceiver = doc
-                        .getElementsByTagName(prefix + ":" + HumanTaskConstants.SMS_RECEIVER_TAG)
+        if (renderingSMS != null) {
+            Document document = xmlRead(renderingSMS.toString());
+            Element rootSMS = document.getDocumentElement();
+
+            try {
+                smsReceiver = rootSMS.getElementsByTagName(prefix + ":" + HumanTaskConstants.SMS_RECEIVER_TAG)
                         .item(0).getTextContent();
-                smsBodyTagVal = doc
+                smsBodyTagVal = rootSMS
                         .getElementsByTagName(
                                 prefix + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG).item(0)
                         .getTextContent();
+            } catch (Exception e) {
+                log.error("Error while evaluating rendering xpath for sms content. Please review xpath and deploy " +
+                        "task again.", e);
             }
+
+        } else {
+            log.warn("Rendering type " + renderingSMS + "Not found for task definition.");
         }
         dynamicPropertiesForSms.put("sms.no", smsReceiver);
-        // dynamicPropertiesForSms.put("smsBodyTagVal", smsBodyTagVal);
 
         return dynamicPropertiesForSms;
     }
@@ -168,39 +182,31 @@ public class NotificationScheduler {
 
 
         Map<String, String> dynamicPropertiesForEmail = new HashMap<String, String>();
+        TRendering rendering = taskConfiguration.getRendering(new QName("http://wso2.org/ht/schema/renderings/", "email"));
 
-        Document document = xmlRead(taskConfiguration.getRenderings().toString());
-        NodeList node = document.getElementsByTagName(prefix + ":"
-                + HumanTaskConstants.RENDERING_TAG);
-        for (int i = 0; i < node.getLength(); i++) {
-            if ((node.item(i).getAttributes().getNamedItem("type").getTextContent())
-                    .equals(HumanTaskConstants.RENDERING_TYPE_EMAIL)) {
-                Document doc = xmlRead(taskConfiguration.getRenderings().getRenderingArray(i)
-                        .toString());
-                mail_to = doc
-                        .getElementsByTagName(prefix + ":" + HumanTaskConstants.EMAIL_TO_TAG)
+        if (rendering != null) {
+            Document document = xmlRead(rendering.toString());
+            Element root = document.getDocumentElement();
+
+            try {
+
+                mail_to = root.getElementsByTagName(prefix + ":" + HumanTaskConstants.EMAIL_TO_TAG)
                         .item(0).getTextContent();
-                ccEmail = doc
-                        .getElementsByTagName(prefix + ":" + HumanTaskConstants.EMAIL_CC_TAG)
-                        .item(0).getTextContent();
-                bccEmail = doc
-                        .getElementsByTagName(prefix + ":" + HumanTaskConstants.EMAIL_BCC_TAG)
-                        .item(0).getTextContent();
-                mail_subject = doc
-                        .getElementsByTagName(
-                                prefix + ":" + HumanTaskConstants.EMAIL_SUBJECT_TAG).item(0)
+                mail_subject = root.getElementsByTagName(prefix + ":" + HumanTaskConstants.EMAIL_SUBJECT_TAG).item(0)
                         .getTextContent();
-                emailBodyTagVal = doc
-                        .getElementsByTagName(
-                                prefix + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG)
+                emailBodyTagVal = root.getElementsByTagName(prefix + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG)
                         .item(0).getTextContent();
+            } catch (Exception e) {
+                log.error("Error while evaluating rendering xpath. Please review xpath and deploy " +
+                        "task again.", e);
             }
-
+        } else {
+            log.warn("Rendering type " + rendering + "Not found for task definition.");
         }
+
         dynamicPropertiesForEmail.put("email.address", mail_to);
         dynamicPropertiesForEmail.put("email.subject", mail_subject);
-        dynamicPropertiesForEmail.put("ccEmail", ccEmail);
-        dynamicPropertiesForEmail.put("bccEmail", bccEmail);
+
 
         return dynamicPropertiesForEmail;
     }

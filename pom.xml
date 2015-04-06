@@ -1033,7 +1033,6 @@
                 <version>${carbon.event.processing.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.wso2.carbon.event-processing</groupId>
                 <artifactId>org.wso2.carbon.event.output.adapter.email</artifactId>
