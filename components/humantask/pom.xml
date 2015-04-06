@@ -148,6 +148,21 @@
             <groupId>org.wso2.carbon.commons</groupId>
             <artifactId>org.wso2.carbon.ntask.core</artifactId>
         </dependency>
+        <!--dependencies for email and sms notification support -->
+        <dependency>
+            <groupId>org.wso2.carbon.event-processing</groupId>
+            <artifactId>org.wso2.carbon.event.output.adapter.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.event-processing</groupId>
+            <artifactId>org.wso2.carbon.event.output.adapter.email</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wso2.carbon.event-processing</groupId>
+            <artifactId>org.wso2.carbon.event.output.adapter.sms</artifactId>
+        </dependency>
+        <!-- end -->
     </dependencies>
 </project>
 

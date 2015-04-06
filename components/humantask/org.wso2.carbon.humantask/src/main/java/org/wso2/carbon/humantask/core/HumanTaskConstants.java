@@ -127,4 +127,15 @@ public final class HumanTaskConstants {
 
     //Default Cache expiry duration in seconds
     public static final int DEFAULT_CACHE_EXPIRY_DURATION = 30;
+
+    /*Human task notification related constants*/
+    public static final String RENDERING_TYPE_EMAIL="email";
+    public static final String RENDERING_TYPE_SMS="sms";
+    public static final String EMAIL_TO_TAG="to";
+    public static final String EMAIL_CC_TAG="cc";
+    public static final String EMAIL_BCC_TAG="bcc";
+    public static final String EMAIL_SUBJECT_TAG="mailSubject";
+    public static final String EMAIL_OR_SMS_BODY_TAG="body";
+    public static final String SMS_RECEIVER_TAG="receiver";
+    public static final String RENDERING_TAG="rendering";
 }
