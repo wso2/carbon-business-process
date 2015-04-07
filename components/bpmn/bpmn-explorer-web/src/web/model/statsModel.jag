@@ -16,25 +16,25 @@
 <%
 var headers = {"Authorization":"Basic " + auth};
 
-var completedProcesses = get( httpUrl + "/bpmnrest/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
-var activeProcesses = get( httpUrl + "/bpmnrest/runtime/process-instances?suspended=false" ,null, headers, "json" ).data.total;
-var suspendProcesses = get( httpUrl + "/bpmnrest/runtime/process-instances?suspended=true" ,null, headers, "json" ).data.total;
+var completedProcesses = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
+var activeProcesses = get( httpUrl + "/bpmn/runtime/process-instances?suspended=false" ,null, headers, "json" ).data.total;
+var suspendProcesses = get( httpUrl + "/bpmn/runtime/process-instances?suspended=true" ,null, headers, "json" ).data.total;
 //No state called failed
-var failedProcesses = 0; //get( httpUrl + "/bpmnrest/runtime/process-instances" ,null, headers, "json" ).data.total 
-						//- get( httpUrl + "/bpmnrest/runtime/process-instances" ,null, headers, "json" ).data.total;
+var failedProcesses = 0; //get( httpUrl + "/bpmn/runtime/process-instances" ,null, headers, "json" ).data.total 
+						//- get( httpUrl + "/bpmn/runtime/process-instances" ,null, headers, "json" ).data.total;
 
-var completedTasks = get( httpUrl + "/bpmnrest/history/historic-task-instances?finished=true" ,null, headers, "json" ).data.total;
-var activeTasks = get( httpUrl + "/bpmnrest/runtime/tasks?active=true" ,null, headers, "json" ).data.total;
-var suspendTasks = get( httpUrl + "/bpmnrest/runtime/tasks?active=false" ,null, headers, "json" ).data.total;
+var completedTasks = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true" ,null, headers, "json" ).data.total;
+var activeTasks = get( httpUrl + "/bpmn/runtime/tasks?active=true" ,null, headers, "json" ).data.total;
+var suspendTasks = get( httpUrl + "/bpmn/runtime/tasks?active=false" ,null, headers, "json" ).data.total;
 //No state called failed 
-var failedTasks = 0; //get( httpUrl + "/bpmnrest/history/historic-task-instances" ,null, headers, "json" ).data.total 
-						//- get( httpUrl + "/bpmnrest/runtime/tasks" ,null, headers, "json" ).data.total;
+var failedTasks = 0; //get( httpUrl + "/bpmn/history/historic-task-instances" ,null, headers, "json" ).data.total 
+						//- get( httpUrl + "/bpmn/runtime/tasks" ,null, headers, "json" ).data.total;
 
-var processNames = get( httpUrl + "/bpmnrest/repository/process-definitions" ,null, headers, "json" ).data;
+var processNames = get( httpUrl + "/bpmn/repository/process-definitions" ,null, headers, "json" ).data;
 var processBarChart = [];
 for(var i=0; i<processNames.data.length; i++){
 	var name = processNames.data[i].id;
-	var processCount = get( httpUrl + "/bpmnrest/history/historic-process-instances?processDefinitionId=" + name ,null, headers, "json" ).data.total;
+	var processCount = get( httpUrl + "/bpmn/history/historic-process-instances?processDefinitionId=" + name ,null, headers, "json" ).data.total;
 	processBarChart.push([
 		name, processCount
 	]);

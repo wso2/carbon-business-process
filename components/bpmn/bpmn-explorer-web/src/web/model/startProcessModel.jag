@@ -19,10 +19,10 @@ var headers = {"Authorization":"Basic " + auth,
 	"Content-Type": "application/json"
 };
 var formGenTool = require("/assets/dynamicFormGen.js");
-var formData = get( httpUrl + "/bpmnrest/process-definition/" + id + "/properties" ,null, headers, "json" ).data;
+var formData = get( httpUrl + "/bpmn/process-definition/" + id + "/properties" ,null, headers, "json" ).data;
 
 if(formData.data.length <= 0){
-	var url = "/bpmnrest/runtime/process-instances";
+	var url = "/bpmn/runtime/process-instances";
 	var body = { 
   		"processDefinitionId": id
 	};
