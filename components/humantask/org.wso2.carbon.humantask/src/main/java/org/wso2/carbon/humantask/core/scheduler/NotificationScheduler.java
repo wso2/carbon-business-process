@@ -19,7 +19,7 @@ package org.wso2.carbon.humantask.core.scheduler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+
 import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterConfiguration;
 import org.wso2.carbon.event.output.adapter.core.exception.OutputEventAdapterException;
 import org.wso2.carbon.event.output.adapter.email.EmailEventAdapter;
@@ -43,7 +43,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+
 
 public class NotificationScheduler {
     private static Log log = LogFactory.getLog(NotificationScheduler.class);
@@ -152,7 +152,7 @@ public class NotificationScheduler {
     public Map getDynamicPropertiesOfSmsNotification(HumanTaskBaseConfiguration taskConfiguration) {
         Map<String, String> dynamicPropertiesForSms = new HashMap<String, String>();
         //TODO:check for namespace 
-        TRendering renderingSMS = taskConfiguration.getRendering(new QName("http://wso2.org/ht/schema/renderings/", "sms"));
+        TRendering renderingSMS = taskConfiguration.getRendering(new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_SMS));
 
         if (renderingSMS != null) {
             Document document = xmlRead(renderingSMS.toString());
@@ -182,7 +182,8 @@ public class NotificationScheduler {
 
 
         Map<String, String> dynamicPropertiesForEmail = new HashMap<String, String>();
-        TRendering rendering = taskConfiguration.getRendering(new QName("http://wso2.org/ht/schema/renderings/", "email"));
+        //TODO:check for namespace
+        TRendering rendering = taskConfiguration.getRendering(new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_EMAIL));
 
         if (rendering != null) {
             Document document = xmlRead(rendering.toString());
