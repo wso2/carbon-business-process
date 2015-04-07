@@ -84,7 +84,8 @@ public class NotificationScheduler {
         try {
             emailAdapter.init();
         } catch (OutputEventAdapterException e) {
-            e.printStackTrace();
+             log.error("unable to initialize adapter"+ emailAdapter + e);
+
         }
 
         return emailAdapter;
@@ -106,7 +107,8 @@ public class NotificationScheduler {
         try {
             smsAdapter.init();
         } catch (OutputEventAdapterException e) {
-            e.printStackTrace();
+            log.error("unable to initialize adapter"+ emailAdapter + e);
+
         }
 
         return smsAdapter;
