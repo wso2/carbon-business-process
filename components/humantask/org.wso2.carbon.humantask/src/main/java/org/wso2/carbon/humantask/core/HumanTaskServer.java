@@ -167,7 +167,6 @@ public class HumanTaskServer {
         } catch (Exception ex) {
             String errMsg = "Error instantiating the PeopleQueryEvaluator Class :" +
                     serverConfig.getPeopleQueryEvaluatorClass();
-            log.error(errMsg);
             throw new HumanTaskServerException(errMsg, ex);
         }
     }
@@ -189,7 +188,7 @@ public class HumanTaskServer {
             database.start();
         } catch (Exception e) {
             String errMsg = "Humantask Database Initialization failed.";
-            log.error(errMsg);
+            log.error(errMsg , e);
             throw new HumanTaskServerException(errMsg, e);
         }
     }

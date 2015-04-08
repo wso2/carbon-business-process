@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,18 @@ public class NotificationTask implements Runnable {
     private Object message;
     private Map<String, String> dynamicProperties;
 
+    /**
+     *Create NotificationTask instance
+     * @param adapter
+     * @param message
+     * @param dynamicProperties
+     */
     public NotificationTask(OutputEventAdapter adapter, Object message, Map<String, String> dynamicProperties) {
         this.outputEventAdapter = adapter;
         this.message = message;
         this.dynamicProperties = dynamicProperties;
     }
+
 
     public void run() {
         outputEventAdapter.publish(message, dynamicProperties);
