@@ -159,14 +159,14 @@ public class NotificationScheduler {
                                      TaskDAO task, boolean isEmail, boolean isSMS) {
 
         if (isEmail) {
-            emailDynamicProperties = getDynamicPropertiesOfEmailNotification(task, context, taskConfiguration); //get dynamic properties
+            emailDynamicProperties = getDynamicPropertiesOfEmailNotification(task, taskConfiguration); //get dynamic properties
             Object message = emailBody;//get email message body
             emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
             notificationTask = new NotificationTask(emailAdapter, message, emailDynamicProperties);//make private prop and add it
             exec.submit(notificationTask);
         }
         if (isSMS) {
-            smsDynamicProperties = getDynamicPropertiesOfSmsNotification(task, context, taskConfiguration);
+            smsDynamicProperties = getDynamicPropertiesOfSmsNotification(task,taskConfiguration);
             Object message = smsBody; //get sms message body
             smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
             notificationTask = new NotificationTask(smsAdapter, message, smsDynamicProperties);
@@ -181,7 +181,7 @@ public class NotificationScheduler {
      * @param taskConfiguration
      * @return dynamicPropertiesForSms
      */
-    public Map getDynamicPropertiesOfSmsNotification(TaskDAO task, TaskCreationContext creationContext, HumanTaskBaseConfiguration taskConfiguration) {
+    public Map getDynamicPropertiesOfSmsNotification(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration) {
         Map<String, String> dynamicPropertiesForSms = new HashMap<String, String>();
         String renderingSMS = CommonTaskUtil.getRendering(task, taskConfiguration, new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_SMS));
 
@@ -216,7 +216,7 @@ public class NotificationScheduler {
      * @param taskConfiguration
      * @return dynamicPropertiesForEmail
      */
-    public Map getDynamicPropertiesOfEmailNotification(TaskDAO task, TaskCreationContext context, HumanTaskBaseConfiguration taskConfiguration) {
+    public Map getDynamicPropertiesOfEmailNotification(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration) {
 
 
         Map<String, String> dynamicPropertiesForEmail = new HashMap<String, String>();
@@ -254,6 +254,7 @@ public class NotificationScheduler {
     }
 
     /**
+     * Creating Document object(xml parsing) from string content
      * @param xmlString
      * @return
      */
