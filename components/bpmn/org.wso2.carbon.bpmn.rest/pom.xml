@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>org.activiti.wso2</groupId>
-            <artifactId>activiti-rest</artifactId>
+            <artifactId>activiti-all</artifactId>
         </dependency>
 
         <dependency>
@@ -50,6 +50,16 @@
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>restlet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
         </dependency>
     </dependencies>
 

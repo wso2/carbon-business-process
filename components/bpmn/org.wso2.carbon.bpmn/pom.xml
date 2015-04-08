@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.activiti.wso2</groupId>
-            <artifactId>activiti-engine</artifactId>
+            <artifactId>activiti-all</artifactId>
         </dependency>
 
         <dependency>

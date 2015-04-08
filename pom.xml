@@ -246,6 +246,11 @@
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.restlet.jee</groupId>
+                <artifactId>restlet</artifactId>
+                <version>${orbit.version.restlet}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.h2database.wso2</groupId>
                 <artifactId>h2-database-engine</artifactId>
                 <version>${orbit.version.h2.engine}</version>
@@ -987,12 +992,7 @@
 
             <dependency>
                 <groupId>org.activiti.wso2</groupId>
-                <artifactId>activiti-engine</artifactId>
-                <version>${org.activiti.wso2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti.wso2</groupId>
-                <artifactId>activiti-rest</artifactId>
+                <artifactId>activiti-all</artifactId>
                 <version>${org.activiti.wso2.version}</version>
             </dependency>
             <dependency>
@@ -1501,6 +1501,7 @@
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
         <orbit.ode.version>1.3.5.wso2v12</orbit.ode.version>
+        <orbit.version.restlet>2.2.1</orbit.version.restlet>
 
 
         <!-- Servlet API -->
@@ -1519,9 +1520,8 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.16-wso2v1</org.activiti.wso2.version>
-        <org.activiti.version>5.16</org.activiti.version>
-        <restlet.version>2.2.1</restlet.version>
+        <org.activiti.wso2.version>5.16.0.wso2v1</org.activiti.wso2.version>
+        <restlet.version>2.2.1.wso2v1</restlet.version>
 
 	<project.scm.id>wso2-scm-server</project.scm.id>
     </properties>
