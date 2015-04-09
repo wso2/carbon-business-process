@@ -566,10 +566,12 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() != 2) {
-                throw new HumanTaskRuntimeException("Invalid number of arguments :" + args.size() + ", for expression: except");
+                throw new HumanTaskRuntimeException(
+                        "Invalid number of arguments :" + args.size() + ", for expression: except");
             }
             if (!(args.get(0) instanceof Node && args.get(1) instanceof Node)) {
-                throw new HumanTaskRuntimeException("Invalid arguments :" + args.get(0) + " , " + args.get(1) + " ,  for expression: except");
+                throw new HumanTaskRuntimeException(
+                        "Invalid arguments :" + args.get(0) + " , " + args.get(1) + " ,  for expression: except");
             }
             Node node1 = (Node) args.get(0);
             Node node2 = (Node) args.get(1);
@@ -824,8 +826,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                                 + " Use getCountOfSubTasks() instead.");
                     }
                 } else {
-                    throw new HumanTaskRuntimeException(
-                            "Invalid number of arguments : " + args.size() + ", for function getCountOfSubTasksInState()");
+                    throw new HumanTaskRuntimeException("Invalid number of arguments : " + args.size()
+                            + ", for function getCountOfSubTasksInState()");
                 }
                 return 0;
             }
@@ -844,7 +846,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 }
             } else {
                 //invalid argument
-                throw new HumanTaskRuntimeException("Invalid argument : "+ arg +", for function getCountOfSubTasksInState()");
+                throw new HumanTaskRuntimeException(
+                        "Invalid argument : " + arg + ", for function getCountOfSubTasksInState()");
             }
 
             return count;
@@ -870,18 +873,22 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
             String result = "";
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
-                NodeList nodeList = (NodeList) args.get(0);
-                for (int i = 0; i < nodeList.getLength(); i++) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
+                ArrayList nodeList = (ArrayList) args.get(0);
+                for (int i = 0; i < nodeList.size(); i++) {
                     try {
-                        String item = nodeList.item(i).getTextContent();
-                        result.concat(item);
+                        String item = (((Element) nodeList.get(i))).getTextContent();
+                        result = result.concat(item);
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function concat()", e);
+                        throw new HumanTaskRuntimeException(
+                                "Invalid arguments:" + args.get(0) + ", for function concat()", e);
+                    } catch (ClassCastException e) {
+                        throw new HumanTaskRuntimeException(
+                                "Invalid arguments:" + args.get(0) + " , for function concat()");
                     }
                 }
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:"+ args +" , for function concat()");
+                throw new HumanTaskRuntimeException("Invalid arguments:" + args + " , for function concat()");
             }
             return result;
         }
@@ -896,23 +903,28 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
             String result = "";
-            if (args.size() == 2 && args.get(0) instanceof NodeList && args.get(1) instanceof String) {
-                NodeList nodeList = (NodeList) args.get(0);
+            if (args.size() == 2 && args.get(0) instanceof ArrayList && args.get(1) instanceof String) {
+                ArrayList nodeList = (ArrayList) args.get(0);
                 String delimiter = (String) args.get(1);
-                int length = nodeList.getLength();
+                int length = nodeList.size();
                 for (int i = 0; i < length; i++) {
                     try {
-                        String item = nodeList.item(i).getTextContent();
-                        result.concat(item);
+                        String item = ((Element) nodeList.get(i)).getTextContent();
+                        result = result.concat(item);
                         if (i != length - 1) {
-                            result.concat(delimiter);
+                            result = result.concat(delimiter);
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function concatWithDelimiter()", e);
+                        throw new HumanTaskRuntimeException(
+                                "Invalid arguments:" + args.get(0) + ", for function concatWithDelimiter()", e);
+                    } catch (ClassCastException e) {
+                        throw new HumanTaskRuntimeException(
+                                "Invalid arguments:" + args.get(0) + " , for function concatWithDelimiter()");
                     }
                 }
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments: "+ args +", for function concatWithDelimiter()");
+                throw new HumanTaskRuntimeException(
+                        "Invalid arguments: " + args + ", for function concatWithDelimiter()");
             }
             return result;
         }
@@ -923,18 +935,20 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * @param list : NodeList
      * @return  : Map<String,Integer> map of string occurrence frequencies
      */
-    private Map<String, Integer> generateFrequencyMap(NodeList list) throws HumanTaskRuntimeException{
+    private Map<String, Integer> generateFrequencyMap(ArrayList list) throws HumanTaskRuntimeException {
         Map<String, Integer> frequencyMap = new HashMap<String, Integer>();
-        for (int i = 0; i < list.getLength(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             try {
-                String item = list.item(i).getTextContent();
+                String item = ((Element) list.get(i)).getTextContent();
                 if (frequencyMap.containsKey(item)) {
-                    int currFrequency = frequencyMap.get(item);
-                    frequencyMap.put(item, currFrequency++);
+                    int frequency = frequencyMap.get(item) + 1;
+                    frequencyMap.put(item, frequency);
                 } else {
                     frequencyMap.put(item, 1);
                 }
             } catch (DOMException e) {
+                throw new HumanTaskRuntimeException("Invalid arguments:" + list, e);
+            } catch (ClassCastException e) {
                 throw new HumanTaskRuntimeException("Invalid arguments:" + list, e);
             }
         }
@@ -950,9 +964,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class LeastFrequentOccurence implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 try {
-                    Map<String, Integer> frequencyMap = generateFrequencyMap((NodeList) args.get(0));
+                    Map<String, Integer> frequencyMap = generateFrequencyMap((ArrayList) args.get(0));
                     boolean tie = false;
                     String result = "";
                     int least = Integer.MAX_VALUE;
@@ -974,11 +988,14 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                         return result;
                     }
                 } catch (HumanTaskRuntimeException e) {
-                    throw new HumanTaskRuntimeException("Error in processing arguments for function leastFrequentOccurence()",e);
+                    throw new HumanTaskRuntimeException(
+                            "Error in processing arguments" + args.get(0) + " for function leastFrequentOccurence()",
+                            e);
                 }
 
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:"+ args +", for function leastFrequentOccurence()");
+                throw new HumanTaskRuntimeException(
+                        "Invalid arguments:" + args + ", for function leastFrequentOccurence()");
             }
         }
     }
@@ -991,9 +1008,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class MostFrequentOccurence implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 try {
-                    Map<String, Integer> frequencyMap = generateFrequencyMap((NodeList) args.get(0));
+                    Map<String, Integer> frequencyMap = generateFrequencyMap((ArrayList) args.get(0));
                     boolean tie = false;
                     int max = Integer.MIN_VALUE;
                     String result = "";
@@ -1016,9 +1033,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                     }
 
                 } catch (HumanTaskRuntimeException e) {
-                    throw new HumanTaskRuntimeException("Error in processing arguments for function mostFrequentOccurence()",e);
+                    throw new HumanTaskRuntimeException(
+                            "Error in processing arguments for function mostFrequentOccurence()", e);
                 }
-
             } else {
                 throw new HumanTaskRuntimeException("Invalid arguments for function mostFrequentOccurence()");
             }
@@ -1033,11 +1050,11 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class VoteOnString implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 2 && args.get(0) instanceof NodeList && args.get(1) instanceof Number) {
+            if (args.size() == 2 && args.get(0) instanceof ArrayList && args.get(1) instanceof Number) {
                 try {
-                    NodeList list = (NodeList) args.get(0);
+                    ArrayList list = (ArrayList) args.get(0);
                     Number percentage = (Number) args.get(1);
-                    Map<String, Integer> frequencyMap = generateFrequencyMap((NodeList) args.get(0));
+                    Map<String, Integer> frequencyMap = generateFrequencyMap((ArrayList) args.get(0));
                     boolean tie = false;
                     int max = Integer.MIN_VALUE;
                     String result = "";
@@ -1053,15 +1070,14 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                         }
 
                     }
-                    float frequencyPercentage = max * 100 / list.getLength();
-                    if (!tie && frequencyPercentage > percentage.floatValue()) {
+                    if (list.size() > 0 && !tie && (max * 100 / list.size()) > percentage.floatValue()) {
                         return result;
                     } else {
                         return "";
                     }
 
                 } catch (HumanTaskRuntimeException e) {
-                    throw new HumanTaskRuntimeException("Error in processing arguments for function voteOnString()",e);
+                    throw new HumanTaskRuntimeException("Error in processing arguments for function voteOnString()", e);
                 }
             } else {
                 throw new HumanTaskRuntimeException("Invalid arguments for function voteOnString()");
@@ -1078,13 +1094,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
 
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 boolean result = false;
-                NodeList list = (NodeList) args.get(0);
-                for (int i = 0; i < list.getLength(); i++) {
+                ArrayList list = (ArrayList) args.get(0);
+                for (int i = 0; i < list.size(); i++) {
                     try {
                         //iterate through node list
-                        String nodeValue = list.item(i).getTextContent();
+                        String nodeValue = ((Element) list.get(i)).getTextContent();
                         if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
                             //true
                             result = true;
@@ -1092,10 +1108,15 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             //false, no point of continuing
                             return false;
                         } else {
-                            throw new HumanTaskRuntimeException("Invalid argument :" + nodeValue + " for function and(), only booleans allowed");
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid argument :" + nodeValue + " for function and(), only booleans allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()", e);
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()",
+                                e);
+                    } catch (ClassCastException e) {
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()",
+                                e);
                     }
                 }
                 return result;
@@ -1113,25 +1134,30 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class Or implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 boolean result = false;
-                NodeList list = (NodeList) args.get(0);
+                ArrayList list = (ArrayList) args.get(0);
 
-                for (int i = 0; i < list.getLength(); i++) {
+                for (int i = 0; i < list.size(); i++) {
                     try {
-                        //iterate through node list
-                        String nodeValue = list.item(i).getTextContent();//text ,error
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {//1,0
+                        //iterate through element list
+                        String nodeValue = ((Element) list.get(i)).getTextContent();
+                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
                             //true, no point of continuing
                             return true;
                         } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
                             //false,
                             result = false;
                         } else {
-                            throw new HumanTaskRuntimeException("Invalid argument:" + nodeValue +" for function or(), only boolean nodes allowed");
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid argument:" + nodeValue + " for function or(), only boolean nodes allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()", e);
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()",
+                                e);
+                    } catch (ClassCastException e) {
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()",
+                                e);
                     }
                 }
                 return result;
@@ -1150,14 +1176,14 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class Vote implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 2 && args.get(0) instanceof NodeList && args.get(1) instanceof Number) {
-                NodeList list = (NodeList) args.get(0);
+            if (args.size() == 2 && args.get(0) instanceof ArrayList && args.get(1) instanceof Number) {
+                ArrayList list = (ArrayList) args.get(0);
                 Number percentage = (Number) args.get(1);
                 int trueCount = 0;
                 int falseCount = 0;
-                for (int i = 0; i < list.getLength(); i++) {
+                for (int i = 0; i < list.size(); i++) {
                     try {
-                        String nodeValue = list.item(i).getTextContent();
+                        String nodeValue = ((Element) list.get(i)).getTextContent();
                         if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
                             //true
                             trueCount++;
@@ -1166,10 +1192,15 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             falseCount++;
                         } else {
                             //invalid
-                            throw new HumanTaskRuntimeException("Invalid argument:" + nodeValue +", only boolean nodes allowed");
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid argument:" + nodeValue + ", only boolean nodes allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function vote()", e);
+                        throw new HumanTaskRuntimeException(
+                                "Invalid arguments:" + args.get(0) + ", for function vote()", e);
+                    } catch (ClassCastException e) {
+                        throw new HumanTaskRuntimeException(
+                                "Invalid arguments:" + args.get(0) + ", for function vote()", e);
                     }
                 }
 
@@ -1194,22 +1225,27 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class Avg implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
-                NodeList list = (NodeList) args.get(0);
-                if (list.getLength() > 0) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
+                ArrayList list = (ArrayList) args.get(0);
+                if (list.size() > 0) {
                     try {
                         //at least one element exists
                         float sum = 0;
-                        for (int i = 0; i < list.getLength(); i++) {
-                            float nodeValue = Float.parseFloat(list.item(i).getTextContent());
+                        for (int i = 0; i < list.size(); i++) {
+                            float nodeValue = Float.parseFloat(((Element) list.get(i)).getTextContent());
                             sum += nodeValue;
                         }
-                        return sum / list.getLength();
+                        return sum / list.size();
 
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()", e);
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                                e);
                     } catch (NumberFormatException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()", e);
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                                e);
+                    } catch (ClassCastException e) {
+                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                                e);
                     }
                 }
                 return Double.NaN;
@@ -1226,22 +1262,27 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class Max implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
-                NodeList list = (NodeList) args.get(0);
-                if (list.getLength() > 0) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
+                ArrayList list = (ArrayList) args.get(0);
+                if (list.size() > 0) {
                     //at least one element exists
                     float max = Float.MIN_VALUE;
-                    for (int i = 0; i < list.getLength(); i++) {
+                    for (int i = 0; i < list.size(); i++) {
                         try {
-                            float nodeValue = Float.parseFloat(list.item(i).getTextContent());
+                            float nodeValue = Float.parseFloat(((Element) list.get(i)).getTextContent());
                             if (nodeValue > max) {
                                 //new max
                                 max = nodeValue;
                             }
                         } catch (DOMException e) {
-                            throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function max()", e);
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
                         } catch (NumberFormatException e) {
-                            throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function max()", e);
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                        } catch (ClassCastException e) {
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
                         }
                     }
                     return max;
@@ -1249,7 +1290,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 //NaN for empty node sets
                 return Double.NaN;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:"+ args +", for function max()");
+                throw new HumanTaskRuntimeException("Invalid arguments:" + args + ", for function max()");
             }
         }
     }
@@ -1261,22 +1302,27 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class Min implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
-                NodeList list = (NodeList) args.get(0);
-                if (list.getLength() > 0) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
+                ArrayList list = (ArrayList) args.get(0);
+                if (list.size() > 0) {
                     float min = Float.MAX_VALUE;
                     //at least one element exists
-                    for (int i = 0; i < list.getLength(); i++) {
+                    for (int i = 0; i < list.size(); i++) {
                         try {
-                            float nodeValue = Float.parseFloat(list.item(i).getTextContent());
+                            float nodeValue = Float.parseFloat(((Element) list.get(i)).getTextContent());
                             if (nodeValue < min) {
                                 //new min
                                 min = nodeValue;
                             }
                         } catch (DOMException e) {
-                            throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function min()", e);
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
                         } catch (NumberFormatException e) {
-                            throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function min()", e);
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                        } catch (ClassCastException e) {
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
                         }
                     }
                     return min;
@@ -1286,7 +1332,6 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             } else {
                 throw new HumanTaskRuntimeException("Invalid arguments:" + args + ", for function min()");
             }
-
         }
     }
 
@@ -1297,19 +1342,24 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     public class Sum implements XPathFunction {
 
         @Override public Object evaluate(List args) throws XPathFunctionException {
-            if (args.size() == 1 && args.get(0) instanceof NodeList) {
-                NodeList list = (NodeList) args.get(0);
-                if (list.getLength() > 0) {
+            if (args.size() == 1 && args.get(0) instanceof ArrayList) {
+                ArrayList list = (ArrayList) args.get(0);
+                if (list.size() > 0) {
                     //at least one element exists
                     float sum = 0;
-                    for (int i = 0; i < list.getLength(); i++) {
+                    for (int i = 0; i < list.size(); i++) {
                         try {
-                            float nodeValue = Float.parseFloat(list.item(i).getTextContent());
+                            float nodeValue = Float.parseFloat(((Element) list.get(i)).getTextContent());
                             sum += nodeValue;
                         } catch (DOMException e) {
-                            throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
                         } catch (NumberFormatException e) {
-                            throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                        } catch (ClassCastException e) {
+                            throw new HumanTaskRuntimeException(
+                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
                         }
                     }
                     return sum;
