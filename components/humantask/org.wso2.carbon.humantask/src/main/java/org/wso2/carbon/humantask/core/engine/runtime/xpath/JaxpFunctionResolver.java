@@ -867,6 +867,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     /**
      * Returns the concatenation of all string nodes,
      * returns an empty string for an empty node-set
+     * logic: goes through the list and concat textContent to result string,
+     * return empty string for empty list.
      * In : node-set of string nodes
      */
     public class Concat implements XPathFunction {
@@ -884,7 +886,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                                 "Invalid arguments:" + args.get(0) + ", for function concat()", e);
                     } catch (ClassCastException e) {
                         throw new HumanTaskRuntimeException(
-                                "Invalid arguments:" + args.get(0) + " , for function concat()");
+                                "Invalid arguments:" + args.get(0) + " , for function concat()",e);
                     }
                 }
             } else {
@@ -897,6 +899,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     /**
      * Returns the concatenation of all string nodes, separated by the specified delimiter string,
      * returns an empty string for an empty node-set.
+     * logic: go through the list and conact textContent and the delimiter to result,
+     * if the last item of the list, delimiter not added.
      * In : node-set of string nodes,delimiter string
      */
     public class ConcatWithDelimiter implements XPathFunction {
@@ -919,7 +923,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                                 "Invalid arguments:" + args.get(0) + ", for function concatWithDelimiter()", e);
                     } catch (ClassCastException e) {
                         throw new HumanTaskRuntimeException(
-                                "Invalid arguments:" + args.get(0) + " , for function concatWithDelimiter()");
+                                "Invalid arguments:" + args.get(0) + " , for function concatWithDelimiter()",e);
                     }
                 }
             } else {
@@ -932,6 +936,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Generates a HashMap containing string items and it's frequency in a given NodeList
+     * logic : create a HashMap where key:textContent value:frequency of the textContent in the list
      * @param list : NodeList
      * @return  : Map<String,Integer> map of string occurrence frequencies
      */
@@ -959,6 +964,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     /**
      * Returns the least frequently occurring string value within all string nodes,
      * or an empty string in case of a tie or for an empty node-set
+     * logic: get the frequency map from generateFrequencyMap() and go through the map
+     * recording the least value, corresponding result and if the least values are same
+     * set tie = true. If tie=true returns empty string, else result string.
      * In : node-set of string nodes
      */
     public class LeastFrequentOccurence implements XPathFunction {
@@ -1002,7 +1010,10 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the most frequently occurring string value within all string nodes,
-     * or an empty string in case of a tie or for an empty node-set
+     * or an empty string in case of a tie or for an empty node-set.
+     * logic: get the frequency map from generateFrequencyMap() and go through the map
+     * recording the maximum value, corresponding result and if the max values are same
+     * set tie = true. If tie=true returns empty string, else result string.
      * In : node-set of string nodes
      */
     public class MostFrequentOccurence implements XPathFunction {
@@ -1045,6 +1056,11 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     /**
      * Returns the most frequently occurring string value if its occurrence is above the specified percentage and there is no tie,
      * or an empty string otherwise (including an empty node-set)
+     * logic: get the frequency map from generateFrequencyMap() and go through the map
+     * recording the max value, corresponding result and if the max values are same
+     * set tie = true. If tie=true returns empty string, if the frequency percentage
+     * is higher than input percentage return result siring, else empty string.
+     * Note: input percentage should be given as parts of 100.
      * In : node-set of string nodes, percentage
      */
     public class VoteOnString implements XPathFunction {
@@ -1087,6 +1103,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the conjunction of all boolean nodes - returns false for an empty node-set
+     * logic: as long as a true is found keep result as true, when the first false is found
+     * return false immediately, else return true.
      * Note: Assumed the nodes contains, "true","false","1" or "0"
      * In : node-set of boolean nodes
      */
@@ -1129,6 +1147,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the disjunction of all boolean nodes - returns false for an empty node-set
+     * logic: go through the list, if a true found, returns true immediately else return false.
+     * return false for empty list
      * In : node-set of boolean nodes
      */
     public class Or implements XPathFunction {
@@ -1171,6 +1191,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     /**
      * Returns the most frequently occurring boolean value if its occurrence is above the specified percentage,
      * or false otherwise (including an empty node-set)
+     * logic: get the true and false count. if true is higher, check if above the percentage and return true.
+     * return false for any other case. no need to check percentage for false.
      * In : node-set of boolean nodes, percentage
      */
     public class Vote implements XPathFunction {
@@ -1207,7 +1229,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 float truePercentage = trueCount * 100 / (trueCount + falseCount);
 
                 if (trueCount > falseCount && truePercentage > percentage.floatValue()) {
-                    //return true
+                    //returns true
                     return true;
                 }
                 //no point of evaluating for false, anyway false returned
@@ -1220,6 +1242,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the average value of all number nodes - returns NaN for an empty node-set
+     * logic: take the sum of all nodes, return dividing by list size. return NaN for empty list.
      * In : node-set of number nodes
      */
     public class Avg implements XPathFunction {
@@ -1257,6 +1280,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the maximum value of all number nodes - returns NaN for an empty node-set
+     * logic: go through the list and find the maximum value. return NaN for empty list.
      * In : node-set of number nodes
      */
     public class Max implements XPathFunction {
@@ -1297,6 +1321,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the minimum value of all number nodes - returns NaN for an empty node-set
+     * logic: go through the list and find the minimum value. return NaN for empty list.
      * In : node-set of number nodes
      */
     public class Min implements XPathFunction {
@@ -1337,6 +1362,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Returns the sum value of all number nodes - returns NaN for an empty node-set
+     * logic: go through the list and add the values to result. return NaN for empty list.
      * In : node-set of number nodes
      */
     public class Sum implements XPathFunction {
