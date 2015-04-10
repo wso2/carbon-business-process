@@ -35,6 +35,7 @@
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task</class>
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.DeploymentUnit</class>
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.TaskVersion</class>
+        <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.LeanTask</class>
         <properties>
             <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.PostgresDictionary"/>
 

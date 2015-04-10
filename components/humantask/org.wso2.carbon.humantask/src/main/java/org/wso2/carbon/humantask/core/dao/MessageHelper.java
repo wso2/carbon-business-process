@@ -58,6 +58,16 @@ public class MessageHelper {
         return messageDao;
     }
 
+
+    public MessageDAO createLeanMessage(LeanTaskCreationContext taskCreationContext) {
+        for (Map.Entry<String, Element> part : taskCreationContext.getMessageBodyParts().entrySet()) {
+            setPart(part.getKey(), part.getValue());
+        }
+
+        return messageDao;
+    }
+
+
     /**
      * Return the part with the given name.
      *

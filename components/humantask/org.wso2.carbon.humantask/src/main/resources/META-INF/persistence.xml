@@ -35,5 +35,6 @@
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task</class>
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.DeploymentUnit</class>
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.TaskVersion</class>
+        <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.LeanTask</class>
     </persistence-unit>
 </persistence>

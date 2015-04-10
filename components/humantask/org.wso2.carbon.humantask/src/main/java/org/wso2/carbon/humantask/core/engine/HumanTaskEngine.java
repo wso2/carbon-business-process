@@ -19,6 +19,7 @@ package org.wso2.carbon.humantask.core.engine;
 import org.wso2.carbon.bpel.common.WSDLAwareMessage;
 import org.wso2.carbon.humantask.core.api.scheduler.Scheduler;
 import org.wso2.carbon.humantask.core.dao.HumanTaskDAOConnectionFactory;
+import org.wso2.carbon.humantask.core.dao.LeanTaskCreationContext;
 import org.wso2.carbon.humantask.core.dao.TaskCreationContext;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
 import org.wso2.carbon.humantask.core.engine.event.processor.EventProcessor;
@@ -27,6 +28,7 @@ import org.wso2.carbon.humantask.core.engine.runtime.xpath.XPathExpressionRuntim
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.store.HumanTaskStore;
+import org.wso2.carbon.humantask.core.store.LeanTaskConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,6 +81,31 @@ public class HumanTaskEngine {
         creationContext.setPeopleQueryEvaluator(peopleQueryEvaluator);
 
         return getDaoConnectionFactory().getConnection().createTask(creationContext);
+    }
+
+
+    /**
+     * create lean task
+     * @param message
+     * @param taskConfiguration
+     * @param tenantId
+     * @return
+     * @throws HumanTaskException
+     */
+    private TaskDAO createLeanTask(WSDLAwareMessage message,
+                                   LeanTaskConfiguration taskConfiguration, int tenantId)
+            throws HumanTaskException {
+
+        LeanTaskCreationContext creationContext = new LeanTaskCreationContext();
+        creationContext.setTaskConfiguration(taskConfiguration);
+        creationContext.setTenantId(tenantId);
+        creationContext.setMessageBodyParts(message.getBodyPartElements());
+        //creationContext.setMessageHeaderParts(message.getHeaderPartElements());
+        creationContext.setPeopleQueryEvaluator(peopleQueryEvaluator);
+
+        return getDaoConnectionFactory().getConnection().createLeanTask(creationContext);
+
+
     }
 
     /**

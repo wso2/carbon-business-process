@@ -1067,6 +1067,43 @@
             <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
         </operation>
     </service>
+
+
+    <service name="LeanTaskClientAPIAdmin">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.wso2.carbon.humantask.client.api.leantask.LeanTaskClientAPIAdminMessageReceiverInOut" />
+        </messageReceivers>
+        <parameter name="ServiceClass">org.wso2.carbon.humantask.core.api.leantask.LeanTaskOperationsImpl</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="registerLeanTaskDefinition" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/registerLeanTaskDefinition</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinitionResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinition/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinition/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalStateFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinition/Fault/illegalStateFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinition/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinition/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/registerLeanTaskDefinition/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+
+        <operation name="createLeanTask" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803">
+            <actionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/createLeanTask</actionMapping>
+            <outputActionMapping>http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTaskResponse</outputActionMapping>
+            <faultActionMapping faultName="illegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalArgumentFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTask/Fault/illegalArgumentFault</faultActionMapping>
+            <faultActionMapping faultName="illegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTask/Fault/illegalAccessFault</faultActionMapping>
+            <faultActionMapping faultName="IllegalAccessFault_Exception">http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803/leanTaskOperations/createLeanTask/Fault/illegalAccessFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+    </service>
+
     <parameter name="adminService" locked="true">true</parameter>
     <parameter name="hiddenService" locked="true">true</parameter>
 </serviceGroup>

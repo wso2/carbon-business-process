@@ -16,7 +16,9 @@
 
 package org.wso2.carbon.humantask.core.dao;
 
+import org.w3c.dom.Element;
 import org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException;
+import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.LeanTask;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
 import org.wso2.carbon.humantask.core.engine.HumanTaskException;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
@@ -39,6 +41,24 @@ public interface HumanTaskDAOConnection {
      * @throws org.wso2.carbon.humantask.core.engine.HumanTaskException :
      */
     TaskDAO createTask(TaskCreationContext creationContext) throws HumanTaskException;
+
+
+
+    /**
+     * creates lean task definition object and persists it in the database
+     * @return
+     */
+    LeanTask createLeanTaskDef(final int tenantId,final String name,final Element leanTaskDef,String md5sum) throws Exception;
+
+
+
+    /**Creates the lean task object
+     *
+     * @param creationContext
+     * @return
+     * @throws HumanTaskException
+     */
+    TaskDAO createLeanTask(LeanTaskCreationContext creationContext) throws HumanTaskException;
 
     /**
      * Retrieves the given task with it's children ( comments, events, etc).

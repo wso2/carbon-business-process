@@ -24,6 +24,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.HumanTaskServer;
 import org.wso2.carbon.humantask.core.store.HumanTaskStore;
@@ -32,6 +33,7 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Handles the deployment of human task artifacts. Artifact can be a ZIP file or TODO registry collection.
@@ -114,4 +116,6 @@ public class HumanTaskDeployer extends AbstractDeployer {
             }
         }
     }
+
+
 }
