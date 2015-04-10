@@ -45,13 +45,7 @@ public interface LeanTaskDAO {
      */
     void setVersion(long version);
 
-<<<<<<< HEAD
     void setleanTaskId(String id);
-=======
-
-   void setleanTaskId(String id);
-
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 
     /**
      * set lean task definition
@@ -62,30 +56,21 @@ public interface LeanTaskDAO {
 
     /**
      * set task status
-<<<<<<< HEAD
      *
-=======
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
      * @param status
      */
     void setTaskStatus(TaskPackageStatus status);
 
     /**
      * set md5sum
-<<<<<<< HEAD
      *
-=======
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
      * @param md5sum
      */
     void setmd5sum(String md5sum);
 
     /**
      * get task status
-<<<<<<< HEAD
      *
-=======
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
      * @return
      */
     TaskPackageStatus getStatus();
@@ -118,17 +103,11 @@ public interface LeanTaskDAO {
      */
     TLeanTask getLeanTask() throws ADBException, XmlException;
 
-<<<<<<< HEAD
     /**
      *
      * @return
      */
     String getleanTaskId();
-=======
-   String getleanTaskId();
-
-    String getmd5sum();
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 
     /**
      *

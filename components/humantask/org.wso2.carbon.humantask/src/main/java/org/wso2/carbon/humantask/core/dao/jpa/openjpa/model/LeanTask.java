@@ -22,10 +22,6 @@ import org.apache.xmlbeans.XmlException;
 import org.w3c.dom.Element;
 import org.wso2.carbon.humantask.core.dao.LeanTaskDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
-<<<<<<< HEAD
-=======
-import org.wso2.carbon.humantask.core.dao.TaskStatus;
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
 
 import javax.persistence.*;
@@ -41,7 +37,6 @@ public class LeanTask implements LeanTaskDAO {
     @Column(name = "LEANTASK_VERSION", nullable = false)
     @GeneratedValue(strategy = GenerationType.TABLE)
     private long version;
-<<<<<<< HEAD
     @Column(name = "LEANTASK_ID")
     private String leanTaskId;
     @Column(name = "LEANTASK_DEF", nullable = false, columnDefinition = "CLOB")
@@ -52,36 +47,14 @@ public class LeanTask implements LeanTaskDAO {
     private TaskPackageStatus status;
     @Column(name = "md5sum", nullable = false)
     private String md5sum;
-=======
-
-    @Column(name="LEANTASK_ID")
-    private String leanTaskId;
-
-    @Column(name = "LEANTASK_DEF", nullable = false, columnDefinition = "CLOB")
-    @Lob
-    private String leanTaskDef;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false)
-    private TaskPackageStatus status;
-
-    @Column(name = "md5sum", nullable = false)
-    private String md5sum;
-
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 
     public void setTenantID(int tenantId) {
         this.tenantId = tenantId;
     }
 
     public void setName(String name) {
-<<<<<<< HEAD
         this.name = name;
         this.leanTaskId = name;
-=======
-        this.name=name;
-        this.leanTaskId=name;
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
     }
 
     public void setVersion(long version) {
@@ -90,10 +63,6 @@ public class LeanTask implements LeanTaskDAO {
 
     public void setleanTaskId(String id) {
         this.leanTaskId = name;
-    }
-
-    public void setleanTaskId(String id){
-        this.leanTaskId=name;
     }
 
     public void setLeanTask(Element leanTask) {
@@ -106,18 +75,6 @@ public class LeanTask implements LeanTaskDAO {
 
     public void setmd5sum(String md5sum) {
         this.md5sum = md5sum;
-    }
-
-    public TaskPackageStatus getStatus() {
-        return status;
-    }
-
-    public void setTaskStatus(TaskPackageStatus status) {
-        this.status=status;
-    }
-
-    public void setmd5sum(String md5sum) {
-        this.md5sum=md5sum;
     }
 
     public TaskPackageStatus getStatus() {
@@ -145,12 +102,6 @@ public class LeanTask implements LeanTaskDAO {
     public String getleanTaskId() {
         return leanTaskId;
     }
-
-    public String getmd5sum() {
-        return md5sum;
-    }
-
-    public String getleanTaskId(){return leanTaskId;}
 
     public String getmd5sum() {
         return md5sum;

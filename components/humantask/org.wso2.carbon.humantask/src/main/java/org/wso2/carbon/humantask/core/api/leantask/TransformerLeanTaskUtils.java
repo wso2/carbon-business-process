@@ -23,11 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlException;
 import org.w3c.dom.Element;
-<<<<<<< HEAD
-=======
-import org.w3c.dom.Node;
-import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 import org.wso2.carbon.humantask.LeanTaskDocument;
 import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
@@ -43,13 +38,7 @@ import java.io.IOException;
 public class TransformerLeanTaskUtils {
     private static Log log = LogFactory.getLog(TransformerLeanTaskUtils.class);
 
-<<<<<<< HEAD
     Element e;
-=======
-    static Element e;
-    static OMElement taskDef;
-
->>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 
     public LeanTaskDocument transformLeanTask(TLeanTask adbLeantask) throws ADBException, XmlException {
 
@@ -59,7 +48,7 @@ public class TransformerLeanTaskUtils {
         QName ns = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/leantask/api/200803", "taskDefinition");
 
 
-        taskDef = adbLeantask.getOMElement(ns, OMAbstractFactory.getOMFactory());
+        OMElement taskDef = adbLeantask.getOMElement(ns, OMAbstractFactory.getOMFactory());
         xmlbLeantask = org.wso2.carbon.humantask.TLeanTask.Factory.parse(taskDef.toString());
 
         //OMElement p = adbLeantask.getPresentationElements().getOMElement(new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803", "presentationElements"), OMAbstractFactory.getOMFactory());
