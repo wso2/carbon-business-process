@@ -113,7 +113,7 @@
             <artifactId>org.wso2.carbon.ntask.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.predic8.wso2</groupId>
+            <groupId>org.wso2.orbit.com.predic8</groupId>
             <artifactId>soa.model.core</artifactId>
         </dependency>
         <dependency>

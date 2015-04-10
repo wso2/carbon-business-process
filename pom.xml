@@ -1027,13 +1027,13 @@
             </dependency>
 
             <dependency>
-                <groupId>com.predic8.wso2</groupId>
+                <groupId>org.wso2.orbit.com.predic8</groupId>
                 <artifactId>soa.model.core</artifactId>
                 <version>${com.predic8.soa-model-core.wso2.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.asm4.wso2</groupId>
+                <groupId>org.wso2.orbit.asm4</groupId>
                 <artifactId>asm4-all</artifactId>
                 <version>${org.asm4.wso2.version}</version>
             </dependency>
@@ -1536,7 +1536,7 @@
         <restlet.version>2.2.1</restlet.version>
 
         <!-- For HT Rendering -->
-        <com.predic8.soa-model-core.wso2.version>1.5.0.wso2v1</com.predic8.soa-model-core.wso2.version>
+        <com.predic8.soa-model-core.wso2.version>1.5.0.wso2v3</com.predic8.soa-model-core.wso2.version>
         <org.asm4.wso2.version>4.0.0.wso2v1</org.asm4.wso2.version>
 
 	<project.scm.id>wso2-scm-server</project.scm.id>
