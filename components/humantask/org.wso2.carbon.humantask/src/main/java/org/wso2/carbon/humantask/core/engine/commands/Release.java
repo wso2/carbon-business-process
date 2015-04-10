@@ -52,10 +52,10 @@ public class Release extends AbstractHumanTaskCommand {
             }
 
             if (!OperationAuthorizationUtil.authoriseUser(task, caller, allowedRoles,
-                                                          getEngine().getPeopleQueryEvaluator())) {
+                    getEngine().getPeopleQueryEvaluator())) {
                 throw new HumanTaskIllegalAccessException(String.format("The user[%s] cannot perform [%s]" +
-                                                                  " operation as he is not in task roles[%s]",
-                                                                  caller.getName(), Release.class, allowedRoles));
+                        " operation as he is not in task roles[%s]",
+                        caller.getName(), Release.class, allowedRoles));
             }
 
             task.stop();

@@ -39,7 +39,6 @@ public class HumanTaskCleanupSchedulerServiceComponent {
     private static Log log = LogFactory.getLog(HumanTaskCleanupSchedulerServiceComponent.class);
 
 
-
     protected void activate(ComponentContext ctxt) {
         try {
             log.info("Starting HumanTaskCleanupSchedulerServiceComponent");

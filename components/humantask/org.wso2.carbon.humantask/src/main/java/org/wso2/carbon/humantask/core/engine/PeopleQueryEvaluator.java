@@ -97,7 +97,7 @@ public interface PeopleQueryEvaluator {
     void checkOrgEntityExists(OrganizationalEntityDAO orgEntity);
 
     boolean isOrgEntityInRole(OrganizationalEntityDAO entity,
-                                     GenericHumanRoleDAO role);
+                              GenericHumanRoleDAO role);
 
     /**
      * Returns the currently logged in user's user name.

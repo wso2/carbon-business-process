@@ -24,24 +24,7 @@ import org.w3c.dom.Node;
 import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +61,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
      * When setting the task name, we convert QName to string. When getting name, caller must
      * convert name back to a QName. This is same as name except name has version appended to it.
      */
-    @Column(name ="TASK_DEF_NAME", nullable = false)
+    @Column(name = "TASK_DEF_NAME", nullable = false)
     private String taskDefinitionName;
 
     @Enumerated(EnumType.STRING)
@@ -249,10 +232,10 @@ public class Task extends OpenJPAEntity implements TaskDAO {
     @OneToMany(targetEntity = Event.class, mappedBy = "task", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<EventDAO> events = new ArrayList<EventDAO>();
 
-    @Column(name="TASK_VERSION", nullable = false)
+    @Column(name = "TASK_VERSION", nullable = false)
     private long taskVersion;
 
-    @Column(name="PACKAGE_NAME", nullable = false)
+    @Column(name = "PACKAGE_NAME", nullable = false)
     private String packageName;
 
     public Task() {
@@ -271,7 +254,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
      *
      * @return The task id.
      */
-    
+
     public Long getId() {
         return id;
     }
@@ -290,62 +273,62 @@ public class Task extends OpenJPAEntity implements TaskDAO {
      *
      * @param input Input MessageDAO
      */
-    
+
     public void setInputMessage(MessageDAO input) {
         inputMessage = input;
     }
 
-    
+
     public MessageDAO getFailureMessage() {
         return failureMessage;
     }
 
-    
+
     public void setFailureMessage(MessageDAO failureMessage) {
         this.failureMessage = failureMessage;
     }
 
-    
+
     public void setTenantId(Integer tenantId) {
         this.tenantId = tenantId;
     }
 
-    
+
     public Integer getTenantId() {
         return this.tenantId;
     }
 
-    
+
     public void addPresentationParameter(PresentationParameterDAO param) {
         presentationParameters.add(param);
     }
 
-    
+
     public List<PresentationParameterDAO> getPresentationParameters() {
         return presentationParameters;
     }
 
-    
+
     public void addPresentationName(PresentationNameDAO preName) {
         this.presentationNames.add(preName);
     }
 
-    
+
     public void addPresentationSubject(PresentationSubjectDAO preSubject) {
         this.presentationSubjects.add(preSubject);
     }
 
-    
+
     public void addPresentationDescription(PresentationDescriptionDAO preDesc) {
         this.presentationDescriptions.add(preDesc);
     }
 
-    
+
     public void addHumanRole(GenericHumanRoleDAO humanRole) {
         this.humanRoles.add(humanRole);
     }
 
-    
+
     public List<GenericHumanRoleDAO> getHumanRoles() {
         List<GenericHumanRoleDAO> humanRoleDAOs = new ArrayList<GenericHumanRoleDAO>();
         if (this.humanRoles != null) {
@@ -354,7 +337,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         return humanRoleDAOs;
     }
 
-    
+
     public String getName() {
         return name;
     }
@@ -372,7 +355,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         this.name = name;
     }
 
-    
+
     public TaskType getType() {
         return type;
     }
@@ -381,47 +364,47 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         this.type = type;
     }
 
-    
+
     public TaskStatus getStatusBeforeSuspension() {
         return statusBeforeSuspension;
     }
 
-    
+
     public void setStatusBeforeSuspension(TaskStatus statusBeforeSuspension) {
         this.statusBeforeSuspension = statusBeforeSuspension;
     }
 
-    
+
     public Integer getPriority() {
         return priority;
     }
 
-    
+
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    
+
     public Date getCreatedOn() {
         return new Date(createdOn.getTime());
     }
 
-    
+
     public void setCreatedOn(Date createdOn) {
         this.createdOn = new Date(createdOn.getTime());
     }
 
-    
+
     public Date getUpdatedOn() {
         return updatedOn;
     }
 
-    
+
     public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
     }
 
-    
+
     public Date getActivationTime() {
         if (activationTime != null) {
             return new Date(activationTime.getTime());
@@ -430,14 +413,14 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public void setActivationTime(Date activationTime) {
         if (activationTime != null) {
             this.activationTime = new Date(activationTime.getTime());
         }
     }
 
-    
+
     public Date getExpirationTime() {
         if (expirationTime != null) {
             return new Date(expirationTime.getTime());
@@ -446,67 +429,67 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public void setExpirationTime(Date expirationTime) {
         if (expirationTime != null) {
             this.expirationTime = new Date(expirationTime.getTime());
         }
     }
 
-    
+
     public Date getStartByTime() {
         return startByTime;
     }
 
-    
+
     public void setStartByTime(Date startByTime) {
         this.startByTime = startByTime;
     }
 
-    
+
     public Date getCompleteByTime() {
         return completeByTime;
     }
 
-    
+
     public void setCompleteByTime(Date completeByTime) {
         this.completeByTime = completeByTime;
     }
 
-    
+
     public MessageDAO getOutputMessage() {
         return outputMessage;
     }
 
-    
+
     public void setOutputMessage(MessageDAO outputMessage) {
         this.outputMessage = outputMessage;
     }
 
-    
+
     public List<AttachmentDAO> getAttachments() {
         return attachments;
     }
 
-    
+
     public void setAttachments(List<AttachmentDAO> attachments) {
         this.attachments = attachments;
     }
 
-    
+
     public boolean addAttachment(AttachmentDAO attachment) {
         return this.attachments.add(attachment);
     }
 
-    
+
     public Boolean isEscalated() {
         return "Y".equalsIgnoreCase(escalatedStr);
     }
 
-    
+
     public void setEscalated(Boolean escalated) {
         this.escalated = escalated;
-        if( escalated) {
+        if (escalated) {
             this.escalatedStr = "Y";
         } else {
             this.escalatedStr = "N";
@@ -530,105 +513,102 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         this.escalatedStr = escalatedStr;
     }
 
-    
+
     public List<PresentationSubjectDAO> getPresentationSubjects() {
         return presentationSubjects;
     }
 
 
-    
     public List<PresentationNameDAO> getPresentationNames() {
         return presentationNames;
     }
 
-    
+
     public List<PresentationDescriptionDAO> getPresentationDescriptions() {
         return presentationDescriptions;
     }
 
-    
+
     public List<DeadlineDAO> getDeadlines() {
         return deadlines;
     }
 
-    
+
     public void addDeadline(DeadlineDAO deadlineDAO) {
         deadlines.add(deadlineDAO);
     }
 
-    
+
     public List<EventDAO> getEvents() {
         return events;
     }
 
-    
+
     public void setEvents(List<EventDAO> events) {
         this.events = events;
     }
 
-    
+
     public void addEvent(EventDAO event) {
         this.events.add(event);
     }
 
-    
+
     public void persistEvent(EventDAO event) {
         event.setTask(this);
         this.getEvents().add(event);
     }
 
 
-
-    
     public List<TaskDAO> getSubTasks() {
         return subTasks;
     }
 
-    
+
     public void setSubTasks(List<TaskDAO> subTasks) {
         this.subTasks = subTasks;
     }
 
-    
+
     public Task getParentTask() {
         return parentTask;
     }
 
-    
+
     public void setParentTask(TaskDAO parentTask) {
         this.parentTask = (Task) parentTask;
     }
 
-    
+
     public TaskStatus getStatus() {
         return status;
     }
 
-    
+
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
-    
+
     public void start() {
         this.setStatus(TaskStatus.IN_PROGRESS);
         getEntityManager().merge(this);
     }
 
-    
+
     public void stop() {
         this.setStatus(TaskStatus.RESERVED);
         getEntityManager().merge(this);
     }
 
-    
+
     public void suspend() {
         this.setStatusBeforeSuspension(this.getStatus());
         this.setStatus(TaskStatus.SUSPENDED);
         getEntityManager().merge(this);
     }
 
-    
+
     public void complete(MessageDAO response) {
         response.setTask(this);
         this.setOutputMessage(response);
@@ -636,7 +616,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         getEntityManager().merge(this);
     }
 
-    
+
     public void claim(OrganizationalEntityDAO caller) {
         List<OrganizationalEntityDAO> organizationalEntities = new ArrayList<OrganizationalEntityDAO>();
         organizationalEntities.add(caller);
@@ -652,18 +632,18 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         this.setStatus(TaskStatus.RESERVED);
     }
 
-    
+
     public void exit() {
         this.setStatus(TaskStatus.EXITED);
         getEntityManager().merge(this);
     }
 
-    
+
     public void delegate(OrganizationalEntityDAO delegatee) {
         claim(delegatee);
     }
 
-    
+
     public CommentDAO persistComment(CommentDAO comment) {
         List<CommentDAO> originalCommentList = new ArrayList<CommentDAO>(this.getComments());
         comment.setTask(this);
@@ -677,7 +657,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public void deleteComment(Long commentId) {
 
         for (Iterator<CommentDAO> i = this.getComments().iterator(); i.hasNext(); ) {
@@ -691,17 +671,17 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public void forward(OrganizationalEntityDAO orgEntity) {
         throw new UnsupportedOperationException("The delegate operation is no supported currently.");
     }
 
-    
+
     public List<CommentDAO> getComments() {
         return comments;
     }
 
-    
+
     public String getTaskDescription(String contentType) {
         String presentationDescriptionString = null;
         for (PresentationDescriptionDAO preDesc : this.getPresentationDescriptions()) {
@@ -713,7 +693,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         return presentationDescriptionString;
     }
 
-    
+
     public void release() {
         for (Iterator<GenericHumanRoleDAO> iterator = getHumanRoles().iterator();
              iterator.hasNext(); ) {
@@ -735,30 +715,30 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         this.setStatus(TaskStatus.READY);
     }
 
-    
+
     public void remove() {
         this.setStatus(TaskStatus.REMOVED);
     }
 
-    
+
     public void resume() {
         this.setStatus(this.getStatusBeforeSuspension());
         this.setStatusBeforeSuspension(null);
         getEntityManager().merge(this);
     }
 
-    
+
     public void activate() {
         this.setStatus(TaskStatus.READY);
         getEntityManager().merge(this);
     }
 
-    
+
     public void skip() {
         this.setStatus(TaskStatus.OBSOLETE);
     }
 
-    
+
     public void updateAndPersistComment(Long commentId, String newComment, String modifiedBy) {
         for (CommentDAO comment : this.getComments()) {
             if (comment.getId().equals(commentId)) {
@@ -771,27 +751,27 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         getEntityManager().merge(this);
     }
 
-    
+
     public Boolean isSkipable() {
         return "Y".equalsIgnoreCase(skipableStr);
     }
 
-    
+
     public MessageDAO getInputMessage() {
         return inputMessage;
     }
 
-    
+
     public void setSkipable(Boolean skipable) {
         this.skipable = skipable;
-        if( skipable) {
+        if (skipable) {
             this.skipableStr = "Y";
         } else {
             this.skipableStr = "N";
         }
     }
 
-    
+
     public void nominate(List<OrganizationalEntityDAO> nominees) {
         if (nominees != null && nominees.size() > 0) {
             if (nominees.size() == 1) {
@@ -824,13 +804,13 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         getEntityManager().merge(this);
     }
 
-    
+
     public void persistPriority(Integer newPriority) {
         this.setPriority(newPriority);
         this.getEntityManager().merge(this);
     }
 
-    
+
     public void fail(String faultName, Element faultData) {
         if (faultData != null && StringUtils.isNotEmpty(faultName)) {
             MessageDAO faultMessage = new Message();
@@ -844,21 +824,21 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         this.getEntityManager().merge(this);
     }
 
-    
+
     public void deleteFault() {
         this.getEntityManager().remove(this.getFailureMessage());
         this.setFailureMessage(null);
         this.getEntityManager().merge(this);
     }
 
-    
+
     public void deleteOutput() {
         this.getEntityManager().remove(this.getOutputMessage());
         this.setOutputMessage(null);
         this.getEntityManager().merge(this);
     }
 
-    
+
     public void persistFault(String faultName, Element faultData) {
         if (StringUtils.isNotEmpty(faultName) && faultData != null) {
             MessageDAO faultMessage = new Message();
@@ -871,7 +851,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public void persistOutput(String outputName, Element outputData) {
         if (StringUtils.isNotEmpty(outputName) && outputData != null) {
             MessageDAO output = new Message();
@@ -891,7 +871,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public void persistToPotentialOwners(OrganizationalEntityDAO delegatee) {
         for (GenericHumanRoleDAO role : this.getHumanRoles()) {
             if (GenericHumanRoleDAO.GenericHumanRoleType.POTENTIAL_OWNERS.equals(role.getType())) {
@@ -902,7 +882,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         }
     }
 
-    
+
     public GenericHumanRoleDAO getGenericHumanRole(GenericHumanRoleDAO.GenericHumanRoleType type) {
         GenericHumanRoleDAO matchingRole = null;
         for (GenericHumanRoleDAO role : getHumanRoles()) {
@@ -914,7 +894,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         return matchingRole;
     }
 
-    
+
     public void replaceOrgEntitiesForLogicalPeopleGroup(
             GenericHumanRoleDAO.GenericHumanRoleType type,
             List<OrganizationalEntityDAO> orgEntities) {
@@ -957,7 +937,7 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         return this.packageName;
     }
 
-    public void delete(){
+    public void delete() {
         deletePresentationDescription();
         deletePresentationName();
         deletePresentationParameter();
@@ -972,57 +952,57 @@ public class Task extends OpenJPAEntity implements TaskDAO {
         deleteAttachments();
     }
 
-    public void deleteInstance(){
+    public void deleteInstance() {
         getEntityManager().remove(this);
     }
 
-    private void deleteEvents(){
+    private void deleteEvents() {
         getEntityManager().createNamedQuery(Event.DELETE_EVENTS_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deleteAttachments(){
+    private void deleteAttachments() {
         getEntityManager().createNamedQuery(Attachment.DELETE_ATTACHMENTS_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deletePresentationElements(){
+    private void deletePresentationElements() {
         getEntityManager().createNamedQuery(PresentationElement.DELETE_PRESENTATION_ELEMENTS_FOR_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deletePresentationSubject(){
+    private void deletePresentationSubject() {
         getEntityManager().createNamedQuery(PresentationSubject.DELETE_PRESENTATION_SUBJECT_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deletePresentationName(){
+    private void deletePresentationName() {
         getEntityManager().createNamedQuery(PresentationName.DELETE_PRESENTATION_NAME_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deletePresentationParameter(){
+    private void deletePresentationParameter() {
         getEntityManager().createNamedQuery(PresentationParameter.DELETE_PRESENTATION_PARAMETERS_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deletePresentationDescription(){
+    private void deletePresentationDescription() {
         getEntityManager().createNamedQuery(PresentationDescription.DELETE_PRESENTATION_DESCRIPTIONS_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deleteGenericHumanRoles(){
-        for(GenericHumanRoleDAO role:humanRoles){
+    private void deleteGenericHumanRoles() {
+        for (GenericHumanRoleDAO role : humanRoles) {
             List<OrganizationalEntityDAO> orgEntities = role.getOrgEntities();
-            for(OrganizationalEntityDAO orgEntity:orgEntities){
+            for (OrganizationalEntityDAO orgEntity : orgEntities) {
                 getEntityManager().remove(orgEntity);
             }
         }
         getEntityManager().createNamedQuery(GenericHumanRole.DELETE_GHR_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deleteDeadlines(){
+    private void deleteDeadlines() {
         getEntityManager().createNamedQuery(Deadline.DELETE_DEADLINES_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deleteComments(){
+    private void deleteComments() {
         getEntityManager().createNamedQuery(Comment.DELETE_COMMENTS_BY_TASK).setParameter("task", this).executeUpdate();
     }
 
-    private void deleteMessages(){
+    private void deleteMessages() {
         getEntityManager().createNamedQuery(Message.DELETE_MESSAGE_BY_TASK).setParameter("task", this).executeUpdate();
     }
 }

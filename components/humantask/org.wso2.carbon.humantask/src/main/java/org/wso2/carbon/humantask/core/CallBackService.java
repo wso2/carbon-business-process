@@ -26,5 +26,6 @@ public interface CallBackService {
     void invoke(OMElement payload, long taskId) throws AxisFault;
 
     void invokeSkip(long taskID) throws AxisFault;
+
     void invokeFault(long taskID, String faultMessage) throws AxisFault;
 }

@@ -24,7 +24,6 @@ import javax.sql.DataSource;
 public interface HumanTaskDAOConnectionFactory {
 
     /**
-     *
      * @return HumanTaskDAOConnection : The dao connection which acts as the interface to the human task database.
      */
     HumanTaskDAOConnection getConnection();
@@ -35,7 +34,6 @@ public interface HumanTaskDAOConnectionFactory {
     void init();
 
     /**
-     *
      * @return : The DataSource
      */
     DataSource getDataSource();

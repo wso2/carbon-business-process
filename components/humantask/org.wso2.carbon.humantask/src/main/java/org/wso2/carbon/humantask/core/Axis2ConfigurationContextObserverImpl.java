@@ -20,10 +20,8 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServerHolder;
 import org.wso2.carbon.utils.AbstractAxis2ConfigurationContextObserver;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 public class Axis2ConfigurationContextObserverImpl extends
         AbstractAxis2ConfigurationContextObserver {

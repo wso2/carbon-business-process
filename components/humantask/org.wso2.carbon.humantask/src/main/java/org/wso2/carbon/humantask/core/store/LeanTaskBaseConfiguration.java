@@ -16,20 +16,10 @@
 
 package org.wso2.carbon.humantask.core.store;
 
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TRenderings;
-import org.wso2.carbon.humantask.TExpression;
-import org.wso2.carbon.humantask.TQuery;
-import org.wso2.carbon.humantask.TPresentationElements;
-import org.wso2.carbon.humantask.TDelegation;
-import org.wso2.carbon.humantask.TPeopleAssignments;
-import org.wso2.carbon.humantask.TPriorityExpr;
-import org.wso2.carbon.humantask.TMessageSchema;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
 import org.wso2.carbon.humantask.core.utils.HumanTaskNamespaceContext;
-
-import javax.xml.namespace.QName;
 
 public abstract class LeanTaskBaseConfiguration {
 
@@ -44,7 +34,7 @@ public abstract class LeanTaskBaseConfiguration {
     private String defaultExpressionLanguage = HumanTaskConstants.WSHT_EXP_LANG_XPATH20;
     private HumanTaskNamespaceContext namespaceContext = new HumanTaskNamespaceContext();
     private String leanTaskDefName;
-    private boolean isLeantask;
+    private boolean isLeantask = true;
     private TaskPackageStatus packageStatus = TaskPackageStatus.ACTIVE;
     private boolean isErroneous = false;
     private String deploymentError = "NONE";
@@ -52,12 +42,12 @@ public abstract class LeanTaskBaseConfiguration {
     public LeanTaskBaseConfiguration() {
     }
 
-    public LeanTaskBaseConfiguration(int tenatId,String task_versionName,String leanTaskDefName,
+    public LeanTaskBaseConfiguration(int tenatId, String task_versionName, String leanTaskDefName,
                                      long version) {
 
         this.tenantId = tenatId;
-        this.leanTaskDefName = leanTaskDefName;
         this.task_versionName = task_versionName;
+        this.leanTaskDefName = leanTaskDefName;
         this.packageStatus = TaskPackageStatus.ACTIVE;
         this.version = version;
     }
@@ -107,7 +97,7 @@ public abstract class LeanTaskBaseConfiguration {
         return this.version;
     }
 
-    public abstract QName getName();
+    //public abstract QName getName();
 
 
     public abstract TDeadlines getDeadlines();

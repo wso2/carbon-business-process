@@ -34,16 +34,16 @@ public class HumanTaskSchemaURIResolver implements org.apache.ws.commons.schema.
     public InputSource resolveEntity(String targetNamespace, String schemaLocation, String baseUri) {
         if (log.isDebugEnabled()) {
             log.debug("resolveEntity: targetNamespace=" + targetNamespace + " schemaLocation=" +
-                      schemaLocation + " baseUri=" + baseUri);
+                    schemaLocation + " baseUri=" + baseUri);
         }
         InputStream is;
         try {
-            URI base = new URI("file:"+baseUri);
+            URI base = new URI("file:" + baseUri);
             URI uri = base.resolve(schemaLocation);
             is = uri.toURL().openStream();
             if (is == null) {
                 log.error("Exception resolving entity: schemaLocation=" + schemaLocation +
-                          " baseUri=" + baseUri);
+                        " baseUri=" + baseUri);
                 return null;
             }
             InputSource source = new InputSource(is);
@@ -52,7 +52,7 @@ public class HumanTaskSchemaURIResolver implements org.apache.ws.commons.schema.
             return new InputSource(is);
         } catch (Exception e) {
             log.error("Exception resolving entity: schemaLocation=" + schemaLocation + " baseUri=" +
-                      baseUri, e);
+                    baseUri, e);
             return null;
         }
     }

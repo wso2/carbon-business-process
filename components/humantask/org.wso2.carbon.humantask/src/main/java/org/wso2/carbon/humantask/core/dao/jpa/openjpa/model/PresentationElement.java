@@ -28,11 +28,11 @@ import javax.persistence.*;
 @Inheritance
 @DiscriminatorColumn(name = "PE_TYPE")
 @NamedNativeQueries(
-        @NamedNativeQuery(name=PresentationElement.DELETE_PRESENTATION_ELEMENTS_FOR_TASK, query = "delete from PresentationElement as e where e.task=:task")
+        @NamedNativeQuery(name = PresentationElement.DELETE_PRESENTATION_ELEMENTS_FOR_TASK, query = "delete from PresentationElement as e where e.task=:task")
 )
 public class PresentationElement {
 
-    public static final String DELETE_PRESENTATION_ELEMENTS_FOR_TASK="DELETE_PRESENTATION_ELEMENTS_FOR_TASK";
+    public static final String DELETE_PRESENTATION_ELEMENTS_FOR_TASK = "DELETE_PRESENTATION_ELEMENTS_FOR_TASK";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

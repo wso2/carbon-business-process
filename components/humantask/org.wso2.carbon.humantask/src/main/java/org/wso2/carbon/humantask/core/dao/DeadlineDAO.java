@@ -24,36 +24,42 @@ import java.util.Date;
 public interface DeadlineDAO {
     /**
      * Set the deadline name
+     *
      * @param name name of the deadline
      */
     void setName(String name);
 
     /**
      * Get the deadline name
+     *
      * @return Deadline name
      */
     String getName();
 
     /**
      * Set the deadline date
+     *
      * @param deadlineDate deadline
      */
     void setDeadlineDate(Date deadlineDate);
 
     /**
      * Get the deadline date
+     *
      * @return Deadline
      */
     Date getDeadlineDate();
 
     /**
      * Set the status
+     *
      * @param status Status of the deadline
      */
     void setStatus(TaskStatus status);
 
     /**
      * Set the task
+     *
      * @param task Task
      */
     void setTask(TaskDAO task);

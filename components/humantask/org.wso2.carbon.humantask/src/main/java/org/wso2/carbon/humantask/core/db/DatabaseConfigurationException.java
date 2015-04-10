@@ -19,9 +19,9 @@ package org.wso2.carbon.humantask.core.db;
 /**
  * The exception representing issues with human task server's db configuration.
  */
-public class DatabaseConfigurationException extends  Exception{
+public class DatabaseConfigurationException extends Exception {
 
-    private static final long serialVersionUID =  45L;
+    private static final long serialVersionUID = 45L;
 
     public DatabaseConfigurationException(String msg, Exception ex) {
         super(msg, ex);

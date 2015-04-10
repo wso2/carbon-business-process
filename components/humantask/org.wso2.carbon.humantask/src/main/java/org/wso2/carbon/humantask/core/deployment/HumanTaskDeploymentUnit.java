@@ -17,13 +17,9 @@
 package org.wso2.carbon.humantask.core.deployment;
 
 import org.wso2.carbon.humantask.*;
-import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
-import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.humantask.core.deployment.config.HTDeploymentConfigDocument;
 import org.wso2.carbon.humantask.core.deployment.config.THTDeploymentConfig;
-import org.wso2.carbon.humantask.core.store.HumanTaskArtifactContentType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskStatusType;
 
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
@@ -193,6 +189,7 @@ public class HumanTaskDeploymentUnit {
     public String getMd5sum() {
         return this.md5sum;
     }
+
     public void setMd5sum(String md5sum) {
         this.md5sum = md5sum;
     }

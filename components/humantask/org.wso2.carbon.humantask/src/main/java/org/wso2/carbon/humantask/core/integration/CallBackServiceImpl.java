@@ -20,7 +20,6 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPFactory;
-import org.apache.axiom.soap.SOAPFault;
 import org.apache.axiom.soap.SOAPHeaderBlock;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
@@ -32,11 +31,11 @@ import org.wso2.carbon.humantask.core.CallBackService;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
 import org.wso2.carbon.humantask.core.integration.utils.AxisServiceUtils;
-import org.wso2.carbon.humantask.core.integration.utils.SOAPUtils;
 import org.wso2.carbon.humantask.core.integration.utils.ServiceInvocationContext;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
+import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.wsdl.*;
 import javax.wsdl.extensions.ExtensibilityElement;
@@ -44,8 +43,6 @@ import javax.wsdl.extensions.http.HTTPBinding;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.xml.namespace.QName;
-import org.wso2.carbon.utils.CarbonUtils;
-
 import java.util.List;
 
 /**
@@ -137,16 +134,15 @@ public class CallBackServiceImpl implements CallBackService {
 
     @Override
     public void invokeSkip(long taskID) throws AxisFault {
-        sendProtocolMessage( taskID, HumanTaskConstants.HT_PROTOCOL_SKIPPED, String.valueOf(taskID));
+        sendProtocolMessage(taskID, HumanTaskConstants.HT_PROTOCOL_SKIPPED, String.valueOf(taskID));
     }
 
     @Override
     public void invokeFault(long taskID, String faultMessage) throws AxisFault {
-       sendProtocolMessage( taskID, HumanTaskConstants.HT_PROTOCOL_FAULT,faultMessage);
+        sendProtocolMessage(taskID, HumanTaskConstants.HT_PROTOCOL_FAULT, faultMessage);
     }
 
-    private void sendProtocolMessage(long taskID, String headerValue,String value) throws AxisFault
-    {
+    private void sendProtocolMessage(long taskID, String headerValue, String value) throws AxisFault {
         final MessageContext mctx = new MessageContext();
 
         ServiceInvocationContext invocationContext = new ServiceInvocationContext();
@@ -192,10 +188,10 @@ public class CallBackServiceImpl implements CallBackService {
         }
 
 
-        OMElement payload = OMAbstractFactory.getOMFactory().createOMElement(messageName,serviceNS);
+        OMElement payload = OMAbstractFactory.getOMFactory().createOMElement(messageName, serviceNS);
         mctx.getEnvelope().getBody().addChild(payload);
 
-        OMNamespace htpNS = OMAbstractFactory.getSOAP11Factory().createOMNamespace(HumanTaskConstants.HT_PROTOCOL_NAMESPACE, HumanTaskConstants.HT_PROTOCOL_DEFAULT_PREFIX );
+        OMNamespace htpNS = OMAbstractFactory.getSOAP11Factory().createOMNamespace(HumanTaskConstants.HT_PROTOCOL_NAMESPACE, HumanTaskConstants.HT_PROTOCOL_DEFAULT_PREFIX);
         SOAPHeaderBlock protocolHeader = mctx.getEnvelope().getHeader().addHeaderBlock(headerValue, htpNS);
         protocolHeader.setText(value);
         protocolHeader.addAttribute(HumanTaskConstants.B4P_CORRELATION_HEADER_ATTRIBUTE, Long.toString(taskID), htpNS);

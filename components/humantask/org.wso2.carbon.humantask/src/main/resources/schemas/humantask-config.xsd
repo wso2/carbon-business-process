@@ -12,10 +12,11 @@
             <xsd:element name="TaskCleanupConfig" type="tns:tTaskCleanupConfig"/>
             <xsd:element name="TaskEventListeners" type="tns:tTaskEventListeners"/>
             <xsd:element name="UIRenderingEnabled" type="xsd:boolean"/>
-            <xsd:element name="HumanTaskCoordination" type="tns:tHumanTaskCoordination" />
-            <xsd:element name="EnableTaskOperationsForBusinessAdministrator" type="xsd:boolean" />
+            <xsd:element name="HumanTaskCoordination" type="tns:tHumanTaskCoordination"/>
+            <xsd:element name="EnableTaskOperationsForBusinessAdministrator" type="xsd:boolean"/>
             <xsd:element name="CacheConfiguration" type="tns:tCacheConfiguration"/>
             <xsd:element name="EnableTaskValidationBeforeDeployment" type="xsd:boolean"/>
+            <xsd:element name="LeanTaskVersioning" type="xsd:boolean"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="tPersistenceConfig">
@@ -57,8 +58,8 @@
     <!-- HumanTask Coordination Related configuration -->
     <xsd:complexType name="tHumanTaskCoordination">
         <xsd:sequence>
-            <xsd:element name="TaskCoordinationEnabled" type="xsd:boolean" />
-            <xsd:element name="RegistrationServiceAuthentication" type="tns:tRegServiceAuth" />
+            <xsd:element name="TaskCoordinationEnabled" type="xsd:boolean"/>
+            <xsd:element name="RegistrationServiceAuthentication" type="tns:tRegServiceAuth"/>
             <xsd:element name="TaskRegistrationEnabled" type="xsd:boolean"/>
             <xsd:element name="ClusteredTaskEngines" type="tns:tClusterConfig"/>
         </xsd:sequence>
@@ -66,7 +67,7 @@
     <xsd:complexType name="tRegServiceAuth">
         <xsd:sequence>
             <xsd:element name="Username" type="xsd:string"/>
-            <xsd:element name="Password" type="xsd:string" />
+            <xsd:element name="Password" type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="tClusterConfig">
@@ -77,7 +78,7 @@
     <xsd:complexType name="tCacheConfiguration">
         <xsd:sequence>
             <xsd:element name="EnableCaching" type="xsd:boolean"/>
-            <xsd:element name="CacheExpiryDuration" type="xsd:int" />
+            <xsd:element name="CacheExpiryDuration" type="xsd:int"/>
         </xsd:sequence>
     </xsd:complexType>
 </xsd:schema>

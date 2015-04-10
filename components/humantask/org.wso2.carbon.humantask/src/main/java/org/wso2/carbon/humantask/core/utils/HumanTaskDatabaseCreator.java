@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 import java.io.File;
 
 /**
- *  To handle -Dsetup for HumanTask component
+ * To handle -Dsetup for HumanTask component
  */
 public class HumanTaskDatabaseCreator extends DatabaseCreator {
     private static final Log log = LogFactory.getLog(DatabaseCreator.class);

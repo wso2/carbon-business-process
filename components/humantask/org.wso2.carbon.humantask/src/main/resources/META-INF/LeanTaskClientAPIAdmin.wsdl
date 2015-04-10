@@ -87,7 +87,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="inputMessage" type="xsd:anyType">
-                                </xsd:element>
+                        </xsd:element>
                         <xsd:element name="taskDefinition" type="htd:tLeanTask" minOccurs="0"/>
                         <xsd:element name="taskName" type="xsd:NCName" minOccurs="0"/>
                     </xsd:sequence>
@@ -97,7 +97,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="outputMessage" type="xsd:anyType">
-                                </xsd:element>
+                        </xsd:element>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>

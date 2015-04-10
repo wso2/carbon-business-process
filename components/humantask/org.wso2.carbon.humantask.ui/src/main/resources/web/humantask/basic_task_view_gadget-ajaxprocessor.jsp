@@ -7,17 +7,16 @@
 <%@ page
         import="org.apache.http.HttpStatus" %>
 <%@ page import="org.wso2.carbon.CarbonConstants" %>
-<%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskAbstract" %>
+<%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TStatus" %>
 <%@ page
-        import="org.wso2.carbon.humantask.ui.clients.HumanTaskClientAPIServiceClient" %>
+        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskAbstract" %>
+<%@ page
+        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskAuthorisationParams" %>
+<%@ page import="org.wso2.carbon.humantask.ui.clients.HumanTaskClientAPIServiceClient" %>
+<%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
 <%@ page
         import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
-<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskAuthorisationParams" %>
-<%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TStatus" %>
-<%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -46,7 +45,7 @@
     <%
         Log log = LogFactory.getLog("task_view_new.jsp");
         response.setHeader("Cache-Control",
-                           "no-store, max-age=0, no-cache, must-revalidate");
+                "no-store, max-age=0, no-cache, must-revalidate");
         // Set IE extended HTTP/1.1 no-cache headers.
         response.addHeader("Cache-Control", "post-check=0, pre-check=0");
         // Set standard HTTP/1.0 no-cache header.

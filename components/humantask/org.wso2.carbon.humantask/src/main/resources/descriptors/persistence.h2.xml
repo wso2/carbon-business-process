@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-        <!--
+<!--
  ~ Copyright (c) 2009-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
  ~ limitations under the License.
 -->
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              version="1.0">
     <persistence-unit name="HT-PU">
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Attachment</class>
@@ -35,7 +34,7 @@
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.DeploymentUnit</class>
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.TaskVersion</class>
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.LeanTask</class>
-       <properties>
+        <properties>
             <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
         </properties>
     </persistence-unit>

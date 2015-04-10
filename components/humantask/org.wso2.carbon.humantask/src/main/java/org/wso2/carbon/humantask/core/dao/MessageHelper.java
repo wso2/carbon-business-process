@@ -43,7 +43,6 @@ public class MessageHelper {
      * Create the task message with the provided task creation context.
      *
      * @param taskCreationContext : The task creation context.
-     *
      * @return : The created MessageDAO object.
      */
     public MessageDAO createMessage(TaskCreationContext taskCreationContext) {

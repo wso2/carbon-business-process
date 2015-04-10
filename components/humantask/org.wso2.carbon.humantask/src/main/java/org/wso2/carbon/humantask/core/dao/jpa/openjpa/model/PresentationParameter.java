@@ -69,7 +69,7 @@ public class PresentationParameter implements PresentationParameterDAO, Serializ
     }
 
     public void setTask(TaskDAO task) {
-        this.task = (Task)task;
+        this.task = (Task) task;
     }
 
     public void setValue(String value) {

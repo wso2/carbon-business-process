@@ -32,7 +32,7 @@
     <link href="css/humantask-gadget.css" rel="stylesheet"/>
     <script type="text/javascript">
 
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             var message = '<%=displayMessage%>';
             displayMessage(message);
         });
@@ -41,16 +41,27 @@
 
 
 <body>
-    <div class="titleStrip"><div class="titleStripSide">&nbsp;</div>LOGIN</div>
-    <div id="errorStrip" style="display:none;"></div>
-    <div class="contentPlacer">
-        <form method="post" action="task-list-gadget-ajaxprocessor.jsp" id="loginForm" onsubmit="return validateLoginForm()">
+<div class="titleStrip">
+    <div class="titleStripSide">&nbsp;</div>
+    LOGIN
+</div>
+<div id="errorStrip" style="display:none;"></div>
+<div class="contentPlacer">
+    <form method="post" action="task-list-gadget-ajaxprocessor.jsp" id="loginForm"
+          onsubmit="return validateLoginForm()">
         <div class="loginBox">
-            <label>User Name:</label><div><input id="userName" name="userName" type="text" autofocus="autofocus" onkeypress="submitLoginForm(event)" /></div>
-            <label>Password:</label><div><input  name="password" type="password" onkeypress="submitLoginForm(event)" /></div>
-            <label>&nbsp;</label><div><a onclick="submitLoginForm()" class="button" >Login</a></div>
+            <label>User Name:</label>
+
+            <div><input id="userName" name="userName" type="text" autofocus="autofocus"
+                        onkeypress="submitLoginForm(event)"/></div>
+            <label>Password:</label>
+
+            <div><input name="password" type="password" onkeypress="submitLoginForm(event)"/></div>
+            <label>&nbsp;</label>
+
+            <div><a onclick="submitLoginForm()" class="button">Login</a></div>
         </div>
-        </form>
-    </div>
+    </form>
+</div>
 </body>
 </html>

@@ -26,6 +26,6 @@ public class HumanTaskDeploymentException extends Exception {
     }
 
     public HumanTaskDeploymentException(String message, Throwable cause) {
-        super(message, cause);    
+        super(message, cause);
     }
 }

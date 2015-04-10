@@ -66,7 +66,7 @@ public final class DeploymentUtil {
             taskInfo.setTaskType(TaskType.TASK);
         }
         taskInfo.setPackageStatus(baseConfiguration.getPackageStatus());
-        taskInfo.setErroneous( baseConfiguration.isErroneous());
+        taskInfo.setErroneous(baseConfiguration.isErroneous());
         taskInfo.setDeploymentError(baseConfiguration.getDeploymentError());
         return taskInfo;
     }

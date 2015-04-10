@@ -16,8 +16,6 @@
 
 package org.wso2.carbon.humantask.coordination.module.handlers;
 
-import java.util.Iterator;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
@@ -33,14 +31,16 @@ import org.apache.axis2.engine.Handler;
 import org.apache.axis2.handlers.AbstractHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.humantask.coordination.module.utils.Constants;
 import org.wso2.carbon.humantask.coordination.module.HumanTaskCoordinationException;
+import org.wso2.carbon.humantask.coordination.module.internal.HTCoordinationModuleContentHolder;
+import org.wso2.carbon.humantask.coordination.module.utils.Constants;
 import org.wso2.carbon.humantask.coordination.module.utils.SOAPUtils;
 import org.wso2.carbon.humantask.coordination.module.utils.ServiceUtils;
-import org.wso2.carbon.humantask.coordination.module.internal.HTCoordinationModuleContentHolder;
 import org.wso2.carbon.humantask.core.configuration.HumanTaskServerConfiguration;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+
+import java.util.Iterator;
 
 /**
  * Axis2 Handler Class for handle HumanTaskCoordination Context
@@ -49,16 +49,13 @@ public class HTCoordinationContextHandler extends AbstractHandler implements Han
 
     private static Log log = LogFactory.getLog(HTCoordinationContextHandler.class);
 
-    private static  HumanTaskServerConfiguration serverConfig = null;
+    private static HumanTaskServerConfiguration serverConfig = null;
 
     static {
-        if(HTCoordinationModuleContentHolder.getInstance().getHtServer() != null){
-            serverConfig =  HTCoordinationModuleContentHolder.getInstance().getHtServer().getServerConfig();
+        if (HTCoordinationModuleContentHolder.getInstance().getHtServer() != null) {
+            serverConfig = HTCoordinationModuleContentHolder.getInstance().getHtServer().getServerConfig();
         }
     }
-
-
-
 
 
     public HTCoordinationContextHandler() throws HumanTaskCoordinationException {
@@ -68,8 +65,7 @@ public class HTCoordinationContextHandler extends AbstractHandler implements Han
     @Override
     public InvocationResponse invoke(MessageContext messageContext) throws AxisFault {
 
-        if(serverConfig == null || !serverConfig.isTaskRegistrationEnabled())
-        {
+        if (serverConfig == null || !serverConfig.isTaskRegistrationEnabled()) {
             return InvocationResponse.CONTINUE;
         }
 
@@ -170,7 +166,7 @@ public class HTCoordinationContextHandler extends AbstractHandler implements Han
     }
 
 
-    private OMElement invokeRegistrationServiceUsingServiceClient(String identifier, String taskProtocolHandlerServiceURL, String registrationService) throws AxisFault{
+    private OMElement invokeRegistrationServiceUsingServiceClient(String identifier, String taskProtocolHandlerServiceURL, String registrationService) throws AxisFault {
         OMElement payload = SOAPUtils.getRegistrationPayload(identifier, taskProtocolHandlerServiceURL);
         Options options = new Options();
         options.setTo(new EndpointReference(registrationService)); // this sets the location of registration service

@@ -20,41 +20,60 @@ import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.humantask.core.dao.TaskType;
 
 import java.util.Date;
-import java.util.List;
 
 /**
- *  A basic representation of the TaskDAO to be accessible by 3rd parties.
+ * A basic representation of the TaskDAO to be accessible by 3rd parties.
  */
 public class TaskInfo {
 
-    /** The task id */
+    /**
+     * The task id
+     */
     private Long id;
 
-    /** The task name */
+    /**
+     * The task name
+     */
     private String name;
 
-    /** The default task description.  */
+    /**
+     * The default task description.
+     */
     private String description;
 
-    /** The task subject */
+    /**
+     * The task subject
+     */
     private String subject;
 
-    /** The task type */
+    /**
+     * The task type
+     */
     private TaskType type;
 
-    /** The task status */
+    /**
+     * The task status
+     */
     private TaskStatus status;
 
-    /** The status of the task before a suspension event */
+    /**
+     * The status of the task before a suspension event
+     */
     private TaskStatus statusBeforeSuspension;
 
-    /** The user name of the task owner */
+    /**
+     * The user name of the task owner
+     */
     private String owner;
 
-    /** The task created date. */
+    /**
+     * The task created date.
+     */
     private Date createdDate;
 
-    /** The task last modified date.  */
+    /**
+     * The task last modified date.
+     */
     private Date modifiedDate;
 
     /**

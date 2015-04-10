@@ -16,23 +16,18 @@
 package org.wso2.carbon.humantask.core.protocol.mgt.services;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axis2.databinding.types.URI;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
 import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.commands.Exit;
-import org.wso2.carbon.humantask.core.engine.runtime.api.*;
+import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.skeleton.protocol.mgt.services.HumanTaskProtocolHandlerSkeletonInterface;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 public class HumanTaskCoordinationProtocolManagementSkeleton extends AbstractAdmin implements HumanTaskProtocolHandlerSkeletonInterface {

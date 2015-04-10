@@ -20,7 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.api.scheduler.Scheduler;
@@ -96,14 +95,11 @@ public class JobProcessorImpl implements Scheduler.JobProcessor {
             log.error(" Cannot find the tenant domain " + e.toString());
         }
 
-        if(tenantDomain == null) {
+        if (tenantDomain == null) {
             tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
         }
 
         PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain);
-
-
-
 
 
         TaskConfiguration taskConf = (TaskConfiguration) HumanTaskServiceComponent.getHumanTaskServer().
@@ -157,7 +153,7 @@ public class JobProcessorImpl implements Scheduler.JobProcessor {
                 HumanTaskBaseConfiguration notificationConfiguration = HumanTaskServiceComponent.
                         getHumanTaskServer().getTaskStoreManager().
                         getHumanTaskStore(task.getTenantId()).getActiveTaskConfiguration(qName);
-                if(notificationConfiguration == null) {
+                if (notificationConfiguration == null) {
                     log.error("Fatal Error, notification definition not found for name " + qName.toString());
                     return;
                 }

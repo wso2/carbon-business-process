@@ -26,74 +26,112 @@ public final class HumanTaskConstants {
     private HumanTaskConstants() {
     }
 
-    /** HumanTask file extension */
+    /**
+     * HumanTask file extension
+     */
     public static final String HUMANTASK_FILE_EXT = ".ht";
 
-    /** HumanTask config file name */
+    /**
+     * HumanTask config file name
+     */
     public static final String HUMANTASK_CONFIG_FILE = "humantask.xml";
 
-    /** XPath 2  */
+    /**
+     * XPath 2
+     */
     public static final String WSHT_EXP_LANG_XPATH20 = "urn:wsht:sublang:xpath2.0";
 
-    /** HumanTask Repo directory name */
+    /**
+     * HumanTask Repo directory name
+     */
     public static final String HUMANTASK_REPO_DIRECTORY = "humantasks";
 
-    /** HumanTask package temporary location */
+    /**
+     * HumanTask package temporary location
+     */
     public static final String HUMANTASK_PACKAGE_TEMP_DIRECTORY = "tmp" +
             File.separator + "humantaskuploads";
 
-    /** HumanTask package file extension */
+    /**
+     * HumanTask package file extension
+     */
     public static final String HUMANTASK_PACKAGE_EXTENSION = "zip";
 
-    /** Registry repository root location for storing human task deployment units */
+    /**
+     * Registry repository root location for storing human task deployment units
+     */
     public static final String HT_DEP_UNITS_REPO_LOCATION = "/humantask/deploymentunits/";
 
-    /** BPEL4People correlation header  */
+    /**
+     * BPEL4People correlation header
+     */
     public static final String B4P_CORRELATION_HEADER = "correlation";
 
-    /** Bpel4People correlation header attribute */
+    /**
+     * Bpel4People correlation header attribute
+     */
     public static final String B4P_CORRELATION_HEADER_ATTRIBUTE = "taskid";
 
-    /** BPEL4People namespace */
+    /**
+     * BPEL4People namespace
+     */
     public static final String B4P_NAMESPACE = "http://docs.oasis-open.org/ns/bpel4people/bpel4people/200803";
 
-    /** Default pagination size */
-	public static final int ITEMS_PER_PAGE = 20;
+    /**
+     * Default pagination size
+     */
+    public static final int ITEMS_PER_PAGE = 20;
 
     /** */
-    public static final String HUMANTASK_TASK_TYPE =  "humantaskType";
+    public static final String HUMANTASK_TASK_TYPE = "humantaskType";
 
-    /** HumanTask Cleanup job name */
+    /**
+     * HumanTask Cleanup job name
+     */
     public static final String HUMANTASK_CLEANUP_JOB = "humantaskCleanupJob";
 
-    /** The port off set identifier */
+    /**
+     * The port off set identifier
+     */
     public static final String CARBON_CONFIG_PORT_OFFSET_NODE = "Ports.Offset";
 
-    /** The specification defines the default task priority to be set as 5 */
+    /**
+     * The specification defines the default task priority to be set as 5
+     */
     public static final int DEFAULT_TASK_PRIORITY = 5;
 
-    /** The default access type value for an attachment*/
+    /**
+     * The default access type value for an attachment
+     */
     public static final String DEFAULT_ATTACHMENT_ACCESS_TYPE = "AnonymousAccessType";
 
-    /** The default content category value for an attachment*/
+    /**
+     * The default content category value for an attachment
+     */
     public static final String DEFAULT_ATTACHMENT_CONTENT_CATEGORY = "AnonymousContentCategory";
 
-    public static final String ATTACHMENT_CONTENT_CATEGORY_MIME ="http://www.iana.org/assignments/media-types/";
+    public static final String ATTACHMENT_CONTENT_CATEGORY_MIME = "http://www.iana.org/assignments/media-types/";
 
     public static final String ATTACHMENT_CONTENT_CATEGORY_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 
 
-    /** The default content type of the presentation desc. */
+    /**
+     * The default content type of the presentation desc.
+     */
     public static final String PRESENTATION_DESC_CONTENT_TYPE = "text/plain";
 
-    /** The log name to enable message tracing for humantask component */
+    /**
+     * The log name to enable message tracing for humantask component
+     */
     public static final String MESSAGE_TRACE = "org.wso2.carbon.humantask.messagetrace";
 
     public static final String SOAP_ENV_NS = "http://schemas.xmlsoap.org/soap/envelope/";
 
     public static final String JAVAX_WSDL_VERBOSE_MODE_KEY = "javax.wsdl.verbose";
 
-    /** HumanTask Protocol and HumanTask Context related constants. See HT spec 8 and  8.4.1 sections*/
+    /**
+     * HumanTask Protocol and HumanTask Context related constants. See HT spec 8 and  8.4.1 sections
+     */
     public static final String HT_CONTEXT_NAMESPACE = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/context/200803";
     public static final String HT_CONTEXT_DEFAULT_PREFIX = "htc";
     public static final String HT_CONTEXT_REQUEST = "humanTaskRequestContext";
@@ -107,7 +145,7 @@ public final class HumanTaskConstants {
 
     public static final String B4P_REGISTRATIONS_USERNAME_ALIAS = "B4P.RegistrationService.Username";
     public static final String B4P_REGISTRATIONS_PASSWORD_ALIAS = "B4P.RegistrationService.Password";
-	
+
 
     public static final QName organizationalEntityQname = new QName("http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803",
             "organizationalEntity");

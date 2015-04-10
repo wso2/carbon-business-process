@@ -92,8 +92,9 @@ public interface MessageDAO {
 
     /**
      * Adds the provided element to message body parts.
+     *
      * @param partName : The part name of the element.
-     * @param part : the element to be added.
+     * @param part     : the element to be added.
      */
     void addBodyPart(String partName, Element part);
 
@@ -112,21 +113,21 @@ public interface MessageDAO {
 
     /**
      * Adds the provided message part to the hear parts.
+     *
      * @param partName : the message part name.
-     * @param part : The message part element to add.
+     * @param part     : The message part element to add.
      */
     void addHeaderPart(String partName, Element part);
 
     /**
      * Returns the header part of the message with the given name.
-     * @param partName : part name.
      *
+     * @param partName : part name.
      * @return : The matching header part.
      */
     Element getHeaderPart(String partName);
 
     /**
-     *
      * @return : The header parts of the message.
      */
     Map<String, Element> getHeaderParts();

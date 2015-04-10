@@ -32,7 +32,7 @@ public class HTCoordinationModuleServiceComponent {
     private static Log log = LogFactory.getLog(HTCoordinationModuleContentHolder.class);
 
     protected void activate(ComponentContext ctxt) {
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("HumanTask Coordination Module is activated.");
         }
     }

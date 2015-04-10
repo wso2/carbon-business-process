@@ -23,16 +23,10 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
-import org.wso2.carbon.humantask.HumanInteractionsDocument;
-import org.wso2.carbon.humantask.TDeadline;
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TPresentationElements;
-import org.wso2.carbon.humantask.TPriorityExpr;
-import org.wso2.carbon.humantask.TTask;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.CallBackService;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
-import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
 import org.wso2.carbon.humantask.core.deployment.config.TCallback;
 import org.wso2.carbon.humantask.core.deployment.config.THTDeploymentConfig;
 import org.wso2.carbon.humantask.core.deployment.config.TPublish;
@@ -76,7 +70,7 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
                              long version,
                              File humanTaskDefinitionFile) {
         super(humanInteractionsDocument, targetNamespace, humanTaskArtifactName, tenatAxisConf,
-              true, packageName, version,humanTaskDefinitionFile);
+                true, packageName, version, humanTaskDefinitionFile);
 
         this.task = task;
         this.taskDeploymentConfiguration = taskDeploymentConfiguration;
@@ -90,7 +84,7 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
 
             HumanTaskNamespaceContext nsContext = new HumanTaskNamespaceContext();
             populateNamespace(task.getDomNode().getNodeType() == Node.ELEMENT_NODE ?
-                              (Element) task.getDomNode() : null, nsContext);
+                    (Element) task.getDomNode() : null, nsContext);
             setNamespaceContext(nsContext);
 
             PortType portType = getWSDL().getPortType(getResponsePortType());
@@ -114,12 +108,12 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
 
     private void initEndpointConfigs() throws HumanTaskDeploymentException {
 
-        if(taskDeploymentConfiguration == null) {
+        if (taskDeploymentConfiguration == null) {
             throw new HumanTaskDeploymentException("Cannot find task deployment configuration.");
         }
 
         if (taskDeploymentConfiguration.getPublish() == null ||
-            taskDeploymentConfiguration.getPublish().getService() == null) {
+                taskDeploymentConfiguration.getPublish().getService() == null) {
             throw new HumanTaskDeploymentException("Cannot find publish element in the htconfig.xml file.");
         }
 
@@ -138,7 +132,7 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
 
 
         if (taskDeploymentConfiguration.getCallback() == null ||
-            taskDeploymentConfiguration.getCallback().getService() == null) {
+                taskDeploymentConfiguration.getCallback().getService() == null) {
             throw new HumanTaskDeploymentException("Cannot find callback element in the htconfig.xml file.");
         }
 

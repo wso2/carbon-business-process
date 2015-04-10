@@ -23,12 +23,10 @@ import org.wso2.carbon.humantask.cleanup.scheduler.ntask.RemovableTaskCleanupJob
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.configuration.HumanTaskServerConfiguration;
 import org.wso2.carbon.humantask.core.engine.HumanTaskServerException;
-
 import org.wso2.carbon.ntask.common.TaskException;
 import org.wso2.carbon.ntask.core.TaskInfo;
 import org.wso2.carbon.ntask.core.TaskManager;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -56,7 +54,7 @@ public final class TaskCleanupSchedulerUtil {
                 log.info("Initialising the task cleanup service.....");
                 HumanTaskCleanupSchedulerServiceComponent.getTaskService().registerTaskType(HumanTaskConstants.HUMANTASK_TASK_TYPE);
                 TaskManager taskManager = HumanTaskCleanupSchedulerServiceComponent.getTaskService().
-                getTaskManager(HumanTaskConstants.HUMANTASK_TASK_TYPE);
+                        getTaskManager(HumanTaskConstants.HUMANTASK_TASK_TYPE);
 
                 TaskInfo.TriggerInfo triggerInfo = new TaskInfo.TriggerInfo();
                 triggerInfo.setCronExpression(serverConfig.getTaskCleanupCronExpression());

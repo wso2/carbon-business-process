@@ -57,7 +57,6 @@ public class HumanTaskDeployer extends AbstractDeployer {
         HumanTaskServer humantaskServer = HumanTaskDeployerServiceComponent.getHumanTaskServer();
         humanTaskStore = humantaskServer.getTaskStoreManager().
                 createHumanTaskStoreForTenant(tenantId, configurationContext);
-
     }
 
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
@@ -110,8 +109,31 @@ public class HumanTaskDeployer extends AbstractDeployer {
             boolean status = humanTaskRepo.mkdir();
             if (!status) {
                 throw new DeploymentException("Failed to create HumanTask repository directory " +
-                                              humanTaskRepo.getAbsolutePath() + ".");
+                        humanTaskRepo.getAbsolutePath() + ".");
             }
         }
     }
+
+    /**
+     * can be used to load  lean task data when server is restarting
+     * @param humanTaskServer
+     */
+    /*private void retrieveLeanTaskData(HumanTaskServer humanTaskServer) {
+        String sql = "select * from HT_LEANTASK";
+        ResultSet resultSet = null;
+        try {
+            Connection connection = humanTaskServer.getTaskEngine().getDaoConnectionFactory().getDataSource().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                log.info("Testing DB data ****" + resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4) + resultSet.getString(5));
+            }
+            preparedStatement.close();
+            resultSet.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    } */
 }

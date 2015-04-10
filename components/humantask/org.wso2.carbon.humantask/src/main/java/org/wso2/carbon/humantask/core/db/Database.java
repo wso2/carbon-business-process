@@ -79,7 +79,7 @@ public class Database {
     }
 
     private void setupHumanTaskDatabase() throws HumanTaskServerException {
-                if (System.getProperty("setup") != null) {
+        if (System.getProperty("setup") != null) {
             HumanTaskDatabaseCreator humantaskDBCreator;
             try {
                 humantaskDBCreator = new HumanTaskDatabaseCreator(getDataSource());
@@ -126,14 +126,14 @@ public class Database {
         try {
             this.dataSource = (DataSource) lookupInJndi(serverConfiguration.getDataSourceName());
 
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("HumanTask Server using external DataSource " +
-                          serverConfiguration.getDataSourceName());
+                        serverConfiguration.getDataSourceName());
             }
 
         } catch (Exception e) {
             String errorMsg = "Failed to resolved external DataSource at " +
-                              serverConfiguration.getDataSourceName();
+                    serverConfiguration.getDataSourceName();
             log.error(errorMsg, e);
             throw new DatabaseConfigurationException(errorMsg, e);
         }
@@ -175,7 +175,6 @@ public class Database {
     }
 
     /**
-     *
      * @param tnxManager : The transaction manager to set.
      */
     public void setTransactionManager(TransactionManager tnxManager) {
@@ -184,6 +183,7 @@ public class Database {
 
     /**
      * Creates the DAO connection factory.
+     *
      * @return : the connection factory.
      * @throws DatabaseConfigurationException : If the provided config factory cannot be instantiated.
      */
@@ -191,16 +191,16 @@ public class Database {
             throws DatabaseConfigurationException {
         String connectionFactoryClassName = serverConfiguration.getDaoConnectionFactoryClass();
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Using DAO connection factory class: " + connectionFactoryClassName);
         }
 
         HumanTaskDAOConnectionFactoryJDBC humanTaskDAOConnectionFactoryJDBC;
 
-        try{
+        try {
             humanTaskDAOConnectionFactoryJDBC = (HumanTaskDAOConnectionFactoryJDBC)
                     Class.forName(connectionFactoryClassName).newInstance();
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             String errMsg = "Human Task DAO Connection Factory instantiation failed!";
             log.error(errMsg);
             throw new DatabaseConfigurationException(errMsg, ex);
@@ -218,9 +218,10 @@ public class Database {
 
     /**
      * Gets the generic properties for DAO Connection Factory.
+     *
      * @return
      */
-    private Map<String, Object> getGenericDAOFactoryProperties(){
+    private Map<String, Object> getGenericDAOFactoryProperties() {
         Map<String, Object> daoFactoryProperties = new HashMap<String, Object>();
         daoFactoryProperties.put(Constants.DATA_SOURCE_PROP, getDataSource());
         daoFactoryProperties.put(Constants.PROP_ENABLE_DDL_GENERATION,

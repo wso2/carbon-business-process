@@ -42,10 +42,10 @@ public class Claim extends AbstractHumanTaskCommand {
         TaskDAO task = getTask();
         for (GenericHumanRoleDAO humanRole : task.getHumanRoles()) {
             if (GenericHumanRoleDAO.GenericHumanRoleType.ACTUAL_OWNER.equals(humanRole.getType())
-                && humanRole.getOrgEntities().size() > 0) {
+                    && humanRole.getOrgEntities().size() > 0) {
                 throw new HumanTaskIllegalOperationException(String.format("The task[%d] already has an actual" +
-                                                                  " owner[%s]", task.getId(),
-                                                                  humanRole.getOrgEntities()));
+                        " owner[%s]", task.getId(),
+                        humanRole.getOrgEntities()));
             }
         }
     }

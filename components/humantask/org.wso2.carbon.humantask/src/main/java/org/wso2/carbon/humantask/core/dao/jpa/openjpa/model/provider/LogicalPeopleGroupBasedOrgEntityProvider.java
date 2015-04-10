@@ -48,10 +48,10 @@ public class LogicalPeopleGroupBasedOrgEntityProvider implements OrganizationalE
             //TODO what about expression language
             if ("role".equals(tArgument.getName())) {
                 roleName = tArgument.newCursor().getTextValue();
-                if(roleName != null && roleName.contains("htd:getInput")) {
-                roleName =
-                        CommonTaskUtil.calculateRole(evaluationContext, roleName,
-                                expressionLanguage);
+                if (roleName != null && roleName.contains("htd:getInput")) {
+                    roleName =
+                            CommonTaskUtil.calculateRole(evaluationContext, roleName,
+                                    expressionLanguage);
                 }
                 break;
             }

@@ -19,8 +19,10 @@ package org.wso2.carbon.humantask.core.dao.jpa.openjpa.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.humantask.core.dao.*;
-import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task;
+import org.wso2.carbon.humantask.core.dao.LeanTaskCreationContext;
+import org.wso2.carbon.humantask.core.dao.MessageDAO;
+import org.wso2.carbon.humantask.core.dao.TaskDAO;
+import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.store.LeanTaskConfiguration;
 
@@ -35,7 +37,6 @@ public class LeanTaskBuilderImpl {
     private MessageDAO inputMessage;
 
     /**
-     *
      * @param creationContext
      * @return
      */
@@ -45,7 +46,6 @@ public class LeanTaskBuilderImpl {
     }
 
     /**
-     *
      * @param inputMessage
      * @return
      */
@@ -61,7 +61,7 @@ public class LeanTaskBuilderImpl {
         int tenantId = creationContext.getTenantId();
 
         if (creationContext.getTaskConfiguration().isLeanTask()) {
-            task = new Task(taskConfiguration.getName(), TaskType.LEAN_TASK, tenantId);
+            // task = new Task(taskConfiguration.getName(), TaskType.LEAN_TASK, tenantId);
         }
 
         task.setInputMessage(this.inputMessage);
@@ -70,11 +70,12 @@ public class LeanTaskBuilderImpl {
         task.setStatus(TaskStatus.CREATED);
         task.setActivationTime(new Date());
         task.setTaskVersion(taskConfiguration.getVersion());
-        task.setTaskPackageName(taskConfiguration.getPackageName());
-        task.setDefinitionName(taskConfiguration.getDefinitionName());
+        //task.setTaskPackageName(taskConfiguration.getPackageName());
+        //task.setDefinitionName(taskConfiguration.getDefinitionName());
 
         return task;
     }
+
     //validate parameters
     private void validateParams() {
         if (inputMessage == null) {

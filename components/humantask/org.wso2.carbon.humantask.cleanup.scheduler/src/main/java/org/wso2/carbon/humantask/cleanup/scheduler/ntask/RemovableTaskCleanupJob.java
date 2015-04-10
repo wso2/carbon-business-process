@@ -43,7 +43,7 @@ public class RemovableTaskCleanupJob extends AbstractTask {
                 HumanTaskCleanupSchedulerServiceComponent.getHumanTaskServer().getServerConfig();
 
         final SimpleQueryCriteria queryCriteria = createQueryCriteria(serverConfiguration);
-        log.info("Running the task cleanup service.....") ;
+        log.info("Running the task cleanup service.....");
         try {
             HumanTaskCleanupSchedulerServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                     execTransaction(new Callable<Object>() {

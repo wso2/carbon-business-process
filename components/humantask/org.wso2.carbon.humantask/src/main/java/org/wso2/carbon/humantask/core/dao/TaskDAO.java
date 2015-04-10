@@ -138,7 +138,6 @@ public interface TaskDAO {
      * Get the task description for the provided content type.
      *
      * @param contentType : The content type
-     *
      * @return : The matching task description.
      */
     String getTaskDescription(String contentType);
@@ -171,7 +170,7 @@ public interface TaskDAO {
     /**
      * Update the provided comment id with the new comment content.
      *
-     * @param commentId : The id of the comment to be updated.
+     * @param commentId  : The id of the comment to be updated.
      * @param newComment : The new comment content.
      * @param modifiedBy : The modified by user name.
      */
@@ -410,6 +409,7 @@ public interface TaskDAO {
 
     /**
      * Nominate the task
+     *
      * @param nominees : The list of nominees.
      */
     void nominate(List<OrganizationalEntityDAO> nominees);
@@ -479,7 +479,8 @@ public interface TaskDAO {
     /**
      * Replaces the organizational entities for the provided human role type with the
      * set of provided entities.
-     * @param type : The human role type of which the org entities should be replaced.
+     *
+     * @param type        : The human role type of which the org entities should be replaced.
      * @param orgEntities : The new list of organizational entities to be added to the human role
      */
     void replaceOrgEntitiesForLogicalPeopleGroup(GenericHumanRoleDAO.GenericHumanRoleType type,
@@ -487,6 +488,7 @@ public interface TaskDAO {
 
     /**
      * Gets the task events for the particular task.
+     *
      * @return : The list of task events for a particular task.
      */
     List<EventDAO> getEvents();
@@ -514,19 +516,16 @@ public interface TaskDAO {
     void setTaskVersion(long version);
 
     /**
-     *
      * @return
      */
     long getTaskVersion();
 
     /**
-     *
      * @param packageName
      */
     void setTaskPackageName(String packageName);
 
     /**
-     *
      * @return
      */
     String getTaskPackageName();

@@ -15,9 +15,9 @@
  ~ limitations under the License.
 -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://wso2.org/ht/schema/deployment/config"
-    xmlns:tns="http://wso2.org/ht/schema/deployment/config"
-    elementFormDefault="qualified">
+            targetNamespace="http://wso2.org/ht/schema/deployment/config"
+            xmlns:tns="http://wso2.org/ht/schema/deployment/config"
+            elementFormDefault="qualified">
     <xsd:complexType name="tPublish">
         <xsd:sequence>
             <xsd:element name="service">

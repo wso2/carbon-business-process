@@ -3,11 +3,7 @@ package org.wso2.carbon.humantask.core.dao.jpa.openjpa.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.core.api.client.TransformerUtils;
-import org.wso2.carbon.humantask.core.dao.MessageDAO;
-import org.wso2.carbon.humantask.core.dao.TaskCreationContext;
-import org.wso2.carbon.humantask.core.dao.TaskDAO;
-import org.wso2.carbon.humantask.core.dao.TaskStatus;
-import org.wso2.carbon.humantask.core.dao.TaskType;
+import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task;
 import org.wso2.carbon.humantask.core.engine.HumanTaskException;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
@@ -94,7 +90,7 @@ public class HumanTaskBuilderImpl {
         //Setting the attachments to the task
         try {
             task.setAttachments(TransformerUtils.generateAttachmentDAOListFromIDs(task,
-                                                                                  creationContext.getAttachmentIDs()));
+                    creationContext.getAttachmentIDs()));
         } catch (HumanTaskException e) {
             log.error(e.getLocalizedMessage(), e);
         }

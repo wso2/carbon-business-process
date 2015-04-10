@@ -20,7 +20,7 @@ package org.wso2.carbon.humantask.core;
  * Invoking an operation that does not apply to the task type (e.g., invoking claim on a notification) will result in
  * this exception.
  */
-public class IllegalOperationException extends Exception{
+public class IllegalOperationException extends Exception {
     public IllegalOperationException() {
         super();
     }

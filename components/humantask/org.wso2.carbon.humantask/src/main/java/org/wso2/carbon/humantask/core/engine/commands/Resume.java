@@ -20,7 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;

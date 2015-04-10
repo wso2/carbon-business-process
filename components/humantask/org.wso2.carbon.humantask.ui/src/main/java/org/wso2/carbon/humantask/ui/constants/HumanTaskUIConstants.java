@@ -27,7 +27,7 @@ public final class HumanTaskUIConstants {
      * Client constants.
      */
     public final class CLIENTS {
-        private  CLIENTS() {
+        private CLIENTS() {
         }
 
         public static final String CARBON = "carbon";

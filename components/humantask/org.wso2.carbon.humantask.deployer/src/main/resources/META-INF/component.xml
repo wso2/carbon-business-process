@@ -17,12 +17,12 @@
  -->
 <component xmlns="http://products.wso2.org/carbon">
     <deployers>
-            <deployer>
-                <directory>humantasks</directory>
-                <extension>zip</extension>
-                <class>org.wso2.carbon.humantask.deployer.HumanTaskDeployer</class>
-            </deployer>
-        </deployers>
+        <deployer>
+            <directory>humantasks</directory>
+            <extension>zip</extension>
+            <class>org.wso2.carbon.humantask.deployer.HumanTaskDeployer</class>
+        </deployer>
+    </deployers>
     <ManagementPermissions>
         <ManagementPermission>
             <DisplayName>HumanTask</DisplayName>

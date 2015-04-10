@@ -24,6 +24,7 @@ public interface TaskVersionDAO {
 
     /**
      * get the task version
+     *
      * @return
      */
     long getTaskVersion();

@@ -18,9 +18,8 @@ package org.wso2.carbon.humantask.core.api.scheduler;
 
 /**
  * Exception thrown if more than one jobs are there in DB for a task id and name.
- *
  */
-public class InvalidJobsInDbException extends Exception  {
+public class InvalidJobsInDbException extends Exception {
 
     private static final long serialVersionUID = 1L;
 

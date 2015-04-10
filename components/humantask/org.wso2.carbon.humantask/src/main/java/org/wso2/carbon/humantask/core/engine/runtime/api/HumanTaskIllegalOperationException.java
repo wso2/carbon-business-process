@@ -19,7 +19,7 @@ package org.wso2.carbon.humantask.core.engine.runtime.api;
 /**
  * Represents the illegal operation errors on human task operations.
  */
-public class HumanTaskIllegalOperationException extends HumanTaskRuntimeException{
+public class HumanTaskIllegalOperationException extends HumanTaskRuntimeException {
 
 
     public HumanTaskIllegalOperationException(String msg) {

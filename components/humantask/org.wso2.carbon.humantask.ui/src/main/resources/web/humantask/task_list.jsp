@@ -17,28 +17,26 @@
 -->
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="carbon" uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" %>
-<%@ page import="org.apache.axis2.client.Options" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
 <%@ page import="org.wso2.carbon.CarbonConstants" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
-<%@ page
-        import="org.wso2.carbon.authenticator.stub.AuthenticationAdminStub" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TSimpleQueryCategory" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TSimpleQueryInput" %>
+<%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TSimpleQueryCategory" %>
+<%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TSimpleQueryInput" %>
 <%@ page
         import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskSimpleQueryResultRow" %>
 <%@ page
         import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskSimpleQueryResultSet" %>
-<%@ page import="org.wso2.carbon.humantask.ui.clients.HumanTaskClientAPIServiceClient" %>
-<%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
-<%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
+<%@ page
+        import="org.wso2.carbon.humantask.ui.clients.HumanTaskClientAPIServiceClient" %>
+<%@ page
+        import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
+<%@ page
+        import="org.wso2.carbon.ui.CarbonUIUtil" %>
+<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%
 
     response.setHeader("Cache-Control",
-                       "no-store, max-age=0, no-cache, must-revalidate");
+            "no-store, max-age=0, no-cache, must-revalidate");
     // Set IE extended HTTP/1.1 no-cache headers.
     response.addHeader("Cache-Control", "post-check=0, pre-check=0");
     // Set standard HTTP/1.0 no-cache header.
@@ -90,9 +88,9 @@
                     queryInput.setSimpleQueryCategory(TSimpleQueryCategory.ASSIGNABLE);
                 } else if ("claimableTasks".equals(queryType)) {
                     queryInput.setSimpleQueryCategory(TSimpleQueryCategory.CLAIMABLE);
-                }  else if ("notifications".equals(queryType)) {
+                } else if ("notifications".equals(queryType)) {
                     queryInput.setSimpleQueryCategory(TSimpleQueryCategory.NOTIFICATIONS);
-                }  else if ("advancedQuery".equals(queryType)) {
+                } else if ("advancedQuery".equals(queryType)) {
                     queryInput.setSimpleQueryCategory(TSimpleQueryCategory.ADVANCED_QUERY);
                 }
             }
@@ -113,16 +111,16 @@
     if (taskResults != null) {
 %>
 <fmt:bundle basename="org.wso2.carbon.humantask.ui.i18n.Resources">
-    <carbon:breadcrumb
+<carbon:breadcrumb
         label="humantask.task.info"
         resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
         topPage="true"
         request="<%=request%>"/>
-    <jsp:include page="../dialog/display_messages.jsp"/>
+<jsp:include page="../dialog/display_messages.jsp"/>
 <link href="css/humantask-gadget.css" rel="stylesheet"/>
 <script type="text/javascript">
 
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function () {
         var queryType = '<%=queryType%>';
         highlightSelectedCriteria(queryType);
     });
@@ -162,227 +160,226 @@
     }
 
 
-
 </script>
 
 
 <div id="middle">
-    <div id="task-instance-list-main">
-    <h2><fmt:message key="humantask.my.task.list"/></h2>
+<div id="task-instance-list-main">
+<h2><fmt:message key="humantask.my.task.list"/></h2>
 
-        <div id="workArea">
+<div id="workArea">
 
-            <div id="contentPlacerDiv" class="contentPlacer">
-                <div class="tabs_task" id="tabs_task">
-                    <ul>
+<div id="contentPlacerDiv" class="contentPlacer">
+<div class="tabs_task" id="tabs_task">
+    <ul>
 
-                        <li><a onclick="selectTaskFilteringTab(this)" id="assignedToMe" rel="assignedToMeTab">My Tasks</a></li>
-                        <li><a onclick="selectTaskFilteringTab(this)" id="claimableTasks" rel="claimableTasksTab">Claimable</a></li>
-                        <li><a onclick="selectTaskFilteringTab(this)" id="adminTasks" rel="adminTasksTab">Admin Tasks</a></li>
-                        <li><a onclick="selectTaskFilteringTab(this)" id="notifications" rel="notificationsTab">Notifications</a></li>
-                        <li><a onclick="selectTaskFilteringTab(this)" id="allTasks" rel="allTasksTab">All</a></li>
-                            <%--<li><a onclick="selectTab(this)" class="selected" rel="advancedFilterTab">Advanced--%>
-                            <%--Filter</a>--%>
-                            <%--</li>--%>
-                    </ul>
-                </div>
-                <div class="tabContent" id="tabContent">
-                    <div id="assignedToMeTab" class="tabContentData" style="display:none">My Tasks</div>
-                    <div id="claimableTasksTab" class="tabContentData" style="display:none">Claimable</div>
-                    <div id="adminTasksTab" class="tabContentData" style="display:none">Admin Tasks</div>
-                    <div id="notificationsTab" class="tabContentData" style="display:none">Notifications</div>
-                    <div id="allTasksTab" class="tabContentData" style="display:none">All Tab Data</div>
-                        <%--<div id="advancedFilterTab" class="tabContentData" style="display:none">--%>
-                        <%--<table class="normal">--%>
-                        <%--<tbody>--%>
-                        <%--<tr>--%>
-                        <%--<th>Task</th>--%>
-                        <%--<td>--%>
-                        <%--<select name="taskId">--%>
-                        <%--<option value="all" selected="">All</option>--%>
-                        <%--</select>--%>
-                        <%--</td>--%>
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                        <%--<th>Task Status</th>--%>
+        <li><a onclick="selectTaskFilteringTab(this)" id="assignedToMe" rel="assignedToMeTab">My Tasks</a></li>
+        <li><a onclick="selectTaskFilteringTab(this)" id="claimableTasks" rel="claimableTasksTab">Claimable</a></li>
+        <li><a onclick="selectTaskFilteringTab(this)" id="adminTasks" rel="adminTasksTab">Admin Tasks</a></li>
+        <li><a onclick="selectTaskFilteringTab(this)" id="notifications" rel="notificationsTab">Notifications</a></li>
+        <li><a onclick="selectTaskFilteringTab(this)" id="allTasks" rel="allTasksTab">All</a></li>
+            <%--<li><a onclick="selectTab(this)" class="selected" rel="advancedFilterTab">Advanced--%>
+            <%--Filter</a>--%>
+            <%--</li>--%>
+    </ul>
+</div>
+<div class="tabContent" id="tabContent">
+    <div id="assignedToMeTab" class="tabContentData" style="display:none">My Tasks</div>
+    <div id="claimableTasksTab" class="tabContentData" style="display:none">Claimable</div>
+    <div id="adminTasksTab" class="tabContentData" style="display:none">Admin Tasks</div>
+    <div id="notificationsTab" class="tabContentData" style="display:none">Notifications</div>
+    <div id="allTasksTab" class="tabContentData" style="display:none">All Tab Data</div>
+        <%--<div id="advancedFilterTab" class="tabContentData" style="display:none">--%>
+        <%--<table class="normal">--%>
+        <%--<tbody>--%>
+        <%--<tr>--%>
+        <%--<th>Task</th>--%>
+        <%--<td>--%>
+        <%--<select name="taskId">--%>
+        <%--<option value="all" selected="">All</option>--%>
+        <%--</select>--%>
+        <%--</td>--%>
+        <%--</tr>--%>
+        <%--<tr>--%>
+        <%--<th>Task Status</th>--%>
 
-                        <%--<td>--%>
-                        <%--<input type="checkbox" name="status" value="active" checked="">--%>
-                        <%--In Progress--%>
-                        <%--<input type="checkbox" name="status" value="completed">--%>
-                        <%--Open--%>
-                        <%--<input type="checkbox" name="status" value="suspended">--%>
-                        <%--Suspended--%>
-                        <%--<input type="checkbox" name="status" value="terminated">--%>
-                        <%--Closed--%>
-                        <%--<input type="checkbox" name="status" value="failed">--%>
-                        <%--Failed--%>
-                        <%--</td>--%>
+        <%--<td>--%>
+        <%--<input type="checkbox" name="status" value="active" checked="">--%>
+        <%--In Progress--%>
+        <%--<input type="checkbox" name="status" value="completed">--%>
+        <%--Open--%>
+        <%--<input type="checkbox" name="status" value="suspended">--%>
+        <%--Suspended--%>
+        <%--<input type="checkbox" name="status" value="terminated">--%>
+        <%--Closed--%>
+        <%--<input type="checkbox" name="status" value="failed">--%>
+        <%--Failed--%>
+        <%--</td>--%>
 
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                        <%--<th>Status</th>--%>
+        <%--</tr>--%>
+        <%--<tr>--%>
+        <%--<th>Status</th>--%>
 
-                        <%--<td>--%>
-                        <%--<input type="checkbox" name="status" value="active" checked="">--%>
+        <%--<td>--%>
+        <%--<input type="checkbox" name="status" value="active" checked="">--%>
 
-                        <%--<input type="checkbox" name="status" value="completed">--%>
-                        <%--Completed--%>
-                        <%--<input type="checkbox" name="status" value="suspended">--%>
-                        <%--Suspended--%>
-                        <%--<input type="checkbox" name="status" value="terminated">--%>
-                        <%--Terminated--%>
-                        <%--<input type="checkbox" name="status" value="failed">--%>
-                        <%--Failed--%>
-                        <%--</td>--%>
+        <%--<input type="checkbox" name="status" value="completed">--%>
+        <%--Completed--%>
+        <%--<input type="checkbox" name="status" value="suspended">--%>
+        <%--Suspended--%>
+        <%--<input type="checkbox" name="status" value="terminated">--%>
+        <%--Terminated--%>
+        <%--<input type="checkbox" name="status" value="failed">--%>
+        <%--Failed--%>
+        <%--</td>--%>
 
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                        <%--<th>--%>
-                        <%--Created:--%>
-                        <%--</th>--%>
-                        <%--<td>--%>
+        <%--</tr>--%>
+        <%--<tr>--%>
+        <%--<th>--%>
+        <%--Created:--%>
+        <%--</th>--%>
+        <%--<td>--%>
 
-                        <%--<input type="radio" name="startedopt" value="onb">--%>
-                        <%--On Or Before--%>
-                        <%--<input type="radio" name="startedopt" value="ona">--%>
-                        <%--On Or After--%>
-                        <%--<input type="text" id="starteddate" size="20" name="starteddate"--%>
-                        <%--value="">--%>
-
-
-                        <%--</td>--%>
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                        <%--<th>--%>
-                        <%--Last Updated:--%>
-                        <%--</th>--%>
-                        <%--<td>--%>
-                        <%--<input type="radio" name="ladateopt" value="onb">--%>
-                        <%--On Or Before--%>
-                        <%--<input type="radio" name="ladateopt" value="ona">--%>
-                        <%--On Or After--%>
-                        <%--<input type="text" id="ladate" size="20" name="ladate" value="">--%>
-                        <%--</td>--%>
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                        <%--<th>Order by:</th>--%>
-                        <%--<td>--%>
-
-                        <%--<input type="radio" name="asdec" value="Ascending" checked="">--%>
-                        <%--Ascending--%>
-                        <%--<input type="radio" name="asdec" value="Descending">--%>
-                        <%--Descending--%>
-                        <%--<select name="orderby">--%>
-                        <%--<option value="taskId">--%>
-                        <%--Task Id--%>
-                        <%--</option>--%>
-                        <%--<option value="status">--%>
-                        <%--Status--%>
-                        <%--</option>--%>
-                        <%--<option value="started">--%>
-                        <%--Date Created--%>
-                        <%--</option>--%>
-                        <%--<option value="last-updated" selected="">--%>
-                        <%--Last Updated--%>
-                        <%--</option>--%>
-                        <%--</select>--%>
-
-                        <%--</td>--%>
-                        <%--</tr>--%>
-                        <%--<tr>--%>
-                        <%--<td></td>--%>
-                        <%--<td>--%>
-                        <%--<input type="submit" class="button" name="filtersubmit" value="Filter">--%>
-                        <%--<input type="reset" class="button" name="cancelsubmit" value="Cancel">--%>
-                        <%--</td>--%>
-                        <%--</tr>--%>
-                        <%--</tbody>--%>
-
-                        <%--</table>--%>
-                        <%--</div>--%>
-                </div>
-
-                <h2></h2>
-
-                <carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
-                                  page="task_list.jsp" pageNumberParameterName="pageNumber"
-                                  resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
-                                  prevKey="prev" nextKey="next"
-                                  parameters="<%=parameters%>"/>
-
-                <table class="dataTable">
-
-                    <%
-                        if (taskResults != null && taskResults.getRow() != null && taskResults.getRow().length > 0) {
-                    %>
-                    <tr>
-                        <th>
-                            <fmt:message key="humantask.tasklist.table.column.id"/>
-                        </th>
-                        <th>
-                            <fmt:message key="humantask.tasklist.table.column.subject"/>
-                        </th>
-                        <th>
-                            <fmt:message key="humantask.tasklist.table.column.status"/>
-                        </th>
-                        <th>
-                            <fmt:message key="humantask.tasklist.table.column.priority"/>
-                        </th>
-                        <th>
-                            <fmt:message key="humantask.tasklist.table.column.created"/>
-                        </th>
-                    </tr>
-
-                    <%
-                    } else {
-                    %>
-                    <tr>
-                        <th>
-                            <fmt:message key="task.there.arent.any.matching.tasks"/>
-                        </th>
-                    </tr>
-                    <%
-                        }
-                    %>
+        <%--<input type="radio" name="startedopt" value="onb">--%>
+        <%--On Or Before--%>
+        <%--<input type="radio" name="startedopt" value="ona">--%>
+        <%--On Or After--%>
+        <%--<input type="text" id="starteddate" size="20" name="starteddate"--%>
+        <%--value="">--%>
 
 
-                    <% if (taskResults != null && taskResults.getRow() != null && taskResults.getRow().length > 0) {
-                        TTaskSimpleQueryResultRow[] rows = taskResults.getRow();
-                        for (TTaskSimpleQueryResultRow row : rows) {
-                    %>
+        <%--</td>--%>
+        <%--</tr>--%>
+        <%--<tr>--%>
+        <%--<th>--%>
+        <%--Last Updated:--%>
+        <%--</th>--%>
+        <%--<td>--%>
+        <%--<input type="radio" name="ladateopt" value="onb">--%>
+        <%--On Or Before--%>
+        <%--<input type="radio" name="ladateopt" value="ona">--%>
+        <%--On Or After--%>
+        <%--<input type="text" id="ladate" size="20" name="ladate" value="">--%>
+        <%--</td>--%>
+        <%--</tr>--%>
+        <%--<tr>--%>
+        <%--<th>Order by:</th>--%>
+        <%--<td>--%>
 
-                    <tr>
-                        <td>
-                            <a href="basic_task_view.jsp?taskClient=carbon&taskId=<%=row.getId().toString()%>"><%=row.getId().toString()%>
-                                -<%=row.getName().getLocalPart()%>
-                            </a></td>
-                        <td>
-                            <%
-                                String presentationName = HumanTaskUIUtil.getTaskPresentationHeader(row.getPresentationSubject(),
-                                                                                                    row.getPresentationName());
-                            %>
-                            <%=presentationName%>
-                        </td>
-                        <td>
-                            <%= row.getStatus().toString() %>
-                        </td>
-                        <td>
-                            <%= row.getPriority() %>
-                        </td>
-                        <td>
-                            <%= row.getCreatedTime().getTime().toString() %>
-                        </td>
-                    </tr>
+        <%--<input type="radio" name="asdec" value="Ascending" checked="">--%>
+        <%--Ascending--%>
+        <%--<input type="radio" name="asdec" value="Descending">--%>
+        <%--Descending--%>
+        <%--<select name="orderby">--%>
+        <%--<option value="taskId">--%>
+        <%--Task Id--%>
+        <%--</option>--%>
+        <%--<option value="status">--%>
+        <%--Status--%>
+        <%--</option>--%>
+        <%--<option value="started">--%>
+        <%--Date Created--%>
+        <%--</option>--%>
+        <%--<option value="last-updated" selected="">--%>
+        <%--Last Updated--%>
+        <%--</option>--%>
+        <%--</select>--%>
 
-                    <%
-                            }
-                        }
-                    %>
-                </table>
-            </div>
-        </div>
-    </div>
+        <%--</td>--%>
+        <%--</tr>--%>
+        <%--<tr>--%>
+        <%--<td></td>--%>
+        <%--<td>--%>
+        <%--<input type="submit" class="button" name="filtersubmit" value="Filter">--%>
+        <%--<input type="reset" class="button" name="cancelsubmit" value="Cancel">--%>
+        <%--</td>--%>
+        <%--</tr>--%>
+        <%--</tbody>--%>
+
+        <%--</table>--%>
+        <%--</div>--%>
+</div>
+
+<h2></h2>
+
+<carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
+                  page="task_list.jsp" pageNumberParameterName="pageNumber"
+                  resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
+                  prevKey="prev" nextKey="next"
+                  parameters="<%=parameters%>"/>
+
+<table class="dataTable">
+
+    <%
+        if (taskResults != null && taskResults.getRow() != null && taskResults.getRow().length > 0) {
+    %>
+    <tr>
+        <th>
+            <fmt:message key="humantask.tasklist.table.column.id"/>
+        </th>
+        <th>
+            <fmt:message key="humantask.tasklist.table.column.subject"/>
+        </th>
+        <th>
+            <fmt:message key="humantask.tasklist.table.column.status"/>
+        </th>
+        <th>
+            <fmt:message key="humantask.tasklist.table.column.priority"/>
+        </th>
+        <th>
+            <fmt:message key="humantask.tasklist.table.column.created"/>
+        </th>
+    </tr>
+
+    <%
+    } else {
+    %>
+    <tr>
+        <th>
+            <fmt:message key="task.there.arent.any.matching.tasks"/>
+        </th>
+    </tr>
+    <%
+        }
+    %>
+
+
+    <% if (taskResults != null && taskResults.getRow() != null && taskResults.getRow().length > 0) {
+        TTaskSimpleQueryResultRow[] rows = taskResults.getRow();
+        for (TTaskSimpleQueryResultRow row : rows) {
+    %>
+
+    <tr>
+        <td>
+            <a href="basic_task_view.jsp?taskClient=carbon&taskId=<%=row.getId().toString()%>"><%=row.getId().toString()%>
+                -<%=row.getName().getLocalPart()%>
+            </a></td>
+        <td>
+            <%
+                String presentationName = HumanTaskUIUtil.getTaskPresentationHeader(row.getPresentationSubject(),
+                        row.getPresentationName());
+            %>
+            <%=presentationName%>
+        </td>
+        <td>
+            <%= row.getStatus().toString() %>
+        </td>
+        <td>
+            <%= row.getPriority() %>
+        </td>
+        <td>
+            <%= row.getCreatedTime().getTime().toString() %>
+        </td>
+    </tr>
+
+    <%
+            }
+        }
+    %>
+</table>
+</div>
+</div>
+</div>
 </div>
 
 </fmt:bundle>

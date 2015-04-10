@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalAccessException;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalArgumentException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -20,8 +20,8 @@ package org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.provider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.wso2.carbon.humantask.TFrom;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.OrganizationalEntityDAO;
@@ -61,17 +61,17 @@ public class ExpressionBasedOrgEntityProvider implements OrganizationalEntityPro
         // Returned list should evaluate to an organizationalEntity or a user
         for (Object item : list) {
             if (item instanceof NodeList) {
-                for(int i = 0; i < ((NodeList) item).getLength(); i++) {
+                for (int i = 0; i < ((NodeList) item).getLength(); i++) {
                     Node node = ((NodeList) item).item(i);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         if (node.getLocalName().equals(HumanTaskConstants.userQname.getLocalPart()) &&
                                 node.getNamespaceURI().equals(HumanTaskConstants.userQname.getNamespaceURI())) {
                             CommonTaskUtil.addOrgEntityForUserNode(node, peopleQueryEvaluator, orgEntityList);
 
-                        } else  if(node.getLocalName().equals(HumanTaskConstants.groupQname.getLocalPart()) &&
+                        } else if (node.getLocalName().equals(HumanTaskConstants.groupQname.getLocalPart()) &&
                                 node.getNamespaceURI().equals(HumanTaskConstants.groupQname.getNamespaceURI())) {
                             CommonTaskUtil.addOrgEntityForGroupNode(node, peopleQueryEvaluator, orgEntityList);
-                        } else if(node.getLocalName().equals("wrapper")) {
+                        } else if (node.getLocalName().equals("wrapper")) {
                             // Expression evaluator wraps the string with wrapper element name
                             CommonTaskUtil.addOrgEntityForUserNode(node, peopleQueryEvaluator, orgEntityList);
                         } else if (node.getLocalName().equals(HumanTaskConstants.organizationalEntityQname.getLocalPart())
@@ -81,11 +81,11 @@ public class ExpressionBasedOrgEntityProvider implements OrganizationalEntityPro
                             CommonTaskUtil.addOrgEntitiesForOrganizationEntityNode(node, peopleQueryEvaluator, orgEntityList);
 
                         }
-                    } else if(node.getNodeType() == Node.TEXT_NODE) {
+                    } else if (node.getNodeType() == Node.TEXT_NODE) {
                         String nodeValue = node.getNodeValue().trim();
-                        if(nodeValue.length() > 0) {
+                        if (nodeValue.length() > 0) {
                             OrganizationalEntityDAO userOrgEntityForName = peopleQueryEvaluator.createUserOrgEntityForName(nodeValue);
-                            if(userOrgEntityForName != null) {
+                            if (userOrgEntityForName != null) {
                                 orgEntityList.add(userOrgEntityForName);
                             }
                         }

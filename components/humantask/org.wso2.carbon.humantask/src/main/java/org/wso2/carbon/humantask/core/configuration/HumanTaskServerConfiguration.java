@@ -89,6 +89,8 @@ public class HumanTaskServerConfiguration {
 
     private boolean validateTaskBeforeDeployment = false;
 
+    private boolean versionEnabled;
+
     /**
      * Create Human Task Server Configuration from a configuration file. If error occurred while parsing configuration
      * file, default configuration will be created.
@@ -117,6 +119,7 @@ public class HumanTaskServerConfiguration {
         this.htCoordinationEnabled = false;
         this.taskRegistrationEnabled = false;
         this.clusteredTaskEngines = false;
+        this.versionEnabled = false;
     }
 
     private HumanTaskServerConfigDocument readConfigurationFromFile(File htServerConfiguration) {
@@ -149,8 +152,7 @@ public class HumanTaskServerConfiguration {
             initPeopleQueryEvaluator(tHumanTaskServerConfig.getPeopleQueryEvaluatorConfig());
         }
 
-        if(tHumanTaskServerConfig.getEnableTaskOperationsForBusinessAdministrator())
-        {
+        if (tHumanTaskServerConfig.getEnableTaskOperationsForBusinessAdministrator()) {
             this.isTaskOperationsForBusinessAdministratorEnabled = true;
         }
 
@@ -166,11 +168,11 @@ public class HumanTaskServerConfiguration {
             iniTaskCleanupConfig(tHumanTaskServerConfig.getTaskCleanupConfig());
         }
 
-        if(tHumanTaskServerConfig.getTaskEventListeners() != null) {
-           initEventListeners(tHumanTaskServerConfig.getTaskEventListeners());
+        if (tHumanTaskServerConfig.getTaskEventListeners() != null) {
+            initEventListeners(tHumanTaskServerConfig.getTaskEventListeners());
         }
 
-        if(tHumanTaskServerConfig.getUIRenderingEnabled()) {
+        if (tHumanTaskServerConfig.getUIRenderingEnabled()) {
             uiRenderingEnabled = true;
         }
 
@@ -181,8 +183,11 @@ public class HumanTaskServerConfiguration {
         if (tHumanTaskServerConfig.getCacheConfiguration() != null) {
             initCacheConfiguration(tHumanTaskServerConfig.getCacheConfiguration());
         }
-        if(tHumanTaskServerConfig.getEnableTaskValidationBeforeDeployment()) {
+        if (tHumanTaskServerConfig.getEnableTaskValidationBeforeDeployment()) {
             validateTaskBeforeDeployment = true;
+        }
+        if (tHumanTaskServerConfig.getLeanTaskVersioning()) {
+            versionEnabled = true;
         }
     }
 
@@ -219,9 +224,9 @@ public class HumanTaskServerConfiguration {
     }
 
     private void initEventListeners(TTaskEventListeners taskEventListeners) {
-        if(taskEventListeners.getClassNameArray() != null) {
-            for(String eventListenerClassName : taskEventListeners.getClassNameArray()) {
-                if(StringUtils.isNotEmpty(eventListenerClassName)) {
+        if (taskEventListeners.getClassNameArray() != null) {
+            for (String eventListenerClassName : taskEventListeners.getClassNameArray()) {
+                if (StringUtils.isNotEmpty(eventListenerClassName)) {
                     this.eventListenerClassNames.add(eventListenerClassName.trim());
                 }
             }
@@ -234,7 +239,7 @@ public class HumanTaskServerConfiguration {
                     trim();
         } else {
             log.debug("TransactionManagerClass not provided with HumanTask configuration." +
-                      "Using default TransactionManagerClass :" + transactionFactoryClass);
+                    "Using default TransactionManagerClass :" + transactionFactoryClass);
         }
     }
 
@@ -243,7 +248,7 @@ public class HumanTaskServerConfiguration {
             this.threadPoolMaxSize = tSchedulerConfig.getMaxThreadPoolSize();
         } else {
             log.debug("ThreadPoolMaxSize not provided with HumanTask configuration." +
-                      "Using default thread pool max value of :" + threadPoolMaxSize);
+                    "Using default thread pool max value of :" + threadPoolMaxSize);
         }
     }
 
@@ -252,7 +257,7 @@ public class HumanTaskServerConfiguration {
             this.peopleQueryEvaluatorClass = tUserManagerConfig.getPeopleQueryEvaluatorClass().trim();
         } else {
             log.debug("PeopleQueryEvaluatorConfig is not provided with HumanTask configuration." +
-                      "Using default PeopleQueryEvaluatorClass: " + peopleQueryEvaluatorClass);
+                    "Using default PeopleQueryEvaluatorClass: " + peopleQueryEvaluatorClass);
         }
     }
 
@@ -496,7 +501,6 @@ public class HumanTaskServerConfiguration {
     }
 
     /**
-     *
      * @return Username of the B4P coordination component's registration service
      */
     public String getRegistrationServiceAuthUsername() {
@@ -530,8 +534,12 @@ public class HumanTaskServerConfiguration {
         return isTaskOperationsForBusinessAdministratorEnabled;
     }
 
-    public boolean getEnableTaskValidationBeforeDeployment(){
+    public boolean getEnableTaskValidationBeforeDeployment() {
         return validateTaskBeforeDeployment;
+    }
+
+    public boolean isLeanTaskVersioningEnabled() {
+        return versionEnabled;
     }
 
 }

@@ -174,10 +174,10 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
 
             try {
                 URI uri = baseUri.relativize(file.toURI());
-                if(!uri.isAbsolute()) {
+                if (!uri.isAbsolute()) {
                     File f = new File(baseUri.getPath() + File.separator + uri.getPath());
                     URI abUri = f.toURI();
-                    if(abUri.isAbsolute()){
+                    if (abUri.isAbsolute()) {
                         uri = abUri;
                     }
                 }
@@ -190,10 +190,10 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
 
             } catch (WSDLException e) {
                 log.error("Error processing wsdl " + file.getName());
-                throw  new HumanTaskDeploymentException(" Error processing wsdl ", e);
+                throw new HumanTaskDeploymentException(" Error processing wsdl ", e);
             } catch (URISyntaxException e) {
-                log.error("Invalid uri in reading wsdl " , e);
-                throw new HumanTaskDeploymentException(" Invalid uri in reading wsdl " , e);
+                log.error("Invalid uri in reading wsdl ", e);
+                throw new HumanTaskDeploymentException(" Invalid uri in reading wsdl ", e);
             }
 //            wsdlsMap.put(file.getName(), is);
         }
@@ -338,7 +338,6 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
     }
 
 
-
     //    public void persist() throws HumanTaskDeploymentException {
 //        //create a collection for the DU n create relevent associations
 //        Registry configRegistry;
@@ -449,6 +448,7 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
      * Example. If the task package name is ClaimsApproval and this is the first task to be deployed in the server
      * resulting in task version being 1, then the extracted directory will be
      * ClaimsApproval-1 located in the corresponding tenants humantasks directory
+     *
      * @param archiveFile zip file
      * @param tenantId    Tenant ID
      * @return Extracted directory
@@ -504,13 +504,13 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
             log.error(errMsg, e);
             throw new HumanTaskDeploymentException(errMsg, e);
         } finally {
-            if(zipStream != null){
+            if (zipStream != null) {
                 try {
                     zipStream.close();
 
                 } catch (IOException e) {
                     String errMsg = "Error occurred during extracting the archive: " + archiveFile;
-                    log.error(errMsg+ e);
+                    log.error(errMsg + e);
                     throw new HumanTaskDeploymentException(errMsg, e);
                 }
             }

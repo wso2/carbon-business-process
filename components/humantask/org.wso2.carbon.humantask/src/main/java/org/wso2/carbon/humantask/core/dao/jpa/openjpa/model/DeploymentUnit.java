@@ -19,22 +19,8 @@ package org.wso2.carbon.humantask.core.dao.jpa.openjpa.model;
 import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Task Attachment Persistent Class.
@@ -42,20 +28,20 @@ import java.util.List;
 
 @Entity
 @Table(name = "HT_DEPLOYMENT_UNIT")
-public class DeploymentUnit extends OpenJPAEntity implements DeploymentUnitDAO{
+public class DeploymentUnit extends OpenJPAEntity implements DeploymentUnitDAO {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name="NAME", nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name="DEPLOY_DIR", nullable = false)
+    @Column(name = "DEPLOY_DIR", nullable = false)
     private String deploymentDir;
 
-    @Column(name="PACKAGE_NAME", nullable = false)
+    @Column(name = "PACKAGE_NAME", nullable = false)
     private String packageName;
 
 
@@ -63,17 +49,17 @@ public class DeploymentUnit extends OpenJPAEntity implements DeploymentUnitDAO{
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date deployedOn;
 
-    @Column(name ="TENANT_ID", nullable = false)
+    @Column(name = "TENANT_ID", nullable = false)
     private long tenantId;
 
-    @Column(name="CHECKSUM", nullable = false)
+    @Column(name = "CHECKSUM", nullable = false)
     private String checksum;
 
-    @Column(name="VERSION", nullable = false)
+    @Column(name = "VERSION", nullable = false)
     private long version;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="STATUS", nullable = false)
+    @Column(name = "STATUS", nullable = false)
     private TaskPackageStatus status;
 
     public void setName(String name) {
@@ -113,12 +99,12 @@ public class DeploymentUnit extends OpenJPAEntity implements DeploymentUnitDAO{
         return tenantId;
     }
 
-    public void setTenantId(long tenantId){
+    public void setTenantId(long tenantId) {
         this.tenantId = tenantId;
     }
 
     public void delete() {
-        
+
     }
 
     public String getChecksum() {

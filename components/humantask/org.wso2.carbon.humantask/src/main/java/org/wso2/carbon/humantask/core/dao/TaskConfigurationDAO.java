@@ -27,76 +27,70 @@ public interface TaskConfigurationDAO {
 
     /**
      * Returns the task configuration id
+     *
      * @return
      */
-     long getTaskConfId();
+    long getTaskConfId();
 
 
     /**
      * GetTask Version
+     *
      * @return
      */
-     long getVersion();
+    long getVersion();
 
     /**
      * Set the version string
      */
 
-     void setVersion(long version);
+    void setVersion(long version);
 
     /**
-     *
      * @return
      */
 
-     String getTaskName();
+    String getTaskName();
 
     /**
-     *
      * @param taskName
      */
 
-     void setTaskName(QName taskName);
+    void setTaskName(QName taskName);
 
     /**
-     *
      * @param status
      */
 
-     void setStatus(TaskConfigStatus status);
+    void setStatus(TaskConfigStatus status);
 
     /**
-     *
      * @return
      */
 
-     TaskConfigStatus getStatus();
+    TaskConfigStatus getStatus();
 
     /**
-     *
      * @return
      */
 
-     Long getTenantId();
+    Long getTenantId();
 
     /**
-     *
      * @param tenantId
      */
 
-     void setTenantId(long tenantId);
+    void setTenantId(long tenantId);
 
     /**
-     *
      * @return
      */
-     DeploymentUnitDAO getDeploymentUnit();
+    DeploymentUnitDAO getDeploymentUnit();
 
     /**
-     *
      * @param deploymentUnit
      */
-     void setDeploymentUnit(DeploymentUnitDAO deploymentUnit);
+    void setDeploymentUnit(DeploymentUnitDAO deploymentUnit);
 
 }
 

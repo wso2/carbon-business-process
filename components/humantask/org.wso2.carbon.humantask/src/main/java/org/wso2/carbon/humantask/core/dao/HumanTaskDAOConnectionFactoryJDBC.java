@@ -27,19 +27,22 @@ import java.util.Map;
 public interface HumanTaskDAOConnectionFactoryJDBC extends HumanTaskDAOConnectionFactory {
 
     /**
-     *  Set the datasource
+     * Set the datasource
+     *
      * @param dataSource : The datasource.
      */
     void setDataSource(DataSource dataSource);
 
     /**
      * The transaction manager.
+     *
      * @param tnxManager : The transaction manager to set.
      */
     void setTransactionManager(TransactionManager tnxManager);
 
     /**
      * TODO
+     *
      * @param propertiesMap
      */
     void setDAOConnectionFactoryProperties(Map<String, Object> propertiesMap);

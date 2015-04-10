@@ -1,14 +1,14 @@
-<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page import="org.wso2.carbon.CarbonConstants" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
-<%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
-<%@ page import="javax.xml.namespace.QName" %>
+<%@ page import="org.apache.http.HttpStatus" %>
+<%@ page import="org.wso2.carbon.CarbonConstants" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskInfoType" %>
 <%@ page import="org.wso2.carbon.humantask.ui.clients.HumanTaskPackageManagementServiceClient" %>
-<%@ page import="org.apache.http.HttpStatus" %>
-<%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
+<%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
+<%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
+<%@ page import="javax.xml.namespace.QName" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
@@ -33,7 +33,7 @@
 
 <%
     response.setHeader("Cache-Control",
-                       "no-store, max-age=0, no-cache, must-revalidate");
+            "no-store, max-age=0, no-cache, must-revalidate");
     // Set IE extended HTTP/1.1 no-cache headers.
     response.addHeader("Cache-Control", "post-check=0, pre-check=0");
     // Set standard HTTP/1.0 no-cache header.
@@ -57,7 +57,7 @@
     String taskDefPrettyPrinted = null;
     try {
         serviceClient = new HumanTaskPackageManagementServiceClient(cookie, backendServerURL,
-                                                                    configContext);
+                configContext);
     } catch (Exception e) {
         response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
@@ -79,12 +79,12 @@
             resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
             topPage="false"
             request="<%=request%>"/>
-<link href="css/prettify.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="js/prettify.js"></script>
-<script type="text/javascript" src="js/run_prettify.js"></script>
-<script type="text/javascript">
-    window.onload=prettyPrint();
-</script>
+    <link href="css/prettify.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <script type="text/javascript" src="js/run_prettify.js"></script>
+    <script type="text/javascript">
+        window.onload = prettyPrint();
+    </script>
     <div id="middle">
         <div id="package-list-main">
             <h2><fmt:message key="humantask.task.definition"/>&nbsp;(<%=taskDefId%>)</h2>
@@ -117,11 +117,12 @@
                                     <tr>
                                         <td>
                                             <!--?prettify lang=html linenums=true?-->
-                                            <pre class="prettyprint linenums" style="height: 35em; overflow:scroll" width="215px">
+                                            <pre class="prettyprint linenums" style="height: 35em; overflow:scroll"
+                                                 width="215px">
                                             <%=taskDefPrettyPrinted%>
                                             </pre>
                                             <script type="text/javascript">
-                                                jQuery(document).ready(function() {
+                                                jQuery(document).ready(function () {
                                                     document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
                                                 });
                                             </script>
@@ -152,11 +153,11 @@
 
     <script type="text/javascript">
         editAreaLoader.init({
-                                id : "xmlPay"        // textarea id
-                                ,syntax: "xml"            // syntax to be uses for highgliting
-                                ,start_highlight: true        // to display with highlight mode on start-up
-                                ,is_editable: false
-                            });
+            id:"xmlPay"        // textarea id
+            , syntax:"xml"            // syntax to be uses for highgliting
+            , start_highlight:true        // to display with highlight mode on start-up
+            , is_editable:false
+        });
     </script>
 
 </fmt:bundle>

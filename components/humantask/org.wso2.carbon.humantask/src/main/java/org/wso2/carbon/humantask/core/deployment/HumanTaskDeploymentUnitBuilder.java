@@ -29,14 +29,16 @@ import java.util.List;
  */
 public abstract class HumanTaskDeploymentUnitBuilder {
 
-    /** The humantask deployment unit object */
+    /**
+     * The humantask deployment unit object
+     */
     private HumanTaskDeploymentUnit htDeploymentUnit;
 
 
     /**
      * Creates a new HumanTaskDeploymentUnit object.
-     * @return : The created HumanTaskDeploymentUnit object.
      *
+     * @return : The created HumanTaskDeploymentUnit object.
      * @throws HumanTaskDeploymentException :
      */
     public HumanTaskDeploymentUnit createNewHumanTaskDeploymentUnit()
@@ -70,6 +72,7 @@ public abstract class HumanTaskDeploymentUnitBuilder {
 
     /**
      * Builds the human task deployment configuration object in the unit.
+     *
      * @throws HumanTaskDeploymentException :
      */
     public abstract void buildDeploymentConfiguration() throws HumanTaskDeploymentException;
@@ -90,7 +93,6 @@ public abstract class HumanTaskDeploymentUnitBuilder {
 
     /**
      * @return : The human interaction document.
-     *
      * @throws HumanTaskDeploymentException :
      */
     public abstract HumanInteractionsDocument getHumanInteractionsDocument()
@@ -98,7 +100,6 @@ public abstract class HumanTaskDeploymentUnitBuilder {
 
     /**
      * @return : The deployment configuration file.
-     *
      * @throws HumanTaskDeploymentException :
      */
     public abstract HTDeploymentConfigDocument getHTDeploymentConfigDocument()

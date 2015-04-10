@@ -46,7 +46,7 @@ public final class JPATaskUtil {
 
     public static void processGenericHumanRoles(TaskDAO task,
                                                 HumanTaskBaseConfiguration taskConfiguration,
-                                                PeopleQueryEvaluator peopleQueryEvaluator,EvaluationContext evaluationContext)
+                                                PeopleQueryEvaluator peopleQueryEvaluator, EvaluationContext evaluationContext)
             throws HumanTaskException {
 
         if (taskConfiguration.isTask()) { //Task
@@ -58,7 +58,7 @@ public final class JPATaskUtil {
                     tTask.getPeopleAssignments().getExcludedOwnersArray();
             if (tExcludedOwners != null && tExcludedOwners.length > 0) {
                 assignHumanRoles(task, peopleQueryEvaluator, tExcludedOwners[0],
-                        GenericHumanRoleDAO.GenericHumanRoleType.EXCLUDED_OWNERS,evaluationContext);
+                        GenericHumanRoleDAO.GenericHumanRoleType.EXCLUDED_OWNERS, evaluationContext);
             }
 
             // Reading potential owners
@@ -98,7 +98,7 @@ public final class JPATaskUtil {
                     tTask.getPeopleAssignments().getTaskStakeholdersArray();
             if (tStakeHolders != null && tStakeHolders.length > 0) {
                 assignHumanRoles(task, peopleQueryEvaluator, tStakeHolders[0],
-                        GenericHumanRoleDAO.GenericHumanRoleType.STAKEHOLDERS,evaluationContext);
+                        GenericHumanRoleDAO.GenericHumanRoleType.STAKEHOLDERS, evaluationContext);
             }
 
             // Reading Business administrators
@@ -106,7 +106,7 @@ public final class JPATaskUtil {
                     tTask.getPeopleAssignments().getBusinessAdministratorsArray();
             if (tBusinessAdministrators != null && tBusinessAdministrators.length > 0) {
                 assignHumanRoles(task, peopleQueryEvaluator, tBusinessAdministrators[0],
-                        GenericHumanRoleDAO.GenericHumanRoleType.BUSINESS_ADMINISTRATORS,evaluationContext);
+                        GenericHumanRoleDAO.GenericHumanRoleType.BUSINESS_ADMINISTRATORS, evaluationContext);
             }
 
 
@@ -118,7 +118,7 @@ public final class JPATaskUtil {
                     tNotification.getPeopleAssignments().getRecipientsArray();
             if (tRecipients != null && tRecipients.length > 0) {
                 assignHumanRoles(task, peopleQueryEvaluator, tRecipients[0],
-                        GenericHumanRoleDAO.GenericHumanRoleType.NOTIFICATION_RECIPIENTS,evaluationContext);
+                        GenericHumanRoleDAO.GenericHumanRoleType.NOTIFICATION_RECIPIENTS, evaluationContext);
             }
         }
 
@@ -126,7 +126,7 @@ public final class JPATaskUtil {
 
     private static void assignHumanRoles(TaskDAO task, PeopleQueryEvaluator peopleQueryEvaluator,
                                          TGenericHumanRoleAssignment roleAssignment,
-                                         GenericHumanRole.GenericHumanRoleType type,EvaluationContext evaluationContext)
+                                         GenericHumanRole.GenericHumanRoleType type, EvaluationContext evaluationContext)
             throws HumanTaskException {
         OrganizationalEntityProvider provider =
                 OrganizationalEntityProviderFactory.getOrganizationalEntityProvider(

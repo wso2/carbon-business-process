@@ -19,16 +19,15 @@ function submitLoginForm(e) {
     if (e == null && validateLoginForm()) {
         loginForm.submit();
     }
-     if(e && e.keyCode == 13 && validateLoginForm())
-   {
-       loginForm.submit();
+    if (e && e.keyCode == 13 && validateLoginForm()) {
+        loginForm.submit();
 
-   }
+    }
 }
-function validateLoginForm(){
+function validateLoginForm() {
     var userName = document.getElementById('userName');
     var errorStrip = document.getElementById('errorStrip');
-    if(userName.value == ""){
+    if (userName.value == "") {
         errorStrip.style.display = "";
         errorStrip.innerHTML = "Please enter a user name to login";
         return false;
@@ -36,41 +35,41 @@ function validateLoginForm(){
     return true;
 }
 
-function displayMessage(message){
+function displayMessage(message) {
     var errorStrip = document.getElementById('errorStrip');
-    if('null' != message && message.value != ''){
+    if ('null' != message && message.value != '') {
         errorStrip.style.display = "";
         errorStrip.innerHTML = message;
     }
 }
 
 
-function selectTabTaskFilteringGadget(selectedTab){
+function selectTabTaskFilteringGadget(selectedTab) {
     //unselect all tabs
     var tabs = document.getElementById('tabs_task').getElementsByTagName('a');
-    for(var i=0;i<tabs.length;i++){
+    for (var i = 0; i < tabs.length; i++) {
         tabs[i].className = "";
     }
     //hide all the tabs
     var tabContent = document.getElementById("tabContent");
-    for(var i=0;i<tabContent.childNodes.length;i++){
-        if(tabContent.childNodes[i].nodeName == "DIV"){
-           tabContent.childNodes[i].style.display = "none";
+    for (var i = 0; i < tabContent.childNodes.length; i++) {
+        if (tabContent.childNodes[i].nodeName == "DIV") {
+            tabContent.childNodes[i].style.display = "none";
         }
     }
 
     selectedTab.className = "selected";
-    if(selectedTab.rel != undefined && selectedTab.rel != null){
+    if (selectedTab.rel != undefined && selectedTab.rel != null) {
         document.getElementById(selectedTab.rel).style.display = "";
     }
 
-    window.location.href = "task-list-gadget-ajaxprocessor.jsp?queryType="+selectedTab.id;
+    window.location.href = "task-list-gadget-ajaxprocessor.jsp?queryType=" + selectedTab.id;
 }
 
-function toggleMe(id){
-    if(document.getElementById(id).style.display == "none"){
+function toggleMe(id) {
+    if (document.getElementById(id).style.display == "none") {
         document.getElementById(id).style.display = "";
-    }else{
+    } else {
         document.getElementById(id).style.display = "none";
     }
 }

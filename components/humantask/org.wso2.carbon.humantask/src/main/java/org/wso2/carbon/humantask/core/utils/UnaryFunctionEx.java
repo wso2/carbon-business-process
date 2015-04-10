@@ -18,6 +18,6 @@
  */
 package org.wso2.carbon.humantask.core.utils;
 
-public interface UnaryFunctionEx<E,V> {
-  V apply(E x) throws Exception;
+public interface UnaryFunctionEx<E, V> {
+    V apply(E x) throws Exception;
 }

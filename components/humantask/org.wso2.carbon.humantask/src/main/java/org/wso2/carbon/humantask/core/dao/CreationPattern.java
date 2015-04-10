@@ -20,5 +20,5 @@ package org.wso2.carbon.humantask.core.dao;
  */
 public enum CreationPattern {
     MANUAL,
-    AUTOMATIC    
+    AUTOMATIC
 }

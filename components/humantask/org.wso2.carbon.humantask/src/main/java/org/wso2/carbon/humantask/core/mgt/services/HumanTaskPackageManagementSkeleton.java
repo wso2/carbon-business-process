@@ -33,17 +33,7 @@ import org.wso2.carbon.humantask.core.store.NotificationConfiguration;
 import org.wso2.carbon.humantask.core.store.TaskConfiguration;
 import org.wso2.carbon.humantask.skeleton.mgt.services.HumanTaskPackageManagementSkeletonInterface;
 import org.wso2.carbon.humantask.skeleton.mgt.services.PackageManagementException;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.DeployedPackagesPaginated;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.DeployedTaskDefinitionsPaginated;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.HumanTaskDefinition;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.HumanTaskPackageDownloadData;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskDefinitionInfo;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskDefinition_type0;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskInfoType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskStatusType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.Task_type0;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.UndeployStatus_type0;
+import org.wso2.carbon.humantask.skeleton.mgt.services.types.*;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;

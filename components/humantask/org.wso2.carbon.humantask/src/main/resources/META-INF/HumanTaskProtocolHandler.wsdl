@@ -2,82 +2,82 @@
 <!--
   Copyright (c) OASIS Open 2009. All Rights Reserved.
 -->
-<wsdl:definitions 
-  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
-  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
-  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:htp="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
-  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+<wsdl:definitions
+        targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+        xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:htp="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
 
-  <wsdl:documentation>
-    Web Service Definition for WS-HumanTask 1.1 - Operations WS-HumanTask Protocol Participants
-  </wsdl:documentation>
+    <wsdl:documentation>
+        Web Service Definition for WS-HumanTask 1.1 - Operations WS-HumanTask Protocol Participants
+    </wsdl:documentation>
 
-  <wsdl:types>
-  <xsd:schema 
-    targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
-    elementFormDefault="qualified" 
-    blockDefault="#all">
-  
-    <xsd:complexType name="tProtocolMsgType">
-    	<xsd:sequence>
-            <xsd:any namespace="##other" processContents="lax" minOccurs="0"
-                     maxOccurs="unbounded" />
-    	</xsd:sequence>
-    </xsd:complexType>
+    <wsdl:types>
+        <xsd:schema
+                targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803"
+                elementFormDefault="qualified"
+                blockDefault="#all">
 
-    <xsd:element name="skipped" type="htp:tProtocolMsgType" />
-    <xsd:element name="fault" type="htp:tProtocolMsgType" />
-    <xsd:element name="exit" type="htp:tProtocolMsgType" />
+            <xsd:complexType name="tProtocolMsgType">
+                <xsd:sequence>
+                    <xsd:any namespace="##other" processContents="lax" minOccurs="0"
+                             maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
 
-    <xsd:element name="responseAction" type="xsd:anyURI" />
-    <xsd:element name="responseOperation" type="xsd:NCName" />
-  
-    </xsd:schema>
-  </wsdl:types>
+            <xsd:element name="skipped" type="htp:tProtocolMsgType"/>
+            <xsd:element name="fault" type="htp:tProtocolMsgType"/>
+            <xsd:element name="exit" type="htp:tProtocolMsgType"/>
 
-  <wsdl:message name="skipped">
-    <wsdl:part name="parameters" element="skipped" />
-  </wsdl:message>
-  <wsdl:message name="fault">
-    <wsdl:part name="parameters" element="fault" />
-  </wsdl:message>
-  <wsdl:message name="exit">
-    <wsdl:part name="parameters" element="exit" />
-  </wsdl:message>
+            <xsd:element name="responseAction" type="xsd:anyURI"/>
+            <xsd:element name="responseOperation" type="xsd:NCName"/>
 
-  <wsdl:portType name="clientParticipantPortType">
-    <wsdl:operation name="skippedOperation">
-      <wsdl:input message="skipped" />
-    </wsdl:operation>
-    <wsdl:operation name="faultOperation">
-      <wsdl:input message="fault" />
-    </wsdl:operation>
-  </wsdl:portType>
+        </xsd:schema>
+    </wsdl:types>
 
-  <wsdl:portType name="humanTaskParticipantPortType">
-    <wsdl:operation name="exitOperation">
-      <wsdl:input message="exit" />
-    </wsdl:operation>
-  </wsdl:portType>
+    <wsdl:message name="skipped">
+        <wsdl:part name="parameters" element="skipped"/>
+    </wsdl:message>
+    <wsdl:message name="fault">
+        <wsdl:part name="parameters" element="fault"/>
+    </wsdl:message>
+    <wsdl:message name="exit">
+        <wsdl:part name="parameters" element="exit"/>
+    </wsdl:message>
 
-  <wsdl:binding name="humanTaskParticipantSOAPBinding" type="humanTaskParticipantPortType">
-    <soap:binding style="document"
-        transport="http://schemas.xmlsoap.org/soap/http"/>
-      <wsdl:operation name="exitOperation">
-          <soap:operation
-                  soapAction="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803/exit"/>
-          <wsdl:input>
-              <soap:body use="literal"/>
-          </wsdl:input>
-      </wsdl:operation>
-  </wsdl:binding>
+    <wsdl:portType name="clientParticipantPortType">
+        <wsdl:operation name="skippedOperation">
+            <wsdl:input message="skipped"/>
+        </wsdl:operation>
+        <wsdl:operation name="faultOperation">
+            <wsdl:input message="fault"/>
+        </wsdl:operation>
+    </wsdl:portType>
 
-  <wsdl:service name="HumanTaskProtocolHandler">
-    <wsdl:port name="humanTaskParticipantPortType" binding="humanTaskParticipantSOAPBinding">
-      <soap:address location="https://localhost:9443/services/HumanTaskProtocolHandler/"/>
-    </wsdl:port>
-  </wsdl:service>
+    <wsdl:portType name="humanTaskParticipantPortType">
+        <wsdl:operation name="exitOperation">
+            <wsdl:input message="exit"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="humanTaskParticipantSOAPBinding" type="humanTaskParticipantPortType">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="exitOperation">
+            <soap:operation
+                    soapAction="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803/exit"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="HumanTaskProtocolHandler">
+        <wsdl:port name="humanTaskParticipantPortType" binding="humanTaskParticipantSOAPBinding">
+            <soap:address location="https://localhost:9443/services/HumanTaskProtocolHandler/"/>
+        </wsdl:port>
+    </wsdl:service>
 
 </wsdl:definitions>
