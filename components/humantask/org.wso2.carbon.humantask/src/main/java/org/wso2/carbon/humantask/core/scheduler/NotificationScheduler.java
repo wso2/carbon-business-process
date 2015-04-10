@@ -24,13 +24,9 @@ import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterConfiguration
 import org.wso2.carbon.event.output.adapter.core.exception.OutputEventAdapterException;
 import org.wso2.carbon.event.output.adapter.email.EmailEventAdapter;
 import org.wso2.carbon.event.output.adapter.sms.SMSEventAdapter;
-import org.wso2.carbon.humantask.TRendering;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.TaskCreationContext;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
-import org.wso2.carbon.humantask.core.dao.jpa.openjpa.JPATaskUtil;
-import org.wso2.carbon.humantask.core.engine.runtime.api.EvaluationContext;
-import org.wso2.carbon.humantask.core.engine.runtime.api.ExpressionLanguageRuntime;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
@@ -43,7 +39,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+
 
 public class NotificationScheduler {
     private static Log log = LogFactory.getLog(NotificationScheduler.class);
@@ -52,8 +48,6 @@ public class NotificationScheduler {
     private boolean isSMSNotification = false;
     private static EmailEventAdapter emailAdapter;
     private static SMSEventAdapter smsAdapter;
-    private ExecutorService exec;
-    private NotificationTask notificationTask;
     private Map<String, String> emailDynamicProperties;
     private Map<String, String> smsDynamicProperties;
 
@@ -64,13 +58,22 @@ public class NotificationScheduler {
     String smsReceiver = null;
     String smsBody = null;
 
-    /**
-     * Set executor service for email/sms notifications
-     *
-     * @param executorService
-     */
-    public void setExecutorService(ExecutorService executorService) {
-        exec = executorService;
+
+    public NotificationScheduler() {
+        emailAdapter = new EmailEventAdapter(null, null);
+        try {
+            emailAdapter.init();
+        } catch (OutputEventAdapterException e) {
+            log.error("unable to initialize adapter" + emailAdapter, e);
+
+        }
+        smsAdapter = new SMSEventAdapter(null, null);
+        try {
+            smsAdapter.init();
+        } catch (OutputEventAdapterException e) {
+            log.error("unable to initialize adapter" + emailAdapter, e);
+
+        }
     }
 
     /**
@@ -79,10 +82,9 @@ public class NotificationScheduler {
      * @param dynamicProperties
      * @return
      */
-    public static synchronized EmailEventAdapter getEmailEventAdapter(Map<String, String> dynamicProperties) {
-        if (emailAdapter == null) {
-            emailAdapter = new EmailEventAdapter(null, dynamicProperties);
-        }
+    public EmailEventAdapter getEmailEventAdapter(Map<String, String> dynamicProperties) {
+        emailAdapter = new EmailEventAdapter(null, dynamicProperties);
+
         try {
             emailAdapter.init();
         } catch (OutputEventAdapterException e) {
@@ -99,18 +101,18 @@ public class NotificationScheduler {
      * @param dynamicProperties
      * @return
      */
-    public static synchronized SMSEventAdapter getSMSEventAdapter(Map<String, String> dynamicProperties) {
-        if (smsAdapter == null) {
-            //Need staticProperties at init()
+    public SMSEventAdapter getSMSEventAdapter(Map<String, String> dynamicProperties) {
 
-            OutputEventAdapterConfiguration configuration = new OutputEventAdapterConfiguration();
-            configuration.setName(HumanTaskConstants.SMS_CONFIG_NAME);
-            configuration.setType(HumanTaskConstants.SMS_CONFIG_TYPE);
-            configuration.setStaticProperties(dynamicProperties);
-            configuration.setMessageFormat(HumanTaskConstants.SMS_CONFIG_FORMAT);
+        //Need staticProperties at init()
 
-            smsAdapter = new SMSEventAdapter(configuration, dynamicProperties);
-        }
+        OutputEventAdapterConfiguration configuration = new OutputEventAdapterConfiguration();
+        configuration.setName(HumanTaskConstants.SMS_CONFIG_NAME);
+        configuration.setType(HumanTaskConstants.SMS_CONFIG_TYPE);
+        configuration.setStaticProperties(dynamicProperties);
+        configuration.setMessageFormat(HumanTaskConstants.SMS_CONFIG_FORMAT);
+
+        smsAdapter = new SMSEventAdapter(configuration, dynamicProperties);
+
 
         try {
             smsAdapter.init();
@@ -139,7 +141,7 @@ public class NotificationScheduler {
             isSMSNotification = HumanTaskServiceComponent.getHumanTaskServer()
                     .getServerConfig().getEnableSMSNotification();
 
-            executeNotifications(taskConfiguration, creationContext, task, isEmailNotification, isSMSNotification);
+            publishNotifications(taskConfiguration, creationContext, task, isEmailNotification, isSMSNotification);
 
         } else {
             log.info("Notification type tasks are not available in " + taskConfiguration);
@@ -155,23 +157,21 @@ public class NotificationScheduler {
      * @param isEmail
      * @param isSMS
      */
-    public void executeNotifications(HumanTaskBaseConfiguration taskConfiguration, TaskCreationContext context,
+    public void publishNotifications(HumanTaskBaseConfiguration taskConfiguration, TaskCreationContext context,
                                      TaskDAO task, boolean isEmail, boolean isSMS) {
 
         if (isEmail) {
             emailDynamicProperties = getDynamicPropertiesOfEmailNotification(task, taskConfiguration); //get dynamic properties
             Object message = emailBody;//get email message body
-            emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
-            notificationTask = new NotificationTask(emailAdapter, message, emailDynamicProperties);//make private prop and add it
-            exec.submit(notificationTask);
+            emailAdapter = getEmailEventAdapter(emailDynamicProperties);
+            emailAdapter.publish(message, emailDynamicProperties);
+            log.info("sent email notifications");
         }
         if (isSMS) {
-            smsDynamicProperties = getDynamicPropertiesOfSmsNotification(task,taskConfiguration);
+            smsDynamicProperties = getDynamicPropertiesOfSmsNotification(task, taskConfiguration);
             Object message = smsBody; //get sms message body
-            smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
-            notificationTask = new NotificationTask(smsAdapter, message, smsDynamicProperties);
-            exec.submit(notificationTask);
-
+            smsAdapter = getSMSEventAdapter(smsDynamicProperties);
+            smsAdapter.publish(message, smsDynamicProperties);
         }
     }
 
@@ -255,6 +255,7 @@ public class NotificationScheduler {
 
     /**
      * Creating Document object(xml parsing) from string content
+     *
      * @param xmlString
      * @return
      */

@@ -107,22 +107,10 @@ public class HumanTaskServer {
      * Notification scheduler initialisation.
      */
     private void initNotificationScheduler() {
-        ThreadFactory threadFactory = new ThreadFactory() {
-            private int threadNumber = 0;
 
-            public Thread newThread(Runnable r) {
-                threadNumber += 1;
-                Thread t = new Thread(r, "HumanTaskServer-" + threadNumber);
-                t.setDaemon(true);
-                return t;
-            }
-        };
-        ExecutorService executorService = Executors.
-                newFixedThreadPool(serverConfig.getThreadPoolMaxSize(), threadFactory);
         NotificationScheduler notificationScheduler = new NotificationScheduler();
         taskEngine.setNotificationScheduler(notificationScheduler);
-        notificationScheduler.setExecutorService(executorService);
-        //  taskEngine.setScheduler(notificationScheduler);
+
 
     }
 
