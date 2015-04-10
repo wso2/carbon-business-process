@@ -109,7 +109,11 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
      * @throws Exception
      */
 
+<<<<<<< HEAD
     public LeanTask persistLeanTaskDef(final int tenantId, final String name, final Element leanTaskDef, final String md5sum) throws Exception {
+=======
+    public LeanTask createLeanTaskDef(final int tenantId, final String name,final Element leanTaskDef,final String md5sum) throws Exception {
+>>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 
 
         final LeanTask taskDef = new LeanTask();
@@ -135,9 +139,15 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
             log.debug("Creating task instance for lean task " + creationContext.getTaskConfiguration().getName());
         }*/
 
+<<<<<<< HEAD
         LeanTaskBuilderImpl leanTaskBuilder = new LeanTaskBuilderImpl();
         MessageDAO inputMessage = createLeanMessage(creationContext);
         leanTaskBuilder.addTaskCreationContext(creationContext).addInputMessage(inputMessage);
+=======
+        LeanTaskBuilderImpl leanTaskBuilder=new LeanTaskBuilderImpl();
+        MessageDAO inputMessage =createLeanMessage(creationContext);
+        leanTaskBuilder.addTaskCreationContext(creationContext) .addInputMessage(inputMessage);
+>>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
         TaskDAO task = leanTaskBuilder.build();
 
         entityManager.persist(task);

@@ -49,7 +49,12 @@ public interface HumanTaskDAOConnection {
      *
      * @return
      */
+<<<<<<< HEAD
     LeanTask persistLeanTaskDef(final int tenantId, final String name, final Element leanTaskDef, String md5sum) throws Exception;
+=======
+    LeanTask createLeanTaskDef(final int tenantId,final String name,final Element leanTaskDef,String md5sum) throws Exception;
+
+>>>>>>> 8fad7dee1bf193d56667148f2ca320ceb615d5d2
 
 
     /**
