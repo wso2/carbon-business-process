@@ -19,7 +19,10 @@ package org.wso2.carbon.humantask.core.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class HumanTaskNamespaceContext implements javax.xml.namespace.NamespaceContext {
     private static final Log log = LogFactory.getLog(HumanTaskNamespaceContext.class);

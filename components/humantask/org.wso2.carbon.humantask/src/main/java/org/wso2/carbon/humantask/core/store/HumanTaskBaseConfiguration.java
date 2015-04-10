@@ -27,7 +27,6 @@ import org.wso2.carbon.humantask.TDeadlines;
 import org.wso2.carbon.humantask.TPresentationElements;
 import org.wso2.carbon.humantask.TPriorityExpr;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
-import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
 import org.wso2.carbon.humantask.core.utils.HumanTaskNamespaceContext;
 
@@ -78,10 +77,14 @@ public abstract class HumanTaskBaseConfiguration {
 
     private AxisConfiguration tenantAxisConf;
 
-    /** The name of the package containing this task configuration. */
+    /**
+     * The name of the package containing this task configuration.
+     */
     private String packageName;
 
-    /** The human task definition file containing this task configuration. */
+    /**
+     * The human task definition file containing this task configuration.
+     */
     private File humanTaskDefinitionFile;
 
     private List<EndpointConfiguration> endpointConfigs = new ArrayList<EndpointConfiguration>();
@@ -176,6 +179,7 @@ public abstract class HumanTaskBaseConfiguration {
      * Returns the versioned named of the task.
      * The task version is derived from the task package version
      * It is appended to the end of the localname
+     *
      * @return
      */
     public abstract QName getName();
@@ -189,6 +193,7 @@ public abstract class HumanTaskBaseConfiguration {
     /**
      * Returns the qualified name of the task. This value does not contain any version information
      * and is extracted from
+     *
      * @return
      */
     public abstract QName getDefinitionName();
@@ -231,7 +236,6 @@ public abstract class HumanTaskBaseConfiguration {
     }
 
 
-
     public String getPackageName() {
         return packageName;
     }
@@ -254,7 +258,6 @@ public abstract class HumanTaskBaseConfiguration {
     }
 
     /**
-     *
      * @return : The human task definition file containing this task configuration.
      */
     public File getHumanTaskDefinitionFile() {

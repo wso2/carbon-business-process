@@ -48,7 +48,9 @@ public class HumanTaskEngine {
      */
     private PeopleQueryEvaluator peopleQueryEvaluator;
 
-    /** The expression  */
+    /**
+     * The expression
+     */
     private Map<String, ExpressionLanguageRuntime> expressionLanguageRuntimeRegistry;
 
     /** */
@@ -86,6 +88,7 @@ public class HumanTaskEngine {
 
     /**
      * create lean task
+     *
      * @param message
      * @param taskConfiguration
      * @param tenantId
@@ -124,7 +127,7 @@ public class HumanTaskEngine {
 //                return createTask(message, taskStore.getTaskConfiguration(message.getPortTypeName(),
 //                        message.getOperationName()),
 //                        message.getTenantId());
-                 return createTask(message, taskConfiguration, message.getTenantId());
+                return createTask(message, taskConfiguration, message.getTenantId());
             }
         });
 
@@ -187,7 +190,6 @@ public class HumanTaskEngine {
     }
 
     /**
-     *
      * @param eventProcessor
      */
     public void setEventProcessor(EventProcessor eventProcessor) {
@@ -195,7 +197,6 @@ public class HumanTaskEngine {
     }
 
     /**
-     *
      * @return
      */
     public EventProcessor getEventProcessor() {

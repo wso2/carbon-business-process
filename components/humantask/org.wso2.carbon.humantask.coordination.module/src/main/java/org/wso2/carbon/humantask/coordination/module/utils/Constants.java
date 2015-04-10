@@ -34,7 +34,9 @@ public final class Constants {
     public static final String HUMANTASK_ENGINE_COORDINATION_PROTOCOL_HANDLER_SERVICE = "HumanTaskProtocolHandler";
     public static final String CARBON_ADMIN_SERVICE_CONTEXT_ROOT = "/services";
 
-    /** ws-coordination related constants. */
+    /**
+     * ws-coordination related constants.
+     */
     public static final String WS_COOR_NAMESPACE = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06";
     public static final String WS_COOR_PREFIX = "wscoor";
 
@@ -49,20 +51,26 @@ public final class Constants {
     public static final String WS_COOR_REGISTER_PARTICIPANT_PROTOCOL_SERVICE = "ParticipantProtocolService";
     public static final String WS_COOR_REGISTERATION_ACTION = "http://docs.oasis-open.org/ws-tx/wscoor/2006/06/Register";
 
-    /** b4p related constants */
+    /**
+     * b4p related constants
+     */
     public static final String B4P_IDENTIFIER = "Identifier";
     public static final String B4P_NAMESPACE = "http://wso2.org/bps/b4p/coordination/";
     public static final String B4P_PREFIX = "b4p";
 
-    /** ws-humantask related constants. */
+    /**
+     * ws-humantask related constants.
+     */
     public static final String WS_HT_COORDINATION_TYPE = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803";
 
-    /** ws-addressing related constants */
+    /**
+     * ws-addressing related constants
+     */
     public static final String WS_A_NAMESPACE = "http://schemas.xmlsoap.org/ws/2004/08/addressing";
     public static final String WS_A_PREFIX = "wsa";
     public static final String WS_A_ADDRESS = "Address";
     public static final String WS_A_REFERENCE_PARAMETER = "ReferenceParameters";
 
-    public static QName registrationService = new QName(WS_COOR_NAMESPACE,WS_COOR_COORDINATION_CONTEXT_REGISTRATION_SERVICE);
+    public static QName registrationService = new QName(WS_COOR_NAMESPACE, WS_COOR_COORDINATION_CONTEXT_REGISTRATION_SERVICE);
     public static final String REGISTRATION_PORT = "RegistrationPort";
 }

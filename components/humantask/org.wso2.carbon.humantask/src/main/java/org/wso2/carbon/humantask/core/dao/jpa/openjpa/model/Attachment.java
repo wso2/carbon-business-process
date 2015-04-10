@@ -79,7 +79,7 @@ public class Attachment implements AttachmentDAO {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private OrganizationalEntity attachedBy;
 
-    @Column(name="ATTACHMENT_VALUE")
+    @Column(name = "ATTACHMENT_VALUE")
     private String value;
 
     @ManyToOne
@@ -122,37 +122,37 @@ public class Attachment implements AttachmentDAO {
         return new Date(attachedAt.getTime());
     }
 
-    
+
     public void setAttachedAt(Date attachedAt) {
         this.attachedAt = new Date(attachedAt.getTime());
     }
 
-    
+
     public OrganizationalEntityDAO getAttachedBy() {
         return attachedBy;
     }
 
-    
+
     public void setAttachedBy(OrganizationalEntityDAO attachedBy) {
-        this.attachedBy = (OrganizationalEntity)attachedBy;
+        this.attachedBy = (OrganizationalEntity) attachedBy;
     }
 
-    
+
     public String getValue() {
         return value;
     }
 
-    
+
     public void setValue(String value) {
         this.value = value;
     }
 
-    
+
     public Task getTask() {
         return task;
     }
 
-    
+
     public void setTask(TaskDAO task) {
         this.task = (Task) task;
     }

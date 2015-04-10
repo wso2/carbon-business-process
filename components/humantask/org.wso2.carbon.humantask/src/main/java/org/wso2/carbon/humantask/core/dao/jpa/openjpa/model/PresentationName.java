@@ -29,11 +29,11 @@ import javax.persistence.NamedQuery;
 @Entity
 @DiscriminatorValue("PNAME")
 @NamedQueries(
-        @NamedQuery(name=PresentationName.DELETE_PRESENTATION_NAME_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.PresentationName as pn where pn.task = :task")
+        @NamedQuery(name = PresentationName.DELETE_PRESENTATION_NAME_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.PresentationName as pn where pn.task = :task")
 )
 public final class PresentationName extends PresentationElement implements PresentationNameDAO {
 
-    public static final String DELETE_PRESENTATION_NAME_BY_TASK ="DELETE_PRESENTATION_NAME_BY_TASK";
+    public static final String DELETE_PRESENTATION_NAME_BY_TASK = "DELETE_PRESENTATION_NAME_BY_TASK";
 
     @Override
     public void setValue(String value) {

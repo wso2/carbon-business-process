@@ -71,72 +71,72 @@ public class Event implements EventDAO {
         return id;
     }
 
-    
+
     public Date getTimeStamp() {
         return timeStamp;
     }
 
-    
+
     public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
     }
 
-    
+
     public TaskEventType getType() {
         return type;
     }
 
-    
+
     public void setType(TaskEventType type) {
         this.type = type;
     }
 
-    
+
     public String getDetails() {
         return details;
     }
 
-    
+
     public void setDetails(String details) {
         this.details = details;
     }
 
-    
+
     public String getUser() {
         return user;
     }
 
-    
+
     public void setUser(String user) {
         this.user = user;
     }
 
-    
+
     public Task getTask() {
         return task;
     }
 
-    
+
     public void setTask(TaskDAO task) {
-        this.task = (Task)task;
+        this.task = (Task) task;
     }
 
-    
+
     public TaskStatus getOldState() {
         return oldState;
     }
 
-    
+
     public void setOldState(TaskStatus oldState) {
         this.oldState = oldState;
     }
 
-    
+
     public TaskStatus getNewState() {
         return newState;
     }
 
-    
+
     public void setNewState(TaskStatus newState) {
         this.newState = newState;
     }

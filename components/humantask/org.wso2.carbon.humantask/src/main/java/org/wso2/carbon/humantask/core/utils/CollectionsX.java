@@ -76,11 +76,8 @@ public final class CollectionsX {
      * returns <code>true</code>. So: <em>coll' = { x : x el-of coll
      * AND f(x) == false }</em>
      *
-     * @param coll
-     *            the collection from which to remove elements
-     * @param f
-     *            the function to apply
-     *
+     * @param coll the collection from which to remove elements
+     * @param f    the function to apply
      * @return coll, for convenience
      */
     public static <T> Collection<T> removeIf(Collection<T> coll, MemberOfFunction<T> f) {

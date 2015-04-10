@@ -63,9 +63,9 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
             FileItemData fileToBeUpload = fileItemsMap.get(0);
 
             AttachmentUploadClient attachmentUploadClient = new AttachmentUploadClient(configurationContext,
-                                                                       serverURL + "AttachmentMgtService", cookie);
+                    serverURL + "AttachmentMgtService", cookie);
             HumanTaskClientAPIServiceClient taskOperationClient = new HumanTaskClientAPIServiceClient(cookie,
-                                                                      serverURL, configurationContext);
+                    serverURL, configurationContext);
 
             response.setContentType("text/html; charset=utf-8");
 
@@ -79,11 +79,11 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
 
             if (!isAdded) {
                 throw new Exception("Attachment was added successfully with id:" + attachmentID + ". But the task " +
-                                    "with id: " + taskID + " was not associated with it correctly.");
+                        "with id: " + taskID + " was not associated with it correctly.");
             } else {
                 if (redirect != null) {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request, response,
-                                                        getContextRoot(request) + "/" + webContext + "/" + redirect);
+                            getContextRoot(request) + "/" + webContext + "/" + redirect);
                 } else {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request);
                 }
@@ -95,7 +95,7 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
             log.error(errMsg, ex);
             if (redirect != null) {
                 CarbonUIMessage.sendCarbonUIMessage(errMsg, CarbonUIMessage.ERROR, request,
-                                                    response, getContextRoot(request) + "/" + webContext + "/" + redirect);
+                        response, getContextRoot(request) + "/" + webContext + "/" + redirect);
             } else {
                 CarbonUIMessage.sendCarbonUIMessage(errMsg, CarbonUIMessage.ERROR, request);
             }

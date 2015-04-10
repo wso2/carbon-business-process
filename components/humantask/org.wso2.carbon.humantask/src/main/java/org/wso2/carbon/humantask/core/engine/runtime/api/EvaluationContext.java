@@ -26,18 +26,19 @@ import javax.xml.namespace.NamespaceContext;
  * Context for evaluating expressions. Implementation of the
  * {@link ExpressionLanguageRuntime} interface use this interface to access
  * the properties and input messages.
- *
  */
 public interface EvaluationContext {
 
     /**
      * Return the input message to the task.
+     *
      * @return Message
      */
     MessageDAO getInput();
 
     /**
      * Return generic human role of give type
+     *
      * @param ghrType generic human role type
      * @return generic human role
      */
@@ -45,6 +46,7 @@ public interface EvaluationContext {
 
     /**
      * Return the namespace context for the current task
+     *
      * @return NamespaceContext
      * @throws Exception :
      */
@@ -52,6 +54,7 @@ public interface EvaluationContext {
 
     /**
      * Get the root node of the payload to task
+     *
      * @return Node DOM node
      * @throws Exception :
      */

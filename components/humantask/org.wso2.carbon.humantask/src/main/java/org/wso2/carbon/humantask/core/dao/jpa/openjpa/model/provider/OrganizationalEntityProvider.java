@@ -38,15 +38,15 @@ public interface OrganizationalEntityProvider {
      * Extracts the organizational entities given the people query evaluator, "From" clause of a
      * generic human role and the evaluation context.
      *
-     * @param peopleQueryEvaluator  People query evaluator associated with the task engine
-     * @param tFrom                 "From" clause of the associated generic human role
-     * @param evaluationContext     Evaluation context of a particular task
-     * @return                      Organizational entities that satisfy the aforementioned conditions
-     * @throws HumanTaskException   Is thrown if the process of extracting organizational entities is
-     *                              interrupted
+     * @param peopleQueryEvaluator People query evaluator associated with the task engine
+     * @param tFrom                "From" clause of the associated generic human role
+     * @param evaluationContext    Evaluation context of a particular task
+     * @return Organizational entities that satisfy the aforementioned conditions
+     * @throws HumanTaskException Is thrown if the process of extracting organizational entities is
+     *                            interrupted
      */
     List<OrganizationalEntityDAO> getOrganizationalEntities(
             PeopleQueryEvaluator peopleQueryEvaluator, TFrom tFrom,
             EvaluationContext evaluationContext) throws HumanTaskException;
-    
+
 }

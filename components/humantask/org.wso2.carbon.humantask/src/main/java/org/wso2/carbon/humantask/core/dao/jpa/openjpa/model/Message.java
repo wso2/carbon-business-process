@@ -37,7 +37,7 @@ import java.util.Map;
 @Entity
 @Table(name = "HT_MESSAGE")
 @NamedQueries(
-        @NamedQuery(name = Message.DELETE_MESSAGE_BY_TASK, query ="delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Message as m where m.task = :task")
+        @NamedQuery(name = Message.DELETE_MESSAGE_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Message as m where m.task = :task")
 )
 public class Message implements MessageDAO, Serializable {
 
@@ -76,7 +76,7 @@ public class Message implements MessageDAO, Serializable {
         }
     }
 
-    
+
     public Element getBodyData() {
         try {
             return data == null ? null : DOMUtils.stringToDOM(data);
@@ -85,7 +85,7 @@ public class Message implements MessageDAO, Serializable {
         }
     }
 
-    
+
     public void setData(Element data) {
         if (data == null) {
             return;
@@ -93,7 +93,7 @@ public class Message implements MessageDAO, Serializable {
         this.data = DOMUtils.domToString(data);
     }
 
-    
+
     public Element getHeader() {
         try {
             return header == null ? null : DOMUtils.stringToDOM(header);
@@ -102,7 +102,7 @@ public class Message implements MessageDAO, Serializable {
         }
     }
 
-    
+
     public void setHeader(Element header) {
         if (header == null) {
             return;
@@ -118,12 +118,12 @@ public class Message implements MessageDAO, Serializable {
         this.task = task;
     }
 
-    
+
     public void setTask(TaskDAO task) {
         this.task = (Task) task;
     }
 
-    
+
     public QName getName() {
         if (name != null) {
             return QName.valueOf(name);
@@ -132,32 +132,32 @@ public class Message implements MessageDAO, Serializable {
         return null;
     }
 
-    
+
     public void setName(QName name) {
         this.name = name.toString();
     }
 
-    
+
     public Long getId() {
         return id;
     }
 
-    
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    
+
     public MessageType getMessageType() {
         return messageType;
     }
 
-    
+
     public void setMessageType(MessageType messageType) {
         this.messageType = messageType;
     }
 
-    
+
     public void addBodyPart(String partName, Element part) {
         Element message = getBodyData();
         if (message == null) {
@@ -167,12 +167,12 @@ public class Message implements MessageDAO, Serializable {
         }
 
         Element partElement = message.getOwnerDocument().createElement(partName);
-        partElement.appendChild(partElement.getOwnerDocument().importNode(part,true));
+        partElement.appendChild(partElement.getOwnerDocument().importNode(part, true));
         message.appendChild(partElement);
         setData(message);
     }
 
-    
+
     public Element getBodyPart(String partName) {
         Element message = getBodyData();
         NodeList eltList = message.getElementsByTagName(partName);
@@ -183,7 +183,7 @@ public class Message implements MessageDAO, Serializable {
         }
     }
 
-    
+
     public Map<String, Element> getBodyParts() {
         Map<String, Element> bodyParts = new HashMap<String, Element>();
 
@@ -191,13 +191,13 @@ public class Message implements MessageDAO, Serializable {
         NodeList eltList = message.getChildNodes();
         for (int i = 0; i < eltList.getLength(); i++) {
             Node part = eltList.item(i);
-            bodyParts.put(part.getLocalName(), (Element)part.getFirstChild());
+            bodyParts.put(part.getLocalName(), (Element) part.getFirstChild());
         }
 
         return bodyParts;
     }
 
-    
+
     public void addHeaderPart(String partName, Element part) {
         Element message = getBodyData();
         if (message == null) {
@@ -207,12 +207,12 @@ public class Message implements MessageDAO, Serializable {
         }
 
         Element partElement = message.getOwnerDocument().createElement(partName);
-        partElement.appendChild(partElement.getOwnerDocument().importNode(part,true));
+        partElement.appendChild(partElement.getOwnerDocument().importNode(part, true));
         message.appendChild(partElement);
         setData(message);
     }
 
-    
+
     public Element getHeaderPart(String partName) {
         Element message = getBodyData();
         NodeList eltList = message.getElementsByTagName(partName);
@@ -223,7 +223,7 @@ public class Message implements MessageDAO, Serializable {
         }
     }
 
-    
+
     public Map<String, Element> getHeaderParts() {
         Map<String, Element> bodyParts = new HashMap<String, Element>();
 
@@ -231,7 +231,7 @@ public class Message implements MessageDAO, Serializable {
         NodeList eltList = message.getChildNodes();
         for (int i = 0; i < eltList.getLength(); i++) {
             Node part = eltList.item(i);
-            bodyParts.put(part.getLocalName(), (Element)part.getFirstChild());
+            bodyParts.put(part.getLocalName(), (Element) part.getFirstChild());
         }
 
         return bodyParts;

@@ -156,7 +156,6 @@ public class SimpleTaskDefinitionInfo {
     }
 
     /**
-     *
      * @param packageStatus : The status of the package.to set.
      */
     public void setPackageStatus(TaskPackageStatus packageStatus) {

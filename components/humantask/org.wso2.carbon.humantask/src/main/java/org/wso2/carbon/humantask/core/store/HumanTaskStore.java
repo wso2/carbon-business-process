@@ -19,6 +19,7 @@ package org.wso2.carbon.humantask.core.store;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.databinding.ADBException;
 import org.apache.axis2.deployment.DeploymentEngine;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.*;
@@ -28,16 +29,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
+import org.apache.xmlbeans.XmlException;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.bpel.common.ServiceConfigurationUtil;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.humantask.TNotification;
 import org.wso2.carbon.humantask.TTask;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
-import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
-import org.wso2.carbon.humantask.core.dao.HumanTaskDAOConnection;
-import org.wso2.carbon.humantask.core.dao.TaskDAO;
-import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
+import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.deployment.*;
 import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
@@ -51,11 +50,11 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.FileManipulator;
 import org.wso2.carbon.utils.ServerConstants;
 
-import javax.cache.*;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.CacheManagerFactory;
+import javax.cache.Caching;
 import javax.persistence.EntityManager;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
 import javax.wsdl.Definition;
 import javax.wsdl.OperationType;
 import javax.xml.namespace.QName;
@@ -63,9 +62,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Manages human task deployments for a tenant. There will be HumanTaskStore per tenant. Handles the deployment
@@ -86,6 +82,10 @@ public class HumanTaskStore {
     private Map<QName, HumanTaskBaseConfiguration> taskBaseConfigurationHashMap =
             new HashMap<QName, HumanTaskBaseConfiguration>();
 
+    // LeanTaskConfiguration Name with LeanTaskConfiguration
+    // Name contains the Taskname
+    private Map<String, LeanTaskConfiguration> leanTaskConfigurationHashMap =
+            new HashMap<String, LeanTaskConfiguration>();
 
     // Store the current task task version string ( TaskPackageName +"-" version ) against taskpackagename
     private Map<String, String> loadedPackages = new HashMap<String, String>();
@@ -115,6 +115,7 @@ public class HumanTaskStore {
     /**
      * This will simply deploy the new task and will not perform removal of existing tasks, which should be done prior to
      * deploying this task
+     *
      * @param humanTaskDU
      * @return List of task configuration Qnames deployed
      * @throws HumanTaskDeploymentException
@@ -146,6 +147,8 @@ public class HumanTaskStore {
                 taskConf.setPackageStatus(humanTaskDU.getTaskPackageStatus());
                 configurations.add(taskConf);
 //                taskConfigurations.add(taskConf);
+
+
 //
 //                // Aggregate task configurations in the hash map
 //                taskBaseConfigurationHashMap.put(taskConf.getName(), taskConf);
@@ -153,16 +156,13 @@ public class HumanTaskStore {
 
                 if (!taskConf.isErroneous()) {
                     createCallBackService(taskConf);
-                    if(taskConf.getPackageStatus() == TaskPackageStatus.ACTIVE) {
+                    if (taskConf.getPackageStatus() == TaskPackageStatus.ACTIVE) {
                         deploy(taskConf);
 //                        activeTaskConfigurationQNameMap.put(taskQName, taskConf.getName());
                     }
                 }
             }
         }
-
-
-
 
 
         TNotification[] notifications = humanTaskDU.getNotifications();
@@ -189,7 +189,7 @@ public class HumanTaskStore {
 
                 if (!notificationConf.isErroneous()) {
                     // Deploy the axis2 service only for the active version of the task/notification
-                    if(notificationConf.getPackageStatus() == TaskPackageStatus.ACTIVE) {
+                    if (notificationConf.getPackageStatus() == TaskPackageStatus.ACTIVE) {
                         deploy(notificationConf);
 //                        activeTaskConfigurationQNameMap.put(notificationQName, notificationConf.getName());
                     }
@@ -198,11 +198,11 @@ public class HumanTaskStore {
         }
         // Add task configuration to runtime only after axis2 service deployment is complete.This avoids the error
         // condition if a service name is deployed with same name outside of this task package
-        for(HumanTaskBaseConfiguration configuration:configurations){
+        for (HumanTaskBaseConfiguration configuration : configurations) {
             taskConfigurations.add(configuration);
             taskBaseConfigurationHashMap.put(configuration.getName(), configuration);
             taskConfigsInPackage.add(configuration.getName());
-            if(configuration.getPackageStatus() == TaskPackageStatus.ACTIVE) {
+            if (configuration.getPackageStatus() == TaskPackageStatus.ACTIVE) {
                 activeTaskConfigurationQNameMap.put(configuration.getDefinitionName(), configuration.getName());
             }
         }
@@ -224,7 +224,7 @@ public class HumanTaskStore {
             taskConfigurations.add(notificationConf);
             taskConfigsInPackage.add(notificationConf.getName());
             taskBaseConfigurationHashMap.put(notificationConf.getName(), notificationConf);
-            if(notificationConf.getPackageStatus() == TaskPackageStatus.ACTIVE){
+            if (notificationConf.getPackageStatus() == TaskPackageStatus.ACTIVE) {
                 activeTaskConfigurationQNameMap.put(notificationQName, notificationConf.getName());
             }
 
@@ -237,13 +237,14 @@ public class HumanTaskStore {
 
     /**
      * Performance a test deployment of the task in order to avoid deployment issues due to invalid task packages
+     *
      * @param humanTaskDU
      * @return
      * @throws HumanTaskDeploymentException
      */
     public void validateTaskConfig(HumanTaskDeploymentUnit humanTaskDU) throws HumanTaskDeploymentException, AxisFault {
         boolean validateTask = HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().getEnableTaskValidationBeforeDeployment();
-        if(validateTask){
+        if (validateTask) {
             TTask[] tasks = humanTaskDU.getTasks();
             if (tasks != null) {
                 for (TTask task : tasks) {
@@ -259,7 +260,7 @@ public class HumanTaskStore {
                                     humanTaskDU.getPackageName(),
                                     humanTaskDU.getVersion(),
                                     humanTaskDU.getHumanTaskDefinitionFile());
-                    if(taskConf.isErroneous()){
+                    if (taskConf.isErroneous()) {
                         throw new HumanTaskDeploymentException(taskConf.getDeploymentError());
                     }
                 }
@@ -300,7 +301,7 @@ public class HumanTaskStore {
                                 humanTaskDU.getVersion(),
                                 humanTaskDU.getHumanTaskDefinitionFile());
                 notificationConf.setPackageStatus(humanTaskDU.getTaskPackageStatus());
-                if(notificationConf.isErroneous()){
+                if (notificationConf.isErroneous()) {
                     throw new HumanTaskDeploymentException(notificationConf.getDeploymentError());
                 }
             }
@@ -310,6 +311,7 @@ public class HumanTaskStore {
 
     /**
      * Handles the deployment steps for the master node and salve node in the cluster
+     *
      * @param humanTaskFile
      * @throws Exception
      */
@@ -336,7 +338,7 @@ public class HumanTaskStore {
                 if ((dao.getStatus() == (TaskPackageStatus.ACTIVE))) {
                     // extract the currently active task package
                     currentlyActiveTaskPackage = dao;
-                    if(dao.getChecksum().equals(md5sum)){
+                    if (dao.getChecksum().equals(md5sum)) {
                         // Check whether the md5sum matches the active task package.
                         isPackageReload = true;
                     }
@@ -353,8 +355,8 @@ public class HumanTaskStore {
             // First check if the currently active task package is already loaded
             String activePackageName = loadedPackages.get(currentlyActiveTaskPackage.getPackageName());
 
-            if (activePackageName!= null && activePackageName.equals(currentlyActiveTaskPackage.getName())) {
-                if(log.isDebugEnabled()) {
+            if (activePackageName != null && activePackageName.equals(currentlyActiveTaskPackage.getName())) {
+                if (log.isDebugEnabled()) {
                     log.debug("This task package and its previous versions are already loaded");
                 }
                 // This task package and its previous versions are already loaded , hence return
@@ -372,7 +374,7 @@ public class HumanTaskStore {
                 // Retire the existing version of the package and deploy the new version
                 // This could be two scenarios. Server restart with new version and deploying on existing version.
                 String activePackageName = loadedPackages.get(currentlyActiveTaskPackage.getPackageName());
-                if(activePackageName == null) {
+                if (activePackageName == null) {
                     // This is a server restart, we need to load existing versions
                     reloadExistingTaskVersions(existingDeploymentUnitsForPackage, humanTaskFile, md5sum, isMasterServer);
                 }
@@ -427,6 +429,7 @@ public class HumanTaskStore {
 
     /**
      * Creates a new deployment unit from the given information
+     *
      * @param humanTaskFile
      * @param tenantId
      * @param version
@@ -447,12 +450,13 @@ public class HumanTaskStore {
     /**
      * Deploy the new task version using the given deployment unit
      * This method will do the deployment of axis2 services, updating the task configuration lists, and updating the db
+     *
      * @param deploymentUnit
      * @param version
      * @throws Exception
      */
-    public void deployNewTaskVersion(HumanTaskDeploymentUnit deploymentUnit ,long version) throws Exception {
-        if(log.isDebugEnabled()) {
+    public void deployNewTaskVersion(HumanTaskDeploymentUnit deploymentUnit, long version) throws Exception {
+        if (log.isDebugEnabled()) {
             log.debug("Deploying new package version " + deploymentUnit.getName());
         }
         deploy(deploymentUnit);
@@ -463,12 +467,13 @@ public class HumanTaskStore {
 
     /**
      * Retire the task configurations in a given task package
+     *
      * @param versionedPackageName
      */
     public void retireTaskPackageConfigurations(String versionedPackageName) {
         if (versionedPackageName == null)
             return;
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Retiring task package configuration for package" + versionedPackageName);
         }
         List<QName> qNames = taskConfigurationsInTaskPackage.get(versionedPackageName);
@@ -483,7 +488,9 @@ public class HumanTaskStore {
 
     /**
      * Reload existing task versions for a given deployment unit
+     *
      * @param existingDeploymentUnitsForPackage
+     *
      * @param archiveFile
      * @param md5sum
      * @throws HumanTaskDeploymentException
@@ -494,18 +501,18 @@ public class HumanTaskStore {
         if (existingDeploymentUnitsForPackage == null) {
             return;
         }
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Reloading existing task versions");
         }
         for (DeploymentUnitDAO dao : existingDeploymentUnitsForPackage) {
 
-            if(!isMasterServer){
+            if (!isMasterServer) {
                 // We need to avoid deployment of already loaded packages
                 String versionedName = dao.getName();
                 List<QName> qNames = taskConfigurationsInTaskPackage.get(versionedName);
-                if(qNames!= null && qNames.size() > 0){
+                if (qNames != null && qNames.size() > 0) {
                     // This dao is already loaded
-                    if(log.isDebugEnabled()){
+                    if (log.isDebugEnabled()) {
                         log.debug("This is already loaded package, skipping " + versionedName);
                     }
                     continue;
@@ -518,8 +525,8 @@ public class HumanTaskStore {
 
             File taskDirectory = new File(taskDirectoryPath);
             ArchiveBasedHumanTaskDeploymentUnitBuilder deploymentUnitBuilder = null;
-            if(log.isDebugEnabled()){
-                log.debug("Loading task : "+ dao.getName());
+            if (log.isDebugEnabled()) {
+                log.debug("Loading task : " + dao.getName());
             }
             try {
                 if (taskDirectory.exists()) {
@@ -528,7 +535,7 @@ public class HumanTaskStore {
                     deploymentUnitBuilder =
                             new ArchiveBasedHumanTaskDeploymentUnitBuilder(taskDirectory, tenantId, dao.getVersion(),
                                     dao.getPackageName(), dao.getChecksum());
-                } else if(dao.getStatus() == TaskPackageStatus.ACTIVE){
+                } else if (dao.getStatus() == TaskPackageStatus.ACTIVE) {
                     // This node is a salve node and task is being reloaded or new version has been deployed on master
                     deploymentUnitBuilder = new ArchiveBasedHumanTaskDeploymentUnitBuilder(archiveFile,
                             tenantId, dao.getVersion(), md5sum);
@@ -540,11 +547,11 @@ public class HumanTaskStore {
                 }
 
                 // Check whether this is a new version deployment on a slave node
-                if(!isMasterServer && dao.getStatus() == TaskPackageStatus.ACTIVE){
+                if (!isMasterServer && dao.getStatus() == TaskPackageStatus.ACTIVE) {
                     String currentDeployedVersion = loadedPackages.get(dao.getPackageName());
-                    if(currentDeployedVersion != null && currentDeployedVersion.equals(dao.getName()) == false) {
+                    if (currentDeployedVersion != null && currentDeployedVersion.equals(dao.getName()) == false) {
                         // This is a new version on the salve node  , retire the existing version
-                         retireTaskPackageConfigurations(currentDeployedVersion);
+                        retireTaskPackageConfigurations(currentDeployedVersion);
                     }
                 }
 
@@ -553,7 +560,7 @@ public class HumanTaskStore {
                         deploymentUnitBuilder.createNewHumanTaskDeploymentUnit();
                 taskDeploymentUnit.setTaskPackageStatus(dao.getStatus());
                 deploy(taskDeploymentUnit);
-                if(dao.getStatus() == TaskPackageStatus.ACTIVE) {
+                if (dao.getStatus() == TaskPackageStatus.ACTIVE) {
                     // Add the active package to the loaded packages
                     loadedPackages.put(dao.getPackageName(), dao.getName());
                 }
@@ -791,13 +798,12 @@ public class HumanTaskStore {
      * If the config is hard undeployment,delete all instance information from the db and delete the task configs
      * If the config is soft undeployment, leave all task instances and undeploy the service and the configuration only
      *
-     *
      * @param packageName : The package name to be unDeployed.
      */
     public void unDeploy(String packageName) {
 
-        if(log.isDebugEnabled()){
-            log.debug("Un deploying task package : "+ packageName);
+        if (log.isDebugEnabled()) {
+            log.debug("Un deploying task package : " + packageName);
         }
         try {
             removeMatchingPackage(packageName);
@@ -816,22 +822,22 @@ public class HumanTaskStore {
         return taskBaseConfigurationHashMap.get(taskName);
     }
 
-    public HumanTaskBaseConfiguration getActiveTaskConfiguration(QName taskQname){
+    public HumanTaskBaseConfiguration getActiveTaskConfiguration(QName taskQname) {
         QName qName = activeTaskConfigurationQNameMap.get(taskQname);
-        if(qName != null){
+        if (qName != null) {
             return taskBaseConfigurationHashMap.get(qName);
         }
         return null;
     }
 
-    private void removeMatchingPackageVersion(String versionedPackageName, TaskPackageStatus status){
+    private void removeMatchingPackageVersion(String versionedPackageName, TaskPackageStatus status) {
         List<QName> taskConfigurationQNameList = taskConfigurationsInTaskPackage.get(versionedPackageName);
-        if(taskConfigurationQNameList != null){
-            for(QName name:taskConfigurationQNameList){
+        if (taskConfigurationQNameList != null) {
+            for (QName name : taskConfigurationQNameList) {
                 HumanTaskBaseConfiguration humanTaskBaseConfiguration = taskBaseConfigurationHashMap.get(name);
-                if(humanTaskBaseConfiguration != null){
+                if (humanTaskBaseConfiguration != null) {
                     taskConfigurations.remove(humanTaskBaseConfiguration);
-                    if(status == TaskPackageStatus.ACTIVE){
+                    if (status == TaskPackageStatus.ACTIVE) {
                         removeAxisServiceForTaskConfiguration(humanTaskBaseConfiguration);
                     }
                 }
@@ -847,18 +853,18 @@ public class HumanTaskStore {
 
     private boolean removeMatchingPackage(final String packageName) throws Exception {
 
-        if(!isServerReadOnly()){
+        if (!isServerReadOnly()) {
             // This is the master server
             Object o = engine.getScheduler().execTransaction(new Callable<Object>() {
                 public Object call() throws Exception {
 
                     HumanTaskDAOConnection connection = engine.getDaoConnectionFactory().getConnection();
                     List<DeploymentUnitDAO> deploymentUnitsForPackageName = connection.getDeploymentUnitsForPackageName(tenantId, packageName);
-                    for(DeploymentUnitDAO deploymentUnitDAO:deploymentUnitsForPackageName){
+                    for (DeploymentUnitDAO deploymentUnitDAO : deploymentUnitsForPackageName) {
                         removeMatchingPackageVersion(deploymentUnitDAO.getName(), deploymentUnitDAO.getStatus());
                     }
                     List<TaskDAO> matchingTaskInstances = connection.getMatchingTaskInstances(packageName, tenantId);
-                    for(TaskDAO taskDAO:matchingTaskInstances){
+                    for (TaskDAO taskDAO : matchingTaskInstances) {
                         taskDAO.deleteInstance();
                     }
                     connection.deleteDeploymentUnits(packageName, tenantId);
@@ -869,13 +875,13 @@ public class HumanTaskStore {
         } else {
             // Slave nodes
             List<HumanTaskBaseConfiguration> matchingTaskConfigurations = new ArrayList<HumanTaskBaseConfiguration>();
-            for(HumanTaskBaseConfiguration configuration:taskConfigurations){
-                if(configuration.getPackageName().equals(packageName)){
+            for (HumanTaskBaseConfiguration configuration : taskConfigurations) {
+                if (configuration.getPackageName().equals(packageName)) {
                     matchingTaskConfigurations.add(configuration);
                 }
             }
 
-            for(HumanTaskBaseConfiguration configuration:matchingTaskConfigurations){
+            for (HumanTaskBaseConfiguration configuration : matchingTaskConfigurations) {
                 String taskPackageName = configuration.getPackageName();
                 long version = configuration.getVersion();
                 String versionedPackageName = taskPackageName + "-" + version;
@@ -885,7 +891,6 @@ public class HumanTaskStore {
         }
         return true;
     }
-
 
 
     private boolean removeMatchingPackageAfterTaskObsoletion(String packageName) {
@@ -1018,7 +1023,7 @@ public class HumanTaskStore {
     }
 
     private void initializeCaches() {
-         Caching.getCacheManagerFactory().getCacheManager(HumanTaskConstants.HT_CACHE_MANAGER);
+        Caching.getCacheManagerFactory().getCacheManager(HumanTaskConstants.HT_CACHE_MANAGER);
         // Currently there is no way to obtain the same cache again since when all the objects in the cache are removed, the
         // cache is also removed.Hence using the default cache
 //        final int cacheExpiryDuration = HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().getCacheExpiryDuration();
@@ -1047,11 +1052,11 @@ public class HumanTaskStore {
 //                .build();
     }
 
-    public void unloadCaches(){
-        if(HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().isCachingEnabled()){
+    public void unloadCaches() {
+        if (HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().isCachingEnabled()) {
             CacheManagerFactory cacheManagerFactory = Caching.getCacheManagerFactory();
-            if(cacheManagerFactory != null){
-                if(log.isDebugEnabled()) {
+            if (cacheManagerFactory != null) {
+                if (log.isDebugEnabled()) {
                     log.debug("Closing the cache manager factory for the tenant");
                 }
                 cacheManagerFactory.close();
@@ -1066,7 +1071,7 @@ public class HumanTaskStore {
                 File.separator + tenantId + File.separator +
                 packageName;
         File humanTaskPackageDirectory = new File(humanTaskPackageLocation);
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Deleting human task package from directory " + humanTaskPackageDirectory);
         }
         log.info("UnDeploying HumanTask package. " + "Deleting " + packageName + " HumanTask package");
@@ -1120,7 +1125,7 @@ public class HumanTaskStore {
     public void setNextVersion(final Long version) throws Exception {
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Long>() {
-                    public Long call () throws Exception {
+                    public Long call() throws Exception {
                         HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
                         HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
                         daoConn.setNextVersion(version.longValue());
@@ -1180,5 +1185,43 @@ public class HumanTaskStore {
                         return deploymentUnit;
                     }
                 });
+    }
+
+    //create lean task memory module
+
+    /**
+     * As versioning is not present assume there can be only one LeanTaskConfiguration for one task name
+     *
+     * @param taskName
+     * @return
+     */
+    public LeanTaskConfiguration getLeanTaskConfiguration(String taskName) {
+        if (leanTaskConfigurationHashMap.size() != 0) {
+            return leanTaskConfigurationHashMap.get(taskName);
+        } else
+            return null;
+    }
+
+    /**
+     * add leantask configurations to the map in lazy loading
+     *
+     * @param taskName
+     * @param leanTaskDAO
+     */
+    public void setLeanTaskConfigurationMap(String taskName, LeanTaskDAO leanTaskDAO) {
+        try {
+            String taskName1 = taskName;
+            LeanTaskConfiguration leanTaskConfiguration = new LeanTaskConfiguration(leanTaskDAO.getLeanTask(),
+                    leanTaskDAO.getTenantID(),
+                    leanTaskDAO.getleanTaskId(),
+                    leanTaskDAO.getName(),
+                    leanTaskDAO.getVersion());
+            leanTaskConfigurationHashMap.put(taskName1, leanTaskConfiguration);
+        } catch (ADBException e) {
+            log.error("adb binding exception");
+            e.printStackTrace();
+        } catch (XmlException e) {
+            log.error("xmlbean exception with leantaskDAO");
+        }
     }
 }

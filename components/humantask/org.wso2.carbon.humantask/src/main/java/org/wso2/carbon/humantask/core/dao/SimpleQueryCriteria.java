@@ -77,7 +77,6 @@ public class SimpleQueryCriteria {
         REMOVE_TASKS,
         /**
          * ADVANCED - NOT supported yet.
-         *
          */
         ADVANCED
     }
@@ -137,7 +136,7 @@ public class SimpleQueryCriteria {
     private String taskName;
 
     /**
-     *  filter to Order Task list
+     * filter to Order Task list
      */
     private QueryOrder queryOrder;
 
@@ -337,6 +336,7 @@ public class SimpleQueryCriteria {
 
     /**
      * Parameter which used to order task list
+     *
      * @param queryOrder
      */
     public void setQueryOrder(QueryOrder queryOrder) {
@@ -352,6 +352,7 @@ public class SimpleQueryCriteria {
 
     /**
      * Parameter is used for specify QueryOrderedBy
+     *
      * @param queryOrderBy
      */
     public void setQueryOrderBy(QueryOrderBy queryOrderBy) {

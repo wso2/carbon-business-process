@@ -39,7 +39,7 @@ public class HumanTaskDeployerServiceComponent {
     private static Log log = LogFactory.getLog(HumanTaskDeployerServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("HumanTask Deployer bundle is activated.");
         }
     }
@@ -71,7 +71,7 @@ public class HumanTaskDeployerServiceComponent {
         return HumanTaskDeployerContentHolder.getInstance().getHumanTaskServer();
     }
 
-    public static TenantRegistryLoader getTenantRegistryLoader(){
+    public static TenantRegistryLoader getTenantRegistryLoader() {
         return HumanTaskDeployerContentHolder.getInstance().getRegistryLoader();
     }
 }

@@ -31,7 +31,7 @@ public class HumanTaskSchedulerInitializer implements ServerStartupHandler {
     private static final Log log = LogFactory.getLog(HumanTaskSchedulerInitializer.class);
 
     public void invoke() {
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info("Starting HumanTasks Scheduler");
         }
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().start();

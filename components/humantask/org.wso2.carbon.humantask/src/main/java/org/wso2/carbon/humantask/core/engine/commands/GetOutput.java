@@ -84,7 +84,7 @@ public class GetOutput extends AbstractHumanTaskCommand {
         checkPreConditions();
         checkState();
         MessageDAO outputMessage = getTask().getOutputMessage();
-        if(outputMessage!=null){
+        if (outputMessage != null) {
             if (StringUtils.isNotEmpty(partName)) {
                 this.outputData = CommonTaskUtil.getMessagePart(outputMessage, partName);
             } else {

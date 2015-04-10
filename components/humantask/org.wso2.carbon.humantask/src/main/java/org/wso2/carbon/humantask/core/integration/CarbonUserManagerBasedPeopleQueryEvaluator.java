@@ -40,14 +40,14 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
         try {
             if (cachingEnabled) {
                 Cache<String, Boolean> userNameListCache = getUserNameListCache();
-                if(userNameListCache != null && userNameListCache.containsKey(userName)) {
+                if (userNameListCache != null && userNameListCache.containsKey(userName)) {
                     return userNameListCache.get(userName);
                 }
             }
             boolean isExistingUser = getUserRealm().getUserStoreManager().isExistingUser(userName);
             if (cachingEnabled) {
                 Cache<String, Boolean> userNameListCache = getUserNameListCache();
-                if(userNameListCache != null) {
+                if (userNameListCache != null) {
                     userNameListCache.put(userName, isExistingUser);
                 }
             }
@@ -67,21 +67,21 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
         try {
             if (cachingEnabled) {
                 Cache<String, Boolean> roleNameListCache = getRoleNameListCache();
-                if(roleNameListCache != null && roleNameListCache.containsKey(roleName)) {
+                if (roleNameListCache != null && roleNameListCache.containsKey(roleName)) {
                     return getRoleNameListCache().get(roleName);
                 }
             }
             boolean isExistingRole = getUserRealm().getUserStoreManager().isExistingRole(roleName);
             if (cachingEnabled) {
                 Cache<String, Boolean> roleNameListCache = getRoleNameListCache();
-                if(roleNameListCache != null){
+                if (roleNameListCache != null) {
                     getRoleNameListCache().put(roleName, isExistingRole);
                 }
             }
             return isExistingRole;
         } catch (UserStoreException e) {
             throw new HumanTaskRuntimeException("Error occurred while calling to realm service " +
-                                                "for operation isExistingRole", e);
+                    "for operation isExistingRole", e);
         }
     }
 
@@ -93,7 +93,7 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
         if (isExistingRole(roleName)) {
             if (cachingEnabled) {
                 Cache<String, List<String>> userNameListForRoleCache = getUserNameListForRoleCache();
-                if(userNameListForRoleCache != null && userNameListForRoleCache.containsKey(roleName)) {
+                if (userNameListForRoleCache != null && userNameListForRoleCache.containsKey(roleName)) {
                     return getUserNameListForRoleCache().get(roleName);
                 }
             }
@@ -101,7 +101,7 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
                 ArrayList<String> usernameList = new ArrayList<String>(Arrays.asList(getUserRealm().getUserStoreManager().getUserListOfRole(roleName)));
                 if (cachingEnabled) {
                     Cache<String, List<String>> userNameListForRoleCache = getUserNameListForRoleCache();
-                    if(userNameListForRoleCache != null) {
+                    if (userNameListForRoleCache != null) {
                         getUserNameListForRoleCache().put(roleName, usernameList);
                     }
                     Cache<String, Boolean> userNameListCache = getUserNameListCache();
@@ -122,13 +122,13 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
     }
 
     public List<String> getRoleNameListForUser(String userName) {
-        String tUserName  = userName;
+        String tUserName = userName;
         List<String> matchingRoleNames = new ArrayList<String>();
         if (StringUtils.isNotEmpty(tUserName)) {
             tUserName = tUserName.trim();
             if (cachingEnabled) {
                 Cache<String, List<String>> roleNameListForUserCache = getRoleNameListForUserCache();
-                if(roleNameListForUserCache != null && roleNameListForUserCache.containsKey(tUserName)){
+                if (roleNameListForUserCache != null && roleNameListForUserCache.containsKey(tUserName)) {
                     return roleNameListForUserCache.get(tUserName);
                 }
             }
@@ -142,7 +142,7 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
                         getRoleNameListForUserCache().put(tUserName, matchingRoleNames);
                         Cache<String, Boolean> roleNameListCache = getRoleNameListCache();
                         if (roleNameListCache != null) {
-                            for(String roleName: matchingRoleNames){
+                            for (String roleName : matchingRoleNames) {
                                 roleNameListCache.put(roleName, true);
                             }
                         }
@@ -183,7 +183,7 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
             for (String userName : userNames) {
                 OrganizationalEntityDAO orgEntity =
                         getConnection().createNewOrgEntityObject(userName,
-                                                                 OrganizationalEntityDAO.OrganizationalEntityType.USER);
+                                OrganizationalEntityDAO.OrganizationalEntityType.USER);
                 orgEntity.addGenericHumanRole(ghr);
                 orgEntities.add(orgEntity);
             }
@@ -203,7 +203,7 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
             GenericHumanRoleDAO ghr = getConnection().createNewGHRObject(type);
             List<OrganizationalEntityDAO> orgEntities = new ArrayList<OrganizationalEntityDAO>();
             OrganizationalEntityDAO orgEntity = getConnection().createNewOrgEntityObject(username,
-                                OrganizationalEntityDAO.OrganizationalEntityType.USER);
+                    OrganizationalEntityDAO.OrganizationalEntityType.USER);
             orgEntity.addGenericHumanRole(ghr);
             orgEntities.add(orgEntity);
             ghr.setOrgEntities(orgEntities);
@@ -228,14 +228,14 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
             if (OrganizationalEntityDAO.OrganizationalEntityType.USER.equals(orgEntity.getOrgEntityType())) {
                 if (!isExistingUser(orgEntity.getName())) {
                     throw new HumanTaskRuntimeException(String.format("The user name:[%s] " +
-                                                                      "does not exist in the user store!",
-                                                                      orgEntity.getName()));
+                            "does not exist in the user store!",
+                            orgEntity.getName()));
                 }
             } else if (OrganizationalEntityDAO.OrganizationalEntityType.GROUP.equals(orgEntity.getOrgEntityType())) {
                 if (!isExistingRole(orgEntity.getName())) {
                     throw new HumanTaskRuntimeException(String.format("The group name:[%s] " +
-                                                                      "does not exist in the user store!",
-                                                                      orgEntity.getName()));
+                            "does not exist in the user store!",
+                            orgEntity.getName()));
                 }
             }
         }
@@ -282,7 +282,7 @@ public class CarbonUserManagerBasedPeopleQueryEvaluator implements PeopleQueryEv
             return this.registryService.getUserRealm(tenantId);
         } catch (RegistryException e) {
             throw new HumanTaskRuntimeException("Error occurred while retrieving " +
-                                                "User Realm for tenant :" + tenantId, e);
+                    "User Realm for tenant :" + tenantId, e);
         }
 
     }

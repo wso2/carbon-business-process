@@ -27,7 +27,6 @@ import org.wso2.carbon.humantask.TDeadlines;
 import org.wso2.carbon.humantask.TPriorityExpr;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.api.event.TaskEventInfo;
-import org.wso2.carbon.humantask.core.dao.TaskEventType;
 import org.wso2.carbon.humantask.core.api.event.TaskInfo;
 import org.wso2.carbon.humantask.core.api.scheduler.Scheduler;
 import org.wso2.carbon.humantask.core.dao.*;
@@ -156,7 +155,7 @@ public final class CommonTaskUtil {
         for (GenericHumanRoleDAO humanRoleDAO : task.getHumanRoles()) {
             if (GenericHumanRoleDAO.GenericHumanRoleType.POTENTIAL_OWNERS.
                     equals(humanRoleDAO.getType()) && humanRoleDAO.getOrgEntities() != null &&
-                humanRoleDAO.getOrgEntities().size() > 0) {
+                    humanRoleDAO.getOrgEntities().size() > 0) {
                 try {
                     pqe.checkOrgEntitiesExist(humanRoleDAO.getOrgEntities());
                     hasPotentialOwners = true;
@@ -182,7 +181,7 @@ public final class CommonTaskUtil {
         OrganizationalEntityDAO matchingUser = null;
         for (GenericHumanRoleDAO humanRoleDAO : task.getHumanRoles()) {
             if (type.equals(humanRoleDAO.getType()) && humanRoleDAO.getOrgEntities() != null &&
-                humanRoleDAO.getOrgEntities().size() == 1) {
+                    humanRoleDAO.getOrgEntities().size() == 1) {
                 matchingUser = humanRoleDAO.getOrgEntities().get(0);
                 break;
             }
@@ -226,7 +225,7 @@ public final class CommonTaskUtil {
             } else {
                 for (PresentationNameDAO presentationName : task.getPresentationNames()) {
                     if (StringUtils.isNotEmpty(presentationName.getXmlLang()) &&
-                        presentationName.getXmlLang().toLowerCase().contains("en")) {
+                            presentationName.getXmlLang().toLowerCase().contains("en")) {
                         defaultPresentationName = presentationName;
                         break;
                     }
@@ -255,7 +254,7 @@ public final class CommonTaskUtil {
             } else {
                 for (PresentationSubjectDAO subject : task.getPresentationSubjects()) {
                     if (StringUtils.isNotEmpty(subject.getXmlLang()) &&
-                        subject.getXmlLang().toLowerCase().contains("en")) {
+                            subject.getXmlLang().toLowerCase().contains("en")) {
                         defaultPresentationSubject = subject;
                         break;
                     }
@@ -286,7 +285,7 @@ public final class CommonTaskUtil {
             } else {
                 for (PresentationDescriptionDAO description : task.getPresentationDescriptions()) {
                     if (StringUtils.isNotEmpty(description.getXmlLang()) &&
-                        description.getXmlLang().toLowerCase().contains("en")) {
+                            description.getXmlLang().toLowerCase().contains("en")) {
                         presentationDescriptionDAO = description;
                         break;
                     }
@@ -316,14 +315,12 @@ public final class CommonTaskUtil {
                 GenericHumanRoleDAO potentialOwners =
                         task.getGenericHumanRole(GenericHumanRoleDAO.GenericHumanRoleType.POTENTIAL_OWNERS);
                 boolean hasMultipleOwners = hasMultiplePotentialOwners(potentialOwners, pqe);
-                if(hasMultipleOwners)
-                {
+                if (hasMultipleOwners) {
                     task.setStatus(TaskStatus.READY);
-                    if(log.isDebugEnabled())
-                    {
-                        log.debug("Task " +  task.getId() +" has multiple potential owners. Task Status -> READY");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Task " + task.getId() + " has multiple potential owners. Task Status -> READY");
                     }
-                }else {
+                } else {
                     for (OrganizationalEntityDAO orgEntity : potentialOwners.getOrgEntities()) {
                         if (OrganizationalEntityDAO.OrganizationalEntityType.GROUP.equals(
                                 orgEntity.getOrgEntityType())) {
@@ -338,9 +335,8 @@ public final class CommonTaskUtil {
                                 actualOwnerRole.setTask(task);
                                 task.addHumanRole(actualOwnerRole);
                                 task.setStatus(TaskStatus.RESERVED);
-                                if(log.isDebugEnabled())
-                                {
-                                    log.debug("Task " +  task.getId() +" has one potential owner from a GroupOrgEntity. Task Status -> RESERVED");
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Task " + task.getId() + " has one potential owner from a GroupOrgEntity. Task Status -> RESERVED");
                                 }
                                 break;
                             }
@@ -353,9 +349,8 @@ public final class CommonTaskUtil {
                             actualOwnerRole.setTask(task);
                             task.addHumanRole(actualOwnerRole);
                             task.setStatus(TaskStatus.RESERVED);
-                            if(log.isDebugEnabled())
-                            {
-                                log.debug("Task " +  task.getId() +" has one potential owner from a UserOrgEntity.. Task Status -> RESERVED");
+                            if (log.isDebugEnabled()) {
+                                log.debug("Task " + task.getId() + " has one potential owner from a UserOrgEntity.. Task Status -> RESERVED");
                             }
                             break;
                         }
@@ -364,7 +359,7 @@ public final class CommonTaskUtil {
             }
         }
     }
-    
+
     private static boolean hasMultiplePotentialOwners(GenericHumanRoleDAO ghr,
                                                       PeopleQueryEvaluator pqe) {
         int counter = 0;
@@ -392,7 +387,7 @@ public final class CommonTaskUtil {
      * @return : The task priority
      */
     public static int calculateTaskPriority(HumanTaskBaseConfiguration taskConfig,
-                                                EvaluationContext evalCtx) {
+                                            EvaluationContext evalCtx) {
 
         TPriorityExpr priorityDef = taskConfig.getPriorityExpression();
 
@@ -400,8 +395,8 @@ public final class CommonTaskUtil {
 
         if (priorityDef != null) {
             String expLang = priorityDef.getExpressionLanguage() == null ?
-                             taskConfig.getExpressionLanguage() :
-                             priorityDef.getExpressionLanguage();
+                    taskConfig.getExpressionLanguage() :
+                    priorityDef.getExpressionLanguage();
             ExpressionLanguageRuntime expLangRuntime = HumanTaskServiceComponent.getHumanTaskServer().
                     getTaskEngine().getExpressionLanguageRuntime(expLang);
 
@@ -409,8 +404,8 @@ public final class CommonTaskUtil {
                     getTextValue().trim(), evalCtx);
             if (priority.intValue() > 10 || priority.intValue() < 1) {
                 log.warn(String.format("Ignoring the task priority value " +
-                                       ":[%d] The task priority has to be with 1 and 10. ",
-                                       priority.intValue()));
+                        ":[%d] The task priority has to be with 1 and 10. ",
+                        priority.intValue()));
             } else {
                 taskPriorityInt = priority.intValue();
             }
@@ -422,8 +417,8 @@ public final class CommonTaskUtil {
     /**
      * Calculates the Role.
      *
-     * @param evalCtx    : The evaluation context.
-     * @param  roleExpression : the role expression
+     * @param evalCtx            : The evaluation context.
+     * @param roleExpression     : the role expression
      * @param expressionLanguage : Expression language associated with the argument named "role"
      * @return : The task priority
      */
@@ -441,8 +436,8 @@ public final class CommonTaskUtil {
     /**
      * Replace the presentation param values with the exact values matching for this task instance.
      *
-     * @param presentationParameters  : The list of presentation parameters for the task.
-     * @param expression : The expression to be replaces/
+     * @param presentationParameters : The list of presentation parameters for the task.
+     * @param expression             : The expression to be replaces/
      * @return : The processed string.
      */
     public static String replaceUsingPresentationParams(
@@ -484,12 +479,12 @@ public final class CommonTaskUtil {
         if (node.hasChildNodes()) {
             Element matchingElement = null;
 
-            if(node.getElementsByTagName(partName).getLength() > 0) {
+            if (node.getElementsByTagName(partName).getLength() > 0) {
                 matchingElement = (Element) node.getElementsByTagName(partName).item(0);
             }
 
             if (matchingElement != null && matchingElement.getFirstChild() != null) {
-                return  (Element) matchingElement.getFirstChild();
+                return (Element) matchingElement.getFirstChild();
             }
 
             return matchingElement;
@@ -502,8 +497,8 @@ public final class CommonTaskUtil {
     /**
      * Process the deadlines for the given task.
      *
-     * @param task : The task object.
-     * @param taskConf : The task configuration for this task.
+     * @param task        : The task object.
+     * @param taskConf    : The task configuration for this task.
      * @param evalContext : The task's eval context.
      */
     public static void processDeadlines(TaskDAO task, TaskConfiguration taskConf,
@@ -542,15 +537,15 @@ public final class CommonTaskUtil {
                                               EvaluationContext evalCtx) {
         if (deadline.getUntil() != null) {
             String expLang = deadline.getUntil().getExpressionLanguage() == null ?
-                             taskConf.getExpressionLanguage() :
-                             deadline.getUntil().getExpressionLanguage();
+                    taskConf.getExpressionLanguage() :
+                    deadline.getUntil().getExpressionLanguage();
             return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().
                     getExpressionLanguageRuntime(expLang).evaluateAsDate(deadline.getUntil().
                     newCursor().getTextValue(), evalCtx);
         } else if (deadline.getFor() != null) {
             String expLang = deadline.getFor().getExpressionLanguage() == null ?
-                             taskConf.getExpressionLanguage() :
-                             deadline.getFor().getExpressionLanguage();
+                    taskConf.getExpressionLanguage() :
+                    deadline.getFor().getExpressionLanguage();
             Duration duration = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().
                     getExpressionLanguageRuntime(expLang).evaluateAsDuration(deadline.getFor().
                     newCursor().getTextValue(), evalCtx);
@@ -572,7 +567,7 @@ public final class CommonTaskUtil {
         for (DeadlineDAO deadline : deadlines) {
             HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                     scheduleJob(System.currentTimeMillis(), deadline.getDeadlineDate().getTime(),
-                                Scheduler.JobType.TIMER_DEADLINE, null, task.getId(), deadline.getName());
+                            Scheduler.JobType.TIMER_DEADLINE, null, task.getId(), deadline.getName());
         }
     }
 
@@ -600,10 +595,11 @@ public final class CommonTaskUtil {
 
     /**
      * Gets the potential owner role name List for the given task.
+     *
      * @param task : The task object.
      * @return : The potential owner role name list.
      */
-    public static List<String> getGenericHumanRoleGroupList(TaskDAO task , GenericHumanRoleDAO.GenericHumanRoleType genericHumanRoleType) {
+    public static List<String> getGenericHumanRoleGroupList(TaskDAO task, GenericHumanRoleDAO.GenericHumanRoleType genericHumanRoleType) {
         List<String> roleNameList = new ArrayList<String>();
         for (GenericHumanRoleDAO role : task.getHumanRoles()) {
             if (genericHumanRoleType.equals(role.getType())) {
@@ -619,10 +615,11 @@ public final class CommonTaskUtil {
 
     /**
      * Gets the potential owner role name List for the given task.
+     *
      * @param task : The task object.
      * @return : The potential owner role name list.
      */
-    public static Set<String> getGenericHumanRoleUserList(TaskDAO task , GenericHumanRoleDAO.GenericHumanRoleType genericHumanRoleType) {
+    public static Set<String> getGenericHumanRoleUserList(TaskDAO task, GenericHumanRoleDAO.GenericHumanRoleType genericHumanRoleType) {
         Set<String> usernameList = new LinkedHashSet<String>();
         for (GenericHumanRoleDAO role : task.getHumanRoles()) {
             if (genericHumanRoleType.equals(role.getType())) {
@@ -656,14 +653,14 @@ public final class CommonTaskUtil {
                 try {
                     userRealm = registryService.getUserRealm(task.getTenantId());
                     String[] assignableUsersArray =
-                                    userRealm.getUserStoreManager().getUserListOfRole(roleName);
+                            userRealm.getUserStoreManager().getUserListOfRole(roleName);
                     allPotentialOwners.addAll(Arrays.asList(assignableUsersArray));
                 } catch (RegistryException e) {
                     throw new HumanTaskRuntimeException("Cannot locate user realm for tenant id " +
-                                                task.getTenantId());
+                            task.getTenantId());
                 } catch (UserStoreException e) {
                     throw new HumanTaskRuntimeException("Error retrieving the UserStoreManager " +
-                                                task.getTenantId(), e);
+                            task.getTenantId(), e);
                 }
             } else if (OrganizationalEntityDAO.OrganizationalEntityType.USER.equals(
                     orgEntity.getOrgEntityType())) {
@@ -702,7 +699,6 @@ public final class CommonTaskUtil {
      * Creates a new TaskEventInfo object for the task creation event.
      *
      * @param task : The newly created task object.
-     *
      * @return : The respective TaskEventInfo object for the task creation event.
      */
     public static TaskEventInfo createNewTaskEvent(TaskDAO task) {
@@ -730,19 +726,19 @@ public final class CommonTaskUtil {
         taskInfo.setCreatedDate(taskDAO.getCreatedOn());
         taskInfo.setName(taskDAO.getName());
 
-        if(getDefaultPresentationDescription(taskDAO) != null) {
+        if (getDefaultPresentationDescription(taskDAO) != null) {
             taskInfo.setDescription(getDefaultPresentationDescription(taskDAO).getValue());
         }
 
-        if(getActualOwner(taskDAO) != null) {
+        if (getActualOwner(taskDAO) != null) {
             taskInfo.setOwner(getActualOwner(taskDAO).getName());
         }
 
-        if(getDefaultPresentationName(taskDAO) != null) {
+        if (getDefaultPresentationName(taskDAO) != null) {
             taskInfo.setName(getDefaultPresentationName(taskDAO).getValue());
         }
 
-        if(getDefaultPresentationSubject(taskDAO) != null){
+        if (getDefaultPresentationSubject(taskDAO) != null) {
             taskInfo.setSubject(getDefaultPresentationSubject(taskDAO).getValue());
         }
 
@@ -756,9 +752,9 @@ public final class CommonTaskUtil {
 
     /**
      * Create the TaskEventInfo object from the EventDAO and the TaskDAO.
-     * @param eventDAO : The event
-     * @param taskDAO : The related task dao.
      *
+     * @param eventDAO : The event
+     * @param taskDAO  : The related task dao.
      * @return : The new TaskEventInfo object.
      */
     public static TaskEventInfo populateTaskEventInfo(EventDAO eventDAO, TaskDAO taskDAO) {

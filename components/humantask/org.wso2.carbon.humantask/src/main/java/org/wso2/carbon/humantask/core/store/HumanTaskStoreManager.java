@@ -34,7 +34,8 @@ public class HumanTaskStoreManager {
 
     /**
      * Create Human Task for a tenant and add it to the internal task store map.
-     * @param tenantId  ID of the tenant which requested a task store
+     *
+     * @param tenantId      ID of the tenant which requested a task store
      * @param configContext axis configuration of the tenant which requested a task store
      * @return HumanTaskStore instance
      */
@@ -50,10 +51,11 @@ public class HumanTaskStoreManager {
     /**
      * Returns the HumanTaskStore instance of tenant specified, null if the HumanTaskStore instance is not available for
      * that tenant.
+     *
      * @param tenantId Tenant's Identifier
      * @return HumanTaskStore instance
      */
-    public HumanTaskStore getHumanTaskStore(int tenantId){
+    public HumanTaskStore getHumanTaskStore(int tenantId) {
         return tenantTaskStoreMap.get(tenantId);
     }
 
@@ -65,7 +67,7 @@ public class HumanTaskStoreManager {
     public void unloadTenantTaskStore(int tenantId) {
         if (tenantTaskStoreMap.get(tenantId) != null) {
             HumanTaskStore taskStore = tenantTaskStoreMap.get(tenantId);
-            for(HumanTaskBaseConfiguration taskBaseConfig : taskStore.getTaskConfigurations()) {
+            for (HumanTaskBaseConfiguration taskBaseConfig : taskStore.getTaskConfigurations()) {
                 taskStore.removeAxisServiceForTaskConfiguration(taskBaseConfig);
             }
             taskStore.unloadCaches();

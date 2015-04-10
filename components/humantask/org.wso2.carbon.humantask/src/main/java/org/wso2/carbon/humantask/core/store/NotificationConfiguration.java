@@ -23,11 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
-import org.wso2.carbon.humantask.HumanInteractionsDocument;
-import org.wso2.carbon.humantask.TDeadlines;
-import org.wso2.carbon.humantask.TNotification;
-import org.wso2.carbon.humantask.TPresentationElements;
-import org.wso2.carbon.humantask.TPriorityExpr;
+import org.wso2.carbon.humantask.*;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
 import org.wso2.carbon.humantask.core.deployment.config.THTDeploymentConfig;
 import org.wso2.carbon.humantask.core.deployment.config.TPublish;
@@ -60,7 +56,7 @@ public class NotificationConfiguration extends HumanTaskBaseConfiguration {
                                      File humanTaskDefinitionFile)
             throws HumanTaskDeploymentException {
         super(humanInteractionsDocument, targetNamespace, humanTaskArtifactName, tenantAxisConfig,
-              false, packageName, version, humanTaskDefinitionFile);
+                false, packageName, version, humanTaskDefinitionFile);
 
         this.notificationDefinition = notification;
         this.notificationDeploymentConfiguration = notificationDeploymentConfiguration;
@@ -69,13 +65,13 @@ public class NotificationConfiguration extends HumanTaskBaseConfiguration {
             Definition notificationWSDL = findWSDLDefinition(wsdls, getPortType(), getOperation());
             if (notificationWSDL == null) {
                 throw new HumanTaskDeploymentException("Cannot find WSDL definition " +
-                                                       "for notification: " + notification.getName());
+                        "for notification: " + notification.getName());
             }
             setWSDL(notificationWSDL);
 
             HumanTaskNamespaceContext nsContext = new HumanTaskNamespaceContext();
             populateNamespace(notification.getDomNode().getNodeType() == Node.ELEMENT_NODE ?
-                              (Element) notification.getDomNode() : null, nsContext);
+                    (Element) notification.getDomNode() : null, nsContext);
             setNamespaceContext(nsContext);
 
             initEndpointConfigs();
@@ -136,8 +132,8 @@ public class NotificationConfiguration extends HumanTaskBaseConfiguration {
     @Override
     public QName getServiceName() {
         if (notificationDeploymentConfiguration != null &&
-            notificationDeploymentConfiguration.getPublish() != null &&
-            notificationDeploymentConfiguration.getPublish().getService() != null) {
+                notificationDeploymentConfiguration.getPublish() != null &&
+                notificationDeploymentConfiguration.getPublish().getService() != null) {
             return notificationDeploymentConfiguration.getPublish().getService().getName();
         }
         return null;
@@ -146,8 +142,8 @@ public class NotificationConfiguration extends HumanTaskBaseConfiguration {
     @Override
     public String getPortName() {
         if (notificationDeploymentConfiguration != null &&
-            notificationDeploymentConfiguration.getPublish() != null &&
-            notificationDeploymentConfiguration.getPublish().getService() != null) {
+                notificationDeploymentConfiguration.getPublish() != null &&
+                notificationDeploymentConfiguration.getPublish().getService() != null) {
             return notificationDeploymentConfiguration.getPublish().getService().getPort();
         }
         return null;

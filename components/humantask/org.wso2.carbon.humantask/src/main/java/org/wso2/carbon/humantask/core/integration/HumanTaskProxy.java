@@ -17,11 +17,9 @@
 package org.wso2.carbon.humantask.core.integration;
 
 /**
- *  The proxy class between the human task service calls and the human task engine.
+ * The proxy class between the human task service calls and the human task engine.
  */
 public class HumanTaskProxy {
-
-
 
 
 }

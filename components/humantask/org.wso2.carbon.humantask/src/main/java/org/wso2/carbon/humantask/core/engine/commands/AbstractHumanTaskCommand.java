@@ -21,20 +21,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.humantask.core.api.event.TaskEventInfo;
-import org.wso2.carbon.humantask.core.dao.EventDAO;
-import org.wso2.carbon.humantask.core.dao.GenericHumanRoleDAO;
-import org.wso2.carbon.humantask.core.dao.OrganizationalEntityDAO;
-import org.wso2.carbon.humantask.core.dao.TaskDAO;
-import org.wso2.carbon.humantask.core.dao.TaskEventType;
-import org.wso2.carbon.humantask.core.dao.TaskStatus;
-import org.wso2.carbon.humantask.core.dao.TaskType;
+import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.engine.HumanTaskCommand;
 import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalAccessException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalArgumentException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalOperationException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
+import org.wso2.carbon.humantask.core.engine.runtime.api.*;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 import org.wso2.carbon.humantask.core.engine.util.OperationAuthorizationUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
@@ -94,7 +84,7 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
                 createNewOrgEntityObject(invokerUserName, OrganizationalEntityDAO.OrganizationalEntityType.USER);
         this.task = engine.getDaoConnectionFactory().getConnection().getTask(taskId);
         validateTenant(invokerUserName);
-        if(this.task != null) {
+        if (this.task != null) {
             this.event = engine.getDaoConnectionFactory().getConnection().createNewEventObject(task);
         }
 
@@ -131,7 +121,7 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
 
         if (!TaskType.TASK.equals(task.getType())) {
             String errMsg = String.format("The task[%d] is a notification, hence cannot perform [%s].",
-                                          task.getId(), this.getClass().getSimpleName());
+                    task.getId(), this.getClass().getSimpleName());
             log.error(errMsg);
             throw new HumanTaskIllegalArgumentException(errMsg);
         }
@@ -148,7 +138,7 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
         if (!TaskType.NOTIFICATION.equals(task.getType())) {
 
             String errMsg = String.format("The task[%d] is a task, hence cannot perform [%s].",
-                                          task.getId(), this.getClass().getSimpleName());
+                    task.getId(), this.getClass().getSimpleName());
             log.error(errMsg);
             throw new HumanTaskIllegalOperationException(errMsg);
         }
@@ -162,8 +152,8 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
     protected void checkPostState(TaskStatus expectedStatus) {
         if (!expectedStatus.equals(task.getStatus())) {
             String errMsg = String.format("Operation [%s] was not successfully performed on task[id: %d]" +
-                                          " as it's state is still in[%s]", this.getClass().getSimpleName(),
-                                          task.getId(), task.getStatus());
+                    " as it's state is still in[%s]", this.getClass().getSimpleName(),
+                    task.getId(), task.getStatus());
             log.error(errMsg);
             throw new HumanTaskIllegalStateException(errMsg);
         }
@@ -178,10 +168,10 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
     protected void checkPreState(TaskStatus expectedStatus) {
         if (!expectedStatus.equals(task.getStatus())) {
             String errMsg = String.format("User[%s] cannot [%s] task[id:%d] as the task is in state[%s]. " +
-                                          "[%s] operation can be performed on tasks in state[%s]!",
-                                          operationInvoker.getName(), this.getClass().getSimpleName(), task.getId(),
-                                          task.getStatus(), this.getClass().getSimpleName(),
-                                          expectedStatus);
+                    "[%s] operation can be performed on tasks in state[%s]!",
+                    operationInvoker.getName(), this.getClass().getSimpleName(), task.getId(),
+                    task.getStatus(), this.getClass().getSimpleName(),
+                    expectedStatus);
             log.error(errMsg);
             throw new HumanTaskIllegalStateException(errMsg);
         }
@@ -196,10 +186,10 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
     protected void checkPreStates(List<TaskStatus> expectedStates) {
         if (!expectedStates.contains(task.getStatus())) {
             String errMsg = String.format("User[%s] cannot [%s] task[id:%d] as the task is in state[%s]. " +
-                                          "[%s] operation can be performed on tasks in states[%s]!",
-                                          operationInvoker.getName(), this.getClass().getSimpleName(), task.getId(),
-                                          task.getStatus(), this.getClass().getSimpleName(),
-                                          expectedStates);
+                    "[%s] operation can be performed on tasks in states[%s]!",
+                    operationInvoker.getName(), this.getClass().getSimpleName(), task.getId(),
+                    task.getStatus(), this.getClass().getSimpleName(),
+                    expectedStates);
             log.error(errMsg);
             throw new HumanTaskIllegalStateException(errMsg);
         }
@@ -207,7 +197,7 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
 
     protected void authoriseRoles(List<GenericHumanRoleDAO.GenericHumanRoleType> allowedRoles) {
         if (!OperationAuthorizationUtil.authoriseUser(this.task, operationInvoker, allowedRoles,
-                                                      engine.getPeopleQueryEvaluator())) {
+                engine.getPeopleQueryEvaluator())) {
             String errorMsg = String.format("The user[%s] cannot perform [%s]" +
                     " operation as either he is in EXCLUDED_OWNERS role or he is not in task roles [%s]",
                     operationInvoker.getName(), this.getClass().getSimpleName(),
@@ -274,8 +264,7 @@ public abstract class AbstractHumanTaskCommand implements HumanTaskCommand {
     }
 
     private void validateForExcludedOwner(String callerId) {
-        if(isExcludedOwner(callerId))
-        {
+        if (isExcludedOwner(callerId)) {
             String errorMessage = "Access Denied. You are not authorized to access this task";
             log.error("Current user " + callerId + " is in EXCLUDED_OWNERS role");
             throw new HumanTaskIllegalAccessException(errorMessage);

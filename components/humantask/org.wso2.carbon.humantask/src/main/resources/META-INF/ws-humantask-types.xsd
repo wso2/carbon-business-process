@@ -7,8 +7,8 @@
         elementFormDefault="qualified">
     <xsd:annotation>
         <xsd:documentation>
-      XML Schema for WS-HumanTask 1.1 - WS-HumanTask Data Type Definitions
-    </xsd:documentation>
+            XML Schema for WS-HumanTask 1.1 - WS-HumanTask Data Type Definitions
+        </xsd:documentation>
     </xsd:annotation>
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
     <xsd:element name="attachmentInfo" type="tAttachmentInfo"/>
@@ -523,8 +523,8 @@
         <xsd:complexType>
             <xsd:annotation>
                 <xsd:documentation>
-               A detailed event that represnts a change in the task's state. 
-            </xsd:documentation>
+                    A detailed event that represnts a change in the task's state.
+                </xsd:documentation>
             </xsd:annotation>
             <xsd:sequence>
                 <xsd:element name="id" type="xsd:integer"/>

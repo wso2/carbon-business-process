@@ -69,7 +69,7 @@ public class HumanTaskServiceComponent {
             this.bundleContext = ctxt.getBundleContext();
             HumanTaskServerHolder htServerHolder = HumanTaskServerHolder.getInstance();
             if (htServerHolder.isDataSourceServiceProvided() &&
-                htServerHolder.getRealmService() != null) {
+                    htServerHolder.getRealmService() != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Activating the HumanTaskServiceComponent....");
                 }
@@ -78,14 +78,14 @@ public class HumanTaskServiceComponent {
                 registerAxis2ConfigurationContextObserver();
                 registerHumanTaskServerService();
 
-                if(HumanTaskServerHolder.getInstance().getHtServer().getServerConfig().isUiRenderingEnabled()) {
+                if (HumanTaskServerHolder.getInstance().getHtServer().getServerConfig().isUiRenderingEnabled()) {
                     registerHumanTaskUIResourceProvider(htServerHolder);
                 }
                 bundleContext.registerService(ServerStartupHandler.class.getName(), new HumanTaskSchedulerInitializer(), null);
 
             } else {
                 log.warn("Couldn't initialize Human Task Server, " +
-                         "realmService == null or dataSourceInfoRepo not provided.");
+                        "realmService == null or dataSourceInfoRepo not provided.");
             }
         } catch (Throwable t) {
             log.error("Failed to activate the HumanTaskServiceComponent.", t);
@@ -104,8 +104,8 @@ public class HumanTaskServiceComponent {
     private void registerAxis2ConfigurationContextObserver() {
         log.info("Registering Axis2ConfigurationContextObserver");
         bundleContext.registerService(Axis2ConfigurationContextObserver.class.getName(),
-                                      new Axis2ConfigurationContextObserverImpl(),
-                                      null);
+                new Axis2ConfigurationContextObserverImpl(),
+                null);
     }
 
     // Registering the HumanTaskUIResourceProvider.
@@ -113,7 +113,7 @@ public class HumanTaskServiceComponent {
         log.info("Registering HumanTaskUIResourceProvider");
         htServerHolder.setHumanTaskUIResourceProvider(new HumanTaskUIResourceProvider());
         bundleContext.registerService(UIResourceProvider.class.getName(),
-                                      htServerHolder.getHumanTaskUIResourceProvider(), null);
+                htServerHolder.getHumanTaskUIResourceProvider(), null);
     }
 
     protected void setRealmService(RealmService realmService) {
@@ -172,7 +172,7 @@ public class HumanTaskServiceComponent {
 
     private void registerHumanTaskServerService() {
         this.bundleContext.registerService(HumanTaskEngineService.class.getName(),
-                                      new HumanTaskEngineServiceImpl(), null);
+                new HumanTaskEngineServiceImpl(), null);
     }
 
     /**

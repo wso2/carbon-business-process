@@ -30,7 +30,9 @@ import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import javax.persistence.EntityManager;
 import javax.transaction.TransactionManager;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 

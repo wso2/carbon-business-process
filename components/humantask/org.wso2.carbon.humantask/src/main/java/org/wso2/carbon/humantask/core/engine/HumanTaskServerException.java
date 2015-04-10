@@ -19,9 +19,9 @@ package org.wso2.carbon.humantask.core.engine;
 /**
  * Human Task Server Exception
  */
-public class HumanTaskServerException extends Exception{
+public class HumanTaskServerException extends Exception {
 
-    private static final long serialVersionUID =  234L;
+    private static final long serialVersionUID = 234L;
 
     public HumanTaskServerException(String message, Exception ex) {
         super(message, ex);

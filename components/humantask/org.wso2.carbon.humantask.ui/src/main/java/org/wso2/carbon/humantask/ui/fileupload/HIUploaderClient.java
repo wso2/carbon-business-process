@@ -35,12 +35,12 @@ public class HIUploaderClient {
 
     public HIUploaderClient(ConfigurationContext ctx, String serviceURL, String cookie) throws AxisFault {
         stub = new HumanTaskUploaderStub(ctx, serviceURL);
-        Options options =  stub._getServiceClient().getOptions();
+        Options options = stub._getServiceClient().getOptions();
         options.setManageSession(true);
         options.setProperty(Constants.Configuration.ENABLE_MTOM, Constants.VALUE_TRUE);
         options.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, cookie);
         //Increase the time out when sending large attachments
-        options.setTimeOutInMilliSeconds(60*1000);
+        options.setTimeOutInMilliSeconds(60 * 1000);
         uploadServiceTypeList = new ArrayList<UploadedFileItem>();
     }
 

@@ -37,7 +37,7 @@ public class EventProcessor {
 
     /**
      * Process the task event.
-     *
+     * <p/>
      * Currently we'd only call the registered event listeners.
      *
      * @param taskEventInfo : The task event information.

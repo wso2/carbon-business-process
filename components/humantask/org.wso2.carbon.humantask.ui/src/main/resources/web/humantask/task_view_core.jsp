@@ -2,7 +2,6 @@
 <%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskAbstract" %>
 <%@ page
         import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskAuthorisationParams" %>
-<%@ page import="org.wso2.carbon.humantask.ui.constants.HumanTaskUIConstants" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
 <%
     TTaskAbstract task = (TTaskAbstract) request.getAttribute("LoadedTask");
@@ -17,67 +16,67 @@
 <div id="task-instance-list-main">
 <script type="text/javascript">
 
-    jQuery(document).ready(function() {
-        jQuery('#completeTaskButton').click(function() {
+    jQuery(document).ready(function () {
+        jQuery('#completeTaskButton').click(function () {
             var OUTPUT_XML = createTaskOutput();
             $.getJSON("task-operations-ajaxprocessor.jsp?operation=complete&taskClient=<%=client%>&taskId=<%=task.getId().toString().trim()%>&payLoad=" + OUTPUT_XML,
-                      function(json) {
-                          if (json.TaskCompleted == 'true') {
-                              location.reload(true);
-                          } else {
-                              CARBON.showErrorDialog("<fmt:message key="humantask.task.completion.failed"/>");
-                              return true;
-                          }
-                      });
+                    function (json) {
+                        if (json.TaskCompleted == 'true') {
+                            location.reload(true);
+                        } else {
+                            CARBON.showErrorDialog("<fmt:message key="humantask.task.completion.failed"/>");
+                            return true;
+                        }
+                    });
         });
 
 
-        jQuery('#claimTaskButton').click(function() {
+        jQuery('#claimTaskButton').click(function () {
             $.getJSON("task-operations-ajaxprocessor.jsp?operation=claim&taskClient=<%=client%>&taskId=<%=task.getId().toString().trim()%>",
-                      function(json) {
-                          if (json.TaskClaimed == 'true') {
-                              location.reload(true);
-                          } else {
-                              CARBON.showErrorDialog("<fmt:message key="humantask.task.claim.failed"/>");
-                              return true;
-                          }
-                      });
+                    function (json) {
+                        if (json.TaskClaimed == 'true') {
+                            location.reload(true);
+                        } else {
+                            CARBON.showErrorDialog("<fmt:message key="humantask.task.claim.failed"/>");
+                            return true;
+                        }
+                    });
         });
 
-        jQuery('#releaseTaskButton').click(function() {
+        jQuery('#releaseTaskButton').click(function () {
             $.getJSON("task-operations-ajaxprocessor.jsp?operation=release&taskClient=<%=client%>&taskId=<%=task.getId().toString().trim()%>",
-                      function(json) {
-                          if (json.TaskReleased == 'true') {
-                              location.reload(true);
-                          } else {
-                              CARBON.showErrorDialog("<fmt:message key="humantask.task.release.failed"/>");
-                              return true;
-                          }
-                      });
+                    function (json) {
+                        if (json.TaskReleased == 'true') {
+                            location.reload(true);
+                        } else {
+                            CARBON.showErrorDialog("<fmt:message key="humantask.task.release.failed"/>");
+                            return true;
+                        }
+                    });
         });
 
-        jQuery('#startTaskButton').click(function() {
+        jQuery('#startTaskButton').click(function () {
             $.getJSON("task-operations-ajaxprocessor.jsp?operation=start&taskClient=<%=client%>&taskId=<%=task.getId().toString().trim()%>",
-                      function(json) {
-                          if (json.TaskStarted == 'true') {
-                              location.reload(true);
-                          } else {
-                              CARBON.showErrorDialog("<fmt:message key="humantask.task.start.failed"/>");
-                              return true;
-                          }
-                      });
+                    function (json) {
+                        if (json.TaskStarted == 'true') {
+                            location.reload(true);
+                        } else {
+                            CARBON.showErrorDialog("<fmt:message key="humantask.task.start.failed"/>");
+                            return true;
+                        }
+                    });
         });
 
-        jQuery('#stopTaskButton').click(function() {
+        jQuery('#stopTaskButton').click(function () {
             $.getJSON("task-operations-ajaxprocessor.jsp?operation=stop&taskClient=<%=client%>&taskId=<%=task.getId().toString().trim()%>",
-                      function(json) {
-                          if (json.TaskStopped == 'true') {
-                              location.reload(true);
-                          } else {
-                              CARBON.showErrorDialog("<fmt:message key="humantask.task.stop.failed"/>");
-                              return true;
-                          }
-                      });
+                    function (json) {
+                        if (json.TaskStopped == 'true') {
+                            location.reload(true);
+                        } else {
+                            CARBON.showErrorDialog("<fmt:message key="humantask.task.stop.failed"/>");
+                            return true;
+                        }
+                    });
         });
     });
 
@@ -87,10 +86,11 @@
 <%
 
     String presentationName = HumanTaskUIUtil.getTaskPresentationHeader(task.getPresentationSubject(),
-                                                                        task.getPresentationName());
+            task.getPresentationName());
 
 %>
-<h2><%=presentationName%></h2>
+<h2><%=presentationName%>
+</h2>
 
 
 <div id="workArea">
@@ -236,8 +236,8 @@
                             <td id="taskResponseContent" style="padding-left:0px">
                                 <div style="background-color:transparent;border:1px solid #CCCCCC;color:#333333;font-family:monospace;padding:4px;">
                                     <%
-                                    if (!"NOTIFICATION".equals(task.getTaskType().toString())) {
-                                        if ("COMPLETED".equals(task.getStatus().toString())) {
+                                        if (!"NOTIFICATION".equals(task.getTaskType().toString())) {
+                                            if ("COMPLETED".equals(task.getStatus().toString())) {
                                     %>
                                     <jsp:include page="<%=responseJspContextPath%>"/>
                                     <%
@@ -245,8 +245,8 @@
                                     %>
                                     <jsp:include page="<%=outputJspContextPath%>"/>
                                     <%
+                                            }
                                         }
-                                    }
                                     %>
                                 </div>
                             </td>

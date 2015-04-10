@@ -30,10 +30,11 @@ public final class HumanTaskDeployerContentHolder {
     private HumanTaskServer humantaskServer;
     private TenantRegistryLoader registryLoader;
 
-    private HumanTaskDeployerContentHolder() {}
+    private HumanTaskDeployerContentHolder() {
+    }
 
     public static HumanTaskDeployerContentHolder getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new HumanTaskDeployerContentHolder();
         }
         return instance;

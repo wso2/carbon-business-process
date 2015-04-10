@@ -24,7 +24,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.humantask.client.api.leantask.humantask.TLeanTask;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.HumanTaskServer;
 import org.wso2.carbon.humantask.core.store.HumanTaskStore;
@@ -33,7 +32,6 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Handles the deployment of human task artifacts. Artifact can be a ZIP file or TODO registry collection.
@@ -59,7 +57,6 @@ public class HumanTaskDeployer extends AbstractDeployer {
         HumanTaskServer humantaskServer = HumanTaskDeployerServiceComponent.getHumanTaskServer();
         humanTaskStore = humantaskServer.getTaskStoreManager().
                 createHumanTaskStoreForTenant(tenantId, configurationContext);
-
     }
 
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
@@ -112,10 +109,31 @@ public class HumanTaskDeployer extends AbstractDeployer {
             boolean status = humanTaskRepo.mkdir();
             if (!status) {
                 throw new DeploymentException("Failed to create HumanTask repository directory " +
-                                              humanTaskRepo.getAbsolutePath() + ".");
+                        humanTaskRepo.getAbsolutePath() + ".");
             }
         }
     }
 
-
+    /**
+     * can be used to load  lean task data when server is restarting
+     * @param humanTaskServer
+     */
+    /*private void retrieveLeanTaskData(HumanTaskServer humanTaskServer) {
+        String sql = "select * from HT_LEANTASK";
+        ResultSet resultSet = null;
+        try {
+            Connection connection = humanTaskServer.getTaskEngine().getDaoConnectionFactory().getDataSource().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                log.info("Testing DB data ****" + resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4) + resultSet.getString(5));
+            }
+            preparedStatement.close();
+            resultSet.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    } */
 }

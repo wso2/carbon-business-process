@@ -39,23 +39,23 @@
     font-size: 10px;
 }
 
-.tv_underline_header{
-    font-size:12px;
-    font-weight:bold;
+.tv_underline_header {
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.tv_task_name{
-    padding-bottom:5px !important;
-    padding-top:5px !important;
+.tv_task_name {
+    padding-bottom: 5px !important;
+    padding-top: 5px !important;
 }
 
 .ui-tabs-nav {
-    float:none;
-    font-size:10px;
+    float: none;
+    font-size: 10px;
 }
 
-.ui-dialog .ui-dialog-buttonpane{
-    padding:0px;
-    font-size:10px;
+.ui-dialog .ui-dialog-buttonpane {
+    padding: 0px;
+    font-size: 10px;
 }
 

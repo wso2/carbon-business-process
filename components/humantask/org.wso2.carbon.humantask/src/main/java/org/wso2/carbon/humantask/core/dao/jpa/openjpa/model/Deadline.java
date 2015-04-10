@@ -29,7 +29,7 @@ import java.util.Date;
 @Entity
 @Table(name = "HT_DEADLINE")
 @NamedQueries(
-        @NamedQuery(name = Deadline.DELETE_DEADLINES_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Deadline as d where d.task = :task" )
+        @NamedQuery(name = Deadline.DELETE_DEADLINES_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Deadline as d where d.task = :task")
 )
 public class Deadline implements DeadlineDAO {
 

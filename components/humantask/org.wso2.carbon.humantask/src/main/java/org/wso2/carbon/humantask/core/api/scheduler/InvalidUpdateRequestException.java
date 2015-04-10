@@ -18,9 +18,8 @@ package org.wso2.carbon.humantask.core.api.scheduler;
 
 /**
  * Exception thrown when the requested  update time has already passed.
- *
  */
-public class InvalidUpdateRequestException extends Exception  {
+public class InvalidUpdateRequestException extends Exception {
 
     private static final long serialVersionUID = 1L;
 

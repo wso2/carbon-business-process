@@ -25,8 +25,8 @@ import org.wso2.carbon.attachment.mgt.skeleton.AttachmentMgtException;
 import org.wso2.carbon.humantask.client.api.types.*;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.*;
-import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.*;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.OrganizationalEntity;
+import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task;
 import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
 import org.wso2.carbon.humantask.core.engine.HumanTaskException;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
@@ -227,8 +227,8 @@ public final class TransformerUtils {
 
         simpleQueryCriteria.setPageNumber(tSimpleQueryInput.getPageNumber());
 
-        if(tSimpleQueryInput.getPageSize() > 0) {
-           simpleQueryCriteria.setPageSize(tSimpleQueryInput.getPageSize());
+        if (tSimpleQueryInput.getPageSize() > 0) {
+            simpleQueryCriteria.setPageSize(tSimpleQueryInput.getPageSize());
         } else {
             simpleQueryCriteria.setPageSize(HumanTaskConstants.ITEMS_PER_PAGE);
         }
@@ -382,7 +382,7 @@ public final class TransformerUtils {
                     "task" + task.getName());
         }
         // Set the versioned package name
-        taskAbstract.setPackageName(baseConfiguration.getPackageName()+"-"+baseConfiguration.getVersion());
+        taskAbstract.setPackageName(baseConfiguration.getPackageName() + "-" + baseConfiguration.getVersion());
 
         taskAbstract.setTenantId(task.getTenantId());
         // If this is a task set the response operation and the port type.
@@ -618,7 +618,7 @@ public final class TransformerUtils {
             attachmentInfo.setAccessType(attachmentDAO.getAccessType());
             try {
                 log.debug("TAttachmentInfo(DTO) has the contentCategory, but the AttachmentDAO(DAO) doesn't support " +
-                         "that attribute. Assume default attachment category as mime: " + HumanTaskConstants.ATTACHMENT_CONTENT_CATEGORY_MIME);
+                        "that attribute. Assume default attachment category as mime: " + HumanTaskConstants.ATTACHMENT_CONTENT_CATEGORY_MIME);
                 attachmentInfo.setContentCategory(new URI(HumanTaskConstants.ATTACHMENT_CONTENT_CATEGORY_MIME));
             } catch (URI.MalformedURIException e) {
                 log.error(e.getLocalizedMessage(), e);
@@ -654,10 +654,9 @@ public final class TransformerUtils {
     /**
      * Generate an {@code AttachmentDAO} for a given attachment-id
      *
-     * @param task task to be associated with the particular attachment
+     * @param task         task to be associated with the particular attachment
      * @param attachmentID id of the attachment, so this will be used to extract attachment information from the
-     * attachment-mgt OSGi service
-     *
+     *                     attachment-mgt OSGi service
      * @return reference to the created {@code AttachmentDAO}
      * @throws HumanTaskException If if was failed to retrieve data from the attachment-mgt OSGi service
      */
@@ -684,7 +683,7 @@ public final class TransformerUtils {
 
             OrganizationalEntityDAO orgEntityDAO = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine()
                     .getDaoConnectionFactory().getConnection().createNewOrgEntityObject(attachment.getCreatedBy(),
-                    OrganizationalEntityDAO.OrganizationalEntityType.USER);
+                            OrganizationalEntityDAO.OrganizationalEntityType.USER);
             dao.setAttachedBy((OrganizationalEntity) orgEntityDAO);
 
             //TODO : "AccessType is not supported by Attachment-Mgt DTOs. So using a dummy value: " + HumanTaskConstants.DEFAULT_ATTACHMENT_ACCESS_TYPE);
@@ -700,10 +699,10 @@ public final class TransformerUtils {
 
     /**
      * Generate a list of {@code AttachmentDAO} for a given list of attachment-id
-     * @param task task to be associated with the particular attachment
-     * @param attachmentIDs list of ids of the attachments, so these will be used to extract attachment information
-     * from the attachment-mgt OSGi service
      *
+     * @param task          task to be associated with the particular attachment
+     * @param attachmentIDs list of ids of the attachments, so these will be used to extract attachment information
+     *                      from the attachment-mgt OSGi service
      * @return a list of references to the created {@code AttachmentDAO}s
      * @throws HumanTaskException
      */

@@ -14,9 +14,8 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-        
+
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              version="1.0">
     <persistence-unit name="HT-PU">
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Attachment</class>
@@ -39,7 +38,7 @@
         <properties>
             <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.SQLServerDictionary"/>
             <property name="javax.persistence.jdbc.driver"
-value="org.apache.derby.jdbc.ClientDriver"/>
-           </properties>
+                      value="org.apache.derby.jdbc.ClientDriver"/>
+        </properties>
     </persistence-unit>
 </persistence>

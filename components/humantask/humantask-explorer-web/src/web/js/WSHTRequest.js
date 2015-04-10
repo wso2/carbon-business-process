@@ -82,8 +82,8 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
 }
 
 /**
- * Function to make WS-HT simplequery request Advance parameters 
- * 
+ * Function to make WS-HT simplequery request Advance parameters
+ *
  * @returns  response payload
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -119,7 +119,6 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
 }
 
 
-
 /*
  * Function to make WS-HT loadTask request
  * 
@@ -146,7 +145,7 @@ function loadTask(id) {
 
 /**
  * Function to make WS-HT getComments request
- * 
+ *
  * return response payload
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -372,7 +371,7 @@ function addComment(id, text) {
  * Function to make delete comment service request
  * @param id ID of the task to delete comment
  * @param taskId - ID of task of relates to comment
- * @param commentId - comment id  
+ * @param commentId - comment id
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -398,7 +397,7 @@ function deleteComment(taskId, commentId) {
 /**
  * Function to make assign task (delegate) service request
  * @param id - ID of the task to assign
- * @param userName - user name of the new asignee 
+ * @param userName - user name of the new asignee
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws {exception java.net.ConnectException} if connection error occurred
  */

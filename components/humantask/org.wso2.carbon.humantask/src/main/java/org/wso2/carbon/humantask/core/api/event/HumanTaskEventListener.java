@@ -27,7 +27,7 @@ public interface HumanTaskEventListener {
      * The listener logic should be implemented in the method body.
      *
      * @param taskEventInfo : A final object containing the context information related to the
-     * task event and the task itself.
+     *                      task event and the task itself.
      */
     public void onEvent(TaskEventInfo taskEventInfo);
 

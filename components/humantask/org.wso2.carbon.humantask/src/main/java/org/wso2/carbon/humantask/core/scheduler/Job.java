@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 
 /**
  * Like a task, but a little bit better.
- *
  */
 class Job extends Task {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
@@ -59,8 +58,8 @@ class Job extends Task {
     @Override
     public String toString() {
         SimpleDateFormat f = (SimpleDateFormat) DATE_FORMAT.clone();
-        return "Job "+jobDAO.getId()+" time: "+f.format(schedDate)+" transacted: "+
-                jobDAO.isTransacted()+" details: "+jobDAO.getDetails();
+        return "Job " + jobDAO.getId() + " time: " + f.format(schedDate) + " transacted: " +
+                jobDAO.isTransacted() + " details: " + jobDAO.getDetails();
     }
 
     public long getJobID() {

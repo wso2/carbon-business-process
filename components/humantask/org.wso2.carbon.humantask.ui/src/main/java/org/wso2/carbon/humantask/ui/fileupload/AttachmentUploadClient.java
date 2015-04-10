@@ -50,10 +50,11 @@ public class AttachmentUploadClient {
 
     /**
      * Upload the attachment and return the attachment id
+     *
      * @param fileItemData wrapper for the attachment
      * @return attachment id for the uploaded attachment
      * @throws AttachmentMgtException If an error occurred in the back-end component
-     * @throws RemoteException if an error during the communication
+     * @throws RemoteException        if an error during the communication
      */
     public String addUploadedFileItem(FileItemData fileItemData) throws AttachmentMgtException, RemoteException {
         DataHandler handler = fileItemData.getDataHandler();

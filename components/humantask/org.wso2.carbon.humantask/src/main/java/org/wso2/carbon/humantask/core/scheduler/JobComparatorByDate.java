@@ -16,8 +16,8 @@
 
 package org.wso2.carbon.humantask.core.scheduler;
 
-import java.util.Comparator;
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Compare jobs, using scheduled date as sort criteria.

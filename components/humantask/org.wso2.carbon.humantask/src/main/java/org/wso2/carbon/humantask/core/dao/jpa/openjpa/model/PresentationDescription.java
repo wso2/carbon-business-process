@@ -26,7 +26,7 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue("PDESC")
 @NamedQueries(
-        @NamedQuery(name=PresentationDescription.DELETE_PRESENTATION_DESCRIPTIONS_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.PresentationDescription as pd where pd.task = :task")
+        @NamedQuery(name = PresentationDescription.DELETE_PRESENTATION_DESCRIPTIONS_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.PresentationDescription as pd where pd.task = :task")
 )
 public final class PresentationDescription extends PresentationElement implements
         PresentationDescriptionDAO {

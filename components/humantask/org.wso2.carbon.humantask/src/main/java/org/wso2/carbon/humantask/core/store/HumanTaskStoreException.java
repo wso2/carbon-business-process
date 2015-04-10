@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.humantask.core.store;
 
-public class HumanTaskStoreException extends Exception{
+public class HumanTaskStoreException extends Exception {
     public HumanTaskStoreException() {
         super();
     }

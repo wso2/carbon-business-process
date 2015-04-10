@@ -18,13 +18,12 @@ package org.wso2.carbon.humantask.core.engine.runtime.api;
 
 /**
  * Representation of run time issue in the Human Task expression evaluation.
- *
  */
-public class HumanTaskRuntimeException extends RuntimeException{
+public class HumanTaskRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = 846241039383944159L;
 
-    public HumanTaskRuntimeException(){
+    public HumanTaskRuntimeException() {
         super();
     }
 

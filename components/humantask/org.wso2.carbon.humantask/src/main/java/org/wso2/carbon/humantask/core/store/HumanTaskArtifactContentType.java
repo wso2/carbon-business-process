@@ -34,11 +34,11 @@ public enum HumanTaskArtifactContentType {
 
     private final String fileExtension;
 
-    HumanTaskArtifactContentType(String extension){
+    HumanTaskArtifactContentType(String extension) {
         this.fileExtension = extension;
     }
 
-    public String fileExtension(){
+    public String fileExtension() {
         return fileExtension;
     }
 }

@@ -20,8 +20,9 @@
         This module implements HumanTask coordination for HumanTask engine.
     </Description>
     <InFlow>
-        <handler name="InFlowCoordinationHandler" class="org.wso2.carbon.humantask.coordination.module.handlers.HTCoordinationContextHandler">
-            <order phase="OperationInPhase" />
+        <handler name="InFlowCoordinationHandler"
+                 class="org.wso2.carbon.humantask.coordination.module.handlers.HTCoordinationContextHandler">
+            <order phase="OperationInPhase"/>
         </handler>
     </InFlow>
 

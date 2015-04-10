@@ -28,7 +28,6 @@ import org.wso2.carbon.humantask.core.dao.MessageDAO;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.runtime.api.EvaluationContext;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
-import org.wso2.carbon.humantask.core.integration.CarbonUserManagerBasedPeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServerHolder;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
 import org.wso2.carbon.humantask.core.utils.HTNameSpaces;

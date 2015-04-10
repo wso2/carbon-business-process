@@ -20,21 +20,20 @@ import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 /**
- *
  * The scheduler API for deadlines.
- *
  */
 public interface Scheduler {
     /**
      * Interface implemented by the object responsible for job execution.
      */
     public interface JobProcessor {
-         /**
-          * Implements execution of the job.
-          * @param jobInfo the job information
-          * @throws JobProcessorException
-          */
-         //TODO implementation
+        /**
+         * Implements execution of the job.
+         *
+         * @param jobInfo the job information
+         * @throws JobProcessorException
+         */
+        //TODO implementation
         void onScheduledJob(JobInfo jobInfo) throws JobProcessorException;
     }
 
@@ -128,29 +127,31 @@ public interface Scheduler {
 
     /**
      * When the task reaches a final state (Completed, Failed, Error, Exited, Obsolete) all deadlines should be deleted
+     *
      * @param taskId Task ID
      */
     void cancelJobsForTask(long taskId);
 
     /**
      * Update the schedule time for a job
+     *
      * @param taskId Task ID
-     * @param time Time to be updated
-     * @param name Name of the task
-     * @throws InvalidJobsInDbException If there are more than one
-     * jobs found for Tadk Id and name
+     * @param time   Time to be updated
+     * @param name   Name of the task
+     * @throws InvalidJobsInDbException      If there are more than one
+     *                                       jobs found for Tadk Id and name
      * @throws InvalidUpdateRequestException If the requested time
-     * has already passed.
+     *                                       has already passed.
      */
     void updateJob(Long taskId, String name, Long time)
             throws InvalidJobsInDbException, InvalidUpdateRequestException;
 
-/**
+    /**
      * Execute a {@link java.util.concurrent.Callable} in a transactional context. If the callable
      * throws an exception, then the transaction will be rolled back, otherwise
      * the transaction will commit.
      *
-     * @param <T> return type
+     * @param <T>         return type
      * @param transaction transaction to execute
      * @return result
      * @throws Exception
@@ -164,9 +165,9 @@ public interface Scheduler {
      * the transaction will commit. Also, modify the value of the timeout value
      * that is associated with the transactions started by the current thread.
      *
-     * @param <T> return type
+     * @param <T>         return type
      * @param transaction transaction to execute
-     * @param timeout, The value of the timeout in seconds. If the value is zero, the transaction service uses the default value.
+     * @param timeout,    The value of the timeout in seconds. If the value is zero, the transaction service uses the default value.
      * @return result
      * @throws Exception
      */

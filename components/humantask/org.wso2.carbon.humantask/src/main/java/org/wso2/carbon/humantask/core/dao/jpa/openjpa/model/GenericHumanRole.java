@@ -39,7 +39,7 @@ import java.util.List;
 @Entity
 @Table(name = "HT_GENERIC_HUMAN_ROLE")
 @NamedQueries(
-        @NamedQuery(name=GenericHumanRole.DELETE_GHR_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.GenericHumanRole as g where g.task = :task")
+        @NamedQuery(name = GenericHumanRole.DELETE_GHR_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.GenericHumanRole as g where g.task = :task")
 )
 public class GenericHumanRole implements GenericHumanRoleDAO {
 
@@ -84,6 +84,7 @@ public class GenericHumanRole implements GenericHumanRoleDAO {
     public void setTask(TaskDAO task) {
         this.task = (Task) task;
     }
+
     public List<OrganizationalEntityDAO> getOrgEntities() {
         return orgEntities;
     }

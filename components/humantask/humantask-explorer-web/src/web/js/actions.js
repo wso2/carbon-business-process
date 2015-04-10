@@ -26,9 +26,9 @@ var appName = "WS-Humantask-Explorer"; //TODO finalize appName
 function claimTask(id) {
     var requestUrl = "/" + appName + "/action?type=claim_task&tid=" + id;
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
@@ -39,7 +39,7 @@ function claimTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -53,9 +53,9 @@ function claimTask(id) {
 function startTask(id) {
     var requestUrl = "/" + appName + "/action?type=start_task&tid=" + id;
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
@@ -66,7 +66,7 @@ function startTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -81,9 +81,9 @@ function stopTask(id) {
     var requestUrl = "/" + appName + "/action?type=stop_task&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
 
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
@@ -96,7 +96,7 @@ function stopTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -111,9 +111,9 @@ function releaseTask(id) {
     var requestUrl = "/" + appName + "/action?type=release_task&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
@@ -125,7 +125,7 @@ function releaseTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -140,9 +140,9 @@ function suspendTask(id) {
     var requestUrl = "/" + appName + "/action?type=suspend_task&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
 
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
@@ -154,7 +154,7 @@ function suspendTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -170,9 +170,9 @@ function resumeTask(id) {
     var requestUrl = "/" + appName + "/action?type=resume_task&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
 
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
@@ -184,7 +184,7 @@ function resumeTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -200,9 +200,9 @@ function failTask(id) {
     var requestUrl = "/" + appName + "/action?type=fail_task&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
 
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
@@ -214,7 +214,7 @@ function failTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -239,9 +239,9 @@ function updateComments(id) {
     var requestUrl = "/" + appName + "/update?type=update_comments&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
@@ -270,7 +270,7 @@ function updateComments(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -287,12 +287,12 @@ function addComment(id) {
     var requestPayload = "<addComment><text><![CDATA[" + text + "]]></text></addComment>";
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        data: requestPayload,
-        contentType: "text/xml",
-        dataType: "xml",
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        data:requestPayload,
+        contentType:"text/xml",
+        dataType:"xml",
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
@@ -303,7 +303,7 @@ function addComment(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -335,9 +335,9 @@ function updateHistory(id) {
     var requestUrl = "/" + appName + "/update?type=update_history&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
@@ -371,7 +371,7 @@ function updateHistory(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -396,9 +396,9 @@ function updateAttachments(id) {
     var requestUrl = "/" + appName + "/update?type=update_attachments&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
             if (success === 'true') {
@@ -433,7 +433,7 @@ function updateAttachments(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -452,9 +452,9 @@ function deleteComment(id, commentId) {
     var requestUrl = "/" + appName + "/action?type=deleteComment&tid=" + id + "&commentId=" + commentId;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
             if (success === 'true') {
@@ -473,7 +473,7 @@ function deleteComment(id, commentId) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
@@ -490,10 +490,10 @@ function assignTask(id) {
 
     $.ajax({
 
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        dataType: "xml",
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        dataType:"xml",
+        success:function (data) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
             if (success === 'true') {
@@ -508,7 +508,7 @@ function assignTask(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#assignTaskModal').modal('hide');
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
@@ -526,9 +526,9 @@ function assignTaskModalUpdate(id) {
     var requestUrl = "/" + appName + "/update?type=update_assignableUsers&tid=" + id;
 
     $.ajax({
-        type: 'POST',
-        url: httpUrl + requestUrl,
-        success: function (data) {
+        type:'POST',
+        url:httpUrl + requestUrl,
+        success:function (data) {
 
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
 
@@ -561,7 +561,7 @@ function assignTaskModalUpdate(id) {
                 $('#additionalInfoErr').show();
             }
         },
-        error: function (response) {
+        error:function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }

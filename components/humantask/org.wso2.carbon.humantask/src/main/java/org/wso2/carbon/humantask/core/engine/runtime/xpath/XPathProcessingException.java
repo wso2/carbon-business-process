@@ -19,17 +19,17 @@ package org.wso2.carbon.humantask.core.engine.runtime.xpath;
 /**
  * Exception used for errors in XPath Processing.
  */
-public class XPathProcessingException extends RuntimeException{
+public class XPathProcessingException extends RuntimeException {
 
-    public XPathProcessingException(){
+    public XPathProcessingException() {
         super();
     }
 
-    public XPathProcessingException(String msg){
+    public XPathProcessingException(String msg) {
         super(msg);
     }
 
-    public XPathProcessingException(String msg, Throwable ex){
+    public XPathProcessingException(String msg, Throwable ex) {
         super(msg, ex);
     }
 }

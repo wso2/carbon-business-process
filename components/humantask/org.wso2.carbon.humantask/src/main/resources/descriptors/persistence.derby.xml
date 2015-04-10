@@ -13,9 +13,8 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->        
+-->
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              version="1.0">
     <persistence-unit name="HT-PU">
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
@@ -39,7 +38,7 @@
         <properties>
             <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.DerbyDictionary"/>
             <property name="javax.persistence.jdbc.driver"
-value="org.apache.derby.jdbc.ClientDriver"/>
-           </properties>
+                      value="org.apache.derby.jdbc.ClientDriver"/>
+        </properties>
     </persistence-unit>
 </persistence>

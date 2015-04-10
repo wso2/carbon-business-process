@@ -63,7 +63,7 @@ public class HumanTaskClientAPIServiceClient {
             String backendServerURL,
             ConfigurationContext configContext) throws AxisFault {
         String serviceURL = backendServerURL +
-                            HumanTaskUIConstants.SERVICE_NAMES.TASK_OPERATIONS_SERVICE;
+                HumanTaskUIConstants.SERVICE_NAMES.TASK_OPERATIONS_SERVICE;
         stub = new HumanTaskClientAPIAdminStub(configContext, serviceURL);
         ServiceClient client = stub._getServiceClient();
         Options options = client.getOptions();
@@ -120,15 +120,15 @@ public class HumanTaskClientAPIServiceClient {
     }
 
     public boolean addAttachment(String taskID, String attachmentName, String contentType, String attachmentID) throws
-                                                                                                 RemoteException,
-                                                                                          IllegalStateFault,
-                                                                            IllegalOperationFault,
-                                                                            IllegalArgumentFault,
-                                                                            IllegalAccessFault, URI.MalformedURIException {
+            RemoteException,
+            IllegalStateFault,
+            IllegalOperationFault,
+            IllegalArgumentFault,
+            IllegalAccessFault, URI.MalformedURIException {
         String errorMsg = "Error occurred while performing addAttachment operation.";
         try {
             //TODO : "Some of the attributes(like accessType) defined in the Service WSDLs are ignored and nulls are " +
-                     //"passed from to the service call");
+            //"passed from to the service call");
             return stub.addAttachment(new URI(taskID), attachmentName, "dummyAccessType", contentType, attachmentID);
         } catch (RemoteException e) {
             log.error(errorMsg, e);
@@ -157,19 +157,19 @@ public class HumanTaskClientAPIServiceClient {
         try {
             return stub.getAttachmentInfos(taskId);
         } catch (RemoteException e) {
-            log.error(errorMsg,e);
+            log.error(errorMsg, e);
             throw e;
         } catch (IllegalStateFault e) {
-            log.error(errorMsg,e);
+            log.error(errorMsg, e);
             throw e;
         } catch (IllegalOperationFault e) {
-            log.error(errorMsg,e);
+            log.error(errorMsg, e);
             throw e;
         } catch (IllegalArgumentFault e) {
-            log.error(errorMsg,e);
+            log.error(errorMsg, e);
             throw e;
         } catch (IllegalAccessFault e) {
-            log.error(errorMsg,e);
+            log.error(errorMsg, e);
             throw e;
         }
 
@@ -189,7 +189,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public void complete(URI taskId, String payLoad)
             throws RemoteException, IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault, XMLStreamException {
+            IllegalOperationFault, XMLStreamException {
         String errMsg = "Error occurred while performing complete operation";
         try {
             String decodedPayload = HumanTaskUIUtil.decodeHTML(payLoad);
@@ -227,7 +227,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public OMElement loadTaskInput(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalAccessFault,
-                   IllegalArgumentFault, XMLStreamException {
+            IllegalArgumentFault, XMLStreamException {
         String errMsg = "Error occurred while performing loadTaskInput operation";
         try {
             String input = (String) stub.getInput(taskId, null);
@@ -269,7 +269,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public OMElement loadTaskOutput(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalAccessFault,
-                   IllegalArgumentFault, XMLStreamException {
+            IllegalArgumentFault, XMLStreamException {
         String errMsg = "Error occurred while performing loadTaskOutput operation";
         try {
             String output = (String) stub.getOutput(taskId, null);
@@ -295,7 +295,7 @@ public class HumanTaskClientAPIServiceClient {
         }
     }
 
-    public void setTaskOutput(URI taskId , String payLoad)
+    public void setTaskOutput(URI taskId, String payLoad)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalAccessFault,
             IllegalArgumentFault, XMLStreamException {
         String errMsg = "Error occurred while performing setTaskOutput operation";
@@ -331,7 +331,7 @@ public class HumanTaskClientAPIServiceClient {
      * @throws IllegalOperationFault :
      */
     public void claim(URI taskId) throws IllegalArgumentFault, IllegalAccessFault,
-                                         IllegalStateFault, RemoteException, IllegalOperationFault {
+            IllegalStateFault, RemoteException, IllegalOperationFault {
         String errMsg = "Error occurred while performing claim operation";
         try {
             stub.claim(taskId);
@@ -382,7 +382,7 @@ public class HumanTaskClientAPIServiceClient {
 
     public void start(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing start operation";
         try {
             stub.start(taskId);
@@ -416,7 +416,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public void stop(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing stop operation";
         try {
             stub.stop(taskId);
@@ -450,7 +450,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public void release(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing release operation";
         try {
             stub.release(taskId);
@@ -485,7 +485,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public TTaskEvents getTaskEvents(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         try {
             return stub.loadTaskEvents(taskId);
         } catch (RemoteException e) {
@@ -513,7 +513,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public TComment[] getComments(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing get comments operation";
         try {
             return stub.getComments(taskId);
@@ -549,7 +549,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public URI addComment(URI taskId, String commentText)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing add comment operation";
         try {
             return stub.addComment(taskId, commentText);
@@ -584,7 +584,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public void deleteComment(URI taskId, URI commentId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
 
         String errMsg = "Error occurred while performing delete comment operation";
         try {
@@ -619,7 +619,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public void suspend(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing suspend operation";
         try {
             stub.suspend(taskId);
@@ -653,7 +653,7 @@ public class HumanTaskClientAPIServiceClient {
      */
     public void resume(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            IllegalAccessFault {
         String errMsg = "Error occurred while performing resume operation";
         try {
             stub.resume(taskId);
@@ -680,10 +680,10 @@ public class HumanTaskClientAPIServiceClient {
      *
      * @param taskId : The task id.
      * @return : The assignable user array.
-     * @throws RemoteException :
-     * @throws IllegalStateFault :
+     * @throws RemoteException       :
+     * @throws IllegalStateFault     :
      * @throws IllegalOperationFault :
-     * @throws IllegalArgumentFault :
+     * @throws IllegalArgumentFault  :
      */
     public TUser[] getTaskAssignableUsers(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalArgumentFault {
@@ -705,18 +705,18 @@ public class HumanTaskClientAPIServiceClient {
     /**
      * Delegate task operation.
      *
-     * @param taskId : the task id of the task being delegated.
+     * @param taskId    : the task id of the task being delegated.
      * @param delegatee : The person to whom the task is being delegated.
-     * @throws RemoteException  :
-     * @throws IllegalStateFault  :
-     * @throws IllegalArgumentFault :
-     * @throws IllegalOperationFault :
-     * @throws RecipientNotAllowedException   :
-     * @throws IllegalAccessFault :
+     * @throws RemoteException              :
+     * @throws IllegalStateFault            :
+     * @throws IllegalArgumentFault         :
+     * @throws IllegalOperationFault        :
+     * @throws RecipientNotAllowedException :
+     * @throws IllegalAccessFault           :
      */
     public void delegate(URI taskId, String delegatee)
             throws RemoteException, IllegalStateFault, IllegalArgumentFault, IllegalOperationFault,
-                   RecipientNotAllowedException, IllegalAccessFault {
+            RecipientNotAllowedException, IllegalAccessFault {
 
         if (delegatee == null || "".equals(delegatee.trim())) {
             throw new IllegalArgumentException("Delegatee user name should not be empty.");
@@ -758,16 +758,17 @@ public class HumanTaskClientAPIServiceClient {
 
     /**
      * The skip operation.
+     *
      * @param taskId : The task id.
-     * @throws IllegalArgumentFault :
-     * @throws IllegalOperationFault  :
-     * @throws IllegalAccessFault :
-     * @throws IllegalStateFault :
-     * @throws RemoteException :
+     * @throws IllegalArgumentFault  :
+     * @throws IllegalOperationFault :
+     * @throws IllegalAccessFault    :
+     * @throws IllegalStateFault     :
+     * @throws RemoteException       :
      */
     public void skip(URI taskId)
             throws IllegalArgumentFault, IllegalOperationFault, IllegalAccessFault,
-                   IllegalStateFault, RemoteException {
+            IllegalStateFault, RemoteException {
         String errMsg = "Error occurred while performing skip operation";
         try {
             stub.skip(taskId);
@@ -791,16 +792,17 @@ public class HumanTaskClientAPIServiceClient {
 
     /**
      * The task fail operation.
+     *
      * @param taskId : The id of the task to be failed.
-     * @throws IllegalArgumentFault :
+     * @throws IllegalArgumentFault  :
      * @throws IllegalOperationFault :
-     * @throws IllegalAccessFault  :
-     * @throws IllegalStateFault  :
-     * @throws RemoteException :
+     * @throws IllegalAccessFault    :
+     * @throws IllegalStateFault     :
+     * @throws RemoteException       :
      */
     public void fail(URI taskId)
             throws IllegalArgumentFault, IllegalOperationFault, IllegalAccessFault,
-                   IllegalStateFault, RemoteException {
+            IllegalStateFault, RemoteException {
         String errMsg = "Error occurred while performing fail operation";
         try {
             stub.fail(taskId, null);
@@ -825,15 +827,16 @@ public class HumanTaskClientAPIServiceClient {
 
     /**
      * Task remove operation. Note: applicable for notifications only.
+     *
      * @param taskId : The id of the task to be removed.
-     * @throws IllegalArgumentFault :
-     * @throws IllegalOperationFault  :
-     * @throws IllegalAccessFault  :
-     * @throws RemoteException   :
+     * @throws IllegalArgumentFault  :
+     * @throws IllegalOperationFault :
+     * @throws IllegalAccessFault    :
+     * @throws RemoteException       :
      */
     public void remove(URI taskId)
             throws IllegalArgumentFault, IllegalOperationFault, IllegalAccessFault,
-                   RemoteException {
+            RemoteException {
         String errMsg = "Error occurred while performing resume operation";
         try {
             stub.remove(taskId);
@@ -856,24 +859,23 @@ public class HumanTaskClientAPIServiceClient {
     /**
      * Change priority client operation.
      *
-     * @param taskId : The task id.
-      @param priorityInt : The new priority value.
-     *
-     * @throws IllegalArgumentFault :
+     * @param taskId      : The task id.
+     * @param priorityInt : The new priority value.
+     * @throws IllegalArgumentFault  :
      * @throws IllegalOperationFault :
-     * @throws IllegalAccessFault :
-     * @throws RemoteException :
-     * @throws IllegalStateFault :
+     * @throws IllegalAccessFault    :
+     * @throws RemoteException       :
+     * @throws IllegalStateFault     :
      */
     public void changePriority(URI taskId, int priorityInt)
             throws IllegalArgumentFault, IllegalOperationFault, IllegalAccessFault,
-                   RemoteException, IllegalStateFault {
+            RemoteException, IllegalStateFault {
 
         String errMsg = "Error occurred while performing change priority operation.";
         try {
             TPriority priority = new TPriority();
             priority.setTPriority(BigInteger.valueOf(priorityInt));
-            stub.setPriority(taskId, priority );
+            stub.setPriority(taskId, priority);
         } catch (RemoteException e) {
             log.error(errMsg, e);
             throw e;

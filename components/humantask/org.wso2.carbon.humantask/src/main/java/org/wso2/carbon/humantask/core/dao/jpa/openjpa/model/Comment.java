@@ -76,67 +76,67 @@ public class Comment implements CommentDAO {
         this.commentedDate = new Date();
     }
 
-    
+
     public Long getId() {
         return id;
     }
 
-    
+
     public Date getCommentedDate() {
         return commentedDate;
     }
 
-    
+
     public void setCommentedDate(Date commentedDate) {
         this.commentedDate = commentedDate;
     }
 
-    
+
     public String getCommentText() {
         return commentText;
     }
 
-    
+
     public void setCommentText(String commentText) {
         this.commentText = commentText;
     }
 
-    
+
     public String getCommentedBy() {
         return commentedBy;
     }
 
-    
+
     public void setCommentedBy(String commentedBy) {
         this.commentedBy = commentedBy;
     }
 
-    
+
     public TaskDAO getTask() {
         return task;
     }
 
-    
+
     public void setTask(TaskDAO task) {
         this.task = (Task) task;
     }
 
-    
+
     public Date getModifiedDate() {
         return modifiedDate;
     }
 
-    
+
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
-    
+
     public String getModifiedBy() {
         return modifiedBy;
     }
 
-    
+
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }

@@ -51,8 +51,8 @@ public class HumanTaskDAOConnectionFactoryImpl implements HumanTaskDAOConnection
         this.jpaPropertiesMap = propertiesMap;
     }
 
-    private boolean isInTransaction() throws SystemException{
-       return tnxManager.getTransaction() != null && tnxManager.getTransaction().getStatus() == Status.STATUS_ACTIVE;
+    private boolean isInTransaction() throws SystemException {
+        return tnxManager.getTransaction() != null && tnxManager.getTransaction().getStatus() == Status.STATUS_ACTIVE;
     }
 
     public HumanTaskDAOConnection getConnection() {
@@ -73,14 +73,14 @@ public class HumanTaskDAOConnectionFactoryImpl implements HumanTaskDAOConnection
                         public void afterCompletion(int i) {
                             if (connections.get() != null) {
                                 if (i == Status.STATUS_COMMITTED) {
-                                    if(log.isDebugEnabled()) {
+                                    if (log.isDebugEnabled()) {
                                         log.debug(" Transaction is successfully committed");
                                     }
                                     connections.get().getEntityManager().getTransaction().commit();
                                     connections.get().getEntityManager().close();
                                     connections.set(null);
                                 } else if (i == Status.STATUS_ROLLEDBACK) {
-                                    if(log.isDebugEnabled()) {
+                                    if (log.isDebugEnabled()) {
                                         log.debug(" Transaction is successfully rolled back ");
                                     }
                                     connections.get().getEntityManager().getTransaction().rollback();
@@ -89,6 +89,7 @@ public class HumanTaskDAOConnectionFactoryImpl implements HumanTaskDAOConnection
                                 }
                             }
                         }
+
                         public void beforeCompletion() {
                         }
                     });

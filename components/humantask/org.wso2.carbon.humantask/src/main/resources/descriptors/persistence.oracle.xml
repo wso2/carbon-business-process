@@ -16,7 +16,6 @@
 -->
 
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              version="1.0">
     <persistence-unit name="HT-PU">
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Attachment</class>
@@ -38,6 +37,6 @@
         <class>org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.LeanTask</class>
         <properties>
             <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.OracleDictionary"/>
-            </properties>
+        </properties>
     </persistence-unit>
 </persistence>

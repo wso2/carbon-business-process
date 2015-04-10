@@ -18,11 +18,7 @@ package org.wso2.carbon.humantask.core.engine.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.humantask.core.dao.GenericHumanRoleDAO;
-import org.wso2.carbon.humantask.core.dao.OrganizationalEntityDAO;
-import org.wso2.carbon.humantask.core.dao.TaskDAO;
-import org.wso2.carbon.humantask.core.dao.TaskStatus;
-import org.wso2.carbon.humantask.core.dao.TaskType;
+import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.people.eval.PeopleQueryComparators;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServerHolder;
@@ -38,6 +34,7 @@ import java.util.List;
 public final class OperationAuthorizationUtil {
 
     private static final Log log = LogFactory.getLog(OperationAuthorizationUtil.class);
+
     private OperationAuthorizationUtil() {
     }
 
@@ -53,7 +50,7 @@ public final class OperationAuthorizationUtil {
                                         PeopleQueryEvaluator pqe) {
         List<GenericHumanRoleDAO> humanRolesInTask = task.getHumanRoles();
 
-        if(isExcludedEntity(task, validatee, pqe)){
+        if (isExcludedEntity(task, validatee, pqe)) {
             return false;
         }
 
@@ -88,7 +85,7 @@ public final class OperationAuthorizationUtil {
     private static boolean isExcludedEntity(TaskDAO task, OrganizationalEntityDAO validatee, PeopleQueryEvaluator pqe) {
 
         GenericHumanRoleDAO excludedOwners = task.getGenericHumanRole(GenericHumanRoleDAO.GenericHumanRoleType.EXCLUDED_OWNERS);
-        if(excludedOwners != null) {
+        if (excludedOwners != null) {
             for (OrganizationalEntityDAO entityForRole : getGroupOrganizationalEntities(excludedOwners)) {
                 if (OrganizationalEntityDAO.OrganizationalEntityType.GROUP.equals(
                         entityForRole.getOrgEntityType())) {
@@ -645,7 +642,7 @@ public final class OperationAuthorizationUtil {
                                                PeopleQueryEvaluator pqe) {
 
         if (TaskStatus.READY.equals(task.getStatus()) || TaskStatus.IN_PROGRESS.equals(task.getStatus()) ||
-            TaskStatus.RESERVED.equals(task.getStatus())) {
+                TaskStatus.RESERVED.equals(task.getStatus())) {
 
             // If there are no users qualified for the task to be assigned, then fail the authorisation.
             List<String> assignableUsersWithoutActualOwner = CommonTaskUtil.getAssignableUserNameList(task, true);
@@ -666,9 +663,9 @@ public final class OperationAuthorizationUtil {
     /**
      * Checks whether the provided user is authorised to complete the given task.
      *
-     * @param task   : The TaskDAO object
+     * @param task             : The TaskDAO object
      * @param operationInvoker : The user  being authorised.
-     * @param pqe    : The people query evaluator.
+     * @param pqe              : The people query evaluator.
      * @return : true if the task has the required state and the user is authorised to complete activate
      *         operation.
      */

@@ -22,7 +22,7 @@ package org.wso2.carbon.humantask.core.engine;
 public interface HumanTaskCommand {
 
     /**
-     *  The method to execute the business logic for the specific command.
+     * The method to execute the business logic for the specific command.
      */
     void execute();
 }

@@ -31,7 +31,6 @@ import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.runtime.api.EvaluationContext;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 

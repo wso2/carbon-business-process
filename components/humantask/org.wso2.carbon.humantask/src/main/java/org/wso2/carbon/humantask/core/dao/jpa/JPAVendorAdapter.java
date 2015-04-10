@@ -51,8 +51,8 @@ public interface JPAVendorAdapter {
     /**
      * Returns the current JPA vendor specific property map
      *
-     * @return property map
      * @param tnxManager TransactionManager
+     * @return property map
      */
     Map<String, ?> getJpaPropertyMap(TransactionManager tnxManager);
 

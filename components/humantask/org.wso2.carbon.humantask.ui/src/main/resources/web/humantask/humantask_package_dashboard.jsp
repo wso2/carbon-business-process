@@ -6,8 +6,8 @@
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
-<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
@@ -30,86 +30,86 @@
 
 <jsp:include page="../resources/resources-i18n-ajaxprocessor.jsp"/>
 
-    <%
-        response.setHeader("Cache-Control",
-                           "no-store, max-age=0, no-cache, must-revalidate");
-        // Set IE extended HTTP/1.1 no-cache headers.
-        response.addHeader("Cache-Control", "post-check=0, pre-check=0");
-        // Set standard HTTP/1.0 no-cache header.
-        response.setHeader("Pragma", "no-cache");
+<%
+    response.setHeader("Cache-Control",
+            "no-store, max-age=0, no-cache, must-revalidate");
+    // Set IE extended HTTP/1.1 no-cache headers.
+    response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+    // Set standard HTTP/1.0 no-cache header.
+    response.setHeader("Pragma", "no-cache");
 
-        String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
-        ConfigurationContext configContext =
-                (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
-        String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
+    String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
+    ConfigurationContext configContext =
+            (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
+    String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
 
-        HumanTaskPackageManagementServiceClient htPackageMgtClient = null;
-        Task_type0[] taskDefinitionsInPackage = null;
-
-
-        String packageName = CharacterEncoder.getSafeText(request.getParameter("packageName"));
-        String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
-        boolean isErroneous = false;
-
-        boolean isAuthorizedToManagePackages =
-                CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/humantask/packages");
-        boolean isAuthorizedToMonitor =
-                CarbonUIUtil.isUserAuthorized(request, "/permission/admin/monitor/humantask");
-
-        if (isAuthorizedToMonitor || isAuthorizedToManagePackages) {
-            try {
-                htPackageMgtClient = new HumanTaskPackageManagementServiceClient(cookie, backendServerURL,
-                                                                                 configContext);
-            } catch (Exception e) {
-                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
-                session.setAttribute(CarbonUIMessage.ID, uiMsg);
-    %>
-    <jsp:include page="../admin/error.jsp"/>
-    <%
-                return;
-            }
-        }
+    HumanTaskPackageManagementServiceClient htPackageMgtClient = null;
+    Task_type0[] taskDefinitionsInPackage = null;
 
 
-        //The package name cannot be null or empty. .
-        if (packageName == null || packageName.isEmpty()) {
+    String packageName = CharacterEncoder.getSafeText(request.getParameter("packageName"));
+    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
+    boolean isErroneous = false;
 
+    boolean isAuthorizedToManagePackages =
+            CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/humantask/packages");
+    boolean isAuthorizedToMonitor =
+            CarbonUIUtil.isUserAuthorized(request, "/permission/admin/monitor/humantask");
+
+    if (isAuthorizedToMonitor || isAuthorizedToManagePackages) {
+        try {
+            htPackageMgtClient = new HumanTaskPackageManagementServiceClient(cookie, backendServerURL,
+                    configContext);
+        } catch (Exception e) {
             response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-            CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, "The package name cannot be null or empty");
+            CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
             session.setAttribute(CarbonUIMessage.ID, uiMsg);
-    %>
-    <jsp:include page="../admin/error.jsp"/>
-    <%
+%>
+<jsp:include page="../admin/error.jsp"/>
+<%
             return;
-
         }
+    }
 
-        // We have to retrieve the list of task definitions under the package to display the list.
-        if (isAuthorizedToManagePackages) {
-            try {
-                taskDefinitionsInPackage = htPackageMgtClient.listTasksInPackage(packageName);
-               isErroneous =  HumanTaskUIUtil.isErroneous(taskDefinitionsInPackage);
-            } catch (Exception e) {
-                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
-                session.setAttribute(CarbonUIMessage.ID, uiMsg);
-    %>
-    <jsp:include page="../admin/error.jsp"/>
-    <%
-                return;
-            }
+
+    //The package name cannot be null or empty. .
+    if (packageName == null || packageName.isEmpty()) {
+
+        response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, "The package name cannot be null or empty");
+        session.setAttribute(CarbonUIMessage.ID, uiMsg);
+%>
+<jsp:include page="../admin/error.jsp"/>
+<%
+        return;
+
+    }
+
+    // We have to retrieve the list of task definitions under the package to display the list.
+    if (isAuthorizedToManagePackages) {
+        try {
+            taskDefinitionsInPackage = htPackageMgtClient.listTasksInPackage(packageName);
+            isErroneous = HumanTaskUIUtil.isErroneous(taskDefinitionsInPackage);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
+            session.setAttribute(CarbonUIMessage.ID, uiMsg);
+%>
+<jsp:include page="../admin/error.jsp"/>
+<%
+            return;
         }
+    }
 
 
-    %>
+%>
 <fmt:bundle basename="org.wso2.carbon.humantask.ui.i18n.Resources">
     <carbon:breadcrumb
-        label="humantask.package.info"
-        resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
-        topPage="false"
-        request="<%=request%>"/>
-<jsp:include page="../dialog/display_messages.jsp"/>
+            label="humantask.package.info"
+            resourceBundle="org.wso2.carbon.humantask.ui.i18n.Resources"
+            topPage="false"
+            request="<%=request%>"/>
+    <jsp:include page="../dialog/display_messages.jsp"/>
     <div id="middle">
         <div id="package-list-main">
             <h2><fmt:message key="humantask.headertext_package_dashboard"/> (<%=packageName%>)</h2>
@@ -131,7 +131,7 @@
 
                         <tbody>
 
-                        <%--unDeploy action --%>
+                            <%--unDeploy action --%>
                         <tr>
                             <td>
 
@@ -142,15 +142,16 @@
 
 
                                 <script type="text/javascript">
-                                    jQuery('#<%=packageName%>').click(function() {
+                                    jQuery('#<%=packageName%>').click(function () {
                                         function handleYes<%=packageName%>() {
                                             window.location = jQuery('#<%=packageName%>').attr('href');
                                         }
-                                        sessionAwareFunction(function() {
-                                        CARBON.showConfirmationDialog(
-                                                "Do you want to undeploy package <%=packageName%>?",
-                                                handleYes<%=packageName%>,
-                                                null);
+
+                                        sessionAwareFunction(function () {
+                                            CARBON.showConfirmationDialog(
+                                                    "Do you want to undeploy package <%=packageName%>?",
+                                                    handleYes<%=packageName%>,
+                                                    null);
                                         }, "<fmt:message key="session.timed.out"/>");
                                         return false;
                                     });
@@ -159,13 +160,13 @@
                         </tr>
 
                         <tr>
-                                <td>
+                            <td>
                                 <a id="<%=packageName%>" class="icon-link-nofloat"
                                    style="background-image:url(images/icon-download.jpg);"
                                    href="humantask_package_download-ajaxprocessor.jsp?packageName=<%=packageName%>"
                                    target="_self">Download</a>
 
-                                </td>
+                            </td>
                         </tr>
 
                         </tbody>
@@ -214,7 +215,7 @@
                     </table>
 
                     <%
-                        if(isErroneous) {
+                        if (isErroneous) {
                     %>
 
 
@@ -240,7 +241,8 @@
                         %>
                         <tr>
                             <td>
-                                 <%=aTaskDefinitionsInPackage.getName()%> : <%=aTaskDefinitionsInPackage.getDeploymentError()%>
+                                <%=aTaskDefinitionsInPackage.getName()%>
+                                : <%=aTaskDefinitionsInPackage.getDeploymentError()%>
                             </td>
                         </tr>
                         <%
@@ -251,9 +253,9 @@
                         </tbody>
                     </table>
 
-                     <%
-                         }
-                     %>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
         </div>

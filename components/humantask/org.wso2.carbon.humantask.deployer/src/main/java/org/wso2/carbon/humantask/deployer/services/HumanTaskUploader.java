@@ -50,7 +50,7 @@ public class HumanTaskUploader extends AbstractAdmin {
         String humantaskDirectory = getHumanTaskLocation(repo);
 
         String humantaskTemp = CarbonUtils.getCarbonHome() + File.separator +
-                               HumanTaskConstants.HUMANTASK_PACKAGE_TEMP_DIRECTORY;
+                HumanTaskConstants.HUMANTASK_PACKAGE_TEMP_DIRECTORY;
         File humantaskTempDir = new File(humantaskTemp);
         if (!humantaskTempDir.exists() && !humantaskTempDir.mkdirs()) {
             throw new AxisFault("Fail to create the directory: " + humantaskTempDir.getAbsolutePath());
@@ -76,8 +76,8 @@ public class HumanTaskUploader extends AbstractAdmin {
                 }
             } else {
                 throw new AxisFault("Invalid file type : " + uploadedFile.getFileType() + " ." +
-                                    HumanTaskConstants.HUMANTASK_PACKAGE_EXTENSION +
-                                    " file type is expected");
+                        HumanTaskConstants.HUMANTASK_PACKAGE_EXTENSION +
+                        " file type is expected");
             }
         }
 
@@ -108,7 +108,7 @@ public class HumanTaskUploader extends AbstractAdmin {
         boolean isDeleted = tempDestFile.delete();
         if (!isDeleted) {
             log.warn("temp file: " + tempDestFile.getAbsolutePath() +
-                     " deletion failed, scheduled deletion on server exit.");
+                    " deletion failed, scheduled deletion on server exit.");
             tempDestFile.deleteOnExit();
         }
     }
@@ -126,9 +126,9 @@ public class HumanTaskUploader extends AbstractAdmin {
 
     // Get the human task repository location.
     private String getHumanTaskLocation(String repoLocation) {
-        if (repoLocation.endsWith(File.separator)){
-            return  repoLocation +    HumanTaskConstants.HUMANTASK_REPO_DIRECTORY;
-        }   else {
+        if (repoLocation.endsWith(File.separator)) {
+            return repoLocation + HumanTaskConstants.HUMANTASK_REPO_DIRECTORY;
+        } else {
             return repoLocation + File.separator + HumanTaskConstants.HUMANTASK_REPO_DIRECTORY;
         }
     }

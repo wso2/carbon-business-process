@@ -26,25 +26,39 @@ import java.util.Date;
  */
 public class TaskEventInfo {
 
-    /** Information about the task related to this event */
+    /**
+     * Information about the task related to this event
+     */
     private TaskInfo taskInfo;
 
-    /** The user who initiated this event */
+    /**
+     * The user who initiated this event
+     */
     private String eventInitiator;
 
-    /** The event timestamp */
+    /**
+     * The event timestamp
+     */
     private Date timestamp;
 
-    /** The event type */
+    /**
+     * The event type
+     */
     private TaskEventType eventType;
 
-    /** The event details */
+    /**
+     * The event details
+     */
     private String details;
 
-    /** The status of the task before this event occurred */
+    /**
+     * The status of the task before this event occurred
+     */
     private TaskStatus oldState;
 
-    /** The status of the task after this event occurred. */
+    /**
+     * The status of the task after this event occurred.
+     */
     private TaskStatus newState;
 
 
@@ -77,7 +91,7 @@ public class TaskEventInfo {
     }
 
     /**
-     * @return  : the timestamp
+     * @return : the timestamp
      */
     public Date getTimestamp() {
         return timestamp;

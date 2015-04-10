@@ -2,11 +2,11 @@
 <!--
   Copyright (c) OASIS Open 2009. All Rights Reserved.
 -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
-            targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
-            elementFormDefault="qualified"
-            blockDefault="#all">
+<xsd:schema
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+  targetNamespace="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803"
+  elementFormDefault="qualified" blockDefault="#all">
   
   <xsd:annotation>
     <xsd:documentation>
@@ -15,7 +15,8 @@
   </xsd:annotation>
   
   <!-- other namespaces -->
-  <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+    schemaLocation="http://www.w3.org/2001/xml.xsd" />
 
   <!-- base types for extensible elements -->
   <xsd:complexType name="tExtensibleElements">
@@ -35,20 +36,20 @@
   </xsd:complexType>
 
   <!-- human interactions definition -->
-  <xsd:element name="humanInteractions" type="tHumanInteractions"/>
+  <xsd:element name="humanInteractions" type="tHumanInteractions" />
   <xsd:complexType name="tHumanInteractions">
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="extensions" type="tExtensions" minOccurs="0"/>
-          <xsd:element name="import" type="tImport" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element name="logicalPeopleGroups" type="tLogicalPeopleGroups" minOccurs="0"/>
-          <xsd:element name="tasks" type="tTasks" minOccurs="0"/>
-          <xsd:element name="notifications" type="tNotifications" minOccurs="0"/>
+          <xsd:element name="extensions" type="tExtensions" minOccurs="0" />
+          <xsd:element name="import" type="tImport" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="logicalPeopleGroups" type="tLogicalPeopleGroups" minOccurs="0" />
+          <xsd:element name="tasks" type="tTasks" minOccurs="0" />
+          <xsd:element name="notifications" type="tNotifications" minOccurs="0" />
         </xsd:sequence>
-        <xsd:attribute name="targetNamespace" type="xsd:anyURI" use="required"/>
-        <xsd:attribute name="queryLanguage" type="xsd:anyURI"/>
-        <xsd:attribute name="expressionLanguage" type="xsd:anyURI"/>
+        <xsd:attribute name="targetNamespace" type="xsd:anyURI" use="required" />
+        <xsd:attribute name="queryLanguage" type="xsd:anyURI" />
+        <xsd:attribute name="expressionLanguage" type="xsd:anyURI" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -57,7 +58,7 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="extension" type="tExtension" maxOccurs="unbounded"/>
+          <xsd:element name="extension" type="tExtension" maxOccurs="unbounded" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -66,29 +67,29 @@
   <xsd:complexType name="tExtension">
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
-        <xsd:attribute name="namespace" type="xsd:anyURI" use="required"/>
-        <xsd:attribute name="mustUnderstand" type="tBoolean" use="required"/>
+        <xsd:attribute name="namespace" type="xsd:anyURI" use="required" />
+        <xsd:attribute name="mustUnderstand" type="tBoolean" use="required" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
   
-  <xsd:element name="import" type="tImport"/>
+  <xsd:element name="import" type="tImport" />
   <xsd:complexType name="tImport">
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
-        <xsd:attribute name="namespace" type="xsd:anyURI" use="optional"/>
-        <xsd:attribute name="location" type="xsd:anyURI" use="optional"/>
-        <xsd:attribute name="importType" type="xsd:anyURI" use="required"/>
+        <xsd:attribute name="namespace" type="xsd:anyURI" use="optional" />
+        <xsd:attribute name="location" type="xsd:anyURI" use="optional" />
+        <xsd:attribute name="importType" type="xsd:anyURI" use="required" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
   
-  <xsd:element name="logicalPeopleGroups" type="tLogicalPeopleGroups"/>
+  <xsd:element name="logicalPeopleGroups" type="tLogicalPeopleGroups" />
   <xsd:complexType name="tLogicalPeopleGroups">
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="logicalPeopleGroup" type="tLogicalPeopleGroup" maxOccurs="unbounded"/>
+          <xsd:element name="logicalPeopleGroup" type="tLogicalPeopleGroup" maxOccurs="unbounded" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -98,24 +99,41 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="parameter" type="tParameter" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="parameter" type="tParameter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
-        <xsd:attribute name="reference" type="xsd:NCName" use="optional"/>
+        <xsd:attribute name="name" type="xsd:NCName" use="required" />
+        <xsd:attribute name="reference" type="xsd:NCName" use="optional" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
   <!-- generic human roles used in tasks and notifications -->
-  <xsd:element name="genericHumanRole" type="tGenericHumanRoleAssignmentBase" abstract="true" block=""/>
-  
-  <xsd:element name="potentialOwners" type="tPotentialOwnerAssignment" substitutionGroup="genericHumanRole"/>
-  <xsd:element name="excludedOwners" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>
-  <xsd:element name="taskInitiator" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>
-  <xsd:element name="taskStakeholders" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>
-  <xsd:element name="businessAdministrators" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>
-  <xsd:element name="recipients" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>
-  
+  <!--<xsd:element name="genericHumanRole" type="tGenericHumanRoleAssignmentBase" abstract="true" block=""/>-->
+  <xsd:group name="genericHumanRole">
+      <xsd:choice>
+          <xsd:element ref="potentialOwners" />
+          <xsd:element ref="excludedOwners" />
+          <xsd:element ref="taskInitiator" />
+          <xsd:element ref="taskStakeholders" />
+          <xsd:element ref="businessAdministrators" />
+          <xsd:element ref="recipients" />
+      </xsd:choice>
+  </xsd:group>
+
+  <xsd:element name="potentialOwners" type="tPotentialOwnerAssignment"/>
+  <xsd:element name="excludedOwners" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="taskInitiator" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="taskStakeholders" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="businessAdministrators" type="tGenericHumanRoleAssignment"/>
+  <xsd:element name="recipients" type="tGenericHumanRoleAssignment"/>
+
+  <!--<xsd:element name="potentialOwners" type="tPotentialOwnerAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="excludedOwners" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="taskInitiator" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="taskStakeholders" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="businessAdministrators" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+  <!--<xsd:element name="recipients" type="tGenericHumanRoleAssignment" substitutionGroup="genericHumanRole"/>-->
+
   <xsd:complexType name="tGenericHumanRoleAssignmentBase" block="">
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements"/>
@@ -126,7 +144,7 @@
     <xsd:complexContent>
       <xsd:extension base="tGenericHumanRoleAssignmentBase">
         <xsd:sequence>
-          <xsd:element name="from" type="tFrom"/>
+          <xsd:element name="from" type="tFrom" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -136,9 +154,9 @@
     <xsd:complexContent>
       <xsd:extension base="tGenericHumanRoleAssignmentBase">
         <xsd:choice>
-          <xsd:element name="from" type="tFrom"/>
-          <xsd:element name="parallel" type="tParallel"/>
-          <xsd:element name="sequence" type="tSequence"/>
+          <xsd:element name="from" type="tFrom" />
+          <xsd:element name="parallel" type="tParallel" />
+          <xsd:element name="sequence" type="tSequence" />
         </xsd:choice>
       </xsd:extension>
     </xsd:complexContent>
@@ -149,14 +167,14 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="completionBehavior" type="tCompletionBehavior" minOccurs="0"/>
-          <xsd:element name="from" type="tFrom" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="completionBehavior" type="tCompletionBehavior" minOccurs="0" />
+          <xsd:element name="from" type="tFrom" minOccurs="0" maxOccurs="unbounded" />
           <xsd:choice minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="parallel" type="tParallel"/>
-            <xsd:element name="sequence" type="tSequence"/>
+            <xsd:element name="parallel" type="tParallel" />
+            <xsd:element name="sequence" type="tSequence" />
           </xsd:choice>
         </xsd:sequence>
-        <xsd:attribute name="type" type="tRoutingPatternType"/>
+        <xsd:attribute name="type" type="tRoutingPatternType" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -165,22 +183,22 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="completionBehavior" type="tCompletionBehavior"/>
-          <xsd:element name="from" type="tFrom" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="completionBehavior" type="tCompletionBehavior" />
+          <xsd:element name="from" type="tFrom" minOccurs="0" maxOccurs="unbounded" />
           <xsd:choice minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="parallel" type="tParallel"/>
-            <xsd:element name="sequence" type="tSequence"/>
+            <xsd:element name="parallel" type="tParallel" />
+            <xsd:element name="sequence" type="tSequence" />
           </xsd:choice>
         </xsd:sequence>
-        <xsd:attribute name="type" type="tRoutingPatternType"/>
+        <xsd:attribute name="type" type="tRoutingPatternType" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:simpleType name="tRoutingPatternType">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="all"/>
-      <xsd:enumeration value="single"/>
+      <xsd:enumeration value="all" />
+      <xsd:enumeration value="single" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -189,10 +207,10 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="completion" type="tCompletion" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element name="defaultCompletion" type="tDefaultCompletion" minOccurs="0"/>
+          <xsd:element name="completion" type="tCompletion" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="defaultCompletion" type="tDefaultCompletion" minOccurs="0" />
         </xsd:sequence>
-        <xsd:attribute name="completionAction" type="tPattern" use="optional" default="automatic"/>
+        <xsd:attribute name="completionAction" type="tPattern" use="optional" default="automatic" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -201,8 +219,8 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="condition" type="tBoolean-expr"/>
-          <xsd:element name="result" type="tResult" minOccurs="0"/>
+          <xsd:element name="condition" type="tBoolean-expr" />
+          <xsd:element name="result" type="tResult" minOccurs="0" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -212,7 +230,7 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element name="result" type="tResult"/>
+          <xsd:element name="result" type="tResult" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -223,8 +241,8 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="aggregate" type="tAggregate"/>
-          <xsd:element name="copy" type="tCopy"/>
+          <xsd:element name="aggregate" type="tAggregate" />
+          <xsd:element name="copy" type="tCopy" />
         </xsd:choice>
       </xsd:extension>
     </xsd:complexContent>
@@ -233,10 +251,10 @@
   <xsd:complexType name="tAggregate">
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
-        <xsd:attribute name="part" type="xsd:NCName" use="optional"/>
-        <xsd:attribute name="location" type="xsd:string" use="optional"/>
-        <xsd:attribute name="condition" type="xsd:string"/>
-        <xsd:attribute name="function" type="xsd:string" use="required"/>
+        <xsd:attribute name="part" type="xsd:NCName" use="optional" />
+        <xsd:attribute name="location" type="xsd:string" use="optional" />
+        <xsd:attribute name="condition" type="xsd:string" />
+        <xsd:attribute name="function" type="xsd:string" use="required" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -379,7 +397,8 @@
     <xsd:complexContent>
       <xsd:extension base="tExtensibleElements">
         <xsd:sequence>
-          <xsd:element ref="genericHumanRole" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:group ref="genericHumanRole" minOccurs="0" maxOccurs="unbounded" />
+          <!--<xsd:element ref="genericHumanRole" minOccurs="0" maxOccurs="unbounded" />-->
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

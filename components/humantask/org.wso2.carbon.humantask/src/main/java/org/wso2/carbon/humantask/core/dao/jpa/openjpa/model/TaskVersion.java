@@ -9,15 +9,16 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "HT_VERSIONS")
-public class TaskVersion implements TaskVersionDAO{
+public class TaskVersion implements TaskVersionDAO {
 
-    @Column(name="TASK_VERSION", nullable = false)
+    @Column(name = "TASK_VERSION", nullable = false)
     private long taskVersion;
 
 
     public long getTaskVersion() {
         return taskVersion;
     }
+
     public void setTaskVersion(long version) {
         this.taskVersion = version;
     }

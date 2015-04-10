@@ -68,6 +68,7 @@ public interface GenericHumanRoleDAO {
 
     /**
      * Adds the provided org entity object to the generic human role.
+     *
      * @param orgEntity : The org entity to add.
      */
     void addOrgEntity(OrganizationalEntityDAO orgEntity);

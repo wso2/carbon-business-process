@@ -19,8 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public final class ArchiveExtractor {
     private static Log log = LogFactory.getLog(ArchiveExtractor.class);
@@ -51,14 +51,14 @@ public final class ArchiveExtractor {
 
                     File tempDir = new File(destination, entry.getName());
 
-                    if ( !tempDir.getParentFile().exists() && !(tempDir.getParentFile().mkdirs())) {
+                    if (!tempDir.getParentFile().exists() && !(tempDir.getParentFile().mkdirs())) {
                         String errMsg = "Error occurred while creating directory: " +
                                 tempDir.getParentFile() + " while extracting the archive: " + file.getName();
                         log.error(errMsg);
                         throw new Exception(errMsg);
                     }
 
-                    if ( !tempDir.exists() && !(tempDir.mkdir())) {
+                    if (!tempDir.exists() && !(tempDir.mkdir())) {
                         String errMsg = "Error occurred while creating directory: " +
                                 entry.getName() + " while extracting the archive: " + file.getName();
                         log.error(errMsg);

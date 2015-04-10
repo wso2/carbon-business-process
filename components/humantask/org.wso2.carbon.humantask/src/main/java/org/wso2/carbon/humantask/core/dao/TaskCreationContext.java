@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.wso2.carbon.bpel.common.constants.Constants;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.runtime.ExpressionEvaluationContext;
 import org.wso2.carbon.humantask.core.engine.runtime.api.EvaluationContext;
@@ -29,7 +30,6 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.wso2.carbon.bpel.common.constants.Constants;
 
 /**
  * The context data required to create a task object.
@@ -41,16 +41,24 @@ public class TaskCreationContext {
 
     private Integer tenantId;
 
-    /** The request message body */
+    /**
+     * The request message body
+     */
     private Map<String, Element> messageBodyParts;
 
-    /** The request message header */
+    /**
+     * The request message header
+     */
     private Map<String, Element> messageHeaderParts;
 
-    /** The request message name. */
+    /**
+     * The request message name.
+     */
     private QName messageName;
 
-    /** The user creating the task. */
+    /**
+     * The user creating the task.
+     */
     private String createdBy;
 
     private PeopleQueryEvaluator peopleQueryEvaluator;

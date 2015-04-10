@@ -16,10 +16,6 @@
 
 package org.wso2.carbon.humantask.coordination.module.utils;
 
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -49,6 +45,10 @@ import org.wso2.carbon.humantask.core.integration.utils.AnonymousServiceFactory;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.NetworkUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ServiceUtils {
@@ -201,7 +201,6 @@ public class ServiceUtils {
         clonedOptions.setTransportIn(options.getTransportIn());
         clonedOptions.setTransportInProtocol(options.getTransportInProtocol());
         clonedOptions.setTransportOut(clonedOptions.getTransportOut());
-
 
 
         // copy username and password options

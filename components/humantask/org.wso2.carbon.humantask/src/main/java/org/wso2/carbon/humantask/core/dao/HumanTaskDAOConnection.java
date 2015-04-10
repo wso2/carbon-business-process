@@ -16,12 +16,12 @@
 
 package org.wso2.carbon.humantask.core.dao;
 
+import org.apache.axis2.databinding.types.NCName;
 import org.w3c.dom.Element;
 import org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException;
 import org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.LeanTask;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
 import org.wso2.carbon.humantask.core.engine.HumanTaskException;
-import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -38,27 +38,55 @@ public interface HumanTaskDAOConnection {
      *
      * @param creationContext : The context data required to create the task.
      * @return : The created task.
-     * @throws org.wso2.carbon.humantask.core.engine.HumanTaskException :
+     * @throws org.wso2.carbon.humantask.core.engine.HumanTaskException
+     *          :
      */
     TaskDAO createTask(TaskCreationContext creationContext) throws HumanTaskException;
 
 
-
     /**
      * creates lean task definition object and persists it in the database
+     *
      * @return
      */
-    LeanTask createLeanTaskDef(final int tenantId,final String name,final Element leanTaskDef,String md5sum) throws Exception;
+    LeanTask persistLeanTaskDef(final int tenantId, final String name, final Element leanTaskDef, String md5sum) throws Exception;
 
 
-
-    /**Creates the lean task object
+    /**
+     * Creates the lean task object
      *
      * @param creationContext
      * @return
      * @throws HumanTaskException
      */
     TaskDAO createLeanTask(LeanTaskCreationContext creationContext) throws HumanTaskException;
+
+    /**
+     * register lean task definition
+     *
+     * @param tenantId
+     * @param taskname
+     * @param element
+     * @param md5sum
+     */
+    void registerLeanTaskDef(boolean versionEnabled, int tenantId, String taskname, Element element, String md5sum) throws Exception;
+
+    /**
+     * check a given lean task definition is registered
+     *
+     *
+     *
+     * @param taskName
+     * @return
+     */
+    List<LeanTask> checkTaskIsRegistered(NCName taskName);
+
+    /**
+     * unregister lean task definition
+     *
+     * @param taskName
+     */
+    void unregisterTask(NCName taskName);
 
     /**
      * Retrieves the given task with it's children ( comments, events, etc).
@@ -103,7 +131,7 @@ public interface HumanTaskDAOConnection {
      * @return : The created org entity.
      */
     OrganizationalEntityDAO createNewOrgEntityObject(String userName,
-                                                            OrganizationalEntityDAO.OrganizationalEntityType type);
+                                                     OrganizationalEntityDAO.OrganizationalEntityType type);
 
     /**
      * Creates a new GenericHumanRoleDAO object.
@@ -115,7 +143,8 @@ public interface HumanTaskDAOConnection {
 
     /**
      * Create a new CommentDAO object.
-     * @param commentString : The comment string.
+     *
+     * @param commentString       : The comment string.
      * @param commentedByUserName : The commented user name.
      * @return : The created comment object.
      */
@@ -139,12 +168,14 @@ public interface HumanTaskDAOConnection {
 
     /**
      * Create a Deadline
+     *
      * @return DeadLine
      */
     DeadlineDAO createDeadline();
 
     /**
      * Performs a simple task query.
+     *
      * @param simpleQueryCriteria : The query criteria.
      * @return : The matching task list.
      */
@@ -157,6 +188,7 @@ public interface HumanTaskDAOConnection {
      * @return : The matching tasks.
      */
     List<TaskDAO> searchTasks(SimpleQueryCriteria queryCriteria);
+
     /**
      * Get the count of the matching tasks for a given set of criteria.
      *
@@ -164,16 +196,19 @@ public interface HumanTaskDAOConnection {
      * @return : The count of matching tasks.
      */
     int getTasksCount(SimpleQueryCriteria queryCriteria);
+
     /**
      * Create a new job
+     *
      * @return HumanTaskJobDAO
      */
     HumanTaskJobDAO createHumanTaskJobDao();
 
 
-/**
+    /**
      * Return a list of unique nodes identifiers found in the database. This is used
      * to initialize the list of known nodes when a new node starts up.
+     *
      * @return list of unique node identfiers found in the databaseuniqu
      */
     List<String> getNodeIds();
@@ -182,7 +217,7 @@ public interface HumanTaskDAOConnection {
      * "Dequeue" jobs from the database that are ready for immediate execution; this basically
      * is a select/delete operation with constraints on the nodeId and scheduled time.
      *
-     * @param nodeId node identifier of the jobs
+     * @param nodeId  node identifier of the jobs
      * @param maxtime only jobs with scheduled time earlier than this will be dequeued
      * @param maxjobs maximum number of jobs to deqeue
      * @return list of jobs that met the criteria and were deleted from the database
@@ -195,16 +230,16 @@ public interface HumanTaskDAOConnection {
      * the node identifier. This fraction is determined by the "y" parameter, while membership in the
      * group (of jobs that get the nodeId) is determined by the "x" parameter. Essentially the logic is:
      * <code>
-     *  UPDATE jobs AS job
-     *      WHERE job.scheduledTime before :maxtime
-     *            AND job.nodeId is null
-     *            AND job.scheduledTime MOD :y == :x
-     *      SET job.nodeId = :nodeId
+     * UPDATE jobs AS job
+     * WHERE job.scheduledTime before :maxtime
+     * AND job.nodeId is null
+     * AND job.scheduledTime MOD :y == :x
+     * SET job.nodeId = :nodeId
      * </code>
      *
-     * @param nodeId node identifier to assign to jobs
-     * @param x the result of the mod-division
-     * @param y the dividend of the mod-division
+     * @param nodeId  node identifier to assign to jobs
+     * @param x       the result of the mod-division
+     * @param y       the dividend of the mod-division
      * @param maxtime only jobs with scheduled time earlier than this will be updated
      * @return number of jobs updated
      */
@@ -219,7 +254,7 @@ public interface HumanTaskDAOConnection {
      */
     int updateReassign(String oldnode, String newnode);
 
-   // public void acquireTransactionLocks();
+    // public void acquireTransactionLocks();
 
     int deleteAllJobs();
 
@@ -227,6 +262,7 @@ public interface HumanTaskDAOConnection {
 
     /**
      * Delete jobs for the specified task and returns the list of jobIds
+     *
      * @param taskId Task Id
      * @return List of job ids corresponding to the deleted jobs
      */
@@ -234,23 +270,26 @@ public interface HumanTaskDAOConnection {
 
     /**
      * Update the schedule time for a job
-     * @param taskId Task ID
-     * @param immediate Whether the job should be executed immediately
+     *
+     * @param taskId     Task ID
+     * @param immediate  Whether the job should be executed immediately
      * @param nearFuture Whether the job should be executed in the near future
-     * @param nodeId Node ID
-     * @param time Time to be updated
-     * @param name Name of the task
+     * @param nodeId     Node ID
+     * @param time       Time to be updated
+     * @param name       Name of the task
      * @return If there is a job, corresponding to taskId and name, returns the job id. If the are
      *         no jobs then returns -1.
-     * @throws org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException If there are two or more
+     * @throws org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException
+     *          If there are two or more
      *          jobs are selected for the Task Id
      */
     Long updateJob(Long taskId, String name, boolean immediate, boolean nearFuture,
-                          String nodeId, Long time)
+                   String nodeId, Long time)
             throws InvalidJobsInDbException;
 
     /**
      * Return the Entity Manager
+     *
      * @return EntityManager
      */
     EntityManager getEntityManager();
@@ -258,6 +297,7 @@ public interface HumanTaskDAOConnection {
 
     /**
      * Creates a new EventDAO object from the underlying dao implementation.
+     *
      * @param task TaskDAO
      * @return EventDAO
      */
@@ -276,29 +316,27 @@ public interface HumanTaskDAOConnection {
     DeploymentUnitDAO createDeploymentUnit();
 
     /**
-     *
      * @param tenantId
      * @param md5sum
      * @return
      */
-    DeploymentUnitDAO getDeploymentUnit(int tenantId,String md5sum);
+    DeploymentUnitDAO getDeploymentUnit(int tenantId, String md5sum);
+
 
     /**
-     *
      * @param deploymentUnit
-     * @param taskConfigurations
      * @param tenantId
      * @return
      */
-
     DeploymentUnitDAO createDeploymentUnitDAO(HumanTaskDeploymentUnit deploymentUnit,
                                               int tenantId);
 
     /**
-     *  Versions of the human tasks follow share the same sequence id. This sequence is shared between
-     *  all the human tasks and all the tenants.
+     * Versions of the human tasks follow share the same sequence id. This sequence is shared between
+     * all the human tasks and all the tenants.
      * Returns the next  human task version id
-     * @return  next number in the sequence
+     *
+     * @return next number in the sequence
      */
 
     long getNextVersion();
@@ -310,7 +348,6 @@ public interface HumanTaskDAOConnection {
     long setNextVersion(long version);
 
     /**
-     *
      * @param tenantId
      * @param packageName
      * @return
@@ -318,7 +355,6 @@ public interface HumanTaskDAOConnection {
     public List<DeploymentUnitDAO> getDeploymentUnitsForPackageName(int tenantId, String packageName);
 
     /**
-     *
      * @param packageName
      * @param tenantId
      * @return
@@ -326,11 +362,16 @@ public interface HumanTaskDAOConnection {
     public List<TaskDAO> getMatchingTaskInstances(String packageName, int tenantId);
 
     /**
-     *
      * @param packageName
      * @param tenantId
      */
     public void deleteDeploymentUnits(String packageName, int tenantId);
+
+    /**
+     * @param taskName
+     * @param tenantId
+     */
+    public LeanTaskDAO retrieveByTaskName(String taskName, int tenantId);
 
 
 }

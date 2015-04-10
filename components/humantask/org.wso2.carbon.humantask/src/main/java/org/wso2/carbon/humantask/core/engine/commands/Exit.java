@@ -22,7 +22,6 @@ import org.wso2.carbon.humantask.core.dao.EventDAO;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
 import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 
 /**
  * Exit operation logic.

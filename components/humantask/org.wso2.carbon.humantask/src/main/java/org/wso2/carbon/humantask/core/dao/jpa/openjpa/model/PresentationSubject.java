@@ -29,7 +29,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @DiscriminatorValue("PSUB")
 @NamedQueries(
-        @NamedQuery(name = PresentationSubject.DELETE_PRESENTATION_SUBJECT_BY_TASK , query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model as s where s.task = :task")
+        @NamedQuery(name = PresentationSubject.DELETE_PRESENTATION_SUBJECT_BY_TASK, query = "delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model as s where s.task = :task")
 )
 public final class PresentationSubject extends PresentationElement implements PresentationSubjectDAO {
 

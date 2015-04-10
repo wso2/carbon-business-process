@@ -18,10 +18,11 @@ package org.wso2.carbon.humantask.core.scheduler;
 
 /**
  * The thing that we schedule.
- *
  */
 class Task {
-    /** Scheduled date/time. */
+    /**
+     * Scheduled date/time.
+     */
     public long schedDate;
 
     Task(long schedDate) {

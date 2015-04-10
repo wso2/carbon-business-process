@@ -106,7 +106,7 @@ public final class HumanTaskUIUtil {
         if (task != null) {
             if (task.getPresentationSubject() != null) {
                 taskDetailsJSONObject.put("taskPresentationSubject",
-                                          task.getPresentationSubject().toString());
+                        task.getPresentationSubject().toString());
             }
 
             if (task.getStatus() != null) {
@@ -114,9 +114,9 @@ public final class HumanTaskUIUtil {
             }
 
             if (task.getPreviousStatus() != null &&
-                !"".equals(task.getPreviousStatus().toString().trim())) {
+                    !"".equals(task.getPreviousStatus().toString().trim())) {
                 taskDetailsJSONObject.put("taskPreviousStatus",
-                                          task.getPreviousStatus().toString().trim());
+                        task.getPreviousStatus().toString().trim());
             }
 
             taskDetailsJSONObject.put("taskPriority", task.getPriority().toString());
@@ -138,7 +138,7 @@ public final class HumanTaskUIUtil {
 
             if (task.getPresentationDescription() != null) {
                 taskDetailsJSONObject.put("taskPresentationDescription",
-                                          task.getPresentationDescription().toString());
+                        task.getPresentationDescription().toString());
             }
         }
 
@@ -202,22 +202,22 @@ public final class HumanTaskUIUtil {
 
                 if (comment.getAddedBy() != null) {
                     commentObject.put("commentAddedBy",
-                                      comment.getAddedBy().getTUser());
+                            comment.getAddedBy().getTUser());
                 }
 
                 if (comment.getAddedTime() != null) {
                     commentObject.put("commentAddedTime",
-                                      comment.getAddedTime().getTime().toString());
+                            comment.getAddedTime().getTime().toString());
                 }
 
                 if (comment.getLastModifiedBy() != null) {
                     commentObject.put("commentLastModifiedBy",
-                                      comment.getLastModifiedBy().getTUser());
+                            comment.getLastModifiedBy().getTUser());
                 }
 
                 if (comment.getLastModifiedTime() != null) {
                     commentObject.put("commentLastModifiedTime",
-                                      comment.getLastModifiedTime().getTime().toString());
+                            comment.getLastModifiedTime().getTime().toString());
                 }
                 commentsMap.put(comment.getId().toString(), commentObject);
             }
@@ -277,7 +277,7 @@ public final class HumanTaskUIUtil {
 
                 if (taskEvent.getEventTime() != null) {
                     eventJSON.put("eventTime",
-                                  taskEvent.getEventTime().getTime().toString());
+                            taskEvent.getEventTime().getTime().toString());
                 }
 
                 taskEventsMap.put(taskEvent.getEventId().toString(), eventJSON);
@@ -334,10 +334,10 @@ public final class HumanTaskUIUtil {
     }
 
     public static String getTaskListURL(String client) {
-        if(HumanTaskUIConstants.CLIENTS.GADGET.equals(client)) {
-            return  HumanTaskUIConstants.PAGES.TASK_LIST_PAGE_GADGET;
+        if (HumanTaskUIConstants.CLIENTS.GADGET.equals(client)) {
+            return HumanTaskUIConstants.PAGES.TASK_LIST_PAGE_GADGET;
         } else if (HumanTaskUIConstants.CLIENTS.CARBON.equals(client)) {
-            return  HumanTaskUIConstants.PAGES.TASK_LIST_PAGE_CARBON;
+            return HumanTaskUIConstants.PAGES.TASK_LIST_PAGE_CARBON;
         }
 
         return "";
@@ -357,7 +357,7 @@ public final class HumanTaskUIUtil {
 
     public static String decodeHTML(String encodedString) {
         //Replace "&lt;" &gt; and &amp; with <,>,& in input String.
-        return encodedString.replace("&lt;","<").replace("&gt;",">").replace("&amp;", "&");
+        return encodedString.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&");
 
     }
 

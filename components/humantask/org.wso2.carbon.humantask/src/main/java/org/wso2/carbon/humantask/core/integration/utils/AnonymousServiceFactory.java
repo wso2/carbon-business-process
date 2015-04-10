@@ -16,20 +16,20 @@
 
 package org.wso2.carbon.humantask.core.integration.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.OutOnlyAxisOperation;
-import org.apache.axis2.description.OutInAxisOperation;
-import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.OutInAxisOperation;
+import org.apache.axis2.description.OutOnlyAxisOperation;
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.xml.namespace.QName;
 
 /**
  * This utility class is inspired by Apache Synapse AnonymousServiceFactory.
- *
+ * <p/>
  * Responsible for creating AxisServices to send out messages
  */
 
@@ -42,11 +42,10 @@ public final class AnonymousServiceFactory {
     /**
      * Create AxisService for the requested endpoint config to sending out messages to external services.
      *
-     *
-     * @param serviceName    External service QName
-     * @param servicePort    service port
-     * @param axisConfig     AxisConfiguration object
-     * @param caller Identifier for the service caller
+     * @param serviceName External service QName
+     * @param servicePort service port
+     * @param axisConfig  AxisConfiguration object
+     * @param caller      Identifier for the service caller
      * @return AxisService
      */
     public static AxisService getAnonymousService(QName serviceName, String servicePort,

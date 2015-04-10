@@ -19,7 +19,7 @@ package org.wso2.carbon.humantask.core;
 /**
  * When the person is not authorized to perform the operation the
  */
-public class RecipientNotAllowedException extends Exception{
+public class RecipientNotAllowedException extends Exception {
     public RecipientNotAllowedException() {
         super();
     }

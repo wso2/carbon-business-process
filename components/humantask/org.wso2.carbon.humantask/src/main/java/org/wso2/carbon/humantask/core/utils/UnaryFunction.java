@@ -18,6 +18,6 @@
  */
 package org.wso2.carbon.humantask.core.utils;
 
-public interface UnaryFunction<E,V> extends UnaryFunctionEx<E,V> {
-  V apply(E x);
+public interface UnaryFunction<E, V> extends UnaryFunctionEx<E, V> {
+    V apply(E x);
 }

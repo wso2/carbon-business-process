@@ -30,7 +30,7 @@ public final class FileUtils {
      * Recursively collect all Files in the given directory and all its
      * subdirectories, applying the given FileFilter. The FileFilter is also applied to the given rootDirectory.
      * As a result the rootDirectory might be in the returned list.
-     * <p>
+     * <p/>
      * Returned files are ordered lexicographically but for each directory, files come before its sudirectories.
      * For instance:<br/>
      * test<br/>
@@ -40,7 +40,7 @@ public final class FileUtils {
      * test/a/alpha.txt<br/>
      * test/z<br/>
      * test/z/zulu.txt<br/>
-     * <p>
+     * <p/>
      * instead of:<br/>
      * test<br/>
      * test/a<br/>
@@ -50,10 +50,8 @@ public final class FileUtils {
      * test/z/zulu.txt<br/>
      * test/zulu.txt<br/>
      *
-     * @param rootDirectory
-     *          the top level directory used for the search
-     * @param filter
-     *          a FileFilter used for accepting/rejecting individual entries
+     * @param rootDirectory the top level directory used for the search
+     * @param filter        a FileFilter used for accepting/rejecting individual entries
      * @return a List of found Files
      */
     public static List<File> directoryEntriesInPath(File rootDirectory, FileFilter filter) {

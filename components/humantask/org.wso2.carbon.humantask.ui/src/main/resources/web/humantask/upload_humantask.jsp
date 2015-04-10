@@ -42,17 +42,17 @@
                 var i18n = {};
             }
 
-            i18n.humantaskPckgUplodedSuccess = function() {
+            i18n.humantaskPckgUplodedSuccess = function () {
                 CARBON.showInfoDialog("<fmt:message key="humantask.package.uploaded.successfully"/>");
                 return true;
             };
 
-            i18n.fileUplodedFailed = function() {
+            i18n.fileUplodedFailed = function () {
                 CARBON.showErrorDialog("<fmt:message key="file.uploading.failed"/>");
                 return true;
             };
 
-            i18n.humantaskPckgUplodedFailed = function(msg) {
+            i18n.humantaskPckgUplodedFailed = function (msg) {
                 CARBON.showErrorDialog("<fmt:message key="humantask.package.upload.failed"/>" + "\n" + msg);
                 return true;
             };
@@ -63,35 +63,35 @@
         <script type="text/javascript">
             function setupHumanTaskUploadForm() {
                 $('#humantask_upload_form').ajaxForm({
-                                                         beforeSubmit: function(a, f, o) {
-                                                             o.dataType = "script";
-                                                             var form = f[0];
-                                                             if (!form.humantaskFileName.value) {
-                                                                 CARBON.showWarningDialog("<fmt:message key="humantask.emptyupload"/>");
-                                                                 return false;
-                                                             }
+                    beforeSubmit:function (a, f, o) {
+                        o.dataType = "script";
+                        var form = f[0];
+                        if (!form.humantaskFileName.value) {
+                            CARBON.showWarningDialog("<fmt:message key="humantask.emptyupload"/>");
+                            return false;
+                        }
 
-                                                             var regex = /[ \~\!\@\#\$\;\%\^\*\(\)\+\=\{\}\[\]\/\\|\<\>\`\"\']+/gi;
-                                                             var packageName = "";
-                                                             jQuery.each(jQuery.browser, function(i) {
-                                                                 if (jQuery.browser.msie || jQuery.browser.safari) {
-                                                                     packageName = form.humantaskFileName.value.substring(form.humantaskFileName.value.lastIndexOf("\\") + 1);
-                                                                 } else {
-                                                                     packageName = form.humantaskFileName.value;
-                                                                 }
-                                                             });
+                        var regex = /[ \~\!\@\#\$\;\%\^\*\(\)\+\=\{\}\[\]\/\\|\<\>\`\"\']+/gi;
+                        var packageName = "";
+                        jQuery.each(jQuery.browser, function (i) {
+                            if (jQuery.browser.msie || jQuery.browser.safari) {
+                                packageName = form.humantaskFileName.value.substring(form.humantaskFileName.value.lastIndexOf("\\") + 1);
+                            } else {
+                                packageName = form.humantaskFileName.value;
+                            }
+                        });
 
-                                                             if (packageName.match(regex)) {
-                                                                 CARBON.showWarningDialog("<fmt:message key="humantask.invalid.humantask"/>");
-                                                                 return false;
-                                                             }
-                                                         },
-                                                         success: function() {
-                                                             return false;
-                                                         },
-                                                         resetForm:true
+                        if (packageName.match(regex)) {
+                            CARBON.showWarningDialog("<fmt:message key="humantask.invalid.humantask"/>");
+                            return false;
+                        }
+                    },
+                    success:function () {
+                        return false;
+                    },
+                    resetForm:true
 
-                                                     });
+                });
             }
             $(document).ready(setupHumanTaskUploadForm);
 
@@ -144,7 +144,8 @@
                     <table class="styledLeft" id="humantaskTbl">
                         <tr>
                             <td class="formRow" width="20%">
-                                <label><fmt:message key="humantask.humantask.package"/><font color="red">*</font></label>
+                                <label><fmt:message key="humantask.humantask.package"/><font
+                                        color="red">*</font></label>
                             </td>
                             <td class="formRow">
                                 <input type="file" name="humantaskFileName" size="50"/>&nbsp;
@@ -153,7 +154,7 @@
                         </tr>
                     </table>
 
-                        <table class="styledLeft">
+                    <table class="styledLeft">
                         <tr>
                             <td class="buttonRow">
                                 <input name="upload" class="button registryWriteOperation"
