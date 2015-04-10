@@ -48,7 +48,7 @@ public interface HumanTaskDAOConnection {
      * creates lean task definition object and persists it in the database
      * @return
      */
-    LeanTask createLeanTaskDef(final int tenantId,final String name,final long version,final Element leanTaskDef) throws Exception;
+    LeanTask createLeanTaskDef(final int tenantId,final String name,final Element leanTaskDef,String md5sum) throws Exception;
 
 
 
