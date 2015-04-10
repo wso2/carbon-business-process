@@ -512,7 +512,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Intersect implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() != 2) {
                 throw new HumanTaskRuntimeException("Invalid number of arguments for expression: except");
             }
@@ -539,7 +540,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Union implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() != 2) {
                 throw new HumanTaskRuntimeException("Invalid number of arguments for expression: except");
             }
@@ -564,7 +566,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Except implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() != 2) {
                 throw new HumanTaskRuntimeException(
                         "Invalid number of arguments :" + args.size() + ", for expression: except");
@@ -737,7 +740,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class GetCountOfFinishedSubTasks implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 0) {
                 //Case 1 : Consider current task
                 List<TaskDAO> subTasksList = evalCtx.getTask().getSubTasks(); //nullable
@@ -781,7 +785,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class GetCountOfSubTasks implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 0) {
                 //Case 1 : Consider current task
                 return evalCtx.getTask().getSubTasks().size();
@@ -809,7 +814,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class GetCountOfSubTasksInState implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             {
                 if (args.size() == 1) {
                     //Case 1 : Consider current task
@@ -873,7 +879,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Concat implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             String result = "";
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 ArrayList nodeList = (ArrayList) args.get(0);
@@ -905,7 +912,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class ConcatWithDelimiter implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             String result = "";
             if (args.size() == 2 && args.get(0) instanceof ArrayList && args.get(1) instanceof String) {
                 ArrayList nodeList = (ArrayList) args.get(0);
@@ -971,7 +979,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class LeastFrequentOccurence implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 try {
                     Map<String, Integer> frequencyMap = generateFrequencyMap((ArrayList) args.get(0));
@@ -1018,7 +1027,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class MostFrequentOccurence implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 try {
                     Map<String, Integer> frequencyMap = generateFrequencyMap((ArrayList) args.get(0));
@@ -1065,7 +1075,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class VoteOnString implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 2 && args.get(0) instanceof ArrayList && args.get(1) instanceof Number) {
                 try {
                     ArrayList list = (ArrayList) args.get(0);
@@ -1110,7 +1121,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class And implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
 
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 boolean result = false;
@@ -1153,7 +1165,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Or implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 boolean result = false;
                 ArrayList list = (ArrayList) args.get(0);
@@ -1197,7 +1210,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Vote implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 2 && args.get(0) instanceof ArrayList && args.get(1) instanceof Number) {
                 ArrayList list = (ArrayList) args.get(0);
                 Number percentage = (Number) args.get(1);
@@ -1247,7 +1261,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Avg implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 ArrayList list = (ArrayList) args.get(0);
                 if (list.size() > 0) {
@@ -1285,7 +1300,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Max implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 ArrayList list = (ArrayList) args.get(0);
                 if (list.size() > 0) {
@@ -1326,7 +1342,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Min implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 ArrayList list = (ArrayList) args.get(0);
                 if (list.size() > 0) {
@@ -1367,7 +1384,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      */
     public class Sum implements XPathFunction {
 
-        @Override public Object evaluate(List args) throws XPathFunctionException {
+        @Override
+        public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() == 1 && args.get(0) instanceof ArrayList) {
                 ArrayList list = (ArrayList) args.get(0);
                 if (list.size() > 0) {
