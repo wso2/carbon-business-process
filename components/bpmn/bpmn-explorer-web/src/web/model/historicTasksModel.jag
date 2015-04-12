@@ -24,7 +24,7 @@ if(pagination > 0){
 }
 var headers = {"Authorization":"Basic " + auth};
 var task = [];
-var tasks = get( httpUrl + "/bpmnrest/history/historic-process-instances?finished=true" ,null, headers, "json" ).data;
+var tasks = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data;
 for(var i=0; i < tasks.data.length; i++){
 	task.push({
 		id:tasks.data[i].id,
@@ -33,6 +33,6 @@ for(var i=0; i < tasks.data.length; i++){
 		endTime:tasks.data[i].endTime
 	});
 }
-var taskCount = get( httpUrl + "/bpmnrest/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
+var taskCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((taskCount / 10));
 %>
