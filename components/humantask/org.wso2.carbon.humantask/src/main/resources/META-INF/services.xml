@@ -1067,6 +1067,41 @@
             <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
         </operation>
     </service>
+    <service name="HumanTaskRenderingAPI">
+        <transports>
+            <transport>https</transport>
+        </transports>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.wso2.carbon.humantask.rendering.api.HumanTaskRenderingAPIMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">org.wso2.carbon.humantask.core.api.rendering.HTRenderingApiImpl</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="setTaskOutput" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">
+            <actionMapping>http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/setTaskOutput</actionMapping>
+            <outputActionMapping>http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/setTaskOutputResponse</outputActionMapping>
+            <faultActionMapping faultName="setTaskOutputFault">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/setTaskOutput/Fault/setTaskOutputFault</faultActionMapping>
+            <faultActionMapping faultName="SetTaskOutputFault">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/setTaskOutput/Fault/setTaskOutputFault</faultActionMapping>
+            <faultActionMapping faultName="SetTaskOutputFault_Exception">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/setTaskOutput/Fault/setTaskOutputFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="getRenderings" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">
+            <actionMapping>http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/getRenderings</actionMapping>
+            <outputActionMapping>http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/getRenderingsResponse</outputActionMapping>
+            <faultActionMapping faultName="getRenderingsFault">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/getRenderings/Fault/getRenderingsFault</faultActionMapping>
+            <faultActionMapping faultName="GetRenderingsFault">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/getRenderings/Fault/getRenderingsFault</faultActionMapping>
+            <faultActionMapping faultName="GetRenderingsFault_Exception">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/getRenderings/Fault/getRenderingsFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+        <operation name="completeTask" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">
+            <actionMapping>http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/completeTask</actionMapping>
+            <outputActionMapping>http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/completeTaskResponse</outputActionMapping>
+            <faultActionMapping faultName="completeTaskFault">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/completeTask/Fault/completeTaskFault</faultActionMapping>
+            <faultActionMapping faultName="CompleteTaskFault">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/completeTask/Fault/completeTaskFault</faultActionMapping>
+            <faultActionMapping faultName="CompleteTaskFault_Exception">http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/renderingOperations/completeTask/Fault/completeTaskFault</faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>
+        </operation>
+    </service>
     <parameter name="adminService" locked="true">true</parameter>
     <parameter name="hiddenService" locked="true">true</parameter>
 </serviceGroup>

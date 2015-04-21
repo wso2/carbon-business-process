@@ -25,6 +25,7 @@
 function initHTServerInfo(url, sessionCookie) {
     this.URL = url;
     this.endPoint = this.URL + '/services/HumanTaskClientAPIAdmin/';
+    this.renderingAPIEndpoint = this.URL + '/services/HumanTaskRenderingAPI/';
     this.cookie = sessionCookie;
 }
 
@@ -120,7 +121,7 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
 
 
 
-/*
+/**
  * Function to make WS-HT loadTask request
  * 
  * return response payload
@@ -137,6 +138,30 @@ function loadTask(id) {
                        </soapenv:Body>\
                     </soapenv:Envelope>';
     var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadTask';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
+}
+
+/**
+ * Function to get input received by WS-HT service
+ * @param id task identifier
+ * @returns response payload
+ */
+function getInput(id) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
+                                    xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
+                        <soapenv:Header/>\
+                        <soapenv:Body>\
+                            <ns:getInput>\
+                                <ns:identifier>' + id +'</ns:identifier>\
+                            </ns:getInput>\
+                        </soapenv:Body>\
+                    </soapenv:Envelope>';
+
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getInput';
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
@@ -420,6 +445,75 @@ function assignTask(id, userName) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
+}
+
+/**********************************************************************************************************************
+        START web service requests to HumanTaskRenderingAPI admin service
+ **********************************************************************************************************************/
+
+/**
+ * Function to retrieve HT renderings
+ *
+ * return response payload
+ * @throws {exception java.net.ConnectException} if connection error occurred
+ */
+function getHTRenderings(id) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                                            xmlns:hum="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
+                            <soapenv:Header/>\
+                                     <soapenv:Body>\
+                                         <hum:getRenderings>\
+                                             <taskIdentifier>'+id +'</taskIdentifier>\
+                                         </hum:getRenderings>\
+                                     </soapenv:Body>\
+                    </soapenv:Envelope>';
+    var soapAction = 'http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/getRenderings';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
+}
+
+
+function setTaskOutput (id, valuesXmlListMessagePart) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
+                                            xmlns:htr="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
+                                <soapenv:Header/>\
+                                <soapenv:Body>\
+                                    <htr:setTaskOutput>\
+                                        <taskIdentifier>' +id +'</taskIdentifier>\
+                                        <values>'+valuesXmlListMessagePart +'</values>\
+                                    </htr:setTaskOutput>\
+                                </soapenv:Body>\
+                            </soapenv:Envelope>';
+
+    var soapAction = 'http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/setTaskOutput';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
+}
+
+function completeTask (id, valuesXmlListMessagePart) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
+                                    xmlns:htr="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
+                            <soapenv:Header/>\
+                                     <soapenv:Body>\
+                                         <htr:completeTask>\
+                                             <taskIdentifier>'+id +'</taskIdentifier>\
+                                             <values>'+valuesXmlListMessagePart +'</values>\
+                                         </htr:completeTask>\
+                                     </soapenv:Body>\
+                    </soapenv:Envelope>';
+
+    var soapAction = 'http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/completeTask';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
 
     return BPSResponse;
 }

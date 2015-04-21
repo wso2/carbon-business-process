@@ -49,6 +49,24 @@
         response.sendRedirect('login');
     }
 
+
+    try {
+
+        //retrieve HT renderings
+        var HTRenderingsMsg = htRequest.getHTRenderings(id);
+
+        var HTRenderingsXML = new XML(HTRenderingsMsg);
+        var wso2InputRenderList = HTRenderingsXML..rendering_NS::getRenderingsResponse.input.element;
+        var wso2OutputRenderList = HTRenderingsXML..rendering_NS::getRenderingsResponse.output.element;
+
+    } catch (e) {
+
+        log.error('Error occurred while connecting to the back-end BPS HTRenderingAPI service : ');
+        log.error(e);
+        response.sendRedirect('login');
+
+    }
+
     /*
      *
      * SAMPLE EXPECTED RESPONSES FOR LOADTASK
@@ -124,6 +142,33 @@
            </soapenv:Body>
         </soapenv:Envelope>
     */
+
+    /* SAMPLE EXPECTED RESPONSES FOR GETINPUT
+         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+             <soapenv:Body>
+                <ns2:getInputResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+                    <ns2:taskData xmlns:s33="http://www.w3.org/2001/XMLSchema-instance" xmlns:s34="http://www.w3.org/2001/XMLSchema" s33:type="s34:string">
+                        <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+                            <ClaimApprovalData xmlns="http://www.example.com/claims/schema"
+                                               xmlns:p="http://www.example.com/claims/schema"
+                                               xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"
+                                               xmlns:wsa="http://www.w3.org/2005/08/addressing">
+                                <cust xmlns="http://www.example.com/claims/schema">
+                                    <id xmlns:xsd="http://www.example.com/claims/schema">?</id>
+                                    <firstname xmlns:xsd="http://www.example.com/claims/schema">?</firstname>
+                                    <lastname xmlns:xsd="http://www.example.com/claims/schema">?</lastname>
+                                </cust>
+                                <amount xmlns:xsd="http://www.example.com/claims/schema">?</amount>
+                                <region xmlns:xsd="http://www.example.com/claims/schema">?</region>
+                                <priority xmlns:xsd="http://www.example.com/claims/schema">?</priority>
+                            </ClaimApprovalData>
+                        ]]>
+                    </ns2:taskData>
+             </ns2:getInputResponse>
+             </soapenv:Body>
+         </soapenv:Envelope>
+
+     */
 %>
 
 

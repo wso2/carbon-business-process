@@ -113,6 +113,14 @@
             <artifactId>org.wso2.carbon.ntask.core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.wso2.orbit.com.predic8</groupId>
+            <artifactId>soa.model.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

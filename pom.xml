@@ -1026,6 +1026,24 @@
                 <version>${carbon.multitenancy.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.wso2.orbit.com.predic8</groupId>
+                <artifactId>soa.model.core</artifactId>
+                <version>${com.predic8.soa-model-core.wso2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wso2.orbit.asm4</groupId>
+                <artifactId>asm4-all</artifactId>
+                <version>${org.asm4.wso2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${org.codehaus.groovy.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -1522,6 +1540,11 @@
         <org.activiti.wso2.version>5.16-wso2v1</org.activiti.wso2.version>
         <org.activiti.version>5.16</org.activiti.version>
         <restlet.version>2.2.1</restlet.version>
+
+        <!-- For HT Rendering -->
+        <com.predic8.soa-model-core.wso2.version>1.5.0.wso2v3</com.predic8.soa-model-core.wso2.version>
+        <org.asm4.wso2.version>4.0.0.wso2v1</org.asm4.wso2.version>
+        <org.codehaus.groovy.version>2.3.9</org.codehaus.groovy.version>
 
 	<project.scm.id>wso2-scm-server</project.scm.id>
     </properties>
