@@ -197,7 +197,7 @@
                             </tasks>
                         </configuration>
                     </execution>
-                    <execution>
+                    <!--execution>
                         <id>xcreate-db-schemas</id>
                         <phase>process-classes</phase>
                         <goals>
@@ -257,7 +257,7 @@
                                 </mappingtool>
                             </tasks>
                         </configuration>
-                    </execution>
+                    </execution-->
                 </executions>
             </plugin>
 
