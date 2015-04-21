@@ -235,7 +235,7 @@
                                     org.wso2.carbon.attachment.mgt.server:${carbon.business-process.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.event.output.adapter.server:${carbon.event.processing.version}
+                                    org.wso2.carbon.event.output.adapter.server:${carbon.analytics.common.version}
                                 </importFeatureDef>
 
 
