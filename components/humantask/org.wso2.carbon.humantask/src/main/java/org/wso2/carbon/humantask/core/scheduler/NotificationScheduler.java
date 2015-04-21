@@ -87,7 +87,7 @@ public class NotificationScheduler {
 
     public static synchronized SMSEventAdapter getSMSEventAdapter(Map<String, String> dynamicProperties) {
         if (smsAdapter == null) {
-            smsAdapter = new SMSEventAdapter(new OutputEventAdapterConfiguration(), dynamicProperties);
+            smsAdapter = new SMSEventAdapter(null, dynamicProperties);
         }
 
         try {
