@@ -24,14 +24,14 @@ if(pagination > 0){
 }
 var headers = {"Authorization":"Basic " + auth};
 
-var processCount = get( httpUrl + "/bpmnrest/repository/process-definitions" ,null, headers, "json" ).data.total;
+var processCount = get( httpUrl + "/bpmn/repository/process-definitions" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((processCount / 10));
 
 
 
 var list = [];
 
-var processes = get( httpUrl + "/bpmnrest/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc" 
+var processes = get( httpUrl + "/bpmn/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc"
 	,null, headers, "json" ).data;
 
 for (var j=0; j<processes.data.length; j++){
