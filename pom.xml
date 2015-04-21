@@ -1028,21 +1028,21 @@
 
             <!-- dependencies for email and sms notifications -->
             <dependency>
-                <groupId>org.wso2.carbon.event-processing</groupId>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.output.adapter.core</artifactId>
-                <version>${carbon.event.processing.version}</version>
+                <version>${carbon.analytics.common.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.wso2.carbon.event-processing</groupId>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.output.adapter.email</artifactId>
-                <version>${carbon.event.processing.version}</version>
+                <version>${carbon.analytics.common.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.wso2.carbon.event-processing</groupId>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.output.adapter.sms</artifactId>
-                <version>${carbon.event.processing.version}</version>
+                <version>${carbon.analytics.common.version}</version>
             </dependency>
 
         </dependencies>
@@ -1330,7 +1330,8 @@
         <carbon.multitenancy.imp.pkg.version>[4.3.0, 4.4.0)</carbon.multitenancy.imp.pkg.version>
 
         <!-- Carbon Event-processing version-->
-        <carbon.event.processing.version>2.0.4-SNAPSHOT</carbon.event.processing.version>
+        <!--carbon.event.processing.version>2.0.4-SNAPSHOT</carbon.event.processing.version-->
+        <carbon.analytics.common.version>1.0.0-SNAPSHOT</carbon.analytics.common.version>
 
         <!-- Axiom Version -->
 

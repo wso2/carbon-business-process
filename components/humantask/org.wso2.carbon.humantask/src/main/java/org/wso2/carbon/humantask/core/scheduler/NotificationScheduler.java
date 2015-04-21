@@ -19,7 +19,6 @@ package org.wso2.carbon.humantask.core.scheduler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
-
 import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterConfiguration;
 import org.wso2.carbon.event.output.adapter.core.exception.OutputEventAdapterException;
 import org.wso2.carbon.event.output.adapter.email.EmailEventAdapter;
@@ -32,8 +31,6 @@ import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Document;
-
-import java.util.concurrent.ExecutorService;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -52,9 +49,6 @@ public class NotificationScheduler {
     private static SMSEventAdapter smsAdapter;
     private Map<String, String> emailDynamicProperties;
     private Map<String, String> smsDynamicProperties;
-    private ExecutorService exec;
-    private NotificationTask notificationTask;
-
     private String prefix = "htd";
     String mailTo = null;
     String mailSubject = null;
@@ -62,14 +56,7 @@ public class NotificationScheduler {
     String smsReceiver = null;
     String smsBody = null;
 
-    /**
-     * Set executor service for email/sms notifications
-     *
-     * @param executorService
-     */
-    public void setExecutorService(ExecutorService executorService) {
-        exec = executorService;
-    }
+
     /**
      * Initialize EmailEventAdapter object
      *
@@ -77,6 +64,7 @@ public class NotificationScheduler {
      * @return
      */
     public static synchronized EmailEventAdapter getEmailEventAdapter(Map<String, String> dynamicProperties) {
+
         if (emailAdapter == null) {
             emailAdapter = new EmailEventAdapter(null, dynamicProperties);
 
@@ -89,6 +77,7 @@ public class NotificationScheduler {
 
         return emailAdapter;
     }
+
     /**
      * Initialize SMSEventAdapter object
      *
@@ -98,10 +87,7 @@ public class NotificationScheduler {
 
     public static synchronized SMSEventAdapter getSMSEventAdapter(Map<String, String> dynamicProperties) {
         if (smsAdapter == null) {
-            smsAdapter = new SMSEventAdapter(null, dynamicProperties);
-
-
-            smsAdapter = new SMSEventAdapter(null, dynamicProperties);
+            smsAdapter = new SMSEventAdapter(new OutputEventAdapterConfiguration(), dynamicProperties);
         }
 
         try {
@@ -153,16 +139,16 @@ public class NotificationScheduler {
             emailDynamicProperties = getDynamicPropertiesOfEmailNotification(task, taskConfiguration); //get dynamic properties
             Object message = emailBody;//get email message body
             emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
-            notificationTask = new NotificationTask(emailAdapter, message, emailDynamicProperties);//make private prop and add it
-            exec.submit(notificationTask);
+            emailAdapter.publish(message, emailDynamicProperties);
             log.info("sent email notifications");
         }
         if (isSMS) {
             smsDynamicProperties = getDynamicPropertiesOfSmsNotification(task, taskConfiguration);
             Object message = smsBody; //get sms message body
             smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
-            notificationTask = new NotificationTask(smsAdapter, message, smsDynamicProperties);
-            exec.submit(notificationTask);
+            smsAdapter.publish(message, smsDynamicProperties);
+            log.info("sent sms notifications");
+
         }
     }
 
