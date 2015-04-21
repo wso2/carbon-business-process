@@ -16,7 +16,7 @@
 <%
 var id = request.getParameter("id");
 var headers = {"Authorization":"Basic " + auth};
-var task = get( httpUrl + "/bpmnrest/task/" + id ,null, headers, "json" ).data;
+var task = get( httpUrl + "/bpmn/task/" + id ,null, headers, "json" ).data;
 var taskDesc = task.description;
 if(taskDesc == null) { taskDesc = "Description not available"; }
 var taskOwner = task.owner;
@@ -32,6 +32,6 @@ var taskData = {
 	subtask:task.subtaskList
 };
 var formGenTool = require("/assets/dynamicFormGen.js");
-var formData = get( httpUrl + "/bpmnrest/form/" + id + "/properties" ,null, headers, "json" ).data;
+var formData = get( httpUrl + "/bpmn/form/" + id + "/properties" ,null, headers, "json" ).data;
 var formContent = formGenTool.generateForm(formData.data);
 %>

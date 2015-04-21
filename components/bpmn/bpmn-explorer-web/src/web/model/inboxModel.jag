@@ -25,7 +25,7 @@ if(pagination > 0){
 var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
 var task = [];
-var tasks = get( httpUrl + "/bpmnrest/runtime/tasks?assignee=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+var tasks = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 
 for(var i=0; i < tasks.data.length; i++){
 	var dueDate = tasks.data[i].dueDate;
@@ -48,7 +48,7 @@ for(var j=0; j<roles.length; j++){
 	} 
 }
 
-tasks = get( httpUrl + "/bpmnrest/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 
 for(var i=0; i < tasks.data.length; i++){
 	var dueDate = tasks.data[i].dueDate;
@@ -62,6 +62,6 @@ for(var i=0; i < tasks.data.length; i++){
 	});
 }
 
-var taskCount = get( httpUrl + "/bpmnrest/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
+var taskCount = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((taskCount / 10));
 %>
