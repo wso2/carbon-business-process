@@ -131,7 +131,9 @@ public class NotificationScheduler {
 
             executeNotifications(taskConfiguration, creationContext, task, isEmailNotification, isSMSNotification);
         } else {
-            log.info("Notification type tasks are not available in " + taskConfiguration);
+            if(log.isDebugEnabled()) {
+                log.debug("Notification type tasks are not available in " + taskConfiguration.getName());
+            }
         }
     }
 
@@ -191,10 +193,8 @@ public class NotificationScheduler {
                     smsReceiver = rootSMS.getElementsByTagName(HumanTaskConstants.PREFIX + ":"
                             + HumanTaskConstants.SMS_RECEIVER_TAG)
                             .item(0).getTextContent();
-                    smsBody = rootSMS
-                            .getElementsByTagName(
-                                    HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG).item(0)
-                            .getTextContent();
+                    smsBody = rootSMS.getElementsByTagName(HumanTaskConstants.PREFIX + ":"
+                            + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG).item(0) .getTextContent();
                 } catch (DOMException e) {
                     log.error("Error while evaluating rendering xpath for sms content. Please review xpath and deploy "
                             + "task again.", e);

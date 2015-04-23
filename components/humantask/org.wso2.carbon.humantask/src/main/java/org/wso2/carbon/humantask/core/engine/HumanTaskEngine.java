@@ -83,8 +83,6 @@ public class HumanTaskEngine {
         creationContext.setPeopleQueryEvaluator(peopleQueryEvaluator);
         TaskDAO task = getDaoConnectionFactory().getConnection().createTask(creationContext);
         creationContext.injectExpressionEvaluationContext(task);
-        // NotificationScheduler notificationScheduler = new NotificationScheduler();
-        // notificationScheduler.checkForNotificationTasks(taskConfiguration, creationContext, task);
         return task;
     }
 
