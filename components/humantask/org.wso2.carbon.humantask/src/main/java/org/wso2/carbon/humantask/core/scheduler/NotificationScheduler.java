@@ -18,8 +18,8 @@ package org.wso2.carbon.humantask.core.scheduler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
-import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterConfiguration;
 import org.wso2.carbon.event.output.adapter.core.exception.OutputEventAdapterException;
 import org.wso2.carbon.event.output.adapter.email.EmailEventAdapter;
 import org.wso2.carbon.event.output.adapter.sms.SMSEventAdapter;
@@ -42,7 +42,9 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Retrieve notification type from human task to send related email/sms notifications
+ */
 public class NotificationScheduler {
     private static Log log = LogFactory.getLog(NotificationScheduler.class);
     private boolean isNotification = false;
@@ -61,7 +63,6 @@ public class NotificationScheduler {
      * @return
      */
     public static synchronized EmailEventAdapter getEmailEventAdapter(Map<String, String> dynamicProperties) {
-
         if (emailAdapter == null) {
             emailAdapter = new EmailEventAdapter(null, dynamicProperties);
         }
@@ -103,16 +104,13 @@ public class NotificationScheduler {
         if (smsAdapter == null) {
             smsAdapter = new SMSEventAdapter(null, dynamicProperties);
         }
-
         try {
             smsAdapter.init();
         } catch (OutputEventAdapterException e) {
             log.error("Unable to initialize sms adapter.", e);
         }
-
         return smsAdapter;
     }
-
 
     /**
      * Check  availability of type email/sms notifications
@@ -121,8 +119,8 @@ public class NotificationScheduler {
      * @param creationContext
      * @param task
      */
-    public void checkForNotificationTasks(HumanTaskBaseConfiguration taskConfiguration, TaskCreationContext creationContext, TaskDAO task) {
-
+    public void checkForNotificationTasks(HumanTaskBaseConfiguration taskConfiguration,
+                                          TaskCreationContext creationContext, TaskDAO task) {
         isNotification = taskConfiguration.getConfigurationType().toString().equalsIgnoreCase("notification");
 
         if (isNotification) {
@@ -148,21 +146,27 @@ public class NotificationScheduler {
      */
     public void executeNotifications(HumanTaskBaseConfiguration taskConfiguration, TaskCreationContext context,
                                      TaskDAO task, boolean isEmail, boolean isSMS) {
-
         if (isEmail) {
             emailDynamicProperties = getDynamicPropertiesOfEmailNotification(task, taskConfiguration); //get dynamic properties
             Object message = getMessageForNotification();//get email message body
-            emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
+            if (emailAdapter == null) {
+                emailAdapter = getEmailEventAdapter(emailDynamicProperties); //singleton
+            }
             emailAdapter.publish(message, emailDynamicProperties);
-            log.debug("sent email notifications");
+            if (log.isDebugEnabled()) {
+                log.debug("sent email notifications of task" + task.getName());
+            }
         }
         if (isSMS) {
             smsDynamicProperties = getDynamicPropertiesOfSmsNotification(task, taskConfiguration);
             Object message = getMessageForNotification(); //get sms message body
-            smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
+            if (smsAdapter == null) {
+                smsAdapter = getSMSEventAdapter(smsDynamicProperties); // singleton
+            }
             smsAdapter.publish(message, smsDynamicProperties);
-            log.debug("sent sms notifications");
-
+            if (log.isDebugEnabled()) {
+                log.debug("sent sms notifications of task" + task.getName());
+            }
         }
     }
 
@@ -176,31 +180,32 @@ public class NotificationScheduler {
         Map<String, String> dynamicPropertiesForSms = new HashMap<String, String>();
         String smsReceiver = null;
         String smsBody = null;
-        String renderingSMS = CommonTaskUtil.getRendering(task, taskConfiguration, new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_SMS));
-
+        String renderingSMS = CommonTaskUtil.getRendering(task, taskConfiguration,
+                new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_SMS));
 
         if (renderingSMS != null) {
             Document document = xmlRead(renderingSMS);
             Element rootSMS = document.getDocumentElement();
-
-            try {
-                smsReceiver = rootSMS.getElementsByTagName(HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.SMS_RECEIVER_TAG)
-                        .item(0).getTextContent();
-                smsBody = rootSMS
-                        .getElementsByTagName(
-                                HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG).item(0)
-                        .getTextContent();
-            } catch (Exception e) {
-                log.error("Error while evaluating rendering xpath for sms content. Please review xpath and deploy " +
-                        "task again.", e);
+            if (rootSMS != null) {
+                try {
+                    smsReceiver = rootSMS.getElementsByTagName(HumanTaskConstants.PREFIX + ":"
+                            + HumanTaskConstants.SMS_RECEIVER_TAG)
+                            .item(0).getTextContent();
+                    smsBody = rootSMS
+                            .getElementsByTagName(
+                                    HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG).item(0)
+                            .getTextContent();
+                } catch (DOMException e) {
+                    log.error("Error while evaluating rendering xpath for sms content. Please review xpath and deploy "
+                            + "task again.", e);
+                }
+                setMessageForNotification(smsBody);
             }
-            setMessageForNotification(smsBody);
 
         } else {
             log.warn("Rendering type " + renderingSMS + "Not found for task definition.");
         }
-        dynamicPropertiesForSms.put("sms.no", smsReceiver);
-
+        dynamicPropertiesForSms.put(HumanTaskConstants.ARRAY_SMS_NO, smsReceiver);
         return dynamicPropertiesForSms;
     }
 
@@ -212,43 +217,40 @@ public class NotificationScheduler {
      */
     public Map getDynamicPropertiesOfEmailNotification(TaskDAO task, HumanTaskBaseConfiguration taskConfiguration) {
 
-
         Map<String, String> dynamicPropertiesForEmail = new HashMap<String, String>();
         String emailBody = null;
         String mailSubject = null;
         String mailTo = null;
 
-        String rendering = CommonTaskUtil.getRendering(task, taskConfiguration, new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_EMAIL));
-
+        String rendering = CommonTaskUtil.getRendering(task, taskConfiguration,
+                new QName(HumanTaskConstants.RENDERING_NAMESPACE, HumanTaskConstants.RENDERING_TYPE_EMAIL));
 
         if (rendering != null) {
             Document document = xmlRead(rendering);
             Element root = document.getDocumentElement();
+            if (root != null) {
+                try {
+                    mailTo = root.getElementsByTagName(HumanTaskConstants.PREFIX + ":"
+                            + HumanTaskConstants.EMAIL_TO_TAG)
+                            .item(0).getTextContent();
+                    mailSubject = root.getElementsByTagName(HumanTaskConstants.PREFIX + ":"
+                            + HumanTaskConstants.EMAIL_SUBJECT_TAG).item(0)
+                            .getTextContent();
+                    emailBody = root.getElementsByTagName(HumanTaskConstants.PREFIX + ":"
+                            + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG)
+                            .item(0).getTextContent();
 
-
-            try {
-
-                mailTo = root.getElementsByTagName(HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.EMAIL_TO_TAG)
-                        .item(0).getTextContent();
-                mailSubject = root.getElementsByTagName(HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.EMAIL_SUBJECT_TAG).item(0)
-                        .getTextContent();
-                emailBody = root.getElementsByTagName(HumanTaskConstants.PREFIX + ":" + HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG)
-                        .item(0).getTextContent();
-
-
-            } catch (Exception e) {
-                log.error("Error while evaluating rendering xpath. Please review xpath and deploy " +
-                        "task again.", e);
+                } catch (DOMException e) {
+                    log.error("Error while evaluating rendering xpath. Please review xpath and deploy " +
+                            "task again.", e);
+                }
+                setMessageForNotification(emailBody);
             }
-            setMessageForNotification(emailBody);
         } else {
             log.warn("Rendering type " + rendering + "Not found for task definition.");
         }
-
-        dynamicPropertiesForEmail.put("email.address", mailTo);
-        dynamicPropertiesForEmail.put("email.subject", mailSubject);
-
-
+        dynamicPropertiesForEmail.put(HumanTaskConstants.ARRAY_EMAIL_ADDRESS, mailTo);
+        dynamicPropertiesForEmail.put(HumanTaskConstants.ARRAY_EMAIL_SUBJECT, mailSubject);
         return dynamicPropertiesForEmail;
     }
 
@@ -274,9 +276,7 @@ public class NotificationScheduler {
 
         } catch (IOException e) {
             log.error("unable to parse content" + xmlString, e);
-
         }
         return doc;
     }
-
 }
