@@ -255,6 +255,13 @@
                                         <pathelement location="${basedir}/target/classes" />
                                     </classpath>
                                 </mappingtool>
+  				<mappingtool schemaAction="build" sqlFile="${basedir}/target/db2.sql" readSchema="false">
+                                    <config DBDictionary="${vendor}" propertiesFile="src/main/resources/descriptors/persistence.db2.xml" />
+                                    <classpath>
+                                        <path refid="classpath" />
+                                        <pathelement location="${basedir}/target/classes" />
+                                    </classpath>
+                                </mappingtool>
                             </tasks>
                         </configuration>
                     </execution-->
