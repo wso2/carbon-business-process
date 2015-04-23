@@ -77,6 +77,7 @@ public class HumanTaskServiceComponent {
                 initHumanTaskServer(htServerHolder);
                 registerAxis2ConfigurationContextObserver();
                 registerHumanTaskServerService();
+                registerTaskServer();
 
                 if(HumanTaskServerHolder.getInstance().getHtServer().getServerConfig().isUiRenderingEnabled()) {
                     registerHumanTaskUIResourceProvider(htServerHolder);
@@ -191,5 +192,10 @@ public class HumanTaskServiceComponent {
      */
     protected void unsetAttachmentMgtService(AttachmentServerService attMgtService) {
         HumanTaskServerHolder.getInstance().setAttachmentService(null);
+    }
+
+    private void registerTaskServer() {
+        this.bundleContext.registerService(TaskOperationService.class.getName(),
+                                           new TaskOperationServiceImpl(), null);
     }
 }
