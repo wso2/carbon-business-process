@@ -28,6 +28,7 @@ import org.wso2.carbon.humantask.core.engine.HumanTaskServerException;
 import org.wso2.carbon.humantask.core.engine.PeopleQueryEvaluator;
 import org.wso2.carbon.humantask.core.engine.event.processor.EventProcessor;
 import org.wso2.carbon.humantask.core.scheduler.JobProcessorImpl;
+import org.wso2.carbon.humantask.core.scheduler.NotificationScheduler;
 import org.wso2.carbon.humantask.core.scheduler.SimpleScheduler;
 import org.wso2.carbon.humantask.core.store.HumanTaskStoreManager;
 import org.wso2.carbon.humantask.core.utils.GUID;
@@ -99,6 +100,15 @@ public class HumanTaskServer {
         initPeopleQueryEvaluator();
         initHumanTaskStore();
         initScheduler();
+        initNotificationScheduler();
+    }
+
+    /**
+     * Notification scheduler initialisation.
+     */
+    private void initNotificationScheduler() {
+        NotificationScheduler notificationScheduler = new NotificationScheduler();
+        taskEngine.setNotificationScheduler(notificationScheduler);
     }
 
     /**
@@ -132,8 +142,6 @@ public class HumanTaskServer {
     }
 
     /**
-     *
-     *
      * @throws HumanTaskServerException :
      */
     private void initPeopleQueryEvaluator() throws HumanTaskServerException {
@@ -143,8 +151,7 @@ public class HumanTaskServer {
             taskEngine.setPeopleQueryEvaluator(peopleQueryEvaluator);
         } catch (Exception ex) {
             String errMsg = "Error instantiating the PeopleQueryEvaluator Class :" +
-                            serverConfig.getPeopleQueryEvaluatorClass();
-            log.error(errMsg);
+                    serverConfig.getPeopleQueryEvaluatorClass();
             throw new HumanTaskServerException(errMsg, ex);
         }
     }
@@ -163,10 +170,10 @@ public class HumanTaskServer {
         //TODO - need to handle the external transaction managers.
         database.setTransactionManager(tnxManager);
         try {
-	        database.start();
+            database.start();
         } catch (Exception e) {
             String errMsg = "Humantask Database Initialization failed.";
-            log.error(errMsg);
+            log.error(errMsg, e);
             throw new HumanTaskServerException(errMsg, e);
         }
     }
@@ -181,7 +188,7 @@ public class HumanTaskServer {
             this.daoConnectionFactory = database.createDAOConnectionFactory();
         } catch (Exception e) {
             String errMsg = "Error instantiating the DAO Connection Factory Class :" +
-                            serverConfig.getDaoConnectionFactoryClass();
+                    serverConfig.getDaoConnectionFactoryClass();
             throw new HumanTaskServerException(errMsg, e);
         }
     }
@@ -189,8 +196,8 @@ public class HumanTaskServer {
     //
 
     /**
-     *  Event processor initialisation logic.
-     *  As of now we have a set of event listeners which we register at the server startup.
+     * Event processor initialisation logic.
+     * As of now we have a set of event listeners which we register at the server startup.
      *
      * @throws HumanTaskServerException : If the event listener object instantiation fails.
      */
@@ -203,9 +210,9 @@ public class HumanTaskServer {
                 eventProcessor.addEventListener(eventListener);
             } catch (Exception e) {
                 log.fatal("Couldn't initialize the event listener for class: "
-                          + eventListenerClassName, e);
+                        + eventListenerClassName, e);
                 throw new HumanTaskServerException("Couldn't initialize a event listener: "
-                                                   + eventListenerClassName, e);
+                        + eventListenerClassName, e);
             }
         }
 
@@ -233,7 +240,7 @@ public class HumanTaskServer {
             serverConfig = new HumanTaskServerConfiguration(htServerConfigFile);
         } else {
             log.info("Humantask configuration file: " + HumanTaskConstants.HUMANTASK_CONFIG_FILE +
-                     " not found. Loading default configurations.");
+                    " not found. Loading default configurations.");
             serverConfig = new HumanTaskServerConfiguration();
         }
     }
@@ -253,7 +260,7 @@ public class HumanTaskServer {
      */
     private String calculateHumanTaskServerConfigurationFilePath() {
         return CarbonUtils.getCarbonConfigDirPath() + File.separator +
-               HumanTaskConstants.HUMANTASK_CONFIG_FILE;
+                HumanTaskConstants.HUMANTASK_CONFIG_FILE;
     }
 
     /**
@@ -295,9 +302,9 @@ public class HumanTaskServer {
             //axisConfiguration.addParameter("ode.transaction.manager", transactionManager);
         } catch (Exception e) {
             log.fatal("Couldn't initialize a transaction manager with factory: "
-                      + transactionFactoryName, e);
+                    + transactionFactoryName, e);
             throw new HumanTaskServerException("Couldn't initialize a transaction manager with factory: "
-                                               + transactionFactoryName, e);
+                    + transactionFactoryName, e);
         }
     }
 

@@ -127,4 +127,17 @@ public final class HumanTaskConstants {
 
     //Default Cache expiry duration in seconds
     public static final int DEFAULT_CACHE_EXPIRY_DURATION = 30;
+
+    /*Human task notification related constants*/
+    public static final String RENDERING_TYPE_EMAIL="email";
+    public static final String RENDERING_TYPE_SMS="sms";
+    public static final String EMAIL_TO_TAG="to";
+    public static final String EMAIL_SUBJECT_TAG="subject";
+    public static final String EMAIL_OR_SMS_BODY_TAG="body";
+    public static final String SMS_RECEIVER_TAG="receiver";
+    public static final String ARRAY_SMS_NO ="sms.no";
+    public static final String ARRAY_EMAIL_SUBJECT ="email.subject";
+    public static final String ARRAY_EMAIL_ADDRESS ="email.address";
+    public static final String PREFIX ="htd";
+    public static final String RENDERING_NAMESPACE ="http://wso2.org/ht/schema/renderings/";
 }

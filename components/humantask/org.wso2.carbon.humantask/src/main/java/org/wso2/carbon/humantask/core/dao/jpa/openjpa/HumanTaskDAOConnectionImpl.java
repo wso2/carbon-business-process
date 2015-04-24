@@ -14,6 +14,7 @@ import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalArgumen
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
+import org.wso2.carbon.humantask.core.scheduler.NotificationScheduler;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.store.TaskConfiguration;
 import org.wso2.carbon.utils.CarbonUtils;
@@ -32,8 +33,11 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
 
     private static final Log log = LogFactory.getLog(HumanTaskDAOConnectionImpl.class);
 
-    /** The entity manager handling object persistence  */
+    /**
+     * The entity manager handling object persistence
+     */
     private EntityManager entityManager;
+    private NotificationScheduler notificationScheduler;
 
     /**
      * @param entityManager : The entity manager handling object persistence.
@@ -43,12 +47,11 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
-    
     public TaskDAO createTask(TaskCreationContext creationContext)
             throws HumanTaskException {
         HumanTaskBuilderImpl taskBuilder = new HumanTaskBuilderImpl();
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Creating task instance for task " + creationContext.getTaskConfiguration().getName());
         }
 
@@ -67,8 +70,11 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
                     creationContext);
             if (task.getType().equals(TaskType.TASK)) {
                 CommonTaskUtil.nominate(task, creationContext.getPeopleQueryEvaluator());
-            } else if(task.getType().equals(TaskType.NOTIFICATION)){
+            } else if (task.getType().equals(TaskType.NOTIFICATION)) {
+
                 task.setStatus(TaskStatus.READY);
+                notificationScheduler = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getNotificationScheduler();
+                notificationScheduler.checkForNotificationTasks(creationContext.getTaskConfiguration(), creationContext, task);
             }
             task.setPriority(CommonTaskUtil.calculateTaskPriority(creationContext.getTaskConfiguration(),
                     creationContext.getEvalContext()));
@@ -96,10 +102,10 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
         return task;
     }
 
-    
+
     public TaskDAO getTask(Long taskId) {
         TaskDAO matchingTask = entityManager.find(Task.class, taskId);
-        if(matchingTask != null) {
+        if (matchingTask != null) {
             //lazy loading items.
             matchingTask.getHumanRoles();
             matchingTask.getParentTask();
@@ -114,19 +120,19 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
             matchingTask.getPresentationParameters();
             matchingTask.getEvents();
         } else {
-            String errorMsg = "Task lookup failed for task id " + taskId + " invalid task id provide" ;
+            String errorMsg = "Task lookup failed for task id " + taskId + " invalid task id provide";
             log.error(errorMsg);
             throw new HumanTaskIllegalArgumentException(errorMsg);
         }
         return matchingTask;
     }
 
-    
+
     public List<TaskDAO> getTasksForUser(String userName) {
         return null;
     }
 
-    
+
     public MessageDAO createMessage(TaskCreationContext taskCreationContext) {
         Message message = new Message();
         MessageHelper msgHelper = new MessageHelper(message);
@@ -134,12 +140,11 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
-    
     public MessageDAO createMessage() {
         return new Message();
     }
 
-    
+
     public OrganizationalEntityDAO createNewOrgEntityObject(String userName,
                                                             OrganizationalEntityDAO.OrganizationalEntityType type) {
         OrganizationalEntityDAO orgEntity = new OrganizationalEntity();
@@ -148,14 +153,14 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
         return orgEntity;
     }
 
-    
+
     public GenericHumanRoleDAO createNewGHRObject(GenericHumanRoleDAO.GenericHumanRoleType type) {
         GenericHumanRoleDAO ghr = new GenericHumanRole();
         ghr.setType(type);
         return ghr;
     }
 
-    
+
     public void obsoleteTasks(String taskName, Integer tenantId) {
         entityManager.createQuery("UPDATE org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task t SET t.status = :statusToSet WHERE t.name = :taskName AND t.tenantId = :tenantId").
                 //entityManager.createNamedQuery(Task.OBSOLETE_TASKS).
@@ -164,20 +169,20 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
                 setParameter("statusToSet", TaskStatus.OBSOLETE).executeUpdate();
     }
 
-    
+
     public List<TaskDAO> simpleTaskQuery(SimpleQueryCriteria simpleQueryCriteria) {
         Query taskQuery = entityManager.createQuery("SELECT t FROM org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task t WHERE t.status <> :obsoleteStatus ").
                 setParameter("obsoleteStatus", TaskStatus.OBSOLETE);
         return taskQuery.getResultList();
     }
 
-    
+
     public List<TaskDAO> searchTasks(SimpleQueryCriteria queryCriteria) {
         HumanTaskJPQLQueryBuilder queryBuilder = new HumanTaskJPQLQueryBuilder(queryCriteria, entityManager);
-        Query taskQuery =queryBuilder.build();
+        Query taskQuery = queryBuilder.build();
         return taskQuery.getResultList();
     }
-    
+
     public int getTasksCount(SimpleQueryCriteria queryCriteria) {
         HumanTaskJPQLQueryBuilder queryBuilder = new HumanTaskJPQLQueryBuilder(queryCriteria, entityManager);
         Query countQuery = queryBuilder.buildCount();
@@ -191,7 +196,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
         taskQuery.executeUpdate();
     }
 
-    
+
     public CommentDAO getCommentDAO(String commentString, String commentedByUserName) {
         return new Comment(commentString, commentedByUserName);
     }
@@ -329,10 +334,9 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
      * @param time       Time to be updated
      * @param name       Name of the task
      * @return If there is a job, corresponding to taskId and name, returns the job id. If the are
-     *         no jobs then returns -1.
-     * @throws org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException
-     *          If there are two or more
-     *          jobs are selected for the Task Id
+     * no jobs then returns -1.
+     * @throws org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException If there are two or more
+     *                                                                               jobs are selected for the Task Id
      */
     public Long updateJob(Long taskId, String name, boolean immediate, boolean nearFuture,
                           String nodeId, Long time) throws InvalidJobsInDbException {
@@ -388,12 +392,12 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
         String errMsg;
         if (size == 0) {
             errMsg = "There are no any jobs, corresponding to Task ID: " + taskId +
-                     " and Name: " + name;
+                    " and Name: " + name;
             log.warn(errMsg);
             return -1L;
         } else {
             errMsg = "More than 1 (" + size + ") jobs are selected to Task ID: " +
-                     taskId + " and Name: " + name;
+                    taskId + " and Name: " + name;
             log.error(errMsg);
             throw new InvalidJobsInDbException(errMsg);
         }
@@ -408,7 +412,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
      *
      * @return :
      */
-    
+
     public EventDAO createNewEventObject(TaskDAO task) {
         EventDAO eventDAO = new Event();
         eventDAO.setTimeStamp(new Date());
@@ -416,7 +420,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
         return eventDAO;
     }
 
-    
+
     public AttachmentDAO createAttachment() {
         return new Attachment();
     }
@@ -428,7 +432,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     public long getNextVersion() {
         List<TaskVersionDAO> resultList = entityManager.createQuery("select v from TaskVersion v")
                 .getResultList();
-        if(resultList.size() == 0){
+        if (resultList.size() == 0) {
             return 1;
         } else {
             TaskVersionDAO versionDAO = resultList.get(0);
@@ -439,7 +443,7 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     public long setNextVersion(long version) {
         List<TaskVersionDAO> resultList = entityManager.createQuery("select v from TaskVersion v").getResultList();
         TaskVersionDAO versionDAO;
-        if(resultList.size() == 0) {
+        if (resultList.size() == 0) {
             versionDAO = new TaskVersion();
         } else {
             versionDAO = resultList.get(0);
@@ -450,9 +454,8 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
-
-    public DeploymentUnitDAO createDeploymentUnitDAO(HumanTaskDeploymentUnit deploymentUnit, int tenantId){
-        String taskRelativePath =  "repository" + File.separator + HumanTaskConstants.HUMANTASK_REPO_DIRECTORY +
+    public DeploymentUnitDAO createDeploymentUnitDAO(HumanTaskDeploymentUnit deploymentUnit, int tenantId) {
+        String taskRelativePath = "repository" + File.separator + HumanTaskConstants.HUMANTASK_REPO_DIRECTORY +
                 File.separator + tenantId + File.separator + deploymentUnit.getName();
 
         DeploymentUnitDAO deploymentUnitDAO = new DeploymentUnit();
@@ -487,17 +490,18 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
      * Obtain the list of deployment units matching the given package name. Name of the deployment unit will be
      * appended with the version while package name will remain the same. Hence if multiple version of the same package exists
      * (At least one version of the human task package is already deployed, there should be a maching deployment unit )
+     *
      * @param tenantId
      * @param packageName
      * @return
      */
-   public List<DeploymentUnitDAO> getDeploymentUnitsForPackageName(int tenantId, String packageName) {
+    public List<DeploymentUnitDAO> getDeploymentUnitsForPackageName(int tenantId, String packageName) {
         Query query = entityManager.createQuery("SELECT hdu from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.DeploymentUnit" +
                 " hdu WHERE hdu.packageName=?1 and hdu.tenantId=?2 ");
         query.setParameter(1, packageName);
         query.setParameter(2, tenantId);
         return query.getResultList();
-   }
+    }
 
     public DeploymentUnitDAO getDeploymentUnitByName(int tenantId, String packageName) {
 
@@ -516,14 +520,14 @@ public class HumanTaskDAOConnectionImpl implements HumanTaskDAOConnection {
     }
 
 
-    public List<TaskDAO> getMatchingTaskInstances(String packageName, int tenantId){
+    public List<TaskDAO> getMatchingTaskInstances(String packageName, int tenantId) {
         Query q = entityManager.createQuery("select t from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task t where t.packageName = ?1 and t.tenantId = ?2");
         q.setParameter(1, packageName);
         q.setParameter(2, tenantId);
         return q.getResultList();
     }
 
-    public void deleteDeploymentUnits(String packageName, int tenantId){
+    public void deleteDeploymentUnits(String packageName, int tenantId) {
         Query query = entityManager.createQuery("delete from org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.DeploymentUnit  d where d.packageName = ?1 and d.tenantId = ?2");
         query.setParameter(1, packageName);
         query.setParameter(2, tenantId);

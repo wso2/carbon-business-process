@@ -27,6 +27,7 @@ import org.wso2.carbon.humantask.core.engine.runtime.xpath.XPathExpressionRuntim
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.store.HumanTaskStore;
+import org.wso2.carbon.humantask.core.scheduler.NotificationScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,9 @@ public class HumanTaskEngine {
      */
     private PeopleQueryEvaluator peopleQueryEvaluator;
 
-    /** The expression  */
+    /**
+     * The expression
+     */
     private Map<String, ExpressionLanguageRuntime> expressionLanguageRuntimeRegistry;
 
     /** */
@@ -56,6 +59,7 @@ public class HumanTaskEngine {
      * Deadline scheduler
      */
     private Scheduler scheduler;
+    private NotificationScheduler notificationScheduler;
 
     public HumanTaskEngine() {
         initExpressionLanguageRuntimes();
@@ -77,9 +81,11 @@ public class HumanTaskEngine {
         creationContext.setMessageBodyParts(message.getBodyPartElements());
         creationContext.setMessageHeaderParts(message.getHeaderPartElements());
         creationContext.setPeopleQueryEvaluator(peopleQueryEvaluator);
-
-        return getDaoConnectionFactory().getConnection().createTask(creationContext);
+        TaskDAO task = getDaoConnectionFactory().getConnection().createTask(creationContext);
+        creationContext.injectExpressionEvaluationContext(task);
+        return task;
     }
+
 
     /**
      * The invoke method called when the {@link org.wso2.carbon.humantask.core.integration.AxisHumanTaskMessageReceiver}
@@ -97,7 +103,7 @@ public class HumanTaskEngine {
 //                return createTask(message, taskStore.getTaskConfiguration(message.getPortTypeName(),
 //                        message.getOperationName()),
 //                        message.getTenantId());
-                 return createTask(message, taskConfiguration, message.getTenantId());
+                return createTask(message, taskConfiguration, message.getTenantId());
             }
         });
 
@@ -159,8 +165,16 @@ public class HumanTaskEngine {
         this.scheduler = scheduler;
     }
 
+    public void setNotificationScheduler(NotificationScheduler scheduler) {
+        this.notificationScheduler = scheduler;
+    }
+
+    public NotificationScheduler getNotificationScheduler() {
+        return notificationScheduler;
+    }
+
+
     /**
-     *
      * @param eventProcessor
      */
     public void setEventProcessor(EventProcessor eventProcessor) {
@@ -168,11 +182,11 @@ public class HumanTaskEngine {
     }
 
     /**
-     *
      * @return
      */
     public EventProcessor getEventProcessor() {
         return this.eventProcessor;
     }
+
 
 }

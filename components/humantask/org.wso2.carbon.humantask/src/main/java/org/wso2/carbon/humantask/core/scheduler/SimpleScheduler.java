@@ -165,6 +165,7 @@ public class SimpleScheduler implements Scheduler, TaskRunner {
         exec.submit(new RunJob(job, jobProcessor));
     }
 
+
     class RunJob implements Callable<Void> {
         private final Job job;
         private final JobProcessor processor;
