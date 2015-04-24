@@ -202,7 +202,7 @@
                                 <importBundleDef>org.apache.ode.wso2:ode</importBundleDef>
                                 <importBundleDef>asm.wso2:asm</importBundleDef>
                                 <importBundleDef>cglib.wso2:cglib</importBundleDef>
-                                <importBundleDef>org.apache.axis2.wso2:axis2-jibx</importBundleDef>
+                                <!--importBundleDef>org.apache.axis2.wso2:axis2-jibx</importBundleDef-->
                                 <importBundleDef>org.jibx.wso2:jibx</importBundleDef>
                                 <importBundleDef>org.apache.axis2.wso2:axis2-jaxbri
                                 </importBundleDef>

@@ -170,10 +170,10 @@
                 <groupId>cglib.wso2</groupId>
                 <artifactId>cglib</artifactId>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.apache.axis2.wso2</groupId>
                 <artifactId>axis2-jibx</artifactId>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>org.jibx.wso2</groupId>
                 <artifactId>jibx</artifactId>
