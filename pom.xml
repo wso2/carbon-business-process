@@ -1070,7 +1070,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>2.1</version>
+                <version>${wagon.ssh.version}</version>
             </extension>
         </extensions>
 
@@ -1078,7 +1078,7 @@
             <plugin>
                 <groupId>org.jvnet.maven.incrementalbuild</groupId>
                 <artifactId>incremental-build-plugin</artifactId>
-                <version>1.3</version>
+                <version>${maven.incremental.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -1114,7 +1114,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.7.2</version>
+                    <version>${maven.scr.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>generate-scr-scrdescriptor</id>
@@ -1127,7 +1127,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.3.5</version>
+                    <version>${maven.bundle.plugin.version}</version>
                     <extensions>true</extensions>
                     <configuration>
                         <obrRepository>NONE</obrRepository>
@@ -1148,27 +1148,26 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.2-beta-2</version>
+                    <version>${maven.assembly.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>${maven.project.info.reports.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.8</version>
+                    <version>${maven.build.helper.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <!--<version>2.2</version>-->
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>${maven.resources.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1345,7 +1344,7 @@
         <!-- Carbon Event-processing version-->
         <!--carbon.event.processing.version>2.0.4-SNAPSHOT</carbon.event.processing.version-->
         <carbon.analytics.common.version>1.0.0</carbon.analytics.common.version>
-        <carbon.analytics.common.imp.pkg.version>[1.0.0, 1.1.0]</carbon.analytics.common.imp.pkg.version>
+        <carbon.analytics.common.imp.pkg.version>[1.0.0, 1.1.0)</carbon.analytics.common.imp.pkg.version>
 
         <!-- Axiom Version -->
 
@@ -1480,6 +1479,8 @@
         <bcel.wso2.version>5.2.0.wso2v1</bcel.wso2.version>
         <jibx.wso2.version>1.2.1.wso2v1</jibx.wso2.version>
         <simple-json.version>1.1.wso2v1</simple-json.version>
+        <wagon.ssh.version>2.1</wagon.ssh.version>
+
         <!-- CXF Runtime Bundles -->
         <spring.version>3.0.7.RELEASE</spring.version>
         <!--carbon.cxf.webapp.ext>1.0.1</carbon.cxf.webapp.ext-->
@@ -1557,6 +1558,15 @@
         <exp.pkg.version.javax.servlet.jsp.jstl>1.2.1</exp.pkg.version.javax.servlet.jsp.jstl>
         <imp.pkg.version.javax.servlet.jsp.jstl>[1.2.1, 1.3.0)
         </imp.pkg.version.javax.servlet.jsp.jstl>
+
+        <!-- Maven Plugin Version -->
+        <maven.incremental.plugin.version>1.3</maven.incremental.plugin.version>
+        <maven.scr.plugin.version>1.7.4</maven.scr.plugin.version>
+        <maven.bundle.plugin.version>2.3.5</maven.bundle.plugin.version>
+        <maven.assembly.plugin.version>2.4</maven.assembly.plugin.version>
+        <maven.build.helper.plugin.version>1.8</maven.build.helper.plugin.version>
+        <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
+        <maven.project.info.reports.plugin.version>2.4</maven.project.info.reports.plugin.version>
 
         <!-- Activiti Version -->
 
