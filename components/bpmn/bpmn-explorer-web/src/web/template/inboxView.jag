@@ -14,10 +14,10 @@
  ~ limitations under the License.
 -->
 <div class="col-sm-12">
-	<ol class="breadcrumb">
+	<!--ol class="breadcrumb">
 	  <li><a href="stats">Home</a></li>
 	  <li class="active">Inbox</li>
-	</ol>
+	</ol-->
 	<div class="panel panel-primary">
 	  <!-- Default panel contents -->
 	  <div class="panel-heading">Inbox</div>
