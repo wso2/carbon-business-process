@@ -17,7 +17,7 @@ var httpUrl = location.protocol + "//" + location.host;
 var CONTEXT="bpmn-explorer";
 
 function completeTask(data, id){
-	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
+	var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
 	var variables = [];
 	for(var i=0; i<data.length; i++){
 		variables.push({
@@ -42,7 +42,7 @@ function completeTask(data, id){
 }
 
 function reassign(username, id){
-	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
+	var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
 	var body = { 
 		"assignee" : username
 	};
@@ -59,7 +59,7 @@ function reassign(username, id){
 }
 
 function transfer(username, id){
-	var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/tasks/" + id;
+	var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
 	var body = { 
 		"owner" : username
 	};
@@ -76,7 +76,7 @@ function transfer(username, id){
 }
 
 function startProcess(processDefId){
-    var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/process-instances";
+    var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/process-instances";
     var body = { 
       "processDefinitionId": processDefId
     };
@@ -93,7 +93,7 @@ function startProcess(processDefId){
 }
 
 function startProcessWithData(data, id){
-    var url = "/"+CONTEXT+"/send?req=/bpmnrest/runtime/process-instances";
+    var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/process-instances";
     var variables = [];
     for(var i=0; i<data.length; i++){
         variables.push({

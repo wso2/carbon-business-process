@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
-        <version>4.3.2-SNAPSHOT</version>
+        <version>4.4.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -44,7 +44,7 @@
                         </goals>
                         <configuration>
                             <id>org.wso2.carbon.bpmn.ui</id>
-                            <propertiesFile>../feature.properties</propertiesFile>
+                            <propertiesFile>../../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:console

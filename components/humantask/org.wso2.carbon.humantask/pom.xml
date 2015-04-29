@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask</artifactId>
-        <version>4.3.2-SNAPSHOT</version>
+        <version>4.4.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -113,6 +113,14 @@
             <artifactId>org.wso2.carbon.ntask.core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.wso2.orbit.com.predic8</groupId>
+            <artifactId>soa.model.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -174,7 +182,7 @@
                             </tasks>
                         </configuration>
                     </execution>
-                    <execution>
+                    <!--execution>
                         <id>xcreate-db-schemas</id>
                         <phase>process-classes</phase>
                         <goals>
@@ -232,9 +240,16 @@
                                         <pathelement location="${basedir}/target/classes" />
                                     </classpath>
                                 </mappingtool>
+ 				<mappingtool schemaAction="build" sqlFile="${basedir}/target/db2.sql" readSchema="false">
+                                    <config DBDictionary="${vendor}" propertiesFile="src/main/resources/descriptors/persistence.db2.xml" />
+                                    <classpath>
+                                        <path refid="classpath" />
+                                        <pathelement location="${basedir}/target/classes" />
+                                    </classpath>
+                                </mappingtool>
                             </tasks>
                         </configuration>
-                    </execution>
+                    </execution-->
                     <!--Removed the stub-generation-->
                 </executions>
             </plugin>
