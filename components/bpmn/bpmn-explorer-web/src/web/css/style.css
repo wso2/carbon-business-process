@@ -17,11 +17,18 @@
 	text-align: center;
 }
 .model-center { /* Edited classname 10/03/2014 */
-    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
-    top: 30%;
-    left: 35%;
+    text-align: center;
+    width: 60%;
 }
 .panel-heading {
 	font-size: 20px;
+}
+.mainContent{ /* this is used to align the footer to bottom */
+	height: 95%; 
+}
+#diagram{
+	width: auto;
 }
