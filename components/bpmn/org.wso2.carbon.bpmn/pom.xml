@@ -31,7 +31,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.activiti.wso2</groupId>
+            <groupId>org.wso2.orbit.org.activiti</groupId>
             <artifactId>activiti-all</artifactId>
         </dependency>
 
@@ -65,6 +65,10 @@
             <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
         </dependency>
 
+	 <dependency>
+             <groupId>org.mybatis</groupId>
+             <artifactId>mybatis</artifactId>
+         </dependency>
 
     </dependencies>
 
