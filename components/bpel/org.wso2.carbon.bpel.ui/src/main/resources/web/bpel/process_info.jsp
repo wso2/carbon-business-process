@@ -642,11 +642,6 @@
                                     <pre class="prettyprint linenums" style="height: 35em; overflow:scroll; width:1500px; white-space: pre-wrap;">
                                         <%=processDefPrettyPrinted%>
                                     </pre>
-                                    <script type="text/javascript">
-                                        jQuery(document).ready(function() {
-                                            document.getElementById("xmlPay").value = editAreaLoader.getValue("xmlPay");
-                                        });
-                                    </script>
                                 </td>
                             </tr>
                         </table>
@@ -715,13 +710,6 @@
         </div>
     </div>
     <script type="text/javascript">
-        editAreaLoader.init({
-            id : "xmlPay"		// textarea id
-            ,syntax: "xml"			// syntax to be uses for highgliting
-            ,start_highlight: true		// to display with highlight mode on start-up
-            ,is_editable: false
-        });
-
         alternateTableRows('serviceOperationsParentTable', 'tableEvenRow', 'tableOddRow');
     </script>
     </fmt:bundle>

@@ -30,6 +30,25 @@
     </ol>
 </div>
 <div class="row">
+    <div id="taskActionBtns" class="btn-group" align="center">
+      <%
+        if (taskStatus == 'RESERVED') {%>
+            <button onclick="startTask(<%=id%>)" type="button" class="btn btn-default">Start</button>
+            <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
+            <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
+            <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
+      <%} else if (taskStatus == 'IN_PROGRESS') {%>
+            <button onclick="stopTask(<%=id%>)" type="button" class="btn btn-default">Stop</button>
+            <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
+            <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
+            <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
+            <button onclick="failTask(<%=id%>)" type="button" class="btn btn-default">Fail</button>
+      <%} else if (taskStatus == 'SUSPENDED') {%>
+            <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
+      <%}%>
+    </div>
+    <br/>
+    <br/>
     <div class="panel panel-primary">
       <div class="panel-heading">
             Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
@@ -61,23 +80,7 @@
         </tbody>
       </table>
     </div>
-    <div id="taskActionBtns" class="btn-group" align="center">
-      <%
-        if (taskStatus == 'RESERVED') {%>
-            <button onclick="startTask(<%=id%>)" type="button" class="btn btn-default">Start</button>
-            <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
-            <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
-            <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
-      <%} else if (taskStatus == 'IN_PROGRESS') {%>
-            <button onclick="stopTask(<%=id%>)" type="button" class="btn btn-default">Stop</button>
-            <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
-            <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
-            <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
-            <button onclick="failTask(<%=id%>)" type="button" class="btn btn-default">Fail</button>
-      <%} else if (taskStatus == 'SUSPENDED') {%>
-            <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
-      <%}%>
-    </div>
+
 </div>
 <br/>
 <div class="row" name="infoErrSection">
@@ -91,7 +94,7 @@
         <div class="panel panel-primary">
 
             <div class="panel-heading">
-                Input
+                Task Information
             </div>
             <table class="table">
                 <tbody>
