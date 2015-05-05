@@ -308,7 +308,7 @@ public class TenantRepository {
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
             for (Deployment deployment : deployments) {
-                repositoryService.deleteDeployment(deployment.getId());
+                repositoryService.deleteDeployment(deployment.getId(), true);
             }
 
         } catch (RegistryException e) {
