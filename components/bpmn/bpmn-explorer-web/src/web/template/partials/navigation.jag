@@ -46,5 +46,3 @@ var loggedUser = session.get("user");
     </div><!-- /.container-fluid -->
   </nav>
 </div>
-<!-- below element is used to align the footer to bottom -->
-<div class="mainContent">

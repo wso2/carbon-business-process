@@ -26,7 +26,6 @@
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 	<!-- Custom theme -->
 	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
 </head>
 <body>
@@ -39,3 +38,5 @@
 				</div>
 			</div>
 		</div>
+		<!-- below element is used to align the footer to bottom -->
+		<div class="mainContent">
