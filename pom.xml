@@ -1578,7 +1578,7 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.16.3.wso2v1</org.activiti.wso2.version>
+        <org.activiti.wso2.version>5.16.3.wso2v2</org.activiti.wso2.version>
         <restlet.version>2.2.1.wso2v1</restlet.version>
 
 	<project.scm.id>wso2-scm-server</project.scm.id>
