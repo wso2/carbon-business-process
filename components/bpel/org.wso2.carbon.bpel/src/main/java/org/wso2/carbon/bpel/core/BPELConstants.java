@@ -298,4 +298,6 @@ public final class BPELConstants {
             = "ode.scheduler.immediateTransactionRetryLimit";
     public static final String ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_INTERVAL
             = "ode.scheduler.immediateTransactionRetryInterval";
+
+    public static final String BPS_CLUSTER_NODE_MAP = "WSO2_BPS_NODE_ID_MAP";
 }
