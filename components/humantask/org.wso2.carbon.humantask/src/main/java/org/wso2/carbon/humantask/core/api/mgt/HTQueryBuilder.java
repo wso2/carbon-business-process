@@ -34,8 +34,8 @@ public class HTQueryBuilder {
     private static final String SELECT_TASKS = " SELECT t FROM org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task t ";
     private static final String SELECT_DISTINCT_TASKS = " SELECT DISTINCT t FROM org.wso2.carbon.humantask.core.dao.jpa.openjpa.model.Task t ";
     private static final String SELECT_DISTINCT_TASKS_COUNT = " SELECT COUNT(DISTINCT t) FROM org.wso2.carbon" +
-            ".humantask.core" +
-            ".dao.jpa.openjpa.model.Task t ";
+                                                              ".humantask.core" +
+                                                              ".dao.jpa.openjpa.model.Task t ";
     private static final String JOIN_HUMAN_ROLES_JOIN_ORG_ENTITIES = " JOIN t.humanRoles hr JOIN hr.orgEntities oe WHERE  ";
     private static final String OE_NAME_IN_NAMES = " oe.name IN :names ";
     private static final String AND = " AND ";
@@ -50,11 +50,9 @@ public class HTQueryBuilder {
     private static final String ROLE_TYPE = "roleType";
     private static final String TASK_TYPE = "taskType";
     private static final String TASK_STATUSES = "taskStatuses";
-    //private static final String FILTER_BY_TASKNAME = " t.name = :taskName ";
     private static final String FILTER_BY_TASKNAME = " t.taskDefinitionName = :taskName ";
     private static final String FILTER_BY_TASK_STATUS = " t.status = :status ";
     private static final String TASK_NAME = "taskName";
-
     private static final String ORDER_BY = " ORDER BY ";
     private static final String DESC = " DESC ";
     private static final String ASC = " ASC ";
@@ -65,16 +63,12 @@ public class HTQueryBuilder {
     private static final String COLUMN_STATUS = " t.status ";
 
     private SimpleQueryCriteria queryCriteria;
-
     private EntityManager em;
     private TPredefinedStatus.Enum queryStatus;
     private TaskStatus taskStatus;
-
     private String taskName;
     private String taskDefName;
-
     private static final Log log = LogFactory.getLog(HTQueryBuilder.class);
-
 
     /**
      * @param criteria : The query criteria on which the tasks will be filtered.
@@ -86,7 +80,6 @@ public class HTQueryBuilder {
     }
 
     public HTQueryBuilder() {
-
     }
 
     /**
@@ -96,34 +89,32 @@ public class HTQueryBuilder {
     public Query buildQueryToCountTaskInstances(String taskName) {
         this.taskName = taskName;
         Query query = null;
-
-
         return query;
     }
 
 
-    public Query buildQueryToCountTaskInstancesByTaskName(String taskName, TPredefinedStatus.Enum status, EntityManager entityManager) {
+    public Query buildQueryToCountTaskInstancesByTaskName(String taskName,
+                                                          TPredefinedStatus.Enum status,
+                                                          EntityManager entityManager) {
         this.taskName = taskName;
         this.queryStatus = status;
 
         taskStatus = TaskStatus.valueOf(status.toString());
         this.em = entityManager;
         Query query = null;
-
-        //count
         query = entityManager.createQuery("SELECT DISTINCT t FROM Task t WHERE t.name = :name AND t.status = :status");
         query.setParameter("name", taskName);
         query.setParameter("status", taskStatus);
         return query;
     }
 
-    public Query buildQueryToCountTaskInstancesByTaskDefName(String taskDefName, TPredefinedStatus.Enum status, EntityManager entityManager) {
+    public Query buildQueryToCountTaskInstancesByTaskDefName(String taskDefName,
+                                                             TPredefinedStatus.Enum status,
+                                                             EntityManager entityManager) {
         this.taskDefName = taskDefName;
         this.queryStatus = status;
-
         taskStatus = TaskStatus.valueOf(status.toString());
         this.em = entityManager;
-
         Query query = null;
         query = entityManager.createQuery("SELECT COUNT (DISTINCT t) FROM Task t WHERE t.taskDefinitionName = :name AND t.status = :status");
         query.setParameter("name", taskDefName);
@@ -132,24 +123,21 @@ public class HTQueryBuilder {
     }
 
 
-    public Query buildQueryToFindTaskInstances(TPredefinedStatus.Enum status, EntityManager entityManager) {
+    public Query buildQueryToFindTaskInstances(TPredefinedStatus.Enum status,
+                                               EntityManager entityManager) {
         this.taskName = taskName;
         this.queryStatus = status;
-
         taskStatus = TaskStatus.valueOf(status.toString());
         this.em = entityManager;
-
         Query query = null;
         query = entityManager.createQuery("SELECT DISTINCT t FROM Task t WHERE t.status = :status");
         query.setParameter("status", taskStatus);
         return query;
-
     }
 
     public Query buildQueryToFindTaskInstances(String taskName, EntityManager entityManager) {
         this.taskName = taskName;
         this.em = entityManager;
-
         Query query = null;
         query = entityManager.createQuery("SELECT DISTINCT t FROM Task t WHERE t.name = :name");
         query.setParameter("name", taskName);
@@ -159,26 +147,22 @@ public class HTQueryBuilder {
     public Query buildQueryToGetAllDeployedTasks(EntityManager entityManager) {
         this.em = entityManager;
         Query query = null;
-
         query = entityManager.createQuery("SELECT DISTINCT du FROM DeploymentUnit du");
         return query;
     }
 
-    public Query buildQueryToGetTaskDefinitionName(String taskPackageName, EntityManager entityManager) {
+    public Query buildQueryToGetTaskDefinitionName(String taskPackageName,
+                                                   EntityManager entityManager) {
         this.em = entityManager;
         Query query = null;
-
         query = entityManager.createQuery("SELECT DISTINCT t FROM Task t WHERE t.packageName LIKE '%:duName'");
         query.setParameter("duName", taskPackageName);
         return query;
     }
 
-    //need to be changed
     public Query getTenantIDs(EntityManager entityManager) {
         Query query = null;
         query = entityManager.createQuery("SELECT DISTINCT du FROM DeploymentUnit du");
-        //query=entityManager.createQuery("SELECT DISTINCT du.tenantId FROM DeploymentUnit du");
-
         return query;
     }
 

@@ -1,7 +1,7 @@
 
 /*
  *
- *   Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -16,7 +16,7 @@
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
  *  under the License.
- * /
+ *
  */
 
 package org.wso2.carbon.humantask.core.integration.jmx;
@@ -36,22 +36,22 @@ import org.wso2.carbon.humantask.types.TPredefinedStatus;
 /**
  * implementation of  HTTaskStatusMonitorMXBean.
  */
-
 public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
 
     private static final Log log = LogFactory.getLog(HTTaskStatusMonitor.class);
     private final String name = "HTTaskStatusMonitor";
     private HTQueryBuildHelper queryBuilderHelper = new HTQueryBuildHelperImpl();
 
-
     /**
-     * @return  String[] contains all deployed tasks details (task instances count, tenant ID, task def name, task name, operation, port name) for all tenants
+     * @return String[] contains all deployed tasks details (task instances count, tenant ID, task def name, task name, operation, port name) for all tenants
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
      * @throws IllegalStateFault
      * @throws IllegalOperationFault
      */
-    public String[] showAllTaskDefinitions() throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, PackageManagementException {
+    public String[] showAllTaskDefinitions()
+            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
+                   IllegalOperationFault, PackageManagementException {
         String[] result = {"No task deployed yet in all the available tenants"};
         String[] resultTemp = queryBuilderHelper.getAllDeployedTasks();
         if (resultTemp != null && resultTemp.length > 0) {
@@ -68,7 +68,9 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
      * @throws IllegalStateFault
      * @throws IllegalOperationFault
      */
-    public String[] getInstanceCountForTaskDefinition(String taskName) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault {
+    public String[] getInstanceCountForTaskDefinition(String taskName)
+            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
+                   IllegalOperationFault {
         String[] result = {"No task deployed yet in all the available tenants"};
         try {
             String[] resultTemp = queryBuilderHelper.getTaskInstanceCountsByState(taskName);
@@ -78,8 +80,6 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-
-
         return result;
     }
 
@@ -91,8 +91,9 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
      * @throws IllegalArgumentFault
      * @throws IllegalAccessFault
      */
-    public String[] getInstancesListForTaskState(String status) throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-            IllegalAccessFault {
+    public String[] getInstancesListForTaskState(String status)
+            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
+                   IllegalAccessFault {
         String[] taskInstances = {"No task instances found in all the available tenants"};
         String[] taskInstanceTemp = {"Invalid task status entered"};
         TPredefinedStatus.Enum st = null;
@@ -112,8 +113,8 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
     }
 
     /**
-     * @param taskID  taskId of the task instance which details should be displayed
-     * @return  all the available details of the task instance
+     * @param taskID taskId of the task instance which details should be displayed
+     * @return all the available details of the task instance
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
      * @throws IllegalStateFault
@@ -121,19 +122,20 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
      * @throws URI.MalformedURIException
      */
 
-    public String[] getTaskInstanceDetails(String taskID) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, URI.MalformedURIException {
+    public String[] getTaskInstanceDetails(String taskID)
+            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
+                   IllegalOperationFault, URI.MalformedURIException {
         String[] taskInstances = {"No task found with the given ID in all the available tenants"};
         try {
             taskInstances = queryBuilderHelper.getTaskDataById(taskID);
         } catch (Exception e) {
-            //log.error,e.msg
             log.error(e.getMessage(), e);
         }
         return taskInstances;
     }
 
     /**
-     * @return  value of name variable
+     * @return value of name variable
      */
     public String getName() {
         return name;

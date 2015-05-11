@@ -29,43 +29,46 @@ import org.wso2.carbon.humantask.client.api.IllegalStateFault;
 import org.wso2.carbon.humantask.skeleton.mgt.services.PackageManagementException;
 
 /**
- ???? devide this into two MBean classes??
+ * Task Status monitoring MBean
  */
 public interface HTTaskStatusMonitorMXBean {
 
     //@DescriptorKey("number of cache slots in use")
 
     /**
-     *  @return String[] contains all deployed tasks details (task instances count, tenant ID, task def name, task name, operation, port name) for all tenants
+     * @return String[] contains all deployed tasks details (task instances count, tenant ID, task def name, task name, operation, port name) for all tenants
      */
-    public String[] showAllTaskDefinitions() throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, PackageManagementException;
+    public String[] showAllTaskDefinitions()
+            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
+                   IllegalOperationFault, PackageManagementException;
 
 
     /**
-     *
-     * @param taskName  can be a task name or task def name, based on that the result will be given, preferred: task def name
+     * @param taskName can be a task name or task def name, based on that the result will be given, preferred: task def name
      * @return String[] of task instances' details ( task instances count for each  status)
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
      * @throws IllegalStateFault
      * @throws IllegalOperationFault
      */
-    public String[] getInstanceCountForTaskDefinition(String taskName) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault;
+    public String[] getInstanceCountForTaskDefinition(String taskName)
+            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
+                   IllegalOperationFault;
 
     /**
-     *
      * @param status give a valid status to search the task instances in that status
-     * @return  String[] of all task instances for the given status
+     * @return String[] of all task instances for the given status
      * @throws IllegalStateFault
      * @throws IllegalOperationFault
      * @throws IllegalArgumentFault
      * @throws IllegalAccessFault
      */
-    public String[] getInstancesListForTaskState(String status) throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault;
+    public String[] getInstancesListForTaskState(String status)
+            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
+                   IllegalAccessFault;
 
     /**
-     *
-     * @param taskID  taskId of the task instance which details should be displayed
+     * @param taskID taskId of the task instance which details should be displayed
      * @return all the available details of the task instance
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
@@ -73,12 +76,10 @@ public interface HTTaskStatusMonitorMXBean {
      * @throws IllegalOperationFault
      * @throws URI.MalformedURIException
      */
-    public String[] getTaskInstanceDetails(String taskID) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, URI.MalformedURIException;
+    public String[] getTaskInstanceDetails(String taskID)
+            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
+                   IllegalOperationFault, URI.MalformedURIException;
 
-    /**
-     *
-     * @return
-     */
     public String getName();
 }
 
