@@ -33,10 +33,6 @@ import org.wso2.carbon.humantask.client.api.IllegalStateFault;
 import org.wso2.carbon.humantask.core.HumanTaskServer;
 import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalAccessException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalArgumentException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalOperationException;
-import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateException;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServerHolder;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
@@ -82,8 +78,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      */
 
     public String[] getTaskInstanceCountsByState(String taskName)
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
         int statusCount1 = 0;
         TPredefinedStatus.Enum[] statuses;
         int statusesSize = TPredefinedStatus.Enum.table.lastInt();
@@ -100,7 +95,11 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         isTaskName = m.find();
         if (isTaskName) {
             for (int i = 0; i < statuses.length; i++) {
-                statusCount1 = getTaskCountsForStateAndTaskName(taskName, statuses[i]);
+                try {
+                    statusCount1 = getTaskCountsForStateAndTaskName(taskName, statuses[i]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 statusCounts[i] = " " + statuses[i].toString() + " " + statusCount1;
             }
         } else {
@@ -121,33 +120,27 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      */
     public int getTaskInstanceCountForTaskName(final String taskname)
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
         final int[] taskCountTemp = {0};
         final List[] tasklist = new List[1];
 
-        try {
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Object>() {
+                    public Object call() throws Exception {
 
-            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<Object>() {
-                        public Object call() throws Exception {
-
-                            HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
-                            HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                            HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                            HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
-                            humanTaskServer.getServerConfig();
-                            HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                            EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                            Query query = htQueryBuilder.buildQueryToFindTaskInstances(taskname, em);
-                            tasklist[0] = query.getResultList();
-                            taskCountTemp[0] = tasklist[0].size();
-                            return null;
-                        }
-                    });
-        } catch (Exception ex) {
-            handleException(ex);
-        }
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        humanTaskServer.getServerConfig();
+                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
+                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        Query query = htQueryBuilder.buildQueryToFindTaskInstances(taskname, em);
+                        tasklist[0] = query.getResultList();
+                        taskCountTemp[0] = tasklist[0].size();
+                        return null;
+                    }
+                });
 
 
         return taskCountTemp[0];
@@ -164,68 +157,58 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      */
     public int getTaskCountsForStateAndTaskName(final String taskName,
                                                 final TPredefinedStatus.Enum status)
-            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            throws Exception {
 
         final List[] tasklist = new List[1];
-        try {
 
-            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<Object>() {
-                        public Object call() throws Exception {
-                            HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
-                            HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                            HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                            HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
-                            humanTaskServer.getServerConfig();
 
-                            HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Object>() {
+                    public Object call() throws Exception {
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        humanTaskServer.getServerConfig();
 
-                            EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                            Query query = htQueryBuilder.buildQueryToCountTaskInstancesByTaskName(taskName, status, em);
-                            tasklist[0] = query.getResultList();
-                            if (tasklist[0].listIterator().hasNext() == true) {
-                                statusCount2 = tasklist[0].size();
-                            }
-                            boolean b = true;
-                            return null;
+                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
+
+                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        Query query = htQueryBuilder.buildQueryToCountTaskInstancesByTaskName(taskName, status, em);
+                        tasklist[0] = query.getResultList();
+                        if (tasklist[0].listIterator().hasNext() == true) {
+                            statusCount2 = tasklist[0].size();
                         }
-                    });
-        } catch (Exception ex) {
-            handleException(ex);
-        }
+                        boolean b = true;
+                        return null;
+                    }
+                });
         return statusCount2;
     }
 
     public int getTaskCountsForStateAndTaskDefName(final String taskName,
                                                    final TPredefinedStatus.Enum status)
-            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
+            throws Exception {
         final List[] tasklist = new List[1];
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Object>() {
+                    public Object call() throws Exception {
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        humanTaskServer.getServerConfig();
 
-        try {
+                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
 
-            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<Object>() {
-                        public Object call() throws Exception {
-                            HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
-                            HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                            HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                            HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
-                            humanTaskServer.getServerConfig();
+                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        Query query = htQueryBuilder.buildQueryToCountTaskInstancesByTaskDefName(taskName, status, em);
+                        tasklist[0] = query.getResultList();
+                        statusCount2 = Integer.parseInt(tasklist[0].get(0).toString());
+                        return null;
+                    }
+                });
 
-                            HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-
-                            EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                            Query query = htQueryBuilder.buildQueryToCountTaskInstancesByTaskDefName(taskName, status, em);
-                            tasklist[0] = query.getResultList();
-                            statusCount2 = Integer.parseInt(tasklist[0].get(0).toString());
-                            return null;
-                        }
-                    });
-        } catch (Exception ex) {
-            handleException(ex);
-        }
         return statusCount2;
     }
 
@@ -237,8 +220,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      */
     public DeployedTaskDetail[][] getAllDeployedTasksDetails()
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
         DeployedTaskDetail[][] dtt = null;
         long[] tenantIDs = getAllTenantIDs();
         dtt = new DeployedTaskDetail[tenantIDs.length][];
@@ -269,8 +251,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
     }
 
     public DeployedTaskDetail getDeployedTasksDetails(String taskName)
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
         DeployedTaskDetail dtt;
         dtt = new DeployedTaskDetail();
         HumanTaskBaseConfiguration htc;
@@ -290,11 +271,31 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         dtt.setConfigType(htc.getConfigurationType());
         dtt.setPackageName(htc.getPackageName());
         dtt.setStatus(htc.getPackageStatus().toString());
-        dtt.setReservedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.RESERVED));
-        dtt.setCompletedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.COMPLETED));
-        dtt.setReadyCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.READY));
-        dtt.setFailedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.FAILED));
-        dtt.setInProgressCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.IN_PROGRESS));
+        try {
+            dtt.setReservedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.RESERVED));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            dtt.setCompletedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.COMPLETED));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            dtt.setReadyCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.READY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            dtt.setFailedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.FAILED));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            dtt.setInProgressCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.IN_PROGRESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return dtt;
     }
@@ -307,8 +308,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      */
     public String[] getAllDeployedTasks()
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault, PackageManagementException {
+            throws Exception {
         long[] tenantIDs;
         tenantIDs = getAllTenantIDs();
         String[][] tasklist = new String[tenantIDs.length][];
@@ -381,33 +381,27 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      */
     public String[] getTaskInstances(final TPredefinedStatus.Enum status)
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
         String[] instances = {"null"};
         final List[] tasklist = new List[1];
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Object>() {
+                    public Object call() throws Exception {
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        humanTaskServer.getServerConfig();
+                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
+                        TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
+                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        Query query = htQueryBuilder.buildQueryToFindTaskInstances(status, em);
+                        tasklist[0] = query.getResultList();
+                        return null;
+                    }
+                });
 
-        try {
 
-            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<Object>() {
-                        public Object call() throws Exception {
-                            HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
-                            HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                            HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                            HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
-                            humanTaskServer.getServerConfig();
-                            HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                            TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
-                            EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                            Query query = htQueryBuilder.buildQueryToFindTaskInstances(status, em);
-                            tasklist[0] = query.getResultList();
-                            return null;
-                        }
-                    });
-
-        } catch (Exception ex) {
-            handleException(ex);
-        }
         int i = 0;
         instances = new String[tasklist[0].size() + 2];
         instances[i++] = String.format("%1$-" + 7 + "s", "ID") + String.format("%1$-" + 60 + "s", "Name") + String.format("%1$-" + 60 + "s", "Definition Name") + String.format("%1$-" + 30 + "s", "Created on");
@@ -520,31 +514,6 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
 
 
     /**
-     * @param ex
-     * @throws IllegalStateFault
-     * @throws IllegalOperationFault
-     * @throws IllegalArgumentFault
-     * @throws IllegalAccessFault
-     */
-    private void handleException(Exception ex)
-            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
-                   IllegalAccessFault {
-        log.error(ex);
-        if (ex instanceof HumanTaskIllegalAccessException) {
-            throw new IllegalAccessFault(ex.getMessage());
-        } else if (ex instanceof HumanTaskIllegalArgumentException) {
-            throw new IllegalArgumentFault(ex.getMessage());
-        } else if (ex instanceof HumanTaskIllegalOperationException) {
-            throw new IllegalOperationFault(ex.getMessage());
-        } else if (ex instanceof HumanTaskIllegalStateException) {
-            throw new IllegalStateFault(ex.getMessage());
-        } else {
-            throw new IllegalStateFault(ex.getMessage());
-        }
-    }
-
-
-    /**
      * @return
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
@@ -552,32 +521,27 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      */
     public long[] getAllTenantIDs()
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
         long[] result = null;
         final List[] tasklist = new List[1];
 
-        try {
-            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<Object>() {
-                        public Object call() throws Exception {
-                            HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
-                            HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                            HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                            HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
-                            humanTaskServer.getServerConfig();
-                            HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                            TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
-                            EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                            Query query = htQueryBuilder.getTenantIDs(em);
-                            tasklist[0] = query.getResultList();
-                            return null;
-                        }
-                    });
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Object>() {
+                    public Object call() throws Exception {
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        humanTaskServer.getServerConfig();
+                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
+                        TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
+                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        Query query = htQueryBuilder.getTenantIDs(em);
+                        tasklist[0] = query.getResultList();
+                        return null;
+                    }
+                });
 
-        } catch (Exception ex) {
-            handleException(ex);
-        }
         int i = 0;
         Set<Long> tid = new HashSet<Long>();
         for (Object object : tasklist[0]) {
@@ -600,29 +564,24 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      */
     private EntityManager getEntityManager()
-            throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
-                   IllegalOperationFault {
+            throws Exception {
 
         final EntityManager[] em = new EntityManager[1];
-        try {
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Object>() {
+                    public Object call() throws Exception {
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        humanTaskServer.getServerConfig();
+                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
+                        TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
+                        em[0] = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        return null;
+                    }
+                });
 
-            HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                    execTransaction(new Callable<Object>() {
-                        public Object call() throws Exception {
-                            HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
-                            HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                            HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                            HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
-                            humanTaskServer.getServerConfig();
-                            HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                            TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
-                            em[0] = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                            return null;
-                        }
-                    });
-        } catch (Exception ex) {
-            handleException(ex);
-        }
         return em[0];
     }
 }

@@ -53,7 +53,12 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
             throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
                    IllegalOperationFault, PackageManagementException {
         String[] result = {"No task deployed yet in all the available tenants"};
-        String[] resultTemp = queryBuilderHelper.getAllDeployedTasks();
+        String[] resultTemp = new String[0];
+        try {
+            resultTemp = queryBuilderHelper.getAllDeployedTasks();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         if (resultTemp != null && resultTemp.length > 0) {
             result = resultTemp;
         }

@@ -34,24 +34,26 @@ import java.util.List;
 
 public interface HTQueryBuildHelper {
 
-    public int getTaskCountsForStateAndTaskName(String taskName, TPredefinedStatus.Enum status) throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault;
+    public int getTaskCountsForStateAndTaskName(final String taskName, final TPredefinedStatus.Enum status)
+            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault, Exception;
 
-    public int getTaskCountsForStateAndTaskDefName(String taskName, TPredefinedStatus.Enum status) throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault, IllegalAccessFault;
+    public int getTaskCountsForStateAndTaskDefName(String taskName, TPredefinedStatus.Enum status)
+            throws Exception;
 
-    public DeployedTaskDetail[][] getAllDeployedTasksDetails() throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault ;
+    public DeployedTaskDetail[][] getAllDeployedTasksDetails() throws Exception;
 
 
-    public String[] getAllDeployedTasks() throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, PackageManagementException;
+    public String[] getAllDeployedTasks() throws Exception;
 
     public List<HumanTaskBaseConfiguration> getAlldeployedTasks(long tenantID);
 
-    public String[] getTaskInstanceCountsByState(String taskname) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault;
+    public String[] getTaskInstanceCountsByState(String taskname) throws Exception;
 
-    public String[] getTaskInstances(final TPredefinedStatus.Enum status) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault;
+    public String[] getTaskInstances(final TPredefinedStatus.Enum status) throws Exception;
 
     public String[] getTaskDataById(String taskid) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, URI.MalformedURIException;
 
-    public long[] getAllTenantIDs() throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault;
+    public long[] getAllTenantIDs() throws Exception;
 
-    public int getTaskInstanceCountForTaskName(final String taskname) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault;
+    public int getTaskInstanceCountForTaskName(final String taskname) throws Exception;
     }
