@@ -28,6 +28,7 @@ import org.wso2.carbon.bpel.core.Axis2ConfigurationContextObserverImpl;
 import org.wso2.carbon.bpel.core.BPELEngineService;
 import org.wso2.carbon.bpel.core.BPELEngineServiceImpl;
 import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerInitializer;
+import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerShutDown;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.core.ServerStartupHandler;
@@ -37,6 +38,7 @@ import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 import org.wso2.carbon.utils.ConfigurationContextService;
+import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpel.BPELServiceComponent" immediate="true"
@@ -75,6 +77,9 @@ public class BPELServiceComponent {
 
             bundleContext.registerService(ServerStartupHandler.class.getName(),
                     new BPELSchedulerInitializer(), null);
+            //registering service to shutdown ode scheduler, before server shutdown
+            bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(),
+                    new BPELSchedulerShutDown(), null);
 
         } catch (Throwable t) {
             log.error("Failed to activate BPEL Core bundle", t);
