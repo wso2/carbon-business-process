@@ -102,6 +102,8 @@ public class HumanTaskStore {
 
     private HumanTaskEngine engine;
 
+    private static final String VERSION_SEPARATOR = "-";
+
     public HumanTaskStore(int tenantId, ConfigurationContext configContext) {
         this.tenantId = tenantId;
         this.configContext = configContext;
@@ -438,10 +440,21 @@ public class HumanTaskStore {
                                                            int tenantId,
                                                            long version,
                                                            String md5sum) throws HumanTaskDeploymentException {
-        ArchiveBasedHumanTaskDeploymentUnitBuilder builder =
-                new ArchiveBasedHumanTaskDeploymentUnitBuilder(humanTaskFile, tenantId, version, md5sum);
-        HumanTaskDeploymentUnit newHumanTaskDeploymentUnit = builder.createNewHumanTaskDeploymentUnit();
-        return newHumanTaskDeploymentUnit;
+        try {
+            ArchiveBasedHumanTaskDeploymentUnitBuilder builder = new ArchiveBasedHumanTaskDeploymentUnitBuilder(
+                    humanTaskFile, tenantId, version, md5sum);
+            HumanTaskDeploymentUnit newHumanTaskDeploymentUnit = builder.createNewHumanTaskDeploymentUnit();
+            return newHumanTaskDeploymentUnit;
+        } catch (HumanTaskDeploymentException deploymentException) {
+            if (log.isDebugEnabled()) {
+                log.debug("humanTask:" + humanTaskFile.getName()
+                        + " deployment failed, removing the extracted human task directory.");
+            }
+            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName()) + VERSION_SEPARATOR + version;
+            deleteHumanTaskPackageFromRepo(versionedName);
+            throw deploymentException;
+        }
+
     }
 
     /**
