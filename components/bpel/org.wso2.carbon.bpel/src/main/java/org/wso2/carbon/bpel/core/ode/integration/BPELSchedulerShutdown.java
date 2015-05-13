@@ -27,31 +27,22 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  * ODE scheduler should be shutdown before the Hazelcast instance.
  * This class halts the carbon server shutdown until the scheduler is shut.
  */
-public class BPELSchedulerShutDown implements WaitBeforeShutdownObserver{
+public class BPELSchedulerShutdown implements WaitBeforeShutdownObserver{
 
-    private static Log log = LogFactory.getLog(BPELSchedulerShutDown.class);
+    private static Log log = LogFactory.getLog(BPELSchedulerShutdown.class);
     private static boolean status = false;
 
     //triggered before shutting down server and shutdown the scheduler if exists
     @Override
     public void startingShutdown() {
         Scheduler scheduler = ((BPELServerImpl) BPELServiceComponent.getBPELServer()).getScheduler();
-
         if (scheduler != null) {
-            try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Shutting down quartz scheduler.");
-                }
-                scheduler.shutdown();
-            } catch (Exception e) {
-                log.warn("Scheduler couldn't be shut down.", e);
-            } finally {
-                scheduler = null;
-                status = true;
+            if (log.isDebugEnabled()) {
+                log.debug("Shutting down quartz scheduler.");
             }
-        } else {
-            status = true;
+            scheduler.shutdown();
         }
+        status = true;
     }
 
     //keep blocking until the status is true
