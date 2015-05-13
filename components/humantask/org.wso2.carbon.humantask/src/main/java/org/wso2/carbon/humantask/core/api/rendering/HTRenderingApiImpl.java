@@ -286,7 +286,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
         String inputRenderings = (String) taskOps.getRendering(taskIdentifier, renderingType);
 
         //Create input element
-        InputType renderingInputs = new InputType();
+        InputType renderingInputs = null;
 
         //check availability of input renderings
         if (inputRenderings != null && inputRenderings.length() > 0) {
@@ -323,6 +323,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
 
                 }
 
+                renderingInputs = new InputType();
                 renderingInputs.setElement(inputElements);
                 //TODO cache renderingInputs against task instance id
             }
@@ -356,7 +357,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
         String outputRenderings = (String) taskOps.getRendering(taskIdentifier, renderingType);
 
         //create output element
-        OutputType renderingOutputs = new OutputType();
+        OutputType renderingOutputs = null;
 
         //HT without output renderings is valid scenario
         //check availability of output renderings
@@ -426,6 +427,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                         throw new GetRenderingsFaultException("Unable to find unique id for the wso2:output rendering element");
                     }
                 }
+                renderingOutputs = new OutputType();
                 renderingOutputs.setElement(outputElements);
             }
         }

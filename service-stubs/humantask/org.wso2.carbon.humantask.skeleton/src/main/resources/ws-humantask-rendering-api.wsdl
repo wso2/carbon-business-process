@@ -17,7 +17,7 @@
             <xsd:element name="getRenderingsResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="input" type="tns:inputType" maxOccurs="1" minOccurs="1"/>
+                        <xsd:element name="input" type="tns:inputType" maxOccurs="1" minOccurs="0"/>
                         <xsd:element name="output" type="tns:outputType" maxOccurs="1"
                                      minOccurs="0"/>
                     </xsd:sequence>
