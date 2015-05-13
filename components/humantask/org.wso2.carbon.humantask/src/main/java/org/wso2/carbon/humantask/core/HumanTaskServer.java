@@ -173,7 +173,6 @@ public class HumanTaskServer {
             database.start();
         } catch (Exception e) {
             String errMsg = "Humantask Database Initialization failed.";
-            log.error(errMsg, e);
             throw new HumanTaskServerException(errMsg, e);
         }
     }
