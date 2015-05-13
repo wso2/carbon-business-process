@@ -186,6 +186,19 @@ public final class BPELServerImpl implements BPELServer , Observer{
      * @throws Exception if error occurred while shutting down BPEL Server.
      */
     public void shutdown() throws Exception {
+        if (scheduler != null) {
+            try {
+                if (log.isDebugEnabled()) {
+                    log.debug("Shutting down quartz scheduler.");
+                }
+                scheduler.shutdown();
+            } catch (Exception e) {
+                log.warn("Scheduler couldn't be shut down.", e);
+            } finally {
+                scheduler = null;
+            }
+        }
+
         if (odeBpelServer != null) {
             try {
                 if (log.isDebugEnabled()) {
@@ -211,19 +224,6 @@ public final class BPELServerImpl implements BPELServer , Observer{
                 cronScheduler = null;
             }
 
-        }
-
-        if (scheduler != null) {
-            try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Shutting down quartz scheduler.");
-                }
-                scheduler.shutdown();
-            } catch (Exception e) {
-                log.warn("Scheduler couldn't be shut down.", e);
-            } finally {
-                scheduler = null;
-            }
         }
 
         if (processStore != null) {
