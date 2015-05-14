@@ -44,8 +44,12 @@
 		    			<td rowspan="<%=count%>"><%=list[i-count].processName%></td>
 		    			<td>
 		    				<a href="" data-toggle="modal" data-target="#diagram" 
-		    					onclick="$('#processDiagram').attr('src', 
-		    							'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+		    				<%if(list[i-count].imageUrl.indexOf("not supported") >= 0){%>
+                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+                            <%}else{%>
+                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src', 
+	    							'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+							<%}%>
 		    					<%=list[i-count].processId%>
 		    				</a>
 		    			</td>
@@ -58,8 +62,12 @@
 		    			<tr>
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
-			    					onclick="$('#processDiagram').attr('src', 
+		    					<%if(list[i-j].imageUrl.indexOf("not supported") >= 0){%>
+                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+                                <%}else{%>
+                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
 			    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
+			    				<%}%>
 			    					<%=list[i-j].processId%>
 			    				</a>
 			    			</td>
@@ -76,8 +84,12 @@
 		    			<td rowspan="<%=count%>"><%=list[i-count].processName%></td>
 		    			<td>
 		    				<a href="" data-toggle="modal" data-target="#diagram" 
-		    					onclick="$('#processDiagram').attr('src', 
+		    				<%if(list[i-count].imageUrl.indexOf("not supported") >= 0){%>
+		    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+		    				<%}else{%>
+		    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
 		    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+							<%}%>
 		    					<%=list[i-count].processId%>
 		    				</a>
 		    			</td>
@@ -90,8 +102,12 @@
 		    			<tr>
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
-			    					onclick="$('#processDiagram').attr('src', 
+			    				<%if(list[i-j].imageUrl.indexOf("not supported") >= 0){%>
+                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+                                <%}else{%>
+                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src', 
 			    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
+								<%}%>
 			    					<%=list[i-j].processId%>
 			    				</a>
 			    			</td>
@@ -134,6 +150,7 @@
                 </div>
                 <div class="modal-body">
                     <img id="processDiagram" src=""/>
+                    <p id="imgStatus"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
