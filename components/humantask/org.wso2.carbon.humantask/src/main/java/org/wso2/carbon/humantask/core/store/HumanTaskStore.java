@@ -692,14 +692,11 @@ public class HumanTaskStore {
             operation.setMessageReceiver(msgReceiver);
             getTenantAxisConfig().getPhasesInfo().setOperationPhases(operation);
         }
-
-        Set<String> exposedTransports = getTenantAxisConfig().getTransportsIn().keySet();
-        /**
-         * Add the transports to axis2 service by reading from the tenant transport config
-         */
-        for (String transport : exposedTransports) {
-            axisService.addExposedTransport(transport);
-        }
+        List<String> transports = new ArrayList<String>();
+        transports.add(Constants.TRANSPORT_HTTPS);
+        transports.add(Constants.TRANSPORT_HTTP);
+        transports.add(Constants.TRANSPORT_LOCAL);
+        axisService.setExposedTransports(transports);
         if (HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().isHtCoordinationEnabled()
                 && HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().isTaskRegistrationEnabled()
                 && config.getConfigurationType() == HumanTaskBaseConfiguration.ConfigurationType.TASK) {
