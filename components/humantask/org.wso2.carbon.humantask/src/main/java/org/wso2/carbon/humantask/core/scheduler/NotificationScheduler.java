@@ -42,7 +42,7 @@ import java.util.Map;
  * Retrieve notification type from human task to send related email/sms notifications
  */
 public class NotificationScheduler {
-    private static Log log = LogFactory.getLog(NotificationScheduler.class);
+    private static final Log log = LogFactory.getLog(NotificationScheduler.class);
     private boolean isEmailNotificationEnabled = false;
     private boolean isSMSNotificationEnabled = false;
     private EmailEventAdapter emailAdapter;
