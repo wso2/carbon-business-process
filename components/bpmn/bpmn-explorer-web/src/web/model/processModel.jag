@@ -35,7 +35,11 @@ var processes = get( httpUrl + "/bpmn/repository/process-definitions?sort=name&s
 	,null, headers, "json" ).data;
 
 for (var j=0; j<processes.data.length; j++){
-	var imageUrl = processes.data[j].diagramResource.replace("resources", "resourcedata").split(":")[2].substring(4);
+	if(processes.data[j].diagramResource == null){
+        imageUrl = "not supported";
+    }else{
+        var imageUrl = processes.data[j].diagramResource.replace("resources", "resourcedata").split(":")[2].substring(4);
+    }
 
 	list.push({
 		processName: processes.data[j].name,
