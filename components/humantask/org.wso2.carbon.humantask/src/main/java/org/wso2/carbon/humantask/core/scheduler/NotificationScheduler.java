@@ -55,12 +55,26 @@ public class NotificationScheduler {
      * exception, actual implementation does not throw such an exception and hence this exception would not occur.
      */
     public void init() {
-        emailAdapter = new EmailEventAdapter(null, globalProperties);
-        smsAdapter = new SMSEventAdapter(null, globalProperties);
+        isEmailNotificationEnabled = HumanTaskServiceComponent.getHumanTaskServer()
+                .getServerConfig().getEnableEMailNotification();
+        isSMSNotificationEnabled = HumanTaskServiceComponent.getHumanTaskServer()
+                .getServerConfig().getEnableSMSNotification();
+
+        if(isEmailNotificationEnabled) {
+            emailAdapter = new EmailEventAdapter(null, globalProperties);
+        }
+
+        if(isSMSNotificationEnabled) {
+            smsAdapter = new SMSEventAdapter(null, globalProperties);
+        }
 
         try {
-            emailAdapter.init();
-            smsAdapter.init();
+            if(isEmailNotificationEnabled) {
+                emailAdapter.init();
+            }
+            if(isSMSNotificationEnabled) {
+                smsAdapter.init();
+            }
         } catch (OutputEventAdapterException e) {
             log.error("Error initializing email/sms event adaptors ", e);
         }
@@ -75,10 +89,6 @@ public class NotificationScheduler {
      */
     public void checkForNotificationTasks(HumanTaskBaseConfiguration taskConfiguration,
                                           TaskCreationContext creationContext, TaskDAO task) {
-        isEmailNotificationEnabled = HumanTaskServiceComponent.getHumanTaskServer()
-                .getServerConfig().getEnableEMailNotification();
-        isSMSNotificationEnabled = HumanTaskServiceComponent.getHumanTaskServer()
-                .getServerConfig().getEnableSMSNotification();
         try {
             if (isEmailNotificationEnabled) {
                 publishEmailNotifications(task, taskConfiguration);
