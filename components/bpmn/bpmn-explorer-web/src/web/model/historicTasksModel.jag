@@ -24,7 +24,7 @@ if(pagination > 0){
 }
 var headers = {"Authorization":"Basic " + auth};
 var task = [];
-var tasks = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data;
+var tasks = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" + "&active=true&sort=endTime&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 for(var i=0; i < tasks.data.length; i++){
 	task.push({
 		id:tasks.data[i].id,
