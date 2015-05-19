@@ -30,8 +30,8 @@ var loggedUser = session.get("userName");
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="logout">
-                            <span class="glyphicon glyphicon-user" style="color:#B0B0B0"\>&nbsp;<%=loggedUser%>
+                        <a href="">
+                            <%=loggedUser%>&nbsp;<span class="glyphicon glyphicon-user" style="color:#B0B0B0"\>
                         </a>
                     </li>
                     <li>
