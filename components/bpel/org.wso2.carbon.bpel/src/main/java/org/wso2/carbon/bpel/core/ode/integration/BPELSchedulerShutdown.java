@@ -30,7 +30,7 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 public class BPELSchedulerShutdown implements WaitBeforeShutdownObserver{
 
     private static Log log = LogFactory.getLog(BPELSchedulerShutdown.class);
-    private static boolean status = false;
+    private boolean status = false;
 
     //triggered before shutting down server and shutdown the scheduler if exists
     @Override
