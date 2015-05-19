@@ -35,7 +35,6 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.TreeMap" %>
 <%@ page import="java.net.URLEncoder" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <jsp:useBean id="instanceFilter" scope="session" class="org.wso2.carbon.bpel.ui.InstanceFilter"/>
 <jsp:setProperty name="instanceFilter" property="*" />
