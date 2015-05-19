@@ -34,9 +34,11 @@
 <%@ page import="javax.xml.namespace.QName" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.TreeMap" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <jsp:useBean id="instanceFilter" scope="session" class="org.wso2.carbon.bpel.ui.InstanceFilter"/>
 <jsp:setProperty name="instanceFilter" property="*" />
+
 
 <%
     response.setHeader("Cache-Control",
@@ -61,10 +63,10 @@
     String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
     int pageNumberInt = 0;
     String instanceListFilter = CharacterEncoder.getSafeText(request.getParameter("filter"));
-//    String instanceListOrderBy = CharacterEncoder.getSafeText(request.getParameter("order"));
-    String instanceListOrderBy = request.getParameter("order");
+    String instanceListOrderBy = CharacterEncoder.getSafeText(request.getParameter("order"));
 
     String parameters = null;
+    final String ENCODING_SCHEME = "UTF-8";
 
     String resetFilterLink = "list_instances.jsp?pageNumber=0&operation=reset";
     String activeInstancesFilterLink = "list_instances.jsp?pageNumber=0&filter=status%3Dactive&order=%2dlast-active";
@@ -137,7 +139,7 @@
         instanceListFilter = InstanceFilterUtil.createInstanceFilterStringFromFormData(instanceFilter);
         instanceListOrderBy = InstanceFilterUtil.getOrderByFromFormData(instanceFilter);
 
-        parameters = "filter=" + instanceListFilter + "&order=" + instanceListOrderBy;
+        parameters = URLEncoder.encode("filter=" + instanceListFilter + "&order=" + instanceListOrderBy,ENCODING_SCHEME);
 
         try {
             client = new InstanceManagementServiceClient(cookie, backendServerURL, configContext);
