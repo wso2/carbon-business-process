@@ -32,3 +32,6 @@
 #diagram{
 	width: auto;
 }
+#processDiagram{
+	max-width:1075px;
+}
