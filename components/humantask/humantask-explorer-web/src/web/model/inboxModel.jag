@@ -35,7 +35,7 @@
 
     var statusQuery = requestParameters.status_query;
     if (statusQuery == null) {
-        statusQuery = "";
+        statusQuery = "RESERVED";
     }
 
     var pageSize = 10;

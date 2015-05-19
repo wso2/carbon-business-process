@@ -23,11 +23,11 @@
     var taskStatus = taskAbstract.NS1_NS::status.text();
 %>
 <div class="row">
-    <ol class="breadcrumb">
+    <!-- <ol class="breadcrumb">
       <li><a href="#">Home</a></li>
       <li><a href="inbox">Inbox</a></li>
       <li class="active">Task : <%=id%></li>
-    </ol>
+    </ol> -->
 </div>
 <div class="row">
     <div id="taskActionBtns" class="btn-group" align="center">

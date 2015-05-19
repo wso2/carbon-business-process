@@ -15,7 +15,9 @@
  * specific language governing permissions and limitations
  * under the License. 
 -->
-
+<%
+var loggedUser = session.get("userName");
+%>
 <div class="row">
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
@@ -29,7 +31,12 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <a href="logout">
-                            <span class="glyphicon glyphicon-log-out" style="color:#B0B0B0"\>
+                            <span class="glyphicon glyphicon-user" style="color:#B0B0B0"\>&nbsp;<%=loggedUser%>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="logout">
+                            <span class="glyphicon glyphicon-log-out" style="color:#B0B0B0"\>&nbsp;Logout
                         </a>
                     </li>
                 </ul>
