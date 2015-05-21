@@ -24,11 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.stub.mgt.HumanTaskPackageManagementStub;
 import org.wso2.carbon.humantask.stub.mgt.PackageManagementException;
-import org.wso2.carbon.humantask.stub.mgt.types.DeployedTaskDefinitionsPaginated;
-import org.wso2.carbon.humantask.stub.mgt.types.HumanTaskPackageDownloadData;
-import org.wso2.carbon.humantask.stub.mgt.types.TaskInfoType;
-import org.wso2.carbon.humantask.stub.mgt.types.Task_type0;
-import org.wso2.carbon.humantask.stub.mgt.types.UndeployStatus_type0;
+import org.wso2.carbon.humantask.stub.mgt.types.*;
 import org.wso2.carbon.humantask.ui.constants.HumanTaskUIConstants;
 
 import javax.activation.DataHandler;
@@ -169,6 +165,17 @@ public class HumanTaskPackageManagementServiceClient {
         return stub.getTaskInfo(taskId);
     }
 
+
+    /**
+     * Return the task configuration information for a given task ID
+     * @param taskId
+     * @return   TaskConfigInfoResponse object
+     * @throws PackageManagementException
+     * @throws RemoteException
+     */
+    public TaskConfigInfoResponse getTaskConfigInfo(QName taskId) throws PackageManagementException, RemoteException {
+        return stub.getTaskConfigInfo(taskId);
+    }
     /**
      * Download package archive.
      *

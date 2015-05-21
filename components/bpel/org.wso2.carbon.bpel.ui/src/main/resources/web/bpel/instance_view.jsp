@@ -29,6 +29,7 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page import="javax.xml.namespace.QName" %>
+<%@ page import="org.wso2.carbon.bpel.stub.mgt.*" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 
@@ -673,6 +674,75 @@
                     </tr>
                     <tr>
                         <td colspan="2">
+                            <%
+                                if (isAuthenticatedForInstanceManagement && instanceInfo.getStatus().getValue().toUpperCase().equals("ACTIVE")) {
+                                    try {
+                                        ActivityRecoveryResultType resultTypeFailedActivities = client.getFailedActivities(Long.parseLong(instanceId));
+                                        ActivityRecoveryInfoType[] failedActivities= resultTypeFailedActivities.getActivityRecoveryInfo();
+                                        if (failedActivities != null && failedActivities.length > 0) {
+                                            ActivityRecoveryInfoType failedActivity;
+                            %>
+
+                            <strong style="padding-bottom:5px;margin-bottom:5px;margin-top:10px;"><fmt:message
+                                    key="activity.failure"/></strong>
+                            <table class="styledLeft" >
+                                <thead>
+                                <tr>
+                                    <th><fmt:message key="activity.id"/></th>
+                                    <th><fmt:message key="timestamp"/></th>
+                                    <th><fmt:message key="details"/></th>
+                                    <th><fmt:message key="retries"/></th>
+                                    <th><fmt:message key="recovery.actions"/></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <%
+                                    for (int i = 0; i < failedActivities.length; i++) {
+                                        failedActivity = failedActivities[i];
+
+                                %>
+
+                                <tr>
+                                    <td><%=failedActivity.getActivityID()%></td>
+                                    <td><%=failedActivity.getDateTime()%></td>
+                                    <td style="width: 50%"><%=failedActivity.getReason()%></td>
+                                    <td><%=failedActivity.getRetires()%></td>
+                                    <td>
+                                        [
+                                        <a id="<%=instanceInfo.getIid() + failedActivity.getActivityID()%>" class="bpel-icon-link" style="background-image:url(images/reset.gif);" href='#<%=instanceInfo.getIid() + failedActivity.getActivityID()%>' onclick="BPEL.instance.retryActivity(<%=instanceInfo.getIid()%>, <%=failedActivity.getActivityID()%>);"><fmt:message key="retry"/></a>
+                                        ]
+                                        &nbsp;
+                                        [
+                                        <a id="<%=instanceInfo.getIid() + failedActivity.getActivityID()%>" class="bpel-icon-link" style="background-image:url(images/resume.gif);" href='#<%=instanceInfo.getIid() + failedActivity.getActivityID()%>' onclick="BPEL.instance.cancelRetry(<%=instanceInfo.getIid()%>, <%=failedActivity.getActivityID()%>);"><fmt:message key="cancel"/></a>
+                                        ]
+                                    </td>
+                                </tr>
+
+                                <%
+                                    }
+                                %>
+                                </tbody>
+                            </table>
+                            <div>&nbsp;</div>
+                            <%
+                                }
+                            } catch (Exception e) {
+                                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                                CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
+                                session.setAttribute(CarbonUIMessage.ID, uiMsg);
+                            %>
+                            <jsp:include page="../admin/error.jsp"/>
+                            <%
+                                        return;
+                                    }
+
+
+                                }
+                            %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
                             <strong style="padding-bottom:5px;margin-bottom:5px;margin-top:10px;"><fmt:message
                                     key="activity.information"/></strong>
 <%
@@ -755,10 +825,11 @@
     } else {
 %>
                         <table class="styledLeft" id="tableActivityInfo">
-                                <thead>
-                        <tr><td>Event information are not available for this instance</td></tr>
+                            <thead>
+                                <tr><td>Event information are not available for this instance</td></tr>
                             </thead>
-                            </table>
+                        </table>
+
 <%
     }
 %>

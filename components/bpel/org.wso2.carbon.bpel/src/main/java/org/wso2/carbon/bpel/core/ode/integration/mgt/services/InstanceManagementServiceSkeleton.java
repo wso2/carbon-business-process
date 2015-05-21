@@ -80,39 +80,8 @@ import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityLifeCycleEventsDo
 import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityStateAndEventDocumentBuilder;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementException;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementServiceSkeletonInterface;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Action_type1;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivitiesWithEvents_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Activities_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityInfoWithEventsType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityLifeCycleEventsListType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityLifeCycleEventsType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityStatusType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ChildrenWithEvents_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Children_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationPropertyType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationSet_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationSets_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Data_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EventInfo;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EventInfoList;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailureInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailuresInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FaultInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceInfoWithEventsType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceStatus;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceSummaryE;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.LimitedInstanceInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.PaginatedInstanceList;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeInfoWithEventsType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeStatusType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Value_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariableInfoType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariableRefType;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariablesWithEvents_type0;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Variables_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityRecoveryInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
 
@@ -301,6 +270,120 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         } catch (Exception e) {
             String errMsg = "Error querying instances from database. Instance Filter:" +
                     instanceFilter.toString();
+            log.error(errMsg, e);
+            throw new InstanceManagementException(errMsg, e);
+        }
+
+        return instanceList;
+    }
+
+
+    /**
+     * Get Failed Activities for give instance id.
+     * @param instanceID
+     * @return
+     * @throws InstanceManagementException
+     */
+    @Override
+    public ActivityRecoveryResultType getFailedActivitiesForInstance(final long instanceID) throws InstanceManagementException {
+        try {
+            isOperationIsValidForTheCurrentTenant(instanceID);
+        } catch (IllegalAccessException ex) {
+            handleError(ex);
+        }
+        ActivityRecoveryInfoType[] activityRecoveryInfoTypes = null;
+        try {
+            BpelDatabase bpelDb = bpelServer.getODEBPELServer().getBpelDb();
+            Object result = bpelDb.exec(new BpelDatabase.Callable<Object>() {
+                public Object run(BpelDAOConnection conn) throws InstanceManagementException {
+                    ProcessInstanceDAO instance = conn.getInstance(instanceID);
+                    Collection<ActivityRecoveryDAO> activityRecoveries = instance.getActivityRecoveries();
+                    return activityRecoveries;
+                }
+            });
+            ArrayList<ActivityRecoveryDAO> activityRecoveryDAOs = (ArrayList<ActivityRecoveryDAO>) result;
+            if (activityRecoveryDAOs != null) {
+                activityRecoveryInfoTypes = new ActivityRecoveryInfoType[activityRecoveryDAOs.size()];
+                for (int i = 0; i < activityRecoveryDAOs.size(); i++) {
+
+                    ActivityRecoveryDAO activityRecovery = activityRecoveryDAOs.get(i);
+                    ActivityRecoveryInfoType info = new ActivityRecoveryInfoType();
+                    info.setActions(activityRecovery.getActions());
+                    info.setActivityID(activityRecovery.getActivityId());
+                    info.setDateTime(String.valueOf(activityRecovery.getDateTime()));
+                    info.setInstanceID(instanceID);
+                    info.setReason(activityRecovery.getReason());
+                    info.setRetires(activityRecovery.getRetries());
+                    activityRecoveryInfoTypes[i] = info;
+                }
+            }
+        } catch (Exception e) {
+            String errMsg = "Error occurred while retrieving failed activity information for instance id " +
+                    instanceID;
+            log.error(errMsg, e);
+            throw new InstanceManagementException(errMsg, e);
+        }
+
+        ActivityRecoveryResultType resultType = new ActivityRecoveryResultType();
+        resultType.setActivityRecoveryInfo(activityRecoveryInfoTypes);
+        return resultType;
+
+
+    }
+
+    /**
+     * Get all failed activities for BPEL processes
+     * @param page
+     * @return failed activity list for a given page
+     * @throws InstanceManagementException
+     */
+    @Override
+    public ActivityRecoveryResultType getFailedActivities(final int page) throws InstanceManagementException {
+
+        ActivityRecoveryInfoType[] activityRecoveryInfoTypes = null;
+        final ActivityRecoveryResultType instanceList = new ActivityRecoveryResultType();
+
+        try {
+            BpelDatabase bpelDb = bpelServer.getODEBPELServer().getBpelDb();
+            Object result = bpelDb.exec(new BpelDatabase.Callable<Object>() {
+                public Object run(BpelDAOConnection conn) throws InstanceManagementException {
+
+                    int pageNum = page;
+                    if (pageNum < 0 || pageNum == Integer.MAX_VALUE) {
+                        pageNum = 0;
+                    }
+                    int startIndexOfCurrentPage = pageNum * BPELConstants.ITEMS_PER_PAGE;
+                    int instanceListSize = Integer.valueOf((String) conn.getCountOfAllFailedActivities());
+
+                    int pages = (int) Math.ceil((double) instanceListSize / BPELConstants.ITEMS_PER_PAGE);
+                    instanceList.setPages(pages);
+
+                    List<ActivityRecoveryDAO> allActivityRecoveries = conn.getFailedActivities(startIndexOfCurrentPage,BPELConstants.ITEMS_PER_PAGE);
+                    return allActivityRecoveries;
+                }
+            });
+
+            List<ActivityRecoveryDAO> activityRecoveryDAOs = (List<ActivityRecoveryDAO>) result;
+            if (activityRecoveryDAOs != null) {
+                activityRecoveryInfoTypes = new ActivityRecoveryInfoType[activityRecoveryDAOs.size()];
+                for (int i = 0; i < activityRecoveryDAOs.size(); i++) {
+
+                    ActivityRecoveryDAO activityRecovery = activityRecoveryDAOs.get(i);
+                    ActivityRecoveryInfoType info = new ActivityRecoveryInfoType();
+                    info.setActions(activityRecovery.getActions());
+                    info.setActivityID(activityRecovery.getActivityId());
+                    info.setDateTime(String.valueOf(activityRecovery.getDateTime()));
+                    info.setInstanceID(activityRecovery.getInstanceId());
+                    info.setReason(activityRecovery.getReason());
+                    info.setRetires(activityRecovery.getRetries());
+                    activityRecoveryInfoTypes[i] = info;
+
+                }
+                instanceList.setActivityRecoveryInfo(activityRecoveryInfoTypes);
+            }
+        }
+        catch (Exception e) {
+            String errMsg = "Error occurred while retrieving failed activity information";
             log.error(errMsg, e);
             throw new InstanceManagementException(errMsg, e);
         }

@@ -59,7 +59,7 @@
     <message name="getActivityLifeCycleFilterResponse">
         <part name="part" element="ns:ActivityLifeCycleEvents"/>
     </message>
-    
+
     <message name="suspendInstanceRequest">
         <part name="part" element="ns:suspendInstance"/>
     </message>
@@ -76,7 +76,7 @@
         <part name="part" element="ns:terminateInstance"/>
     </message>
     <!--<message name="terminateInstanceResponse">-->
-        <!--<part name="part" element="ns:InstanceInfo"/>-->
+    <!--<part name="part" element="ns:InstanceInfo"/>-->
     <!--</message>-->
     <message name="faultInstanceRequest">
         <part name="part" element="ns:faultInstance"/>
@@ -125,6 +125,21 @@
         <part name="part"  element="ns:instanceManagementException" />
     </message>
 
+    <message name="getFailedActivitiesForInstanceRequest">
+        <part name="part" element="ns:getFailedActivitiesForInstance"/>
+    </message>
+    <message name="getFailedActivitiesForInstanceResponse">
+        <part name="part" element="ns:getFailedActivitiesForInstanceResponse"/>
+    </message>
+
+    <!--New message for getFailedActivities-->
+    <message name="getFailedActivitiesRequest">
+        <part name="part" element="ns:getFailedActivities"/>
+    </message>
+    <message name="getFailedActivitiesResponse">
+        <part name="part" element="ns:getFailedActivitiesResponse"/>
+    </message>
+
     <portType name="InstanceManagementPortType">
         <operation name="getPaginatedInstanceList">
             <input message="tns:getPaginatedInstanceListRequest"/>
@@ -168,26 +183,26 @@
             <output message="tns:deleteInstancesResponse"/>
             <fault name="instanceManagementException" message="tns:instanceManagementException" />
         </operation>
-        
+
         <!--<operation name="faultInstance">-->
-            <!--<input message="tns:faultInstanceRequest"/>-->
-            <!--<output message="tns:faultInstanceResponse"/>-->
+        <!--<input message="tns:faultInstanceRequest"/>-->
+        <!--<output message="tns:faultInstanceResponse"/>-->
         <!--</operation>-->
         <!--<operation name="deleteInstance">-->
-            <!--<input message="tns:deleteInstanceRequest"/>-->
-            <!--<output message="tns:deleteInstanceResponse"/>-->
+        <!--<input message="tns:deleteInstanceRequest"/>-->
+        <!--<output message="tns:deleteInstanceResponse"/>-->
         <!--</operation>-->
         <!--<operation name="getScopeInfo">-->
-            <!--<input message="tns:getScopeInfoRequest"/>-->
-            <!--<output message="tns:getScopeInfoResponse"/>-->
+        <!--<input message="tns:getScopeInfoRequest"/>-->
+        <!--<output message="tns:getScopeInfoResponse"/>-->
         <!--</operation>-->
         <!--<operation name="getScopeInfoWithActivities">-->
-            <!--<input message="tns:getScopeInfoWithActivitiesRequest"/>-->
-            <!--<output message="tns:getScopeInfoWithActivitiesResponse"/>-->
+        <!--<input message="tns:getScopeInfoWithActivitiesRequest"/>-->
+        <!--<output message="tns:getScopeInfoWithActivitiesResponse"/>-->
         <!--</operation>-->
         <!--<operation name="getVariableInfo">-->
-            <!--<input message="tns:getVariableInfoRequest"/>-->
-            <!--<output message="tns:getVariableInfoResponse"/>-->
+        <!--<input message="tns:getVariableInfoRequest"/>-->
+        <!--<output message="tns:getVariableInfoResponse"/>-->
         <!--</operation>-->
         <operation name="recoverActivity">
             <input message="tns:recoverActivityRequest"/>
@@ -196,9 +211,21 @@
         <operation name="getInstanceSummary">
             <input message="tns:getInstanceSummaryRequest"/>
             <output message="tns:getInstanceSummaryResponse"/>
-	        <fault name="instanceManagementException" message="tns:instanceManagementException" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
+        <operation name="getFailedActivitiesForInstance">
+            <input message="tns:getFailedActivitiesForInstanceRequest"/>
+            <output message="tns:getFailedActivitiesForInstanceResponse" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
+        <!--New port type operation for getFailedActivities-->
+        <operation name="getFailedActivities">
+            <input message="tns:getFailedActivitiesRequest"/>
+            <output message="tns:getFailedActivitiesResponse" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
         </operation>
     </portType>
+
     <binding name="InstanceManagementSOAPBinding" type="tns:InstanceManagementPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="getPaginatedInstanceList">
@@ -302,49 +329,49 @@
         </operation>
 
         <!--<operation name="faultInstance">-->
-            <!--<soap:operation soapAction="urn:faultInstance"/>-->
-            <!--<input>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</input>-->
-            <!--<output>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</output>-->
+        <!--<soap:operation soapAction="urn:faultInstance"/>-->
+        <!--<input>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</input>-->
+        <!--<output>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</output>-->
         <!--</operation>-->
         <!--<operation name="deleteInstance">-->
-            <!--<soap:operation soapAction="urn:deleteInstance"/>-->
-            <!--<input>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</input>-->
-            <!--<output>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</output>-->
+        <!--<soap:operation soapAction="urn:deleteInstance"/>-->
+        <!--<input>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</input>-->
+        <!--<output>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</output>-->
         <!--</operation>-->
         <!--<operation name="getScopeInfo">-->
-            <!--<soap:operation soapAction="urn:getScopeInfo"/>-->
-            <!--<input>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</input>-->
-            <!--<output>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</output>-->
+        <!--<soap:operation soapAction="urn:getScopeInfo"/>-->
+        <!--<input>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</input>-->
+        <!--<output>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</output>-->
         <!--</operation>-->
         <!--<operation name="getScopeInfoWithActivities">-->
-            <!--<soap:operation soapAction="urn:getScopeInfoWithActivities"/>-->
-            <!--<input>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</input>-->
-            <!--<output>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</output>-->
+        <!--<soap:operation soapAction="urn:getScopeInfoWithActivities"/>-->
+        <!--<input>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</input>-->
+        <!--<output>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</output>-->
         <!--</operation>-->
         <!--<operation name="getVariableInfo">-->
-            <!--<soap:operation soapAction="urn:getVariableInfo"/>-->
-            <!--<input>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</input>-->
-            <!--<output>-->
-                <!--<soap:body use="literal"/>-->
-            <!--</output>-->
+        <!--<soap:operation soapAction="urn:getVariableInfo"/>-->
+        <!--<input>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</input>-->
+        <!--<output>-->
+        <!--<soap:body use="literal"/>-->
+        <!--</output>-->
         <!--</operation>-->
         <operation name="recoverActivity">
             <soap:operation soapAction="urn:recoverActivity"/>
@@ -357,6 +384,31 @@
         </operation>
         <operation name="getInstanceSummary">
             <soap:operation soapAction="urn:getInstanceSummary"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="getFailedActivitiesForInstance">
+            <soap:operation soapAction="urn:getFailedActivitiesForInstance"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <!--New operation for getFailedActivities-->
+        <operation name="getFailedActivities">
+            <soap:operation soapAction="urn:getFailedActivities"/>
             <input>
                 <soap:body use="literal"/>
             </input>

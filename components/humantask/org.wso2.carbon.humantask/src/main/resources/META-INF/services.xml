@@ -1051,6 +1051,12 @@
             <outputActionMapping>urn:downloadHumanTaskPackageResponse</outputActionMapping>
             <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
         </operation>
+        <!-- Add operation for getTaskConfigInfo -->
+        <operation name="getTaskConfigInfo">
+            <actionMapping>urn:getTaskConfigInfo</actionMapping>
+            <outputActionMapping>urn:getTaskConfigInfoResponse</outputActionMapping>
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/packages</parameter>
+        </operation>
     </service>
     <service name="HumanTaskProtocolHandler">
         <transports>

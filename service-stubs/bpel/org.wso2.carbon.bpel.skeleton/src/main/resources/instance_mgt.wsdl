@@ -125,51 +125,66 @@
         <part name="part"  element="ns:instanceManagementException" />
     </message>
 
-    <portType name="InstanceManagementPortType">
-        <operation name="getPaginatedInstanceList">
-            <input message="tns:getPaginatedInstanceListRequest"/>
-            <output message="tns:getPaginatedInstanceListResponse"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="getLongRunningInstances">
-            <input message="tns:getLongRunningInstancesRequest"/>
-            <output message="tns:getLongRunningInstancesResponse"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="getInstanceInfo">
-            <input message="tns:getInstanceInfoRequest"/>
-            <output message="tns:getInstanceInfoResponse"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="getInstanceInfoWithEvents">
-            <input message="tns:getInstanceInfoRequest"/>
-            <output message="tns:getInstanceInfoWithEventsResponse"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="getActivityLifeCycleFilter">
-            <input message="tns:getActivityLifeCycleFilterRequest"/>
-            <output message="tns:getActivityLifeCycleFilterResponse"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="suspendInstance">
-            <input message="tns:suspendInstanceRequest"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="resumeInstance">
-            <input message="tns:resumeInstanceRequest"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="terminateInstance">
-            <input message="tns:terminateInstanceRequest"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        <operation name="deleteInstances">
-            <input message="tns:deleteInstancesRequest"/>
-            <output message="tns:deleteInstancesResponse"/>
-            <fault name="instanceManagementException" message="tns:instanceManagementException" />
-        </operation>
-        
-        <!--<operation name="faultInstance">-->
+    <message name="getFailedActivitiesForInstanceRequest">
+        <part name="part" element="ns:getFailedActivitiesForInstance"/>
+    </message>
+    <message name="getFailedActivitiesForInstanceResponse">
+        <part name="part" element="ns:getFailedActivitiesForInstanceResponse"/>
+    </message>
+
+    <!--New message for getFailedActivities-->
+    <message name="getFailedActivitiesRequest">
+        <part name="part" element="ns:getFailedActivities"/>
+    </message>
+    <message name="getFailedActivitiesResponse">
+        <part name="part" element="ns:getFailedActivitiesResponse"/>
+    </message>
+
+<portType name="InstanceManagementPortType">
+   <operation name="getPaginatedInstanceList">
+       <input message="tns:getPaginatedInstanceListRequest"/>
+       <output message="tns:getPaginatedInstanceListResponse"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="getLongRunningInstances">
+       <input message="tns:getLongRunningInstancesRequest"/>
+       <output message="tns:getLongRunningInstancesResponse"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="getInstanceInfo">
+       <input message="tns:getInstanceInfoRequest"/>
+       <output message="tns:getInstanceInfoResponse"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="getInstanceInfoWithEvents">
+       <input message="tns:getInstanceInfoRequest"/>
+       <output message="tns:getInstanceInfoWithEventsResponse"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="getActivityLifeCycleFilter">
+       <input message="tns:getActivityLifeCycleFilterRequest"/>
+       <output message="tns:getActivityLifeCycleFilterResponse"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="suspendInstance">
+       <input message="tns:suspendInstanceRequest"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="resumeInstance">
+       <input message="tns:resumeInstanceRequest"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="terminateInstance">
+       <input message="tns:terminateInstanceRequest"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+   <operation name="deleteInstances">
+       <input message="tns:deleteInstancesRequest"/>
+       <output message="tns:deleteInstancesResponse"/>
+       <fault name="instanceManagementException" message="tns:instanceManagementException" />
+   </operation>
+
+   <!--<operation name="faultInstance">-->
             <!--<input message="tns:faultInstanceRequest"/>-->
             <!--<output message="tns:faultInstanceResponse"/>-->
         <!--</operation>-->
@@ -198,7 +213,19 @@
             <output message="tns:getInstanceSummaryResponse"/>
 	        <fault name="instanceManagementException" message="tns:instanceManagementException" />
         </operation>
-    </portType>
+        <operation name="getFailedActivitiesForInstance">
+            <input message="tns:getFailedActivitiesForInstanceRequest"/>
+            <output message="tns:getFailedActivitiesForInstanceResponse" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
+        <!--New port type operation for getFailedActivities-->
+        <operation name="getFailedActivities">
+            <input message="tns:getFailedActivitiesRequest"/>
+            <output message="tns:getFailedActivitiesResponse" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
+</portType>
+
     <binding name="InstanceManagementSOAPBinding" type="tns:InstanceManagementPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="getPaginatedInstanceList">
@@ -357,6 +384,31 @@
         </operation>
         <operation name="getInstanceSummary">
             <soap:operation soapAction="urn:getInstanceSummary"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="getFailedActivitiesForInstance">
+            <soap:operation soapAction="urn:getFailedActivitiesForInstance"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <!--New operation for getFailedActivities-->
+        <operation name="getFailedActivities">
+            <soap:operation soapAction="urn:getFailedActivities"/>
             <input>
                 <soap:body use="literal"/>
             </input>
