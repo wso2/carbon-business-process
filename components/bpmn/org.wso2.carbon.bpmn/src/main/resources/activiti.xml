@@ -4,20 +4,15 @@
 
     <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
 
-        <property name="dataSourceJndiName" value="jdbc/WSO2CarbonDB" />
+        <property name="dataSourceJndiName" value="jdbc/ActivitiDB"/>
 
-        <property name="databaseSchemaUpdate" value="true" />
+        <property name="databaseSchemaUpdate" value="true"/>
 
-        <property name="jobExecutorActivate" value="true" />
+        <property name="jobExecutorActivate" value="true"/>
 
-        <property name="mailServerHost" value="mail.my-corp.com" />
-        <property name="mailServerPort" value="5025" />
+        <property name="mailServerHost" value="mail.my-corp.com"/>
+        <property name="mailServerPort" value="5025"/>
 
-        <property name="customMybatisMappers">
-            <set>
-                <value>org.wso2.carbon.bpmn.core.mgt.model.DeploymentWrapper</value>
-            </set>
-        </property>
     </bean>
 
 </beans>

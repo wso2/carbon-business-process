@@ -20,16 +20,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.core.ServerStartupHandler;
+import org.wso2.carbon.core.ServerStartupObserver;
 
 /**
  * This class starts up the ode scheduler when the startup finalizer calls the invoke method
  */
-public class BPELSchedulerInitializer implements ServerStartupHandler {
+public class BPELSchedulerInitializer implements ServerStartupObserver {
 
     private static Log log = LogFactory.getLog(BPELSchedulerInitializer.class);
 
-    public void invoke() {
-
+    @Override
+    public void completingServerStartup() {
         if(log.isInfoEnabled()) {
             log.info("Starting BPS Scheduler");
             if(BPELServiceComponent.getBPELServer().getBpelServerConfiguration().getUseDistributedLock()){
@@ -41,5 +42,12 @@ public class BPELSchedulerInitializer implements ServerStartupHandler {
             }
         }
         ((BPELServerImpl)BPELServiceComponent.getBPELServer()).getScheduler().start();
+    }
+
+    @Override
+    public void completedServerStartup() {
+        if(log.isDebugEnabled()) {
+            log.debug("Competed server startup");
+        }
     }
 }

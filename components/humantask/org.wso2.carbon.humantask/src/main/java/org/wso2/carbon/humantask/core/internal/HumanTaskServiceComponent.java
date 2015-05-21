@@ -22,6 +22,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
 import org.wso2.carbon.core.ServerStartupHandler;
+import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.humantask.core.*;
 import org.wso2.carbon.humantask.core.integration.jmx.DeployedTasks;
 import org.wso2.carbon.humantask.core.integration.jmx.HTTaskStatusMonitor;
@@ -89,7 +90,7 @@ public class HumanTaskServiceComponent {
                 if(HumanTaskServerHolder.getInstance().getHtServer().getServerConfig().isUiRenderingEnabled()) {
                     registerHumanTaskUIResourceProvider(htServerHolder);
                 }
-                bundleContext.registerService(ServerStartupHandler.class.getName(), new HumanTaskSchedulerInitializer(), null);
+                bundleContext.registerService(ServerStartupObserver.class.getName(), new HumanTaskSchedulerInitializer(), null);
 
             } else {
                 log.warn("Couldn't initialize Human Task Server, " +

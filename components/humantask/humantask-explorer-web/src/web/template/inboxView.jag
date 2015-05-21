@@ -18,10 +18,10 @@
  */
 %>
 <div class="row">
-    <ol class="breadcrumb">
+    <!-- <ol class="breadcrumb">
         <li><a href="#">Home</a></li>
         <li class="active">Inbox</li>
-    </ol>
+    </ol> -->
 </div>
 <div class="row">	
     <div class="panel panel-primary">

@@ -246,6 +246,11 @@
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.orbit.org.restlet.jee</groupId>
+                <artifactId>restlet</artifactId>
+                <version>${orbit.version.restlet}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.h2database.wso2</groupId>
                 <artifactId>h2-database-engine</artifactId>
                 <version>${orbit.version.h2.engine}</version>
@@ -986,13 +991,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.activiti.wso2</groupId>
-                <artifactId>activiti-engine</artifactId>
-                <version>${org.activiti.wso2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.activiti.wso2</groupId>
-                <artifactId>activiti-rest</artifactId>
+                <groupId>org.wso2.orbit.org.activiti</groupId>
+                <artifactId>activiti-all</artifactId>
                 <version>${org.activiti.wso2.version}</version>
             </dependency>
             <dependency>
@@ -1030,6 +1030,12 @@
                 <groupId>org.wso2.orbit.com.predic8</groupId>
                 <artifactId>soa.model.core</artifactId>
                 <version>${com.predic8.soa-model-core.wso2.version}</version>
+            </dependency>
+
+	    <dependency>
+                 <groupId>org.mybatis</groupId>
+                 <artifactId>mybatis</artifactId>
+                 <version>${mybatis.version}</version>
             </dependency>
 
             <dependency>
@@ -1542,7 +1548,9 @@
         <!--geronimo-ejb_2.1_spec.version>1.1.0.wso2v1</geronimo-ejb_2.1_spec.version-->
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
+        <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>
         <orbit.ode.version>1.3.5-wso2v13</orbit.ode.version>
+	<mybatis.version>3.2.5</mybatis.version>
 
 
         <!-- Servlet API -->
@@ -1570,9 +1578,10 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.16-wso2v1</org.activiti.wso2.version>
-        <org.activiti.version>5.16</org.activiti.version>
-        <!--restlet.version>2.2.1</restlet.version-->
+        <org.activiti.wso2.version>5.16.3.wso2v2</org.activiti.wso2.version>
+        <restlet.version>2.2.1.wso2v1</restlet.version>
+
+	<project.scm.id>wso2-scm-server</project.scm.id>
 
         <!-- For HT Rendering -->
         <com.predic8.soa-model-core.wso2.version>1.5.0.wso2v3</com.predic8.soa-model-core.wso2.version>

@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*  Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -28,15 +28,18 @@ import org.wso2.carbon.bpel.core.Axis2ConfigurationContextObserverImpl;
 import org.wso2.carbon.bpel.core.BPELEngineService;
 import org.wso2.carbon.bpel.core.BPELEngineServiceImpl;
 import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerInitializer;
+import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerShutdown;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.core.ServerStartupHandler;
+import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.ndatasource.core.DataSourceService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 import org.wso2.carbon.utils.ConfigurationContextService;
+import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpel.BPELServiceComponent" immediate="true"
@@ -73,8 +76,11 @@ public class BPELServiceComponent {
                 registerBPELServerService();
             }
 
-            bundleContext.registerService(ServerStartupHandler.class.getName(),
+            bundleContext.registerService(ServerStartupObserver.class.getName(),
                     new BPELSchedulerInitializer(), null);
+            //registering service to shutdown ode scheduler, before server shutdown
+            bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(),
+                    new BPELSchedulerShutdown(), null);
 
         } catch (Throwable t) {
             log.error("Failed to activate BPEL Core bundle", t);

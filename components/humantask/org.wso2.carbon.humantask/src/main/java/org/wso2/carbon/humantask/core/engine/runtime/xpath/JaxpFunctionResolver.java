@@ -643,7 +643,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         //Reading users
         NodeList userList = ((Element) node)
                 .getElementsByTagNameNS(userQname.getNamespaceURI(), userQname.getLocalPart());
-        for (int j = 0; j < userList.getLength(); j++) {
+        int userListLength = userList.getLength();
+        for (int j = 0; j < userListLength; j++) {
             Node item = userList.item(j);
             String username = item.getTextContent();
             if (username != null) {
@@ -657,7 +658,8 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         //Reading groups
         NodeList groupList = ((Element) node)
                 .getElementsByTagNameNS(groupQname.getNamespaceURI(), groupQname.getLocalPart());
-        for (int j = 0; j < groupList.getLength(); j++) {
+        int groupListLength = groupList.getLength();
+        for (int j = 0; j < groupListLength; j++) {
             Node item = groupList.item(j);
             String groupName = item.getTextContent();
             if (groupName != null) {
@@ -877,7 +879,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * return empty string for empty list.
      * In : node-set of string nodes
      */
-    public class Concat implements XPathFunction {
+    public static class Concat implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -910,7 +912,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * if the last item of the list, delimiter not added.
      * In : node-set of string nodes,delimiter string
      */
-    public class ConcatWithDelimiter implements XPathFunction {
+    public static class ConcatWithDelimiter implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1097,7 +1099,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                         }
 
                     }
-                    if (list.size() > 0 && !tie && (max * 100 / list.size()) > percentage.floatValue()) {
+                    if (list.size() > 0 && !tie && ((float)max * 100 / (float)list.size()) > percentage.floatValue()) {
                         return result;
                     } else {
                         return "";
@@ -1119,7 +1121,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * Note: Assumed the nodes contains, "true","false","1" or "0"
      * In : node-set of boolean nodes
      */
-    public class And implements XPathFunction {
+    public static class And implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1163,7 +1165,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * return false for empty list
      * In : node-set of boolean nodes
      */
-    public class Or implements XPathFunction {
+    public static class Or implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1208,7 +1210,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * return false for any other case. no need to check percentage for false.
      * In : node-set of boolean nodes, percentage
      */
-    public class Vote implements XPathFunction {
+    public static class Vote implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1240,7 +1242,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                     }
                 }
 
-                float truePercentage = trueCount * 100 / (trueCount + falseCount);
+                float truePercentage = (float)(trueCount * 100) / (float)(trueCount + falseCount);
 
                 if (trueCount > falseCount && truePercentage > percentage.floatValue()) {
                     //returns true
@@ -1259,7 +1261,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * logic: take the sum of all nodes, return dividing by list size. return NaN for empty list.
      * In : node-set of number nodes
      */
-    public class Avg implements XPathFunction {
+    public static class Avg implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1298,7 +1300,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * logic: go through the list and find the maximum value. return NaN for empty list.
      * In : node-set of number nodes
      */
-    public class Max implements XPathFunction {
+    public static class Max implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1340,7 +1342,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * logic: go through the list and find the minimum value. return NaN for empty list.
      * In : node-set of number nodes
      */
-    public class Min implements XPathFunction {
+    public static class Min implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {
@@ -1382,7 +1384,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
      * logic: go through the list and add the values to result. return NaN for empty list.
      * In : node-set of number nodes
      */
-    public class Sum implements XPathFunction {
+    public static class Sum implements XPathFunction {
 
         @Override
         public Object evaluate(List args) throws XPathFunctionException {

@@ -22,18 +22,25 @@ package org.wso2.carbon.humantask.core;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.ServerStartupHandler;
+import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 
 /**
  * Starts the human task scheduler when the task deployment is completed.
  */
-public class HumanTaskSchedulerInitializer implements ServerStartupHandler {
+public class HumanTaskSchedulerInitializer implements ServerStartupObserver {
     private static final Log log = LogFactory.getLog(HumanTaskSchedulerInitializer.class);
 
-    public void invoke() {
+    @Override
+    public void completingServerStartup() {
         if(log.isInfoEnabled()) {
             log.info("Starting HumanTasks Scheduler");
         }
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().start();
+        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getNotificationScheduler().init();
+    }
+
+    @Override
+    public void completedServerStartup() {
     }
 }
