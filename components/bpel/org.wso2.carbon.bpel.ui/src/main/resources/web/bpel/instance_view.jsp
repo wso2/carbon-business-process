@@ -628,7 +628,18 @@
         //                                        PrettyXML.writeFancily(sr, sw);
         //                                        sr.close();
         //                                        varStr = sw.toString();
-                                                varStr = BpelUIUtil.encodeHTML(BpelUIUtil.prettyPrint(varValue));
+                                                try {
+                                                    //read the max variable size from configuration
+                                                    int maxSize = client.getBPELInstanceVariableSize() * 1000;
+                                                    varStr = BpelUIUtil.encodeHTML(BpelUIUtil
+                                                            .truncateString(BpelUIUtil.prettyPrint(varValue), maxSize));
+                                                } catch (Exception e) {
+
+                                                    response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                                                    CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR,
+                                                            e.getMessage(), e);
+                                                    session.setAttribute(CarbonUIMessage.ID, uiMsg);
+                                                }
         //                                        varStr = varStr.replaceAll("\n", "<br/>");
 
                                             }

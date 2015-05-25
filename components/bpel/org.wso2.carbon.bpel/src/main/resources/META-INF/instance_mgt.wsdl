@@ -29,6 +29,10 @@
         </xsd:schema>
     </types>
 
+    <message name="getBPELInstanceVariableSizeRequest"/>
+    <message name="getBPELInstanceVariableSizeResponse">
+        <part name="part" element="ns:BPELInstanceVariableSize"/>
+    </message>
     <message name="getPaginatedInstanceListRequest">
         <part name="part" element="ns:getPaginatedInstanceListInput"/>
     </message>
@@ -126,6 +130,11 @@
     </message>
 
     <portType name="InstanceManagementPortType">
+        <operation name="getBPELInstanceVariableSize">
+            <input message="tns:getBPELInstanceVariableSizeRequest"/>
+            <output message="tns:getBPELInstanceVariableSizeResponse"/>
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
         <operation name="getPaginatedInstanceList">
             <input message="tns:getPaginatedInstanceListRequest"/>
             <output message="tns:getPaginatedInstanceListResponse"/>
@@ -201,6 +210,18 @@
     </portType>
     <binding name="InstanceManagementSOAPBinding" type="tns:InstanceManagementPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getBPELInstanceVariableSize">
+            <soap:operation soapAction="urn:getBPELInstanceVariableSize"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
         <operation name="getPaginatedInstanceList">
             <soap:operation soapAction="urn:getPaginatedInstanceList"/>
             <input>

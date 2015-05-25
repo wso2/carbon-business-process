@@ -263,6 +263,8 @@ public final class BPELConstants {
 
     public static final int DEFAULT_TIMEOUT = 120000;
 
+    public static final int DEFAULT_INSTANCE_VARIABLE_SIZE = 1000;
+
     /*  added to set updated properties of a package*/
     public static final String BPEL_INSTANCE_CLEANUP_FAILURE =  "bpel.instance.cleanup.failure: ";
     public static final String BPEL_INSTANCE_CLEANUP_SUCCESS =  "bpel.instance.cleanup.success:";

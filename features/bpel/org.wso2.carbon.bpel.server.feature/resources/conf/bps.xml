@@ -59,6 +59,11 @@
         <tns:property name="openjpa.FlushBeforeQueries" value="true"/>
     </tns:OpenJPAConfig>
 
+    <!--Set the maximum value size for a variable in a BPEL process in kilobytes,
+    higher sizes may slowdown the instance view rendering. Default size is 1000KB.
+    Please note that this only limits the displayed variable content size.-->
+    <!--<tns:BPELInstanceVariableSize>1000</tns:BPELInstanceVariableSize>-->
+
     <!-- Message exchange timeout. Default value is 120000ms -->
     <!--<tns:MexTimeOut value="120000"/>-->
 

@@ -45,6 +45,23 @@ public final class BpelUIUtil {
     private BpelUIUtil() {
     }
 
+    /**
+     * Truncates a given text to the size specified. Appends "..." to the end.
+     * @param text
+     * @param maxSize
+     * @return Truncated string
+     */
+    public static String truncateString(String text,int maxSize) {
+        long strLength = text.length();
+        if (strLength > maxSize) {
+            if (log.isDebugEnabled()) {
+                log.debug("Limiting variable size of the instance to:"+ maxSize);
+            }
+            return text.substring(0,maxSize) + " ...";
+        }
+        return text;
+    }
+
     public static String encodeHTML(String aText) {
         final StringBuilder result = new StringBuilder();
         final StringCharacterIterator iterator = new StringCharacterIterator(aText);

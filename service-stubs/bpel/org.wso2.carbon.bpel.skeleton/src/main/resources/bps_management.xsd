@@ -30,6 +30,7 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="BPELInstanceVariableSize" type="xsd:int"/>
     <!--The following elements are added to describe process contents-->
     <xsd:element name="getProcessDeployDetails" type="xsd:QName"/>
     <xsd:element name="ProcessDeployDetailsList">
