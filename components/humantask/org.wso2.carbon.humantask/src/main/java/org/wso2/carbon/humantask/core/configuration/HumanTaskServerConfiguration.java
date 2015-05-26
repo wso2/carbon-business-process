@@ -334,7 +334,9 @@ public class HumanTaskServerConfiguration {
             log.warn("Error occurred while retrieving secured TaskEngineProtocolHandler configuration.", e);
         } finally {
             try {
-                in.close();
+                if(in != null) {
+                    in.close();
+                }
             } catch (IOException e) {
                 log.error(e.getLocalizedMessage(), e);
             }

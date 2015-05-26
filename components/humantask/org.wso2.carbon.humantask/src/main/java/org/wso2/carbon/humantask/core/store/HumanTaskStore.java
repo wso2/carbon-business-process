@@ -355,7 +355,7 @@ public class HumanTaskStore {
 
             if (activePackageName!= null && activePackageName.equals(currentlyActiveTaskPackage.getName())) {
                 if(log.isDebugEnabled()) {
-                    log.debug("This task package and its previous versions are already loaded");
+                    log.debug("This task package and its previous versions are already loaded " + activePackageName);
                 }
                 // This task package and its previous versions are already loaded , hence return
                 return;
@@ -495,7 +495,7 @@ public class HumanTaskStore {
             return;
         }
         if(log.isDebugEnabled()) {
-            log.debug("Reloading existing task versions");
+            log.debug("Reloading existing task versions for human task archive [ " + archiveFile.getName() + "]");
         }
         for (DeploymentUnitDAO dao : existingDeploymentUnitsForPackage) {
 
@@ -837,9 +837,8 @@ public class HumanTaskStore {
                     if(status == TaskPackageStatus.ACTIVE){
                         removeAxisServiceForTaskConfiguration(humanTaskBaseConfiguration);
                     }
+                    activeTaskConfigurationQNameMap.remove(humanTaskBaseConfiguration.getDefinitionName());
                 }
-                activeTaskConfigurationQNameMap.remove(humanTaskBaseConfiguration.getDefinitionName());
-
                 taskBaseConfigurationHashMap.remove(name);
             }
         }
@@ -852,7 +851,7 @@ public class HumanTaskStore {
 
         if(!isServerReadOnly()){
             // This is the master server
-            Object o = engine.getScheduler().execTransaction(new Callable<Object>() {
+           engine.getScheduler().execTransaction(new Callable<Object>() {
                 public Object call() throws Exception {
 
                     HumanTaskDAOConnection connection = engine.getDaoConnectionFactory().getConnection();
