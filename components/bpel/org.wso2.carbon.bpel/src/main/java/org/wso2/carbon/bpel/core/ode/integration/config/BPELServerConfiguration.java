@@ -133,8 +133,8 @@ public class BPELServerConfiguration {
     private int odeSchedulerImmediateTransactionRetryLimit  = 3;
     private long odeSchedulerImmediateTransactionRetryInterval  = 1000;
 
-    //Maximum size of a BPEL variable
-    private int instanceVariableSize = BPELConstants.DEFAULT_INSTANCE_VARIABLE_SIZE;
+    //Maximum length of a instance variable in instance view.
+    private int instanceViewVariableLength = BPELConstants.DEFAULT_INSTANCE_VIEW_VARIABLE_LENGTH;
 
     public BPELServerConfiguration() {
         if (log.isDebugEnabled()) {
@@ -201,8 +201,8 @@ public class BPELServerConfiguration {
         this.keepAlive = keepAlive;
     }
 
-    public int getBPELInstanceVariableSize() {
-        return instanceVariableSize;
+    public int getInstanceViewVariableLength() {
+        return instanceViewVariableLength;
     }
 
 
@@ -439,7 +439,7 @@ public class BPELServerConfiguration {
         populatePersistenceProvider();
         populateNodeId();
         populateODESchedulerConfiguration();
-        populateBPELInstanceVariableSize();
+        populateInstanceViewVariableLength();
     }
 
     private void populateSyncWithRegistry() {
@@ -663,9 +663,9 @@ public class BPELServerConfiguration {
         }
     }
 
-    private void populateBPELInstanceVariableSize() {
-        if(bpsConfigDocument.getWSO2BPS().isSetBPELInstanceVariableSize()) {
-            this.instanceVariableSize = bpsConfigDocument.getWSO2BPS().getBPELInstanceVariableSize();
+    private void populateInstanceViewVariableLength() {
+        if(bpsConfigDocument.getWSO2BPS().isSetInstanceViewVariableLength()) {
+            this.instanceViewVariableLength = bpsConfigDocument.getWSO2BPS().getInstanceViewVariableLength();
         }
 
     }

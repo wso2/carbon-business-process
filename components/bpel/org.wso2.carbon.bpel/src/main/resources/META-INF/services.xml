@@ -248,20 +248,20 @@
         </parameter>
         <parameter name="useOriginalwsdl">true</parameter>
         <parameter name="modifyUserWSDLPortAddress">true</parameter>
-        <operation name="getBPELInstanceVariableSize" mep="http://www.w3.org/ns/wsdl/in-out"
+        <operation name="getInstanceViewVariableLength" mep="http://www.w3.org/ns/wsdl/in-out"
                    namespace="http://wso2.org/bps/management/wsdl/InstanceManagement">
             <actionMapping>urn:getBPELInstanceVariableSize</actionMapping>
             <outputActionMapping>
-                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getBPELInstanceVariableSizeResponse
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getInstanceViewVariableLengthResponse
             </outputActionMapping>
             <faultActionMapping faultName="instanceManagementException">
-                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getBPELInstanceVariableSize/Fault/instanceManagementException
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getInstanceViewVariableLength/Fault/instanceManagementException
             </faultActionMapping>
             <faultActionMapping faultName="InstanceManagementException">
-                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getBPELInstanceVariableSize/Fault/instanceManagementException
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getInstanceViewVariableLength/Fault/instanceManagementException
             </faultActionMapping>
             <faultActionMapping faultName="InstanceManagementException_Exception">
-                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getBPELInstanceVariableSize/Fault/instanceManagementException
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getInstanceViewVariableLength/Fault/instanceManagementException
             </faultActionMapping>
             <parameter name="AuthorizationAction" locked="true">
                 /permission/admin/manage/bpel/instances,/permission/admin/monitor/bpel

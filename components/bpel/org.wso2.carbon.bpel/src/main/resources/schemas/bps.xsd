@@ -41,7 +41,7 @@
                          maxOccurs="1"/>
             <xsd:element name="OpenJPAConfig" type="tns:tOpenJPAConfig" minOccurs="0"
                          maxOccurs="1"/>
-            <xsd:element name="BPELInstanceVariableSize" type="xsd:int" minOccurs="0"
+            <xsd:element name="InstanceViewVariableLength" type="xsd:int" minOccurs="0"
                          maxOccurs="1"/>
             <xsd:element name="MexTimeOut" minOccurs="0" maxOccurs="1">
                 <xsd:complexType>

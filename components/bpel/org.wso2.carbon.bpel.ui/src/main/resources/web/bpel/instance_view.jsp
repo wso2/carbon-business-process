@@ -629,8 +629,8 @@
         //                                        sr.close();
         //                                        varStr = sw.toString();
                                                 try {
-                                                    //read the max variable size from configuration
-                                                    int maxSize = client.getBPELInstanceVariableSize() * 1000;
+                                                    //read the max variable length from configuration
+                                                    int maxSize = client.getInstanceViewVariableLength() * 1000;
                                                     varStr = BpelUIUtil.encodeHTML(BpelUIUtil
                                                             .truncateString(BpelUIUtil.prettyPrint(varValue), maxSize));
                                                 } catch (Exception e) {

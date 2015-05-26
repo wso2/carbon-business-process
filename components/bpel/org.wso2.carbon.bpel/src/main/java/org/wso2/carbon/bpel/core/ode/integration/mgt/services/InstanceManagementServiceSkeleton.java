@@ -315,8 +315,8 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
      * @throws InstanceManagementException
      */
     @Override
-    public int getBPELInstanceVariableSize() throws InstanceManagementException {
-        return bpelServer.getBpelServerConfiguration().getBPELInstanceVariableSize();
+    public int getInstanceViewVariableLength() throws InstanceManagementException {
+        return bpelServer.getBpelServerConfiguration().getInstanceViewVariableLength();
     }
 
     /**
