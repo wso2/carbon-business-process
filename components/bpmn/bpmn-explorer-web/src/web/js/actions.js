@@ -12,73 +12,23 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
-*/
+ */
+
 var httpUrl = location.protocol + "//" + location.host;
-var CONTEXT="bpmn-explorer";
+var CONTEXT = "bpmn-explorer";
 
-function completeTask(data, id){
-	var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
-	var variables = [];
-	for(var i=0; i<data.length; i++){
-		variables.push({
-			"name":data[i].name,
-			"value":data[i].value
-		});
-	}
-	var body = {
-		"action" : "complete",
-		"variables" : variables
-	};
-
-	$.ajax({
-        type: 'POST',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(body),
-        success: function(data){
-        	window.location=httpUrl+"/"+CONTEXT+"/inbox";
-        }
-    });
-}
-
-function reassign(username, id){
-	var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
-	var body = { 
-		"assignee" : username
-	};
-
-	$.ajax({
-        type: 'PUT',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(body),
-        success: function(data){
-        	window.location=httpUrl+"/"+CONTEXT+"/inbox";
-        }
-    });
-}
-
-function transfer(username, id){
-	var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
-	var body = { 
-		"owner" : username
-	};
-
-	$.ajax({
-        type: 'PUT',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(body),
-        success: function(data){
-        	window.location=httpUrl+"/"+CONTEXT+"/inbox";
-        }
-    });
-}
-
-function startProcess(processDefId){
-    var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/process-instances";
-    var body = { 
-      "processDefinitionId": processDefId
+function completeTask(data, id) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+    var variables = [];
+    for (var i = 0; i < data.length; i++) {
+        variables.push({
+            "name": data[i].name,
+            "value": data[i].value
+        });
+    }
+    var body = {
+        "action": "complete",
+        "variables": variables
     };
 
     $.ajax({
@@ -86,32 +36,105 @@ function startProcess(processDefId){
         contentType: "application/json",
         url: httpUrl + url,
         data: JSON.stringify(body),
-        success: function(data){
-            window.location=httpUrl+"/"+CONTEXT+"/inbox";
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/inbox";
         }
     });
 }
 
-function startProcessWithData(data, id){
-    var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/process-instances";
+function reassign(username, id) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+    var body = {
+        "assignee": username
+    };
+
+    $.ajax({
+        type: 'PUT',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+        }
+    });
+}
+
+function transfer(username, id) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+    var body = {
+        "owner": username
+    };
+
+    $.ajax({
+        type: 'PUT',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+        }
+    });
+}
+
+
+function startProcess(processDefId) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
+    var body = {
+        "processDefinitionId": processDefId
+    };
+
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+        }
+    });
+}
+
+function startProcessWithData(data, id) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
     var variables = [];
-    for(var i=0; i<data.length; i++){
+    for (var i = 0; i < data.length; i++) {
         variables.push({
-            "name":data[i].name,
-            "value":data[i].value
+            "name": data[i].name,
+            "value": data[i].value
         });
     }
     var body = {
         "processDefinitionId": id,
-        "variables" : variables
+        "variables": variables
     };
     $.ajax({
         type: 'POST',
         contentType: "application/json",
         url: httpUrl + url,
         data: JSON.stringify(body),
-        success: function(data){
-            window.location=httpUrl+"/"+CONTEXT+"/inbox";
+        success: function (data) {
+            showStatusForProcessWithData(id, 1);
+        },
+        error: function (xhr, status, error) {
+            showStatusForProcessWithData(id, 0);
         }
+
     });
 }
+
+function showStatusForProcessWithData(id, status) {
+    var statusContent = "";
+    if (status == 1) {
+        statusContent = "Successfully started process";
+    }
+    else {
+        statusContent = "Failed to start process";
+    }
+    $('.btn-primary').popover({title: "Process Status", content: statusContent + " " + id,
+        placement: "right"});
+    $('.btn-primary').popover('show');
+    setTimeout(function () {
+        $('.btn-primary').popover('hide')
+    }, 3000);
+}
+
