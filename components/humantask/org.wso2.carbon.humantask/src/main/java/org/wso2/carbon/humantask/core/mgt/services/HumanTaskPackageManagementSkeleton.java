@@ -69,7 +69,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
      * @param page : The page number.
      * @return :
      */
-    @Override
     public DeployedPackagesPaginated listDeployedPackagesPaginated(int page) {
         return null;
     }
@@ -81,7 +80,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
      * @param packageName : The name of the package to list task definitions.
      * @return : The Task_type0 array containing the task definition information.
      */
-    @Override
     public Task_type0[] listTasksInPackage(String packageName) throws PackageManagementException {
 
         if (StringUtils.isEmpty(packageName)) {
@@ -106,7 +104,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
         }
     }
 
-    @Override
     public DeployedTaskDefinitionsPaginated listDeployedTaskDefinitionsPaginated(int page)
             throws PackageManagementException {
 
@@ -144,7 +141,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
         }
     }
 
-    @Override
     public TaskInfoType getTaskInfo(QName taskId) throws PackageManagementException {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
