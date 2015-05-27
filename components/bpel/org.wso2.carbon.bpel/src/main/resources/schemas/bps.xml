@@ -60,11 +60,6 @@
         <tns:property name="openjpa.FlushBeforeQueries" value="true"/>
     </tns:OpenJPAConfig>
 
-    <!--Set the maximum value size for a variable in a instance view in kilobytes,
-    higher sizes may slowdown the instance view rendering. Default size is 1000KB.
-    Please note that this only limits the displayed variable content size.-->
-    <!--<tns:InstanceViewVariableLength>1000</tns:InstanceViewVariableLength>-->
-
     <!-- Message exchange timeout. Default value is 120000ms -->
     <!--<tns:MexTimeOut value="120000"/>-->
 
@@ -143,5 +138,10 @@
         <!-- Interval between immediate retries when the transaction fails -->
         <!--<tns:ODESchedulerImmediateTransactionRetryInterval>1000</tns:ODESchedulerImmediateTransactionRetryInterval>-->
     <!--</tns:ODESchedulerConfiguration>-->
+
+    <!--Set the maximum value size for a variable in a instance view in kilobytes,
+    higher sizes may slowdown the instance view rendering. Default size is 1000KB.
+    Please note that this only limits the displayed variable content size.-->
+    <!--<tns:InstanceViewVariableLength>1000</tns:InstanceViewVariableLength>-->
 
 </tns:WSO2BPS>
