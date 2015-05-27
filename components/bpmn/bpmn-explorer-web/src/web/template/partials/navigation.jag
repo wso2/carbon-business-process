@@ -31,6 +31,9 @@ var loggedUser = session.get("user");
           <li>
             <a href="inbox?pagination=1"><img width="40px" src="images/task.png"/>&nbsp;My Tasks </a>
           </li>
+           <li>
+            <a href="claimableTask?pagination=1"><img width="40px" src="images/claim.png"/>&nbsp;Claimable Tasks </a>
+          </li>
           <li>
             <a href="historicTasks?pagination=1"><img width="40px" src="images/check.png"/>&nbsp;Completed Tasks </a>
           </li>
