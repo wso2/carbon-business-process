@@ -123,11 +123,9 @@ public class BPELPackageRepository {
             if (!isDUCollectionIsThere(deploymentContext)) {
                 configRegistry.beginTransaction();
                 createBPELPackageParentCollectionWithProperties(deploymentContext);
-
-                /**Following methods are commented out due to BPS-562
-                //addLatestArchiveToRegistryCollection(deploymentContext);
-                //createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);**/
-                createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
+                addLatestArchiveToRegistryCollection(deploymentContext);
+                createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);
+                //createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -155,12 +153,9 @@ public class BPELPackageRepository {
             if (!isDUCollectionIsThere(deploymentContext)) {
                 configRegistry.beginTransaction();
                 updateBPELPackageProperties(deploymentContext);
-
-                /**Following methods are commented out due to BPS-562
-                 //addLatestArchiveToRegistryCollection(deploymentContext);
-                 //createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);**/
-
-                createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
+                addLatestArchiveToRegistryCollection(deploymentContext);
+                createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);
+                //createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {

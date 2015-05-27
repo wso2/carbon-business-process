@@ -20,7 +20,14 @@
 	</ol-->
 	<div class="panel panel-primary">
 	  <!-- Default panel contents -->
-	  <div class="panel-heading">Processes</div>
+	  <div class="panel-heading">Processes
+	  <% var processStatus = session.get("processStatus");
+         var processId = session.get("processId");
+          session.put("processStatus","");
+          session.put("processId","");
+       %>
+
+	  </div>
 
 	  <!-- Table -->
 	  <table class="table">
@@ -36,32 +43,39 @@
 	    <tbody>
 	    	<% var previous = list[0].processName; var count = 0;%>
 	    	<% for(var i=0; i<list.length; i++){ %>
-	    		<% if(previous == list[i].processName){ 
+	    		<% if(previous == list[i].processName){
 	    			count++;
 	    		} else {
 	    		%>
 	    			<tr>
-		    			<td rowspan="<%=count%>"><%=list[i-count].processName%></td>
+
+		    			<td rowspan="<%=count%>"><%=list[i-count].processName%>
+                        </td>
 		    			<td>
-		    				<a href="" data-toggle="modal" data-target="#diagram" 
+		    				<a href="" data-toggle="modal" data-target="#diagram"
 		    				<%if(list[i-count].imageUrl.indexOf("not supported") >= 0){%>
                                 onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
                             <%}else{%>
-                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src', 
+                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
 	    							'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
 							<%}%>
 		    					<%=list[i-count].processId%>
 		    				</a>
 		    			</td>
 						<td><%=list[i-count].version%></td>
-						<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+						<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
+						<% if(list[i-count].processId == processId ) {%>
+                         <%=processStatus%>
+                           <% }%>
+						</td>
+
 					</tr>
 	    		<%
 	    			for (var j=count-1; j>0; j--){
 		    		%>
 		    			<tr>
 			    			<td>
-			    				<a href="" data-toggle="modal" data-target="#diagram" 
+			    				<a href="" data-toggle="modal" data-target="#diagram"
 		    					<%if(list[i-j].imageUrl.indexOf("not supported") >= 0){%>
                                     onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
                                 <%}else{%>
@@ -72,7 +86,11 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-j].version%></td>
-							<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+							<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
+							<% if(list[i-j].processId == processId ) {%>
+                      <%=processStatus%>
+                          <% }%>
+							</td>
 						</tr>
 		    		<%
 	    			}
@@ -81,7 +99,7 @@
 	    		}%>
 	    		<% if(i >= list.length-1){ i++; %>
 	    			<tr>
-		    			<td rowspan="<%=count%>"><%=list[i-count].processName%></td>
+		    			<td rowspan="<%=count%>"><%=list[i-count].processName%> </td>
 		    			<td>
 		    				<a href="" data-toggle="modal" data-target="#diagram" 
 		    				<%if(list[i-count].imageUrl.indexOf("not supported") >= 0){%>
@@ -94,29 +112,37 @@
 		    				</a>
 		    			</td>
 						<td><%=list[i-count].version%></td>
-						<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+						<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
+						<% if(list[i-count].processId == processId ) {%>
+                         <%=processStatus%>
+                          <% }%>
+						</td>
 					</tr>
 	    		<%
 	    			for (var j=count-1; j>0; j--){
 		    	%>
 		    			<tr>
 			    			<td>
-			    				<a href="" data-toggle="modal" data-target="#diagram" 
+			    				<a href="" data-toggle="modal" data-target="#diagram"
 			    				<%if(list[i-j].imageUrl.indexOf("not supported") >= 0){%>
                                     onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
                                 <%}else{%>
-                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src', 
+                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
 			    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
 								<%}%>
 			    					<%=list[i-j].processId%>
 			    				</a>
 			    			</td>
 							<td><%=list[i-j].version%></td>
-							<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+							<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
+							<% if(list[i-count].processId == processId ) {%>
+                              <%=processStatus%>
+                                <% }%>
+							</td>
 						</tr>
 		    	<%
 	    			}
-	    		}%>		    	
+	    		}%>
 	    	<% } %>
 	    </tbody>
 	    <% } %>
@@ -128,7 +154,7 @@
 		<% } else { %>
 			<li class="disabled"><a href="#">&laquo;</a></li>			
 		<% } %>
-		<% for(var i = 1; i<=paginatePageCount+1; i++){ 
+		<% for(var i = 1; i<=paginatePageCount+1; i++){
 				if(pagination == i){ %>
 					<li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
 			<% }else { %>

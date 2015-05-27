@@ -22,6 +22,7 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
+import org.apache.axis2.deployment.DeploymentException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +47,7 @@ public class UnifiedEndpointFactory {
     public UnifiedEndpointFactory() {
     }
 
-    public UnifiedEndpoint createVirtualEndpointFromFilePath(String logicalName) {
+    public UnifiedEndpoint createVirtualEndpointFromFilePath(String logicalName) throws AxisFault {
         UnifiedEndpoint realUEP = null;
         if (logicalName.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
             String filePath = logicalName.replaceFirst(UnifiedEndpointConstants.VIRTUAL_FILE, "");
@@ -56,18 +57,18 @@ public class UnifiedEndpointFactory {
                 realUEP = createEndpoint(omElem);
 
             } catch (XMLStreamException e) {
-                log.error(e.getLocalizedMessage(), e);
-            } catch (AxisFault f) {
-                log.error(f.getLocalizedMessage(), f);
-            } catch (Exception e) {
-                log.error(e.getLocalizedMessage(), e);
+                throw new AxisFault("Could not create endpoint from file path", e);
+            } catch (IOException e) {
+                throw new AxisFault("Could not create endpoint from file path", e);
             }
-
         }
         return realUEP;
     }
 
-    private OMElement getOmFromFile(String filePath) throws XMLStreamException, IOException {
+    private OMElement getOmFromFile(String filePath) throws IOException, XMLStreamException {
+        if (!new File(filePath).isFile()) {
+            throw new DeploymentException("EPR file: " + filePath + " not found.");
+        }
         String xmlString = FileUtils.readFileToString(new File(filePath), "UTF-8");
         return AXIOMUtil.stringToOM(xmlString);
     }

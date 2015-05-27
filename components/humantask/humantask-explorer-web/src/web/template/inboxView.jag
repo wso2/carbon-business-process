@@ -56,7 +56,6 @@
                             <th>Type</th>
                             <th>Task Name</th>
                             <th>Subject</th>
-                            <th>Status</th>
                             <th>Priority</th>
                         </tr>
                     </thead>
@@ -70,7 +69,6 @@
                             <td><%=taskXMLList[i].NS1_NS::taskType.text()%></td>
                             <td><%=taskXMLList[i].NS1_NS::presentationName.text()%></td>
                             <td><%=taskXMLList[i].NS1_NS::presentationSubject%></td>
-                            <td><%=taskXMLList[i].NS1_NS::status%></td>
                             <td><%=taskXMLList[i].NS1_NS::priority%></td>
                         </tr>
                         <%

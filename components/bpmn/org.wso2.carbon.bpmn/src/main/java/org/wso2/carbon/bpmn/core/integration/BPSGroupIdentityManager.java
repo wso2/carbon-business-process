@@ -20,11 +20,14 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,8 +79,18 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
     @Override
     public List<Group> findGroupsByUser(String userId) {
-        String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        List<Group> groups = new ArrayList<Group>();
+        try {
+            String[] roles = userStoreManager.getRoleListOfUser(userId);
+            for (String role : roles) {
+                Group group = new GroupEntity(role);
+                groups.add(group);
+            }
+        } catch (UserStoreException e) {
+            String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
+            log.error(msg, e);
+        }
+        return groups;
     }
 
     @Override

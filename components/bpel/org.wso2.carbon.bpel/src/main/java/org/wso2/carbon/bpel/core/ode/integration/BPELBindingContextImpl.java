@@ -34,11 +34,9 @@ import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.bpel.common.BusinessProcessConstants;
 import org.wso2.carbon.bpel.common.ServiceConfigurationUtil;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
-import org.wso2.carbon.bpel.core.ode.integration.store.MultiTenantProcessConfiguration;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStore;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AxisServiceUtils;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
@@ -170,7 +168,6 @@ public class BPELBindingContextImpl implements BindingContext {
                     pConf, bpelServer.getHttpConnectionManager());
 
         } catch (Exception ex) {
-            log.error("Could not create external service.", ex);
             throw new ContextException("Error creating external service! name:" + serviceName +
                     ", port:" + portName, ex);
         }
