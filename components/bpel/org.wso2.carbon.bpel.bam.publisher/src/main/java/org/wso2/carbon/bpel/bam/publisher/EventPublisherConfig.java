@@ -41,7 +41,7 @@ public class EventPublisherConfig {
     }
 
     public void addEventStream(String streamName, String version) {
-        addedStreamDefinitions.put(streamName + version, new String("exist"));
+        addedStreamDefinitions.put(streamName + version, "exist");
     }
 
     public boolean eventStreamAlreadyDefined(String streamName, String version) {
