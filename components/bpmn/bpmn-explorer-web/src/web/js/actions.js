@@ -59,6 +59,24 @@ function reassign(username, id) {
     });
 }
 
+function claim(username, id){
+    var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
+    var body = {
+        "assignee" : username
+    };
+
+    $.ajax({
+        type: 'PUT',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function(data){
+            window.location=httpUrl+"/"+CONTEXT+"/inbox";
+        }
+    });
+}
+
+
 function transfer(username, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
