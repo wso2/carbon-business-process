@@ -160,7 +160,13 @@
                 <fieldset id="requestFieldSet" style="display: none;">
                     <legend><a onclick="toggleMe('requestDiv')"><h3><fmt:message key="humantask.taskview.request"/>:</h3></a></legend>
                     <div id="requestDiv" class="dynamicContent">
-                          <jsp:include page="<%=requestJSPContextPath%>"/>
+                        <%try {%>
+                        <jsp:include page="<%=requestJSPContextPath%>"/>
+                        <%} catch (Exception ex) {%>
+                        <div id="errorStrip"><fmt:message
+                                key="humantask.request.jsp.context.missing"/> <%=" " + task.getName().getLocalPart() + "-input.jsp"%>
+                            <fmt:message key="humantask.jsp.available"/></div>
+                        <%}%>
                     </div>
                 </fieldset>
                 <%
@@ -168,13 +174,21 @@
                 %>
                 <fieldset id="responseFormFieldSet" style="display: none;">
                     <legend><a onclick="toggleMe('responseFormDiv')"><h3><fmt:message key="humantask.taskview.response"/>:</h3></a></legend>
+                    <%try {%>
                     <div id="responseFormDiv" class="dynamicContent">
-                          <jsp:include page="<%=outputJspContextPath%>"/>
+                        <jsp:include page="<%=outputJspContextPath%>"/>
                     </div>
                     <div id="completeButtonDiv">
                         <button id="saveTaskButton" value="Save" style="float: left; margin-right:10px;"><fmt:message key="humantask.taskview.save"/></button>
                         <button id="completeTaskButton" value="Complete" style="float: left;"><fmt:message key="humantask.taskview.complete"/></button>
                     </div>
+                    <%} catch (Exception ex) {%>
+                    <div id="responseFormDiv" class="dynamicContent">
+                        <div id="errorStrip"><fmt:message
+                                key="humantask.output.jsp.context.missing"/> <%=" " + task.getName().getLocalPart() + "-output.jsp"%>
+                            <fmt:message key="humantask.jsp.available"/></div>
+                    </div>
+                    <%}%>
                 </fieldset>
                 <%
                     } else if ("COMPLETED".equals(task.getStatus().toString())) {
@@ -182,7 +196,13 @@
                 <fieldset id="responseFieldSet" style="display: none;">
                     <legend><a onclick="toggleMe('responseDiv')"><h3><fmt:message key="humantask.taskview.response"/>:</h3></a></legend>
                     <div id="responseDiv" class="dynamicContent">
+                        <%try {%>
                         <jsp:include page="<%=responseJspContextPath%>"/>
+                        <%} catch (Exception ex) {%>
+                        <div id="errorStrip"><fmt:message
+                                key="humantask.response.jsp.context.missing"/> <%=" " + task.getName().getLocalPart() + "-response.jsp"%>
+                            <fmt:message key="humantask.jsp.available"/></div>
+                        <%}%>
                     </div>
                 </fieldset>
                 <%
@@ -193,7 +213,13 @@
                     <legend><a onclick="toggleMe('notificationDiv')"><h3><fmt:message
                             key="humantask.taskview.request"/>:</h3></a></legend>
                     <div id="notificationDiv" class="dynamicContent">
+                        <%try {%>
                         <jsp:include page="<%=requestJSPContextPath%>"/>
+                        <%} catch (Exception ex) {%>
+                        <div id="errorStrip"><fmt:message
+                                key="humantask.request.jsp.context.missing"/> <%=" " + task.getName().getLocalPart() + "-input.jsp"%>
+                            <fmt:message key="humantask.jsp.available"/></div>
+                        <%}%>
                     </div>
                 </fieldset>
                 <%
