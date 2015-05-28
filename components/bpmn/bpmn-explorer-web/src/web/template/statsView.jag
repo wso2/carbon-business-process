@@ -61,7 +61,11 @@
 
         var options = {
           title: 'Process Instances',
-          is3D: true,
+          pieHole: 0.6,
+          pieSliceTextStyle: {
+            color: 'black'
+          },
+          colors:['green','red','yellow','blue']
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('processInstanceChart'));
@@ -83,7 +87,11 @@
 
         var options = {
           title: 'Task Instances',
-          is3D: true,
+          pieHole: 0.6,
+          pieSliceTextStyle: {
+            color: 'black'
+          },
+          colors:['green','red','yellow','blue']
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('taskInstances'));
