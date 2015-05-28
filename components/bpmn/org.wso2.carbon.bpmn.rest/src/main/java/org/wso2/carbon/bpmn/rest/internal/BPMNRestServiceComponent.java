@@ -73,7 +73,6 @@ public class BPMNRestServiceComponent {
     }
 
     public void setHttpService(HttpService httpService) {
-
         BPMNRestHolder.getInstance().setHttpService(httpService);
 
         ServerServlet restServlet = new ServerServlet();
@@ -82,6 +81,7 @@ public class BPMNRestServiceComponent {
         String paramName = "org.restlet.application";
         String paramValue = "org.activiti.rest.service.application.ActivitiRestServicesApplication";
         initParams.put(paramName, paramValue);
+        
 
         try {
             httpService.registerServlet(BPMNRestConstants.BPMN_REST_CONTEXT_PATH, restServlet, initParams, defaultHttpContext);
