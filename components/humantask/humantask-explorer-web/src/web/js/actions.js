@@ -19,7 +19,6 @@
 var httpUrl = window.location.protocol + "//" + window.location.host;
 var appName = "humantask-explorer"; //TODO finalize appName
 
-
 /**
  * function to make ajax call to claim task
  * @param id target task id
@@ -34,16 +33,24 @@ function claimTask(id) {
             if (success === 'true') {
                 //successful
                 window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
-            } else {
+            }
+            else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }
+            else {
+
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Claim task");
                 $('#additionalInfoErr').show();
             }
         },
+
         error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
             $('#additionalInfoErr').show();
         }
+
+
     });
 }
 
@@ -57,15 +64,24 @@ function startTask(id) {
         type: 'POST',
         url: httpUrl + requestUrl,
         success: function (data) {
+            if(!data) {
+
+                    window.location = httpUrl + "/" + appName +"/login";
+
+            }
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
                 window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
-            } else {
-                //unsuccessful
+            }
+            else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }
+               else { //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Start task");
                 $('#additionalInfoErr').show();
             }
+
         },
         error: function (response) {
             $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
@@ -91,7 +107,10 @@ function stopTask(id) {
                 //successful
                 window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
 
-            } else {
+            }
+            else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Stop task");
                 $('#additionalInfoErr').show();
@@ -120,7 +139,13 @@ function releaseTask(id) {
                 //successful
                 window.location = httpUrl + "/" + appName + "/taskview?id=" + id;
 
+            } else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
+                var session = session.get("authSuccess");
+                if(!session){
+                    window.location = httpUrl + "/" + appName +"/login";
+                }
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Release task");
                 $('#additionalInfoErr').show();
@@ -149,7 +174,13 @@ function suspendTask(id) {
             if (success === 'true') {
                 //successful
                 window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
+                var session = session.get("authSuccess");
+                if(!session){
+                    window.location = httpUrl + "/" + appName +"/login";
+                }
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Suspend task");
                 $('#additionalInfoErr').show();
@@ -179,6 +210,8 @@ function resumeTask(id) {
             if (success === 'true') {
                 //successful
                 window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Resume task");
@@ -209,6 +242,8 @@ function failTask(id) {
             if (success === 'true') {
                 //successful
                 window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Fail task");
@@ -265,7 +300,9 @@ function updateComments(id) {
                 }
 
                 $('#commentList').html(commentViewList);
-            } else {
+            }else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }  else  {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Update Comments task");
                 $('#additionalInfoErr').show();
@@ -298,6 +335,8 @@ function addComment(id) {
             if (success === 'true') {
                 //successful
                 $('#addCommentModal').modal('hide');
+            }else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Add Comment task");
@@ -366,6 +405,8 @@ function updateHistory(id) {
                                                         </li>';
                 }
                 $('#historyList').html(historyViewList);
+            } else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Update History task");
@@ -428,7 +469,9 @@ function updateAttachments(id) {
                 }
 
                 $('#AttchmentsList').html(attachmentViewList);
-            } else {
+            }else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }  else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Update Attachements task");
                 $('#additionalInfoErr').show();
@@ -468,6 +511,9 @@ function deleteComment(id, commentId) {
                     $('#InfoErrMsg').html("ERROR : element " + commentElementId + " not found. Please refresh the page");
                     $('#additionalInfoErr').show();
                 }
+            }
+            else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
             } else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Delete Comment task");
@@ -503,7 +549,9 @@ function assignTask(id) {
                 //redirect to task view
                 window.location = httpUrl + "/" + appName + "/taskview?id=" + id;
 
-            } else {
+            }else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }  else {
                 //unsuccessful
                 $('#InfoErrMsg').html("ERROR : Unable to Assign task");
                 $('#additionalInfoErr').show();
@@ -548,6 +596,8 @@ function assignTaskModalUpdate(id) {
                     $('#taskAssignBtn').removeAttr('disabled');
                     $('#userUnavailableAlert').hide();
 
+                } else if (success === 'timeout') {
+                    window.location = httpUrl + "/" + appName + "/login";
                 } else {
                     //no users available to assign
                     $('#assignableUserList').html(userListDisplay);

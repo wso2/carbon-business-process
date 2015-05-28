@@ -39,6 +39,12 @@
         var paginatePageCount = 0;
         var BPSResponseXML = new XML(htRequest.simpleQueryBasic("", pageSize, pageNumber, queryCategory,
                                                                 queryOrder, queryOrderBy));
+          if(BPSResponseXML == null || BPSResponseXML == ""){
+              if (log.isDebugEnabled()) {
+                  log.debug('Session timed out for request'+ "" + htRequest);
+              }
+              response.sendRedirect('login');
+          }
         if (log.isDebugEnabled()) {
             log.debug('simpleQueryBasic BPS RESPONSE : ' + BPSResponseXML);
         }

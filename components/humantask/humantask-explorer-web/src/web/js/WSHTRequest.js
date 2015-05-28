@@ -16,7 +16,6 @@
  * under the License.
  */
 
-
 /**
  * Initialize HT server information
  * @param url back end url
@@ -44,9 +43,15 @@ function requestBPS(endPoint, soapAction, BPSSessionCookie, payload) {
     httpClient.setRequestHeader('Content-Type', 'text/xml');
 
     httpClient.send(payload);
+    //BPSResponse = httpClient.responseText;
     BPSResponse = httpClient.responseText;
+    if (httpClient.status == 401) { //session timed out
 
-    return BPSResponse;
+        return null;
+    }
+    else {
+        return BPSResponse;
+    }
 }
 
 
@@ -78,13 +83,17 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
     var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
     var BPSResponse;
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    }
+    else {
+        return BPSResponse;
+    }
 }
 
 /**
- * Function to make WS-HT simplequery request Advance parameters 
- * 
+ * Function to make WS-HT simplequery request Advance parameters
+ *
  * @returns  response payload
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -115,15 +124,17 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    }
 
     return BPSResponse;
 }
 
 
-
 /**
  * Function to make WS-HT loadTask request
- * 
+ *
  * return response payload
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -141,8 +152,12 @@ function loadTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        response.sendRedirect('login');
+    }
+    else {
+        return BPSResponse;
+    }
 }
 
 /**
@@ -156,7 +171,7 @@ function getInput(id) {
                         <soapenv:Header/>\
                         <soapenv:Body>\
                             <ns:getInput>\
-                                <ns:identifier>' + id +'</ns:identifier>\
+                                <ns:identifier>' + id + '</ns:identifier>\
                             </ns:getInput>\
                         </soapenv:Body>\
                     </soapenv:Envelope>';
@@ -165,13 +180,15 @@ function getInput(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
+    if (BPSResponse == null) {
+        return null;
+    }
     return BPSResponse;
 }
 
 /**
  * Function to make WS-HT getComments request
- * 
+ *
  * return response payload
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -188,7 +205,9 @@ function getComments(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
+    if (BPSResponse == null) {
+        return null;
+    }
     return BPSResponse;
 }
 
@@ -214,8 +233,11 @@ function claimTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**
@@ -238,8 +260,11 @@ function startTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 
@@ -263,9 +288,11 @@ function stopTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
-
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 
@@ -289,8 +316,11 @@ function releaseTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**
@@ -313,8 +343,11 @@ function suspendTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 
@@ -338,8 +371,11 @@ function resumeTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**
@@ -363,8 +399,11 @@ function failTask(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**
@@ -389,15 +428,18 @@ function addComment(id, text) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**
  * Function to make delete comment service request
  * @param id ID of the task to delete comment
  * @param taskId - ID of task of relates to comment
- * @param commentId - comment id  
+ * @param commentId - comment id
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -416,14 +458,17 @@ function deleteComment(taskId, commentId) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**
  * Function to make assign task (delegate) service request
  * @param id - ID of the task to assign
- * @param userName - user name of the new asignee 
+ * @param userName - user name of the new asignee
  * @returns response payload from HumanTaskClientAPIAdmin service
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
@@ -445,12 +490,15 @@ function assignTask(id, userName) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 /**********************************************************************************************************************
-        START web service requests to HumanTaskRenderingAPI admin service
+ START web service requests to HumanTaskRenderingAPI admin service
  **********************************************************************************************************************/
 
 /**
@@ -465,7 +513,7 @@ function getHTRenderings(id) {
                             <soapenv:Header/>\
                                      <soapenv:Body>\
                                          <hum:getRenderings>\
-                                             <taskIdentifier>'+id +'</taskIdentifier>\
+                                             <taskIdentifier>' + id + '</taskIdentifier>\
                                          </hum:getRenderings>\
                                      </soapenv:Body>\
                     </soapenv:Envelope>';
@@ -473,19 +521,22 @@ function getHTRenderings(id) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
 
-function setTaskOutput (id, valuesXmlListMessagePart) {
+function setTaskOutput(id, valuesXmlListMessagePart) {
     var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
                                             xmlns:htr="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
                                 <soapenv:Header/>\
                                 <soapenv:Body>\
                                     <htr:setTaskOutput>\
-                                        <taskIdentifier>' +id +'</taskIdentifier>\
-                                        <values>'+valuesXmlListMessagePart +'</values>\
+                                        <taskIdentifier>' + id + '</taskIdentifier>\
+                                        <values>' + valuesXmlListMessagePart + '</values>\
                                     </htr:setTaskOutput>\
                                 </soapenv:Body>\
                             </soapenv:Envelope>';
@@ -494,18 +545,21 @@ function setTaskOutput (id, valuesXmlListMessagePart) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }
 
-function completeTask (id, valuesXmlListMessagePart) {
+function completeTask(id, valuesXmlListMessagePart) {
     var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
                                     xmlns:htr="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
                             <soapenv:Header/>\
                                      <soapenv:Body>\
                                          <htr:completeTask>\
-                                             <taskIdentifier>'+id +'</taskIdentifier>\
-                                             <values>'+valuesXmlListMessagePart +'</values>\
+                                             <taskIdentifier>' + id + '</taskIdentifier>\
+                                             <values>' + valuesXmlListMessagePart + '</values>\
                                          </htr:completeTask>\
                                      </soapenv:Body>\
                     </soapenv:Envelope>';
@@ -514,6 +568,9 @@ function completeTask (id, valuesXmlListMessagePart) {
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
-
-    return BPSResponse;
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
 }

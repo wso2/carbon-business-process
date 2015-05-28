@@ -46,6 +46,12 @@ try {
     }
 
     var bpsResponse = new XML(htRequest.completeTask (taskID, valueList));
+    if(bpsResponse == null || bpsResponse == ""){ //session timeout
+        if (log.isDebugEnabled()) {
+            log.debug('Session timed out for task'+ "" + taskID);
+        }
+        response.sendRedirect('login');
+    }
     var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::completeTaskResponse.success.text().toString();
 
     if (success != null && success === 'false') {
