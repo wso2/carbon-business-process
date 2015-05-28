@@ -47,10 +47,18 @@
                                 </update_commentsResponse>';
 
             } else {
-                responseMsg = '<update_commentsResponse>\
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<update_commentsResponse><success>timeout</success></update_commentsResponse>';
+                }
+                else {
+                    responseMsg = '<update_commentsResponse>\
                                     <success>false</success>\
-                                    <data>' +result.SOAPENV_NS::Body +'</data>\
+                                    <data>' + result.SOAPENV_NS::Body + '</data>\
                                 </update_commentsResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -74,10 +82,17 @@
                                 </update_historyResponse>';
 
             } else {
-                responseMsg = '<update_historyResponse>\
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<update_historyResponse><success>timeout</success></update_historyResponse>';
+                }else {
+                    responseMsg = '<update_historyResponse>\
                                     <success>false</success>\
-                                    <data>' +result.SOAPENV_NS::Body +'</data>\
+                                    <data>' + result.SOAPENV_NS::Body + '</data>\
                                 </update_historyResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -127,10 +142,17 @@
                                     <data>' +result.SOAPENV_NS::Body.NS2_NS::getAssignableUserListResponse +'</data>\
                                 </update_assignableUsersResponse>';
             } else {
-                responseMsg = '<update_assignableUsersResponse>\
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<update_assignableUsersResponse><success>timeout</success></update_assignableUsersResponse>';
+                }else {
+                    responseMsg = '<update_assignableUsersResponse>\
                                     <success>false</success>\
-                                    <data>' +result.SOAPENV_NS::Body +'</data>\
+                                    <data>' + result.SOAPENV_NS::Body + '</data>\
                                 </update_assignableUsersResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -162,10 +184,17 @@
                                     <data>' +result.SOAPENV_NS::Body.NS2_NS::getAttachmentInfosResponse +'</data>\
                                 </update_attachmentsResponse>';
             } else {
-                responseMsg = '<update_attachmentsResponse>\
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<update_attachmentsResponse><success>timeout</success></update_attachmentsResponse>';
+                }else {
+                    responseMsg = '<update_attachmentsResponse>\
                                     <success>false</success>\
-                                    <data>' +result.SOAPENV_NS::Body +'</data>\
+                                    <data>' + result.SOAPENV_NS::Body + '</data>\
                                 </update_attachmentsResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -224,7 +253,7 @@ function retrieveComments(id) {
     var BPSSessionCookie = session.get('BPSSessionCookie');
     var endPoint = BPSUrl + '/services/HumanTaskClientAPIAdmin/';
     var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getComments';
-    var result = new XML(requestBPS(endPoint, soapAction, BPSSessionCookie, payload));
+    var result = new XML(requestBPS(endPoint, soapAction,BPSSessionCookie, payload));
     return result;
 }
 

@@ -33,7 +33,7 @@
         if (log.isDebugEnabled()) {
             log.debug('loadTask BPS RESPONSE : ' + result);
         }
-
+           //taskAbstract = result;
         taskAbstract = result.SOAPENV_NS::Body.NS2_NS::loadTaskResponse.NS2_NS::taskAbstract;
 
         //retrieve comments
@@ -54,7 +54,13 @@
 
         //retrieve HT renderings
         var HTRenderingsMsg = htRequest.getHTRenderings(id);
+          if(HTRenderingsMsg == null || HTRenderingsMsg =="" ){
+              if (log.isDebugEnabled()) {
+                  log.debug('Session timed out for task'+ "" + id);
+              }
 
+              response.sendRedirect('login');
+          }
         var HTRenderingsXML = new XML(HTRenderingsMsg);
         var wso2InputRenderList = HTRenderingsXML..rendering_NS::getRenderingsResponse.input.element;
         var wso2OutputRenderList = HTRenderingsXML..rendering_NS::getRenderingsResponse.output.element;

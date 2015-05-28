@@ -36,14 +36,23 @@
         if (actionType === 'claim_task') {
             //claim specified task
             var result = new XML(htRequest.claimTask(taskId));
+
             var resultCheck = result.SOAPENV_NS::Body.NS2_NS::claimResponse;
 
             if (resultCheck.length() > 0) {
                 //claiming success
                 responseMsg = '<claim_taskResponse><success>true</success></claim_taskResponse>';
             } else {
-                //claiming unsuccessfull
-                responseMsg = '<claim_taskResponse><success>false</success></claim_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<claim_taskResponse><success>timeout</success></claim_taskResponse>';
+                }
+                else {
+                    //claiming unsuccessfull
+                    responseMsg = '<claim_taskResponse><success>false</success></claim_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -70,15 +79,25 @@
         } else if (actionType === 'start_task') {
 
             var result =  new XML(htRequest.startTask(taskId));
+
             var resultCheck = result.SOAPENV_NS::Body.NS2_NS::startResponse;
 
             if (resultCheck.length() > 0) {
                 //start successfull
                 responseMsg = '<start_taskResponse><success>true</success></start_taskResponse>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<start_taskResponse><success>false</success></start_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<start_taskResponse><success>timeout</success></start_taskResponse>';
+                }
+                else {
+                    //claiming unsuccessfull
+                    responseMsg = '<start_taskResponse><success>false</success></start_taskResponse>';
+                }
             }
+
 
             response.contentType = 'text/xml';
             response.content = responseMsg;
@@ -110,8 +129,16 @@
                 //stop successfull
                 responseMsg = '<stop_taskResponse><success>true</success></stop_taskResponse>';
             } else {
-                //stop unsuccessfull
-                responseMsg = '<stop_taskResponse><success>false</success></stop_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<stop_taskResponse><success>timeout</success></stop_taskResponse>';
+                }
+                else {
+                    //stop unsuccessfull
+                    responseMsg = '<stop_taskResponse><success>false</success></stop_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -145,8 +172,16 @@
                 //start successfull
                 responseMsg = '<release_taskResponse><success>true</success></release_taskResponse>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<release_taskResponse><success>false</success></release_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<release_taskResponse><success>timeout</success></release_taskResponse>';
+                }
+                else {
+                    //start unsuccessfull
+                    responseMsg = '<release_taskResponse><success>false</success></release_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -181,8 +216,16 @@
                 //start successfull
                 responseMsg = '<suspend_taskResponse><success>true</success></suspend_taskResponse>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<suspend_taskResponse><success>false</success></suspend_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<suspend_taskResponse><success>timeout</success></suspend_taskResponse>';
+                }
+                else {
+                    //start unsuccessfull
+                    responseMsg = '<suspend_taskResponse><success>false</success></suspend_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -216,8 +259,15 @@
                 //start successfull
                 responseMsg = '<resume_taskResponse><success>true</success></resume_taskResponse>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<resume_taskResponse><success>false</success></resume_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<resume_taskResponse><success>timeout</success></resume_taskResponse>';
+                }else {
+                    //start unsuccessfull
+                    responseMsg = '<resume_taskResponse><success>false</success></resume_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -250,8 +300,16 @@
                 //start successfull
                 responseMsg = '<fail_taskResponse><success>true</success></fail_taskResponse>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<fail_taskResponse><success>false</success></fail_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<fail_taskResponse><success>timeout</success></fail_taskResponse>';
+                }
+                else {
+                    //start unsuccessfull
+                    responseMsg = '<fail_taskResponse><success>false</success></fail_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -290,8 +348,15 @@
                 //start successfull
                 responseMsg = '<addComment_taskResponse><success>true</success></addComment_taskResponse>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<addComment_taskResponse><success>false</success></addComment_taskResponse>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<addComment_taskResponse><success>timeout</success></addComment_taskResponse>';
+                }else {
+                    //start unsuccessfull
+                    responseMsg = '<addComment_taskResponse><success>false</success></addComment_taskResponse>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -326,8 +391,15 @@
                 //start successfull
                 responseMsg = '<deleteComment_Response><success>true</success></deleteComment_Response>';
             } else {
-                //start unsuccessfull
-                responseMsg = '<deleteComment_Response><success>false</success></deleteComment_Response>';
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<deleteComment_taskResponse><success>timeout</success></deleteComment_taskResponse>';
+                }else {
+                    //start unsuccessfull
+                    responseMsg = '<deleteComment_Response><success>false</success></deleteComment_Response>';
+                }
             }
 
             response.contentType = 'text/xml';
@@ -351,12 +423,15 @@
                 responseMsg =  '<assign_taskResponse>\
                                     <success>true</success>\
                                 </assign_taskResponse>';
-            } else {
-                responseMsg =  '<assign_taskResponse>\
-                                    <success>false</success>\
-                                    <data>' +result.SOAPENV_NS::Body +'</data>\
-                                </assign_taskResponse>';
             }
+
+                else {
+                    responseMsg = '<assign_taskResponse>\
+                                    <success>false</success>\
+                                    <data>' + result.SOAPENV_NS::Body + '</data>\
+                                </assign_taskResponse>';
+                }
+
 
             response.contentType = 'text/xml';
             response.content = responseMsg;
