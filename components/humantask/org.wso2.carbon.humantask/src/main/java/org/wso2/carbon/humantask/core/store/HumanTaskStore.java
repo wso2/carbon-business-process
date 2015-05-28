@@ -102,6 +102,8 @@ public class HumanTaskStore {
 
     private HumanTaskEngine engine;
 
+    private static final String VERSION_SEPARATOR = "-";
+
     public HumanTaskStore(int tenantId, ConfigurationContext configContext) {
         this.tenantId = tenantId;
         this.configContext = configContext;
@@ -355,7 +357,7 @@ public class HumanTaskStore {
 
             if (activePackageName!= null && activePackageName.equals(currentlyActiveTaskPackage.getName())) {
                 if(log.isDebugEnabled()) {
-                    log.debug("This task package and its previous versions are already loaded");
+                    log.debug("This task package and its previous versions are already loaded " + activePackageName);
                 }
                 // This task package and its previous versions are already loaded , hence return
                 return;
@@ -438,10 +440,21 @@ public class HumanTaskStore {
                                                            int tenantId,
                                                            long version,
                                                            String md5sum) throws HumanTaskDeploymentException {
-        ArchiveBasedHumanTaskDeploymentUnitBuilder builder =
-                new ArchiveBasedHumanTaskDeploymentUnitBuilder(humanTaskFile, tenantId, version, md5sum);
-        HumanTaskDeploymentUnit newHumanTaskDeploymentUnit = builder.createNewHumanTaskDeploymentUnit();
-        return newHumanTaskDeploymentUnit;
+        try {
+            ArchiveBasedHumanTaskDeploymentUnitBuilder builder = new ArchiveBasedHumanTaskDeploymentUnitBuilder(
+                    humanTaskFile, tenantId, version, md5sum);
+            HumanTaskDeploymentUnit newHumanTaskDeploymentUnit = builder.createNewHumanTaskDeploymentUnit();
+            return newHumanTaskDeploymentUnit;
+        } catch (HumanTaskDeploymentException deploymentException) {
+            if (log.isDebugEnabled()) {
+                log.debug("humanTask:" + humanTaskFile.getName()
+                        + " deployment failed, removing the extracted human task directory.");
+            }
+            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName()) + VERSION_SEPARATOR + version;
+            deleteHumanTaskPackageFromRepo(versionedName);
+            throw deploymentException;
+        }
+
     }
 
     /**
@@ -495,7 +508,7 @@ public class HumanTaskStore {
             return;
         }
         if(log.isDebugEnabled()) {
-            log.debug("Reloading existing task versions");
+            log.debug("Reloading existing task versions for human task archive [ " + archiveFile.getName() + "]");
         }
         for (DeploymentUnitDAO dao : existingDeploymentUnitsForPackage) {
 
@@ -837,9 +850,8 @@ public class HumanTaskStore {
                     if(status == TaskPackageStatus.ACTIVE){
                         removeAxisServiceForTaskConfiguration(humanTaskBaseConfiguration);
                     }
+                    activeTaskConfigurationQNameMap.remove(humanTaskBaseConfiguration.getDefinitionName());
                 }
-                activeTaskConfigurationQNameMap.remove(humanTaskBaseConfiguration.getDefinitionName());
-
                 taskBaseConfigurationHashMap.remove(name);
             }
         }
@@ -852,7 +864,7 @@ public class HumanTaskStore {
 
         if(!isServerReadOnly()){
             // This is the master server
-            Object o = engine.getScheduler().execTransaction(new Callable<Object>() {
+           engine.getScheduler().execTransaction(new Callable<Object>() {
                 public Object call() throws Exception {
 
                     HumanTaskDAOConnection connection = engine.getDaoConnectionFactory().getConnection();

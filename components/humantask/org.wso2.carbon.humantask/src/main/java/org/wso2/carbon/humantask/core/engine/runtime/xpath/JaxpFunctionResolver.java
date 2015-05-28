@@ -379,7 +379,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 excludedOwners = getExcludedOwnersFromCtx();
             } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
                 String taskName = (String) args.get(0);
-                if (evalCtx.getTask().equals(taskName)) {
+                if (evalCtx.getTask().getName().equals(taskName)) {
                     //Case 2 : TaskName equals to current task, consider current task
                     excludedOwners = getExcludedOwnersFromCtx();
                 } else if (!StringUtils.isNullOrEmpty(taskName)) {

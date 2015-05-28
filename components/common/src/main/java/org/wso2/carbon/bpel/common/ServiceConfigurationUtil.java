@@ -40,6 +40,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Iterator;
 
@@ -120,21 +121,17 @@ public class ServiceConfigurationUtil {
     //If the service file is located in the file system, read if from the file.
     private static OMElement readServiceElementFromFile(String fileLocation) {
         OMElement serviceElement = null;
-
         File serviceDescFile =
                 new File(fileLocation.substring(UnifiedEndpointConstants.VIRTUAL_FILE.length()));
-
         if (serviceDescFile.exists()) {
-
             InputStream fis = null;
             try {
                 fis = new FileInputStream(serviceDescFile);
-
                 StAXOMBuilder omBuilder = new StAXOMBuilder(fis);
                 serviceElement = omBuilder.getDocumentElement();
-
-            } catch (Exception ex) {
-                log.warn("File not found");
+                serviceElement.build();
+            } catch (FileNotFoundException | XMLStreamException ex) {
+                log.error("Error while processing the services file : " + fileLocation , ex);
             } finally {
                 IOUtils.closeQuietly(fis);
             }
@@ -183,7 +180,6 @@ public class ServiceConfigurationUtil {
                 String resourceContent = new String((byte[]) resource.getContent());
                 serviceElement = new StAXOMBuilder
                         (new ByteArrayInputStream(resourceContent.getBytes())).getDocumentElement();
-
             } else {
                 String errMsg = "The resource: " + location + " does not exist.";
                 log.warn(errMsg);
@@ -197,7 +193,6 @@ public class ServiceConfigurationUtil {
                             "location: " + location;
             log.warn(errMsg, e);
         }
-
         return serviceElement;
 
     }

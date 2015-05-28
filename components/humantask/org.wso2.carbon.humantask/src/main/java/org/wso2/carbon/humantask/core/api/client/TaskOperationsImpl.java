@@ -285,12 +285,14 @@ public class TaskOperationsImpl extends AbstractAdmin
             HumanTaskBaseConfiguration taskConfiguration = HumanTaskServiceComponent.getHumanTaskServer().
                     getTaskStoreManager().getHumanTaskStore(task.getTenantId()).
                     getTaskConfiguration(QName.valueOf(task.getName()));
-            QName[] types = (QName[]) taskConfiguration.getRenderingTypes().toArray();
+            List<QName> renderingTypes = taskConfiguration.getRenderingTypes();
+            QName[] types = new QName[renderingTypes.size()];
+            types = renderingTypes.toArray(types);
+            return types;
         } catch (Exception ex) {
             log.error(ex);
             throw new IllegalArgumentFault(ex);
         }
-        return new QName[0];
     }
 
 

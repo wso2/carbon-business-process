@@ -421,205 +421,205 @@
                 </tr>
                 <tr>
                     <td>
-    <%
-        if(isAuthorizedToManageProcesses && isAuthorizedToManageServices &&
-           processStatus.equals(ProcessStatus.ACTIVE.getValue())) {
-    %>
-                        <table class="styledLeft" id="serviceOperationsParentTable"
-                               style="margin-left: 0px;" width="100%">
-                            <thead>
-                                <tr>
-                                    <th colspan="2" align="left"><fmt:message
-                                            key="quality.of.service.configuration"/></th>
-                                </tr>
-                            </thead>
-                            <tr>
-                                <td colspan="2">
-                                    <span class="icon-text"
-                                          style="background-image:url(../service-mgt/images/service.gif);"><fmt:message
-                                            key="partnerlinks"/>&nbsp;&nbsp;</span>
-                                    <select id="partnerLinkSelectorForQoS"
-                                            onclick="changepartnerLinkValueForQoS(document.getElementById('partnerLinkSelectorForQoS').options[document.getElementById('partnerLinkSelectorForQoS').selectedIndex].text)"
-                                            onchange="changepartnerLinkValueForQoS(document.getElementById('partnerLinkSelectorForQoS').options[document.getElementById('partnerLinkSelectorForQoS').selectedIndex].text)"
-                                            style="margin-top:2px !important;">
-    <%
-            isFirst = true;                 //this is due to an assumption of first element of EPRMap is the process itself
-            for (String partnerLink : refMap.keySet()) {
-                String serviceName =refMap.get(partnerLink).getLocalPart();
-                if (!isFirst) {
-    %>
-                                        <option title="<%= serviceName%>" id="<%= partnerLink%>"><%= partnerLink%>
-                                        </option>
-    <%
-                } else {
-                    isFirst = false;
-    %>
-                                        <option title="<%= serviceName%>" id="<%= partnerLink%>"
-                                                selected="true"><%= partnerLink%>
-                                        </option>
+    <%--<%--%>
+        <%--if(isAuthorizedToManageProcesses && isAuthorizedToManageServices &&--%>
+           <%--processStatus.equals(ProcessStatus.ACTIVE.getValue())) {--%>
+    <%--%>--%>
+                        <%--<table class="styledLeft" id="serviceOperationsParentTable"--%>
+                               <%--style="margin-left: 0px;" width="100%">--%>
+                            <%--<thead>--%>
+                                <%--<tr>--%>
+                                    <%--<th colspan="2" align="left"><fmt:message--%>
+                                            <%--key="quality.of.service.configuration"/></th>--%>
+                                <%--</tr>--%>
+                            <%--</thead>--%>
+                            <%--<tr>--%>
+                                <%--<td colspan="2">--%>
+                                    <%--<span class="icon-text"--%>
+                                          <%--style="background-image:url(../service-mgt/images/service.gif);"><fmt:message--%>
+                                            <%--key="partnerlinks"/>&nbsp;&nbsp;</span>--%>
+                                    <%--<select id="partnerLinkSelectorForQoS"--%>
+                                            <%--onclick="changepartnerLinkValueForQoS(document.getElementById('partnerLinkSelectorForQoS').options[document.getElementById('partnerLinkSelectorForQoS').selectedIndex].text)"--%>
+                                            <%--onchange="changepartnerLinkValueForQoS(document.getElementById('partnerLinkSelectorForQoS').options[document.getElementById('partnerLinkSelectorForQoS').selectedIndex].text)"--%>
+                                            <%--style="margin-top:2px !important;">--%>
+    <%--<%--%>
+            <%--isFirst = true;                 //this is due to an assumption of first element of EPRMap is the process itself--%>
+            <%--for (String partnerLink : refMap.keySet()) {--%>
+                <%--String serviceName =refMap.get(partnerLink).getLocalPart();--%>
+                <%--if (!isFirst) {--%>
+    <%--%>--%>
+                                        <%--<option title="<%= serviceName%>" id="<%= partnerLink%>"><%= partnerLink%>--%>
+                                        <%--</option>--%>
+    <%--<%--%>
+                <%--} else {--%>
+                    <%--isFirst = false;--%>
+    <%--%>--%>
+                                        <%--<option title="<%= serviceName%>" id="<%= partnerLink%>"--%>
+                                                <%--selected="true"><%= partnerLink%>--%>
+                                        <%--</option>--%>
 
-    <%
-                }
-            }
-    %>
-                                    </select>
-                                    <script type="text/javascript">
-                                            jQuery(document).ready(function() {
-                                                changepartnerLinkValueForQoS(document.getElementById('partnerLinkSelectorForQoS').options[document.getElementById('partnerLinkSelectorForQoS').selectedIndex].text);
-                                                changepartnerLinkValueForWSDLTable(document.getElementById('partnerLinkSelectorForWSDLTable').options[document.getElementById('partnerLinkSelectorForWSDLTable').selectedIndex].text);
-                                            });
-                                    </script>
+    <%--<%--%>
+                <%--}--%>
+            <%--}--%>
+    <%--%>--%>
+                                    <%--</select>--%>
+                                    <%--<script type="text/javascript">--%>
+                                            <%--jQuery(document).ready(function() {--%>
+                                                <%--changepartnerLinkValueForQoS(document.getElementById('partnerLinkSelectorForQoS').options[document.getElementById('partnerLinkSelectorForQoS').selectedIndex].text);--%>
+                                                <%--changepartnerLinkValueForWSDLTable(document.getElementById('partnerLinkSelectorForWSDLTable').options[document.getElementById('partnerLinkSelectorForWSDLTable').selectedIndex].text);--%>
+                                            <%--});--%>
+                                    <%--</script>--%>
 
-                                </td>
-                            </tr>
+                                <%--</td>--%>
+                            <%--</tr>--%>
 
-                            <tr>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/securityconfig/")) {
-    %>
-                                    <a id="qos_security" href=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/security.gif);">
-                                        <fmt:message key="security"/>&nbsp;&nbsp;&nbsp;
-                                        <div id="qos_security_icon" style="display: inline;"></div>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
-                                <td>
-                                    <a id="qos_policy" href=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/policies.gif);">
-                                        <fmt:message key="policies"/>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/rm/")) {
-    %>
-                                    <a id ="qos_rm" href=""
-                                       onclick=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/rm.gif);">
-                                        <fmt:message key="reliable.messaging"/>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/transport-mgt/")) {
-    %>
-                                    <a id="qos_transport" href=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/transports.gif);">
-                                        <fmt:message key="transports"/>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
+                            <%--<tr>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/securityconfig/")) {--%>
+    <%--%>--%>
+                                    <%--<a id="qos_security" href=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/security.gif);">--%>
+                                        <%--<fmt:message key="security"/>&nbsp;&nbsp;&nbsp;--%>
+                                        <%--<div id="qos_security_icon" style="display: inline;"></div>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
+                                <%--<td>--%>
+                                    <%--<a id="qos_policy" href=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/policies.gif);">--%>
+                                        <%--<fmt:message key="policies"/>--%>
+                                    <%--</a>--%>
+                                <%--</td>--%>
+                            <%--</tr>--%>
+                            <%--<tr>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/rm/")) {--%>
+    <%--%>--%>
+                                    <%--<a id ="qos_rm" href=""--%>
+                                       <%--onclick=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/rm.gif);">--%>
+                                        <%--<fmt:message key="reliable.messaging"/>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/transport-mgt/")) {--%>
+    <%--%>--%>
+                                    <%--<a id="qos_transport" href=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/transports.gif);">--%>
+                                        <%--<fmt:message key="transports"/>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
 
-                            </tr>
-                            <tr>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/caching/")) {
-    %>
-                                    <a id="qos_caching" href=""
-                                       onclick=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/caching.gif);">
-                                        <fmt:message key="response.caching"/>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/modulemgt/")) {
-    %>
-                                    <a id="qos_modules" href=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/modules.gif);">
-                                        <fmt:message key="modules"/>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/throttling/")) {
-    %>
-                                    <a id="qos_throttling" href=""
-                                       onclick=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/throttling.gif);">
-                                        <fmt:message key="access.throttling"/>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
-                                <td>
-    <%
-        if (CarbonUIUtil.isContextRegistered(config, "/operation/")) {
-    %>
-                                    <a id="qos_operations" href=""
-                                       class="icon-link-nofloat"
-                                       style="background-image:url(../service-mgt/images/operations.gif);">
-                                        <fmt:message key="operations"/>
-                                    </a>
-    <%
-        }
-    %>
-                                </td>
-                            </tr>
-                            <%--<tr>
-                                <td colspan="2">
-                                    <a id="qos_tryit" href=""
-                                       class="icon-link"
-                                       style="background-image:url(../service-mgt/images/tryit.gif);"
-                                       target="_blank">
-                                        <fmt:message key="create.instance"/>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <a id="qos_wsdl" href=""
-                                       class="icon-link"
-                                       style="background-image:url(../service-mgt/images/wsdl.gif);"
-                                       target="_blank">
-                                        WSDL1.1
-                                    </a>
-                                </td>
-                                <td width="50%">
-                                    <a id="qos_wsdl2" href=""
-                                       class="icon-link"
-                                       style="background-image:url(../service-mgt/images/wsdl.gif);"
-                                       target="_blank">
-                                        WSDL2.0
-                                    </a>
-                                </td>
-                            </tr>--%>
+                            <%--</tr>--%>
+                            <%--<tr>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/caching/")) {--%>
+    <%--%>--%>
+                                    <%--<a id="qos_caching" href=""--%>
+                                       <%--onclick=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/caching.gif);">--%>
+                                        <%--<fmt:message key="response.caching"/>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/modulemgt/")) {--%>
+    <%--%>--%>
+                                    <%--<a id="qos_modules" href=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/modules.gif);">--%>
+                                        <%--<fmt:message key="modules"/>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
+                            <%--</tr>--%>
+                            <%--<tr>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/throttling/")) {--%>
+    <%--%>--%>
+                                    <%--<a id="qos_throttling" href=""--%>
+                                       <%--onclick=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/throttling.gif);">--%>
+                                        <%--<fmt:message key="access.throttling"/>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
+                                <%--<td>--%>
+    <%--<%--%>
+        <%--if (CarbonUIUtil.isContextRegistered(config, "/operation/")) {--%>
+    <%--%>--%>
+                                    <%--<a id="qos_operations" href=""--%>
+                                       <%--class="icon-link-nofloat"--%>
+                                       <%--style="background-image:url(../service-mgt/images/operations.gif);">--%>
+                                        <%--<fmt:message key="operations"/>--%>
+                                    <%--</a>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                                <%--</td>--%>
+                            <%--</tr>--%>
+                            <%--&lt;%&ndash;<tr>--%>
+                                <%--<td colspan="2">--%>
+                                    <%--<a id="qos_tryit" href=""--%>
+                                       <%--class="icon-link"--%>
+                                       <%--style="background-image:url(../service-mgt/images/tryit.gif);"--%>
+                                       <%--target="_blank">--%>
+                                        <%--<fmt:message key="create.instance"/>--%>
+                                    <%--</a>--%>
+                                <%--</td>--%>
+                            <%--</tr>--%>
+                            <%--<tr>--%>
+                                <%--<td width="50%">--%>
+                                    <%--<a id="qos_wsdl" href=""--%>
+                                       <%--class="icon-link"--%>
+                                       <%--style="background-image:url(../service-mgt/images/wsdl.gif);"--%>
+                                       <%--target="_blank">--%>
+                                        <%--WSDL1.1--%>
+                                    <%--</a>--%>
+                                <%--</td>--%>
+                                <%--<td width="50%">--%>
+                                    <%--<a id="qos_wsdl2" href=""--%>
+                                       <%--class="icon-link"--%>
+                                       <%--style="background-image:url(../service-mgt/images/wsdl.gif);"--%>
+                                       <%--target="_blank">--%>
+                                        <%--WSDL2.0--%>
+                                    <%--</a>--%>
+                                <%--</td>--%>
+                            <%--</tr>&ndash;%&gt;--%>
 
-                        </table>
-    <%
-        }
-    %>
-                    </td>
-                    <td width="10px">&nbsp;</td>
-                </tr>
+                        <%--</table>--%>
+    <%--<%--%>
+        <%--}--%>
+    <%--%>--%>
+                    <%--</td>--%>
+                    <%--<td width="10px">&nbsp;</td>--%>
+                <%--</tr>--%>
 
                 <tr>
                     <td colspan="3">&nbsp;</td>

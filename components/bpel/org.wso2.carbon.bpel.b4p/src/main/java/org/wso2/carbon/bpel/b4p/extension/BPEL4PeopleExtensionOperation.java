@@ -80,7 +80,7 @@ public class BPEL4PeopleExtensionOperation extends AbstractLongRunningExtensionO
     @Override
     public void onRequestReceived(String mexId) throws FaultException {
         if(log.isDebugEnabled()){
-            log.debug("People Activity Response received");
+            log.debug("People Activity Response received : mexId " + mexId);
         }
 
         Element notificationMessageEle = extensionContext.getInternalInstance().getMyRequest(mexId);
