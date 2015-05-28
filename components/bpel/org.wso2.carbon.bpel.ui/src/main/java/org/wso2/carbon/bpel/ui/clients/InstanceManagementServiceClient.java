@@ -60,6 +60,20 @@ public class InstanceManagementServiceClient {
         }
     }
 
+    /**
+     * Return the InstanceViewVariableLength allowed, defined in bps.xml
+     * @return BPELInstanceVariableSize
+     * @throws Exception
+     */
+    public int getInstanceViewVariableLength() throws Exception {
+        try {
+            return stub.getInstanceViewVariableLength();
+        } catch (Exception e) {
+            log.error("getInstanceViewVariableLength operation failed", e);
+            throw e;
+        }
+    }
+
     public InstanceInfoType getInstanceInfo(long iid) throws Exception {
         try {
             return stub.getInstanceInfo(iid);
