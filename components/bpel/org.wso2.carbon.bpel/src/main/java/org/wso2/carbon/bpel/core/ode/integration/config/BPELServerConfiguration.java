@@ -30,7 +30,6 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
@@ -134,6 +133,9 @@ public class BPELServerConfiguration {
     private int odeSchedulerImmediateTransactionRetryLimit  = 3;
     private long odeSchedulerImmediateTransactionRetryInterval  = 1000;
 
+    //Maximum length of a instance variable in instance view.
+    private int instanceViewVariableLength = BPELConstants.DEFAULT_INSTANCE_VIEW_VARIABLE_LENGTH;
+
     public BPELServerConfiguration() {
         if (log.isDebugEnabled()) {
             log.debug("Loading bps configuration....");
@@ -197,6 +199,10 @@ public class BPELServerConfiguration {
 
     public void setKeepAlive(boolean keepAlive) {
         this.keepAlive = keepAlive;
+    }
+
+    public int getInstanceViewVariableLength() {
+        return instanceViewVariableLength;
     }
 
 
@@ -433,6 +439,7 @@ public class BPELServerConfiguration {
         populatePersistenceProvider();
         populateNodeId();
         populateODESchedulerConfiguration();
+        populateInstanceViewVariableLength();
     }
 
     private void populateSyncWithRegistry() {
@@ -654,6 +661,13 @@ public class BPELServerConfiguration {
                 }
             }
         }
+    }
+
+    private void populateInstanceViewVariableLength() {
+        if(bpsConfigDocument.getWSO2BPS().isSetInstanceViewVariableLength()) {
+            this.instanceViewVariableLength = bpsConfigDocument.getWSO2BPS().getInstanceViewVariableLength();
+        }
+
     }
 
     public String getPersistenceProvider() {
