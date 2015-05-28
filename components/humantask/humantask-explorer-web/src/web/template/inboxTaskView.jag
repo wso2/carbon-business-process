@@ -31,28 +31,39 @@
 </div>
 <div class="row">
     <div id="taskActionBtns" class="btn-group" align="center">
-      <%
-        if (taskStatus == 'RESERVED') {%>
+    <!--load only the authorised actions-->
+        <% if(authorisedActions.NS1_NS::authorisedToStart.text() == 'true'){%>
             <button onclick="startTask(<%=id%>)" type="button" class="btn btn-default">Start</button>
-            <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
-            <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
-            <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
-      <%} else if (taskStatus == 'IN_PROGRESS') {%>
+        <%}%>
+        <% if(authorisedActions.NS1_NS::authorisedToStop.text() == 'true'){%>
             <button onclick="stopTask(<%=id%>)" type="button" class="btn btn-default">Stop</button>
+        <%}%>
+        <% if(authorisedActions.NS1_NS::authorisedToRelease.text() == 'true'){%>
             <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
+        <%}%>
+        <% if(authorisedActions.NS1_NS::authorisedToSuspend.text() == 'true'){%>
             <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
+        <%}%>
+        <% if(authorisedActions.NS1_NS::authorisedToDelegate.text() == 'true'){%>
             <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
+        <%}%>
+        <% if(authorisedActions.NS1_NS::authorisedToFail.text() == 'true'){%>
             <button onclick="failTask(<%=id%>)" type="button" class="btn btn-default">Fail</button>
-      <%} else if (taskStatus == 'SUSPENDED') {%>
+        <%}%>
+        <% if(authorisedActions.NS1_NS::authorisedToResume.text() == 'true'){%>
             <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
-      <%}%>
+        <%}%>
+
     </div>
     <br/>
     <br/>
     <div class="panel panel-primary">
-      <div class="panel-heading">
+        <div class="panel-heading">
             Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
-      </div>
+            <%if (authorisedActions.NS1_NS::authorisedToClaim.text() == 'true') {%>
+                <span><button  onclick="claimTask(<%=id%>)" class="btn btn-xs btn-danger" style="float:right;">Claim</button></span>
+            <%}%>
+        </div>
       <table class="table">
         <tbody>
             <tr>

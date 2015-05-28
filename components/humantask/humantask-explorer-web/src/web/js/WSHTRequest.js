@@ -160,6 +160,24 @@ function loadTask(id) {
     }
 }
 
+function loadAuthorisationParams(id) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                                    xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
+                       <soapenv:Header/>\
+                       <soapenv:Body>\
+                          <ns:loadAuthorisationParams>\
+                             <ns:identifier>' + id + '</ns:identifier>\
+                          </ns:loadAuthorisationParams>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/loadAuthorisationParams';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+
+    return BPSResponse;
+}
+
 /**
  * Function to get input received by WS-HT service
  * @param id task identifier
