@@ -64,11 +64,6 @@ function startTask(id) {
         type: 'POST',
         url: httpUrl + requestUrl,
         success: function (data) {
-            if(!data) {
-
-                    window.location = httpUrl + "/" + appName +"/login";
-
-            }
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
