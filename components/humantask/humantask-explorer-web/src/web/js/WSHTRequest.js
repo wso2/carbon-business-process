@@ -515,6 +515,35 @@ function assignTask(id, userName) {
     }
 }
 
+/**
+ * Function to set a new priority for the task identified by given id
+ * @param id - ID of the task to assign
+ * @param priority - new priority value to be assigned to the task
+ * @returns response payload from HumanTaskClientAPIAdmin service
+ * @throws {exception java.net.ConnectException} if connection error occurred
+ */
+function setPriority(id, priority) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
+                                    xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">\
+                            <soapenv:Header/>\
+                                     <soapenv:Body>\
+                                         <ns:setPriority>\
+                                             <ns:identifier>' + id + '</ns:identifier>\
+                                             <ns:priority>' + priority + '</ns:priority>\
+                                         </ns:setPriority>\
+                                     </soapenv:Body>\
+                    </soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/setPriority'
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
+}
+
 /**********************************************************************************************************************
  START web service requests to HumanTaskRenderingAPI admin service
  **********************************************************************************************************************/

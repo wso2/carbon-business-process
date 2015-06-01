@@ -27,6 +27,7 @@
         include("/template/partials/navigation.jag");
         include("/template/modals/addCommentModal.jag");
         include("/template/modals/assignTaskModal.jag");
+        include ("/template/modals/setPriorityModal.jag")
         include("/template/modals/verifyTaskCompletion.jag");
 
         if (taskAbstract != null) {

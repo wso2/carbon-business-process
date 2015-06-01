@@ -454,7 +454,38 @@
                    </soapenv:Body>
                 </soapenv:Envelope>
             */
-        } else {
+        } else if (actionType === "set_priority") {
+            var priority = request.getParameter('priority');
+            var result = new XML(htRequest.setPriority(taskId, priority));
+            var resultCheck = result.SOAPENV_NS::Body.NS2_NS::setPriorityResponse;
+
+            if (resultCheck.length() > 0) {
+                //comment retrieval success
+                responseMsg =  '<assign_taskResponse>\
+                                    <success>true</success>\
+                                </assign_taskResponse>';
+            }
+
+            else {
+                responseMsg = '<assign_taskResponse>\
+                                    <success>false</success>\
+                                    <data>' + result.SOAPENV_NS::Body + '</data>\
+                                </assign_taskResponse>';
+            }
+
+
+            response.contentType = 'text/xml';
+            response.content = responseMsg;
+
+            /*
+             * SAMPLE SUCCESS:
+             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+             <soapenv:Body>
+             <ns2:setPriorityResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+             </soapenv:Body>
+             </soapenv:Envelope>
+             */
+        }   else {
             responseMsg = '<unknownTaskResponse>\
                                 <success>false</success>\
                                 <data>unknon task</data>\
