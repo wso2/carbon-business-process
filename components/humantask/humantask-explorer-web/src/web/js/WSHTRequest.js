@@ -527,7 +527,7 @@ function assignTask(id, userName) {
  */
 function getHTRenderings(id) {
     var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
-                                            xmlns:hum="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
+                                            xmlns:hum="http://wso2.org/ht/schema/renderings/">\
                             <soapenv:Header/>\
                                      <soapenv:Body>\
                                          <hum:getRenderings>\
@@ -535,7 +535,7 @@ function getHTRenderings(id) {
                                          </hum:getRenderings>\
                                      </soapenv:Body>\
                     </soapenv:Envelope>';
-    var soapAction = 'http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/getRenderings';
+    var soapAction = 'http://wso2.org/ht/schema/renderings/getRenderings';
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
@@ -549,7 +549,7 @@ function getHTRenderings(id) {
 
 function setTaskOutput(id, valuesXmlListMessagePart) {
     var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
-                                            xmlns:htr="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
+                                            xmlns:htr="http://wso2.org/ht/schema/renderings/">\
                                 <soapenv:Header/>\
                                 <soapenv:Body>\
                                     <htr:setTaskOutput>\
@@ -559,7 +559,7 @@ function setTaskOutput(id, valuesXmlListMessagePart) {
                                 </soapenv:Body>\
                             </soapenv:Envelope>';
 
-    var soapAction = 'http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/setTaskOutput';
+    var soapAction = 'http://wso2.org/ht/schema/renderings/setTaskOutput';
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);
@@ -572,7 +572,7 @@ function setTaskOutput(id, valuesXmlListMessagePart) {
 
 function completeTask(id, valuesXmlListMessagePart) {
     var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" \
-                                    xmlns:htr="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">\
+                                    xmlns:htr="http://wso2.org/ht/schema/renderings/">\
                             <soapenv:Header/>\
                                      <soapenv:Body>\
                                          <htr:completeTask>\
@@ -582,7 +582,7 @@ function completeTask(id, valuesXmlListMessagePart) {
                                      </soapenv:Body>\
                     </soapenv:Envelope>';
 
-    var soapAction = 'http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI/completeTask';
+    var soapAction = 'http://wso2.org/ht/schema/renderings/completeTask';
     var BPSResponse = null;
 
     BPSResponse = requestBPS(this.renderingAPIEndpoint, soapAction, this.cookie, payload);

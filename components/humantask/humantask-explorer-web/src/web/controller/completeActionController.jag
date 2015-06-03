@@ -65,7 +65,7 @@ try {
      <?xml version="1.0" encoding="UTF-8"?>
      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
          <soapenv:Body>
-             <ns1:completeTaskResponse xmlns:ns1="http://wso2.org/bps/management/wsdl/HumanTaskRenderingAPI">
+             <ns1:completeTaskResponse xmlns:ns1="http://wso2.org/ht/schema/renderings/">
                 <success>true</success>
              </ns1:completeTaskResponse>
          </soapenv:Body>
