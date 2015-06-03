@@ -179,7 +179,6 @@ public class HumanTaskJob extends OpenJPAEntity implements HumanTaskJobDAO {
      * Delete the object
      */
     public void delete() {
-//        System.out.println("HumanTaskJob - delete");
 //        HumanTaskServiceComponent.getHumanTaskServer().getDaoConnectionFactory().getConnection().getEntityManager().remove(this);
 ////        getEntityManager().remove(this);
     }

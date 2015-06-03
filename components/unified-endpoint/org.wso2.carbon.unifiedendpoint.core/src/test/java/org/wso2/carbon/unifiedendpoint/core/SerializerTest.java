@@ -69,7 +69,7 @@ public class SerializerTest {
         temp.setAddress("dfsfjsdfjsjf");
         cluster.addClusteredUnifiedEndpoint(temp);
 
-        System.out.println("our cluster " + cluster.getClusteredUnifiedEndpointList().get(0));
+        log.info("our cluster " + cluster.getClusteredUnifiedEndpointList().get(0));
         uep.setUnifiedEndpointCluster(cluster);
 
 
