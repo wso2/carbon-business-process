@@ -89,7 +89,6 @@ public class Instance extends AbstractAdmin implements InstanceMXBean {
             String errMsg="failed to get instance information from instance id";
             log.error(errMsg, e);
         }
-        //To change body of implemented methods use File | Settings | File Templates.
        return instanceInfoArray;
     }
 

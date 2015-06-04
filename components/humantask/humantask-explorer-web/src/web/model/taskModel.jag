@@ -28,6 +28,7 @@
     try {
         var taskAbstract = null;
         var commentList = null;
+        var authorisedActions = null;
         //Retrieve task Details
         var result = new XML(htRequest.loadTask(id));
         if (log.isDebugEnabled()) {
@@ -42,6 +43,15 @@
         }
 
         commentList = commentResults.SOAPENV_NS::Body.NS2_NS::getCommentsResponse.NS2_NS::comment;
+
+        //retrieve authorized actions for currrent user
+        var authParamResult = new XML(htRequest.loadAuthorisationParams(id));
+        if (log.isDebugEnabled()) {
+            log.debug('load auth paramas respnse :\n'+ authParamResult);
+        }
+
+        authorisedActions = authParamResult.SOAPENV_NS::Body.NS2_NS::loadAuthorisationParamsResponse.NS2_NS::taskAuthorisationParamsResult;
+
     } catch (e) {
         log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
         log.error(e);
@@ -173,6 +183,43 @@
              </soapenv:Body>
          </soapenv:Envelope>
 
+     */
+
+    /* SAMPLE EXPECTED RESPONSE FROM LOADAUTHORISATIONPARAMS()
+     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+         <soapenv:Body>
+             <ns2:loadAuthorisationParamsResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">
+                 <ns2:taskAuthorisationParamsResult>
+                     <ns1:authorisedToClaim xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToClaim>
+                     <ns1:authorisedToComplete xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToComplete>
+                     <ns1:authorisedToDelegate xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToDelegate>
+                     <ns1:authorisedToExit xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToExit>
+                     <ns1:authorisedToNominate xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToNominate>
+                     <ns1:authorisedToStop xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToStop>
+                     <ns1:authorisedToComment xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToComment>
+                     <ns1:authorisedToGetComments xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToGetComments>
+                     <ns1:authorisedToDeleteComment xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToDeleteComment>
+                     <ns1:authorisedToUpdateComment xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToUpdateComment>
+                     <ns1:authorisedToDeleteFault xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToDeleteFault>
+                     <ns1:authorisedToFail xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToFail>
+                     <ns1:authorisedToForward xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToForward>
+                     <ns1:authorisedToDeleteOutput xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToDeleteOutput>
+                     <ns1:authorisedToRelease xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToRelease>
+                     <ns1:authorisedToResume xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToResume>
+                     <ns1:authorisedToRemove xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToRemove>
+                     <ns1:authorisedToSuspend xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToSuspend>
+                     <ns1:authorisedToSetPriority xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToSetPriority>
+                     <ns1:authorisedToSkip xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToSkip>
+                     <ns1:authorisedToStart xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToStart>
+                     <ns1:authorisedToSetFault xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToSetFault>
+                     <ns1:authorisedToGetInput xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToGetInput>
+                     <ns1:authorisedToGetDescription xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToGetDescription>
+                     <ns1:authorisedToSetOutput xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">true</ns1:authorisedToSetOutput>
+                     <ns1:authorisedToActivate xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">false</ns1:authorisedToActivate>
+                 </ns2:taskAuthorisationParamsResult>
+             </ns2:loadAuthorisationParamsResponse>
+         </soapenv:Body>
+     </soapenv:Envelope>
      */
 %>
 

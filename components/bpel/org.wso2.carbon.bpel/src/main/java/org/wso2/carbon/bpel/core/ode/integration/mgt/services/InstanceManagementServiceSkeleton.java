@@ -309,6 +309,17 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
     }
 
     /**
+     * Returns the maximum size for a variable to be displayed in the instance_view UI,
+     * defined in bps.xml.
+     * @return Maximum instance variable size
+     * @throws InstanceManagementException
+     */
+    @Override
+    public int getInstanceViewVariableLength() throws InstanceManagementException {
+        return bpelServer.getBpelServerConfiguration().getInstanceViewVariableLength();
+    }
+
+    /**
      * Get long running instances with duration
      *
      * @param limit The maximum number of instances to be fetched

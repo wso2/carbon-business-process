@@ -26,7 +26,6 @@
 //                                                                   "/src/test/resources/conf");
 //        BPELServerConfiguration BPELsc = new BPELServerConfiguration();
 //
-//        System.out.println(System.getProperty("user.dir"));
 //
 //        //Datasource Config Fields
 //        assertEquals(BPELServerConfiguration.DataSourceType.EXTERNAL, BPELsc.getDsType());

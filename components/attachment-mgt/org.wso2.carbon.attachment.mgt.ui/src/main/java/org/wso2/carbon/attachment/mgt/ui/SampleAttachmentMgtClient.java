@@ -22,6 +22,8 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.attachment.mgt.stub.AttachmentMgtException;
 import org.wso2.carbon.attachment.mgt.stub.AttachmentMgtServiceStub;
 import org.wso2.carbon.attachment.mgt.stub.types.TAttachment;
@@ -32,6 +34,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 
 public class SampleAttachmentMgtClient {
+    private static Log log = LogFactory.getLog(SampleAttachmentMgtClient.class);
     public static void main(String[] args) throws RemoteException, AttachmentMgtException {
         String id = uploadAttachment();
         getAttachmentInfo(id);
@@ -46,8 +49,9 @@ public class SampleAttachmentMgtClient {
         options.setTo(new EndpointReference("http://127.0.0.1:9763/services/AttachmentMgtService/"));
         options.setProperty(Constants.Configuration.ENABLE_MTOM, Boolean.TRUE);
         stub._getServiceClient().setOptions(options);
-
-        System.out.println("Attachment removed status:" + stub.remove(id));
+        if (log.isDebugEnabled()) {
+            log.debug("Attachment removed status:" + stub.remove(id));
+        }
     }
 
     private static void getAttachmentInfo (String id) throws RemoteException,
@@ -60,8 +64,9 @@ public class SampleAttachmentMgtClient {
         stub._getServiceClient().setOptions(options);
 
         TAttachment attachment = stub.getAttachmentInfo(id);
-
-        System.out.println("Attachment details received. Id: " + attachment.getId());
+        if (log.isDebugEnabled()) {
+            log.debug("Attachment details received. Id: " + attachment.getId());
+        }
     }
 
     private static String uploadAttachment() throws RemoteException, AttachmentMgtException {
@@ -85,7 +90,9 @@ public class SampleAttachmentMgtClient {
         att.setContent(fileDataHandler);
 
         String id = stub.add(att);
-        System.out.println("Attachment uploaded with id: " + id);
+        if (log.isDebugEnabled()) {
+            log.debug("Attachment uploaded with id: " + id);
+        }
 
         return id;
 

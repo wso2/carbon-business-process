@@ -48,9 +48,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-/**
- * Created by chandana on 4/22/15.
- */
 public class TaskOperationServiceImpl implements TaskOperationService {
 
     private static Log log = LogFactory.getLog(TaskOperationServiceImpl.class);

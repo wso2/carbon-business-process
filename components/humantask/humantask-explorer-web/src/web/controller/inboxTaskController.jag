@@ -30,12 +30,7 @@
         include("/template/modals/verifyTaskCompletion.jag");
 
         if (taskAbstract != null) {
-            var user = session.get('userName');
-            if (user == taskAbstract.NS1_NS::actualOwner.text()) {
-                include("/template/inboxTaskView.jag");
-            } else {
-                include("/template/taskView.jag");
-            }
+            include("/template/inboxTaskView.jag");
         }
         include("/template/partials/footer.jag");
     }
