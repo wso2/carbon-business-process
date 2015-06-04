@@ -30,9 +30,9 @@ var task = [];
 
 //candidateGroups
 var groups = "";
-for(var j=0; j<roles.length; j++){
+for(var j = 0; j < roles.length; j++){
 	groups += roles[j];
-	if(j+1<roles.length){
+	if(j + 1 <roles.length){
 		groups += ",";
 	} 
 }

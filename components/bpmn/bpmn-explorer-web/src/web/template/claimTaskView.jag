@@ -25,11 +25,11 @@
 	    <tbody>
 	    	<tr>
 	    		<th>Description:</th>
-				<td colspan='2'><%=taskData.desc%></td>
+				<td colspan = '2'><%=taskData.desc%></td>
 	    	</tr>
 	    	<tr>
 	    		<th>Process ID:</th>
-	    		<td colspan='2'><%=taskData.pid%></td>
+	    		<td colspan = '2'><%=taskData.pid%></td>
 	    	</tr>
 	    	<tr>
 	    		<th>People:</th>
@@ -38,11 +38,11 @@
 	    	</tr>
 	    	<tr>
 	    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
-	    		<td colspan='2'>
+	    		<td colspan = '2'>
 	    			<%if(taskData.subtask == null){%>
 	    				No sub tasks
 	    			<%}else{%>
-	    				<%for(var i=0; i<taskData.subtask.length; i++){%>
+	    				<%for(var i = 0; i < taskData.subtask.length; i++){%>
 	    					<%=taskData.subtask[i].id + " "%>
 	    					<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button-->
 	    				<%}%>
@@ -51,15 +51,15 @@
 	    	</tr>
 	    	<tr>
 	    		<th>Fill in the form:</th>
-	    		<td colspan='2'>
+	    		<td colspan = '2'>
 	    			<form>
 	    				<table><%=formContent%></table>
 	    			</form>
 	    		</td>
 	    	</tr>
 	    	<tr>
-	    		<td align='center' colspan='3'>		
-	    			<button onclick="claim(&quot;<%=user%>&quot;,<%=id%>);" class="btn btn-info">Claim Task</button>
+	    		<td align = 'center' colspan = '3'>		
+	    			<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info">Claim Task</button>
 	    		</td>
 	    	</tr>
 	    </tbody>
