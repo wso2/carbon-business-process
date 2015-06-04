@@ -1549,7 +1549,7 @@
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
         <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>
-        <orbit.ode.version>1.3.5-wso2v13</orbit.ode.version>
+        <orbit.ode.version>1.3.5-wso2v14-SNAPSHOT</orbit.ode.version>
 	<mybatis.version>3.2.5</mybatis.version>
 
 
