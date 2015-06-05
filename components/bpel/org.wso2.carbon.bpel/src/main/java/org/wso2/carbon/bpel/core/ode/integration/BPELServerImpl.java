@@ -939,8 +939,7 @@ public final class BPELServerImpl implements BPELServer , Observer{
             if(log.isInfoEnabled()) {
                 log.info("Configured HazelCast instance for BPS cluster");
             }
-
-            // Registering this node in BPS cluster.
+            // Registering this node in BPS cluster BPS-675.
             hazelcastInstance.getCluster().addMembershipListener(new MemberShipListener());
             Member localMember = hazelcastInstance.getCluster().getLocalMember();
             String localMemberID = getHazelCastNodeID(localMember);
@@ -955,12 +954,22 @@ public final class BPELServerImpl implements BPELServer , Observer{
         //scheduler.start();
     }
 
+    /**
+     * Provides HazelCast node id
+     * Added to fix BPS-675
+     *
+     * @param member
+     * @return
+     */
     protected static String getHazelCastNodeID(Member member) {
         String hostName = member.getSocketAddress().getHostName();
         int port = member.getSocketAddress().getPort();
         return hostName + ":" + port;
     }
 
+    /**
+     * ODEClusterImpl class is added to fix BPS-675
+     */
     class ODEClusterImpl implements ODECluster {
 
         @Override
@@ -998,6 +1007,9 @@ public final class BPELServerImpl implements BPELServer , Observer{
 
     }
 
+    /**
+     * MemberShipListener class is added to fix BPS-675
+     */
     class MemberShipListener implements MembershipListener{
 
         @Override
