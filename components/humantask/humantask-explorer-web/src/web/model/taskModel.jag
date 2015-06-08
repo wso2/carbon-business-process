@@ -34,7 +34,6 @@
         if (log.isDebugEnabled()) {
             log.debug('loadTask BPS RESPONSE : ' + result);
         }
-           //taskAbstract = result;
         taskAbstract = result.SOAPENV_NS::Body.NS2_NS::loadTaskResponse.NS2_NS::taskAbstract;
 
         //retrieve comments
