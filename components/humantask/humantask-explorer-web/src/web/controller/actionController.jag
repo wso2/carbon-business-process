@@ -460,17 +460,17 @@
             var resultCheck = result.SOAPENV_NS::Body.NS2_NS::setPriorityResponse;
 
             if (resultCheck.length() > 0) {
-                //comment retrieval success
-                responseMsg =  '<assign_taskResponse>\
+                //setting new priority success
+                responseMsg =  '<set_priorityResponse>\
                                     <success>true</success>\
-                                </assign_taskResponse>';
+                                </set_priorityResponse>';
             }
 
             else {
-                responseMsg = '<assign_taskResponse>\
+                responseMsg = '<set_priorityResponse>\
                                     <success>false</success>\
                                     <data>' + result.SOAPENV_NS::Body + '</data>\
-                                </assign_taskResponse>';
+                                </set_priorityResponse>';
             }
 
 
