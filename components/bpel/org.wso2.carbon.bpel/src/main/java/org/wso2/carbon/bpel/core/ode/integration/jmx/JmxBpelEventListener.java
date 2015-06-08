@@ -21,9 +21,6 @@ import org.apache.ode.bpel.evt.BpelEvent;
 import org.apache.ode.bpel.evt.ScopeFaultEvent;
 import org.apache.ode.bpel.iapi.BpelEventListener;
 
-import javax.management.*;
-
-import java.lang.management.ManagementFactory;
 import java.util.Properties;
 
 public class JmxBpelEventListener implements BpelEventListener {
@@ -46,11 +43,9 @@ public class JmxBpelEventListener implements BpelEventListener {
 
     @Override
     public void startup(Properties properties) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void shutdown() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

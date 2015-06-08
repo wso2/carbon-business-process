@@ -163,30 +163,6 @@ public final class GUID implements Cloneable, Comparable, java.io.Serializable {
         return ret;
     }
 
-//    public static void main(String[] argv) throws Exception {
-//        Set<GUID> set = new HashSet<GUID>();
-//
-//        for (int i = 0; i < 100000; ++i) {
-//            GUID g = new GUID();
-//
-//            if (set.contains(g)) {
-//                System.out.println("CONFLICT>>>");
-//            }
-//
-//            set.add(g);
-//
-//            GUID ng = new GUID(g.toString());
-//
-//            if (!ng.toString().equals(g.toString()) || !ng.equals(g)) {
-//                System.out.println("INEQUALITY>>>");
-//                System.out.println(ng.toString());
-//                System.out.println(g.toString());
-//            } else {
-//                System.out.println(g.toString());
-//            }
-//        }
-//    }
-
     /**
      * Convert a GUID to it's string representation. This will return a string
      * of at most 32 bytes.

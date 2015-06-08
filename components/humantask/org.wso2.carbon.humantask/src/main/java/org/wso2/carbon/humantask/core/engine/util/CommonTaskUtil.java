@@ -342,17 +342,27 @@ public final class CommonTaskUtil {
 				                                                        rendering.xmlText());
 				// Evaluating xpaths with $ $ marks..
 				try {
-					if(processedString.contains("$")) {
-						String[] split = processedString.split("$");
+					if (processedString.contains("$htd")) {
+						String[] split = processedString.split("\\$");
 						if (split != null && split.length > 0) {
 							StringBuilder sm = new StringBuilder();
-							for (String xpath : split) {
-								if (xpath.startsWith(htdPrefix)) {
-									String value = expLangRuntime.evaluateAsString(xpath, evalCtx);
+							// Assume xpath replaced initially, to avoid adding $ to start of the xml.
+							// TODO : Improve this logic.
+							boolean xpathReplaced = true;
+							for (String s : split) {
+								if (s.startsWith(htdPrefix)) {
+									String value = expLangRuntime.evaluateAsString(s, evalCtx);
 									sm.append(value);
+									xpathReplaced = true;
 								} else {
-									// This is not a xpath. Adding $ and split content back.
-									sm.append("$").append(xpath);
+									if(xpathReplaced ==  true) {
+										// xpath replaced.
+										sm.append(s);
+									}else {
+										// This is not a xpath. Adding $ and split content back.
+										sm.append("$").append(s);
+									}
+									xpathReplaced = false;
 								}
 							}
 							processedString = sm.toString();

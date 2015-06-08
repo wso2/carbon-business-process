@@ -85,7 +85,6 @@ public class HumanTaskWSDLLocator implements WSDLLocator {
     }
 
     public void close() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public InputStream openResource(URI uri) throws IOException {

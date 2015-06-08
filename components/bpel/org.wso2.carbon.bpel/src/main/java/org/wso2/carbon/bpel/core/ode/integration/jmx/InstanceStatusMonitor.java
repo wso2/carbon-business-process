@@ -40,7 +40,7 @@ public class InstanceStatusMonitor extends NotificationBroadcasterSupport implem
 
     @Override
     public String getLastFailedProcessInfo() {
-        return this.lastFailedProcessInfo;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.lastFailedProcessInfo;
     }
 
     @Override
