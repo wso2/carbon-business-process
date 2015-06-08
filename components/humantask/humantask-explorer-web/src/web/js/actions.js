@@ -633,4 +633,43 @@ function completeTask (formId, formAction) {
     submitForm (formId, formAction);
 }
 
+function showSetPriorityModal() {
+    $('#setPriorityModal').modal();
+}
+
+function setPriority(id){
+    var priority = document.getElementById("priorityList").value;
+    var requestUrl = "/" + appName + "/action?type=set_priority&tid=" + id + "&priority=" + priority;
+
+    $.ajax({
+
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        dataType: "xml",
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+
+            if (success === 'true') {
+                //successful
+                $('#setPriorityModal').modal('hide');
+                //redirect to task view
+                window.location = httpUrl + "/" + appName + "/taskview?id=" + id;
+
+            }else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }  else {
+                //unsuccessful
+                $('#InfoErrMsg').html("ERROR : Unable to set new priority");
+                $('#additionalInfoErr').show();
+            }
+        },
+        error: function (response) {
+            $('#setPriorityModal').modal('hide');
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
+        }
+
+    });
+}
+
 

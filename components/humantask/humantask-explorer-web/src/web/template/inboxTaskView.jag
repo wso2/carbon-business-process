@@ -53,7 +53,9 @@
         <% if(authorisedActions.NS1_NS::authorisedToResume.text() == 'true'){%>
             <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
         <%}%>
-
+        <% if(authorisedActions.NS1_NS::authorisedToSetPriority.text() == 'true'){%>
+            <button type="button" class="btn btn-default" onclick="showSetPriorityModal()" data-target="#setPriorityModal">Set Priority</button>
+        <%}%>
     </div>
     <br/>
     <br/>
