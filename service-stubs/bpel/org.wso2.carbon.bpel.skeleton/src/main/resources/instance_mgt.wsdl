@@ -129,6 +129,13 @@
         <part name="part"  element="ns:instanceManagementException" />
     </message>
 
+    <message name="getFailedActivitiesForInstanceRequest">
+        <part name="part" element="ns:getFailedActivitiesForInstance"/>
+    </message>
+    <message name="getFailedActivitiesForInstanceResponse">
+        <part name="part" element="ns:getFailedActivitiesForInstanceResponse"/>
+    </message>
+
     <portType name="InstanceManagementPortType">
         <operation name="getInstanceViewVariableLength">
             <input message="tns:getInstanceViewVariableLengthRequest"/>
@@ -206,6 +213,11 @@
             <input message="tns:getInstanceSummaryRequest"/>
             <output message="tns:getInstanceSummaryResponse"/>
 	        <fault name="instanceManagementException" message="tns:instanceManagementException" />
+        </operation>
+        <operation name="getFailedActivitiesForInstance">
+            <input message="tns:getFailedActivitiesForInstanceRequest"/>
+            <output message="tns:getFailedActivitiesForInstanceResponse" />
+            <fault name="instanceManagementException" message="tns:instanceManagementException" />
         </operation>
     </portType>
     <binding name="InstanceManagementSOAPBinding" type="tns:InstanceManagementPortType">
@@ -378,6 +390,18 @@
         </operation>
         <operation name="getInstanceSummary">
             <soap:operation soapAction="urn:getInstanceSummary"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="instanceManagementException">
+                <soap:fault name="instanceManagementException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="getFailedActivitiesForInstance">
+            <soap:operation soapAction="urn:getFailedActivitiesForInstance"/>
             <input>
                 <soap:body use="literal"/>
             </input>

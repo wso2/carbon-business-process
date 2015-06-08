@@ -448,6 +448,22 @@
                 /permission/admin/manage/bpel/instances
             </parameter>
         </operation>
+        <operation name="getFailedActivitiesForInstance" mep="http://www.w3.org/ns/wsdl/in-out"
+                   namespace="http://wso2.org/bps/management/wsdl/InstanceManagement">
+            <actionMapping>urn:getFailedActivitiesForInstance</actionMapping>
+            <faultActionMapping faultName="instanceManagementException">
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getFailedActivitiesForInstance/Fault/instanceManagementException
+            </faultActionMapping>
+            <faultActionMapping faultName="InstanceManagementException">
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getFailedActivitiesForInstance/Fault/instanceManagementException
+            </faultActionMapping>
+            <faultActionMapping faultName="InstanceManagementException_Exception">
+                http://wso2.org/bps/management/wsdl/InstanceManagement/InstanceManagementPortType/getFailedActivitiesForInstance/Fault/instanceManagementException
+            </faultActionMapping>
+            <parameter name="AuthorizationAction" locked="true">
+                /permission/admin/manage/bpel/instances
+            </parameter>
+        </operation>
         <operation name="terminateInstance" mep="http://www.w3.org/ns/wsdl/robust-in-only"
                    namespace="http://wso2.org/bps/management/wsdl/InstanceManagement">
             <actionMapping>urn:terminateInstance</actionMapping>

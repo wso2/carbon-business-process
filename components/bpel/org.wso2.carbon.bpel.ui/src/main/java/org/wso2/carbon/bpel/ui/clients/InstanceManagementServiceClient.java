@@ -192,6 +192,19 @@ public class InstanceManagementServiceClient {
         }
     }
 
+    public ActivityRecoveryInfoType[] getFailedActivities(long iid) throws RemoteException, InstanceManagementException {
+
+        try {
+            return stub.getFailedActivitiesForInstance(iid);
+        } catch (RemoteException re) {
+            log.error("geFailedActivities operation failed.", re);
+            throw re;
+        } catch (InstanceManagementException e) {
+            log.error("geFailedActivities operation failed: " + e.getFaultMessage().getResult(), e);
+            throw e;
+        }
+    }
+
     public InstanceSummaryE getInstanceSummary()
             throws RemoteException, InstanceManagementException {
         try {
