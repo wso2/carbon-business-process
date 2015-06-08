@@ -60,7 +60,7 @@ function reassign(username, id) {
 }
 
 function claim(username, id){
-    var url = "/"+CONTEXT+"/send?req=/bpmn/runtime/tasks/" + id;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
         "assignee" : username
     };

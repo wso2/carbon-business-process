@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.bpel.core.ode.integration;
 
-import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.*;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
@@ -35,7 +35,9 @@ import org.apache.ode.bpel.intercept.MessageExchangeInterceptor;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
 import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
+import org.apache.ode.scheduler.simple.ODECluster;
 import org.apache.ode.scheduler.simple.SimpleScheduler;
+import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.internal.BPELServerHolder;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
@@ -53,6 +55,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -936,7 +939,99 @@ public final class BPELServerImpl implements BPELServer , Observer{
             if(log.isInfoEnabled()) {
                 log.info("Configured HazelCast instance for BPS cluster");
             }
+            // Registering this node in BPS cluster BPS-675.
+            hazelcastInstance.getCluster().addMembershipListener(new MemberShipListener());
+            Member localMember = hazelcastInstance.getCluster().getLocalMember();
+            String localMemberID = getHazelCastNodeID(localMember);
+
+            log.info("Registering HZ localMember ID " + localMemberID
+                    + " as ODE Node ID " + bpelServerConfiguration.getNodeId());
+
+            hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP)
+                    .put(localMemberID, bpelServerConfiguration.getNodeId());
         }
+        ((SimpleScheduler) scheduler).setCluster(new ODEClusterImpl());
         //scheduler.start();
     }
+
+    /**
+     * Provides HazelCast node id
+     * Added to fix BPS-675
+     *
+     * @param member
+     * @return
+     */
+    protected static String getHazelCastNodeID(Member member) {
+        String hostName = member.getSocketAddress().getHostName();
+        int port = member.getSocketAddress().getPort();
+        return hostName + ":" + port;
+    }
+
+    /**
+     * ODEClusterImpl class is added to fix BPS-675
+     */
+    class ODEClusterImpl implements ODECluster {
+
+        @Override
+        public boolean isClusterEnabled() {
+            return bpelServerConfiguration.getUseDistributedLock() && isAxis2ClusteringEnabled();
+        }
+
+        /**
+         * Check whether current node is the leader or not.
+         * @return boolean
+         */
+        @Override
+        public boolean isLeader() {
+            HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
+            Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
+            if (leader.localMember()) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * returns Current BPS Nodes in the cluster.
+         * @return ODE Node list
+         */
+        @Override
+        public List<String> getKnownNodes() {
+            List<String> nodeList = new ArrayList<String>();
+            HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
+            for (Object s : hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).keySet()) {
+                nodeList.add((String) hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).get(s));
+            }
+            return nodeList;
+        }
+
+    }
+
+    /**
+     * MemberShipListener class is added to fix BPS-675
+     */
+    class MemberShipListener implements MembershipListener{
+
+        @Override
+        public void memberAdded(MembershipEvent membershipEvent) {
+            // Noting to do here.
+        }
+
+        @Override
+        public void memberRemoved(MembershipEvent membershipEvent) {
+            HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
+            Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
+            // Allow Leader to update distributed map.
+            if (leader.localMember()) {
+                String leftMemberID = getHazelCastNodeID(membershipEvent.getMember());
+                hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).remove(leftMemberID);
+            }
+        }
+
+	    @Override
+	    public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
+		    // Noting to do here.
+	    }
+    }
+
 }
