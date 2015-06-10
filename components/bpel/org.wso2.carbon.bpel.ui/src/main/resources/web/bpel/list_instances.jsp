@@ -333,7 +333,7 @@
             </script>
 
             <link rel="stylesheet" type="text/css" href="js/dyndatetime/css/calendar-blue.css" />
-
+           <a id="linkactive"  class="icon-link-nofloat" style="background-image:url(images/bpel-ins-active.gif);" href="retry_instances.jsp"><fmt:message key="retry.page"/></a>
             <h2><fmt:message key="instaces.created"/></h2>
             <div id="workArea">
                 <div id="instance-list">
