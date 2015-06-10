@@ -73,6 +73,7 @@ import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalOperati
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskIllegalStateException;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
+import org.wso2.carbon.humantask.core.engine.util.OperationAuthorizationUtil;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
@@ -513,7 +514,9 @@ public class TaskOperationsImpl extends AbstractAdmin
      * @return Task Abstract
      * @throws IllegalAccessFault
      */
-    public TTaskAbstract loadTask(URI taskIdURI) throws IllegalAccessFault {
+    public TTaskAbstract loadTask(URI taskIdURI)
+            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
+            IllegalAccessFault {
         try {
             final Long taskId = validateTaskId(taskIdURI);
             TaskDAO task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
@@ -523,16 +526,50 @@ public class TaskOperationsImpl extends AbstractAdmin
                             HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
                             TaskDAO task = daoConn.getTask(taskId);
                             validateTaskTenant(task);
+                            authoriseToLoadTask(task);
                             return task;
                         }
                     });
             return TransformerUtils.transformTask(task, getCaller());
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("Error occurred while load task.",ex);
-            throw new IllegalAccessFault(ex);
+            handleException(ex);
+        }
+        return null;
+    }
+
+    /**
+     * Throws an exception if the current user is not allowed to perform loadTask() operation
+     * @param taskId
+     */
+    private void authoriseToLoadTask(TaskDAO task) throws Exception {
+        List<GenericHumanRoleDAO.GenericHumanRoleType> allowedRoles = new ArrayList<GenericHumanRoleDAO.GenericHumanRoleType>();
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.ACTUAL_OWNER);
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.BUSINESS_ADMINISTRATORS);
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.NOTIFICATION_RECIPIENTS);
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.POTENTIAL_OWNERS);
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.STAKEHOLDERS);
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.TASK_INITIATOR);
+
+        HumanTaskEngine taskEngine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+        PeopleQueryEvaluator pqe = taskEngine.getPeopleQueryEvaluator();
+        OrganizationalEntityDAO invoker = taskEngine.getScheduler().execTransaction(new Callable<OrganizationalEntityDAO>() {
+            @Override
+            public OrganizationalEntityDAO call() throws Exception {
+                return HumanTaskServiceComponent.getHumanTaskServer().getDaoConnectionFactory().getConnection().createNewOrgEntityObject(getCaller(),
+                        OrganizationalEntityDAO.OrganizationalEntityType.USER);
+            }
+        });
+        if (!OperationAuthorizationUtil.authoriseUser(task, invoker, allowedRoles, pqe)) {
+            String errorMsg = String.format("The user[%s] cannot perform loadTask()"
+                            + " operation as either he is in EXCLUDED_OWNERS role or he is not in task roles [%s]",
+                    invoker.getName(), allowedRoles);
+            log.error(errorMsg);
+            throw new HumanTaskIllegalAccessException("Access Denied. You are not authorized to perform this task");
         }
 
     }
+
 
 
     public TTaskDetails[] getMyTaskDetails(String s, String s1, String s2, TStatus[] tStatuses,
