@@ -24,11 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.stub.mgt.HumanTaskPackageManagementStub;
 import org.wso2.carbon.humantask.stub.mgt.PackageManagementException;
-import org.wso2.carbon.humantask.stub.mgt.types.DeployedTaskDefinitionsPaginated;
-import org.wso2.carbon.humantask.stub.mgt.types.HumanTaskPackageDownloadData;
-import org.wso2.carbon.humantask.stub.mgt.types.TaskInfoType;
-import org.wso2.carbon.humantask.stub.mgt.types.Task_type0;
-import org.wso2.carbon.humantask.stub.mgt.types.UndeployStatus_type0;
+import org.wso2.carbon.humantask.stub.mgt.types.*;
 import org.wso2.carbon.humantask.ui.constants.HumanTaskUIConstants;
 
 import javax.activation.DataHandler;
@@ -65,7 +61,7 @@ public class HumanTaskPackageManagementServiceClient {
             String backendServerURL,
             ConfigurationContext configContext) throws AxisFault {
         String serviceURL = backendServerURL +
-                            HumanTaskUIConstants.SERVICE_NAMES.HUMANTASK_MANAGEMENT_SERVICE;
+                HumanTaskUIConstants.SERVICE_NAMES.HUMANTASK_MANAGEMENT_SERVICE;
         stub = new HumanTaskPackageManagementStub(configContext, serviceURL);
         ServiceClient client = stub._getServiceClient();
         Options options = client.getOptions();
@@ -158,25 +154,36 @@ public class HumanTaskPackageManagementServiceClient {
     }
 
     /**
-     *
      * @param taskId
      * @return
      * @throws PackageManagementException
      * @throws RemoteException
      */
-    public TaskInfoType getTaskInfo (QName taskId)
+    public TaskInfoType getTaskInfo(QName taskId)
             throws PackageManagementException, RemoteException {
         return stub.getTaskInfo(taskId);
+    }
+
+
+    /**
+     * +     * Return the task configuration information for a given task ID
+     * +     * @param taskId
+     * +     * @return   TaskConfigInfoResponse object
+     * +     * @throws PackageManagementException
+     * +     * @throws RemoteException
+     * +
+     */
+    public TaskConfigInfoResponse getTaskConfigInfo(QName taskId) throws PackageManagementException, RemoteException {
+        return stub.getTaskConfigInfo(taskId);
     }
 
     /**
      * Download package archive.
      *
      * @param humanTaskPackageName : The package name.
-     * @param response :
-     *
+     * @param response             :
      * @throws PackageManagementException :
-     * @throws java.io.IOException :
+     * @throws java.io.IOException        :
      */
     public void downloadHumanTaskPackage(String humanTaskPackageName, HttpServletResponse response)
             throws PackageManagementException, IOException {
