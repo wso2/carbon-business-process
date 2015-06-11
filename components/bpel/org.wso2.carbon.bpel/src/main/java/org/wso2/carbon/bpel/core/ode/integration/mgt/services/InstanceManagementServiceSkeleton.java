@@ -733,6 +733,8 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
 
         final List<Long> ret = new LinkedList<Long>();
         try {
+            final int deletionBatchSize = BPELServerImpl.getInstance().getBpelServerConfiguration()
+                    .getBpelInstanceDeletionLimit();
             dbexec(new BpelDatabase.Callable<Object>() {
                 public Object run(BpelDAOConnection conn) throws IllegalAccessException {
                     Collection<ProcessInstanceDAO> instances = conn.instanceQuery(instanceFilter);
@@ -744,10 +746,16 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
                         isOperationIsValidForTheCurrentTenant(instance.getProcess().getProcessId());
                     }
 
+                    int count = 1;
                     for (ProcessInstanceDAO instance : instances) {
                         instance.delete(EnumSet.allOf(ProcessConf.CLEANUP_CATEGORY.class),
                                 deleteMessageExchanges);
                         ret.add(instance.getInstanceId());
+                        count++;
+                        //limiting number of instances that can be deleted to avoid timeout exceptions
+                        if (count > deletionBatchSize) {
+                            break;
+                        }
                     }
                     return null;
                 }
