@@ -15,32 +15,22 @@
  * specific language governing permissions and limitations
  * under the License. 
 -->
-<%
-var loggedUser = session.get("userName");
-%>
-<div class="row">
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <a class="navbar-brand" href="inbox">My Tasks</a>
-                <a class="navbar-brand" href="taskpool">Claimable Tasks</a>
-                <a class="navbar-brand" href="alltasks">Search</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="">
-                            <%=loggedUser%>&nbsp;<span class="glyphicon glyphicon-user" style="color:#B0B0B0"\>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="logout">
-                            <span class="glyphicon glyphicon-log-out" style="color:#B0B0B0"\>&nbsp;Logout
-                        </a>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-</div>
+ <nav class="navbar navbar-default">
+    <div class="container-fluid wr-navbar-inner">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="inbox"><img width="30px" src="images/My-Task.png"/><span class="padding-left">My Tasks</span></a></li>
+              <li><a href="taskpool"><img width="30px" src="images/claimable-task.png"/> <span class="padding-left">Claimable Tasks</span></a></li>
+              <li><a href="alltasks"><img width="30px" src="images/search.png"/><span class="padding-left">Search</span></a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
