@@ -15,5 +15,7 @@
 -->
 <%
 	session.put("authSuccess" ,false);
+	session.put("user", null);
+	session.invalidate();
 	response.sendRedirect("login");
 %>

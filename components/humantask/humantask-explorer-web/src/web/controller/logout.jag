@@ -22,6 +22,7 @@
     var log = new Log();
 
     session.put("authSuccess" ,false);
+    session.put("userName",null);
     //send logout message to BPS
     var payload ='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
                                     xmlns:aut="http://authentication.services.core.carbon.wso2.org">\
@@ -56,6 +57,7 @@
         log.error(e);
         response.sendRedirect('login');
     }
+    session.invalidate();
     response.sendRedirect("login");
 
 %>
