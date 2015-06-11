@@ -150,19 +150,19 @@
 	</div>
 	<ul class="pagination">
 		<% if(pagination != 1){ %>
-			<li><a href="inbox?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
+			<li><a href="process?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
 		<% } else { %>
 			<li class="disabled"><a href="#">&laquo;</a></li>			
 		<% } %>
 		<% for(var i = 1; i<=paginatePageCount+1; i++){
 				if(pagination == i){ %>
-					<li class="active"><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+					<li class="active"><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
 			<% }else { %>
-					<li><a href="inbox?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+					<li><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
 			<% } %>
 		<% } %>
 		<% if(pagination != paginatePageCount+1){ %>
-			<li><a href="inbox?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
+			<li><a href="process?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
 		<% } else { %>
 			<li class="disabled"><a href="#">&raquo;</a></li>			
 		<% } %>
