@@ -17,14 +17,8 @@
  * under the License.
  */
 
-    var log = new Log();
-
-    var data = {
-        title : "WS Humantask Explorer",
-        author: "WSO2 Business Process Server",
-        footer: "&copy; 2005 - 2014 WSO2 Inc. All Rights Reserved.",
-        webappUrlName: "humantask-explorer"
-    };
+    var log = new Log(),
+        data = require('../config/config.json');
 
     //construct backend URI (asume webapp deployed in BPS)
     var BPSUrl = application.get('bpsURI');
