@@ -112,8 +112,8 @@
                         <xsd:sequence>
                             <xsd:element name="taskName" type="xsd:string"/>
                             <xsd:element name="packageName" type="xsd:string"/>
-							<xsd:element name="erroneous" type="xsd:boolean"/>
-							<xsd:element name="deploymentError" type="xsd:string"/>
+                            <xsd:element name="erroneous" type="xsd:boolean"/>
+                            <xsd:element name="deploymentError" type="xsd:string"/>
                         </xsd:sequence>
                         <xsd:attribute name="state" type="tns:TaskStatusType"/>
                         <xsd:attribute name="type" type="tns:TaskType"/>
@@ -140,8 +140,8 @@
             <xsd:element name="taskType" type="tns:TaskType"/>
             <xsd:element name="status" type="tns:TaskStatusType"/>
             <xsd:element name="definitionInfo" type="tns:TaskDefinitionInfo"/>
-			<xsd:element name="erroneous" type="xsd:boolean"/>
-			<xsd:element name="deploymentError" type="xsd:string"/>
+            <xsd:element name="erroneous" type="xsd:boolean"/>
+            <xsd:element name="deploymentError" type="xsd:string"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
         </xsd:sequence>
         <xsd:anyAttribute namespace="##other" processContents="lax"/>
@@ -167,8 +167,8 @@
     <xsd:simpleType name="TaskStatusType">
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="ACTIVE"/>
-			<xsd:enumeration value="UNDEPLOYING"/>
-			<xsd:enumeration value="INACTIVE"/>
+            <xsd:enumeration value="UNDEPLOYING"/>
+            <xsd:enumeration value="INACTIVE"/>
         </xsd:restriction>
     </xsd:simpleType>
     <xsd:element name="listTasksInPackage">
@@ -185,8 +185,8 @@
                     <xsd:complexType>
                         <xsd:sequence>
                             <xsd:element name="name" type="xsd:string"/>
-							<xsd:element name="erroneous" type="xsd:boolean"/>
-							<xsd:element name="deploymentError" type="xsd:string"/>							
+                            <xsd:element name="erroneous" type="xsd:boolean"/>
+                            <xsd:element name="deploymentError" type="xsd:string"/>
                         </xsd:sequence>
                         <xsd:attribute name="type" type="tns:TaskType"/>
                     </xsd:complexType>
@@ -231,6 +231,26 @@
             <xsd:sequence>
                 <xsd:element minOccurs="0" name="return" nillable="true"
                              type="tns:HumanTaskPackageDownloadData"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <!--New Element taskConfigInfo"-->
+    <xsd:element name="taskConfigInfo">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="taskId" type="xsd:QName"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <!--New Element taskConfigInfoResponse-->
+    <xsd:element name="taskConfigInfoResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="TaskName" type="xsd:QName"/>
+                <xsd:element name="ServiceName" type="xsd:QName"/>
+                <xsd:element name="PortName" type="xsd:string"/>
+                <xsd:element name="CallbackServiceName" type="xsd:QName" minOccurs="0"/>
+                <xsd:element name="CallbackPortName" type="xsd:string" minOccurs="0"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

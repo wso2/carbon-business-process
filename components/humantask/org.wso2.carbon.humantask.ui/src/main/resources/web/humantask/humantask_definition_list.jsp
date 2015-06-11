@@ -10,6 +10,7 @@
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.UndeployStatus_type0" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskStatusType" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
@@ -36,7 +37,7 @@
 <%
 
     response.setHeader("Cache-Control",
-                       "no-store, max-age=0, no-cache, must-revalidate");
+            "no-store, max-age=0, no-cache, must-revalidate");
     // Set IE extended HTTP/1.1 no-cache headers.
     response.addHeader("Cache-Control", "post-check=0, pre-check=0");
     // Set standard HTTP/1.0 no-cache header.
@@ -81,7 +82,7 @@
 
     // unDeploy
     if (isAuthorizedToManagePackages && operation != null && packageName != null &&
-        operation.equals("unDeploy")) {
+            operation.equals("unDeploy")) {
         try {
 
             UndeployStatus_type0 unDeployStatus = htPackageMgtClient.unDeployPackage(packageName);
@@ -158,7 +159,7 @@
                     <%
                         if (isAuthorizedToManagePackages || isAuthorizedToMonitor) {
                             if (taskDefinitionsPaginated != null && taskDefinitionsPaginated.getTaskDefinition() != null &&
-                                taskDefinitionsPaginated.getTaskDefinition().length > 0) {
+                                    taskDefinitionsPaginated.getTaskDefinition().length > 0) {
                     %>
                     <carbon:paginator pageNumber="<%=pageNumberInt%>"
                                       numberOfPages="<%=numberOfPages%>"
@@ -187,16 +188,16 @@
                         <tr>
                             <td>
                                 <%
-                                    if(!TaskStatusType.UNDEPLOYING.equals(taskDef.getState())) {
+                                    if (!TaskStatusType.UNDEPLOYING.equals(taskDef.getState())) {
                                 %>
 
                                 <a href="humantask_package_dashboard.jsp?packageName=<%=taskDef.getPackageName()%>"><%=taskDef.getPackageName()%>
                                 </a>
 
                                 <%
-                                    } else {
+                                } else {
                                 %>
-                                    <%=taskDef.getPackageName()%>
+                                <%=taskDef.getPackageName()%>
                                 <%
                                     }
                                 %>
@@ -205,16 +206,16 @@
                             <td>
 
                                 <%
-                                    if(!TaskStatusType.UNDEPLOYING.equals(taskDef.getState())) {
+                                    if (!TaskStatusType.UNDEPLOYING.equals(taskDef.getState())) {
                                 %>
 
                                 <a href="./task_definition_info.jsp?taskDefId=<%=taskDef.getTaskName()%>"><%=taskDef.getTaskName()%>
                                 </a>
 
                                 <%
-                                    } else {
+                                } else {
                                 %>
-                                    <%=taskDef.getTaskName()%>
+                                <%=taskDef.getTaskName()%>
                                 <%
                                     }
                                 %>

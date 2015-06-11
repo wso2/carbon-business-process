@@ -33,18 +33,9 @@ import org.wso2.carbon.humantask.core.store.NotificationConfiguration;
 import org.wso2.carbon.humantask.core.store.TaskConfiguration;
 import org.wso2.carbon.humantask.skeleton.mgt.services.HumanTaskPackageManagementSkeletonInterface;
 import org.wso2.carbon.humantask.skeleton.mgt.services.PackageManagementException;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.DeployedPackagesPaginated;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.DeployedTaskDefinitionsPaginated;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.HumanTaskDefinition;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.HumanTaskPackageDownloadData;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskDefinitionInfo;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskDefinition_type0;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskInfoType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskStatusType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskType;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.Task_type0;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.UndeployStatus_type0;
+import org.wso2.carbon.humantask.skeleton.mgt.services.types.*;
 
+import javax.wsdl.Definition;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.xml.namespace.QName;
@@ -69,7 +60,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
      * @param page : The page number.
      * @return :
      */
-    @Override
     public DeployedPackagesPaginated listDeployedPackagesPaginated(int page) {
         return null;
     }
@@ -81,7 +71,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
      * @param packageName : The name of the package to list task definitions.
      * @return : The Task_type0 array containing the task definition information.
      */
-    @Override
     public Task_type0[] listTasksInPackage(String packageName) throws PackageManagementException {
 
         if (StringUtils.isEmpty(packageName)) {
@@ -106,7 +95,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
         }
     }
 
-    @Override
     public DeployedTaskDefinitionsPaginated listDeployedTaskDefinitionsPaginated(int page)
             throws PackageManagementException {
 
@@ -144,7 +132,6 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
         }
     }
 
-    @Override
     public TaskInfoType getTaskInfo(QName taskId) throws PackageManagementException {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
@@ -177,6 +164,40 @@ public class HumanTaskPackageManagementSkeleton extends AbstractAdmin
         }
 
         return taskInfo;
+    }
+
+    /**
+     * +     * Check the configuration type and return the configuration information for a given task ID
+     * +     * @param taskId
+     * +     * @return  TaskConfigInfoResponse response
+     * +     * @throws  PackageManagementException
+     * +
+     */
+    public TaskConfigInfoResponse getTaskConfigInfo(QName taskId) throws PackageManagementException {
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        TaskConfigInfoResponse response = null;
+        HumanTaskBaseConfiguration taskConf = HumanTaskServiceComponent.
+                getHumanTaskServer().getTaskStoreManager().getHumanTaskStore(tenantId).
+                getTaskConfiguration(taskId);
+        if (taskConf != null) {
+            response = new TaskConfigInfoResponse();
+
+            if (taskConf.getConfigurationType() == HumanTaskBaseConfiguration.ConfigurationType.TASK) {
+                response.setTaskName(taskConf.getName());
+                response.setServiceName(taskConf.getServiceName());
+                response.setPortName(taskConf.getPortName());
+                response.setCallbackServiceName(((TaskConfiguration) taskConf).getCallbackServiceName());
+                response.setCallbackPortName(((TaskConfiguration) taskConf).getCallbackPortName());
+
+            } else if (taskConf.getConfigurationType() == HumanTaskBaseConfiguration.ConfigurationType.NOTIFICATION) {
+                response.setTaskName(((NotificationConfiguration) taskConf).getName());
+                response.setServiceName(taskConf.getServiceName());
+                response.setPortName(taskConf.getPortName());
+            }
+
+        }
+        return response;
+
     }
 
     private TaskDefinitionInfo fillTaskDefinitionInfo(HumanTaskBaseConfiguration taskConf)

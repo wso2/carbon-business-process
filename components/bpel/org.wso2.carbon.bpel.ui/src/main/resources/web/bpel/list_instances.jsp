@@ -423,12 +423,12 @@
                 <td id="linkreset" style="border-right: 1px solid #CCCCCC; width: 70px;">
                     <a href="<%=resetFilterLink%>"><fmt:message key="reset.filter"/></a>
                 </td>
-                <td style="border-right: 1px solid #CCCCCC; width: 70px;">
+                <td></td>
+                <td style="border-left: 1px solid #CCCCCC; width: 70px;">
                     <a id="linkretry" class="icon-link-nofloat"
                        style="background-image:url(images/bpel-ins-failed.gif);"
                        href="<%=retryInstanceFilterLink%>"><fmt:message key="retry.page"/></a>
                 </td>
-                <td></td>
                 <%
                     if (isAuthenticatedForInstanceManagement && instanceList.getPages() > 0) {
                 %>
@@ -691,7 +691,9 @@
 </tbody>
 </form>
 </table>
+<% if(!retryActivityFlag){ %>
 <br/>
+<% }%>
 <%
     if (instanceList != null && instanceList.getInstance() != null) { %>
 <carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
@@ -724,8 +726,6 @@
     else if (retryActivityFlag == false) {
 
     %>
-
-
     <thead>
     <tr>
         <th>
