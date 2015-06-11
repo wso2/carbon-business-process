@@ -38,7 +38,7 @@
 
 <jsp:useBean id="instanceFilter" scope="session" class="org.wso2.carbon.bpel.ui.InstanceFilter"/>
 <jsp:setProperty name="instanceFilter" property="*" />
-
+<jsp:include page="../dialog/display_messages.jsp"/>
 
 <%
     response.setHeader("Cache-Control",
@@ -215,11 +215,19 @@
                 }
             } else if (operation.equals("deleteInstances")) {
                 try {
+                    int deletedCount = 0;
                     if(deleteMex == null) {
-                        client.deleteInstances(instanceListFilter, false);
+                        deletedCount = client.deleteInstances(instanceListFilter, false);
                     } else {
-                        client.deleteInstances(instanceListFilter, true);
+                        deletedCount = client.deleteInstances(instanceListFilter, true);
                     }
+%>
+                    <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
+                        <script type="application/javascript">
+                            CARBON.showInfoDialog(<% out.print(deletedCount); %> + ' ' + '<fmt:message key="bpel.instance.delete.done" />');
+                        </script>
+                    </fmt:bundle>
+<%
                 } catch(Exception e) {
                     response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
                     CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);

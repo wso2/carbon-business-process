@@ -154,10 +154,10 @@ public class InstanceManagementServiceClient {
         }
     }
 
-    public void deleteInstances(String filter, boolean deleteMessageExchanges)
+    public int deleteInstances(String filter, boolean deleteMessageExchanges)
             throws RemoteException, InstanceManagementException {
         try {
-            stub.deleteInstances(filter, deleteMessageExchanges);
+            return stub.deleteInstances(filter, deleteMessageExchanges);
         } catch (RemoteException re) {
             log.error("deleteInstances operation failed.", re);
             throw re;
