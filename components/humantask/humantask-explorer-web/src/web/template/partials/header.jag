@@ -38,7 +38,7 @@ var loggedUser = session.get("userName");
     <div class="logo-wrapper app-logo">
         <a href="inbox"><img src="images/logo-wso2.png"><h2 class="app-title"><%=data.app.title%></h2></a>
     </div>
-        <% if(loggedUser != null){ %>
+        <% if (loggedUser != null){ %>
                 <div class="login-wrapper padding-top padding-left">
                     <img src="images/admin.png"/>
                     <span class="padding-top margin-left margin-right"><%=loggedUser%></span>|

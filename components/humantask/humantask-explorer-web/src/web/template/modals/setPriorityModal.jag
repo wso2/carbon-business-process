@@ -36,17 +36,17 @@
                 <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
                     <select id="priorityList" name="priority" class="form-control">
-                        <option value="0" <% if (taskAbstract.NS1_NS::priority.text() == 0) {%> selected <%}%> >0 - Highest</option>
-                        <option value="1" <% if (taskAbstract.NS1_NS::priority.text() == 1) {%> selected <%}%> >1</option>
-                        <option value="2" <% if (taskAbstract.NS1_NS::priority.text() == 2) {%> selected <%}%> >2</option>
-                        <option value="3" <% if (taskAbstract.NS1_NS::priority.text() == 3) {%> selected <%}%> >3</option>
-                        <option value="4" <% if (taskAbstract.NS1_NS::priority.text() == 4) {%> selected <%}%> >4</option>
-                        <option value="5" <% if (taskAbstract.NS1_NS::priority.text() == 5) {%> selected <%}%> >5</option>
-                        <option value="6" <% if (taskAbstract.NS1_NS::priority.text() == 6) {%> selected <%}%> >6</option>
-                        <option value="7" <% if (taskAbstract.NS1_NS::priority.text() == 7) {%> selected <%}%> >7</option>
-                        <option value="8" <% if (taskAbstract.NS1_NS::priority.text() == 8) {%> selected <%}%> >8</option>
-                        <option value="9" <% if (taskAbstract.NS1_NS::priority.text() == 9) {%> selected <%}%> >9</option>
-                        <option value="10" <% if (taskAbstract.NS1_NS::priority.text() == 10) {%> selected <%}%> >10 - Lowest</option>
+                        <option value="0" <% if (taskAbstract.NS1_NS::priority.text() == 0) { %> selected <% } %> >0 - Highest</option>
+                        <option value="1" <% if (taskAbstract.NS1_NS::priority.text() == 1) { %> selected <% } %> >1</option>
+                        <option value="2" <% if (taskAbstract.NS1_NS::priority.text() == 2) { %> selected <% } %> >2</option>
+                        <option value="3" <% if (taskAbstract.NS1_NS::priority.text() == 3) { %> selected <% } %> >3</option>
+                        <option value="4" <% if (taskAbstract.NS1_NS::priority.text() == 4) { %> selected <% } %> >4</option>
+                        <option value="5" <% if (taskAbstract.NS1_NS::priority.text() == 5) { %> selected <% } %> >5</option>
+                        <option value="6" <% if (taskAbstract.NS1_NS::priority.text() == 6) { %> selected <% } %> >6</option>
+                        <option value="7" <% if (taskAbstract.NS1_NS::priority.text() == 7) { %> selected <% } %> >7</option>
+                        <option value="8" <% if (taskAbstract.NS1_NS::priority.text() == 8) { %> selected <% } %> >8</option>
+                        <option value="9" <% if (taskAbstract.NS1_NS::priority.text() == 9) { %> selected <% } %> >9</option>
+                        <option value="10" <% if (taskAbstract.NS1_NS::priority.text() == 10) { %> selected <% } %> >10 - Lowest</option>
                     </select>
                 </div>
             </div>
