@@ -30,8 +30,12 @@
 	height: 95%; 
 }
 #diagram{
-	width: auto;
+	width: 100%;
+	height:100%;
 }
-#processDiagram{
-	max-width:1075px;
+#diagramScroll{
+	width:100%;
+	height:70%;
+	overflow-x:scroll;
+	overflow-y:scroll;
 }
