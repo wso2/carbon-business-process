@@ -13,58 +13,60 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<div class="col-sm-12">
+<div class="row">
+ 	<div class="panel-inbox">
 	<!--ol class="breadcrumb">
 	  <li><a href="stats">Home</a></li>
 	  <li><a href="inbox">Inbox</a></li>
 	  <li class="active">Task:<%=id%></li>
 	</ol-->
-	<div class="panel panel-primary">
-	  <div class="panel-heading"><%=taskData.name%></div>
-	  <table class="table">
-	    <tbody>
-	    	<tr>
-	    		<th>Description:</th>
-				<td colspan='2'><%=taskData.desc%></td>
-	    	</tr>
-	    	<tr>
-	    		<th>Process ID:</th>
-	    		<td colspan='2'><%=taskData.pid%></td>
-	    	</tr>
-	    	<tr>
-	    		<th>People:</th>
-	    		<td><%=taskData.owner%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#transfer">Transfer</button></td>
-	    		<td><%=taskData.assignee%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#reassign">Reassign</button></td>
-	    	</tr>
-	    	<tr>
-	    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
-	    		<td colspan='2'>
-	    			<%if(taskData.subtask == null){%>
-	    				No sub tasks
-	    			<%}else{%>
-	    				<%for(var i=0; i<taskData.subtask.length; i++){%>
-	    					<%=taskData.subtask[i].id + " "%>
-	    					<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button-->
-	    				<%}%>
-	    			<%}%>
-	    		</td>
-	    	</tr>
-	    	<tr>
-	    		<th>Fill in the form:</th>
-	    		<td colspan='2'>
-	    			<form>
-	    				<table><%=formContent%></table>
-	    			</form>
-	    		</td>
-	    	</tr>
-	    	<tr>
-	    		<td align='center' colspan='3'>
-	    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info">Complete task</button>
-	    		</td>
-	    	</tr>
-	    </tbody>
-	  </table>
+	   	<div class="table-body margin-left-double">
+	      <div class="table-title"><%=taskData.name%></div>
+	        <table class="table">
+		    <tbody>
+		    	<tr class="white-bg">
+		    		<th>Description:</th>
+					<td colspan='2'><%=taskData.desc%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Process ID:</th>
+		    		<td colspan='2'><%=taskData.pid%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>People:</th>
+		    		<td><%=taskData.owner%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#transfer">Transfer</button></td>
+		    		<td><%=taskData.assignee%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#reassign">Reassign</button></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
+		    		<td colspan='2'>
+		    			<% if (taskData.subtask == null) { %>
+		    				No sub tasks
+		    			<% } else { %>
+		    				<% for (var i=0; i<taskData.subtask.length; i++) { %>
+		    					<%=taskData.subtask[i].id + " "%>
+		    					<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button-->
+		    				<% } %>
+		    			<% } %>
+		    		</td>
+		    	</tr>
+		     	<tr class="white-bg">
+		    		<th>Fill in the form:</th>
+		    		<td colspan='2'>
+		    			<form>
+		    				<table><%=formContent%></table>
+		    			</form>
+		    		</td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<td align='center' colspan='3'>
+		    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info">Complete task</button>
+		    		</td>
+		    	</tr>
+		    </tbody>
+		  </table>
 	</div>
+ </div>
 	<div class="modal fade" id="transfer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog model-center">
             <div class="modal-content">

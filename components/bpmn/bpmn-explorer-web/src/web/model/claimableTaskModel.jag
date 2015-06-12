@@ -50,6 +50,11 @@ for(var i=0; i < tasks.data.length; i++){
 	});
 }
 
+/*
+According to the activiti documentation candidateUser includes both tasks where the user is an explicit candidate for and task that are claimable by a group that the user is a member of.
+Hence we do not need to get tasks of candidateGroups which may cause duplicate tasks in claimable task view.
+ */
+/*
 tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 
 for(var i=0; i < tasks.data.length; i++){
@@ -63,7 +68,7 @@ for(var i=0; i < tasks.data.length; i++){
 }
 
 var taskCount = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true" ,null, headers, "json" ).data.total;
-var taskCount2 = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true" ,null, headers, "json" ).data.total;
-
-var paginatePageCount = parseInt((taskCount + taskCount2  / 10));
+*/
+var taskCount = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true" ,null, headers, "json" ).data.total;
+var paginatePageCount = parseInt(taskCount / 10);
 %>

@@ -13,13 +13,11 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-		</div>
 		<div class="footer">
 			<div class="col-sm-12">
 				<div class="well well-sm"><%=data.app.footer%></div>
 			</div>
 		</div>
-	</div>
 		<!-- javascript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->

@@ -18,18 +18,16 @@
  */
 
 %>
-<div class="row">
-    <!-- <ol class="breadcrumb">
+<!--<div class="row">
+   <ol class="breadcrumb">
       <li><a href="#">Home</a></li>
       <li class="active">AllTasks</li>
-    </ol> -->
-</div>
-<div class="row">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Advance Search</h3>
-        </div>
-        <div class="panel-body">
+    </ol> 
+</div>-->
+<div class="row">   
+    <div class="panel-inbox">
+        <div class=" margin-left-double table-title">Advance Search</div>
+        <div class="table-body margin-left-double">
             <form role="form" class="" action="alltasks" method="GET">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group">
@@ -108,17 +106,14 @@
     </div>
 </div>
 <div class="row">
-    <%if (queryReceived == true && taskXMLList != null) {%>
-        <div class="panel panel-primary">
-              <!-- Default panel contents -->
-              <div class="panel-heading">Search Results</div>
-
-              <div class="row">
-                    <div class="col-sm-12 col-md-12 col-lg-12 main">
-                        <!-- Table -->
-                        <table class="table">
+    <div class="panel-inbox">
+            <% if (queryReceived == true && taskXMLList != null) { %>
+                <div class=" margin-left-double table-title margin-top-double">Search Results</div>
+                <div class="table-body margin-left-double">
+                    <!-- Table -->
+                    <table class="table">
                             <thead>
-                                <tr>
+                                <tr class="table-title-row">
                                     <th>ID</th>
                                     <th>Type</th>
                                     <th>Task Name</th>
@@ -128,9 +123,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for(var i=0; i<taskXMLList.length(); i++){ %>
-                                <tr>
-                                    <td><a href="taskview?id=<%=taskXMLList[i].NS1_NS::id.toString()%>"><%=taskXMLList[i].NS1_NS::id.toString()%></a></td>
+                                <% for (var i=0; i<taskXMLList.length(); i++) { %>
+                                <tr class="white-bg" style="cursor:pointer;" onclick="window.location='taskview?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
+                                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                                    <td><%=taskXMLList[i].NS1_NS::id.toString()%></td>
                                     <td><%=taskXMLList[i].NS1_NS::taskType.text()%></td>
                                     <td><%=taskXMLList[i].NS1_NS::presentationName.text()%></td>
                                     <td><%=taskXMLList[i].NS1_NS::presentationSubject%></td>
@@ -139,17 +135,16 @@
                                 </tr>
                                 <% } %>
                             </tbody>
-                        </table>
-                    </div>
-              </div>
-        </div>
+                    </table>               
+            </div>
+    </div>
         <ul class="pagination">
             <% if (pagination != 1) { %>
                 <li><a href="alltasks?<%=newQueryString%>&pagination=<%=pagination-1%>">&laquo;</a></li>
             <% } else { %>
                 <li class="disabled"><a href="#">&laquo;</a></li>
             <% } %>
-            <% for(var i = 1; i<=paginatePageCount; i++){
+            <% for (var i = 1; i<=paginatePageCount; i++){
                     if (pagination == i) { %>
                         <li class="active"><a href="alltasks?<%=newQueryString%>&pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
                 <% } else { %>
@@ -162,5 +157,5 @@
                 <li class="disabled"><a href="#">&raquo;</a></li>
             <% } %>
         </ul>
-    <%}%>
+    <% } %>
 </div>

@@ -13,54 +13,54 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<div class="col-sm-12">
+<div class="row">
+ 	<div class="panel-inbox">
 	<!--ol class="breadcrumb">
 	  <li><a href="stats">Home</a></li>
 	  <li class="active">Historical Tasks</li>
 	</ol-->
-	<div class="panel panel-primary">
-	  <!-- Default panel contents -->
-	  <div class="panel-heading">Historical Tasks</div>
-
-	  <!-- Table -->
-	  <table class="table">
-	    <thead>
-	    	<tr>
-	    		<th>ID</th>
-	    		<th>Process Name</th>
-	    		<th>Start Time</th>
-	    		<th>End Time</th>
-	    	</tr>
-	    </thead>
-	    <tbody>
-	    	<% for(var i=0; i<task.length; i++){ %>
-	    	<tr>
-	    		<td><%=task[i].id%></td>
-				<td><%=task[i].processDefinitionId%></td>
-				<td><%=task[i].startTime%></td>
-				<td><%=task[i].endTime%></td>
-	    	</tr>
-	    	<% } %>
-	    </tbody>
-	  </table>
-	</div>
-	<ul class="pagination">
-		<% if(pagination != 1){ %>
-			<li><a href="historicTasks?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&laquo;</a></li>			
-		<% } %>
-		<% for(var i = 1; i<=paginatePageCount+1; i++){ 
-				if(pagination == i){ %>
-					<li class="active"><a href="historicTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% }else { %>
-					<li><a href="historicTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+		<div class=" margin-left-double table-title">Completed Tasks</div>
+    	<div class="table-body margin-left-double">
+		  <!-- Table -->
+		  <table class="table">
+		    <thead>
+		    	<tr class="table-title-row">
+		    		<th>ID</th>
+		    		<th>Process Name</th>
+		    		<th>Start Time</th>
+		    		<th>End Time</th>
+		    	</tr>
+		    </thead>
+		    <tbody>
+		    	<% for (var i=0; i<task.length; i++) { %>
+		    	<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+	    			<td><%=task[i].id%></td>
+					<td><%=task[i].processDefinitionId%></td>
+					<td><%=task[i].startTime%></td>
+					<td><%=task[i].endTime%></td>
+		    	</tr>
+		    	<% } %>
+		    </tbody>
+		  </table>
+		</div>
+		<ul class="pagination">
+			<% if (pagination != 1) { %>
+				<li><a href="historicTasks?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&laquo;</a></li>			
 			<% } %>
-		<% } %>
-		<% if(pagination != paginatePageCount+1){ %>
-			<li><a href="historicTasks?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&raquo;</a></li>			
-		<% } %>
-	</ul>
+			<% for (var i = 1; i<=paginatePageCount+1; i++) {
+					if (pagination == i) { %>
+						<li class="active"><a href="historicTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+				<% } else { %>
+						<li><a href="historicTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+				<% } %>
+			<% } %>
+			<% if (pagination != paginatePageCount+1) { %>
+				<li><a href="historicTasks?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&raquo;</a></li>			
+			<% } %>
+		</ul>
+	</div>
 </div>
