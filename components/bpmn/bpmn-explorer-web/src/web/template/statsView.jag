@@ -14,11 +14,8 @@
  ~ limitations under the License.
 -->
 <div class="col-sm-12">
-  <div class="panel panel-primary">
-    <!-- Default panel contents -->
-    <div class="panel-heading">BPMN Statistics</div>
-  
-    <%if(processNames.data.length>0 && (activeProcesses>0 || suspendProcesses>0 || completedProcesses>0)){%>
+  <div class="row">
+    <% if (processNames.data.length>0 && (activeProcesses>0 || suspendProcesses>0 || completedProcesses>0)) { %>
     <link rel="stylesheet" href="css/tooltip.css">
     <script src="js/pieChartGen.js"></script>
     <script src="js/corechartEn.js"></script>
@@ -30,10 +27,10 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Process Name', 'Instance Count'],
-          <%for(var j=0; j<processBarChart.length; j++){%>
+          <% for (var j=0; j<processBarChart.length; j++) { %>
             <%=JSON.stringify(processBarChart[j])%>
-            <%if(j<processBarChart.length){%>,<%}%>
-          <%}%>
+            <% if (j<processBarChart.length) { %>,<% } %>
+          <% } %>
         ]);
 
         var options = {
@@ -46,8 +43,13 @@
         chart.draw(data, options);
       }
     </script>
-    <div id="barChart" style="width: 900px; height: 500px;margin-left:50px"></div>
-
+      <div class="col-lg-8 float-left">
+            <div class="panel">
+            <!-- Default panel contents -->
+            <div class="table-title"  style="width:100%">  Process Instance Growth</div>
+            <div id="barChart" style="height: 74%"></div>
+            </div>
+      </div>      
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -65,15 +67,19 @@
           pieSliceTextStyle: {
             color: 'black'
           },
-          colors:['green','red','yellow','blue']
+          colors:['green','yellow','red','blue']
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('processInstanceChart'));
         chart.draw(data, options);
       }
     </script>
-    <div id="processInstanceChart" style="width: 900px; height: 400px;"></div>
-
+      <div class="col-lg-4 float-left">
+          <div class="row" name="TaskInstancesChart">
+          <!-- Default panel contents -->
+              <div class="table-title"  style="width:100%">Process Instance Growth</div>
+              <div id="processInstanceChart" style="height:33%"></div>
+          </div>
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -91,18 +97,22 @@
           pieSliceTextStyle: {
             color: 'black'
           },
-          colors:['green','red','yellow','blue']
+          colors:['green','yellow','red','blue']
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('taskInstances'));
+        var chart = new google.visualization.PieChart(document.getElementById('taskInstancesChart'));
         chart.draw(data, options);
       }
     </script>
-    <div id="taskInstances" style="width: 900px; height: 400px;"></div>
-    <%}else{%>
+          <br/>
+          <div class="row" name="TaskInstancesChart">
+              <div class="table-title" style="width:100%">Task Instances</div>
+              <div id="taskInstancesChart" style="height:33% " ></div>
+      </div>
+    <% } else { %>
       <br/>
       &nbsp;&nbsp;Welcome to BPMN Explorer statistical view. Please deploy processes from admin view and create tasks to generate statistics.
       <br/><br/>
-    <%}%>
+    <% } %>
   </div>
 </div>
