@@ -844,9 +844,22 @@ i.cu-btn-exp-col {
     overflow-x: scroll;
     overflow-y: scroll;
 }
+<<<<<<< HEAD
 
 @media (min-width: 768px) {
     .fixed-bar {
         position: fixed;
     }
 }
+=======
+#diagram{
+	width: 100%;
+	height:100%;
+}
+#diagramScroll{
+	width:100%;
+	height:70%;
+	overflow-x:scroll;
+	overflow-y:scroll;
+}
+>>>>>>> 450fef04a2f7b83ec891147b2a74d0b73985ac0c

@@ -115,6 +115,7 @@
 	                          <% } %>
 							</td>
 						</tr>
+<<<<<<< HEAD
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
 			    	%>
@@ -147,10 +148,23 @@
 		</div>
 		<ul class="pagination">
 		<% if (pagination != 1) { %>
+=======
+		    	<%
+	    			}
+	    		}%>
+	    	<% } %>
+	    </tbody>
+	    <% } %>
+	  </table>
+	</div>
+	<ul class="pagination">
+		<% if(pagination != 1){ %>
+>>>>>>> 450fef04a2f7b83ec891147b2a74d0b73985ac0c
 			<li><a href="process?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
 		<% } else { %>
 			<li class="disabled"><a href="#">&laquo;</a></li>			
 		<% } %>
+<<<<<<< HEAD
 		<% for (var i = 1; i<=paginatePageCount+1; i++) {
 				if (pagination == i) { %>
 					<li class="active"><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
@@ -159,6 +173,16 @@
 			<% } %>
 		<% } %>
 		<% if (pagination != paginatePageCount+1) { %>
+=======
+		<% for(var i = 1; i<=paginatePageCount+1; i++){
+				if(pagination == i){ %>
+					<li class="active"><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+			<% }else { %>
+					<li><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+			<% } %>
+		<% } %>
+		<% if(pagination != paginatePageCount+1){ %>
+>>>>>>> 450fef04a2f7b83ec891147b2a74d0b73985ac0c
 			<li><a href="process?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
 		<% } else { %>
 			<li class="disabled"><a href="#">&raquo;</a></li>			

@@ -121,6 +121,7 @@ public class BPELServerConfiguration {
     private String password = null;
     private int maxPoolSize = 100;
     private int minPoolSize = 5;
+    private int bpelInstanceDeletionLimit = BPELConstants.DEFAULT_INSTANCE_DELETION_LIMIT;
 
 
     //SimpleScheduler Configuration
@@ -282,6 +283,15 @@ public class BPELServerConfiguration {
         return jobs;
     }
 
+    /**
+     * Returns the maximum number of instances that can be deleted in a delete instance request as defined in bps.xml.
+     * Default is 1000.
+     * @return bpelInstanceDeletionLimit - maximum number of instance that can delete in single request
+     */
+    public int getBpelInstanceDeletionLimit() {
+        return bpelInstanceDeletionLimit;
+    }
+
     public static void processACleanup(Set<ProcessConf.CLEANUP_CATEGORY> categories,
                                        List<TCleanup.Category.Enum> categoryList) {
         if (categoryList.isEmpty()) {
@@ -440,6 +450,14 @@ public class BPELServerConfiguration {
         populateNodeId();
         populateODESchedulerConfiguration();
         populateInstanceViewVariableLength();
+        populateBpelInstanceDeletionLimit();
+    }
+
+    private void populateBpelInstanceDeletionLimit() {
+        TBpelUI bpelUI = bpsConfigDocument.getWSO2BPS().getBpelUI();
+        if (bpelUI != null && bpelUI.isSetBpelInstanceDeletionLimit()) {
+            this.bpelInstanceDeletionLimit = bpelUI.getBpelInstanceDeletionLimit();
+        }
     }
 
     private void populateSyncWithRegistry() {
@@ -664,10 +682,10 @@ public class BPELServerConfiguration {
     }
 
     private void populateInstanceViewVariableLength() {
-        if(bpsConfigDocument.getWSO2BPS().isSetInstanceViewVariableLength()) {
-            this.instanceViewVariableLength = bpsConfigDocument.getWSO2BPS().getInstanceViewVariableLength();
+        TBpelUI bpelUI = bpsConfigDocument.getWSO2BPS().getBpelUI();
+        if (bpelUI != null && bpelUI.isSetInstanceViewVariableLength()) {
+            this.instanceViewVariableLength = bpelUI.getInstanceViewVariableLength();
         }
-
     }
 
     public String getPersistenceProvider() {
