@@ -13,6 +13,9 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+<%
+var loggedUser = session.get("user");
+%>
 <head>
 	<meta charset="utf-8">
 	<title><%=data.app.title%></title>
@@ -29,14 +32,15 @@
 	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
 </head>
 <body>
-	<div class="container">
-		<div class="header">
-			<div class="col-sm-12">
-				<div class="page-header">
-				<a href="stats"><img width="400px" src="images/bpmn_logo.png"/></a>
-					<!--h1><%=data.app.title%></h1-->
-				</div>
-			</div>
+	<header>
+		<div class="logo-wrapper app-logo">
+	    	<a href="stats"><img src="images/logo-wso2.png"><h2 class="app-title"><%=data.app.title%></h2></a>
 		</div>
-		<!-- below element is used to align the footer to bottom -->
-		<div class="mainContent">
+			<% if (loggedUser != null) { %>
+		        <div class="login-wrapper padding-top padding-left">
+		            <img src="images/admin.png"/>
+				    <span class="padding-top margin-left margin-right"><%=loggedUser%></span>|
+				    <span class="padding-top"><a href="logout">Logout</a></span>
+				</div>
+		    <% } %>
+	</header>

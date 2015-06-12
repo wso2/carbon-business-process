@@ -14,7 +14,7 @@
  ~ limitations under the License.
 -->
 <%
-var data = require('/config.json'),
+var data = require('../config/config.json'),
 	encoder = require("/assets/encoder.js"),
 	process = require('process'),
     	localIP = process.getProperty('carbon.local.ip'),
