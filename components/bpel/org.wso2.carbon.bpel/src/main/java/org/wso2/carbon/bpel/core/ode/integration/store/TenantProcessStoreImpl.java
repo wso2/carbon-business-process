@@ -36,7 +36,6 @@ import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
-import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
 import org.wso2.carbon.bpel.core.ode.integration.config.bam.BAMServerProfile;
 import org.wso2.carbon.bpel.core.ode.integration.config.bam.BAMServerProfileBuilder;
 import org.wso2.carbon.bpel.core.ode.integration.store.clustering.BPELProcessStateChangedCommand;
@@ -289,7 +288,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
      * @param bpelPackageName Name of the BPEL package which going to be undeployed
      */
     public void undeploy(String bpelPackageName)
-            throws RegistryException, TooMuchInstancesException {
+            throws RegistryException, BPELUIException {
 
         if (log.isDebugEnabled()) {
             log.debug("Un-deploying BPEL package " + bpelPackageName + " ....");
@@ -333,7 +332,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         //check the instance count to be deleted
         long instanceCount = getInstanceCountForPackage(versionsOfThePackage);
         if (instanceCount > BPELServerImpl.getInstance().getBpelServerConfiguration().getBpelInstanceDeletionLimit()) {
-            throw new TooMuchInstancesException("Too much instances to delete");
+            throw new BPELUIException("Instance deletion limit reached.");
         }
 
         for (String nameWithVersion : versionsOfThePackage) {

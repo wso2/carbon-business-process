@@ -346,7 +346,6 @@ public final class Utils {
                 return count;
             } catch (Exception e) {
                 String errMsg = "Exception during instance count for deletion. Filter: " + filter;
-                log.error(errMsg, e);
                 throw new ManagementException(errMsg, e);
             }
 

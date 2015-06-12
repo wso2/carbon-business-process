@@ -16,12 +16,11 @@
 package org.wso2.carbon.bpel.core.ode.integration.store;
 
 /**
- * Throws when there are bpel instances more than specified
- * for a particular bpel package
+ * Throws when there are BPEL UI related problem occurred.
  */
-public class TooMuchInstancesException extends RuntimeException {
+public class BPELUIException extends RuntimeException {
 
-    public TooMuchInstancesException(String s) {
+    public BPELUIException(String s) {
         super(s);
     }
 }

@@ -105,7 +105,7 @@
            operation.equals("undeploy")) {
             try {
                 UndeployStatus_type0 status = pkgClient.undeploy(packageName);
-                if (status.equals(UndeployStatus_type0.TOO_MUCH_INSTANCES)) {
+                if (status.equals(UndeployStatus_type0.INSTANCE_DELETE_LIMIT_REACHED)) {
 %>
                     <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
                         <script type="application/javascript">
