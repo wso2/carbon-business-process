@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStoreImpl;
+import org.wso2.carbon.bpel.core.ode.integration.store.TooMuchInstancesException;
 import org.wso2.carbon.bpel.core.ode.integration.store.repository.BPELPackageInfo;
 import org.wso2.carbon.bpel.core.ode.integration.store.repository.BPELPackageRepository;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AdminServiceUtils;
@@ -62,7 +63,12 @@ public class BPELPackageManagementServiceSkeleton extends AbstractAdmin
         TenantProcessStoreImpl tenantProcessStore = getTenantProcessStore();
         try {
             tenantProcessStore.undeploy(packageName);
-        } catch (Exception e) {
+        } catch (TooMuchInstancesException e) {
+            //There are exceptions more than the limit. Not an error, better to abort un deploy to avoid timeout exceptions
+            log.warn("Too much instances to delete, aborting un deploy. Try deleting instances manually.");
+            return UndeployStatus_type0.TOO_MUCH_INSTANCES;
+        }
+        catch (Exception e) {
             log.error("Un-deploying BPEL package " + packageName + " failed.", e);
             return UndeployStatus_type0.FAILED;
         }

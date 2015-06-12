@@ -1049,6 +1049,7 @@
                 <xsd:enumeration value="FAILED"/>
                 <xsd:enumeration value="INVALID_PACKAGE_NAME"/>
                 <xsd:enumeration value="REGISTRY_OUT_OF_SYNC"/>
+                <xsd:enumeration value="TOO_MUCH_INSTANCES"/>
             </xsd:restriction>
         </xsd:simpleType>
     </xsd:element>

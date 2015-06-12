@@ -147,7 +147,7 @@
         <!--<tns:InstanceViewVariableLength>1000</tns:InstanceViewVariableLength>-->
 
         <!--This property specify the maximum number of BPEL process instances that can be deleted in a single delete instance-->
-        <!--request. Default value is 1000. Increase this with caution. It may result in various timeout exceptions.-->
+        <!--request. Default value is 2000. Increase this with caution. It may result in various timeout exceptions.-->
         <!--<tns:BpelInstanceDeletionLimit>1000</tns:BpelInstanceDeletionLimit>-->
     </tns:BpelUI>
 
