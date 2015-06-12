@@ -33,6 +33,9 @@
     <div class="col-lg-9">  
        <div id="taskActionBtns" class="btn-group" align="center">
        <!--load only the authorised actions-->
+        <% if (authorisedActions.NS1_NS::authorisedToClaim.text() == 'true') { %>
+            <button  onclick="claimTask(<%=id%>)" type="button" class="btn btn-default">Claim</button>
+        <% } %>
         <% if (authorisedActions.NS1_NS::authorisedToStart.text() == 'true') { %>
             <button onclick="startTask(<%=id%>)" type="button" class="btn btn-default">Start</button>
         <% } %>
