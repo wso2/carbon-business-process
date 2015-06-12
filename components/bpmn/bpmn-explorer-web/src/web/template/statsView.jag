@@ -43,7 +43,7 @@
         chart.draw(data, options);
       }
     </script>
-      <div class="col-lg-8 float-left">
+      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 float-left">
             <div class="panel">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Process Instance Growth</div>
@@ -74,7 +74,7 @@
         chart.draw(data, options);
       }
     </script>
-      <div class="col-lg-4 float-left">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 float-left">
           <div class="row" name="TaskInstancesChart">
           <!-- Default panel contents -->
               <div class="table-title"  style="width:100%">Process Instance Growth</div>
