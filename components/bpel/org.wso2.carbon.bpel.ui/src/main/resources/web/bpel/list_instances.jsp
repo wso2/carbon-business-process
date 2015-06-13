@@ -43,6 +43,7 @@
 <jsp:setProperty name="instanceFilter" property="*"/>
 <jsp:include page="../dialog/display_messages.jsp"/>
 
+
 <%
     response.setHeader("Cache-Control",
             "no-store, max-age=0, no-cache, must-revalidate");
@@ -62,6 +63,8 @@
     int numberOfPages = 0;
     String processIds[] = null;
     Boolean retryActivityFlag = false; // check filtering of retry tab
+    Boolean failedActivityExists = false; //check if there are failed activities at page load
+
     String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String deleteMex = CharacterEncoder.getSafeText(request.getParameter("deleteMex"));
     String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
@@ -70,6 +73,8 @@
     String instanceListOrderBy = CharacterEncoder.getSafeText(request.getParameter("order"));
 
     String parameters = null;
+    String parameters1 = null; //create list of encode strings of retry page
+    String parameterSet = null; // store query strings of retry page
     final String ENCODING_SCHEME = "UTF-8";
 
     String resetFilterLink = "list_instances.jsp?pageNumber=0&operation=reset";
@@ -78,7 +83,7 @@
     String suspendedInstanceFilterLink = "list_instances.jsp?pageNumber=0&filter=status%3Dsuspended&order=%2dlast-active";
     String terminatedInstanceFilterLink = "list_instances.jsp?pageNumber=0&filter=status%3Dterminated&order=%2dlast-active";
     String failedInstanceFilterLink = "list_instances.jsp?pageNumber=0&filter=status%3Dfailed&order=%2dlast-active";
-    String retryInstanceFilterLink = "list_instances.jsp?pageNumber=0&filter=status%3Dactive&order=%2dlast-active&operation=retryInstances";
+    String retryInstanceFilterLink = "list_instances.jsp?pageNumber=0&operation=retryInstances&filter=status%3Dactive&order=%2dlast-active";
 
     String deleteInstancesInFilterLink = "list_instances.jsp?pageNumber=0&operation=deleteInstances";
 
@@ -90,11 +95,11 @@
             CarbonUIUtil.isUserAuthorized(request, "/permission/admin/monitor/bpel");
 
     if (isAuthenticatedForInstanceManagement || isAuthenticatedForInstanceMonitor) {
+
         if (operation != null && operation.equals("reset")) {
             instanceFilter = null;
             session.removeAttribute("instanceFilter");
         }
-
 
         if (pageNumber == null) {
             pageNumber = "0";
@@ -104,7 +109,6 @@
         } catch (NumberFormatException ignored) {
 
         }
-
 
         if (instanceFilter == null) {
             instanceFilter = new InstanceFilter();
@@ -129,7 +133,6 @@
             }
 //            instanceFilter.setStatus(stateArray);
         } //else use the advanced filter
-
         // TODO: Add instance filter saving support(only for the session)
         if (instanceListOrderBy != null && instanceListOrderBy.length() > 0) {
             if (instanceListOrderBy.startsWith("-")) {
@@ -144,8 +147,23 @@
 
         instanceListFilter = InstanceFilterUtil.createInstanceFilterStringFromFormData(instanceFilter);
         instanceListOrderBy = InstanceFilterUtil.getOrderByFromFormData(instanceFilter);
-
+        String retryOperation = "retryInstances";
         parameters = URLEncoder.encode("filter=" + instanceListFilter + "&order=" + instanceListOrderBy, ENCODING_SCHEME);
+//        To encode query strings encode each piece at a time, else parameter definitions (&) will be encoded.Encoding
+//        for retry activities
+        parameters1 = URLEncoder.encode("operation", ENCODING_SCHEME);
+        parameters1 += "=";
+        parameters1 += URLEncoder.encode(retryOperation, ENCODING_SCHEME);
+        parameters1 += "&";
+        parameters1 += URLEncoder.encode("filter", ENCODING_SCHEME);
+        parameters1 += "=";
+        parameters1 += URLEncoder.encode(instanceListFilter, ENCODING_SCHEME);
+        parameters1 += "&";
+        parameters1 += URLEncoder.encode("orders", ENCODING_SCHEME);
+        parameters1 += "=";
+        parameters1 += URLEncoder.encode(instanceListOrderBy, ENCODING_SCHEME);
+        parameterSet = parameters1; //this will be used in pagination of retry activities
+
 
         try {
             client = new InstanceManagementServiceClient(cookie, backendServerURL, configContext);
@@ -162,7 +180,7 @@
         return;
     }
 
-    if (operation != null && isAuthenticatedForInstanceManagement) {
+    if ((operation != null) && isAuthenticatedForInstanceManagement) {
         String iid = CharacterEncoder.getSafeText(request.getParameter("iid"));
         if (iid != null && !operation.equals("reset")) {
             Long instanceId = Long.parseLong(iid.trim());
@@ -224,7 +242,6 @@
         }
     }
 } else if (operation.equals("retryInstances")) {
-
     retryActivityFlag = true;
 
 } else if (operation.equals("deleteInstances")) {
@@ -237,16 +254,16 @@
             deletedCount = client.deleteInstances(instanceListFilter, true);
         }
 %>
-            <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
-                <script type="application/javascript">
-                    CARBON.showInfoDialog(<% out.print(deletedCount); %> + ' ' + '<fmt:message key="bpel.instance.delete.done" />');
-                </script>
-            </fmt:bundle>
+<fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
+    <script type="application/javascript">
+        CARBON.showInfoDialog(<% out.print(deletedCount); %> +' ' + '<fmt:message key="bpel.instance.delete.done" />');
+    </script>
+</fmt:bundle>
 <%
-    } catch (Exception e) {
-        response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-        CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
-        session.setAttribute(CarbonUIMessage.ID, uiMsg);
+} catch (Exception e) {
+    response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
+    session.setAttribute(CarbonUIMessage.ID, uiMsg);
 %>
 <jsp:include page="../admin/error.jsp"/>
 <%
@@ -282,6 +299,17 @@
 <jsp:include page="../admin/error.jsp"/>
 <%
             return;
+        }
+        if (retryActivityFlag == true) { // If retry tab clicked check for any failed activities
+            if (instanceList != null && instanceList.getInstance() != null) {
+                for (LimitedInstanceInfoType activeInstanceInfo : instanceList.getInstance()) {
+                    ActivityRecoveryInfoType[] failedActivitiesCount = client.getFailedActivities(Long.parseLong(activeInstanceInfo.getIid()));
+                    if (failedActivitiesCount != null && failedActivitiesCount.length > 0) {
+                        failedActivityExists = true; // failed activities exists, hence show table headers
+                    }
+
+                }
+            }
         }
     }
 %>
@@ -321,7 +349,6 @@
         return false;
     };
     BPEL.instance.retryActivity = function (iid, aid) {
-
         function retryYes() {
             window.location.href = "instance_view.jsp?operation=retry&iid=" + iid + "&aid=" + aid;
         }
@@ -435,7 +462,7 @@
                 <td style="border-left: 1px solid #CCCCCC; width: 70px;">
                     <a id="linkretry" class="icon-link-nofloat"
                        style="background-image:url(images/bpel-ins-failed.gif);"
-                       href="<%=retryInstanceFilterLink%>"><fmt:message key="retry.page"/></a>
+                       href='<%=retryInstanceFilterLink%>'><fmt:message key="retry.page"/></a>
                 </td>
                 <%
                     if (isAuthenticatedForInstanceManagement && instanceList.getPages() > 0) {
@@ -699,18 +726,31 @@
 </tbody>
 </form>
 </table>
-<% if(!retryActivityFlag){ %>
 <br/>
-<% }%>
+
 <%
-    if (instanceList != null && instanceList.getInstance() != null) { %>
+    if (instanceList != null && instanceList.getInstance() != null) {
+
+        if (retryActivityFlag == true) { // if it's retry tab create own pagination links
+%>
+
+<carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
+                  page="list_instances.jsp" pageNumberParameterName="pageNumber"
+                  resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+                  prevKey="prev" nextKey="next"
+                  parameters="<%= parameterSet%>"/>
+<% } else {
+%>
 <carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
                   page="list_instances.jsp" pageNumberParameterName="pageNumber"
                   resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
                   prevKey="prev" nextKey="next"
                   parameters="<%= parameters%>"/>
+<%
+    }
+%>
 <table id="instanceListTable" class="styledLeft" width="100%">
-    <% if (retryActivityFlag == true) { //if  clicked on retry tab
+    <% if (retryActivityFlag == true && failedActivityExists == true) { //if  clicked on retry tab & failed activities
     %>
 
     <thead>
@@ -731,7 +771,9 @@
     </tr>
     </thead>
     <% } //close of retry tab
-    else if (retryActivityFlag == false) {
+    else if (retryActivityFlag == true && failedActivityExists == false) {%>
+    <p><fmt:message key="no.failed.instances"/></p>
+    <% } else if (retryActivityFlag == false) {  //clicked on other filter tabs
 
     %>
     <thead>
@@ -808,7 +850,7 @@
     <%
         }
     %>
-    <div>&nbsp;</div>
+
     <%
         }
     } catch (Exception e) {
@@ -874,12 +916,22 @@
     %>
     </tbody>
 </table>
+<% if (retryActivityFlag == true) { %>
+<carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
+                  page="list_instances.jsp" pageNumberParameterName="pageNumber"
+                  resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+                  prevKey="prev" nextKey="next"
+                  parameters="<%= parameterSet%>"/>
+<% } else {
+%>
 <carbon:paginator pageNumber="<%=pageNumberInt%>" numberOfPages="<%=numberOfPages%>"
                   page="list_instances.jsp" pageNumberParameterName="pageNumber"
                   resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
                   prevKey="prev" nextKey="next"
                   parameters="<%= parameters%>"/>
 <%
+    }
+
 } else {
 %>
 <p><fmt:message key="no.process.instances.found"/></p>
