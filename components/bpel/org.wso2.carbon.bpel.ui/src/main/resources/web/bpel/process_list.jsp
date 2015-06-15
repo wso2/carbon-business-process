@@ -32,6 +32,7 @@
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 
 <jsp:include page="../resources/resources-i18n-ajaxprocessor.jsp"/>
+<jsp:include page="../dialog/display_messages.jsp"/>
 
 <%
     response.setHeader("Cache-Control",
@@ -104,7 +105,15 @@
            operation.equals("undeploy")) {
             try {
                 UndeployStatus_type0 status = pkgClient.undeploy(packageName);
-                if(status.equals(UndeployStatus_type0.FAILED)) {
+                if (status.equals(UndeployStatus_type0.INSTANCE_DELETE_LIMIT_REACHED)) {
+%>
+                    <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
+                        <script type="application/javascript">
+                            CARBON.showInfoDialog('<fmt:message key="bpel.undeploy.too.much.instances"/>');
+                        </script>
+                    </fmt:bundle>
+<%
+                } else if(status.equals(UndeployStatus_type0.FAILED)) {
                     response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
                     CarbonUIMessage uiMsg = new CarbonUIMessage(
                             CarbonUIMessage.ERROR,

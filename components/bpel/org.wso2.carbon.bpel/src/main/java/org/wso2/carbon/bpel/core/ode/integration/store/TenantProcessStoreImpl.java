@@ -288,7 +288,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
      * @param bpelPackageName Name of the BPEL package which going to be undeployed
      */
     public void undeploy(String bpelPackageName)
-            throws RegistryException {
+            throws RegistryException, BPELUIException {
 
         if (log.isDebugEnabled()) {
             log.debug("Un-deploying BPEL package " + bpelPackageName + " ....");
@@ -329,6 +329,12 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             throw re;
         }
 
+        //check the instance count to be deleted
+        long instanceCount = getInstanceCountForPackage(versionsOfThePackage);
+        if (instanceCount > BPELServerImpl.getInstance().getBpelServerConfiguration().getBpelInstanceDeletionLimit()) {
+            throw new BPELUIException("Instance deletion limit reached.");
+        }
+
         for (String nameWithVersion : versionsOfThePackage) {
             parentProcessStore.deleteDeploymentUnitDataFromDB(nameWithVersion);
             Utils.deleteInstances(getProcessesInPackage(nameWithVersion));
@@ -364,6 +370,14 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
 //        parentProcessStore.sendProcessDeploymentNotificationsToCluster(
 //                new BPELPackageUndeployedCommand(versionsOfThePackage, bpelPackageName, tenantId),
 //                configurationContext);
+    }
+
+    private int getInstanceCountForPackage(List<String> versionsOfThePackage) {
+        int count = 0;
+        for (String versionName : versionsOfThePackage ) {
+            count += Utils.getInstanceCountForProcess(getProcessesInPackage(versionName));
+        }
+        return count;
     }
 
     /**

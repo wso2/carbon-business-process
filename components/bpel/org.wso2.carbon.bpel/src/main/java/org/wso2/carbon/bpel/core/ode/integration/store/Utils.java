@@ -318,6 +318,41 @@ public final class Utils {
         byte[] b = createChecksum(file);
         return getHex(b);
     }
+
+    /**
+     * Return the instances in the given processes list
+     * @param processesInPackage
+     * @return Instance count
+     * @throws ManagementException
+     */
+    public static long getInstanceCountForProcess(List<QName> processesInPackage) throws ManagementException {
+        if (processesInPackage != null) {
+            String filter = null;
+            for (QName q : processesInPackage) {
+                if (filter == null) {
+                    filter = "pid=" + q.toString();
+                } else {
+                    filter += "|" + q.toString();
+                }
+            }
+            try {
+                final InstanceFilter instanceFilter = new InstanceFilter(filter);
+                long count = (long) dbexec(new BpelDatabase.Callable<Object>() {
+
+                    public Object run(BpelDAOConnection conn) {
+                        return conn.instanceCount(instanceFilter);
+                    }
+                });
+                return count;
+            } catch (Exception e) {
+                String errMsg = "Exception during instance count for deletion. Filter: " + filter;
+                throw new ManagementException(errMsg, e);
+            }
+
+        } else {
+            return 0;
+        }
+    }
 }
 
 

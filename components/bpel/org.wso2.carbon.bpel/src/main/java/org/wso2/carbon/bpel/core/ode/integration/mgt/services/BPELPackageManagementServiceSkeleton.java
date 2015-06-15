@@ -15,12 +15,12 @@
  */
 package org.wso2.carbon.bpel.core.ode.integration.mgt.services;
 
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStoreImpl;
+import org.wso2.carbon.bpel.core.ode.integration.store.BPELUIException;
 import org.wso2.carbon.bpel.core.ode.integration.store.repository.BPELPackageInfo;
 import org.wso2.carbon.bpel.core.ode.integration.store.repository.BPELPackageRepository;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AdminServiceUtils;
@@ -28,9 +28,7 @@ import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.BPELPackageMan
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.PackageManagementException;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
@@ -62,7 +60,12 @@ public class BPELPackageManagementServiceSkeleton extends AbstractAdmin
         TenantProcessStoreImpl tenantProcessStore = getTenantProcessStore();
         try {
             tenantProcessStore.undeploy(packageName);
-        } catch (Exception e) {
+        } catch (BPELUIException e) {
+            //There are instances more than then deletion limit. Not an error, better to abort un deploy to avoid timeout exceptions
+            log.warn("Instance deletion limit reached, aborting un deploy. Try deleting instances manually.");
+            return UndeployStatus_type0.INSTANCE_DELETE_LIMIT_REACHED;
+        }
+        catch (Exception e) {
             log.error("Un-deploying BPEL package " + packageName + " failed.", e);
             return UndeployStatus_type0.FAILED;
         }
