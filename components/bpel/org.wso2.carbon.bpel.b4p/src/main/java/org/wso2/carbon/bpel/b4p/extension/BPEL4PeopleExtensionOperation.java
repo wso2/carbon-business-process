@@ -84,56 +84,69 @@ public class BPEL4PeopleExtensionOperation extends AbstractLongRunningExtensionO
         }
 
         Element notificationMessageEle = extensionContext.getInternalInstance().getMyRequest(mexId);
-        Node part = extensionContext.getPartData(notificationMessageEle,
-                outputVarName);
 
-        if (messageTraceLog.isTraceEnabled()) {
-            messageTraceLog.trace("B4P Response Message: " +
-                    DOMUtils.domToString(notificationMessageEle));
-            messageTraceLog.trace("B4P Response Part: " +
-                    DOMUtils.domToString(part));
+        if("".equals(outputVarName) || outputVarName == null) {
+        // if output variable is null or empty, these is no way to process the response from the task as we do not have
+        // a variable from bpel file to assign the values to. Hence what what we can do is to return a fault and exit.
+            log.error("Output variable not specified correctly for the remoteTask activity.Hence the error condition." +
+                      "Please verify and correct your BPEL process remoteTask");
 
-        }
+            extensionContext.completeWithFault(
+                                    cid,
+                                    new FaultException(BPEL4PeopleConstants.B4P_FAULT,
+                                    BPEL4PeopleConstants.NON_RECOVERABLE_ERROR));
+        } else {
+            Node part = extensionContext.getPartData(notificationMessageEle,
+                                                     outputVarName);
 
-        if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() && notificationMessageEle.hasChildNodes()) {
-            String taskID = "";
-            Element correlationHeader = DOMUtils.findChildByName(notificationMessageEle, new QName(BPEL4PeopleConstants.B4P_NAMESPACE, BPEL4PeopleConstants.B4P_CORRELATION_HEADER), true);
-            if (correlationHeader != null) {
-                taskID = correlationHeader.getAttributeNS(BPEL4PeopleConstants.B4P_NAMESPACE, BPEL4PeopleConstants.B4P_CORRELATION_HEADER_ATTRIBUTE);
-                try {
-                    deleteCoordinationTaskData(taskID);
-                } catch (Exception e) {
-                    log.error("Error occurred while cleaning coordination data for task id " + taskID, e);
-                }
+            if (messageTraceLog.isTraceEnabled()) {
+                messageTraceLog.trace("B4P Response Message: " +
+                                      DOMUtils.domToString(notificationMessageEle));
+                messageTraceLog.trace("B4P Response Part: " +
+                                      DOMUtils.domToString(part));
+
             }
 
-            //Checking for fault
-            Element fault = DOMUtils.findChildByName(notificationMessageEle, new QName(WSConstants.WS_HT_COORDINATION_PROTOCOL_FAULT));
-            if (fault != null) {
-                if (fault.hasAttribute("headerPart")) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Throwing Fault to People Activity Scope since received Fault Protocol Message for task" + taskID + ".");
+            if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() && notificationMessageEle.hasChildNodes()) {
+                String taskID = "";
+                Element correlationHeader = DOMUtils.findChildByName(notificationMessageEle, new QName(BPEL4PeopleConstants.B4P_NAMESPACE, BPEL4PeopleConstants.B4P_CORRELATION_HEADER), true);
+                if (correlationHeader != null) {
+                    taskID = correlationHeader.getAttributeNS(BPEL4PeopleConstants.B4P_NAMESPACE, BPEL4PeopleConstants.B4P_CORRELATION_HEADER_ATTRIBUTE);
+                    try {
+                        deleteCoordinationTaskData(taskID);
+                    } catch (Exception e) {
+                        log.error("Error occurred while cleaning coordination data for task id " + taskID, e);
                     }
-                    extensionContext.completeWithFault(cid,
-                            new FaultException(BPEL4PeopleConstants.B4P_FAULT, BPEL4PeopleConstants.NON_RECOVERABLE_ERROR));
-                    ;
                 }
-            }
-            //Checking for Skip
-            Element skipped = DOMUtils.findChildByName(notificationMessageEle, new QName(WSConstants.WS_HT_COORDINATION_PROTOCOL_SKIPPED));
-            if (skipped != null) {
-                if (skipped.hasAttribute("headerPart")) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Skipping People Activity since received Skipped Protocol Message for task " + taskID + ".");
+
+                //Checking for fault
+                Element fault = DOMUtils.findChildByName(notificationMessageEle, new QName(WSConstants.WS_HT_COORDINATION_PROTOCOL_FAULT));
+                if (fault != null) {
+                    if (fault.hasAttribute("headerPart")) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Throwing Fault to People Activity Scope since received Fault Protocol Message for task" + taskID + ".");
+                        }
+                        extensionContext.completeWithFault(cid,
+                                                           new FaultException(BPEL4PeopleConstants.B4P_FAULT, BPEL4PeopleConstants.NON_RECOVERABLE_ERROR));
+                        ;
                     }
-                    //Set extension as complete, since task is skipped. No value write to output variable.
-                    extensionContext.complete(cid);
-                    return;
+                }
+                //Checking for Skip
+                Element skipped = DOMUtils.findChildByName(notificationMessageEle, new QName(WSConstants.WS_HT_COORDINATION_PROTOCOL_SKIPPED));
+                if (skipped != null) {
+                    if (skipped.hasAttribute("headerPart")) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Skipping People Activity since received Skipped Protocol Message for task " + taskID + ".");
+                        }
+                        //Set extension as complete, since task is skipped. No value write to output variable.
+                        extensionContext.complete(cid);
+                        return;
+                    }
                 }
             }
+            extensionContext.writeVariable(outputVarName, notificationMessageEle);
+            extensionContext.complete(cid);
         }
-        extensionContext.writeVariable(outputVarName, notificationMessageEle);
-        extensionContext.complete(cid);
     }
 
     private boolean deleteCoordinationTaskData(final String taskID) throws Exception {
