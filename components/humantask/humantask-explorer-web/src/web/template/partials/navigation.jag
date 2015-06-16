@@ -29,6 +29,7 @@
             <ul class="nav navbar-nav">
               <li><a href="inbox"><img width="30px" src="images/My-Task.png"/><span class="padding-left">My Tasks</span></a></li>
               <li><a href="taskpool"><img width="30px" src="images/claimable-task.png"/> <span class="padding-left">Claimable Tasks</span></a></li>
+              <li><a href="notificationlist"><img width="30px" src="images/My-Task.png"/><span class="padding-left">Notifications</span></a></li>
               <li><a href="alltasks"><img width="30px" src="images/search.png"/><span class="padding-left">Search</span></a></li>
             </ul>
         </div><!--/.nav-collapse -->
