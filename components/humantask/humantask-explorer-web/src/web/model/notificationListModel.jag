@@ -48,6 +48,7 @@
         }
         taskXMLList = BPSResponseXML..SOAPENV_NS::Body.NS2_NS::simpleQueryResponse.NS2_NS::taskSimpleQueryResultSet.NS1_NS::row;
         paginatePageCount =  parseInt(BPSResponseXML..SOAPENV_NS::Body.NS2_NS::simpleQueryResponse.NS2_NS::taskSimpleQueryResultSet.NS1_NS::pages);
+
     } catch(e) {
         log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
         log.error(e);
