@@ -473,10 +473,10 @@ a.collapsing-h2 {
 }
 
 .table-title {
-    background: #282828;
+    background: #C6C6C6  ;
     border: 0px;
     border-radius: 0px;
-    color: #fff;
+    color: #333;
     height: 55px;
     padding: 10px 0 0px 10px;
     font-size: 20px;
@@ -851,3 +851,23 @@ i.cu-btn-exp-col {
     }
 }
 
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #be2d28;
+    border-color: #be2d28;}
+
+.pagination > li > a, .pagination > li > span {
+    color: #333;
+}
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    outline: none;
+    border-color: #DDD;
+}
+.btn-info {
+    background: #be2d28;
+    border-color: #be2d28;
+    border-radius: 0;
+}
+.btn-xs{background: #343434;border-color: #343434;}
+.btn-xs:hover{ background: #be2d28;border-color: #be2d28;   }
+.padding-top-icon{padding-top: 8px;}
+.navbar {   m

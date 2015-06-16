@@ -27,10 +27,34 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li><a href="inbox"><img width="30px" src="images/My-Task.png"/><span class="padding-left">My Tasks</span></a></li>
-              <li><a href="taskpool"><img width="30px" src="images/claimable-task.png"/> <span class="padding-left">Claimable Tasks</span></a></li>
-              <li><a href="notificationlist"><img width="30px" src="images/My-Task.png"/><span class="padding-left">Notifications</span></a></li>
-              <li><a href="alltasks"><img width="30px" src="images/search.png"/><span class="padding-left">Search</span></a></li>
+              <li><a href="inbox">
+                <span class="fw-stack fw-lg">
+                    <i class="fw fw-ring fw-stack-2x"></i>
+                    <i class="fw fw-tasks fw-lg fw-stack-1x padding-top-icon"></i>
+                </span>
+                <span class="padding-left">My Tasks</span></a>
+              </li>
+              <li><a href="taskpool">
+                <span class="fw-stack fw-lg">
+                    <i class="fw fw-ring fw-stack-2x"></i>
+                    <i class="fw fw-ticked-box fw-lg fw-stack-1x padding-top-icon"></i>
+                </span>
+                <span class="padding-left">Claimable Tasks</span></a>
+              </li>
+              <li><a href="notificationlist">
+                <span class="fw-stack fw-lg">
+                    <i class="fw fw-ring fw-stack-2x"></i>
+                    <i class="fw fw-search fw-lg fw-stack-1x padding-top-icon"></i>
+                </span>
+                <span class="padding-left">Notifications</span></a>
+              </li>
+              <li><a href="alltasks">
+                <span class="fw-stack fw-lg">
+                    <i class="fw fw-ring fw-stack-2x"></i>
+                    <i class="fw fw-search fw-lg fw-stack-1x padding-top-icon"></i>
+                </span>
+                <span class="padding-left">Search</span></a>
+              </li>
             </ul>
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
