@@ -62,8 +62,6 @@ public class UnifiedEndpointSerializer {
             /*Monitoring*/
             unifiedEndpoint.addMetaData(serializeUnifiedEndpointMonitoring(unifiedEndpoint));
 
-            /*ErrorHandling*/
-            unifiedEndpoint.addMetaData(serializeUnifiedEndpointErrorHandling(unifiedEndpoint));
 
             /*QoS*/
             unifiedEndpoint.addMetaData(serializeQoS(unifiedEndpoint));
@@ -73,11 +71,6 @@ public class UnifiedEndpointSerializer {
                 OMElement sessionElem = omFactory.createOMElement(UnifiedEndpointConstants.SESSION, null);
                 sessionElem.addAttribute(UnifiedEndpointConstants.SESSION_TYPE, unifiedEndpoint.getSessionType(), null);
                 unifiedEndpoint.addMetaData(sessionElem);
-            }
-
-            /*LB/FO Cluster*/
-            if (unifiedEndpoint.getUnifiedEndpointCluster() != null) {
-                unifiedEndpoint.addMetaData(serializeUnifiedEndpointCluster(unifiedEndpoint.getUnifiedEndpointCluster()));
             }
 
             unifiedEndpoint.setUepMetadataSerialized(true); /*UEP Metadata is serialized now*/
@@ -220,73 +213,6 @@ public class UnifiedEndpointSerializer {
         return monitoringElem;
     }
 
-    public OMElement serializeUnifiedEndpointErrorHandling(UnifiedEndpoint unifiedEndpoint) {
-        OMElement errorHandlingElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING, null);
-
-        /*MarkForSuspensionOnFailure*/
-        /*ToDO ? : MarkForSuspensionOnFailure must have RetriesBeforeSuspension & RetryDelay*/
-        if ((unifiedEndpoint.getRetriesBeforeSuspension() != -1)
-            && (unifiedEndpoint.getRetryDelay() != -1)) {
-
-            OMElement markForSuspensionOnFailureElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION, null);
-
-            OMElement retriesBeforeSuspensionElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_RETRIES, null);
-            retriesBeforeSuspensionElem.addChild(omFactory.createOMText(Integer.toString(unifiedEndpoint.getRetriesBeforeSuspension())));
-            markForSuspensionOnFailureElem.addChild(retriesBeforeSuspensionElem);
-
-            OMElement retryDelayElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_RETRY_DELAY, null);
-            retryDelayElem.addChild(omFactory.createOMText(String.valueOf(unifiedEndpoint.getRetryDelay())));
-            markForSuspensionOnFailureElem.addChild(retryDelayElem);
-
-            if (!unifiedEndpoint.getTimeoutErrorCodes().isEmpty()) {
-                OMElement markForSuspensionErrorCodesElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_ERROR_CODES, null);
-                String markForSuspensionErrorCodeStr = "";
-                StringBuffer sb = new StringBuffer();
-
-                for (int errorCode : unifiedEndpoint.getTimeoutErrorCodes()) {
-                    sb.append(errorCode).append(",");
-                }
-                markForSuspensionErrorCodeStr = sb.toString();
-                markForSuspensionErrorCodesElem.addChild(omFactory.createOMText(markForSuspensionErrorCodeStr));
-                markForSuspensionOnFailureElem.addChild(markForSuspensionErrorCodesElem);
-            }
-            errorHandlingElem.addChild(markForSuspensionOnFailureElem);
-        }
-
-        /*SuspendOnFailure*/
-        /*ToDO ? : SuspendOnFailure must have InitialDuration, ProgressionFac & MaxDuration*/
-        if ((unifiedEndpoint.getInitialDuration() != -1)
-            && (unifiedEndpoint.getProgressionFactor() != 0)
-            && (unifiedEndpoint.getMaximumDuration() != -1)) {
-            OMElement suspendOnFailureElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE, null);
-
-            OMElement initialDurationElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_INITIAL_DURATION, null);
-            initialDurationElem.addChild(omFactory.createOMText(String.valueOf(unifiedEndpoint.getInitialDuration())));
-            suspendOnFailureElem.addChild(initialDurationElem);
-
-            OMElement progressionFactorElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_PROGRESSION_FACTOR, null);
-            progressionFactorElem.addChild(omFactory.createOMText(Double.toString(unifiedEndpoint.getProgressionFactor())));
-            suspendOnFailureElem.addChild(progressionFactorElem);
-
-            OMElement maxDurationElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_MAXIMUM_DURATION, null);
-            maxDurationElem.addChild(omFactory.createOMText(String.valueOf(unifiedEndpoint.getMaximumDuration())));
-            suspendOnFailureElem.addChild(maxDurationElem);
-
-            if (!unifiedEndpoint.getSuspendErrorCodes().isEmpty()) {
-                OMElement suspendOnFailureErrorCodesElem = omFactory.createOMElement(UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_ERROR_CODES, null);
-                String suspendOnFailureErrorCodesStr = "";
-                for (int errorCode : unifiedEndpoint.getSuspendErrorCodes()) {
-                    suspendOnFailureErrorCodesStr += (errorCode + ",");
-                }
-                suspendOnFailureErrorCodesElem.addChild(omFactory.createOMText(suspendOnFailureErrorCodesStr));
-                suspendOnFailureElem.addChild(suspendOnFailureErrorCodesElem);
-            }
-            errorHandlingElem.addChild(suspendOnFailureElem);
-        }
-
-        return errorHandlingElem;
-    }
-
     public OMElement serializeQoS(UnifiedEndpoint unifiedEndpoint) {
         OMElement qosElem = omFactory.createOMElement(UnifiedEndpointConstants.QOS, null);
         if (unifiedEndpoint.isRMEnabled()) {
@@ -339,62 +265,4 @@ public class UnifiedEndpointSerializer {
         qosElem.addChild(secElem);
         return qosElem;
     }
-
-    public OMElement serializeUnifiedEndpointCluster(
-            UnifiedEndpointCluster unifiedEndpointCluster) {
-        OMElement clusterElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER, null);
-
-        OMElement membershipElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_MEMBERSHIP, null);
-        if (unifiedEndpointCluster.getMembershipHandler() != null) {
-            membershipElem.addAttribute(UnifiedEndpointConstants.CLUSTER_MEMBERSHIP_HANDLER, unifiedEndpointCluster.getMembershipHandler(), null);
-
-            if (unifiedEndpointCluster.getClusteredUnifiedEndpointList() != null
-                && !unifiedEndpointCluster.getClusteredUnifiedEndpointList().isEmpty()) {
-                for (UnifiedEndpoint uEP : unifiedEndpointCluster.getClusteredUnifiedEndpointList()) {
-                    membershipElem.addChild(serializeUnifiedEndpoint(uEP));
-                }
-            }
-            if (unifiedEndpointCluster.getClusteredEndpointUrlList() != null
-                && !unifiedEndpointCluster.getClusteredEndpointUrlList().isEmpty()) {
-                for (String uEPUrl : unifiedEndpointCluster.getClusteredEndpointUrlList()) {
-                    OMElement memberElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_MEMBER, null);
-                    memberElem.addAttribute(UnifiedEndpointConstants.CLUSTER_MEMBER_URL, uEPUrl, null);
-                    membershipElem.addChild(memberElem);
-                }
-            }
-
-            if (unifiedEndpointCluster.getClusterProperties() != null) {
-                OMElement propertiesElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_PROPERTIES, null);
-                for (Object key : unifiedEndpointCluster.getClusterProperties().keySet()) {
-                    String propValueStr = unifiedEndpointCluster.getClusterProperties().getProperty((String) key);
-                    OMElement propertyElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_PROPERTY, null);
-                    propertiesElem.addAttribute(UnifiedEndpointConstants.CLUSTER_PROPERTY_NAME, (String) key, null);
-                    propertiesElem.addAttribute(UnifiedEndpointConstants.CLUSTER_PROPERTY_VALUE, propValueStr, null);
-                    propertiesElem.addChild(propertyElem);
-                }
-                membershipElem.addChild(propertiesElem);
-            }
-        }
-        clusterElem.addChild(membershipElem);
-
-        if (unifiedEndpointCluster.isLoadBalancing()) {
-            OMElement lbElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE, null);
-            if (unifiedEndpointCluster.getLoadBalancingAlgorithm() != null) {
-                lbElem.addAttribute(UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_ALGORITHM, unifiedEndpointCluster.getLoadBalancingAlgorithm(), null);
-            }
-            if (unifiedEndpointCluster.getLoadBalancingPolicy() != null) {
-                lbElem.addAttribute(UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_POLICY, unifiedEndpointCluster.getLoadBalancingPolicy(), null);
-            }
-            clusterElem.addChild(lbElem);
-        }
-
-        if (unifiedEndpointCluster.isFailOver()) {
-            OMElement foElem = omFactory.createOMElement(UnifiedEndpointConstants.CLUSTER_FAIL_OVER, null);
-            clusterElem.addChild(foElem);
-        }
-
-        return clusterElem;
-    }
-
-
 }

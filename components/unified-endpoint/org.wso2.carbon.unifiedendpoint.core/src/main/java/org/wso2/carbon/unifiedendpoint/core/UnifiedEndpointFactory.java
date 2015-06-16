@@ -170,12 +170,6 @@ public class UnifiedEndpointFactory {
                                                 metadataElem.getFirstChildWithName(UnifiedEndpointConstants.MONITORING_Q));
             }
 
-            /** ErrorHandling */
-            if (metadataElem.getFirstChildWithName(UnifiedEndpointConstants.ERROR_HANDLING_Q) != null) {
-                extractErrorHandlingConfig(unifiedEndpoint, metadataElem.getFirstChildWithName(
-                        UnifiedEndpointConstants.ERROR_HANDLING_Q));
-            }
-
             /** QoS */
             if (metadataElem.getFirstChildWithName(UnifiedEndpointConstants.QOS_Q) != null) {
                 extractQoSConfig(unifiedEndpoint, metadataElem.getFirstChildWithName(
@@ -191,12 +185,6 @@ public class UnifiedEndpointFactory {
                             UnifiedEndpointConstants.SESSION_Q).getAttributeValue(
                             UnifiedEndpointConstants.SESSION_TYPE_Q));
                 }
-            }
-
-            /** Cluster */
-            if (metadataElem.getFirstChildWithName(UnifiedEndpointConstants.CLUSTER_Q) != null) {
-                extractClusterConfig(unifiedEndpoint, metadataElem.getFirstChildWithName(
-                        UnifiedEndpointConstants.CLUSTER_Q));
             }
         }
         return unifiedEndpoint;
@@ -310,83 +298,6 @@ public class UnifiedEndpointFactory {
     }
 
     /**
-     * Error Handling
-     *
-     * @param unifiedEndpoint
-     * @param errorHandlingElem
-     */
-    public void extractErrorHandlingConfig(UnifiedEndpoint unifiedEndpoint, OMElement errorHandlingElem) {
-
-        OMElement markForSuspensionElem = errorHandlingElem.getFirstChildWithName(
-                UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_Q);
-        if (markForSuspensionElem != null) {
-            if (markForSuspensionElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_RETRIES_Q) != null) {
-                unifiedEndpoint.setRetriesBeforeSuspension(Integer.parseInt(
-                        markForSuspensionElem.getFirstChildWithName(
-                                UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_RETRIES_Q).getText()));
-            }
-            if (markForSuspensionElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_RETRY_DELAY_Q) != null) {
-                unifiedEndpoint.setRetryDelay(Long.parseLong(
-                        markForSuspensionElem.getFirstChildWithName(
-                                UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_RETRY_DELAY_Q).getText()));
-            }
-            if (markForSuspensionElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_ERROR_CODES_Q) != null) {
-                String errorCodesStr = markForSuspensionElem.getFirstChildWithName(
-                        UnifiedEndpointConstants.ERROR_HANDLING_MARK_SUSPENSION_ERROR_CODES_Q).getText();
-                String[] errorCodes = errorCodesStr.split(",");
-                if (errorCodes != null) {
-                    for (String errorCode : errorCodes) {
-                        if (errorCode != null && !errorCode.equals("")) {
-                            unifiedEndpoint.addTimeOutErrorCode(Integer.parseInt(errorCode));
-                        }
-                    }
-                }
-            }
-        }
-
-        OMElement suspendOnFailureElem = errorHandlingElem.getFirstChildWithName(
-                UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_Q);
-        if (suspendOnFailureElem != null) {
-            if (suspendOnFailureElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_INITIAL_DURATION_Q) != null) {
-                unifiedEndpoint.setInitialDuration(Long.parseLong(
-                        suspendOnFailureElem.getFirstChildWithName(
-                                UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_INITIAL_DURATION_Q).getText()));
-            }
-            if (suspendOnFailureElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_PROGRESSION_FACTOR_Q) != null) {
-                unifiedEndpoint.setProgressionFactor(Double.parseDouble(
-                        suspendOnFailureElem.getFirstChildWithName(
-                                UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_PROGRESSION_FACTOR_Q).
-                                getText()));
-            }
-            if (suspendOnFailureElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_MAXIMUM_DURATION_Q) != null) {
-                unifiedEndpoint.setMaximumDuration(Long.parseLong(
-                        suspendOnFailureElem.getFirstChildWithName(
-                                UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_MAXIMUM_DURATION_Q).getText()));
-            }
-
-            if (suspendOnFailureElem.getFirstChildWithName(
-                    UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_ERROR_CODES_Q) != null) {
-                String errorCodesStr = suspendOnFailureElem.getFirstChildWithName(
-                        UnifiedEndpointConstants.ERROR_HANDLING_SUSPEND_ON_FAILURE_ERROR_CODES_Q).getText();
-                String[] errorCodes = errorCodesStr.split(",");
-                if (errorCodes != null) {
-                    for (String errorCode : errorCodes) {
-                        if (errorCode != null && !errorCode.equals("")) {
-                            unifiedEndpoint.addSuspendErrorCode(Integer.parseInt(errorCode));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * QoS
      *
      * @param unifiedEndpoint
@@ -449,63 +360,5 @@ public class UnifiedEndpointFactory {
                 }
             }
         }
-    }
-
-    /**
-     * Cluster : LB/FO
-     *
-     * @param unifiedEndpoint
-     * @param clusterElem
-     * @throws AxisFault
-     */
-    public void extractClusterConfig(UnifiedEndpoint unifiedEndpoint, OMElement clusterElem) throws AxisFault {
-
-        UnifiedEndpointCluster uEPCluster = new UnifiedEndpointCluster();
-        OMElement membershipOmElem = clusterElem.getFirstChildWithName(UnifiedEndpointConstants.CLUSTER_MEMBERSHIP_Q);
-        if (membershipOmElem != null) {
-            if (membershipOmElem.getAttributeValue(UnifiedEndpointConstants.CLUSTER_MEMBERSHIP_HANDLER_Q) != null) {
-                uEPCluster.setMembershipHandler(membershipOmElem.getAttributeValue(
-                        UnifiedEndpointConstants.CLUSTER_MEMBERSHIP_HANDLER_Q));
-            }
-
-            /*UEP Group*/
-            Iterator clusterUepIterator = membershipOmElem.getChildrenWithName(UnifiedEndpointConstants.UNIFIED_EPR_Q);
-            while (clusterUepIterator.hasNext()) {
-                OMElement clusterElement = (OMElement) clusterUepIterator.next();
-                /*Recursive call to create UEP*/
-                uEPCluster.addClusteredUnifiedEndpoint(createEndpoint(clusterElement));
-            }
-
-            /*EP Group with members url*/
-            Iterator memberIterator = membershipOmElem.getChildrenWithName(UnifiedEndpointConstants.CLUSTER_MEMBER_Q);
-            while (memberIterator.hasNext()) {
-                OMElement memberElem = (OMElement) memberIterator.next();
-                if (memberElem != null
-                    && memberElem.getAttributeValue(UnifiedEndpointConstants.CLUSTER_MEMBER_URL_Q) != null) {
-                    uEPCluster.addClusteredEndpointUrlList(memberElem.getAttributeValue(
-                            UnifiedEndpointConstants.CLUSTER_MEMBER_URL_Q));
-                }
-            }
-        }
-
-        /*LB*/
-        OMElement lbElem = clusterElem.getFirstChildWithName(UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_Q);
-        if (lbElem != null) {
-            uEPCluster.setLoadBalancing(true);
-            if (lbElem.getAttributeValue(UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_POLICY_Q) != null) {
-                uEPCluster.setLoadBalancingPolicy(lbElem.getAttributeValue(
-                        UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_POLICY_Q));
-            }
-            if (lbElem.getAttributeValue(UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_ALGORITHM_Q) != null) {
-                uEPCluster.setLoadBalancingAlgorithm(lbElem.getAttributeValue(
-                        UnifiedEndpointConstants.CLUSTER_LOAD_BALANCE_ALGORITHM_Q));
-            }
-        }
-
-        /*FO*/
-        if (clusterElem.getFirstChildWithName(UnifiedEndpointConstants.CLUSTER_FAIL_OVER_Q) != null) {
-            uEPCluster.setFailOver(true);
-        }
-        unifiedEndpoint.setUnifiedEndpointCluster(uEPCluster);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,19 +55,6 @@ public class UnifiedEndpoint extends EndpointReference {
     private boolean isTraceEnabled;
     private String monitoringLogStatement;
 
-    /** Error Handling */
-    /** Mark for suspension on  Failure */
-    private final List<Integer> timeoutErrorCodes = new ArrayList<Integer>();
-    private int retriesBeforeSuspension = -1;
-    private long retryDelay = -1;
-
-    /** Suspend on Failure */
-    private final List<Integer> suspendErrorCodes = new ArrayList<Integer>();
-    private long initialDuration = -1;
-    private double progressionFactor = 0.0;
-    private long maximumDuration = -1;
-
-
     /** QoS */
     private boolean isRMEnabled = false;
     private String wsRMPolicyKey = null;
@@ -87,10 +74,6 @@ public class UnifiedEndpoint extends EndpointReference {
 
     /** Session */
     private String sessionType;
-
-    /** Load Balancing or Fail Over */
-    private UnifiedEndpointCluster unifiedEndpointCluster;
-
 
     /** Metadata Serializer status */
     private boolean isUepMetadataSerialized = false;
@@ -199,46 +182,6 @@ public class UnifiedEndpoint extends EndpointReference {
         this.monitoringLogStatement = monitoringLogStatement;
     }
 
-    public int getRetriesBeforeSuspension() {
-        return retriesBeforeSuspension;
-    }
-
-    public void setRetriesBeforeSuspension(int retriesBeforeSuspension) {
-        this.retriesBeforeSuspension = retriesBeforeSuspension;
-    }
-
-    public long getRetryDelay() {
-        return retryDelay;
-    }
-
-    public void setRetryDelay(long retryDelay) {
-        this.retryDelay = retryDelay;
-    }
-
-    public long getInitialDuration() {
-        return initialDuration;
-    }
-
-    public void setInitialDuration(long initialDuration) {
-        this.initialDuration = initialDuration;
-    }
-
-    public double getProgressionFactor() {
-        return progressionFactor;
-    }
-
-    public void setProgressionFactor(double progressionFactor) {
-        this.progressionFactor = progressionFactor;
-    }
-
-    public long getMaximumDuration() {
-        return maximumDuration;
-    }
-
-    public void setMaximumDuration(long maximumDuration) {
-        this.maximumDuration = maximumDuration;
-    }
-
     public boolean isRMEnabled() {
         return isRMEnabled;
     }
@@ -325,32 +268,6 @@ public class UnifiedEndpoint extends EndpointReference {
 
     public void setSessionType(String sessionType) {
         this.sessionType = sessionType;
-    }
-
-    public UnifiedEndpointCluster getUnifiedEndpointCluster() {
-        return unifiedEndpointCluster;
-    }
-
-    public void setUnifiedEndpointCluster(UnifiedEndpointCluster unifiedEndpointCluster) {
-        this.unifiedEndpointCluster = unifiedEndpointCluster;
-    }
-
-    public List<Integer> getTimeoutErrorCodes() {
-        return timeoutErrorCodes;
-    }
-
-    public void addTimeOutErrorCode(int timeOutErrorCode) {
-        timeoutErrorCodes.add(timeOutErrorCode);
-
-    }
-
-    public List<Integer> getSuspendErrorCodes() {
-        return suspendErrorCodes;
-    }
-
-    public void addSuspendErrorCode(int suspendErrorCode) {
-        suspendErrorCodes.add(suspendErrorCode);
-
     }
 
     public String getAuthorizationUserName() {

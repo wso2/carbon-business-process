@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 
 
 public class SerializerTest {
-    private static Log log = LogFactory.getLog(SerializerTest.class);
 
     public static void main(String[] args) {
         uepSerializerTests();
@@ -61,17 +60,6 @@ public class SerializerTest {
         unifiedEndpointTimeout.addTimeOutProperty("SEND_TIMEOUT_ACK", "1000");
 
         uep.setTimeout(unifiedEndpointTimeout);
-
-        /*Cluster*/
-        UnifiedEndpointCluster cluster = new UnifiedEndpointCluster();
-        UnifiedEndpoint temp = new UnifiedEndpoint();
-        temp.setUepId("dfd");
-        temp.setAddress("dfsfjsdfjsjf");
-        cluster.addClusteredUnifiedEndpoint(temp);
-
-        log.info("our cluster " + cluster.getClusteredUnifiedEndpointList().get(0));
-        uep.setUnifiedEndpointCluster(cluster);
-
 
         /*Serialize*/
         UnifiedEndpointSerializer uepSerializer = new UnifiedEndpointSerializer();

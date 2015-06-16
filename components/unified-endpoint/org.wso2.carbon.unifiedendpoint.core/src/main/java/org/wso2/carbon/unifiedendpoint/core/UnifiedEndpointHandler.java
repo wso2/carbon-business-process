@@ -60,7 +60,6 @@ public class UnifiedEndpointHandler extends AbstractHandler {
             handleMessageOutput(unifiedEndpoint, msgContext);
             handleAddressing(unifiedEndpoint, msgContext);
             handleSecurity(unifiedEndpoint, msgContext);
-            handleRM(unifiedEndpoint, msgContext);
             handleTransportProperties(unifiedEndpoint, msgContext);
         }
         return InvocationResponse.CONTINUE;
@@ -235,21 +234,8 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 }
             }
         }
-        /*TODO Add other transports*/
-        /*else if () {
-        }*/
     }
 
-    private void handleTimeout(UnifiedEndpoint uep, MessageContext msgContext) {
-        UnifiedEndpointTimeout unifiedEndpointTimeout = uep.getTimeout();
-        if (unifiedEndpointTimeout.getTimeOutProperties() != null && (!unifiedEndpointTimeout.getTimeOutProperties().isEmpty())) {
-            for (Map.Entry<String, String> entry : unifiedEndpointTimeout.getTimeOutProperties().entrySet()) {
-                if (entry.getKey() != null && entry.getValue() != null) {
-                    msgContext.setProperty(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-    }
 
     private void handleSecurity(UnifiedEndpoint uep, MessageContext msgContext) throws AxisFault {
         if (uep.isSecurityEnabled()) {
@@ -260,10 +246,6 @@ public class UnifiedEndpointHandler extends AbstractHandler {
         }
     }
 
-
-    private void handleRM(UnifiedEndpoint uep, MessageContext msgContext) {
-        /*ToDO*/
-    }
 
     private Policy loadPolicy(String path, MessageContext msgContext) throws AxisFault {
         Policy policyDoc = null;
