@@ -420,7 +420,6 @@ a.collapsing-h2 {
 
 .navbar-collapse {
     padding-left: 0;
-    padding-top: 5px;
 }
 
 .navbar {
@@ -473,7 +472,7 @@ a.collapsing-h2 {
 }
 
 .table-title {
-    background: #282828;
+    background: #7A7A7A ;
     border: 0px;
     border-radius: 0px;
     color: #fff;
@@ -803,13 +802,12 @@ a.cu-btn {
     text-decoration: none;
     border: 0px solid #ff0000;
     padding: 17px 10px 16px 45px;
-    margin: 0 0 0 0px !important;
+    margin: 0 0 0 45px !important;
     font-weight: 100;
     display: inline-block;
     text-transform: uppercase;
     background-size: 26px 26px;
     border: 0px solid #ff0000;
-    padding-left: 45px !important;
 }
 
 a.cu-btn:hover {
@@ -846,3 +844,25 @@ i.cu-btn-exp-col {
         position: fixed;
     }
 }
+.padding-top-icon {
+    padding-top: 8px;
+}
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    height: 40px;
+    padding-top: 8px;}
+.nav > li > a:hover, .nav > li > a:focus {
+    height: 40px;
+    padding-top: 8px;
+    transition: all 0.5s ease 0s;
+}
+.glyphicon {
+    color: #be2d28;
+ }
+.glyphicon:hover {
+    color: #434343;
+}
+nav > li > a:hover, .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #444;
+    color: #fff;}
