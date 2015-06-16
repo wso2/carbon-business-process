@@ -16,7 +16,10 @@
 
 package org.wso2.carbon.bpel.common;
 
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
@@ -63,9 +66,7 @@ public class ServiceConfigurationUtil {
                     log.debug("Configuring service " + axisService.getName() + " using: " +
                               endpointConf.getServiceDescriptionLocation());
                 }
-//                if (configCtx == null) {
-//                    configCtx = new ConfigurationContext(axisService.getAxisConfiguration());
-//                }
+
                 ServiceBuilder builder = new ServiceBuilder(configCtx, axisService);
                 Iterator itr = documentEle.getChildElements();
 
@@ -103,44 +104,46 @@ public class ServiceConfigurationUtil {
                 serviceDescriptionLocation = serviceDescriptionLocation.substring(UnifiedEndpointConstants.VIRTUAL_FILE.
                         length());
             }
-            if (EndpointConfiguration.isAbsolutePath(serviceDescriptionLocation)) {
-                serviceDescriptionLocation = UnifiedEndpointConstants.VIRTUAL_FILE + serviceDescriptionLocation;
-            } else {
-                serviceDescriptionLocation =
-                        EndpointConfiguration.getAbsolutePath(endpointConfig.getBasePath(),
-                                                              serviceDescriptionLocation);
+            if (!EndpointConfiguration.isAbsolutePath(serviceDescriptionLocation)) {
+                serviceDescriptionLocation = endpointConfig.getBasePath() + File.separator + serviceDescriptionLocation;
             }
-            serviceElement = readServiceElementFromFile(serviceDescriptionLocation);
+            serviceElement = readOMElementFromFile(serviceDescriptionLocation);
         } else {
-            serviceElement = readServiceElementFromRegistry(serviceDescriptionLocation);
+            serviceElement = readOMElementFromRegistry(serviceDescriptionLocation);
         }
-
+        // We need to check whether policy file is embedded within the services.xml or it is referred from the
+        // file system using <policy key="custom_policy_file.xml"
+        if(serviceElement != null) {
+            loadAndEmbedPolicy(serviceElement, endpointConfig);
+        }
         return serviceElement;
     }
 
     //If the service file is located in the file system, read if from the file.
-    private static OMElement readServiceElementFromFile(String fileLocation) {
-        OMElement serviceElement = null;
-        File serviceDescFile =
-                new File(fileLocation.substring(UnifiedEndpointConstants.VIRTUAL_FILE.length()));
+    private static OMElement readOMElementFromFile(String fileLocation) {
+        OMElement element = null;
+        File serviceDescFile = new File(fileLocation);
         if (serviceDescFile.exists()) {
             InputStream fis = null;
             try {
                 fis = new FileInputStream(serviceDescFile);
-                StAXOMBuilder omBuilder = new StAXOMBuilder(fis);
-                serviceElement = omBuilder.getDocumentElement();
-                serviceElement.build();
-            } catch (FileNotFoundException | XMLStreamException ex) {
-                log.error("Error while processing the services file : " + fileLocation , ex);
-            } finally {
-                IOUtils.closeQuietly(fis);
+                OMXMLParserWrapper omBuilder = OMXMLBuilderFactory.createOMBuilder(fis);
+                element = omBuilder.getDocumentElement();
+                element.build();
+            } catch (FileNotFoundException ex ) {
+                log.error("Error while processing the services file : " + fileLocation, ex);
             }
+//            finally {
+//                if(fis != null) {
+//                    IOUtils.closeQuietly(fis);
+//                }
+//            }
         }
-        return serviceElement;
+        return element;
     }
 
     //If the service file is located in the registry, read if from the registry.
-    private static OMElement readServiceElementFromRegistry(String registryLocation) {
+    private static OMElement readOMElementFromRegistry(String registryLocation) {
         OMElement serviceElement = null;
         Registry registry;
         String location;
@@ -150,50 +153,98 @@ public class ServiceConfigurationUtil {
             location = registryLocation.substring(registryLocation.indexOf(
                     UnifiedEndpointConstants.VIRTUAL_CONF_REG) +
                                                   UnifiedEndpointConstants.VIRTUAL_CONF_REG.length());
-            serviceElement = loadServiceElement(registry, location);
+            serviceElement = loadOMElement(registry, location);
         } else if (registryLocation.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG)) {
             registry = CarbonContext.getThreadLocalCarbonContext().getRegistry(RegistryType.SYSTEM_GOVERNANCE);
             location = registryLocation.substring(registryLocation.indexOf(
                     UnifiedEndpointConstants.VIRTUAL_GOV_REG) +
                                                   UnifiedEndpointConstants.VIRTUAL_GOV_REG.length());
-            serviceElement = loadServiceElement(registry, location);
+            serviceElement = loadOMElement(registry, location);
         } else if (registryLocation.startsWith(UnifiedEndpointConstants.VIRTUAL_REG)) {
             registry = CarbonContext.getThreadLocalCarbonContext().getRegistry(RegistryType.LOCAL_REPOSITORY);
             location = registryLocation.substring(registryLocation.indexOf(
                     UnifiedEndpointConstants.VIRTUAL_REG) +
                                                   UnifiedEndpointConstants.VIRTUAL_REG.length());
-            serviceElement = loadServiceElement(registry, location);
+            serviceElement = loadOMElement(registry, location);
         } else {
             String errMsg = "Invalid service.xml file location: " + registryLocation;
             log.warn(errMsg);
         }
 
-
         return serviceElement;
     }
 
-    private static OMElement loadServiceElement(Registry registry, String location) {
+    private static OMElement loadOMElement(Registry registry, String location) {
         OMElement serviceElement = null;
+        ByteArrayInputStream bis = null;
         try {
             if (registry.resourceExists(location)) {
                 Resource resource = registry.get(location);
                 String resourceContent = new String((byte[]) resource.getContent());
-                serviceElement = new StAXOMBuilder
-                        (new ByteArrayInputStream(resourceContent.getBytes())).getDocumentElement();
+                bis = new ByteArrayInputStream(resourceContent.getBytes()); 
+                serviceElement = new StAXOMBuilder(bis).getDocumentElement();
+                serviceElement.build();
+
             } else {
                 String errMsg = "The resource: " + location + " does not exist.";
                 log.warn(errMsg);
             }
-        } catch (RegistryException e) {
-            String errMsg = "Error occurred while creating the OMElement out of service.xml " +
-                            location + " to build the BAM server profile: " + location;
+        } catch (RegistryException | XMLStreamException e) {
+            
+            String errMsg = "Error occurred while creating the OMElement out of service.xml " + location;
             log.warn(errMsg, e);
-        } catch (XMLStreamException e) {
-            String errMsg = "Error occurred while creating the OMElement out of service.xml " +
-                            "location: " + location;
-            log.warn(errMsg, e);
+            
         }
+//        finally {
+//            if(null != bis) {
+//                IOUtils.closeQuietly(bis);
+//            }
+//        }
         return serviceElement;
 
+    }
+
+    private static void loadAndEmbedPolicy(OMElement serviceElement, EndpointConfiguration endpointConfiguration) {
+        Iterator serviceIterator = serviceElement.getChildrenWithLocalName("service");
+        while(serviceIterator.hasNext()) {
+            OMElement nextService = (OMElement)serviceIterator.next();
+            OMElement policy = nextService.getFirstChildWithName(new QName("policy"));
+
+            if (policy != null) {
+                OMAttribute key = policy.getAttribute(new QName("key"));
+                if (key != null && null != key.getAttributeValue()) {
+                    String location = key.getAttributeValue();
+                    OMElement policyElement = null;
+                    if (location.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG) ||
+                        location.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG) ||
+                        location.startsWith(UnifiedEndpointConstants.VIRTUAL_REG)) {
+                        policyElement = readOMElementFromRegistry(location);
+
+                    } else {
+
+                        if (location.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
+                            // load the policy file from file system
+                            location = location.substring(UnifiedEndpointConstants.VIRTUAL_FILE.length());
+                        }
+                        if(!EndpointConfiguration.isAbsolutePath(location)) {
+                            location = endpointConfiguration.getBasePath() + File.separator + location;
+                        }
+                        policyElement = readOMElementFromFile(location);
+                    }
+                    if (policyElement != null) {
+
+                        policy.detach();
+                        nextService.addChild(policyElement);
+                        if (log.isDebugEnabled()) {
+                            log.debug(" Processed Service descriptor : " + serviceElement.toString());
+                        }
+                    }
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Policy file not correctly specified when referring using <policy key=... syntax");
+                    }
+                }
+            }
+        }
     }
 }

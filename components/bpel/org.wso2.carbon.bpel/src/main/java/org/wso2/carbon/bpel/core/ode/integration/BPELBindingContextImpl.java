@@ -176,8 +176,9 @@ public class BPELBindingContextImpl implements BindingContext {
         if (partnerService == null) {
             throw new ContextException("Only SOAP and HTTP binding supported!");
         }
-
-        log.debug("Created external service " + serviceName);
+        if(log.isDebugEnabled()) {
+            log.debug("Created external service " + serviceName);
+        }
         return partnerService;
     }
 
