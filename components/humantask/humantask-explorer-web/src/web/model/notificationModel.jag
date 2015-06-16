@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
     var log = new Log();
     //initialize BPS HT service request creator
     var htRequest = require ('/js/WSHTRequest.js');
@@ -46,12 +45,10 @@
         log.error(e);
         response.sendRedirect('login');
     }
-
-
     try {
         //retrieve HT renderings
         var HTRenderingsMsg = htRequest.getHTRenderings(id);
-        if(HTRenderingsMsg == null || HTRenderingsMsg =="" ){
+        if(HTRenderingsMsg == null || HTRenderingsMsg =="" ) {
             if (log.isDebugEnabled()) {
                 log.debug('Session timed out for task'+ "" + id);
             }
@@ -61,11 +58,8 @@
         var wso2InputRenderList = HTRenderingsXML..rendering_NS::getRenderingsResponse.input.element;
 
     } catch (e) {
-
         log.error('Error occurred while connecting to the back-end BPS HTRenderingAPI service : ');
         log.error(e);
         response.sendRedirect('login');
-
     }
-
 %>

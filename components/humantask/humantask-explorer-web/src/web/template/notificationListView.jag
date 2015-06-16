@@ -17,7 +17,6 @@
 * under the License.
 */
 %>
-
 <div class="row">
  <div class="panel-inbox">
     <!-- Default panel contents -->
@@ -36,7 +35,7 @@
                 </tr>
             </thead>
             <tbody>
-                <% for (var i=0; i<taskXMLList.length(); i++){ %>
+                <% for (var i=0; i<taskXMLList.length(); i++) { %>
                     <tr class="white-bg" style="cursor:pointer;" onclick="window.location='notificationview?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
                         onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
                         <td><%=taskXMLList[i].NS1_NS::id.toString()%></td>
@@ -56,7 +55,7 @@
         <% } else { %>
             <li class="disabled"><a href="#">&laquo;</a></li>
         <% } %>
-        <% for (var i = 1; i<=paginatePageCount; i++){
+        <% for (var i = 1; i<=paginatePageCount; i++) {
     if (pagination == i) { %>
                     <li class="active"><a href="notificationlist?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
             <% } else { %>
