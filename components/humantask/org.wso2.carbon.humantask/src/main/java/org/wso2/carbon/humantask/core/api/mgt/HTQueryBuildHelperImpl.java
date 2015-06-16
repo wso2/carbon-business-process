@@ -95,11 +95,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         isTaskName = m.find();
         if (isTaskName) {
             for (int i = 0; i < statuses.length; i++) {
-                try {
-                    statusCount1 = getTaskCountsForStateAndTaskName(taskName, statuses[i]);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                statusCount1 = getTaskCountsForStateAndTaskName(taskName, statuses[i]);
                 statusCounts[i] = " " + statuses[i].toString() + " " + statusCount1;
             }
         } else {
@@ -128,10 +124,12 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
                 execTransaction(new Callable<Object>() {
                     public Object call() throws Exception {
 
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
+                                .getConnection();
                         HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
                         HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
+                                .getDaoConnectionFactory();
                         humanTaskServer.getServerConfig();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
                         EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
@@ -165,10 +163,12 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Object>() {
                     public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
+                                .getConnection();
                         HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
                         HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
+                                .getDaoConnectionFactory();
                         humanTaskServer.getServerConfig();
 
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
@@ -193,10 +193,12 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Object>() {
                     public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
+                                .getConnection();
                         HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
                         HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
+                                .getDaoConnectionFactory();
                         humanTaskServer.getServerConfig();
 
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
@@ -271,32 +273,11 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         dtt.setConfigType(htc.getConfigurationType());
         dtt.setPackageName(htc.getPackageName());
         dtt.setStatus(htc.getPackageStatus().toString());
-        try {
-            dtt.setReservedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.RESERVED));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            dtt.setCompletedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.COMPLETED));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            dtt.setReadyCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.READY));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            dtt.setFailedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.FAILED));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            dtt.setInProgressCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.IN_PROGRESS));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        dtt.setReservedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.RESERVED));
+        dtt.setCompletedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.COMPLETED));
+        dtt.setReadyCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.READY));
+        dtt.setFailedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.FAILED));
+        dtt.setInProgressCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.IN_PROGRESS));
         return dtt;
     }
 
@@ -327,17 +308,39 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
             tasknamelist[countTenant - 1] = new String[htc.size()];
             j += htc.size();
             for (int i = 0; i < htc.size(); i++) {
-                tasklist[countTenant - 1][i] = " " + String.format("%1$-" + 4 + "s", tenantID) + " " + String.format("%1$-" + 55 + "s", htc.get(i).getName()) + "  " + String.format("%1$-" + 55 + "s", htc.get(i).getDefinitionName()) + " " + String.format("%1$-" + 10 + "s", htc.get(i).getOperation()) + " " + String.format("%1$-" + 15 + "s", htc.get(i).getPortName());
+                tasklist[countTenant - 1][i] = " " + String.format("%1$-" + 4 + "s",
+                                                                   tenantID) + " " + String.format("%1$-" + 55 + "s",
+                                                                                                   htc.get(i).getName
+                                                                                                           ()) + "  "
+                                               + String.format("%1$-" + 55 + "s", htc.get(i).getDefinitionName()) + "" +
+                                               " " + String.format("%1$-" + 10 + "s",
+                                                                   htc.get(i).getOperation()) + " " + String.format
+                        ("%1$-" + 15 + "s", htc.get(i).getPortName());
                 tasknamelist[countTenant - 1][i] = "" + htc.get(i).getName();
             }
         }
         int k = 0;
         result = new String[j + 2];
-        result[k++] = String.format("%1$-" + 11 + "s", "InstCount ") + "  " + String.format("%1$-" + 4 + "s", "TID") + "  " + String.format("%1$-" + 55 + "s", "Task Name") + "  " + String.format("%1$-" + 55 + "s", "Task Definition Name") + " " + String.format("%1$-" + 10 + "s", "Operation") + " " + String.format("%1$-" + 15 + "s", "Port name");
-        result[k++] = String.format("%1$-" + 11 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" + 4 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" + 55 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" + 55 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 10 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 15 + "s", "").replace(" ", "-");
+        result[k++] = String.format("%1$-" + 11 + "s", "InstCount ") + "  " + String.format("%1$-" + 4 + "s",
+                                                                                            "TID") + "  " + String
+                              .format("%1$-" + 55 + "s", "Task Name") + "  " + String.format("%1$-" + 55 + "s",
+                                                                                             "Task Definition Name")
+                      + " " + String.format("%1$-" + 10 + "s", "Operation") + " " + String.format("%1$-" + 15 + "s",
+                                                                                                  "Port name");
+        result[k++] = String.format("%1$-" + 11 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" + 4 + "s",
+                                                                                                    "").replace(" ",
+                                                                                                                "-")
+                      + "  " + String.format("%1$-" + 55 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" +
+                                                                                                             55 +
+                                                                                                             "s",
+                                                                                                             "")
+                .replace(" ", "-") + " " + String.format("%1$-" + 10 + "s", "").replace(" ",
+                                                                                        "-") + " " + String.format
+                ("%1$-" + 15 + "s", "").replace(" ", "-");
         for (int a = 0; a < tasklist.length; a++) {
             for (int b = 0; b < tasklist[a].length; b++) {
-                result[k++] = " [ " + String.format("%1$-" + 6 + "s", getTaskInstanceCountForTaskName(tasknamelist[a][b])) + " ] " + tasklist[a][b];
+                result[k++] = " [ " + String.format("%1$-" + 6 + "s", getTaskInstanceCountForTaskName
+                        (tasknamelist[a][b])) + " ] " + tasklist[a][b];
             }
         }
         return result;
@@ -364,7 +367,9 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         taskCount.put(tenantID, taskCountPerTenant);
         deployedTasks = new String[humanTaskConfigurations.size()];
         for (int i = 0; i < humanTaskConfigurations.size(); i++) {
-            deployedTasks[i] = " " + tenantID + " " + humanTaskConfigurations.get(i).getName() + "\t" + humanTaskConfigurations.get(i).getDefinitionName() + "\t" + humanTaskConfigurations.get(i).getOperation() + " \t" + humanTaskConfigurations.get(i).getPortName();
+            deployedTasks[i] = " " + tenantID + " " + humanTaskConfigurations.get(i).getName() + "\t" +
+                               humanTaskConfigurations.get(i).getDefinitionName() + "\t" + humanTaskConfigurations
+                    .get(i).getOperation() + " \t" + humanTaskConfigurations.get(i).getPortName();
         }
         if (deployedTasks.length == 0) {
             return null;
@@ -387,10 +392,12 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Object>() {
                     public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
+                                .getConnection();
                         HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
                         HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
+                                .getDaoConnectionFactory();
                         humanTaskServer.getServerConfig();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
                         TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
@@ -404,11 +411,27 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
 
         int i = 0;
         instances = new String[tasklist[0].size() + 2];
-        instances[i++] = String.format("%1$-" + 7 + "s", "ID") + String.format("%1$-" + 60 + "s", "Name") + String.format("%1$-" + 60 + "s", "Definition Name") + String.format("%1$-" + 30 + "s", "Created on");
-        instances[i++] = String.format("%1$-" + 6 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 30 + "s", "").replace(" ", "-");
+        instances[i++] = String.format("%1$-" + 7 + "s", "ID") + String.format("%1$-" + 60 + "s",
+                                                                               "Name") + String.format("%1$-" + 60 +
+                                                                                                       "s",
+                                                                                                       "Definition " +
+                                                                                                       "Name") +
+                         String.format("%1$-" + 30 + "s", "Created on");
+        instances[i++] = String.format("%1$-" + 6 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 59 +
+                                                                                                     "s",
+                                                                                                     "").replace(" ",
+                                                                                                                 "-")
+                         + " " + String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " + String.format("%1$-"
+                                                                                                              + 30 +
+                                                                                                              "s",
+                                                                                                              "")
+                .replace(" ", "-");
         for (Object o : tasklist[0]) {
             TaskDAO taskDAOinstance = (TaskDAO) o;
-            instances[i++] = String.format("%1$-" + 7 + "s", taskDAOinstance.getId()) + String.format("%1$-" + 60 + "s", taskDAOinstance.getName()) + String.format("%1$-" + 60 + "s", taskDAOinstance.getDefinitionName()) + String.format("%1$-" + 30 + "s", taskDAOinstance.getCreatedOn());
+            instances[i++] = String.format("%1$-" + 7 + "s", taskDAOinstance.getId()) + String.format("%1$-" + 60 +
+                                                                                                      "s",
+                                                                                                      taskDAOinstance
+                                                                                                              .getName()) + String.format("%1$-" + 60 + "s", taskDAOinstance.getDefinitionName()) + String.format("%1$-" + 30 + "s", taskDAOinstance.getCreatedOn());
         }
         return instances;
     }
@@ -528,10 +551,12 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Object>() {
                     public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
+                                .getConnection();
                         HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
                         HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
+                                .getDaoConnectionFactory();
                         humanTaskServer.getServerConfig();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
                         TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
@@ -570,10 +595,12 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Object>() {
                     public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory().getConnection();
+                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
+                                .getConnection();
                         HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
                         HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine.getDaoConnectionFactory();
+                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
+                                .getDaoConnectionFactory();
                         humanTaskServer.getServerConfig();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
                         TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
