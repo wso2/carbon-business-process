@@ -39,7 +39,28 @@ for(var i=0; i < tasks.data.length; i++){
 	});
 }
 
+//candidateGroups
+var groups = "";
+for(var j=0; j<roles.length; j++){
+	groups += roles[j];
+	if(j+1<roles.length){
+		groups += ",";
+	} 
+}
 
+tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+
+for(var i=0; i < tasks.data.length; i++){
+	var dueDate = tasks.data[i].dueDate;
+	if(dueDate == null){ dueDate = "Not available"; }
+	var taskName = tasks.data[i].name;
+	if(taskName == null){ taskName = "Not available"; }
+	task.push({
+		id:tasks.data[i].id,
+		name:taskName,
+		date:dueDate
+	});
+}
 
 var taskCount = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((taskCount / 10));

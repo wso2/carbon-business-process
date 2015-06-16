@@ -73,7 +73,7 @@ public class BPMNRestServiceComponent {
     }
 
     public void setHttpService(HttpService httpService) {
-        log.info("REACEHED EXECUTION OF URL - 1");
+
         BPMNRestHolder.getInstance().setHttpService(httpService);
 
         ServerServlet restServlet = new ServerServlet();
@@ -82,7 +82,6 @@ public class BPMNRestServiceComponent {
         String paramName = "org.restlet.application";
         String paramValue = "org.activiti.rest.service.application.ActivitiRestServicesApplication";
         initParams.put(paramName, paramValue);
-        log.info("REACEHED EXECUTION OF URL");
 
         try {
             httpService.registerServlet(BPMNRestConstants.BPMN_REST_CONTEXT_PATH, restServlet, initParams, defaultHttpContext);
