@@ -18,7 +18,6 @@ package org.wso2.carbon.unifiedendpoint.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 public class UnifiedEndpointTransport {
 
@@ -34,20 +33,8 @@ public class UnifiedEndpointTransport {
         }
     }
 
-    public String getTransportPropertyValue(String propertyName) {
-        return (String)transportProperties.get(propertyName);
-    }
-
-    public void removeTransportProperty(String propertyName) {
-        transportProperties.remove(propertyName);
-    }
-
     public Map<String, String> getTransportProperties() {
         return transportProperties;
-    }
-
-    public void setTransportProperties(Map<String, String> transportProperties) {
-        this.transportProperties = transportProperties;
     }
 
     public String getTransportType() {

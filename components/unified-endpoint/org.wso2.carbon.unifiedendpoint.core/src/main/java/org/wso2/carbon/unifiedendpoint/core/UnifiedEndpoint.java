@@ -19,8 +19,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.addressing.EndpointReference;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is the class to represent an UnifiedEndpoint. To be compatible with existing endpoints,

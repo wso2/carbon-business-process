@@ -142,7 +142,7 @@ public class UnifiedEndpointFactory {
                         secretAlias = secretAlias.trim();
                         SecretResolver secretResolver = SecretResolverFactory.create(metadataElem.getFirstChildWithName(
                                 UnifiedEndpointConstants.TRANSPORT_Q), false);
-                        
+
                         /* Setting the secured password */
                         if (secretResolver != null && secretResolver.isInitialized() &&
                             secretResolver.isTokenProtected(secretAlias)) {

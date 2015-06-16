@@ -40,7 +40,6 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 /**
  * Axis2 Handler that should be invoked when using Unified EP. This handler should be included in
