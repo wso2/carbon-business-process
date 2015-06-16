@@ -29,6 +29,8 @@ var loggedUser = session.get("userName");
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Optional theme -->
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/fontwso2-extend.css">
+	<link rel="stylesheet" href="css/fontwso2.css">
     <!-- Custom theme -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="ICON" href="images/favicon.ico" type="image/ico" />
@@ -38,11 +40,11 @@ var loggedUser = session.get("userName");
     <div class="logo-wrapper app-logo">
         <a href="inbox"><img src="images/logo-wso2.png"><h2 class="app-title"><%=data.app.title%></h2></a>
     </div>
-        <% if (loggedUser != null){ %>
-                <div class="login-wrapper padding-top padding-left">
-                    <img src="images/admin.png"/>
-                    <span class="padding-top margin-left margin-right"><%=loggedUser%></span>|
+        <%if(loggedUser!=null){%>
+            <div class="login-wrapper padding-top padding-left">
+                <img src="images/admin.png"/>
+                <span class="padding-top margin-left margin-right"><%=loggedUser%></span>|
                 <span class="padding-top"><a href="logout">Logout</a></span>
             </div>
-        <% } %>
+        <%}%>
     </header>
