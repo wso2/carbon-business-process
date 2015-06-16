@@ -374,8 +374,11 @@ public final class CommonTaskUtil {
 				}
 				return processedString;
 			} else {
-				log.warn("Rendering type " + renderingType + "Not found for task definition.");
-			}
+                if (log.isDebugEnabled()) {
+                    log.debug("Rendering type " + renderingType + " Not found for task definition " +
+                              taskConfiguration.getName());
+                }
+            }
 
 		}
 		return "";
