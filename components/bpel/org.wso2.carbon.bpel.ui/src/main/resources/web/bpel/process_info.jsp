@@ -269,7 +269,7 @@
     <style type="text/css">
         #process-instance-summary {
             width: 400px;
-            height: 250px;
+            height: 295px;
             margin-top: 10px;
         }
     </style>
@@ -327,16 +327,18 @@
                             </tr>
                             </tbody>
                         </table>
-                        <table><tbody>
-                        <tr>
-                            <td colspan="3">&nbsp;</td>
-                        </tr>
-                        </tbody></table>
-                    <%
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                                <%
                         boolean isFirst = true;                 //this is due to an assumption of first element of EPRMap is the process itself
                         if (processStatus.equals(ProcessStatus.ACTIVE.getValue())) {
                     %>
-                        <table class="styledLeft" id="wsdlTable">
+                        <table class="styledLeft" style="margin-left:0px;" id="wsdlTable">
                             <thead>
                             <tr>
                                 <th colspan="2"><fmt:message key="wsdl.details"/></th>
@@ -352,30 +354,30 @@
                                             onclick="changepartnerLinkValueForWSDLTable(document.getElementById('partnerLinkSelectorForWSDLTable').options[document.getElementById('partnerLinkSelectorForWSDLTable').selectedIndex].text)"
                                             onchange="changepartnerLinkValueForWSDLTable(document.getElementById('partnerLinkSelectorForWSDLTable').options[document.getElementById('partnerLinkSelectorForWSDLTable').selectedIndex].text)"
                                             style="margin-top:2px !important;">
-    <%
-            for (String partnerLink : refMap.keySet()) {
-                String serviceName = refMap.get(partnerLink).getLocalPart();
-                if (!isFirst) {
-    %>
+                                        <%
+                                            for (String partnerLink : refMap.keySet()) {
+                                                String serviceName = refMap.get(partnerLink).getLocalPart();
+                                                if (!isFirst) {
+                                        %>
                                         <option title="<%= serviceName%>"
                                                 id="<%= partnerLink%>"><%= partnerLink%>
                                         </option>
-    <%
-                } else {
-                    isFirst = false;
-    %>
+                                        <%
+                                        } else {
+                                            isFirst = false;
+                                        %>
                                         <option title="<%= serviceName%>" id="<%= partnerLink%>"
                                                 selected="true"><%= partnerLink%>
                                         </option>
-    <%
-                }
-            }
-    %>
+                                        <%
+                                                }
+                                            }
+                                        %>
                                     </select>
                                     <script type="text/javascript">
-                                            jQuery(document).ready(function() {
-                                                changepartnerLinkValueForWSDLTable(document.getElementById('partnerLinkSelectorForWSDLTable').options[document.getElementById('partnerLinkSelectorForWSDLTable').selectedIndex].text);
-                                            });
+                                        jQuery(document).ready(function() {
+                                            changepartnerLinkValueForWSDLTable(document.getElementById('partnerLinkSelectorForWSDLTable').options[document.getElementById('partnerLinkSelectorForWSDLTable').selectedIndex].text);
+                                        });
                                     </script>
 
                                 </td>
@@ -411,16 +413,9 @@
                             </tr>
                             </tbody>
                         </table>
-                        <%
+                                <%
                             }
                         %>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>
     <%--<%--%>
         <%--if(isAuthorizedToManageProcesses && isAuthorizedToManageServices &&--%>
            <%--processStatus.equals(ProcessStatus.ACTIVE.getValue())) {--%>
@@ -639,7 +634,7 @@
                                         <%=processDefPrettyPrinted%>
                                     </div>--%>
                                     <!--?prettify lang=html linenums=true?-->
-                                    <pre class="prettyprint linenums" style="height: 35em; overflow:scroll; width:1500px; white-space: pre-wrap;">
+                                    <pre class="prttyprint linenums" style="height: 35em; overflow:scroll; white-space: pre-wrap;">
                                         <%=processDefPrettyPrinted%>
                                     </pre>
                                 </td>
