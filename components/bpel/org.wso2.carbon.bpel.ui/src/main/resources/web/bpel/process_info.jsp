@@ -634,7 +634,7 @@
                                         <%=processDefPrettyPrinted%>
                                     </div>--%>
                                     <!--?prettify lang=html linenums=true?-->
-                                    <pre class="prttyprint linenums" style="height: 35em; overflow:scroll; white-space: pre-wrap;">
+                                    <pre class="prettyprint linenums" style="height: 35em; overflow:scroll; white-space: pre-wrap;">
                                         <%=processDefPrettyPrinted%>
                                     </pre>
                                 </td>
