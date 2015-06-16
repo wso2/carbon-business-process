@@ -24,6 +24,7 @@
     htRequest.initHTServerInfo(BPSUrl, session.get('BPSSessionCookie'));
 
     var id = request.getParameter("id");
+    var errorMsg = '';
 
     try {
         var taskAbstract = null;
@@ -35,6 +36,10 @@
             log.debug('loadTask BPS RESPONSE : ' + result);
         }
         taskAbstract = result.SOAPENV_NS::Body.NS2_NS::loadTaskResponse.NS2_NS::taskAbstract;
+
+        if (taskAbstract.length() < 1) {
+            errorMsg = result.SOAPENV_NS::Body.SOAPENV_NS::Fault.faultstring;
+        }
 
         //retrieve comments
         var commentResults = new XML(htRequest.getComments(id));
@@ -132,6 +137,19 @@
         </soapenv:Envelope>
 
     */
+
+    /*
+     * SAMPLE ERROR RESPONSE FOR LOADTASK FOR UNAUTHORIZED ACTION
+     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+     <soapenv:Body>
+     <soapenv:Fault>
+     <faultcode>soapenv:Server</faultcode>
+     <faultstring>Access Denied. You are not authorized to perform this task</faultstring>
+     <detail/>
+     </soapenv:Fault>
+     </soapenv:Body>
+     </soapenv:Envelope>
+     */
 
     /* SAMPLE EXPECTED RESPONSES FOR GETCOMMENTS
          <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">

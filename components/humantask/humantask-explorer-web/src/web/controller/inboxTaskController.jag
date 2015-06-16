@@ -30,8 +30,10 @@
         include ("/template/modals/setPriorityModal.jag")
         include("/template/modals/verifyTaskCompletion.jag");
 
-        if (taskAbstract != null) {
+        if (taskAbstract.length() > 0) {
             include("/template/inboxTaskView.jag");
+        } else {
+            include("/template/partials/internalError.jag");
         }
         include("/template/partials/footer.jag");
     }

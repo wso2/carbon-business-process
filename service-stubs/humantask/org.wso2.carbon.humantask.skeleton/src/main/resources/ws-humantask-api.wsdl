@@ -2422,7 +2422,10 @@
         <wsdl:operation name="loadTask">
             <wsdl:input message="loadTask"/>
             <wsdl:output message="loadTaskResponse"/>
+            <wsdl:fault name="illegalStateFault" message="illegalStateFault"/>
+            <wsdl:fault name="illegalArgumentFault" message="illegalArgumentFault"/>
             <wsdl:fault name="illegalAccessFault" message="illegalAccessFault"/>
+            <wsdl:fault name="illegalOperationFault" message="illegalOperationFault"/>
         </wsdl:operation>
     </wsdl:portType>
 
@@ -3795,8 +3798,17 @@
             <wsdl:output>
                 <soap:body use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="illegalStateFault">
+                <soap:fault use="literal" name="illegalStateFault"/>
+            </wsdl:fault>
+            <wsdl:fault name="illegalArgumentFault">
+                <soap:fault use="literal" name="illegalArgumentFault"/>
+            </wsdl:fault>
             <wsdl:fault name="illegalAccessFault">
                 <soap:fault use="literal" name="illegalAccessFault"/>
+            </wsdl:fault>
+            <wsdl:fault name="illegalOperationFault">
+                <soap:fault use="literal" name="illegalOperationFault"/>
             </wsdl:fault>
         </wsdl:operation>
     </wsdl:binding>
