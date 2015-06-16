@@ -93,7 +93,7 @@ var serverInfoIntervalObject;
 BPEL.summary.drawInstanceSummaryBarChart = function(summaryJSON, id, processId) {
     var chartContainer = jQuery("#" + id);
     chartContainer.width(450);
-    chartContainer.height(280);
+    chartContainer.height(325);
 
     var chartLegendContainer = jQuery("#" + id + "-legend");
     chartLegendContainer.width(450);
