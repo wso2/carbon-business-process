@@ -142,6 +142,7 @@ public class UnifiedEndpointFactory {
                         secretAlias = secretAlias.trim();
                         SecretResolver secretResolver = SecretResolverFactory.create(metadataElem.getFirstChildWithName(
                                 UnifiedEndpointConstants.TRANSPORT_Q), false);
+                        
                         /* Setting the secured password */
                         if (secretResolver != null && secretResolver.isInitialized() &&
                             secretResolver.isTokenProtected(secretAlias)) {
@@ -304,14 +305,6 @@ public class UnifiedEndpointFactory {
      * @param qosElem
      */
     public void extractQoSConfig(UnifiedEndpoint unifiedEndpoint, OMElement qosElem) {
-
-        OMElement enableRmElem = qosElem.getFirstChildWithName(UnifiedEndpointConstants.QOS_ENABLE_RM_Q);
-        if (enableRmElem != null) {
-            unifiedEndpoint.setRMEnabled(true);
-            if (enableRmElem.getAttributeValue(UnifiedEndpointConstants.QOS_POLICY_Q) != null) {
-                unifiedEndpoint.setWsRMPolicyKey(enableRmElem.getAttributeValue(UnifiedEndpointConstants.QOS_POLICY_Q));
-            }
-        }
 
         OMElement enableWsSecElem = qosElem.getFirstChildWithName(UnifiedEndpointConstants.QOS_ENABLE_WS_SEC_Q);
         if (enableWsSecElem != null) {

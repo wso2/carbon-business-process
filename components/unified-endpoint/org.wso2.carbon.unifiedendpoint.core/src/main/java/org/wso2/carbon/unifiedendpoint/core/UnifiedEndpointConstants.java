@@ -105,8 +105,7 @@ public final class UnifiedEndpointConstants {
     public static final QName MONITORING_TRACE_Q = new QName(null, MONITORING_TRACE);
 
     public static final QName QOS_Q = new QName(null, QOS);
-    public static final QName QOS_ENABLE_RM_Q = new QName(null, QOS_ENABLE_RM);
-    public static final QName QOS_POLICY_Q = new QName(null, QOS_POLICY);    
+    public static final QName QOS_POLICY_Q = new QName(null, QOS_POLICY);
     public static final QName QOS_ENABLE_WS_SEC_Q = new QName(null, QOS_ENABLE_WS_SEC);
     public static final QName QOS_ENABLE_ADDRESSING_Q = new QName(null, QOS_ENABLE_ADDRESSING);
     public static final QName QOS_VERSION_Q = new QName(null, QOS_VERSION);
