@@ -485,7 +485,50 @@
              </soapenv:Body>
              </soapenv:Envelope>
              */
-        }   else {
+        } else if (actionType === 'skip_task') {
+            var result = new XML(htRequest.skipTask(taskId));
+            var resultCheck = result.SOAPENV_NS::Body.NS2_NS::skipResponse;
+
+            if (resultCheck.length() > 0) {
+                //skip successfull
+                responseMsg = '<skip_taskResponse><success>true</success></skip_taskResponse>';
+            } else {
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for task'+ "" + taskId);
+                    }
+                    responseMsg = '<skip_taskResponse><success>timeout</success></skip_taskResponse>';
+                }
+                else {
+                    //skip unsuccessfull
+                    responseMsg = '<skip_taskResponse><success>false</success></skip_taskResponse>';
+                }
+            }
+
+            response.contentType = 'text/xml';
+            response.content = responseMsg;
+
+            /*
+             * SAMPLE SUCCESS RESPONSE
+             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+             <soapenv:Body>
+             <ns2:skipResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+             </soapenv:Body>
+             </soapenv:Envelope>
+
+             SAMPLE FAILURE RESPONSE
+             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+             <soapenv:Body>
+             <soapenv:Fault>
+             <faultcode>soapenv:Server</faultcode>
+             <faultstring>The task[id:4207] is not a skippable task.</faultstring>
+             <detail/>
+             </soapenv:Fault>
+             </soapenv:Body>
+             </soapenv:Envelope>
+
+             */
+        } else {
             responseMsg = '<unknownTaskResponse>\
                                 <success>false</success>\
                                 <data>unknon task</data>\

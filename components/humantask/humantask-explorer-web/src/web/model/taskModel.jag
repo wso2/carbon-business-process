@@ -52,7 +52,7 @@
         //retrieve authorized actions for currrent user
         var authParamResult = new XML(htRequest.loadAuthorisationParams(id));
         if (log.isDebugEnabled()) {
-            log.debug('load auth paramas respnse :\n'+ authParamResult);
+            log.debug('load auth params BPS response :\n'+ authParamResult);
         }
 
         authorisedActions = authParamResult.SOAPENV_NS::Body.NS2_NS::loadAuthorisationParamsResponse.NS2_NS::taskAuthorisationParamsResult;

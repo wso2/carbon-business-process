@@ -54,6 +54,9 @@
         <% if (authorisedActions.NS1_NS::authorisedToFail.text() == 'true') { %>
             <button onclick="failTask(<%=id%>)" type="button" class="btn btn-default">Fail</button>
         <% } %>
+        <% if (authorisedActions.NS1_NS::authorisedToSkip.text() == 'true') { %>
+            <button onclick="skipTask(<%=id%>)" type="button" class="btn btn-default">Skip</button>
+        <% } %>
         <% if (authorisedActions.NS1_NS::authorisedToResume.text() == 'true') { %>
             <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
         <% } %>

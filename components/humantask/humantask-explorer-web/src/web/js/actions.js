@@ -672,4 +672,33 @@ function setPriority(id){
     });
 }
 
+/**
+ * function to make ajax call to skip task
+ * @param id task ID
+ */
+function skipTask(id) {
+    var requestUrl = "/" + appName + "/action?type=skip_task&tid=" + id;
 
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+            } else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            } else {
+                //unsuccessful
+                $('#InfoErrMsg').html("ERROR : Unable to Skip task");
+                $('#additionalInfoErr').show();
+            }
+        },
+        error: function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
+        }
+    });
+}

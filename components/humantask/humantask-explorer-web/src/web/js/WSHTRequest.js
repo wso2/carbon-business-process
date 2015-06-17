@@ -544,6 +544,33 @@ function setPriority(id, priority) {
     }
 }
 
+/**
+ * Function to skip a task identified by the given id
+ * @param id - ID of the task to skip
+ * @returns response payload from HumanTaskClientAPIAdmin service
+ */
+function skipTask(id) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                                             xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
+                                             xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
+                       <soapenv:Header/>\
+                       <soapenv:Body>\
+                          <ns:skip>\
+                             <ns:identifier>' + id + '</ns:identifier>\
+                          </ns:skip>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/skip';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
+}
+
 /**********************************************************************************************************************
  START web service requests to HumanTaskRenderingAPI admin service
  **********************************************************************************************************************/
