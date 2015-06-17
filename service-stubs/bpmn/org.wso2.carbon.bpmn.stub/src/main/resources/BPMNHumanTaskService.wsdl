@@ -18,7 +18,7 @@
         <xs:schema xmlns:ax24="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" xmlns:ax22="http://core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
             <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"/>
             <xs:import namespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd"/>
-            <xs:element name="BPMNHumanTasksServiceBPSException">
+            <xs:element name="BPMNHumanTasksServiceBPSFault">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="BPSException" nillable="true" type="ax21:BPSException"/>
@@ -52,7 +52,7 @@
         <wsdl:part name="parameters" element="ns:completeTask"/>
     </wsdl:message>
     <wsdl:message name="BPMNHumanTasksServiceBPSException">
-        <wsdl:part name="parameters" element="ns:BPMNHumanTasksServiceBPSException"/>
+        <wsdl:part name="parameters" element="ns:BPMNHumanTasksServiceBPSFault"/>
     </wsdl:message>
     <wsdl:message name="getTasksOfUserRequest">
         <wsdl:part name="parameters" element="ns:getTasksOfUser"/>
