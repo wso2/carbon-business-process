@@ -104,7 +104,7 @@
                 <p id="InfoErrMsg"></p>
             </div>
         </div>
-        <% if (taskStatus == 'IN_PROGRESS') { %>
+        <% if (taskStatus == 'IN_PROGRESS' || taskStatus == 'COMPLETED') { %>
             <a data-toggle="collapse" href="#collapseOverview2" aria-expanded="true" class="collapsing-h2">
             <div class="table-title" style="width:99%"><i class="cu-btn-exp-col btn-collapsed"></i>Workspace</div>
             </a>
@@ -171,7 +171,8 @@
                                             <% } %>
                                         </td>
                                     </tr>
-                                <% } %>
+                                <% }
+                                if (taskStatus == 'IN_PROGRESS') { %>
                                 <tr>
                                     <td width="25%">
                                         <input type="button" value="Save" class="btn btn-primary"
@@ -180,6 +181,7 @@
                                                                                             data-target="#verifyTaskCompleteModal">
                                     </td>
                                 </tr>
+                                <% } %>
                             </form>
                         </tbody>
                     </table>
