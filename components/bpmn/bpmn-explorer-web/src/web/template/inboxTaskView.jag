@@ -79,7 +79,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="transfer($('#transferName').val(), <%=id%>);">Save</button>
+                    <button type="button" class="btn btn-default" onclick="transfer($('#transferName').val(), <%=id%>);">Save</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -96,7 +96,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="reassign($('#reassignName').val(), <%=id%>);">Save</button>
+                    <button type="button" class="btn btn-default" onclick="reassign($('#reassignName').val(), <%=id%>);">Save</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

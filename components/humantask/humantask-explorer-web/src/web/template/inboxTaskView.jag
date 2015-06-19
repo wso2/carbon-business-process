@@ -175,7 +175,7 @@
                                 if (taskStatus == 'IN_PROGRESS') { %>
                                 <tr>
                                     <td width="25%">
-                                        <input type="button" value="Save" class="btn btn-primary"
+                                        <input type="button" value="Save" class="btn btn-danger"
                                                                             onclick="submitForm('HTWorkspaceForm', '/action/save/')">
                                         <input type="button" value="Complete" class="btn btn-danger" data-toggle="modal"
                                                                                             data-target="#verifyTaskCompleteModal">
@@ -230,7 +230,7 @@
                   }
                 %>
             </ul>
-            <div id="addComment" style="float:right;">
+            <div id="addComment" style="float:left;">
                         <a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
                             <span class="glyphicon glyphicon-plus"></span>
                         </a>
