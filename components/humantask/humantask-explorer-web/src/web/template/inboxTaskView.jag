@@ -263,7 +263,13 @@
                                 </td>
                                  <td colspan='1'>
                                     <p><small><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::actualOwner.text()%></small></p>
+                                    <p><small>
+                                    <% if (taskAbstract.NS1_NS::actualOwner.length() > 0) {
+                                            print(taskAbstract.NS1_NS::actualOwner.text());
+                                        } else {
+                                            print('Unassigned');
+                                    }%>
+                                    </small></p>
                                     <p><small><%=taskAbstract.NS1_NS::status.text()%></small></p>
                                     <p><small><%=taskAbstract.NS1_NS::priority.text()%></small></p>
                                     <p><small><%=taskAbstract.NS1_NS::createdTime.text()%></small></p>
