@@ -26,7 +26,7 @@
         <xs:schema xmlns:ax224="http://core.bpmn.carbon.wso2.org/xsd" xmlns:ax226="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
             <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"></xs:import>
             <xs:import namespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd"></xs:import>
-            <xs:element name="BPMNInstanceServiceBPSException">
+            <xs:element name="BPMNInstanceServiceBPSFault">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="BPSException" nillable="true" type="ax223:BPSException"></xs:element>
@@ -112,7 +112,7 @@
         <wsdl:part name="parameters" element="ns:suspendProcessInstance"></wsdl:part>
     </wsdl:message>
     <wsdl:message name="BPMNInstanceServiceBPSException">
-        <wsdl:part name="parameters" element="ns:BPMNInstanceServiceBPSException"></wsdl:part>
+        <wsdl:part name="parameters" element="ns:BPMNInstanceServiceBPSFault"></wsdl:part>
     </wsdl:message>
     <wsdl:message name="getInstanceCountRequest">
         <wsdl:part name="parameters" element="ns:getInstanceCount"></wsdl:part>
