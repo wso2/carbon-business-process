@@ -869,4 +869,22 @@ i.cu-btn-exp-col {
 .btn-xs{background: #343434;border-color: #343434;}
 .btn-xs:hover{ background: #be2d28;border-color: #be2d28;   }
 .padding-top-icon{padding-top: 8px;}
-.navbar {   m
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    height: 40px;
+    padding-top: 8px;}
+.nav > li > a:hover, .nav > li > a:focus {
+    height: 40px;
+    padding-top: 8px;
+    transition: all 0.5s ease 0s;
+}
+.glyphicon {
+    color: #be2d28;
+}
+.glyphicon:hover {
+    color: #434343;
+}
+nav > li > a:hover, .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #444;
+    color: #fff;}

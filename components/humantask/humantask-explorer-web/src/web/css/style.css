@@ -534,6 +534,19 @@ a.collapsing-h2 {
     border-radius: 0;
 }
 
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #be2d28;
+    border-color: #be2d28;}
+
+.pagination > li > a, .pagination > li > span {
+    color: #333;
+}
+
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    outline: none;
+    border-color: #DDD;
+}
+
 footer {
     bottom: 0;
     height: 100px;
@@ -617,14 +630,14 @@ footer {
 .form-control {
     line-height: normal;
     width: 100%;
-    padding: 15px;
+    /*padding: 15px;*/
     font-size: 15px;
     border: 1px solid #ccc;
     border-radius: 0;
     box-shadow: none;
     color: #555;
     display: block;
-    height: 57px;
+    /*height: 57px;*/
 }
 
 .wr-btn {
@@ -843,25 +856,52 @@ i.cu-btn-exp-col {
         position: fixed;
     }
 }
+
+.btn-info {
+    background: #be2d28;
+    border-color: #be2d28;
+    border-radius: 0;
+}
+
+.btn-xs{
+    background: #343434;
+    border-color: #343434;
+}
+
+.btn-xs:hover{
+    background: #be2d28;
+    border-color: #be2d28;
+}
+
 .padding-top-icon {
     padding-top: 8px;
 }
+
+.padding-top-icon {
+    padding-top: 8px;
 }
+
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
     height: 40px;
-    padding-top: 8px;}
+    padding-top: 8px;
+}
+
 .nav > li > a:hover, .nav > li > a:focus {
     height: 40px;
     padding-top: 8px;
     transition: all 0.5s ease 0s;
 }
+
 .glyphicon {
     color: #be2d28;
  }
+
 .glyphicon:hover {
     color: #434343;
 }
+
 nav > li > a:hover, .nav > li > a:focus {
     text-decoration: none;
     background-color: #444;
-    color: #fff;}
+    color: #fff;
+}
