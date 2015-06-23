@@ -158,9 +158,7 @@
 
                                             <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'string') { %>
 
-                                                <textarea name="<%=wso2OutputRenderList[i].@id%>">
-                                                    <%=wso2OutputRenderList[i].default.toString()%>
-                                                </textarea>
+                                                <textarea name="<%=wso2OutputRenderList[i].@id%>" rows="4" cols="50"><%=wso2OutputRenderList[i].default.toString()%></textarea>
 
                                             <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'int' ||
                                                                                         wso2OutputRenderList[i].value.@type.toString() === 'double') { %>
