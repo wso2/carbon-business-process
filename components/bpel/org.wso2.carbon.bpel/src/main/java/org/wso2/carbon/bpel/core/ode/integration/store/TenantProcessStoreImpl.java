@@ -20,10 +20,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.compiler.api.CompilationException;
-import org.apache.ode.bpel.dd.DeployDocument;
-import org.apache.ode.bpel.dd.TBAMServerProfiles;
-import org.apache.ode.bpel.dd.TDeployment;
-import org.apache.ode.bpel.dd.TProvide;
+import org.apache.ode.bpel.dd.*;
 import org.apache.ode.bpel.engine.BpelServerImpl;
 import org.apache.ode.bpel.iapi.ContextException;
 import org.apache.ode.bpel.iapi.ProcessConf;
@@ -36,8 +33,8 @@ import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
-import org.wso2.carbon.bpel.core.ode.integration.config.bam.BAMServerProfile;
-import org.wso2.carbon.bpel.core.ode.integration.config.bam.BAMServerProfileBuilder;
+import org.wso2.carbon.bpel.core.ode.integration.config.analytics.AnalyticsServerProfile;
+import org.wso2.carbon.bpel.core.ode.integration.config.analytics.AnalyticsServerProfileBuilder;
 import org.wso2.carbon.bpel.core.ode.integration.store.clustering.BPELProcessStateChangedCommand;
 import org.wso2.carbon.bpel.core.ode.integration.store.repository.BPELPackageInfo;
 import org.wso2.carbon.bpel.core.ode.integration.store.repository.BPELPackageRepository;
@@ -99,8 +96,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     private File bpelArchiveRepo;
 
     // Holds the BAM server profiles
-    private final Map<String, BAMServerProfile> bamProfiles =
-            new ConcurrentHashMap<String, BAMServerProfile>();
+    private final Map<String, AnalyticsServerProfile> analyticsProfiles =
+            new ConcurrentHashMap<String, AnalyticsServerProfile>();
 
     private final Map<String, Object> dataPublisherMap =
             new ConcurrentHashMap<String, Object>();
@@ -704,7 +701,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             processIds.add(processId);
             processConfs.add(processConf);
 
-            readBAMServerProfiles(processDD, du);
+            readAnalyticsServerProfiles(processDD, du);
         }
 
         deploymentUnits.put(du.getName(), du);
@@ -815,7 +812,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             // if the deployment descriptor is updated at runtime, first load the updated data in
             // registry and use them with the specific process
             repository.readPropertiesOfUpdatedDeploymentInfo(pConf, bpelPackageName);
-            readBAMServerProfiles(processDD, du);
+            readAnalyticsServerProfiles(processDD, du);
 
             processConfigMap.put(pConf.getProcessId(), pConf);
             loaded.add(pConf);
@@ -826,12 +823,12 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         parentProcessStore.onBPELPackageReload(tenantId, du.getName(), loaded);
     }
 
-    private void readBAMServerProfiles(TDeployment.Process processDD, DeploymentUnitDir du){
-        TBAMServerProfiles bamServerProfiles = processDD.getBamServerProfiles();
-        if (bamServerProfiles != null) {
-            for (TBAMServerProfiles.Profile bamServerProfile :
-                    bamServerProfiles.getProfileList()) {
-                String location = bamServerProfile.getLocation();
+    private void readAnalyticsServerProfiles(TDeployment.Process processDD, DeploymentUnitDir du){
+        TAnalyticsServerProfiles analyticsServerProfiles = processDD.getAnalyticsServerProfiles();
+        if (analyticsServerProfiles != null) {
+            for (TAnalyticsServerProfiles.Profile analyticsServerProfile :
+                    analyticsServerProfiles.getProfileList()) {
+                String location = analyticsServerProfile.getLocation();
 
                 if (location.startsWith(UnifiedEndpointConstants.VIRTUAL_FILE)) {
                     if (!EndpointConfiguration.isAbsolutePath(
@@ -850,9 +847,9 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                         location = UnifiedEndpointConstants.VIRTUAL_FILE + location;
                     }
                 }
-                BAMServerProfileBuilder builder = new BAMServerProfileBuilder(location, tenantId);
-                BAMServerProfile profile = builder.build();
-                addBAMServerProfile(profile.getName(), profile);
+                AnalyticsServerProfileBuilder builder = new AnalyticsServerProfileBuilder(location, tenantId);
+                AnalyticsServerProfile profile = builder.build();
+                addAnalyticsServerProfile(profile.getName(), profile);
             }
         }
     }
@@ -1010,12 +1007,12 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         return parentProcessStore.getServicesPublishedByTenant(tenantId);
     }
 
-    public void addBAMServerProfile(String name, BAMServerProfile profile) {
-        bamProfiles.put(name, profile);
+    public void addAnalyticsServerProfile(String name, AnalyticsServerProfile profile) {
+        analyticsProfiles.put(name, profile);
     }
 
-    public BAMServerProfile getBAMServerProfile(String name) {
-        return bamProfiles.get(name);
+    public AnalyticsServerProfile getAnalyticsServerProfile(String name) {
+        return analyticsProfiles.get(name);
     }
 
     public synchronized void addDataPublisher(String processName, Object publisher) {
