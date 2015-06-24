@@ -34,7 +34,7 @@
         <module>org.wso2.carbon.bpel.server.feature</module>
         <module>org.wso2.carbon.bpel.ui.feature</module>
         <module>org.wso2.carbon.bpel.feature</module>
-        <module>org.wso2.carbon.bpel.bam.publisher.feature</module>
+        <module>org.wso2.carbon.bpel.analytics.publisher.feature</module>
     </modules>
 
         <dependencies>
@@ -68,11 +68,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
+                <artifactId>org.wso2.carbon.bpel.analytics.publisher</artifactId>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher.skeleton</artifactId>
+                <artifactId>org.wso2.carbon.bpel.analytics.publisher.skeleton</artifactId>
             </dependency>
 
 	    <dependency>

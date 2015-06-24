@@ -36,8 +36,8 @@
     <modules>
         <module>org.wso2.carbon.bpel.skeleton</module>
         <module>org.wso2.carbon.bpel.stub</module>
-        <module>org.wso2.carbon.bpel.bam.publisher.skeleton</module>
-        <module>org.wso2.carbon.bpel.bam.publisher.stub</module>
+        <module>org.wso2.carbon.bpel.analytics.publisher.skeleton</module>
+        <module>org.wso2.carbon.bpel.analytics.publisher.stub</module>
     </modules>
 
     <dependencies>

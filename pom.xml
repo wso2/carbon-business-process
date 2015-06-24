@@ -759,12 +759,12 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
+                <artifactId>org.wso2.carbon.bpel.analytics.publisher</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher.skeleton</artifactId>
+                <artifactId>org.wso2.carbon.bpel.analytics.publisher.skeleton</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>

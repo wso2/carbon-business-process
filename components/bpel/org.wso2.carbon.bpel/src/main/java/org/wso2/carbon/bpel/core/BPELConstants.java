@@ -280,7 +280,7 @@ public final class BPELConstants {
 
     public static final String DAFAULT_BPEL_CLIENT = "AnonymousBPELClient";
 
-    public static final String BAM_SERVER_PROFILE_NS = "http://wso2.org/bam/2.0";
+    public static final String ANALYTICS_SERVER_PROFILE_NS = "http://wso2.org/analytics/2.0";
 
      public static final String MESSAGE_TRACE = "org.wso2.carbon.bpel.messagetrace";
 
