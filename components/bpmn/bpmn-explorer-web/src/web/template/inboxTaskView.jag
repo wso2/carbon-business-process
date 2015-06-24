@@ -67,6 +67,87 @@
 		  </table>
 	</div>
  </div>
+ <!-- Adding attachments tab -->
+ <div class="row" name="additionalInfoSection">
+   <ul class="nav nav-tabs" role="tablist">
+   <li id="attachmentsTab">
+           <a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
+            </li>
+   </ul>
+<!--content of attachments-->
+   <ul class="list-group" id="attachmentList">
+
+   <!--Attachment List Table -->
+   <% if(attachmentList.length > 0 ){ %>
+    	<div class="table-body margin-left-double">
+
+	  	<!-- Table -->
+		  <table class="table">
+		    <thead>
+		    	<tr class="table-title-row">
+		    		<th>Name</th>
+		    		<th>Type</th>
+		    		<th>Link</th>
+		    	</tr>
+		    </thead>
+		    <tbody>
+		    	<% for (var i=0; i<attachmentList.length; i++) { %>
+		    	  	<tr class="white-bg" style="cursor:pointer;"
+	                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+		    			<td><%=attachmentList[i].name%></td>
+						<td><%=attachmentList[i].type%></td>
+						<td> <a href="<%=attachmentList[i].url%>">Download</a></td>
+			    	</tr>
+		    	<% } %>
+		    </tbody>
+		  </table>
+		</div>
+
+
+		<!--Pagination for attachment table -->
+<ul class="pagination">
+			<% if (pagination != 1) { %>
+				<li><a href="inboxTask?id=<%=id%>&pagination=<%=parseInt(pagination) - 1%>">&laquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&laquo;</a></li>
+			<% } %>
+			<% for (var i = 1; i <= paginatePageCount + 1; i++) {
+    if (pagination == i) { %>
+						<li class="active"><a href="inboxTask?id=<%=id%>&pagination=<%=i%>"><%=("" + i).split(".")[0]%></a></li>
+				<% } else { %>
+						<li><a href="inboxTask?id=<%=id%>&pagination=<%=i%>"><%=("" + i).split(".")[0]%></a></li>
+				<% } %>
+			<% } %>
+			<% if (pagination != paginatePageCount + 1) { %>
+				<li><a href="inboxTask?id=<%=id%>&pagination=<%=parseInt(pagination)+ 1%>">&raquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&raquo;</a></li>
+			<% } %>
+		</ul>
+
+   <!--End of Attachment List Table-->
+
+<% }
+else{%>
+ <div><span style="display:table;
+margin:0 auto;">No attachments found</span></div>
+<%}
+%>
+ <div id="error_content" style="visibility:hidden;margin-left: 70px;position: absolute; left: 30%;
+    top: 80%;">Failed to  upload attachment</div>
+    <!-- add Attachment content -->
+<div id="addAttachment" style="margin-left:20px;float:left;box-sizing:border-box;border: 1px solid darkgray;">
+   <form id="attachForm" style="margin-left: 10px;" method="POST" action="/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
+   <input type="hidden" id="type" name="type" value="png"/><br>
+   File Name: <input type="text" id="name" name="name"/> <br>
+      Select File:  <input type="file" id="files" name="file" /><br>
+  <button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button>
+  </form>
+   </div>
+   <!-- end of add Attachment content -->
+   </ul>
+</div>
+		    	<!--End of attachments tab -->
 	<div class="modal fade" id="transfer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog model-center">
             <div class="modal-content">

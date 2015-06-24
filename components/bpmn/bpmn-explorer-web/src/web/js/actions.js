@@ -17,6 +17,53 @@
 var httpUrl = location.protocol + "//" + location.host;
 var CONTEXT = "bpmn-explorer";
 
+
+$( document ).ready(function() {
+
+    function getFileType(){
+        var fileName = document.getElementById('files').value;
+        if(fileName!== null) {
+            var extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+            return extension;
+        }
+    }
+    // Send attachment info the server
+    $('#attachForm').ajaxForm({
+        beforeSubmit: function(arr, formData, options) {
+            for (var i=0; i < arr.length; i++) {
+                if (!arr[i].value) {
+                    $('#submit-attachment').popover({ content: "Please enter all values",
+                        placement: "right"});
+                    $('#submit-attachment').popover('show');
+
+                    return false;
+                }
+            }
+
+            setTimeout(function () {
+                $('.btn-primary').popover('hide')
+            }, 1000);
+            var fileType = getFileType();
+            if(fileType) {
+                arr.push({name: 'type', value: fileType})
+            }
+        },
+
+        success : function(res){
+            var taskUrl = res.taskUrl;
+            var taskId = taskUrl.substr(taskUrl.lastIndexOf('/') + 1);
+            window.location = httpUrl + "/" + CONTEXT + "/inboxTask?id=" + taskId ;
+
+        },
+        error :  function(res){
+            document.getElementById("error_content").style.visibility='visible';
+        }
+    });
+});
+
+function displayAttachmentData(id){
+   window.location = httpUrl + "/" + CONTEXT + "/inboxTask?id=" + id ;
+}
 function completeTask(data, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var variables = [];
