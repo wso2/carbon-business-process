@@ -24,12 +24,18 @@ import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
 import org.wso2.carbon.core.ServerStartupHandler;
 import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.humantask.core.*;
+import org.wso2.carbon.humantask.core.integration.jmx.DeployedTasks;
+import org.wso2.carbon.humantask.core.integration.jmx.HTTaskStatusMonitor;
 import org.wso2.carbon.humantask.core.engine.HumanTaskServerException;
 import org.wso2.carbon.ndatasource.core.DataSourceService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.ui.util.UIResourceProvider;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
+import org.wso2.carbon.utils.MBeanRegistrar;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.NotCompliantMBeanException;
 
 /**
  * @scr.component name="org.wso2.carbon.humantask.HumanTaskServiceComponent" immediate="true"
@@ -79,6 +85,7 @@ public class HumanTaskServiceComponent {
                 registerAxis2ConfigurationContextObserver();
                 registerHumanTaskServerService();
                 registerTaskServer();
+                registerMBeans();
 
                 if(HumanTaskServerHolder.getInstance().getHtServer().getServerConfig().isUiRenderingEnabled()) {
                     registerHumanTaskUIResourceProvider(htServerHolder);
@@ -198,5 +205,22 @@ public class HumanTaskServiceComponent {
     private void registerTaskServer() {
         this.bundleContext.registerService(TaskOperationService.class.getName(),
                                            new TaskOperationServiceImpl(), null);
+    }
+
+    /**
+     * to register all the MBeans.
+     *
+     * @throws Exception
+     * @throws MBeanRegistrationException
+     * @throws InstanceAlreadyExistsException
+     * @throws NotCompliantMBeanException
+     */
+    public void registerMBeans() throws Exception, MBeanRegistrationException, InstanceAlreadyExistsException, NotCompliantMBeanException {
+        log.info("Registering HT related MBeans");
+        HTTaskStatusMonitor taskStatusMonitor = new HTTaskStatusMonitor();
+        DeployedTasks deployedTasks = new DeployedTasks();
+        MBeanRegistrar.registerMBean(taskStatusMonitor, "org.wso2.carbon.humantask.core.integration.jmx:type=HTTaskStatusMonitorMXBean");
+        MBeanRegistrar.registerMBean(deployedTasks,"org.wso2.carbon.humantask.core.integration.jmx:type=DeployedTasksMXBean");
+        log.info("MXBean for Human tasks registered successfully");
     }
 }
