@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
 public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
 
     private static final Log log = LogFactory.getLog(HTQueryBuildHelperImpl.class);
-//    private int tenantID = -1;
+    //    private int tenantID = -1;
     private int taskCountPerTenant = 0;
     HashMap<Integer, Integer> taskCount = new HashMap<Integer, Integer>();
 
@@ -104,24 +104,22 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      */
     private int getTaskInstanceCountForTaskName(final String taskName)
             throws Exception {
-
-        final List[] taskList = new List[1];
-
         return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                 execTransaction(new Callable<Integer>() {
                     public Integer call() throws Exception {
-
                         HumanTaskDAOConnection connection = HumanTaskServerHolder.getInstance().getHtServer().
                                 getTaskEngine().getDaoConnectionFactory().getConnection();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
                         EntityManager em = connection.getEntityManager();
                         Query query = htQueryBuilder.buildQueryToFindTaskInstances(taskName, em);
                         List resultList = query.getResultList();
-                        if(resultList != null)
-                        return taskList[0].size();
+                        if (resultList != null) {
+                            return resultList.size();
+                        } else {
+                            return 0;
+                        }
                     }
                 });
-
     }
 
     /**
@@ -134,7 +132,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalAccessFault
      */
     private int getTaskCountsForStateAndTaskName(final String taskName,
-                                                final TPredefinedStatus.Enum status)
+                                                 final TPredefinedStatus.Enum status)
             throws Exception {
 
         return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
@@ -217,34 +215,34 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
     /**
      * This method is not used, hence commenting out
 
-    public DeployedTaskDetail getDeployedTasksDetails(String taskName)
-            throws Exception {
-        DeployedTaskDetail dtt;
-        dtt = new DeployedTaskDetail();
-        HumanTaskBaseConfiguration htc;
-        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-        HumanTaskStore humanTaskStore = humanTaskServer.getTaskStoreManager().getHumanTaskStore(-1234);
-        QName taskName1 = QName.valueOf(taskName);
-        htc = humanTaskStore.getTaskConfiguration(taskName1);
+     public DeployedTaskDetail getDeployedTasksDetails(String taskName)
+     throws Exception {
+     DeployedTaskDetail dtt;
+     dtt = new DeployedTaskDetail();
+     HumanTaskBaseConfiguration htc;
+     int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+     HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
+     HumanTaskStore humanTaskStore = humanTaskServer.getTaskStoreManager().getHumanTaskStore(-1234);
+     QName taskName1 = QName.valueOf(taskName);
+     htc = humanTaskStore.getTaskConfiguration(taskName1);
 
-        dtt = new DeployedTaskDetail();
-        dtt.setTenantID(tenantID);
-        dtt.setTaskDefName(htc.getDefinitionName());
-        dtt.setTaskName(htc.getName());
-        dtt.setOperation(htc.getOperation());
-        dtt.setPortName(htc.getPortName());
-        dtt.setTaskCount(getTaskInstanceCountForTaskName(htc.getName().toString()));
-        dtt.setConfigType(htc.getConfigurationType());
-        dtt.setPackageName(htc.getPackageName());
-        dtt.setStatus(htc.getPackageStatus().toString());
-        dtt.setReservedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.RESERVED));
-        dtt.setCompletedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.COMPLETED));
-        dtt.setReadyCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.READY));
-        dtt.setFailedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.FAILED));
-        dtt.setInProgressCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.IN_PROGRESS));
-        return dtt;
-    }
+     dtt = new DeployedTaskDetail();
+     dtt.setTenantID(tenantID);
+     dtt.setTaskDefName(htc.getDefinitionName());
+     dtt.setTaskName(htc.getName());
+     dtt.setOperation(htc.getOperation());
+     dtt.setPortName(htc.getPortName());
+     dtt.setTaskCount(getTaskInstanceCountForTaskName(htc.getName().toString()));
+     dtt.setConfigType(htc.getConfigurationType());
+     dtt.setPackageName(htc.getPackageName());
+     dtt.setStatus(htc.getPackageStatus().toString());
+     dtt.setReservedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.RESERVED));
+     dtt.setCompletedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.COMPLETED));
+     dtt.setReadyCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.READY));
+     dtt.setFailedCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.FAILED));
+     dtt.setInProgressCount(getTaskCountsForStateAndTaskName(taskName.toString(), TPredefinedStatus.IN_PROGRESS));
+     return dtt;
+     }
 
      */
 
@@ -291,7 +289,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
                       String.format("%1$-" + 15 + "s", "Port name");
 
         result[k++] = String.format("%1$-" + 11 + "s", "").replace(" ", "-") + "  " +
-                      String.format("%1$-" + 4 + "s", "").replace(" ", "-")  + "  " +
+                      String.format("%1$-" + 4 + "s", "").replace(" ", "-") + "  " +
                       String.format("%1$-" + 55 + "s", "").replace(" ", "-") + "  " +
                       String.format("%1$-" + 55 + "s", "").replace(" ", "-") + " " +
                       String.format("%1$-" + 10 + "s", "").replace(" ", "-") + " " +
@@ -300,7 +298,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         for (int a = 0; a < taskList.length; a++) {
             for (int b = 0; b < taskList[a].length; b++) {
                 result[k++] = " [ " + String.format("%1$-" + 6 + "s",
-                        getTaskInstanceCountForTaskName (taskNameList[a][b])) + " ] " + taskList[a][b];
+                                                    getTaskInstanceCountForTaskName(taskNameList[a][b])) + " ] " + taskList[a][b];
             }
         }
         return result;
@@ -351,7 +349,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
                          String.format("%1$-" + 30 + "s", "Created on");
 
         instances[i++] = String.format("%1$-" + 6 + "s", "").replace(" ", "-") + " " +
-                         String.format("%1$-" + 59 + "s", "").replace( " ", "-") + " " +
+                         String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " +
                          String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " +
                          String.format("%1$-" + 30 + "s", "").replace(" ", "-");
 
@@ -403,7 +401,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         MessageDAO outputMessageDAO = task.getOutputMessage();
         String description = task.getTaskDescription("text/plain");
 
-        String titleString = String.format("%1$-" + 25 + "s" , "Task Name") + ":" + task.getName();
+        String titleString = String.format("%1$-" + 25 + "s", "Task Name") + ":" + task.getName();
         outputList.add(titleString);
 
         for (int i = 0; i < genericHumanRoleTypes.length; i++) {
@@ -412,7 +410,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
             if (organizationalEntityDAOs.size() > 0) {
                 String taskDataString = String.format("%1$-" + 25 + "s", genericHumanRoleTypes[i]) + ":";
 
-                for (int j = 0; j < organizationalEntityDAOs.size() ; j++) {
+                for (int j = 0; j < organizationalEntityDAOs.size(); j++) {
                     taskDataString = taskDataString + organizationalEntityDAOs.get(j).getName() + " [" +
                                      organizationalEntityDAOs.get(j).getOrgEntityType() + "]  ";
                 }
@@ -433,8 +431,8 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         if (outputMessageDAO != null) {
             Element outputBodyData = outputMessageDAO.getBodyData();
             if (outputBodyData != null) {
-                String outputMessageStr  = String.format("%1$-" + 25 + "s", "Task Output") + ":" + "\n" +
-                                           DOMUtils.domToString(outputBodyData);
+                String outputMessageStr = String.format("%1$-" + 25 + "s", "Task Output") + ":" + "\n" +
+                                          DOMUtils.domToString(outputBodyData);
                 outputList.add(outputMessageStr);
             }
         }
@@ -488,11 +486,11 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
             DeploymentUnitDAO duDAO = (DeploymentUnitDAO) object;
             tenantIdSet.add(duDAO.getTenantId());
         }
-        long[] results = {};
+        long[] results = new long[tenantIdSet.size()];
 
         Iterator<Long> iterator = tenantIdSet.iterator();
-        for(int i = 0; iterator.hasNext(); i++) {
-            results[i] = ((Long)iterator.next()).longValue();
+        for (int i = 0; iterator.hasNext(); i++) {
+            results[i] = (iterator.next()).longValue();
         }
         return results;
     }

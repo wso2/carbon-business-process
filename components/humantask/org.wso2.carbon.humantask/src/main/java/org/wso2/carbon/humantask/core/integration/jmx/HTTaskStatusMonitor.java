@@ -99,20 +99,24 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
     public String[] getInstancesListForTaskState(String status)
             throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault,
                    IllegalAccessFault {
-        String[] taskInstances = {"No task instances found in all the available tenants"};
-        String[] taskInstanceTemp = {"Invalid task status entered"};
-        TPredefinedStatus.Enum st = null;
-        boolean isStatus = false;
-        try {
-            st = TPredefinedStatus.Enum.forString(status.toUpperCase());
-            taskInstanceTemp = queryBuilderHelper.getTaskInstances(st);
-            isStatus = true;
-        } catch (Exception e) {
-            taskInstances = taskInstanceTemp;
-            log.error(e.getMessage(), e);
-        }
-        if (taskInstanceTemp != null && taskInstanceTemp.length > 0) {
-            taskInstances = taskInstanceTemp;
+        String[] taskInstances = {"There are 0 task instances in the system "};
+        String[] invalidTaskStatusMessage = {"Invalid Task status provided"};
+
+        if(status == null || status.isEmpty()) {
+            return invalidTaskStatusMessage;
+        } else {
+            try {
+                TPredefinedStatus.Enum statusEnumValue = null;
+                statusEnumValue = TPredefinedStatus.Enum.forString(status.toUpperCase());
+                if(null != statusEnumValue) {
+                    return queryBuilderHelper.getTaskInstances(statusEnumValue);
+                } else  {
+                    return invalidTaskStatusMessage;
+                }
+            } catch (Exception e) {
+                taskInstances = invalidTaskStatusMessage;
+                log.error(e.getMessage(), e);
+            }
         }
         return taskInstances;
     }
@@ -131,6 +135,10 @@ public class HTTaskStatusMonitor implements HTTaskStatusMonitorMXBean {
             throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
                    IllegalOperationFault, URI.MalformedURIException {
         String[] taskInstances = {"No task found with the given ID in all the available tenants"};
+        String[] invalidTaskIDMessage = {"Invalid task id provided, please specify a valid task id"};
+        if(null == taskID || taskID.isEmpty()) {
+            return invalidTaskIDMessage;
+        }
         try {
             taskInstances = queryBuilderHelper.getTaskDataById(taskID);
         } catch (Exception e) {
