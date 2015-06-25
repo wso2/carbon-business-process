@@ -1,6 +1,5 @@
 /*
- *
- *   Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -26,7 +25,6 @@ import org.wso2.carbon.humantask.client.api.IllegalArgumentFault;
 import org.wso2.carbon.humantask.client.api.IllegalOperationFault;
 import org.wso2.carbon.humantask.client.api.IllegalStateFault;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
-import org.wso2.carbon.humantask.skeleton.mgt.services.PackageManagementException;
 import org.wso2.carbon.humantask.types.TPredefinedStatus;
 
 import java.util.List;
@@ -34,18 +32,22 @@ import java.util.List;
 
 public interface HTQueryBuildHelper {
 
-    public int getTaskCountsForStateAndTaskName(final String taskName, final TPredefinedStatus.Enum status)
-            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault, Exception;
-
-    public int getTaskCountsForStateAndTaskDefName(String taskName, TPredefinedStatus.Enum status)
-            throws Exception;
-
-    public DeployedTaskDetail[][] getAllDeployedTasksDetails() throws Exception;
+//    public int getTaskCountsForStateAndTaskName(final String taskName, final TPredefinedStatus.Enum status)
+//            throws IllegalStateFault, IllegalOperationFault, IllegalArgumentFault, Exception;
+//
+//    public int getTaskCountsForStateAndTaskDefName(String taskName, TPredefinedStatus.Enum status)
+//            throws Exception;
+//
+//    public DeployedTaskDetail[][] getAllDeployedTasksDetails() throws Exception;
+//
+//    public List<HumanTaskBaseConfiguration> getAllDeployedTasks(long tenantID);
+//
+//    public long[] getAllTenantIDs() throws Exception;
+//
+//    public int getTaskInstanceCountForTaskName(final String taskname) throws Exception;
 
 
     public String[] getAllDeployedTasks() throws Exception;
-
-    public List<HumanTaskBaseConfiguration> getAlldeployedTasks(long tenantID);
 
     public String[] getTaskInstanceCountsByState(String taskname) throws Exception;
 
@@ -53,7 +55,4 @@ public interface HTQueryBuildHelper {
 
     public String[] getTaskDataById(String taskid) throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault, IllegalOperationFault, URI.MalformedURIException;
 
-    public long[] getAllTenantIDs() throws Exception;
-
-    public int getTaskInstanceCountForTaskName(final String taskname) throws Exception;
     }

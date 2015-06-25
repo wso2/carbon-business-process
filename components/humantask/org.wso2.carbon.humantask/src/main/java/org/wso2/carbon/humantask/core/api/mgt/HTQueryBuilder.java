@@ -160,7 +160,7 @@ public class HTQueryBuilder {
         return query;
     }
 
-    public Query getTenantIDs(EntityManager entityManager) {
+    public Query getDeploymentUnits(EntityManager entityManager) {
         Query query = null;
         query = entityManager.createQuery("SELECT DISTINCT du FROM DeploymentUnit du");
         return query;

@@ -25,12 +25,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
-import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.humantask.client.api.IllegalAccessFault;
 import org.wso2.carbon.humantask.client.api.IllegalArgumentFault;
 import org.wso2.carbon.humantask.client.api.IllegalOperationFault;
 import org.wso2.carbon.humantask.client.api.IllegalStateFault;
-import org.wso2.carbon.humantask.core.HumanTaskServer;
 import org.wso2.carbon.humantask.core.dao.*;
 import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
 import org.wso2.carbon.humantask.core.engine.util.CommonTaskUtil;
@@ -39,16 +37,10 @@ import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import org.wso2.carbon.humantask.core.store.HumanTaskBaseConfiguration;
 import org.wso2.carbon.humantask.core.store.HumanTaskStore;
 import org.wso2.carbon.humantask.core.utils.DOMUtils;
-import org.wso2.carbon.humantask.core.mgt.services.HumanTaskPackageManagementSkeleton;
-import org.wso2.carbon.humantask.skeleton.mgt.services.PackageManagementException;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.DeployedTaskDefinitionsPaginated;
-import org.wso2.carbon.humantask.skeleton.mgt.services.types.TaskDefinition_type0;
 import org.wso2.carbon.humantask.types.TPredefinedStatus;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.transaction.TransactionManager;
-import javax.xml.namespace.QName;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
@@ -59,11 +51,8 @@ import java.util.regex.Pattern;
  */
 public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
 
-    private List<TaskDAO> allTasks = new ArrayList<TaskDAO>();
-    private int statusCount = 0;
-    int statusCount2;
     private static final Log log = LogFactory.getLog(HTQueryBuildHelperImpl.class);
-    private int tenantID = -1;
+//    private int tenantID = -1;
     private int taskCountPerTenant = 0;
     HashMap<Integer, Integer> taskCount = new HashMap<Integer, Integer>();
 
@@ -79,11 +68,9 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
 
     public String[] getTaskInstanceCountsByState(String taskName)
             throws Exception {
-        int statusCount1 = 0;
+        int statusCount = 0;
         TPredefinedStatus.Enum[] statuses;
         int statusesSize = TPredefinedStatus.Enum.table.lastInt();
-        TPredefinedStatus.Enum.table.forInt(1);
-        org.apache.xmlbeans.StringEnumAbstractBase.Table table = TPredefinedStatus.Enum.table;
         statuses = new TPredefinedStatus.Enum[statusesSize];
         String[] statusCounts = new String[statusesSize];
         for (int i = 0; i < statusesSize; i++) {
@@ -95,53 +82,46 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         isTaskName = m.find();
         if (isTaskName) {
             for (int i = 0; i < statuses.length; i++) {
-                statusCount1 = getTaskCountsForStateAndTaskName(taskName, statuses[i]);
-                statusCounts[i] = " " + statuses[i].toString() + " " + statusCount1;
+                statusCount = getTaskCountsForStateAndTaskName(taskName, statuses[i]);
+                statusCounts[i] = " " + statuses[i].toString() + " " + statusCount;
             }
         } else {
             for (int i = 0; i < statuses.length; i++) {
-                statusCount1 = getTaskCountsForStateAndTaskDefName(taskName, statuses[i]);
-                statusCounts[i] = " " + statuses[i].toString() + " " + statusCount1;
+                statusCount = getTaskCountsForStateAndTaskDefName(taskName, statuses[i]);
+                statusCounts[i] = " " + statuses[i].toString() + " " + statusCount;
             }
         }
         return statusCounts;
     }
 
     /**
-     * @param taskname
+     * @param taskName
      * @return
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
      * @throws IllegalStateFault
      * @throws IllegalOperationFault
      */
-    public int getTaskInstanceCountForTaskName(final String taskname)
+    private int getTaskInstanceCountForTaskName(final String taskName)
             throws Exception {
-        final int[] taskCountTemp = {0};
-        final List[] tasklist = new List[1];
 
-        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                execTransaction(new Callable<Object>() {
-                    public Object call() throws Exception {
+        final List[] taskList = new List[1];
 
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
-                                .getConnection();
-                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
-                                .getDaoConnectionFactory();
-                        humanTaskServer.getServerConfig();
+        return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Integer>() {
+                    public Integer call() throws Exception {
+
+                        HumanTaskDAOConnection connection = HumanTaskServerHolder.getInstance().getHtServer().
+                                getTaskEngine().getDaoConnectionFactory().getConnection();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                        Query query = htQueryBuilder.buildQueryToFindTaskInstances(taskname, em);
-                        tasklist[0] = query.getResultList();
-                        taskCountTemp[0] = tasklist[0].size();
-                        return null;
+                        EntityManager em = connection.getEntityManager();
+                        Query query = htQueryBuilder.buildQueryToFindTaskInstances(taskName, em);
+                        List resultList = query.getResultList();
+                        if(resultList != null)
+                        return taskList[0].size();
                     }
                 });
 
-
-        return taskCountTemp[0];
     }
 
     /**
@@ -153,65 +133,47 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalArgumentFault
      * @throws IllegalAccessFault
      */
-    public int getTaskCountsForStateAndTaskName(final String taskName,
+    private int getTaskCountsForStateAndTaskName(final String taskName,
                                                 final TPredefinedStatus.Enum status)
             throws Exception {
 
-        final List[] tasklist = new List[1];
+        return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Integer>() {
+                    public Integer call() throws Exception {
 
-
-        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                execTransaction(new Callable<Object>() {
-                    public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
-                                .getConnection();
-                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
-                                .getDaoConnectionFactory();
-                        humanTaskServer.getServerConfig();
-
+                        HumanTaskDAOConnection connection = HumanTaskServerHolder.getInstance().getHtServer().
+                                getTaskEngine().getDaoConnectionFactory().getConnection();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-
-                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        EntityManager em = connection.getEntityManager();
                         Query query = htQueryBuilder.buildQueryToCountTaskInstancesByTaskName(taskName, status, em);
-                        tasklist[0] = query.getResultList();
-                        if (tasklist[0].listIterator().hasNext() == true) {
-                            statusCount2 = tasklist[0].size();
+                        List resultList = query.getResultList();
+                        if (resultList != null) {
+                            return resultList.size();
                         }
-                        boolean b = true;
-                        return null;
+                        return 0;
                     }
                 });
-        return statusCount2;
     }
 
-    public int getTaskCountsForStateAndTaskDefName(final String taskName,
-                                                   final TPredefinedStatus.Enum status)
+    private int getTaskCountsForStateAndTaskDefName(
+            final String taskName,
+            final TPredefinedStatus.Enum status)
             throws Exception {
-        final List[] tasklist = new List[1];
-        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                execTransaction(new Callable<Object>() {
-                    public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
-                                .getConnection();
-                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
-                                .getDaoConnectionFactory();
-                        humanTaskServer.getServerConfig();
-
+        return HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<Integer>() {
+                    public Integer call() throws Exception {
+                        HumanTaskDAOConnection connection = HumanTaskServerHolder.getInstance().getHtServer().
+                                getTaskEngine().getDaoConnectionFactory().getConnection();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-
-                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
+                        EntityManager em = connection.getEntityManager();
                         Query query = htQueryBuilder.buildQueryToCountTaskInstancesByTaskDefName(taskName, status, em);
-                        tasklist[0] = query.getResultList();
-                        statusCount2 = Integer.parseInt(tasklist[0].get(0).toString());
-                        return null;
+                        List resultList = query.getResultList();
+                        if (resultList != null) {
+                            return resultList.size();
+                        }
+                        return 0;
                     }
                 });
-
-        return statusCount2;
     }
 
     /**
@@ -229,7 +191,7 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         HumanTaskBaseConfiguration htc;
         int i = 0;
         for (Long tenantID : tenantIDs) {
-            List<HumanTaskBaseConfiguration> htcList = getAlldeployedTasks(tenantID);
+            List<HumanTaskBaseConfiguration> htcList = getAllDeployedTasks(tenantID);
             int size = htcList.size();
             dtt[i] = new DeployedTaskDetail[size];
 
@@ -251,6 +213,9 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
 
         return dtt;
     }
+
+    /**
+     * This method is not used, hence commenting out
 
     public DeployedTaskDetail getDeployedTasksDetails(String taskName)
             throws Exception {
@@ -281,6 +246,8 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
         return dtt;
     }
 
+     */
+
     /**
      * @return
      * @throws IllegalAccessFault
@@ -292,55 +259,48 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
             throws Exception {
         long[] tenantIDs;
         tenantIDs = getAllTenantIDs();
-        String[][] tasklist = new String[tenantIDs.length][];
-        String[][] tasknamelist = new String[tenantIDs.length][];
+        String[][] taskList = new String[tenantIDs.length][];
+        String[][] taskNameList = new String[tenantIDs.length][];
         String[] result;
         int j = 0;
         int countTenant = 0;
 
-        HumanTaskPackageManagementSkeleton htl = new HumanTaskPackageManagementSkeleton();
-        DeployedTaskDefinitionsPaginated res = htl.listDeployedTaskDefinitionsPaginated(0);
-        TaskDefinition_type0[] taskDefinition_type0s = res.getTaskDefinition();
-
         for (Long tenantID : tenantIDs) {
-            List<HumanTaskBaseConfiguration> htc = getAlldeployedTasks(tenantID);
-            tasklist[countTenant++] = new String[htc.size()];
-            tasknamelist[countTenant - 1] = new String[htc.size()];
-            j += htc.size();
-            for (int i = 0; i < htc.size(); i++) {
-                tasklist[countTenant - 1][i] = " " + String.format("%1$-" + 4 + "s",
-                                                                   tenantID) + " " + String.format("%1$-" + 55 + "s",
-                                                                                                   htc.get(i).getName
-                                                                                                           ()) + "  "
-                                               + String.format("%1$-" + 55 + "s", htc.get(i).getDefinitionName()) + "" +
-                                               " " + String.format("%1$-" + 10 + "s",
-                                                                   htc.get(i).getOperation()) + " " + String.format
-                        ("%1$-" + 15 + "s", htc.get(i).getPortName());
-                tasknamelist[countTenant - 1][i] = "" + htc.get(i).getName();
+            List<HumanTaskBaseConfiguration> allDeployedTasks = getAllDeployedTasks(tenantID);
+            taskList[countTenant++] = new String[allDeployedTasks.size()];
+            taskNameList[countTenant - 1] = new String[allDeployedTasks.size()];
+            j += allDeployedTasks.size();
+            for (int i = 0; i < allDeployedTasks.size(); i++) {
+                taskList[countTenant - 1][i] =
+                        " " + String.format("%1$-" + 4 + "s", tenantID) + " " +
+                        String.format("%1$-" + 55 + "s", allDeployedTasks.get(i).getName()) + "  " +
+                        String.format("%1$-" + 55 + "s", allDeployedTasks.get(i).getDefinitionName()) + "" +
+                        " " + String.format("%1$-" + 10 + "s", allDeployedTasks.get(i).getOperation()) + " " +
+                        String.format("%1$-" + 15 + "s", allDeployedTasks.get(i).getPortName());
+                taskNameList[countTenant - 1][i] = "" + allDeployedTasks.get(i).getName();
             }
         }
+
         int k = 0;
         result = new String[j + 2];
-        result[k++] = String.format("%1$-" + 11 + "s", "InstCount ") + "  " + String.format("%1$-" + 4 + "s",
-                                                                                            "TID") + "  " + String
-                              .format("%1$-" + 55 + "s", "Task Name") + "  " + String.format("%1$-" + 55 + "s",
-                                                                                             "Task Definition Name")
-                      + " " + String.format("%1$-" + 10 + "s", "Operation") + " " + String.format("%1$-" + 15 + "s",
-                                                                                                  "Port name");
-        result[k++] = String.format("%1$-" + 11 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" + 4 + "s",
-                                                                                                    "").replace(" ",
-                                                                                                                "-")
-                      + "  " + String.format("%1$-" + 55 + "s", "").replace(" ", "-") + "  " + String.format("%1$-" +
-                                                                                                             55 +
-                                                                                                             "s",
-                                                                                                             "")
-                .replace(" ", "-") + " " + String.format("%1$-" + 10 + "s", "").replace(" ",
-                                                                                        "-") + " " + String.format
-                ("%1$-" + 15 + "s", "").replace(" ", "-");
-        for (int a = 0; a < tasklist.length; a++) {
-            for (int b = 0; b < tasklist[a].length; b++) {
-                result[k++] = " [ " + String.format("%1$-" + 6 + "s", getTaskInstanceCountForTaskName
-                        (tasknamelist[a][b])) + " ] " + tasklist[a][b];
+        result[k++] = String.format("%1$-" + 11 + "s", "InstCount ") + "  " +
+                      String.format("%1$-" + 4 + "s", "TID") + "  " +
+                      String.format("%1$-" + 55 + "s", "Task Name") + "  " +
+                      String.format("%1$-" + 55 + "s", "Task Definition Name") + " " +
+                      String.format("%1$-" + 10 + "s", "Operation") + " " +
+                      String.format("%1$-" + 15 + "s", "Port name");
+
+        result[k++] = String.format("%1$-" + 11 + "s", "").replace(" ", "-") + "  " +
+                      String.format("%1$-" + 4 + "s", "").replace(" ", "-")  + "  " +
+                      String.format("%1$-" + 55 + "s", "").replace(" ", "-") + "  " +
+                      String.format("%1$-" + 55 + "s", "").replace(" ", "-") + " " +
+                      String.format("%1$-" + 10 + "s", "").replace(" ", "-") + " " +
+                      String.format("%1$-" + 15 + "s", "").replace(" ", "-");
+
+        for (int a = 0; a < taskList.length; a++) {
+            for (int b = 0; b < taskList[a].length; b++) {
+                result[k++] = " [ " + String.format("%1$-" + 6 + "s",
+                        getTaskInstanceCountForTaskName (taskNameList[a][b])) + " ] " + taskList[a][b];
             }
         }
         return result;
@@ -352,28 +312,11 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @return all the deployed tasks for the given tenant
      */
 
-    public List<HumanTaskBaseConfiguration> getAlldeployedTasks(long ltenantID) {
-        this.tenantID = (int) ltenantID;
-        String[] deployedTasks;
-        String[] noTask = {"No deployed task for the specified tenant"};
-        String[] noStore = {"No Human Tasks Store found for the given tenantID"};
-        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-        HumanTaskStore humanTaskStore = humanTaskServer.getTaskStoreManager().getHumanTaskStore(tenantID);
-        if (humanTaskStore == null) {
-            return null;
-        }
+    public List<HumanTaskBaseConfiguration> getAllDeployedTasks(long ltenantID) {
+        int tenantID = (int) ltenantID;
+        HumanTaskStore humanTaskStore = HumanTaskServiceComponent.getHumanTaskServer().
+                getTaskStoreManager().getHumanTaskStore(tenantID);
         List<HumanTaskBaseConfiguration> humanTaskConfigurations = humanTaskStore.getTaskConfigurations();
-        taskCountPerTenant = humanTaskConfigurations.size();
-        taskCount.put(tenantID, taskCountPerTenant);
-        deployedTasks = new String[humanTaskConfigurations.size()];
-        for (int i = 0; i < humanTaskConfigurations.size(); i++) {
-            deployedTasks[i] = " " + tenantID + " " + humanTaskConfigurations.get(i).getName() + "\t" +
-                               humanTaskConfigurations.get(i).getDefinitionName() + "\t" + humanTaskConfigurations
-                    .get(i).getOperation() + " \t" + humanTaskConfigurations.get(i).getPortName();
-        }
-        if (deployedTasks.length == 0) {
-            return null;
-        }
         return humanTaskConfigurations;
     }
 
@@ -388,56 +331,42 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
     public String[] getTaskInstances(final TPredefinedStatus.Enum status)
             throws Exception {
         String[] instances = {"null"};
-        final List[] tasklist = new List[1];
-        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                execTransaction(new Callable<Object>() {
-                    public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
-                                .getConnection();
-                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
-                                .getDaoConnectionFactory();
-                        humanTaskServer.getServerConfig();
+        List taskList = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<List>() {
+                    public List call() throws Exception {
+                        HumanTaskDAOConnection connection = HumanTaskServerHolder.getInstance().getHtServer().
+                                getTaskEngine().getDaoConnectionFactory().getConnection();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                        TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
-                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                        Query query = htQueryBuilder.buildQueryToFindTaskInstances(status, em);
-                        tasklist[0] = query.getResultList();
-                        return null;
+                        Query query = htQueryBuilder.buildQueryToFindTaskInstances(status, connection.getEntityManager());
+                        return query.getResultList();
                     }
                 });
 
 
         int i = 0;
-        instances = new String[tasklist[0].size() + 2];
-        instances[i++] = String.format("%1$-" + 7 + "s", "ID") + String.format("%1$-" + 60 + "s",
-                                                                               "Name") + String.format("%1$-" + 60 +
-                                                                                                       "s",
-                                                                                                       "Definition " +
-                                                                                                       "Name") +
+        instances = new String[taskList.size() + 2];
+        instances[i++] = String.format("%1$-" + 7 + "s", "ID") +
+                         String.format("%1$-" + 60 + "s", "Name") +
+                         String.format("%1$-" + 60 + "s", "Definition " + "Name") +
                          String.format("%1$-" + 30 + "s", "Created on");
-        instances[i++] = String.format("%1$-" + 6 + "s", "").replace(" ", "-") + " " + String.format("%1$-" + 59 +
-                                                                                                     "s",
-                                                                                                     "").replace(" ",
-                                                                                                                 "-")
-                         + " " + String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " + String.format("%1$-"
-                                                                                                              + 30 +
-                                                                                                              "s",
-                                                                                                              "")
-                .replace(" ", "-");
-        for (Object o : tasklist[0]) {
-            TaskDAO taskDAOinstance = (TaskDAO) o;
-            instances[i++] = String.format("%1$-" + 7 + "s", taskDAOinstance.getId()) + String.format("%1$-" + 60 +
-                                                                                                      "s",
-                                                                                                      taskDAOinstance
-                                                                                                              .getName()) + String.format("%1$-" + 60 + "s", taskDAOinstance.getDefinitionName()) + String.format("%1$-" + 30 + "s", taskDAOinstance.getCreatedOn());
+
+        instances[i++] = String.format("%1$-" + 6 + "s", "").replace(" ", "-") + " " +
+                         String.format("%1$-" + 59 + "s", "").replace( " ", "-") + " " +
+                         String.format("%1$-" + 59 + "s", "").replace(" ", "-") + " " +
+                         String.format("%1$-" + 30 + "s", "").replace(" ", "-");
+
+        for (Object o : taskList) {
+            TaskDAO taskDaoInstance = (TaskDAO) o;
+            instances[i++] = String.format("%1$-" + 7 + "s", taskDaoInstance.getId()) +
+                             String.format("%1$-" + 60 + "s", taskDaoInstance.getName()) +
+                             String.format("%1$-" + 60 + "s", taskDaoInstance.getDefinitionName()) +
+                             String.format("%1$-" + 30 + "s", taskDaoInstance.getCreatedOn());
         }
         return instances;
     }
 
     /**
-     * @param taskid
+     * @param taskId
      * @return all the task details for the given taskID
      * @throws IllegalAccessFault
      * @throws IllegalArgumentFault
@@ -445,69 +374,68 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      * @throws IllegalOperationFault
      * @throws URI.MalformedURIException
      */
-    public String[] getTaskDataById(String taskid)
+    public String[] getTaskDataById(String taskId)
             throws IllegalAccessFault, IllegalArgumentFault, IllegalStateFault,
                    IllegalOperationFault, URI.MalformedURIException {
 
         String[] output = {""};
-        List<String> outputList = new ArrayList<String>();
-        String temp = null;
+        List<String> outputList = new ArrayList<>();
         TaskDAO task;
-        URI uri = new URI(taskid);
+        URI uri = new URI(taskId);
         try {
-            final Long taskId = validateTaskId(uri);
+            final Long validatedTaskId = validateTaskId(uri);
             task = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                     execTransaction(new Callable<TaskDAO>() {
                         public TaskDAO call() throws Exception {
                             HumanTaskEngine engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
                             HumanTaskDAOConnection daoConn = engine.getDaoConnectionFactory().getConnection();
-                            TaskDAO task = daoConn.getTask(taskId);
+                            TaskDAO task = daoConn.getTask(validatedTaskId);
                             return task;
                         }
-
                     });
-
         } catch (Exception ex) {
-            log.error(ex);
             throw new IllegalAccessFault(ex);
         }
-        GenericHumanRoleDAO.GenericHumanRoleType[] ghrt = GenericHumanRoleDAO.GenericHumanRoleType.values();
-        int ghrtlength = ghrt.length;
+
+        GenericHumanRoleDAO.GenericHumanRoleType[] genericHumanRoleTypes = GenericHumanRoleDAO.GenericHumanRoleType.values();
+
         MessageDAO inputMessageDAO = task.getInputMessage();
         MessageDAO outputMessageDAO = task.getOutputMessage();
         String description = task.getTaskDescription("text/plain");
-        temp = String.format("%1$-" + 25 + "s", "Task Name") + ":" + task.getName();
-        outputList.add(temp);
-        for (int i = 0; i < ghrtlength; i++) {
-            List<OrganizationalEntityDAO> orgDAO = CommonTaskUtil.getOrgEntitiesForRole(task, ghrt[i]);
-            if (orgDAO.size() > 0) {
-                temp = String.format("%1$-" + 25 + "s", ghrt[i]) + ":";
-                int orgDAOSize = orgDAO.size();
-                for (int j = 0; j < orgDAOSize; j++) {
-                    temp = temp + orgDAO.get(j).getName() + " [" + orgDAO.get(j).getOrgEntityType() + "]  ";
+
+        String titleString = String.format("%1$-" + 25 + "s" , "Task Name") + ":" + task.getName();
+        outputList.add(titleString);
+
+        for (int i = 0; i < genericHumanRoleTypes.length; i++) {
+            List<OrganizationalEntityDAO> organizationalEntityDAOs =
+                    CommonTaskUtil.getOrgEntitiesForRole(task, genericHumanRoleTypes[i]);
+            if (organizationalEntityDAOs.size() > 0) {
+                String taskDataString = String.format("%1$-" + 25 + "s", genericHumanRoleTypes[i]) + ":";
+
+                for (int j = 0; j < organizationalEntityDAOs.size() ; j++) {
+                    taskDataString = taskDataString + organizationalEntityDAOs.get(j).getName() + " [" +
+                                     organizationalEntityDAOs.get(j).getOrgEntityType() + "]  ";
                 }
-                outputList.add(temp);
-                temp = null;
+                outputList.add(taskDataString);
             }
         }
         if (description != null) {
-            temp = String.format("%1$-" + 25 + "s", "Task Description") + ":" + task.getTaskDescription("text/plain");
-            outputList.add(temp);
+            String taskDescriptionString = String.format("%1$-" + 25 + "s", "Task Description") + ":" +
+                                           task.getTaskDescription("text/plain");
+            outputList.add(taskDescriptionString);
         }
-        Element inputBbodyData = inputMessageDAO.getBodyData();
-        if (inputBbodyData != null) {
-            temp = String.format("%1$-" + 25 + "s", "Task Input") + ":";
-            temp = temp + "\n" + DOMUtils.domToString(inputBbodyData);
-            outputList.add(temp);
+        Element inputBodyData = inputMessageDAO.getBodyData();
+        if (inputBodyData != null) {
+            String inputMsgStr = String.format("%1$-" + 25 + "s", "Task Input")
+                                 + ":" + "\n" + DOMUtils.domToString(inputBodyData);
+            outputList.add(inputMsgStr);
         }
-
-
         if (outputMessageDAO != null) {
             Element outputBodyData = outputMessageDAO.getBodyData();
             if (outputBodyData != null) {
-                temp = String.format("%1$-" + 25 + "s", "Task Output") + ":";
-                temp = temp + "\n" + DOMUtils.domToString(outputBodyData);
-                outputList.add(temp);
+                String outputMessageStr  = String.format("%1$-" + 25 + "s", "Task Output") + ":" + "\n" +
+                                           DOMUtils.domToString(outputBodyData);
+                outputList.add(outputMessageStr);
             }
         }
 
@@ -545,70 +473,27 @@ public class HTQueryBuildHelperImpl implements HTQueryBuildHelper {
      */
     public long[] getAllTenantIDs()
             throws Exception {
-        long[] result = null;
-        final List[] tasklist = new List[1];
-
-        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                execTransaction(new Callable<Object>() {
-                    public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
-                                .getConnection();
-                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
-                                .getDaoConnectionFactory();
-                        humanTaskServer.getServerConfig();
+        List DeploymentUnitList = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
+                execTransaction(new Callable<List>() {
+                    public List call() throws Exception {
+                        HumanTaskDAOConnection connection = HumanTaskServerHolder.getInstance().getHtServer().
+                                getTaskEngine().getDaoConnectionFactory().getConnection();
                         HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                        TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
-                        EntityManager em = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                        Query query = htQueryBuilder.getTenantIDs(em);
-                        tasklist[0] = query.getResultList();
-                        return null;
+                        Query query = htQueryBuilder.getDeploymentUnits(connection.getEntityManager());
+                        return query.getResultList();
                     }
                 });
-
-        int i = 0;
-        Set<Long> tid = new HashSet<Long>();
-        for (Object object : tasklist[0]) {
+        Set<Long> tenantIdSet = new HashSet<>();
+        for (Object object : DeploymentUnitList) {
             DeploymentUnitDAO duDAO = (DeploymentUnitDAO) object;
-            tid.add(duDAO.getTenantId());
+            tenantIdSet.add(duDAO.getTenantId());
         }
-        result = new long[tid.size()];
-        Iterator<Long> iterator = tid.iterator();
-        while (iterator.hasNext()) {
-            result[i++] = iterator.next().longValue();
+        long[] results = {};
+
+        Iterator<Long> iterator = tenantIdSet.iterator();
+        for(int i = 0; iterator.hasNext(); i++) {
+            results[i] = ((Long)iterator.next()).longValue();
         }
-        return result;
-    }
-
-    /**
-     * @return
-     * @throws IllegalAccessFault
-     * @throws IllegalArgumentFault
-     * @throws IllegalStateFault
-     * @throws IllegalOperationFault
-     */
-    private EntityManager getEntityManager()
-            throws Exception {
-
-        final EntityManager[] em = new EntityManager[1];
-        HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
-                execTransaction(new Callable<Object>() {
-                    public Object call() throws Exception {
-                        HumanTaskServerHolder.getInstance().getHtServer().getTaskEngine().getDaoConnectionFactory()
-                                .getConnection();
-                        HumanTaskServer humanTaskServer = HumanTaskServiceComponent.getHumanTaskServer();
-                        HumanTaskEngine humanTaskEngine = humanTaskServer.getTaskEngine();
-                        HumanTaskDAOConnectionFactory humanTaskDAOConnectionFactory = humanTaskEngine
-                                .getDaoConnectionFactory();
-                        humanTaskServer.getServerConfig();
-                        HTQueryBuilder htQueryBuilder = new HTQueryBuilder();
-                        TransactionManager transactionManager = humanTaskServer.getDatabase().getTnxManager();
-                        em[0] = humanTaskDAOConnectionFactory.getConnection().getEntityManager();
-                        return null;
-                    }
-                });
-
-        return em[0];
+        return results;
     }
 }
