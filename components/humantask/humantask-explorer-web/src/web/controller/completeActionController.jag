@@ -58,7 +58,7 @@ try {
         log.error('Task Completion failed');
     }
 
-    response.sendRedirect('/' +data.app.webappUrlName + '/inboxtask?id=' + taskID);
+    response.sendRedirect('/' +data.app.webappUrlName + '/task?id=' + taskID);
 
     /*
             SAMPLE SUCCESS RESPONSE

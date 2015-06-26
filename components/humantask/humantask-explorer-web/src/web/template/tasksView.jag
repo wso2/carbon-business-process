@@ -19,8 +19,8 @@
 %>
 
 <%
-    //get task status
-    var taskStatus = taskAbstract.NS1_NS::status.text();
+//get task status
+var taskStatus = taskAbstract.NS1_NS::status.text();
 %>
  <!--<div class="row">
     <ol class="breadcrumb">
@@ -29,6 +29,7 @@
       <li class="active">Task : <%=id%></li>
     </ol> 
 </div>-->
+
 <div class="row">
     <div class="col-lg-9">  
        <div id="taskActionBtns" class="btn-group" align="center">
@@ -87,13 +88,13 @@
                             <td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
                         </tr>
                         <% if (taskStatus == 'IN_PROGRESS') {
-                            for (var i = 0; i < wso2InputRenderList.length(); i++) { %>
+    for (var i = 0; i < wso2InputRenderList.length(); i++) { %>
                                 <tr class="white-bg">
                                     <th width="50%"><%=wso2InputRenderList[i].label.text()%></th>
                                     <td width="50%"><%=wso2InputRenderList[i].value.text()%></td>
                                 </tr>
                             <% }
-                        } %>
+} %>
                     </tbody>
                 </table>
             </div>
@@ -120,39 +121,39 @@
                                         <td width="75%">
                                             <% if (wso2OutputRenderList[i].value.@type.toString() === 'boolean') {
 
-                                                var displayValues = wso2OutputRenderList[i].value.text();
-                                                var dispValueSet = displayValues.split(",");
+    var displayValues = wso2OutputRenderList[i].value.text();
+    var dispValueSet = displayValues.split(",");
 
-                                                var trueChecked = '';
-                                                var falseChecked = 'checked';
-                                                if (wso2OutputRenderList[i].default.toString() === 'true') {
-                                                    trueChecked = 'checked';
-                                                    falseChecked = '';
-                                                }
-                                            %>
+    var trueChecked = '';
+    var falseChecked = 'checked';
+    if (wso2OutputRenderList[i].default.toString() === 'true') {
+        trueChecked = 'checked';
+        falseChecked = '';
+    }
+    %>
 
-                                                <input type="radio" name="<%=wso2OutputRenderList[i].@id%>"
+        <input type="radio" name="<%=wso2OutputRenderList[i].@id%>"
                                                                     value="true" <%=trueChecked%>><%=dispValueSet[0].trim()%>
                                                 <input type="radio" name="<%=wso2OutputRenderList[i].@id%>"
                                                                     value="false" <%=falseChecked%>><%=dispValueSet[1].trim()%>
 
                                             <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'list') {
 
-                                                var displayValues = wso2OutputRenderList[i].value.text();
-                                                var dispValueSet = displayValues.split(",");
+    var displayValues = wso2OutputRenderList[i].value.text();
+    var dispValueSet = displayValues.split(",");
 
-                                                var defaultValue = wso2OutputRenderList[i].default.toString();
-                                                var selected = '';
-                                            %>
-                                                <select name="<%=wso2OutputRenderList[i].@id%>">
+    var defaultValue = wso2OutputRenderList[i].default.toString();
+    var selected = '';
+    %>
+        <select name="<%=wso2OutputRenderList[i].@id%>">
                                                     <% for (var j = 0; j < dispValueSet.length; j++) {
-                                                        if (defaultValue.trim() === dispValueSet[j].trim()) {
-                                                            selected = 'selected'
-                                                        } else {
-                                                            selected = ''
-                                                        }
-                                                    %>
-                                                        <option value="<%=dispValueSet[j].trim()%>" <%=selected%>><%=dispValueSet[j].trim()%></option>
+        if (defaultValue.trim() === dispValueSet[j].trim()) {
+            selected = 'selected'
+        } else {
+            selected = ''
+        }
+        %>
+            <option value="<%=dispValueSet[j].trim()%>" <%=selected%>><%=dispValueSet[j].trim()%></option>
                                                     <% } %>
                                                 </select>
 
@@ -161,7 +162,7 @@
                                                 <textarea name="<%=wso2OutputRenderList[i].@id%>" rows="4" cols="50"><%=wso2OutputRenderList[i].default.toString()%></textarea>
 
                                             <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'int' ||
-                                                                                        wso2OutputRenderList[i].value.@type.toString() === 'double') { %>
+        wso2OutputRenderList[i].value.@type.toString() === 'double') { %>
 
                                                 <input type="text" name="<%=wso2OutputRenderList[i].@id%>"
                                                                     value="<%=wso2OutputRenderList[i].default.toString()%>">
@@ -170,7 +171,7 @@
                                         </td>
                                     </tr>
                                 <% }
-                                if (taskStatus == 'IN_PROGRESS') { %>
+    if (taskStatus == 'IN_PROGRESS') { %>
                                 <tr>
                                     <td width="25%">
                                         <input type="button" value="Save" class="btn btn-danger"
@@ -203,13 +204,13 @@
             </ul>
             <ul class="list-group" id="commentList">
                 <%
-                  if (commentList != null) {
-                    for (var i=0; i < commentList.length(); i++) { %>
+if (commentList != null) {
+    for (var i=0; i < commentList.length(); i++) { %>
                     <%
-                        var commentID = commentList[i].NS1_NS::id.text();
-                        var commentLiID = "comment_" + commentID;
-                    %>
-                    <li class="list-group-item" id="<%=commentLiID%>">
+        var commentID = commentList[i].NS1_NS::id.text();
+        var commentLiID = "comment_" + commentID;
+        %>
+        <li class="list-group-item" id="<%=commentLiID%>">
                         <div><%=commentList[i].NS1_NS::addedBy.text()%> added a comment -
                             <time id="time">
                                 <script>
@@ -224,49 +225,49 @@
                         <div><%=commentList[i].NS1_NS::text.text()%></div>
                     </li>
                 <%
-                    }
-                  }
-                %>
-            </ul>
-            <div id="addComment" style="float:left;">
-                        <a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </a>
-            </div>
-            <ul class="list-group" id="historyList" hidden>
-                <li class="list-group-item">not updated !</li>
-            </ul>
-            <ul class="list-group" id="AttchmentsList" hidden>
-                <li class="list-group-item">not implemented !</li>
-            </ul>
-        </div>
-    </div>
-    </br>
-    <div class="col-lg-3">
-        <div class="row" name="HTForm">
-            <div class="col-sm-4 sidebar-outer">
-                <div class="fixed-bar panel panel-primary ">
-                    <div class="table-title" style="width: 100%">Summary</div>
-                    <table class="table white-bg">
-                        <tbody>
-                            <tr class="white-bg">
-                                <td colspan='1'>
-                                    <p><small><b>Type : </b></small></p>
-                                    <p><small><b>Owner : </b></small></p>
-                                    <p><small><b>Status : </b></small></p>
-                                    <p><small><b>Priority : </b></small></p>
-                                    <p><small><b>Created Time: </b></small></p>
-                                    <p><small><b>Activation Time: </b></small></p>
-                                    <p><small><b>Last Modified: </b></small></p>
-                                </td>
-                                 <td colspan='1'>
-                                    <p><small><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
+    }
+}
+%>
+</ul>
+<div id="addComment" style="float:left;">
+        <a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+</div>
+<ul class="list-group" id="historyList" hidden>
+<li class="list-group-item">not updated !</li>
+</ul>
+<ul class="list-group" id="AttchmentsList" hidden>
+<li class="list-group-item">not implemented !</li>
+</ul>
+</div>
+</div>
+</br>
+<div class="col-lg-3">
+<div class="row" name="HTForm">
+<div class="col-sm-4 sidebar-outer">
+<div class="fixed-bar panel panel-primary ">
+    <div class="table-title" style="width: 100%">Summary</div>
+    <table class="table white-bg">
+        <tbody>
+            <tr class="white-bg">
+                <td colspan='1'>
+                    <p><small><b>Type : </b></small></p>
+                    <p><small><b>Owner : </b></small></p>
+                    <p><small><b>Status : </b></small></p>
+                    <p><small><b>Priority : </b></small></p>
+                    <p><small><b>Created Time: </b></small></p>
+                    <p><small><b>Activation Time: </b></small></p>
+                    <p><small><b>Last Modified: </b></small></p>
+                </td>
+                 <td colspan='1'>
+                    <p><small><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
                                     <p><small>
                                     <% if (taskAbstract.NS1_NS::actualOwner.length() > 0) {
-                                            print(taskAbstract.NS1_NS::actualOwner.text());
-                                        } else {
-                                            print('Unassigned');
-                                    }%>
+    print(taskAbstract.NS1_NS::actualOwner.text());
+} else {
+    print('Unassigned');
+}%>
                                     </small></p>
                                     <p><small><%=taskAbstract.NS1_NS::status.text()%></small></p>
                                     <p><small><%=taskAbstract.NS1_NS::priority.text()%></small></p>

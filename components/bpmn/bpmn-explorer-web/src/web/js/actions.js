@@ -52,7 +52,7 @@ $( document ).ready(function() {
         success : function(res){
             var taskUrl = res.taskUrl;
             var taskId = taskUrl.substr(taskUrl.lastIndexOf('/') + 1);
-            window.location = httpUrl + "/" + CONTEXT + "/inboxTask?id=" + taskId ;
+            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + taskId ;
 
         },
         error :  function(res){
@@ -62,7 +62,7 @@ $( document ).ready(function() {
 });
 
 function displayAttachmentData(id){
-   window.location = httpUrl + "/" + CONTEXT + "/inboxTask?id=" + id ;
+   window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
 }
 function completeTask(data, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
@@ -84,7 +84,7 @@ function completeTask(data, id) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
         }
     });
 }
@@ -101,7 +101,7 @@ function reassign(username, id) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
         }
     });
 }
@@ -118,7 +118,7 @@ function claim(username, id){
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function(data){
-            window.location=httpUrl+"/"+CONTEXT+"/inbox";
+            window.location=httpUrl+"/"+CONTEXT+"/myTasks";
         }
     });
 }
@@ -136,7 +136,7 @@ function transfer(username, id) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
         }
     });
 }
@@ -154,7 +154,7 @@ function startProcess(processDefId) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/inbox";
+            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
         }
     });
 }

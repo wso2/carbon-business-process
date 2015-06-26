@@ -57,7 +57,7 @@ try {
         log.error('Task output message saving failed');
     }
 
-    response.sendRedirect('/' +data.app.webappUrlName + '/inboxtask?id=' + taskID);
+    response.sendRedirect('/' +data.app.webappUrlName + '/task?id=' + taskID);
 
     /*
         SAMPLE setTaskOutput RESPONSE

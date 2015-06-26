@@ -32,7 +32,7 @@ function claimTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             }
             else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
@@ -67,7 +67,7 @@ function startTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             }
             else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
@@ -100,7 +100,7 @@ function stopTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
 
             }
             else if (success === 'timeout') {
@@ -168,7 +168,7 @@ function suspendTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
@@ -204,7 +204,7 @@ function resumeTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
@@ -236,7 +236,7 @@ function failTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
@@ -687,7 +687,7 @@ function skipTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
