@@ -18,6 +18,7 @@
  */
 
     var authSuccess = session.get("authSuccess");
+var log = new Log();
     if (!authSuccess) {
         response.sendRedirect("login");
     } else {
@@ -31,7 +32,7 @@
         include("/template/modals/verifyTaskCompletion.jag");
 
         if (taskAbstract.length() > 0) {
-            include("/template/inboxTaskView.jag");
+            include("/template/tasksView.jag");
         } else {
             include("/template/partials/internalError.jag");
         }

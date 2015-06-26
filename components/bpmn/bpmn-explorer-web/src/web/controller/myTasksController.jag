@@ -19,10 +19,10 @@
 		response.sendRedirect("login");
 	} else {
 		include("/model/common.jag");
-		include("/model/taskModel.jag");
+		include("/model/myTasksModel.jag");
 		include("/template/partials/header.jag");
 		include("/template/partials/navigation.jag");
-		include("/template/inboxTaskView.jag");
+		include("/template/myTasksView.jag");
 		include("/template/partials/footer.jag");
 	}
 %>
