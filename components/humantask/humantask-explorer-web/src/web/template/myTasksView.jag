@@ -38,15 +38,15 @@ function updateActiveStatusNavTab(status, button){
     return "class=\"active\"";
 }
 %>
-<li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="myTasks?status_query=RESERVED">Reserved <span class="circle light-blue-bg"> </span></a> </li>
+<li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="mytasks?status_query=RESERVED">Reserved <span class="circle light-blue-bg"> </span></a> </li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="myTasks?status_query=IN_PROGRESS">In Progress <span class="circle light-yellow-bg"> </span></a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="mytasks?status_query=IN_PROGRESS">In Progress <span class="circle light-yellow-bg"> </span></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="myTasks?status_query=SUSPENDED">Suspended <span class="circle light-grey-bg"> </span></a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="mytasks?status_query=SUSPENDED">Suspended <span class="circle light-grey-bg"> </span></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="myTasks?status_query=COMPLETED">Completed <span class="circle light-green-bg"> </span></a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="mytasks?status_query=COMPLETED">Completed <span class="circle light-green-bg"> </span></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="myTasks?status_query=FAILED">Failed <span class="circle light-red-bg"> </span></a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="mytasks?status_query=FAILED">Failed <span class="circle light-red-bg"> </span></a></li>
               </ul>
             </div>
 
@@ -85,19 +85,19 @@ if (taskXMLList != null) {
 </div>
 <ul class="pagination">
 <% if (pagination != 1) { %>
-            <li><a href="myTasks?pagination=<%=pagination-1%>">&laquo;</a></li>
+            <li><a href="mytasks?pagination=<%=pagination-1%>">&laquo;</a></li>
         <% } else { %>
             <li class="disabled"><a href="#">&laquo;</a></li>
         <% } %>
         <% for (var i = 1; i<=paginatePageCount; i++){
     if (pagination == i) { %>
-                    <li class="active"><a href="myTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+                    <li class="active"><a href="mytasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
             <% }else { %>
-                    <li><a href="myTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+                    <li><a href="mytasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
             <% } %>
         <% } %>
         <% if (pagination != paginatePageCount) { %>
-            <li><a href="myTasks?pagination=<%=pagination+1%>">&raquo;</a></li>
+            <li><a href="mytasks?pagination=<%=pagination+1%>">&raquo;</a></li>
         <% } else { %>
             <li class="disabled"><a href="#">&raquo;</a></li>
         <% } %>

@@ -41,7 +41,7 @@
     } else {
         session.put('authSuccess', authSuccess);
         session.put('userName', username);
-        response.sendRedirect("myTasks");
+        response.sendRedirect("mytasks");
     }
 
     /**

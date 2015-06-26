@@ -32,7 +32,7 @@ var log = new Log();
         include("/template/modals/verifyTaskCompletion.jag");
 
         if (taskAbstract.length() > 0) {
-            include("/template/tasksView.jag");
+            include("/template/taskInstanceView.jag");
         } else {
             include("/template/partials/internalError.jag");
         }
