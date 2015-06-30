@@ -28,7 +28,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package parent collection given humanTaskDeploymentUnit
      *
      * @param humanTaskDeploymentUnit
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackage(HumanTaskDeploymentUnit humanTaskDeploymentUnit) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + humanTaskDeploymentUnit.getPackageName();
@@ -38,7 +38,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package parent collection on given deploymentDAO
      *
      * @param deploymentUnitDAO
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackage(DeploymentUnitDAO deploymentUnitDAO) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + deploymentUnitDAO.getPackageName();
@@ -48,7 +48,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package parent collection on given package name
      *
      * @param humanTaskPackageName
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackage(String humanTaskPackageName) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + humanTaskPackageName;
@@ -58,7 +58,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package zip file
      *
      * @param humanTaskPackageName
-     * @return
+     * @return registry resource path
      */
     public static String getHumanTaskPackageArchiveResourcePath(String humanTaskPackageName) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES.concat(humanTaskPackageName).concat
@@ -69,7 +69,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package versions collection
      *
      * @param humanTaskDeploymentUnit
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackageVersions(HumanTaskDeploymentUnit humanTaskDeploymentUnit) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + humanTaskDeploymentUnit.getPackageName() +
@@ -78,7 +78,7 @@ public class HumanTaskPackageRepositoryUtils {
 
     /**
      * @param deploymentUnitDAO
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackageVersions(DeploymentUnitDAO deploymentUnitDAO) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + deploymentUnitDAO.getPackageName() +
@@ -89,7 +89,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package content collection on given version
      *
      * @param humanTaskDeploymentUnit
-     * @return
+     * @return registry resource path registry resource path
      */
     public static String getResourcePathForHumanTaskPackageContent(HumanTaskDeploymentUnit humanTaskDeploymentUnit) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + humanTaskDeploymentUnit.getPackageName() +
@@ -101,7 +101,7 @@ public class HumanTaskPackageRepositoryUtils {
      * Registry resource path for human task package content collection on given version
      *
      * @param deploymentUnitDAO
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackageContent(DeploymentUnitDAO deploymentUnitDAO) {
         return HumanTaskConstants.REG_PATH_OF_HUMANTASK_PACKAGES + deploymentUnitDAO.getPackageName() +
@@ -114,7 +114,7 @@ public class HumanTaskPackageRepositoryUtils {
      *
      * @param humanTaskPackageName
      * @param humanTaskPackageNameWithVersion
-     * @return
+     * @return registry resource path
      */
     public static String getResourcePathForHumanTaskPackageContent(String humanTaskPackageName,
                                                                    String humanTaskPackageNameWithVersion) {
