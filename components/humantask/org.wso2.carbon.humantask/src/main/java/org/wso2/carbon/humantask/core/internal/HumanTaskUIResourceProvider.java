@@ -46,8 +46,8 @@ public class HumanTaskUIResourceProvider implements UIResourceProvider {
                 String packageName = nameElements[3];
                 String fileName = nameElements[4];
                 HumanTaskStore taskStore = HumanTaskServiceComponent.getHumanTaskServer().getTaskStoreManager().getHumanTaskStore(tenantId);
-                String jspFilePath = taskStore.getHumanTaskDeploymentRepo().getAbsolutePath() + File.separator + tenantId + File.separator + packageName + File.separator
-                        + "web" + File.separator + fileName;
+                String jspFilePath = taskStore.getHumanTaskDeploymentRepo().getAbsolutePath() + File.separator +
+                                     packageName + File.separator + "web" + File.separator + fileName;
                 File jspFile = new File(jspFilePath);
 
                 if (jspFile.exists()) {

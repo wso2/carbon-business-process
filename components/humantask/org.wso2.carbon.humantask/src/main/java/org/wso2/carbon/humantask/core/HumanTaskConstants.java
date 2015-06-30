@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.humantask.core;
 
+import org.wso2.carbon.registry.core.RegistryConstants;
+
 import javax.xml.namespace.QName;
 import java.io.File;
 
@@ -140,4 +142,16 @@ public final class HumanTaskConstants {
     public static final String ARRAY_EMAIL_ADDRESS ="email.address";
     public static final String PREFIX ="htd";
     public static final String RENDERING_NAMESPACE ="http://wso2.org/ht/schema/renderings/";
+
+    /* Human task registry repository related constants */
+    public static final String REG_PATH_OF_HUMANTASK_PACKAGES = RegistryConstants.PATH_SEPARATOR + "humantasks" +
+                                                                RegistryConstants.PATH_SEPARATOR + "packages" +
+                                                                RegistryConstants.PATH_SEPARATOR;
+    public static final String HUMANTASK_PACKAGE_VERSIONS = RegistryConstants.PATH_SEPARATOR + "versions" +
+                                                            RegistryConstants.PATH_SEPARATOR;
+    public static final String PATH_SEPARATOR = "/";
+    public static final String VERSION_SEPARATOR = "-";
+    public static final String HUMANTASK_PACKAGE_PROP_LATEST_CHECKSUM = "humantask.package.latest.checksum";
+    public static final String HUMANTASK_PACKAGE_PROP_STATUS = "humantask.package.status";
+    public static final String HUMANTASK_PACKAGE_PROP_LATEST_VERSION = "humantask.package.latest.version";
 }

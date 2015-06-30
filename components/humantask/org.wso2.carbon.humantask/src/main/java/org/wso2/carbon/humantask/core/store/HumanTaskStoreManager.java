@@ -17,10 +17,8 @@
 package org.wso2.carbon.humantask.core.store;
 
 import org.apache.axis2.context.ConfigurationContext;
-import org.wso2.carbon.humantask.core.HumanTaskConstants;
-import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,10 +36,10 @@ public class HumanTaskStoreManager {
      * @param configContext axis configuration of the tenant which requested a task store
      * @return HumanTaskStore instance
      */
-    public HumanTaskStore createHumanTaskStoreForTenant(int tenantId, ConfigurationContext configContext) {
+    public HumanTaskStore createHumanTaskStoreForTenant(int tenantId, ConfigurationContext configContext)
+            throws RegistryException {
         HumanTaskStore taskStore = new HumanTaskStore(tenantId, configContext);
-        taskStore.setHumanTaskDeploymentRepo(new File(CarbonUtils.getCarbonHome() +
-                File.separator + "repository" + File.separator + HumanTaskConstants.HUMANTASK_REPO_DIRECTORY));
+        taskStore.init();
         tenantTaskStoreMap.put(tenantId, taskStore);
 
         return taskStore;
