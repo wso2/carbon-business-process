@@ -364,8 +364,15 @@ public final class BPELServerImpl implements BPELServer , Observer{
         try {
             Class txFactoryClass = this.getClass().getClassLoader().loadClass(txFactoryName);
             Object txFactory = txFactoryClass.newInstance();
-            transactionManager = (TransactionManager) txFactoryClass.
-                    getMethod("getTransactionManager", (Class[]) null).invoke(txFactory);
+            int transactionTimeout = bpelServerConfiguration.getTransactionManagerTimeout();
+            if ( transactionTimeout > -1) {
+                transactionManager = (TransactionManager) txFactoryClass.
+                        getMethod("getTransactionManager", int.class).invoke(txFactory,transactionTimeout);
+            } else {
+                transactionManager = (TransactionManager) txFactoryClass.
+                        getMethod("getTransactionManager", (Class[]) null).invoke(txFactory);
+            }
+
 
             // Didn't use Debug Transaction manager which used in ODE.
             // TODO: Look for the place we use this axis parameter.

@@ -137,6 +137,8 @@ public class BPELServerConfiguration {
     //Maximum length of a instance variable in instance view.
     private int instanceViewVariableLength = BPELConstants.DEFAULT_INSTANCE_VIEW_VARIABLE_LENGTH;
 
+    private int transactionManagerTimeout = -1;
+
     public BPELServerConfiguration() {
         if (log.isDebugEnabled()) {
             log.debug("Loading bps configuration....");
@@ -395,6 +397,14 @@ public class BPELServerConfiguration {
         return odeConfig;
     }
 
+    /**
+     * Returns the Transaction manager timeout set for ODE in bps configuration. Returns -1 if not available.
+     * @return transactionManagerTimeout
+     */
+    public int getTransactionManagerTimeout() {
+        return transactionManagerTimeout;
+    }
+
     private void populateDefaultOpenJPAProps() {
         openJpaProperties.put(BPELConstants.OPENJPA_FLUSH_BEFORE_QUERIES, "true");
     }
@@ -451,6 +461,14 @@ public class BPELServerConfiguration {
         populateODESchedulerConfiguration();
         populateInstanceViewVariableLength();
         populateBpelInstanceDeletionLimit();
+        populateTransactionManagerTimeout();
+    }
+
+    private void populateTransactionManagerTimeout() {
+        if (bpsConfigDocument.getWSO2BPS().isSetTransactionManagerTimeout()) {
+            this.transactionManagerTimeout = bpsConfigDocument.getWSO2BPS().
+                    getTransactionManagerTimeout();
+        }
     }
 
     private void populateBpelInstanceDeletionLimit() {
