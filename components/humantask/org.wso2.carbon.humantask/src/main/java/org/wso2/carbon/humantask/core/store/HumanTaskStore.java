@@ -17,11 +17,14 @@
 package org.wso2.carbon.humantask.core.store;
 
 import org.apache.axis2.AxisFault;
-import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.deployment.DeploymentEngine;
 import org.apache.axis2.deployment.util.Utils;
-import org.apache.axis2.description.*;
+import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.AxisServiceGroup;
+import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -38,34 +41,45 @@ import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.dao.HumanTaskDAOConnection;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
 import org.wso2.carbon.humantask.core.dao.TaskPackageStatus;
-import org.wso2.carbon.humantask.core.deployment.*;
+import org.wso2.carbon.humantask.core.deployment.ArchiveBasedHumanTaskDeploymentUnitBuilder;
+import org.wso2.carbon.humantask.core.deployment.DeploymentUtil;
+import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentException;
+import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
+import org.wso2.carbon.humantask.core.deployment.SimpleTaskDefinitionInfo;
 import org.wso2.carbon.humantask.core.engine.HumanTaskEngine;
 import org.wso2.carbon.humantask.core.engine.runtime.api.HumanTaskRuntimeException;
 import org.wso2.carbon.humantask.core.integration.AxisHumanTaskMessageReceiver;
 import org.wso2.carbon.humantask.core.integration.CallBackServiceImpl;
 import org.wso2.carbon.humantask.core.integration.HumanTaskWSDLLocator;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
+import org.wso2.carbon.humantask.core.store.repository.HumanTaskPackageRepository;
+import org.wso2.carbon.humantask.core.store.repository.HumanTaskPackageRepositoryUtils;
 import org.wso2.carbon.humantask.core.utils.HumanTaskStoreUtils;
+import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.utils.RegistryClientUtils;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.FileManipulator;
 import org.wso2.carbon.utils.ServerConstants;
 
-import javax.cache.*;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.CacheManagerFactory;
+import javax.cache.Caching;
 import javax.persistence.EntityManager;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
 import javax.wsdl.Definition;
 import javax.wsdl.OperationType;
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Manages human task deployments for a tenant. There will be HumanTaskStore per tenant. Handles the deployment
@@ -95,23 +109,36 @@ public class HumanTaskStore {
 
     private Map<QName, QName> activeTaskConfigurationQNameMap = new HashMap<QName, QName>();
 
-
     // This is the human task deployment repository
-
     private File humanTaskDeploymentRepo;
 
     private HumanTaskEngine engine;
 
-    private static final String VERSION_SEPARATOR = "-";
+    // Tenant's config registry
+    private Registry tenantConfigRegistry;
 
-    public HumanTaskStore(int tenantId, ConfigurationContext configContext) {
+    // Tenant's registry based human task repository
+    private HumanTaskPackageRepository repository;
+
+    public HumanTaskStore(int tenantId, ConfigurationContext configContext) throws RegistryException {
         this.tenantId = tenantId;
         this.configContext = configContext;
         this.engine = HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine();
+        tenantConfigRegistry = HumanTaskServiceComponent.getRegistryService().getConfigSystemRegistry(tenantId);
 
         if (HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().isCachingEnabled()) {
             initializeCaches();
         }
+    }
+
+    public void init() {
+        this.humanTaskDeploymentRepo = new File(CarbonUtils.getCarbonHome() + File.separator + "repository" +
+                                                File.separator + HumanTaskConstants.HUMANTASK_REPO_DIRECTORY +
+                                                File.separator + tenantId);
+        if (!humanTaskDeploymentRepo.exists() && !humanTaskDeploymentRepo.mkdirs()) {
+            log.warn("Cannot create tenant " + tenantId + " HumanTask deployment unit repository.");
+        }
+        repository = new HumanTaskPackageRepository(tenantConfigRegistry, humanTaskDeploymentRepo);
     }
 
     /**
@@ -389,6 +416,9 @@ public class HumanTaskStore {
 
                 // Create and deploy new version
                 deployNewTaskVersion(newDeploymentUnit, newVersion);
+                // Add new version of human task package to registry
+                // Update the zip and package properties in the registry
+                repository.handleNewHumanTaskPackageAddition(newDeploymentUnit, humanTaskFile);
                 // Successfully deployed the packages.
                 return;
             } else {
@@ -418,11 +448,13 @@ public class HumanTaskStore {
         // Process the human task configurations
         // Store deployment unit information to the db
         // Deploy axis2 services
+        // Adding HumanTask package the registry.
 
         long newVersion = getNextVersion();
         HumanTaskDeploymentUnit newDeploymentUnit = createNewDeploymentUnit(humanTaskFile, tenantId, newVersion, md5sum);
         validateTaskConfig(newDeploymentUnit);
         deployNewTaskVersion(newDeploymentUnit, newVersion);
+        repository.handleNewHumanTaskPackageAddition(newDeploymentUnit, humanTaskFile);
 
         return;
     }
@@ -450,7 +482,7 @@ public class HumanTaskStore {
                 log.debug("humanTask:" + humanTaskFile.getName()
                         + " deployment failed, removing the extracted human task directory.");
             }
-            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName()) + VERSION_SEPARATOR + version;
+            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName()) + HumanTaskConstants.VERSION_SEPARATOR + version;
             deleteHumanTaskPackageFromRepo(versionedName);
             throw deploymentException;
         }
@@ -502,7 +534,7 @@ public class HumanTaskStore {
      * @throws HumanTaskDeploymentException
      */
     public void reloadExistingTaskVersions(List<DeploymentUnitDAO> existingDeploymentUnitsForPackage,
-                                           File archiveFile, String md5sum, boolean isMasterServer) throws HumanTaskDeploymentException {
+                                           File archiveFile, String md5sum, boolean isMasterServer) throws Exception {
         // deployment units list should not be null, having a safety check anyway
         if (existingDeploymentUnitsForPackage == null) {
             return;
@@ -525,16 +557,12 @@ public class HumanTaskStore {
                 }
 
             }
-
-            String taskDirectoryPath = humanTaskDeploymentRepo.getAbsolutePath() + File.separator +
-                    tenantId + File.separator + dao.getName();
-
-            File taskDirectory = new File(taskDirectoryPath);
-            ArchiveBasedHumanTaskDeploymentUnitBuilder deploymentUnitBuilder = null;
-            if(log.isDebugEnabled()){
-                log.debug("Loading task : "+ dao.getName());
-            }
             try {
+                File taskDirectory = findHumanTaskPackageInFileSystem(dao,archiveFile);
+                ArchiveBasedHumanTaskDeploymentUnitBuilder deploymentUnitBuilder = null;
+                if (log.isDebugEnabled()) {
+                    log.debug("Loading task : " + dao.getName());
+                }
                 if (taskDirectory.exists()) {
                     // This is an existing task configuration
 
@@ -572,8 +600,8 @@ public class HumanTaskStore {
                 }
 
             } catch (HumanTaskDeploymentException e) {
-                String errMsg = "Error loading the task configuration";
-                log.error(errMsg + e);
+                String errMsg = "Error loading the task configuration ";
+                log.error(errMsg, e);
                 throw e;
             }
         }
@@ -881,6 +909,7 @@ public class HumanTaskStore {
                 }
             });
             loadedPackages.remove(packageName);
+            repository.handleHumanTaskPackageUndeploy(packageName);
         } else {
             // Slave nodes
             List<HumanTaskBaseConfiguration> matchingTaskConfigurations = new ArrayList<HumanTaskBaseConfiguration>();
@@ -1078,8 +1107,7 @@ public class HumanTaskStore {
     private void deleteHumanTaskPackageFromRepo(String packageName) {
 
         String humanTaskPackageLocation = this.humanTaskDeploymentRepo.getAbsolutePath() +
-                File.separator + tenantId + File.separator +
-                packageName;
+                 File.separator + packageName;
         File humanTaskPackageDirectory = new File(humanTaskPackageLocation);
         if(log.isDebugEnabled()) {
             log.debug("Deleting human task package from directory " + humanTaskPackageDirectory);
@@ -1195,5 +1223,56 @@ public class HumanTaskStore {
                         return deploymentUnit;
                     }
                 });
+    }
+
+    /**
+     * This method provides the extracted human task package location in file system.
+     * If human task package does not exist in file system then package will be exported from registry.
+     * If human task package does not exist in registry then package will be imported to registry from file system.
+     * If registry and file location don't have extracted human task package content then exception will be thrown
+     *
+     * @param dudao
+     * @return File
+     * @throws HumanTaskDeploymentException
+     */
+    private File findHumanTaskPackageInFileSystem(DeploymentUnitDAO dudao, File archiveFile) throws Exception {
+
+        String duName = dudao.getName();
+        log.info("Looking for HumanTask package in file system for deployment unit " + duName);
+        File humanTaskDUDirectory = new File(humanTaskDeploymentRepo, duName);
+        String registryCollectionPath = HumanTaskPackageRepositoryUtils.getResourcePathForHumanTaskPackageContent
+                (dudao.getPackageName(), dudao.getName());
+        try {
+            if (humanTaskDUDirectory.exists()) {
+                if (!tenantConfigRegistry.resourceExists(registryCollectionPath)) {
+                    // Import human task package content to from file system
+                    repository.restoreHumanTaskPackageContentInRegistry(dudao, archiveFile);
+                }
+                return humanTaskDUDirectory;
+            } else {
+                if (tenantConfigRegistry.resourceExists(registryCollectionPath)) {
+                    if (!humanTaskDUDirectory.exists() && !humanTaskDUDirectory.mkdirs()) {
+                        String errMsg = "Error creating HumanTask deployment unit repository for " + "tenant " +
+                                        tenantId;
+                        log.error(errMsg);
+                        log.error("Failed to load HumanTask deployment unit " + duName + " due to above error.");
+                        throw new HumanTaskDeploymentException(errMsg);
+                    }
+                    // Export human task package content from registry to file system
+                    RegistryClientUtils.exportFromRegistry(humanTaskDUDirectory, registryCollectionPath,
+                                                           tenantConfigRegistry);
+                    return humanTaskDUDirectory;
+                } else {
+                    String errMsg = "Expected resource: " + registryCollectionPath + " not found in the registry";
+                    log.error(errMsg);
+                    throw new HumanTaskDeploymentException(errMsg);
+                }
+            }
+        } catch (RegistryException re) {
+            String errMsg = "Error while exporting deployment unit: " + duName + " to file system from the " +
+                            "registry.";
+            log.error(errMsg, re);
+            throw new HumanTaskDeploymentException(errMsg, re);
+        }
     }
 }
