@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.DeploymentUnitDAO;
 import org.wso2.carbon.humantask.core.deployment.HumanTaskDeploymentUnit;
+import org.wso2.carbon.humantask.core.store.HumanTaskStoreException;
 import org.wso2.carbon.registry.core.Collection;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
@@ -29,6 +30,7 @@ import org.wso2.carbon.registry.core.utils.RegistryClientUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * HumanTask Package is responsible for manage registry based human task deployment units
@@ -236,16 +238,36 @@ public class HumanTaskPackageRepository {
      *
      * @param humanTaskDeploymentUnit
      * @param humanTaskFile
-     * @throws FileNotFoundException
+     * @throws HumanTaskStoreException
      * @throws RegistryException
      */
     private void addLatestArchiveToRegistryCollection(HumanTaskDeploymentUnit humanTaskDeploymentUnit,
                                                       File humanTaskFile)
-            throws FileNotFoundException, RegistryException {
-        Resource latestHumanTaskArchive = configRegistry.newResource();
-        latestHumanTaskArchive.setContent(new FileInputStream(humanTaskFile));
-        configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
-                (humanTaskDeploymentUnit.getPackageName()), latestHumanTaskArchive);
+            throws HumanTaskStoreException, RegistryException {
+
+        FileInputStream fileInputStream = null;
+        try {
+            Resource latestHumanTaskArchive = configRegistry.newResource();
+            fileInputStream = new FileInputStream(humanTaskFile);
+            latestHumanTaskArchive.setContent(new FileInputStream(humanTaskFile));
+            configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
+                    (humanTaskDeploymentUnit.getPackageName()), latestHumanTaskArchive);
+        } catch (FileNotFoundException ex) {
+            String errMsg = "HumanTask package zip file couldn't found on given location " +
+                            humanTaskFile.getAbsolutePath();
+            throw new HumanTaskStoreException(errMsg, ex);
+        } catch (RegistryException ex) {
+            String errMsg = "Exception occurred while adding latest archive to registry collection";
+            throw new RegistryException(errMsg, ex);
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    log.warn("Cannot close file input stream.", e);
+                }
+            }
+        }
     }
 
     /**
@@ -253,16 +275,36 @@ public class HumanTaskPackageRepository {
      *
      * @param deploymentUnitDAO
      * @param humanTaskFile
-     * @throws FileNotFoundException
      * @throws RegistryException
+     * @throws HumanTaskStoreException
      */
     private void addLatestArchiveToRegistryCollection(DeploymentUnitDAO deploymentUnitDAO,
                                                       File humanTaskFile)
-            throws FileNotFoundException, RegistryException {
-        Resource latestHumanTaskArchive = configRegistry.newResource();
-        latestHumanTaskArchive.setContent(new FileInputStream(humanTaskFile));
-        configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
-                (deploymentUnitDAO.getPackageName()), latestHumanTaskArchive);
+            throws HumanTaskStoreException, RegistryException {
+
+        FileInputStream fileInputStream = null;
+        try {
+            Resource latestHumanTaskArchive = configRegistry.newResource();
+            fileInputStream = new FileInputStream(humanTaskFile);
+            latestHumanTaskArchive.setContent(new FileInputStream(humanTaskFile));
+            configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
+                    (deploymentUnitDAO.getPackageName()), latestHumanTaskArchive);
+        } catch (FileNotFoundException ex) {
+            String errMsg = "HumanTask package zip file couldn't found on given location " +
+                            humanTaskFile.getAbsolutePath();
+            throw new HumanTaskStoreException(errMsg, ex);
+        } catch (RegistryException ex) {
+            String errMsg = "Exception occurred while adding latest archive to registry collection";
+            throw new RegistryException(errMsg, ex);
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    log.warn("Cannot close file input stream.", e);
+                }
+            }
+        }
     }
 
     /**
