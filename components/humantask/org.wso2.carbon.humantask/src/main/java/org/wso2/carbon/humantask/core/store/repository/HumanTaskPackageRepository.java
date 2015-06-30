@@ -249,7 +249,7 @@ public class HumanTaskPackageRepository {
         try {
             Resource latestHumanTaskArchive = configRegistry.newResource();
             fileInputStream = new FileInputStream(humanTaskFile);
-            latestHumanTaskArchive.setContent(new FileInputStream(humanTaskFile));
+            latestHumanTaskArchive.setContent(fileInputStream);
             configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
                     (humanTaskDeploymentUnit.getPackageName()), latestHumanTaskArchive);
         } catch (FileNotFoundException ex) {
@@ -286,7 +286,7 @@ public class HumanTaskPackageRepository {
         try {
             Resource latestHumanTaskArchive = configRegistry.newResource();
             fileInputStream = new FileInputStream(humanTaskFile);
-            latestHumanTaskArchive.setContent(new FileInputStream(humanTaskFile));
+            latestHumanTaskArchive.setContent(fileInputStream);
             configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
                     (deploymentUnitDAO.getPackageName()), latestHumanTaskArchive);
         } catch (FileNotFoundException ex) {
