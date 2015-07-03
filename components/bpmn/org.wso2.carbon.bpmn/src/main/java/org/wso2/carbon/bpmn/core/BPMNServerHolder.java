@@ -23,6 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
+import java.util.concurrent.ExecutorService;
+
 public class BPMNServerHolder {
 
     private static Log log = LogFactory.getLog(BPMNServerHolder.class);
@@ -30,6 +32,7 @@ public class BPMNServerHolder {
     private ProcessEngine engine = null;
     private TenantManager tenantManager = null;
     private RegistryService registryService = null;
+    private ExecutorService executorService = null;
 
     private static BPMNServerHolder bpmnServerHolder = null;
 
@@ -71,4 +74,11 @@ public class BPMNServerHolder {
         return registryService;
     }
 
+    public void setExecutorService(ExecutorService executorService){
+        this.executorService = executorService;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
 }
