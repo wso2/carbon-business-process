@@ -282,6 +282,5 @@ public class AnalyticsPublisher {
 		System.setProperty("javax.net.ssl.trustStore", trustStore + "/client-truststore.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
 	}
-
 }
 
