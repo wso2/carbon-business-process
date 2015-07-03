@@ -21,6 +21,7 @@ import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+//import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
@@ -51,6 +52,10 @@ public class BPMNServiceComponent {
 
             ExecutorService executorService = Executors.newFixedThreadPool(2);
             holder.setExecutorService(executorService);
+
+            //initialize AnalyticsPublisher and call intialize() method here (when server start this service is up and running)
+//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
+//            analyticsPublisher.initialize();
 
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
 //            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
