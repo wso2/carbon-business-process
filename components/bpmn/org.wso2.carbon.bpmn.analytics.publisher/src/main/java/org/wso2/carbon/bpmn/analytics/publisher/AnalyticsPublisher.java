@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
+import org.wso2.carbon.bpmn.analytics.publisher.utils.AnalyticsPublishServiceUtils;
 import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNAdminConfig;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
@@ -34,7 +35,6 @@ import org.wso2.carbon.utils.NetworkUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.SocketException;
-import java.util.concurrent.Executors;
 
 /**
  * AnalyticsPublisher uses to publish events to the data receiver in data-bridge
@@ -235,11 +235,8 @@ public class AnalyticsPublisher {
 	private DataPublisher createDataPublisher()
 			throws MalformedURLException, AgentException, AuthenticationException,
 			       TransportException, UserStoreException, RegistryException, SocketException {
-		System.out.println("Start data publisher");
-		DataPublisher dataPublisher =
-				new DataPublisher(getURL(), BPMNAdminConfig.getUserName(),
-				                  BPMNAdminConfig.getPassword());
-		System.out.println("End data publisher");
+		DataPublisher dataPublisher = new DataPublisher(getURL(), BPMNAdminConfig.getUserName(),
+		                                                BPMNAdminConfig.getPassword());
 		return dataPublisher;
 	}
 

@@ -35,7 +35,7 @@ public class BPMNAdminConfig {
 	 * @throws UserStoreException
 	 */
 	public static String getUserName() throws RegistryException, UserStoreException {
-		UserRealm userRealm = BPMNServerHolder.getInstance().getRegistryService().getGovernanceSystemRegistry().getUserRealm();
+		UserRealm userRealm = BPMNServerHolder.getInstance().getRegistryService().getRegistry().getUserRealm();
 		return userRealm.getRealmConfiguration().getAdminUserName();
 	}
 
@@ -46,7 +46,7 @@ public class BPMNAdminConfig {
 	 * @throws UserStoreException
 	 */
 	public static String getPassword() throws RegistryException, UserStoreException {
-		UserRealm userRealm = BPMNServerHolder.getInstance().getRegistryService().getGovernanceSystemRegistry().getUserRealm();
+		UserRealm userRealm = BPMNServerHolder.getInstance().getRegistryService().getRegistry().getUserRealm();
 		return userRealm.getRealmConfiguration().getAdminPassword();
 	}
 

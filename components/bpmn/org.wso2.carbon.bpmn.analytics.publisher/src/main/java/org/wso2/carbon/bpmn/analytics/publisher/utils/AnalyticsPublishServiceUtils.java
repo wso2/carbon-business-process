@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.analytics.publisher;
+package org.wso2.carbon.bpmn.analytics.publisher.utils;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
-import org.wso2.carbon.bpmn.analytics.publisher.utils.DateConverter;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
@@ -42,6 +42,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Get completed process instances which were finished after the given date and time
+	 *
 	 * @return BPMNProcessInstance array if the historic process instance list is not null
 	 */
 	public BPMNProcessInstance[] getCompletedProcessInstances() {
@@ -76,6 +77,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Get completed task instances which were finished after the given date and time
+	 *
 	 * @return BPMNTaskInstance array if the historic task instance list is not null
 	 */
 	public BPMNTaskInstance[] getCompletedTasks() {
@@ -110,6 +112,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Convert historic process instances to BPMN process instances
+	 *
 	 * @param historicProcessInstanceList List of historic process instances
 	 * @return BPMNProcessInstance array
 	 */
@@ -137,6 +140,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * convert historic task instances to BPMN task instances
+	 *
 	 * @param historicTaskInstanceList List of historic task instances
 	 * @return BPMNTaskInstance array
 	 */
@@ -166,6 +170,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Format the process instance variables as BPMNVariable objects
+	 *
 	 * @param processVariables variables which belongs to a given process instance as key, value pairs
 	 * @return BPMNVariable objects array
 	 */
@@ -186,6 +191,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Write last completed process instance end time to carbon registry
+	 *
 	 * @param historicProcessInstanceList List of historic process instances
 	 */
 	private void writeLastCompletedProcessInstanceEndTimeToRegistry(
@@ -207,6 +213,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Write last completed task instance end time to carbon registry
+	 *
 	 * @param historicTaskInstanceList List of historic task instances
 	 */
 	private void writeLastCompletedTaskInstanceEndTimeToRegistry(
@@ -227,6 +234,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Read last completed process instance end time from carbon registry
+	 *
 	 * @return the end time of last completed process instance
 	 */
 	private String readLastCompletedProcessInstanceEndTimeFromRegistry() {
@@ -244,6 +252,7 @@ public class AnalyticsPublishServiceUtils {
 
 	/**
 	 * Read last completed task instance end time from carbon registry
+	 *
 	 * @return the end time of last completed task instance
 	 */
 	private String readLastCompletedTaskInstanceEndTimeFromRegistry() {
