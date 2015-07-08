@@ -34,8 +34,8 @@
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>People:</th>
-		    		<td><%=taskData.owner%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#transfer">Transfer</button></td>
-		    		<td><%=taskData.assignee%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#reassign">Reassign</button></td>
+		    		<td><b>Owner: </b><%=taskData.owner%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#transfer">Transfer</button></td>
+		    		<td><b>Assignee: </b><%=taskData.assignee%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#reassign">Reassign</button></td>
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>

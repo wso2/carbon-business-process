@@ -23,6 +23,9 @@ function genSelect(data) {
         content += "<option value=\"" + data.enumValues[i].id + "\">" + data.enumValues[i].name + "</option>"
     }
     content += "</select></td></tr>";
+    if(data.writable == false){
+        content = content.replace("select", "select readonly=\"true\"");
+    }
     return content;
 }
 
@@ -31,6 +34,9 @@ function genCheckbox(data) {
     content += "<td/><td style='padding-right:15px; padding-top:10px;' colspan='2'>";
     content += "<input name=\"" + data.id + "\" type=\"checkbox\"/> " + data.name;
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 function genCheckboxWithValues(data) {
@@ -38,6 +44,9 @@ function genCheckboxWithValues(data) {
     content += "<td/><td style='padding-right:15px; padding-top:10px;' colspan='2'>";
     content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"checkbox\"/> " + data.name;
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 
@@ -48,6 +57,9 @@ function genTextBox(data) {
     content += "</td><td style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\" type=\"text\"  class=\"form-control\"/>";
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 function genTextBoxWithValues(data) {
@@ -57,6 +69,9 @@ function genTextBoxWithValues(data) {
     content += "</td><td style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"text\" class=\"form-control\"/>";
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 
@@ -67,6 +82,9 @@ function genNumberBox(data) {
     content += "</td><td style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\"  type=\"number\"  class=\"form-control\"/>";
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 function genNumberBoxWithValues(data) {
@@ -76,6 +94,9 @@ function genNumberBoxWithValues(data) {
     content += "</td><td style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"number\"  class=\"form-control\"/>";
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 
@@ -86,6 +107,9 @@ function genDatepicker(data) {
     content += "</td><td style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\" type=\"date\"   class=\"form-control\"/>";
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 function genDatepickerWithValues(data) {
@@ -95,10 +119,13 @@ function genDatepickerWithValues(data) {
     content += "</td><td style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"date\"   class=\"form-control\"/>";
     content += "</td></tr>";
+    if(data.writable == false){
+        content = content.replace("input", "input readonly=\"true\"");
+    }
     return content;
 }
 
-function generateForm(data) {
+function generateForm(data, readonly) {
     var formContent = "";
     for (var i = 0; i < data.length; i++) {
         if (data[i].type == "boolean") {
@@ -136,6 +163,9 @@ function generateForm(data) {
             }
 
         }
+    }
+    if(readonly){
+        formContent = formContent.replace("input","input readonly=\"true\"").replace("select","select readonly=\"true\"");
     }
     return formContent;
 }
