@@ -118,7 +118,7 @@ function claim(username, id){
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function(data){
-            window.location=httpUrl+"/"+CONTEXT+"/myTasks";
+            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
         }
     });
 }
