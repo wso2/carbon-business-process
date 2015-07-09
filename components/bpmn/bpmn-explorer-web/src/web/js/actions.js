@@ -154,7 +154,10 @@ function startProcess(processDefId) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+            window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + processDefId;
+        },
+        error: function (xhr, status, error) {
+            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + processDefId;
         }
     });
 }
@@ -178,28 +181,11 @@ function startProcessWithData(data, id) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
-            showStatusForProcessWithData(id, 1);
+            window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
         },
         error: function (xhr, status, error) {
-            showStatusForProcessWithData(id, 0);
+            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id;
         }
 
     });
 }
-
-function showStatusForProcessWithData(id, status) {
-    var statusContent = "";
-    if (status == 1) {
-        statusContent = "Successfully started process";
-    }
-    else {
-        statusContent = "Failed to start process";
-    }
-    $('.btn-primary').popover({title: "Process Status", content: statusContent + " " + id,
-        placement: "right"});
-    $('.btn-primary').popover('show');
-    setTimeout(function () {
-        $('.btn-primary').popover('hide')
-    }, 3000);
-}
-
