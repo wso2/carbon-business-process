@@ -19,9 +19,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
+import org.wso2.carbon.registry.core.service.RegistryService;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
+ * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  */
 public class BPMNAnalyticsServiceComponent {
 	private static Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
@@ -29,8 +32,19 @@ public class BPMNAnalyticsServiceComponent {
 	protected void activate(ComponentContext ctxt){
 		log.info("Initializing the BPMN Analytics Service component...");
 
+		// ExecutorService executorService = Executors.newFixedThreadPool(2);
+		// holder.setExecutorService(executorService);
+
 		//initialize AnalyticsPublisher and call initialize() method here (when server start this service is up and running)
 		AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
 		analyticsPublisher.initialize();
+	}
+
+	public void setRegistryService(RegistryService registryService) {
+		BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
+	}
+
+	public void unsetRegistryService(RegistryService registryService) {
+		BPMNAnalyticsHolder.getInstance().setRegistryService(null);
 	}
 }
