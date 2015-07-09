@@ -133,6 +133,12 @@
 						window.onload = function() {
 							$('.processStatus').html("Process Started");
 							$('#processStart').modal('show');
+							if (typeof (history.pushState) != "undefined") {
+								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
+								history.pushState(obj, obj.Title, obj.Url);
+							} else {
+								alert("Browser does not support HTML5.");
+							}
 						}
 					</script>
 				<%
