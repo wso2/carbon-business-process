@@ -20,6 +20,7 @@ import org.activiti.engine.history.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
+import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
@@ -49,24 +50,27 @@ public class AnalyticsPublishServiceUtils {
 	 */
 	public BPMNProcessInstance[] getCompletedProcessInstances() {
 		HistoryService historyService =
-				BPMNServerHolder.getInstance().getEngine().getHistoryService();
+				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine().getHistoryService();
 		HistoricProcessInstanceQuery instanceQuery =
 				historyService.createHistoricProcessInstanceQuery();
 		List<HistoricProcessInstance> historicProcessInstanceList = null;
 		String time = readLastCompletedProcessInstancePublishTimeFromRegistry();
 		if (time == null) {
 			if (instanceQuery.finished().list().size() != 0) {
-				// if the time value is null in the xml file then send all completed process instances.
+				// if the time value is null in the registry file then send all completed process instances.
 				historicProcessInstanceList =
 						instanceQuery.finished().orderByProcessInstanceStartTime().asc().list();
 			}
 		} else {
 			Date timeInDateFormat = DateConverter.convertStringToDate(time);
-			if (instanceQuery.finished().startedAfter(timeInDateFormat).list().size() != 0) {
-				//send the process instances which are finished after the given date/time in XML
+			int listSize = instanceQuery.finished().startedAfter(timeInDateFormat).list().size();
+			if (listSize != 0) {
+				//avoid to return same object repeatedly if the list has only one object
+				if(listSize == 1){return null;}
+				//send the process instances which were finished after the given date/time in registry
 				historicProcessInstanceList =
 						instanceQuery.finished().startedAfter(timeInDateFormat)
-						             .orderByProcessInstanceStartTime().asc().list();
+						             .orderByProcessInstanceStartTime().asc().listPage(1, listSize);
 			}
 		}
 		if (historicProcessInstanceList != null) {
@@ -75,8 +79,7 @@ public class AnalyticsPublishServiceUtils {
 			//return ProcessInstances set as BPMNProcessInstance array
 			return getBPMNProcessInstances(historicProcessInstanceList);
 		}
-		log.info(
-				"Finish one cycle of getCompletedProcessInstances method..................................");
+		log.info("Finish one cycle of getCompletedProcessInstances method.......................");
 		return null;
 	}
 
@@ -87,25 +90,24 @@ public class AnalyticsPublishServiceUtils {
 	 */
 	public BPMNTaskInstance[] getCompletedTasks() {
 		HistoryService historyService =
-				BPMNServerHolder.getInstance().getEngine().getHistoryService();
-		HistoricTaskInstanceQuery taskInstanceQuery =
-				historyService.createHistoricTaskInstanceQuery();
+				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine().getHistoryService();
+		HistoricTaskInstanceQuery instanceQuery = historyService.createHistoricTaskInstanceQuery();
 		List<HistoricTaskInstance> historicTaskInstanceList = null;
-		String timeInXML = readLastCompletedTaskInstanceEndTimeFromRegistry();
-		if (timeInXML == null) {
-			if (taskInstanceQuery.finished().list().size() != 0) {
+		String time = readLastCompletedTaskInstanceEndTimeFromRegistry();
+		if (time == null) {
+			if (instanceQuery.finished().list().size() != 0) {
 				historicTaskInstanceList =
-						taskInstanceQuery.finished().orderByHistoricTaskInstanceEndTime().asc()
-						                 .list();
+						instanceQuery.finished().orderByHistoricTaskInstanceEndTime().asc().list();
 			}
 		} else {
-			if (taskInstanceQuery.finished()
-			                     .taskCompletedAfter(DateConverter.convertStringToDate(timeInXML))
-			                     .list().size() != 0) {
-				historicTaskInstanceList = taskInstanceQuery.finished().taskCompletedAfter(
-						DateConverter.convertStringToDate(timeInXML))
-				                                            .orderByHistoricTaskInstanceEndTime()
-				                                            .asc().list();
+			Date dateFormat = DateConverter.convertStringToDate(time);
+			int listSize = instanceQuery.finished().taskCompletedAfter(dateFormat).list().size();
+			if (listSize != 0) {
+				//avoid to return same object repeatedly if the list has only one object
+				if(listSize == 1){return null;}
+				historicTaskInstanceList = instanceQuery.finished().taskCompletedAfter(dateFormat)
+				                                        .orderByHistoricTaskInstanceEndTime().asc()
+				                                        .listPage(1, listSize);
 			}
 		}
 		if (historicTaskInstanceList != null) {
@@ -203,7 +205,7 @@ public class AnalyticsPublishServiceUtils {
 	 */
 	private void writeLastCompletedProcessInstancePublishTimeToRegistry(
 			List<HistoricProcessInstance> historicProcessInstanceList) {
-		log.info("Start writing last completed process instance end time......");
+		log.info("Start writing last completed process instance publish time......");
 		Date lastProcessInstancePublishTime =
 				historicProcessInstanceList.get(historicProcessInstanceList.size() - 1)
 				                           .getStartTime();
@@ -222,9 +224,9 @@ public class AnalyticsPublishServiceUtils {
 				                     String.valueOf(lastProcessInstancePublishTime));
 				registry.put(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH, resource);
 			}
-			log.info("End of writing last completed process instance end time......");
+			log.info("End of writing last completed process instance publish time......");
 		} catch (RegistryException e) {
-			String errMsg = "Registry error while writing the process instance end time.";
+			String errMsg = "Registry error while writing the process instance publish time.";
 			log.error(errMsg, e);
 		}
 	}

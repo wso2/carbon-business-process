@@ -17,6 +17,7 @@ package org.wso2.carbon.bpmn.analytics.publisher.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 import java.util.concurrent.ExecutorService;
@@ -31,6 +32,9 @@ public class BPMNAnalyticsHolder {
 
 	private RegistryService registryService;
 	private ExecutorService executorService = null;
+
+	private BPMNAnalyticsHolder(){
+	}
 
 	public static BPMNAnalyticsHolder getInstance(){
 		if(bpmnAnalyticsHolder == null){
@@ -53,5 +57,13 @@ public class BPMNAnalyticsHolder {
 
 	public ExecutorService getExecutorService() {
 		return executorService;
+	}
+
+	private static class BPMNServerInstanceHolder{
+		private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
+	}
+
+	public static BPMNServerHolder getThreadSafeBPMNServerInstance(){
+		return BPMNServerInstanceHolder.INSTANCE;
 	}
 }

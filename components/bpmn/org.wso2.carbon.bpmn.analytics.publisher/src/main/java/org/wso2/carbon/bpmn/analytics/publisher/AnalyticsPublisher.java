@@ -39,6 +39,7 @@ import org.wso2.carbon.utils.NetworkUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.util.concurrent.Executors;
 
 /**
  * AnalyticsPublisher uses to publish events to the data receiver in data-bridge
@@ -78,7 +79,7 @@ public class AnalyticsPublisher {
 
 			log.debug("Calling for a polling thread to publish process instances......");
 			setPrivilegeForProcessInstanceThread(tenantId, tenantDomain, registry);
-			//setPrivilegeForTaskInstanceThread(tenantId, tenantDomain, registry);
+			setPrivilegeForTaskInstanceThread(tenantId, tenantDomain, registry);
 			log.debug("End of initialize method.....");
 		} catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
 				DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
@@ -94,7 +95,7 @@ public class AnalyticsPublisher {
 	private void setPrivilegeForProcessInstanceThread(final int tenantId, final String tenantDomain,
 	                                                  final Registry registry) {
 		log.info("Run setPrivilegeForProcessInstanceThread method.......");
-		BPMNAnalyticsHolder.getInstance().getExecutorService().execute(new Runnable() {
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			@Override public void run() {
 				log.debug("Waiting for server startup...");
 				try {
@@ -119,25 +120,25 @@ public class AnalyticsPublisher {
 	private void doPollingForProcessInstances() {
 		log.debug("Start polling for process instances.....");
 		try {
-			Thread.sleep(AnalyticsPublisherConstants.DELAY);
-			//while (true) {
-			BPMNProcessInstance[] bpmnProcessInstances =
-					analyticsPublishServiceUtils.getCompletedProcessInstances();
-			if (bpmnProcessInstances != null && bpmnProcessInstances.length > 0) {
-				for (BPMNProcessInstance instance : bpmnProcessInstances) {
-					long startTime = System.currentTimeMillis();
-					publishBPMNProcessInstanceEvent(instance);
-					long elapsedTime = System.currentTimeMillis() - startTime;
-					try {
-						Thread.sleep(elapsedTime);
-					} catch (InterruptedException e) {
-						String errMsg =
-								"Interrupted exception in polling thread for BPMN process instances.";
-						log.error(errMsg, e);
+			while (true) {
+				Thread.sleep(AnalyticsPublisherConstants.DELAY);
+				BPMNProcessInstance[] bpmnProcessInstances =
+						analyticsPublishServiceUtils.getCompletedProcessInstances();
+				if (bpmnProcessInstances != null && bpmnProcessInstances.length > 0) {
+					for (BPMNProcessInstance instance : bpmnProcessInstances) {
+						long startTime = System.currentTimeMillis();
+						publishBPMNProcessInstanceEvent(instance);
+						long elapsedTime = System.currentTimeMillis() - startTime;
+						try {
+							Thread.sleep(elapsedTime);
+						} catch (InterruptedException e) {
+							String errMsg =
+									"Interrupted exception in polling thread for BPMN process instances.";
+							log.error(errMsg, e);
+						}
 					}
 				}
 			}
-			//}
 		} catch (AgentException e) {
 			String errMsg = "Agent exception in polling thread for BPMN process instances.";
 			log.error(errMsg, e);
@@ -153,7 +154,7 @@ public class AnalyticsPublisher {
 	private void setPrivilegeForTaskInstanceThread(final int tenantId, final String tenantDomain,
 	                                               final Registry registry) {
 		log.info("Run startPollingForTaskInstances method.......");
-		BPMNAnalyticsHolder.getInstance().getExecutorService().execute(new Runnable() {
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			@Override public void run() {
 				log.info("Start polling for task instances.....");
 				try {
@@ -177,24 +178,25 @@ public class AnalyticsPublisher {
 	 */
 	private void doPollingForTaskInstances() {
 		try {
-			Thread.sleep(AnalyticsPublisherConstants.DELAY);
-			//while (true) {
-			BPMNTaskInstance[] bpmnTaskInstances = analyticsPublishServiceUtils.getCompletedTasks();
-			if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
-				for (BPMNTaskInstance instance : bpmnTaskInstances) {
-					long startTime = System.currentTimeMillis();
-					publishBPMNTaskInstanceEvent(instance);
-					long elapsedTime = System.currentTimeMillis() - startTime;
-					try {
-						Thread.sleep(elapsedTime);
-					} catch (InterruptedException e) {
-						String errMsg =
-								"Interrupted exception in polling thread for BPMN task instances.";
-						log.error(errMsg, e);
+			while (true) {
+				Thread.sleep(AnalyticsPublisherConstants.DELAY);
+				BPMNTaskInstance[] bpmnTaskInstances =
+						analyticsPublishServiceUtils.getCompletedTasks();
+				if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
+					for (BPMNTaskInstance instance : bpmnTaskInstances) {
+						long startTime = System.currentTimeMillis();
+						publishBPMNTaskInstanceEvent(instance);
+						long elapsedTime = System.currentTimeMillis() - startTime;
+						try {
+							Thread.sleep(elapsedTime);
+						} catch (InterruptedException e) {
+							String errMsg =
+									"Interrupted exception in polling thread for BPMN task instances.";
+							log.error(errMsg, e);
+						}
 					}
 				}
 			}
-			//}
 		} catch (AgentException e) {
 			String errMsg = "Agent exception in polling thread for BPMN task instances.";
 			log.error(errMsg, e);
