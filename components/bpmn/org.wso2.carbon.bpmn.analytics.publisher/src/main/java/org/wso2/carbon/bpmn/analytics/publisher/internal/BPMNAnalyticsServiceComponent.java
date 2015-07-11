@@ -21,6 +21,9 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
@@ -32,8 +35,9 @@ public class BPMNAnalyticsServiceComponent {
 	protected void activate(ComponentContext ctxt){
 		log.info("Initializing the BPMN Analytics Service component...");
 
-		// ExecutorService executorService = Executors.newFixedThreadPool(2);
-		// holder.setExecutorService(executorService);
+		 BPMNAnalyticsHolder bpmnAnalyticsHolder = BPMNAnalyticsHolder.getInstance();
+		 ExecutorService executorService = Executors.newFixedThreadPool(2);
+		 bpmnAnalyticsHolder.setExecutorService(executorService);
 
 		//initialize AnalyticsPublisher and call initialize() method here (when server start this service is up and running)
 		AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();

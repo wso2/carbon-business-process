@@ -19,6 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  *
  */
@@ -28,6 +30,7 @@ public class BPMNAnalyticsHolder {
 	private static BPMNAnalyticsHolder bpmnAnalyticsHolder = null;
 
 	private RegistryService registryService;
+	private ExecutorService executorService = null;
 
 	public static BPMNAnalyticsHolder getInstance(){
 		if(bpmnAnalyticsHolder == null){
@@ -42,5 +45,13 @@ public class BPMNAnalyticsHolder {
 
 	public void setRegistryService(RegistryService registryService) {
 		this.registryService = registryService;
+	}
+
+	public void setExecutorService(ExecutorService executorService){
+		this.executorService = executorService;
+	}
+
+	public ExecutorService getExecutorService() {
+		return executorService;
 	}
 }
