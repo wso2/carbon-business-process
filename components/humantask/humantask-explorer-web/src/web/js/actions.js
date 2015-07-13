@@ -495,7 +495,6 @@ function updateAttachments(id) {
  * @returns {boolean}
  */
 function uploadAttachment() {
-    alert('upload method');
 
     if( $('#fileToUploadID').val() =='' || $('#fileToUploadID').length ==0)
     {
@@ -505,7 +504,7 @@ function uploadAttachment() {
     }
     document.attachmentUpload.submit();
     return true;
-};
+}
 
 
 /**
