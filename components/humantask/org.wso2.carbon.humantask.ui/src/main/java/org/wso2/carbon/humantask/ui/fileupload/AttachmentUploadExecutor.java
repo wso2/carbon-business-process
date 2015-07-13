@@ -84,7 +84,9 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
                 if (redirect != null) {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request, response,
                                                         getContextRoot(request) + "/" + webContext + "/" + redirect);
-                } else {
+                } else if (redirect.contains("humantask-explorer")) {
+                   out.write(msg);
+                }else {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request);
                 }
 
