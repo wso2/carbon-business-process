@@ -57,30 +57,17 @@ public class AnalyticsPublisher {
 	 */
 	public void initialize() {
 		try {
-			log.debug("Start initialize method.....");
 			RegistryUtils.setTrustStoreSystemProperties();
 			dataPublisher = createDataPublisher();
-			if (processInstanceStreamId == null) {
-				processInstanceStreamId = getBPMNProcessInstanceStreamId();
-			} else {
-				log.debug("process stream id is already defined......");
-			}
-			if (taskInstanceStreamId == null) {
-				taskInstanceStreamId = getBPMNTaskInstanceStreamId();
-			} else {
-				log.debug("task stream is already defined.....");
-			}
+			processInstanceStreamId = getBPMNProcessInstanceStreamId();
+			taskInstanceStreamId = getBPMNTaskInstanceStreamId();
 			analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
-
 			int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 			String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 			Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
 			                                       .getGovernanceSystemRegistry();
-
-			log.debug("Calling for a polling thread to publish process instances......");
 			setPrivilegeForProcessInstanceThread(tenantId, tenantDomain, registry);
 			setPrivilegeForTaskInstanceThread(tenantId, tenantDomain, registry);
-			log.debug("End of initialize method.....");
 		} catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
 				DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
 				MalformedStreamDefinitionException | UserStoreException | RegistryException | SocketException e) {
@@ -94,10 +81,9 @@ public class AnalyticsPublisher {
 	 */
 	private void setPrivilegeForProcessInstanceThread(final int tenantId, final String tenantDomain,
 	                                                  final Registry registry) {
-		log.info("Run setPrivilegeForProcessInstanceThread method.......");
+		log.debug("Run setPrivilegeForProcessInstanceThread method.......");
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			@Override public void run() {
-				log.debug("Waiting for server startup...");
 				try {
 					PrivilegedCarbonContext.startTenantFlow();
 					PrivilegedCarbonContext privilegedCarbonContext =
@@ -111,7 +97,6 @@ public class AnalyticsPublisher {
 				}
 			}
 		});
-		BPMNAnalyticsHolder.getInstance().getExecutorService().shutdown();
 	}
 
 	/**
@@ -153,10 +138,9 @@ public class AnalyticsPublisher {
 	 */
 	private void setPrivilegeForTaskInstanceThread(final int tenantId, final String tenantDomain,
 	                                               final Registry registry) {
-		log.info("Run startPollingForTaskInstances method.......");
+		log.debug("Run startPollingForTaskInstances method.......");
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			@Override public void run() {
-				log.info("Start polling for task instances.....");
 				try {
 					PrivilegedCarbonContext.startTenantFlow();
 					PrivilegedCarbonContext privilegedCarbonContext =
@@ -170,7 +154,6 @@ public class AnalyticsPublisher {
 				}
 			}
 		});
-		BPMNAnalyticsHolder.getInstance().getExecutorService().shutdown();
 	}
 
 	/**
@@ -181,7 +164,7 @@ public class AnalyticsPublisher {
 			while (true) {
 				Thread.sleep(AnalyticsPublisherConstants.DELAY);
 				BPMNTaskInstance[] bpmnTaskInstances =
-						analyticsPublishServiceUtils.getCompletedTasks();
+						analyticsPublishServiceUtils.getCompletedTaskInstances();
 				if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
 					for (BPMNTaskInstance instance : bpmnTaskInstances) {
 						long startTime = System.currentTimeMillis();
@@ -311,10 +294,8 @@ public class AnalyticsPublisher {
 	private DataPublisher createDataPublisher()
 			throws MalformedURLException, AgentException, AuthenticationException,
 			       TransportException, UserStoreException, RegistryException, SocketException {
-		log.info("Start creating data publisher......");
 		DataPublisher dataPublisher = new DataPublisher(getURL(), BPMNAdminConfig.getUserName(),
 		                                                BPMNAdminConfig.getPassword());
-		log.info("End of creating data publisher.....");
 		return dataPublisher;
 	}
 

@@ -32,14 +32,13 @@ import java.util.concurrent.Executors;
 public class BPMNAnalyticsServiceComponent {
 	private static Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
 
-	protected void activate(ComponentContext ctxt){
+	protected void activate(ComponentContext ctxt) {
 		log.info("Initializing the BPMN Analytics Service component...");
 
-		 BPMNAnalyticsHolder bpmnAnalyticsHolder = BPMNAnalyticsHolder.getInstance();
-		 ExecutorService executorService = Executors.newFixedThreadPool(2);
-		 bpmnAnalyticsHolder.setExecutorService(executorService);
+		BPMNAnalyticsHolder bpmnAnalyticsHolder = BPMNAnalyticsHolder.getInstance();
+		ExecutorService executorService = Executors.newFixedThreadPool(2);
+		bpmnAnalyticsHolder.setExecutorService(executorService);
 
-		//initialize AnalyticsPublisher and call initialize() method here (when server start this service is up and running)
 		AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
 		analyticsPublisher.initialize();
 	}
