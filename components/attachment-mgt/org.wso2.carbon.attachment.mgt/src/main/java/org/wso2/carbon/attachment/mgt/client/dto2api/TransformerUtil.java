@@ -52,10 +52,8 @@ public class TransformerUtil {
      */
     public static Attachment convertAttachment(TAttachment attachment) throws AttachmentMgtException {
         Attachment attachmentDTO = null;
-        attachmentDTO = new AttachmentImpl(attachment.getName(),
-                                           attachment.getCreatedBy(),
-                                           attachment.getContentType(),
-                                           attachment.getContent());
+        attachmentDTO = new AttachmentImpl(attachment.getName(), attachment.getCreatedBy(), attachment.getContentType(),
+                attachment.getContent(), attachment.getCreatedTime().getTime());
         return attachmentDTO;
     }
 
@@ -72,7 +70,7 @@ public class TransformerUtil {
         attachmentDTO.setCreatedBy(attachment.getCreatedBy());
 
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(attachment.getCreatedTime());
+        cal.setTime(attachment.getCreatedTime());
         attachmentDTO.setCreatedTime(cal);
 
         attachmentDTO.setContentType(attachment.getContentType());

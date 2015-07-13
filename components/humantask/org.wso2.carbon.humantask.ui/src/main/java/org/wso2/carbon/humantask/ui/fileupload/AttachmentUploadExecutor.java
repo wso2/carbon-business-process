@@ -63,7 +63,7 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
             FileItemData fileToBeUpload = fileItemsMap.get(0);
 
             AttachmentUploadClient attachmentUploadClient = new AttachmentUploadClient(configurationContext,
-                                                                       serverURL + "AttachmentMgtService", cookie);
+                                                                       serverURL, cookie);
             HumanTaskClientAPIServiceClient taskOperationClient = new HumanTaskClientAPIServiceClient(cookie,
                                                                       serverURL, configurationContext);
 
@@ -73,7 +73,7 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
 
             String attachmentName = fileToBeUpload.getDataHandler().getName();
             String contentType = fileToBeUpload.getDataHandler().getContentType();
-            boolean isAdded = taskOperationClient.addAttachment(taskID, attachmentName, contentType, attachmentID);
+             boolean isAdded = taskOperationClient.addAttachment(taskID, attachmentName, contentType, attachmentID);
 
             String msg = "Your attachment has been uploaded successfully.";
 
