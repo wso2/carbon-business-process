@@ -20,7 +20,7 @@ public class AnalyticsPublisherConstants {
     public static final String PORT = "7611";
     public static final String USER_NAME = "admin";
     public static final String PASSWORD = "admin";
-    public static final int DELAY = 12000;
+    public static final int DELAY = 10000;
 
     public static final String PROCESS_INSTANCE = "PROCESS_INSTANCE";
     public static final String TASK_INSTANCE = "TASK_INSTANCE";

@@ -311,7 +311,7 @@ public class AnalyticsPublishServiceUtils {
 			Registry registry = localContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
 			if (registry != null) {
 				if (registry.resourceExists(AnalyticsPublisherConstants.TASK_RESOURCE_PATH)) {
-					log.info("Task instance resource path exists...........");
+					log.debug("Task instance resource path exists...........");
 					resource = registry.get(AnalyticsPublisherConstants.TASK_RESOURCE_PATH);
 					time = resource.getProperty(
 							AnalyticsPublisherConstants.LAST_TASK_INSTANCE_END_TIME);

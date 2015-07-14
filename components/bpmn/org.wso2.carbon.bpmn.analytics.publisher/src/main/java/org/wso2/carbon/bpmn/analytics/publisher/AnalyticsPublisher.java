@@ -221,9 +221,9 @@ public class AnalyticsPublisher {
 		                                  bpmnTaskInstance.getEndTime().toString(),
 		                                  bpmnTaskInstance.getDurationInMills(),
 		                                  bpmnTaskInstance.getAssignee() };
-		log.info("Start to Publish BPMN task instance event.....");
+		log.debug("Start to Publish BPMN task instance event.....");
 		dataPublisher.publish(taskInstanceStreamId, getMeta(), null, payload);
-		log.info("Published BPMN task instance event.....");
+		log.debug("Published BPMN task instance event.....");
 	}
 
 	/**
