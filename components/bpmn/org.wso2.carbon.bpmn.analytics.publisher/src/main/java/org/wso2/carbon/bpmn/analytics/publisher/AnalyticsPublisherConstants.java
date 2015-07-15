@@ -20,15 +20,15 @@ public class AnalyticsPublisherConstants {
     public static final String PORT = "7611";
     public static final String USER_NAME = "admin";
     public static final String PASSWORD = "admin";
-    public static final int DELAY = 12000;
+    public static final int DELAY = 10000;
 
     public static final String PROCESS_INSTANCE = "PROCESS_INSTANCE";
     public static final String TASK_INSTANCE = "TASK_INSTANCE";
     public static final String LAST_PROCESS_INSTANCE_PUBLISH_TIME = "lastBPMNProcessInstanceTime";
     public static final String LAST_TASK_INSTANCE_END_TIME = "lastBPMNTaskInstanceTime";
 
-    public static final String PROCESS_STREAM_NAME = "BPMNProcessInstanceDataPublish";
-    public static final String TASK_STREAM_NAME = "BPMNTaskDataPublish";
+    public static final String PROCESS_STREAM_NAME = "BPMN_Process_Instance_Data_Publish";
+    public static final String TASK_STREAM_NAME = "BPMN_Task_Instance_Data_Publish";
     public static final String STREAM_ID = "id";
     public static final String STREAM_VERSION = "1.0.0";
     public static final String STREAM_NICK_NAME = "nickName";

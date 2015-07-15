@@ -34,13 +34,12 @@ public class BPMNAnalyticsServiceComponent {
 
 	protected void activate(ComponentContext ctxt) {
 		log.info("Initializing the BPMN Analytics Service component...");
-
-		BPMNAnalyticsHolder bpmnAnalyticsHolder = BPMNAnalyticsHolder.getInstance();
-		ExecutorService executorService = Executors.newFixedThreadPool(2);
-		bpmnAnalyticsHolder.setExecutorService(executorService);
-
-		AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-		analyticsPublisher.initialize();
+		try {
+			AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
+			analyticsPublisher.initialize();
+		} catch (Throwable e) {
+			log.error("Failed to initialize the Analytics Service component.", e);
+		}
 	}
 
 	public void setRegistryService(RegistryService registryService) {

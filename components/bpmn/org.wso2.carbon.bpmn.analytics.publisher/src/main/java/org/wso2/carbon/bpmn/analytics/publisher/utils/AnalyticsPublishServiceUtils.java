@@ -23,7 +23,6 @@ import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
@@ -55,7 +54,8 @@ public class AnalyticsPublishServiceUtils {
 		HistoricProcessInstanceQuery instanceQuery =
 				historyService.createHistoricProcessInstanceQuery();
 		List<HistoricProcessInstance> historicProcessInstanceList = null;
-		String time = readLastCompletedProcessInstancePublishTimeFromRegistry();
+		String time = readPublishTimeFromRegistry(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH,
+		                                          AnalyticsPublisherConstants.LAST_PROCESS_INSTANCE_PUBLISH_TIME);
 		if (time == null) {
 			if (instanceQuery.finished().list().size() != 0) {
 				// if the stored time is null in the registry file then send all completed process instances.
@@ -77,8 +77,8 @@ public class AnalyticsPublishServiceUtils {
 			}
 		}
 		if (historicProcessInstanceList != null) {
-			log.debug("Write BPMN process instance to the carbon registry.........");
-			writeLastCompletedProcessInstancePublishTimeToRegistry(historicProcessInstanceList);
+			log.debug("Write BPMN process instance to the carbon registry...");
+			writePublishTimeToRegistry(historicProcessInstanceList);
 			//return ProcessInstances set as BPMNProcessInstance array
 			return getBPMNProcessInstances(historicProcessInstanceList);
 		}
@@ -96,7 +96,8 @@ public class AnalyticsPublishServiceUtils {
 				                   .getHistoryService();
 		HistoricTaskInstanceQuery instanceQuery = historyService.createHistoricTaskInstanceQuery();
 		List<HistoricTaskInstance> historicTaskInstanceList = null;
-		String time = readLastCompletedTaskInstanceEndTimeFromRegistry();
+		String time = readPublishTimeFromRegistry(AnalyticsPublisherConstants.TASK_RESOURCE_PATH,
+		                                          AnalyticsPublisherConstants.LAST_TASK_INSTANCE_END_TIME);
 		if (time == null) {
 			if (instanceQuery.finished().list().size() != 0) {
 				historicTaskInstanceList =
@@ -116,8 +117,8 @@ public class AnalyticsPublishServiceUtils {
 			}
 		}
 		if (historicTaskInstanceList != null) {
-			log.debug("Write BPMN task instance to the carbon registry........");
-			writeLastCompletedTaskInstanceEndTimeToRegistry(historicTaskInstanceList);
+			log.debug("Write BPMN task instance to the carbon registry...");
+			writeTaskEndTimeToRegistry(historicTaskInstanceList);
 			return getBPMNTaskInstances(historicTaskInstanceList);
 		}
 		return null;
@@ -207,16 +208,16 @@ public class AnalyticsPublishServiceUtils {
 	 *
 	 * @param historicProcessInstanceList List of historic process instances
 	 */
-	private void writeLastCompletedProcessInstancePublishTimeToRegistry(
+	private void writePublishTimeToRegistry(
 			List<HistoricProcessInstance> historicProcessInstanceList) {
-		log.debug("Start writing last completed process instance publish time......");
+		log.debug("Start writing last completed process instance publish time...");
 		Date lastProcessInstancePublishTime =
 				historicProcessInstanceList.get(historicProcessInstanceList.size() - 1)
 				                           .getStartTime();
 		try {
 			PrivilegedCarbonContext context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
 			Registry registry = context.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
-			Resource resource = null;
+			Resource resource;
 			if (!registry.resourceExists(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH)) {
 				resource = registry.newResource();
 				resource.addProperty(AnalyticsPublisherConstants.LAST_PROCESS_INSTANCE_PUBLISH_TIME,
@@ -228,7 +229,7 @@ public class AnalyticsPublishServiceUtils {
 				                     String.valueOf(lastProcessInstancePublishTime));
 				registry.put(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH, resource);
 			}
-			log.debug("End of writing last completed process instance publish time......");
+			log.debug("End of writing last completed process instance publish time...");
 		} catch (RegistryException e) {
 			String errMsg = "Registry error while writing the process instance publish time.";
 			log.error(errMsg, e);
@@ -240,16 +241,15 @@ public class AnalyticsPublishServiceUtils {
 	 *
 	 * @param historicTaskInstanceList List of historic task instances
 	 */
-	private void writeLastCompletedTaskInstanceEndTimeToRegistry(
-			List<HistoricTaskInstance> historicTaskInstanceList) {
-		log.debug("Start writing last completed task instance end time......");
+	private void writeTaskEndTimeToRegistry(List<HistoricTaskInstance> historicTaskInstanceList) {
+		log.debug("Start writing last completed task instance end time...");
 		Date lastTaskInstanceDate =
 				historicTaskInstanceList.get(historicTaskInstanceList.size() - 1).getEndTime();
 		try {
 			PrivilegedCarbonContext privilegedContext =
 					PrivilegedCarbonContext.getThreadLocalCarbonContext();
 			Registry registry = privilegedContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
-			Resource resource = null;
+			Resource resource;
 			if (!registry.resourceExists(AnalyticsPublisherConstants.TASK_RESOURCE_PATH)) {
 				resource = registry.newResource();
 				resource.addProperty(AnalyticsPublisherConstants.LAST_TASK_INSTANCE_END_TIME,
@@ -261,7 +261,7 @@ public class AnalyticsPublishServiceUtils {
 				                     String.valueOf(lastTaskInstanceDate));
 				registry.put(AnalyticsPublisherConstants.TASK_RESOURCE_PATH, resource);
 			}
-			log.debug("End of writing last completed task instance end time......");
+			log.debug("End of writing last completed task instance end time...");
 		} catch (RegistryException e) {
 			String errMsg = "Registry error while writing the task instance end time.";
 			log.error(errMsg, e);
@@ -269,26 +269,28 @@ public class AnalyticsPublishServiceUtils {
 	}
 
 	/**
-	 * Read last completed process instance end time from carbon registry
+	 * Read last completed process/task instance end time from carbon registry
 	 *
-	 * @return the end time of last completed process instance
+	 * @param resourcePath resource path in the carbon registry
+	 * @param propertyPath property path in the resource
+	 * @return the end time of last completed process/task instance
 	 */
-	private String readLastCompletedProcessInstancePublishTimeFromRegistry() {
+
+	private String readPublishTimeFromRegistry(String resourcePath, String propertyPath) {
 		String time = null;
-		Resource resource = null;
+		Resource resource;
 		try {
 			PrivilegedCarbonContext carbonContext =
 					PrivilegedCarbonContext.getThreadLocalCarbonContext();
 			Registry registry = carbonContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
 			if (registry != null) {
-				if (registry.resourceExists(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH)) {
-					log.debug("Process instance resource path exists.........");
-					resource = registry.get(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH);
-					time = resource.getProperty(
-							AnalyticsPublisherConstants.LAST_PROCESS_INSTANCE_PUBLISH_TIME);
+				if (registry.resourceExists(resourcePath)) {
+					log.debug("Process instance resource path exists...");
+					resource = registry.get(resourcePath);
+					time = resource.getProperty(propertyPath);
 				}
 			} else {
-				log.debug("Registry is null........");
+				log.debug("Registry is null...");
 			}
 		} catch (RegistryException e) {
 			String errMsg = "Registry error while reading the process instance publish time.";
@@ -296,33 +298,6 @@ public class AnalyticsPublishServiceUtils {
 		}
 		return time;
 	}
-
-	/**
-	 * Read last completed task instance end time from carbon registry
-	 *
-	 * @return the end time of last completed task instance
-	 */
-	private String readLastCompletedTaskInstanceEndTimeFromRegistry() {
-		String time = null;
-		Resource resource = null;
-		try {
-			PrivilegedCarbonContext localContext =
-					PrivilegedCarbonContext.getThreadLocalCarbonContext();
-			Registry registry = localContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
-			if (registry != null) {
-				if (registry.resourceExists(AnalyticsPublisherConstants.TASK_RESOURCE_PATH)) {
-					log.debug("Task instance resource path exists...........");
-					resource = registry.get(AnalyticsPublisherConstants.TASK_RESOURCE_PATH);
-					time = resource.getProperty(
-							AnalyticsPublisherConstants.LAST_TASK_INSTANCE_END_TIME);
-				}
-			} else {
-				log.debug("Registry is null.........");
-			}
-		} catch (RegistryException e) {
-			String errMsg = "Registry error while reading the task instance end time.";
-			log.error(errMsg, e);
-		}
-		return time;
-	}
 }
+
+

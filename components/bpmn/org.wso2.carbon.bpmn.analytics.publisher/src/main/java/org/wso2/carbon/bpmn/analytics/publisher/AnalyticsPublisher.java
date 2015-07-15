@@ -66,8 +66,7 @@ public class AnalyticsPublisher {
 			String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 			Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
 			                                       .getGovernanceSystemRegistry();
-			setPrivilegeForProcessInstanceThread(tenantId, tenantDomain, registry);
-			setPrivilegeForTaskInstanceThread(tenantId, tenantDomain, registry);
+			setPrivilegeContext(tenantId, tenantDomain, registry);
 		} catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
 				DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
 				MalformedStreamDefinitionException | UserStoreException | RegistryException | SocketException e) {
@@ -77,11 +76,11 @@ public class AnalyticsPublisher {
 	}
 
 	/**
-	 * Set thread local privileges to process instance polling thread
+	 * Set thread local privileges to polling thread
 	 */
-	private void setPrivilegeForProcessInstanceThread(final int tenantId, final String tenantDomain,
-	                                                  final Registry registry) {
-		log.debug("Run setPrivilegeForProcessInstanceThread method.......");
+	private void setPrivilegeContext(final int tenantId, final String tenantDomain,
+	                                 final Registry registry) {
+		log.debug("Run setPrivilegeContext method...");
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			@Override public void run() {
 				try {
@@ -91,7 +90,7 @@ public class AnalyticsPublisher {
 					privilegedCarbonContext.setTenantId(tenantId, true);
 					privilegedCarbonContext.setTenantDomain(tenantDomain, true);
 					privilegedCarbonContext.setRegistry(RegistryType.SYSTEM_GOVERNANCE, registry);
-					doPollingForProcessInstances();
+					doPollingForInstances();
 				} finally {
 					PrivilegedCarbonContext.endTenantFlow();
 				}
@@ -102,25 +101,24 @@ public class AnalyticsPublisher {
 	/**
 	 * Polling for Process instances
 	 */
-	private void doPollingForProcessInstances() {
-		log.debug("Start polling for process instances.....");
+	private void doPollingForInstances() {
+		log.debug("Start polling for process instances...");
 		try {
+
 			while (true) {
 				Thread.sleep(AnalyticsPublisherConstants.DELAY);
 				BPMNProcessInstance[] bpmnProcessInstances =
 						analyticsPublishServiceUtils.getCompletedProcessInstances();
 				if (bpmnProcessInstances != null && bpmnProcessInstances.length > 0) {
 					for (BPMNProcessInstance instance : bpmnProcessInstances) {
-						long startTime = System.currentTimeMillis();
 						publishBPMNProcessInstanceEvent(instance);
-						long elapsedTime = System.currentTimeMillis() - startTime;
-						try {
-							Thread.sleep(elapsedTime);
-						} catch (InterruptedException e) {
-							String errMsg =
-									"Interrupted exception in polling thread for BPMN process instances.";
-							log.error(errMsg, e);
-						}
+					}
+				}
+				BPMNTaskInstance[] bpmnTaskInstances =
+						analyticsPublishServiceUtils.getCompletedTaskInstances();
+				if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
+					for (BPMNTaskInstance instance : bpmnTaskInstances) {
+						publishBPMNTaskInstanceEvent(instance);
 					}
 				}
 			}
@@ -129,62 +127,6 @@ public class AnalyticsPublisher {
 			log.error(errMsg, e);
 		} catch (InterruptedException e) {
 			String errMsg = "I/O exception in polling thread for BPMN process instances.";
-			log.error(errMsg, e);
-		}
-	}
-
-	/**
-	 * Set thread local privileges to task instance polling thread
-	 */
-	private void setPrivilegeForTaskInstanceThread(final int tenantId, final String tenantDomain,
-	                                               final Registry registry) {
-		log.debug("Run startPollingForTaskInstances method.......");
-		Executors.newSingleThreadExecutor().execute(new Runnable() {
-			@Override public void run() {
-				try {
-					PrivilegedCarbonContext.startTenantFlow();
-					PrivilegedCarbonContext privilegedCarbonContext =
-							PrivilegedCarbonContext.getThreadLocalCarbonContext();
-					privilegedCarbonContext.setTenantId(tenantId, true);
-					privilegedCarbonContext.setTenantDomain(tenantDomain, true);
-					privilegedCarbonContext.setRegistry(RegistryType.SYSTEM_GOVERNANCE, registry);
-					doPollingForTaskInstances();
-				} finally {
-					PrivilegedCarbonContext.endTenantFlow();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Polling for task instances
-	 */
-	private void doPollingForTaskInstances() {
-		try {
-			while (true) {
-				Thread.sleep(AnalyticsPublisherConstants.DELAY);
-				BPMNTaskInstance[] bpmnTaskInstances =
-						analyticsPublishServiceUtils.getCompletedTaskInstances();
-				if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
-					for (BPMNTaskInstance instance : bpmnTaskInstances) {
-						long startTime = System.currentTimeMillis();
-						publishBPMNTaskInstanceEvent(instance);
-						long elapsedTime = System.currentTimeMillis() - startTime;
-						try {
-							Thread.sleep(elapsedTime);
-						} catch (InterruptedException e) {
-							String errMsg =
-									"Interrupted exception in polling thread for BPMN task instances.";
-							log.error(errMsg, e);
-						}
-					}
-				}
-			}
-		} catch (AgentException e) {
-			String errMsg = "Agent exception in polling thread for BPMN task instances.";
-			log.error(errMsg, e);
-		} catch (InterruptedException e) {
-			String errMsg = "I/O exception in polling thread for BPMN task instances.";
 			log.error(errMsg, e);
 		}
 	}
@@ -202,9 +144,9 @@ public class AnalyticsPublisher {
 		                                  bpmnProcessInstance.getStartTime().toString(),
 		                                  bpmnProcessInstance.getEndTime().toString(),
 		                                  bpmnProcessInstance.getDuration() };
-		log.debug("Start to Publish BPMN process instance event.....");
+		log.debug("Start to Publish BPMN process instance event...");
 		dataPublisher.publish(processInstanceStreamId, getMeta(), null, payload);
-		log.debug("Published BPMN process instance event.....");
+		log.debug("Published BPMN process instance event...");
 	}
 
 	/**
@@ -221,9 +163,9 @@ public class AnalyticsPublisher {
 		                                  bpmnTaskInstance.getEndTime().toString(),
 		                                  bpmnTaskInstance.getDurationInMills(),
 		                                  bpmnTaskInstance.getAssignee() };
-		log.debug("Start to Publish BPMN task instance event.....");
+		log.debug("Start to Publish BPMN task instance event...");
 		dataPublisher.publish(taskInstanceStreamId, getMeta(), null, payload);
-		log.debug("Published BPMN task instance event.....");
+		log.debug("Published BPMN task instance event...");
 	}
 
 	/**
