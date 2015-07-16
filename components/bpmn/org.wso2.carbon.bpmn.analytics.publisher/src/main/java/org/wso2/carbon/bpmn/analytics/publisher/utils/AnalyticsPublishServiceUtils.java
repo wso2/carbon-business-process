@@ -24,6 +24,7 @@ import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
 
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
@@ -48,9 +49,9 @@ public class AnalyticsPublishServiceUtils {
 	 * @return BPMNProcessInstance array if the historic process instance list is not null
 	 */
 	public BPMNProcessInstance[] getCompletedProcessInstances() {
-		HistoryService historyService =
-				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine()
-				                   .getHistoryService();
+		HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
+//				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine()
+//				                   .getHistoryService();
 		HistoricProcessInstanceQuery instanceQuery =
 				historyService.createHistoricProcessInstanceQuery();
 		List<HistoricProcessInstance> historicProcessInstanceList = null;
@@ -91,9 +92,9 @@ public class AnalyticsPublishServiceUtils {
 	 * @return BPMNTaskInstance array if the historic task instance list is not null
 	 */
 	public BPMNTaskInstance[] getCompletedTaskInstances() {
-		HistoryService historyService =
-				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine()
-				                   .getHistoryService();
+		HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
+//				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine()
+//				                   .getHistoryService();
 		HistoricTaskInstanceQuery instanceQuery = historyService.createHistoricTaskInstanceQuery();
 		List<HistoricTaskInstance> historicTaskInstanceList = null;
 		String time = readPublishTimeFromRegistry(AnalyticsPublisherConstants.TASK_RESOURCE_PATH,
@@ -278,7 +279,6 @@ public class AnalyticsPublishServiceUtils {
 
 	private String readPublishTimeFromRegistry(String resourcePath, String propertyPath) {
 		String time = null;
-		Resource resource;
 		try {
 			PrivilegedCarbonContext carbonContext =
 					PrivilegedCarbonContext.getThreadLocalCarbonContext();
@@ -286,7 +286,7 @@ public class AnalyticsPublishServiceUtils {
 			if (registry != null) {
 				if (registry.resourceExists(resourcePath)) {
 					log.debug("Process instance resource path exists...");
-					resource = registry.get(resourcePath);
+					Resource resource = registry.get(resourcePath);
 					time = resource.getProperty(propertyPath);
 				}
 			} else {

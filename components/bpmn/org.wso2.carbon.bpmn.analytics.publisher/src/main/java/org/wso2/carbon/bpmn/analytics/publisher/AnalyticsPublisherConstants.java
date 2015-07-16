@@ -20,7 +20,9 @@ public class AnalyticsPublisherConstants {
     public static final String PORT = "7611";
     public static final String USER_NAME = "admin";
     public static final String PASSWORD = "admin";
-    public static final int DELAY = 10000;
+    public static final String LOCAL_THRIFT_URL = "tcp://localhost:7611";
+    public static final int DELAY = 15000;
+    public static final int REPEATEDLY_DELAY = 6000;
 
     public static final String PROCESS_INSTANCE = "PROCESS_INSTANCE";
     public static final String TASK_INSTANCE = "TASK_INSTANCE";
@@ -47,4 +49,9 @@ public class AnalyticsPublisherConstants {
 
     public static final String PROCESS_RESOURCE_PATH = "resource_process_instance_time_location";
     public static final String TASK_RESOURCE_PATH = "resource_task_instance_time_location";
+
+    public static final String DATA_RECEIVER_RESOURCE_PATH = "bpmn/BPMN_data_analytics_publisher";
+    public static final String THRIFT_URL_PROPERTY = "data_receiver_thrift_url";
+    public static final String USER_NAME_PROPERTY = "password";
+    public static final String PASSWORD_PROPERTY = "username";
 }

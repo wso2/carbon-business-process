@@ -21,7 +21,7 @@ import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.utils.AnalyticsPublishServiceUtils;
-import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNAdminConfig;
+import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
@@ -34,11 +34,9 @@ import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.utils.NetworkUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.SocketException;
 import java.util.concurrent.Executors;
 
 /**
@@ -69,7 +67,7 @@ public class AnalyticsPublisher {
 			setPrivilegeContext(tenantId, tenantDomain, registry);
 		} catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
 				DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
-				MalformedStreamDefinitionException | UserStoreException | RegistryException | SocketException e) {
+				MalformedStreamDefinitionException | UserStoreException | RegistryException e) {
 			String errMsg = "Data publisher objects initialization error.";
 			log.error(errMsg, e);
 		}
@@ -104,9 +102,8 @@ public class AnalyticsPublisher {
 	private void doPollingForInstances() {
 		log.debug("Start polling for process instances...");
 		try {
-
+			Thread.sleep(AnalyticsPublisherConstants.DELAY);
 			while (true) {
-				Thread.sleep(AnalyticsPublisherConstants.DELAY);
 				BPMNProcessInstance[] bpmnProcessInstances =
 						analyticsPublishServiceUtils.getCompletedProcessInstances();
 				if (bpmnProcessInstances != null && bpmnProcessInstances.length > 0) {
@@ -121,6 +118,7 @@ public class AnalyticsPublisher {
 						publishBPMNTaskInstanceEvent(instance);
 					}
 				}
+				Thread.sleep(AnalyticsPublisherConstants.REPEATEDLY_DELAY);
 			}
 		} catch (AgentException e) {
 			String errMsg = "Agent exception in polling thread for BPMN process instances.";
@@ -235,9 +233,11 @@ public class AnalyticsPublisher {
 	 */
 	private DataPublisher createDataPublisher()
 			throws MalformedURLException, AgentException, AuthenticationException,
-			       TransportException, UserStoreException, RegistryException, SocketException {
-		DataPublisher dataPublisher = new DataPublisher(getURL(), BPMNAdminConfig.getUserName(),
-		                                                BPMNAdminConfig.getPassword());
+			       TransportException, UserStoreException, RegistryException {
+		DataPublisher dataPublisher = new DataPublisher(BPMNDataReceiverConfig.getThriftURL(),
+		                                                BPMNDataReceiverConfig.getUserName(),
+		                                                BPMNDataReceiverConfig.getPassword());
+
 		return dataPublisher;
 	}
 
@@ -246,17 +246,6 @@ public class AnalyticsPublisher {
 	 */
 	private void stopDataPublisher() {
 		dataPublisher.stop();
-	}
-
-	/**
-	 * Get the url of data receiver to publish the data
-	 *
-	 * @return the url of data receiver in the data-bridge
-	 */
-	private String getURL() throws SocketException {
-		String url = "tcp://" + NetworkUtils.getLocalHostname() + ":" +
-		             AnalyticsPublisherConstants.PORT;
-		return url;
 	}
 
 	/**
