@@ -49,9 +49,8 @@ public class AnalyticsPublishServiceUtils {
 	 * @return BPMNProcessInstance array if the historic process instance list is not null
 	 */
 	public BPMNProcessInstance[] getCompletedProcessInstances() {
-		HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
-//				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine()
-//				                   .getHistoryService();
+		HistoryService historyService =
+				BPMNServerHolder.getInstance().getEngine().getHistoryService();
 		HistoricProcessInstanceQuery instanceQuery =
 				historyService.createHistoricProcessInstanceQuery();
 		List<HistoricProcessInstance> historicProcessInstanceList = null;
@@ -92,9 +91,8 @@ public class AnalyticsPublishServiceUtils {
 	 * @return BPMNTaskInstance array if the historic task instance list is not null
 	 */
 	public BPMNTaskInstance[] getCompletedTaskInstances() {
-		HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
-//				BPMNAnalyticsHolder.getThreadSafeBPMNServerInstance().getEngine()
-//				                   .getHistoryService();
+		HistoryService historyService =
+				BPMNServerHolder.getInstance().getEngine().getHistoryService();
 		HistoricTaskInstanceQuery instanceQuery = historyService.createHistoricTaskInstanceQuery();
 		List<HistoricTaskInstance> historicTaskInstanceList = null;
 		String time = readPublishTimeFromRegistry(AnalyticsPublisherConstants.TASK_RESOURCE_PATH,
