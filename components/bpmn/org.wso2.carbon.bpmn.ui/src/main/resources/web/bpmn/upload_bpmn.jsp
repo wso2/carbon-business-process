@@ -34,32 +34,57 @@
 <script type="text/javascript" src="js/bpmn-main.js"></script>
 <script>
 function validate() {
-    if (document.bpmnUpload.bpmnFileName.value != null) {
-        var jarinput = document.bpmnUpload.bpmnFileName.value;
-        if (jarinput == '') {
+    var validFileNames = true;
+    if (document.bpmnUpload.bpmnFileName.value != null && document.bpmnUpload.bpmnFileName.value != '') {
+        var jarInput = document.bpmnUpload.bpmnFileName.value;
+        if (jarInput == null || jarInput == '') {
             CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
-        } else if (jarinput.lastIndexOf(".bar") == -1) {
+            validFileNames = false;
+        } else if (jarInput.lastIndexOf(".bar") == -1) {
             CARBON.showWarningDialog('Please select a .bar file');
-        } else {
-            document.bpmnUpload.submit();
+            validFileNames = false;
         }
     } else if (document.bpmnUpload.bpmnFileName[0].value != null) {
         var validFileNames = true;
         for (var i = 0; i < document.bpmnUpload.bpmnFileName.length; i++) {
-            var jarinput = document.bpmnUpload.bpmnFileName[i].value;
-            if (jarinput == '') {
+            var jarInput = document.bpmnUpload.bpmnFileName[i].value;
+            if (jarInput == null || jarInput == '') {
                 CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
                 validFileNames = false;
                 break;
-            } else if (jarinput.lastIndexOf(".bar") == -1) {
+            } else if (jarInput.lastIndexOf(".bar") == -1) {
                 CARBON.showWarningDialog('Please select a .bar file');
                 validFileNames = false;
                 break;
-            } else {
-                document.bpmnUpload.submit();
             }
         }
     }
+    if(validFileNames){
+        document.bpmnUpload.submit();
+    }
+}
+var rows = 0;
+function addNewRow() {
+    rows++;
+
+    //add a row to the rows collection and get a reference to the newly added row
+    var newRow = document.getElementById("bpmnTbl").insertRow(-1);
+    newRow.id = 'file' + rows;
+
+    var oCell = newRow.insertCell(-1);
+    oCell.innerHTML = '<label>BPMN Package(.bar)<font color="red">*</font></label>';
+    oCell.className = "formRow";
+
+    oCell = newRow.insertCell(-1);
+    oCell.innerHTML = "<input type='file' name='bpmnFileName' size='50'/>&nbsp;&nbsp;<input type='button' width='20px' class='button' value='  -  ' onclick=\"deleteThisRow('file" + rows + "');\" />";
+    oCell.className = "formRow";
+
+    alternateTableRows('bpmnTbl', 'tableEvenRow', 'tableOddRow');
+}
+function deleteThisRow(rowId) {
+    var tableRow = document.getElementById(rowId);
+    tableRow.parentNode.deleteRow(tableRow.rowIndex);
+    alternateTableRows('bpmnTbl', 'tableEvenRow', 'tableOddRow');
 }
 </script>
     <carbon:breadcrumb
@@ -83,7 +108,7 @@ function validate() {
                         </td>
                         <td class="formRow">
                             <input type="file" name="bpmnFileName" size="50"/>&nbsp;
-                            <input type="button" width='20px' class="button" onclick="addRow();" value=" + "/>
+                            <input type="button" width='20px' class="button" onclick="addNewRow()" value=" + "/>
                         </td>
                     </tr>
                 </table>
