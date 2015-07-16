@@ -21,7 +21,6 @@ import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-//import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
@@ -29,9 +28,6 @@ import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
 import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 import org.wso2.carbon.registry.core.service.RegistryService;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"

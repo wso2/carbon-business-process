@@ -70,4 +70,5 @@ public class BPMNServerHolder {
     public RegistryService getRegistryService() {
         return registryService;
     }
+
 }
