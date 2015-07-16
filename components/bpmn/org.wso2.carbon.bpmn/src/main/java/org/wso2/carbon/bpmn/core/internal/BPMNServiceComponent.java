@@ -50,13 +50,6 @@ public class BPMNServiceComponent {
             holder.setEngine(activitiEngineBuilder.buildEngine());
             holder.setTenantManager(new TenantManager());
 
-            ExecutorService executorService = Executors.newFixedThreadPool(2);
-            holder.setExecutorService(executorService);
-
-            //initialize AnalyticsPublisher and call intialize() method here (when server start this service is up and running)
-//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-//            analyticsPublisher.initialize();
-
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
 //            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
 //            dataSourceHandler.closeDataSource();
