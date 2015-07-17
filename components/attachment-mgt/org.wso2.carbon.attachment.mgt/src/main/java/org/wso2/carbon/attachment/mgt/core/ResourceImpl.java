@@ -23,6 +23,8 @@ import org.wso2.carbon.attachment.mgt.api.Resource;
 import javax.activation.DataHandler;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Initial implementation for the org.wso2.carbon.attachment.mgt.api.Resource
@@ -46,7 +48,7 @@ public class ResourceImpl implements Resource {
     /**
      * Birth-time of the resource
      */
-    protected long createdTime;
+    protected Date createdTime;
 
     /**
      * Owner of the resource
@@ -87,10 +89,41 @@ public class ResourceImpl implements Resource {
         this.content = content;
     }
 
+    /**
+     * Create a resource with given details.
+     * @param name
+     * @param author
+     * @param contentType
+     * @param content
+     * @param createdTime
+     */
+    public ResourceImpl(String name, String author, String contentType, DataHandler content, Date createdTime) {
+        this.name = name;
+        this.author = author;
+        this.contentType = contentType;
+        this.content = content;
+        this.createdTime = createdTime;
+    }
+
     protected ResourceImpl(String id, String name, String author, String contentType, DataHandler content, URL uri) {
         this(name, author, contentType, content);
         this.id = id;
         this.url = uri;
+    }
+
+    /**
+     * Create a resource with given details
+     * @param id
+     * @param name
+     * @param author
+     * @param contentType
+     * @param content
+     * @param uri
+     * @param createdTime
+     */
+    protected ResourceImpl(String id, String name, String author, String contentType, DataHandler content, URL uri, Date createdTime) {
+        this(id, name, author, contentType, content, uri);
+        this.createdTime = createdTime;
     }
 
     /**
@@ -110,7 +143,7 @@ public class ResourceImpl implements Resource {
     /**
      * {@inheritDoc}
      */
-    public long getCreatedTime() {
+    public Date getCreatedTime() {
         return this.createdTime;
     }
 

@@ -45,7 +45,7 @@ public interface Resource {
      *
      * @return the created time
      */
-    public long getCreatedTime();
+    public Date getCreatedTime();
 
     /**
      * Get the user name of the resource author.
