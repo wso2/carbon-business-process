@@ -81,12 +81,15 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
                 throw new Exception("Attachment was added successfully with id:" + attachmentID + ". But the task " +
                                     "with id: " + taskID + " was not associated with it correctly.");
             } else {
-                if (redirect != null) {
+                if (redirect != null && redirect.contains("humantask/basic_task_view.jsp")) {
+                    //redirection is going to the carbon mgt console
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request, response,
                                                         getContextRoot(request) + "/" + webContext + "/" + redirect);
-                } else if (redirect.contains("humantask-explorer")) {
-                   out.write(msg);
-                }else {
+                } else if (redirect != null) {
+                    //redirection exists, not to carbon mgt console
+                    out.write(msg);
+                    response.sendRedirect(getContextRoot(request) + "/" + webContext + "/" + redirect);
+                } else {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request);
                 }
 
