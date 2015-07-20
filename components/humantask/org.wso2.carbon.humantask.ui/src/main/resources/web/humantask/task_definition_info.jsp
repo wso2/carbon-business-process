@@ -128,8 +128,8 @@
                                     <tr>
                                         <td>
                                             <!--?prettify lang=html linenums=true?-->
-                                            <pre class="prettyprint linenums" style="height: 35em; overflow:scroll"
-                                                 width="215px">
+                                            <pre class="prettyprint linenums"
+                                                 style="height: 35em; overflow: scroll; white-space: pre-wrap;">
                                             <%=taskDefPrettyPrinted%>
                                             </pre>
                                             <script type="text/javascript">

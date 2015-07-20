@@ -110,7 +110,7 @@
                 <tr>
                     <td>
                         <!--?prettify lang=html linenums=true?-->
-                        <pre class="prettyprint linenums" style="height: 35em; width: 1500px; overflow:scroll; white-space: pre-wrap;">
+                        <pre class="prettyprint linenums" style="height: 35em; overflow:scroll; white-space: pre-wrap;">
                               <%=client.getProcessModel(processId)%>
                         </pre>
                     </td>
