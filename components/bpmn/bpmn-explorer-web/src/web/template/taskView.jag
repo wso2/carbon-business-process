@@ -34,8 +34,17 @@
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>People:</th>
-		    		<td><b>Owner: </b><%=taskData.owner%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#transfer">Transfer</button></td>
-		    		<td><b>Assignee: </b><%=taskData.assignee%> <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#reassign">Reassign</button></td>
+		    		<td>
+		    		<div class="col-lg-8 padding-left-none">
+		    			<div class="col-lg-3 padding-left-none"><b>Owner: </b><%=taskData.owner%> </div>
+		    			<div class="col-lg-3"><button class="btn btn-action" data-toggle="modal" data-target="#transfer">Transfer</button></div>
+					</div>
+					<div class="col-lg-8 padding-top padding-left-none">
+		    			<div class="col-lg-3 padding-left-none"><b>Assignee: </b><%=taskData.assignee%></div>
+		    			<div class="col-lg-3"> <button class="btn btn-action" data-toggle="modal" data-target="#reassign">Reassign</button></div>
+					</div>
+
+		    		</td>
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
@@ -59,8 +68,8 @@
 		    		</td>
 		    	</tr>
 		    	<tr class="white-bg">
-		    		<td align='center' colspan='3'>
-		    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info">Complete task</button>
+		    		<td align='right' colspan='3'>
+		    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">Complete task</button>
 		    		</td>
 		    	</tr>
 		    </tbody>
@@ -69,18 +78,37 @@
  </div>
  <!-- Adding attachments tab -->
  <div class="row" name="additionalInfoSection">
-   <ul class="nav nav-tabs" role="tablist">
-   <li id="attachmentsTab">
-           <a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
-            </li>
-   </ul>
+  	<div class="table-title margin-left-double margin-right-double">
+	 	<a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
+	</div>
+
+	<div id="addAttachment" class="addAttachment padding-double">
+   		<form id="attachForm" style="margin-left: 10px;" method="POST" action="/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
+   		<div class="col-lg-3">File Name:
+   			<span class="padding-left">
+   				<input type="text" id="name" name="name"/>
+   			</span>
+   		</div>
+   		<div class="col-lg-8">
+   			<span class="float-left padding-right">Select File:</span>
+   			<div class="float-left">
+   				<input type="file" id="files" name="file" />
+   			</div>
+   		</div>
+   		<div class="col-lg-1 right"><button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button></div>
+  		</form>
+   </div>
+  <!--  <ul class="nav nav-tabs" role="tablist">
+	   <li id="attachmentsTab">
+			<a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
+		</li>
+   </ul>-->
 <!--content of attachments-->
    <ul class="list-group" id="attachmentList">
 
    <!--Attachment List Table -->
    <% if(attachmentList.length > 0 ){ %>
-    	<div class="table-body margin-left-double">
-
+    	<div class="table-body margin-left-double float-left">
 	  	<!-- Table -->
 		  <table class="table">
 		    <thead>
@@ -102,7 +130,6 @@
 		    </tbody>
 		  </table>
 		</div>
-
 
 		<!--Pagination for attachment table -->
 <ul class="pagination">
@@ -129,21 +156,13 @@
 
 <% }
 else{%>
- <div><span style="display:table;
-margin:0 auto;">No attachments found</span></div>
+ <div><span style="display:block; margin:20px;">No attachments found</span></div>
 <%}
 %>
- <div id="error_content" style="visibility:hidden;margin-left: 70px;position: absolute; left: 30%;
+ <div id="error_content" style="visibility:hidden; margin-left: 70px; position: absolute; left: 30%;
     top: 80%;">Failed to  upload attachment</div>
     <!-- add Attachment content -->
-<div id="addAttachment" style="margin-left:20px;float:left;box-sizing:border-box;border: 1px solid darkgray;">
-   <form id="attachForm" style="margin-left: 10px;" method="POST" action="/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
-   <input type="hidden" id="type" name="type" value="png"/><br>
-   File Name: <input type="text" id="name" name="name"/> <br>
-      Select File:  <input type="file" id="files" name="file" /><br>
-  <button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button>
-  </form>
-   </div>
+
    <!-- end of add Attachment content -->
    </ul>
 </div>
