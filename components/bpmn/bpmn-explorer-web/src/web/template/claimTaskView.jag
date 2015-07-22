@@ -34,8 +34,11 @@
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>People:</th>
-		    		<td><%=taskData.owner%></td>
-		    		<td><%=taskData.assignee%></td>
+		    		<td>
+		    			<div class="col-lg-12 margin-left-none padding-left-none"><%=taskData.owner%></div>
+		    			<div class="col-lg-12 margin-left-none padding-left-none"><%=taskData.assignee%></div>
+
+		    		</td>
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
@@ -59,8 +62,8 @@
 		    		</td>
 		    	</tr>
 		    	<tr class="white-bg">
-		    		<td align = 'center' colspan = '3'>		
-		    			<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info">Claim Task</button>
+		    		<td align = 'right' colspan = '3'>
+		    			<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double">Claim Task</button>
 		    		</td>
 		    	</tr>
 		    </tbody>
