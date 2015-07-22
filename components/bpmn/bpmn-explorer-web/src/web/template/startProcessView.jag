@@ -24,8 +24,8 @@
 		<div class="panel-heading">Start Process</div>
 
 	  
-	  	<table style="margin-left:10px margin-bottom:10px;">
-	  		<form >
+	  	<table style="margin-left:10px; margin-bottom:10px;">
+	  		<form>
 	  			<%=formContent%>
 	  		</form>
 	  		<tr>
