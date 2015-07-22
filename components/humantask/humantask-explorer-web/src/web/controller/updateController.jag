@@ -181,7 +181,8 @@
                 //comment retrieval success
                 responseMsg = '<update_attachmentsResponse>\
                                     <success>true</success>\
-                                    <data>' +result.SOAPENV_NS::Body.NS2_NS::getAttachmentInfosResponse +'</data>\
+                                    <bpsUrl>' + BPSUrl + '</bpsUrl>\
+                        <data>' +result.SOAPENV_NS::Body.NS2_NS::getAttachmentInfosResponse +'</data>\
                                 </update_attachmentsResponse>';
             } else {
                 if(result == null || result == '') { // session timeout
