@@ -154,4 +154,7 @@ public final class HumanTaskConstants {
     public static final String HUMANTASK_PACKAGE_PROP_LATEST_CHECKSUM = "humantask.package.latest.checksum";
     public static final String HUMANTASK_PACKAGE_PROP_STATUS = "humantask.package.status";
     public static final String HUMANTASK_PACKAGE_PROP_LATEST_VERSION = "humantask.package.latest.version";
+
+
+    public static final String FILE_LOCATION_FILE_PREFIX = "file:";
 }
