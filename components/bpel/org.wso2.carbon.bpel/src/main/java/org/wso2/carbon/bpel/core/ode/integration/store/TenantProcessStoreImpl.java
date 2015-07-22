@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.compiler.api.CompilationException;
 import org.apache.ode.bpel.dd.DeployDocument;
-import org.apache.ode.bpel.dd.TBAMServerProfiles;
+import org.apache.ode.bpel.dd.TAnalyticsServerProfiles;
 import org.apache.ode.bpel.dd.TDeployment;
 import org.apache.ode.bpel.dd.TProvide;
 import org.apache.ode.bpel.engine.BpelServerImpl;
@@ -827,9 +827,9 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     }
 
     private void readBAMServerProfiles(TDeployment.Process processDD, DeploymentUnitDir du){
-        TBAMServerProfiles bamServerProfiles = processDD.getBamServerProfiles();
+        TAnalyticsServerProfiles bamServerProfiles = processDD.getAnalyticsServerProfiles();
         if (bamServerProfiles != null) {
-            for (TBAMServerProfiles.Profile bamServerProfile :
+            for (TAnalyticsServerProfiles.Profile bamServerProfile :
                     bamServerProfiles.getProfileList()) {
                 String location = bamServerProfile.getLocation();
 
