@@ -61,7 +61,7 @@
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
 			    		%>
-			    			<tr>
+			    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
@@ -82,7 +82,7 @@
 		    			previous = list[i].processName;
 		    		} %>
 		    		<% if (i >= list.length-1) { i++; %>
-		    			<tr>
+		    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 			    			<td rowspan="<%=count%>"><%=list[i-count].processName%> </td>
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
@@ -101,7 +101,7 @@
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
 			    	%>
-			    			<tr>
+			    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
