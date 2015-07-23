@@ -154,7 +154,7 @@
                 <th width="20%"><fmt:message key="bpmn.instance.id"/></th>
                 <th width="30%"><fmt:message key="bpmn.process.id"/></th>
                 <th width="20%"><fmt:message key="bpmn.instance.createdDate"/></th>
-                <th width="20%"><fmt:message key="bpmn.instance.createdDate"/></th>
+                <th width="20%"><fmt:message key="bpmn.instance.completeDate"/></th>
                 <th width="10%"><fmt:message key="bpmn.instance.manage"/></th>
             </tr>
             </thead>
