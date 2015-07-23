@@ -25,6 +25,7 @@ public class BPMNInstance {
     private BPMNVariable[] variables;
     private boolean suspended;
     private Date startTime;
+    private Date endTime;
 
     public String getInstanceId() {
         return instanceId;
@@ -64,5 +65,13 @@ public class BPMNInstance {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }
