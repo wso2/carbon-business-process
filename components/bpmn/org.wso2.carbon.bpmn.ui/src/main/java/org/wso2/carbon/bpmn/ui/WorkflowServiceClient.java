@@ -73,6 +73,14 @@ public class WorkflowServiceClient {
         return  deploymentServiceStub.getDeployments();
     }
 
+    public BPMNDeployment[] getPaginatedDeployments(int start, int size) throws Exception {
+        return  deploymentServiceStub.getPaginatedDeployments(start, size);
+    }
+
+    public int getDeploymentCount() throws Exception {
+        return deploymentServiceStub.getDeploymentCount();
+    }
+
     public int getInstanceCount() throws Exception  {
         return instanceServiceStub.getInstanceCount();
     }
@@ -93,6 +101,10 @@ public class WorkflowServiceClient {
 
     public BPMNInstance[] getProcessInstances() throws Exception {
         return instanceServiceStub.getProcessInstances();
+    }
+
+    public BPMNInstance[] getPaginatedInstances(int start, int size) throws Exception {
+        return instanceServiceStub.getPaginatedInstances(start, size);
     }
 
     public BPMNInstance getProcessInstanceById(String instanceId) throws Exception {

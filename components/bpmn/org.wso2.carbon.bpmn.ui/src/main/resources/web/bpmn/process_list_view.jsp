@@ -49,6 +49,12 @@ WorkflowServiceClient client;
 
     String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
+    String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+    int currentPage = 0;
+    if(pageNumber != null && pageNumber != ""){
+        currentPage = Integer.parseInt(pageNumber);
+    }
+    int start = currentPage * 10;
     if(operation != null && operation.equals("startProcess")){
         client.startProcess(processId);
     }
@@ -56,7 +62,8 @@ WorkflowServiceClient client;
     if(operation != null && operation.equals("undeploy")){
             client.undeploy(deploymentName);
     }
-    deployments = client.getDeployments();
+    deployments = client.getPaginatedDeployments(start, 10);
+    int numberOfPages = (int) Math.ceil(client.getDeploymentCount()/10.0);
 %>
 <%
     if(operation != null && operation.equals("packageInfo")){
@@ -102,7 +109,7 @@ WorkflowServiceClient client;
                 <th width="30%"><fmt:message key="bpmn.process.id"/></th>
                 <th width="10%"><fmt:message key="bpmn.process.version"/></th>
                 <th width="30%"><fmt:message key="bpmn.process.deployedDate"/></th>
-                <th width="10%"><fmt:message key="bpmn.process.manage"/></th>
+                <!--th width="10%"><fmt:message key="bpmn.process.manage"/></th-->
             </tr>
             </thead>
             <tbody>
@@ -122,7 +129,7 @@ WorkflowServiceClient client;
                                    <%=process.getProcessId()%></a></td>
                             <td><%=process.getVersion()%></td>
                             <td><%=deployment.getDeploymentTime().toString()%></td>
-                            <td><a class="bpmn-icon-link" style="background-image:url(images/start.gif);" href="#" onclick="startProcess('<%=process.getProcessId()%>');"><fmt:message key="bpmn.process.start"/></a></td>
+                            <!--td><a class="bpmn-icon-link" style="background-image:url(images/start.gif);" href="#" onclick="startProcess('<%=process.getProcessId()%>');"><fmt:message key="bpmn.process.start"/></a></td-->
                         </tr>
                     <% }} %>
                 <% }}else{ %>
@@ -132,6 +139,12 @@ WorkflowServiceClient client;
                 <% } %>
             </tbody>
         </table>
+        <br/>
+        <carbon:paginator pageNumber="<%=currentPage%>" numberOfPages="<%=numberOfPages%>"
+                          page="process_list_view.jsp" pageNumberParameterName="pageNumber"
+                          resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
+                          prevKey="prev" nextKey="next"
+                          parameters="region=region1&item=bpmn_menu"/>
     </div>
 </div>
 <%  } %>
