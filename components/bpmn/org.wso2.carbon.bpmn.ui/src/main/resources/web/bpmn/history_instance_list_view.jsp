@@ -162,7 +162,7 @@
                 <% if(bpmnInstances!=null && bpmnInstances.length>0){ %>
                 <%  for(BPMNInstance bpmnInstance: bpmnInstances){ %>
                     <tr>
-                        <td><a href=<%="history_instance_list_view.jsp?operation=instanceInfo&instanceID=" + bpmnInstance.getInstanceId()%>><%=bpmnInstance.getInstanceId()%></a></td>
+                        <td><%=bpmnInstance.getInstanceId()%></td>
                         <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + bpmnInstance.getProcessId()%>><%=bpmnInstance.getProcessId()%></a></td>
                         <td><%=bpmnInstance.getStartTime().toString()%></td>
                         <td><%=bpmnInstance.getEndTime().toString()%></td>
