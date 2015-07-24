@@ -93,13 +93,15 @@
                                 <td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
                             </tr>
                             <% if (taskStatus == 'IN_PROGRESS') {
-        for (var i = 0; i < wso2InputRenderList.length(); i++) { %>
+                                for (var i = 0; i < wso2InputRenderList.length(); i++) { %>
                                     <tr class="white-bg">
                                         <th width="50%"><%=wso2InputRenderList[i].label.text()%></th>
                                         <td width="50%"><%=wso2InputRenderList[i].value.text()%></td>
                                     </tr>
-                                <% }
-    } %>
+                            <%
+                                }
+                            }
+                            %>
                         </tbody>
                     </table>
                 </div>
@@ -110,7 +112,12 @@
                     <p id="InfoErrMsg"></p>
                 </div>
             </div>
-            <% if (taskStatus == 'IN_PROGRESS' || taskStatus == 'COMPLETED') { %>
+            <% if (taskStatus == 'IN_PROGRESS' || taskStatus == 'COMPLETED') {
+                var disabled = '';
+                if (taskStatus == 'COMPLETED') {
+                    disabled = 'disabled';
+                }
+            %>
                 <a data-toggle="collapse" href="#collapseOverview2" aria-expanded="true" class="collapsing-h2">
                 <div class="table-title" style="width:99%">
                     <div style=" margin-top: -4px; float: left;">
@@ -128,66 +135,77 @@
                                     <% for (var i = 0; i < wso2OutputRenderList.length(); i++) { %>
                                         <tr class="white-bg">
                                             <td width="25%">
-                                            <div class="col-lg-4"> <%=wso2OutputRenderList[i].label.text()%></div>
-                                            <div class="col-lg-8">
+                                                <div class="col-lg-4"> <%=wso2OutputRenderList[i].label.text()%></div>
+                                                <div class="col-lg-8">
                                                 <% if (wso2OutputRenderList[i].value.@type.toString() === 'boolean') {
+                                                    //The user input is a boolean type. So display two check boxes for TRUE and FALSE
 
-    var displayValues = wso2OutputRenderList[i].value.text();
-    var dispValueSet = displayValues.split(",");
+                                                    var displayValues = wso2OutputRenderList[i].value.text();
+                                                    var dispValueSet = displayValues.split(",");
 
-    var trueChecked = '';
-    var falseChecked = 'checked';
-    if (wso2OutputRenderList[i].default.toString() === 'true') {
-        trueChecked = 'checked';
-        falseChecked = '';
-    }
-    %>
+                                                    var trueChecked = '';
+                                                    var falseChecked = 'checked';
+                                                    if (wso2OutputRenderList[i].default.toString() === 'true') {
+                                                        trueChecked = 'checked';
+                                                        falseChecked = '';
+                                                    }
+                                                %>
+                                                    <input style="radio-btn" type="radio" name="<%=wso2OutputRenderList[i].@id%>"
+                                                                            value="true" <%=trueChecked%> <%=disabled%>><%=dispValueSet[0].trim()%>
+                                                    <input style="radio-btn" type="radio" name="<%=wso2OutputRenderList[i].@id%>"
+                                                                            value="false" <%=falseChecked%> <%=disabled%>><%=dispValueSet[1].trim()%>
 
-    <input style="radio-btn" type="radio" name="<%=wso2OutputRenderList[i].@id%>" value="true" <%=trueChecked%>><%=dispValueSet[0].trim()%>
-            <input style="radio-btn" type="radio" name="<%=wso2OutputRenderList[i].@id%>" value="false" <%=falseChecked%>><%=dispValueSet[1].trim()%>
+                                                <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'list') {
+                                                    //The user input is a list type. So display dropdown with possible values
 
-        <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'list') {
+                                                    var displayValues = wso2OutputRenderList[i].value.text();
+                                                    var dispValueSet = displayValues.split(",");
 
-    var displayValues = wso2OutputRenderList[i].value.text();
-    var dispValueSet = displayValues.split(",");
-
-    var defaultValue = wso2OutputRenderList[i].default.toString();
-    var selected = '';
-    %>
-        <select name="<%=wso2OutputRenderList[i].@id%>">
-            <% for (var j = 0; j < dispValueSet.length; j++) {
-        if (defaultValue.trim() === dispValueSet[j].trim()) {
-            selected = 'selected'
-        } else {
-            selected = ''
-        }
-        %>
-            <option value="<%=dispValueSet[j].trim()%>" <%=selected%>><%=dispValueSet[j].trim()%></option>
-                                                        <% } %>
+                                                    var defaultValue = wso2OutputRenderList[i].default.toString();
+                                                    var selected = '';
+                                                %>
+                                                    <select name="<%=wso2OutputRenderList[i].@id%>" <%=disabled%>>
+                                                    <% for (var j = 0; j < dispValueSet.length; j++) {
+                                                        if (defaultValue.trim() === dispValueSet[j].trim()) {
+                                                            selected = 'selected'
+                                                        } else {
+                                                            selected = ''
+                                                        }
+                                                    %>
+                                                        <option value="<%=dispValueSet[j].trim()%>" <%=selected%>><%=dispValueSet[j].trim()%></option>
+                                                    <% } %>
                                                     </select>
 
-                                                <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'string') { %>
+                                                <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'string') {
+                                                    //The user input is a string type. So display text area to write text content
+                                                %>
 
-                                                    <textarea name="<%=wso2OutputRenderList[i].@id%>" rows="4" cols="50"><%=wso2OutputRenderList[i].default.toString()%></textarea>
+                                                    <textarea name="<%=wso2OutputRenderList[i].@id%>" rows="4" cols="50" <%=disabled%>>
+                                                        <%=wso2OutputRenderList[i].default.toString()%>
+                                                    </textarea>
 
                                                 <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'int' ||
-wso2OutputRenderList[i].value.@type.toString() === 'double') { %>
+                                                                    wso2OutputRenderList[i].value.@type.toString() === 'double') {
+                                                    //The user input is a int and double types. So display text input
+                                                %>
 
                                                     <input type="text" name="<%=wso2OutputRenderList[i].@id%>"
-                                                                        value="<%=wso2OutputRenderList[i].default.toString()%>">
+                                                                        value="<%=wso2OutputRenderList[i].default.toString()%>" <%=disabled%>>
 
                                                 <% } %>
-                                            </div>
-                                            <% } if (taskStatus == 'IN_PROGRESS') { %>
-                                            <div class="col-lg-12">
-                                                <div class="col-lg-2 float-right padding-bottom">
-                                                <input type="button" value="Save" class="btn btn-pri"
-                                                                                onclick="submitForm('HTWorkspaceForm', '/action/save/')">
-                                                <input type="button" value="Complete" class="btn btn-sec" data-toggle="modal"
-                                                                                                data-target="#verifyTaskCompleteModal">
+                                                </div>
+                                    <% }
+                                    if (taskStatus == 'IN_PROGRESS') {
+                                    %>
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-2 float-right padding-bottom">
+                                                        <input type="button" value="Save" class="btn btn-pri"
+                                                                                    onclick="submitForm('HTWorkspaceForm', '/action/save/')">
+                                                        <input type="button" value="Complete" class="btn btn-sec" data-toggle="modal"
+                                                                                                    data-target="#verifyTaskCompleteModal">
 
-                                            </div>
-                                            </div>
+                                                    </div>
+                                                </div>
                                             </td>
 
                                         </tr>
