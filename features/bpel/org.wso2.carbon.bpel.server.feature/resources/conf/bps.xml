@@ -21,7 +21,7 @@
     <tns:DataBaseConfig>
         <!-- Data source configuration. Use data sources created in data sources component. -->
         <tns:DataSource name="bpsds">
-          <tns:JNDI contextFactory="com.sun.jndi.rmi.registry.RegistryContextFactory" providerURL="rmi://localhost:2199"/>
+          <!--tns:JNDI contextFactory="com.sun.jndi.rmi.registry.RegistryContextFactory" providerURL="rmi://localhost:2199"/-->
         </tns:DataSource>
     </tns:DataBaseConfig>
 
@@ -36,6 +36,10 @@
     <!--<tns:EventListeners>
         <tns:listener class="org.wso2.bps.SampleEventListener"/>
     </tns:EventListeners>-->
+
+    <!--tns:EventListeners>
+        <tns:listener class="org.wso2.carbon.bpel.core.ode.integration.jmx.JmxBpelEventListener"/>
+    </tns:EventListeners-->
 
     <!-- BPEL Message Exchange Interceptors. Used to track and handle incoming and out going
          Messages from BPEL Processes.
@@ -57,6 +61,7 @@
     <!-- OpenJPA specific configuration properties -->
     <tns:OpenJPAConfig>
         <tns:property name="openjpa.FlushBeforeQueries" value="true"/>
+	<tns:property name="openjpa.TransactionMode" value="local"/>
     </tns:OpenJPAConfig>
 
     <!-- Message exchange timeout. Default value is 120000ms -->
@@ -66,10 +71,11 @@
     <!--<tns:ExternalServiceTimeOut value="60000"/>-->
 
     <!-- MultithreadedHttpConnectionManager tuning parameters -->
-    <!--<tns:MultithreadedHttpConnectionManagerConfig>
+    <tns:MultithreadedHttpConnectionManagerConfig>
         <tns:maxConnectionsPerHost value="20"/>
         <tns:maxTotalConnections value="100"/>
-    </tns:MultithreadedHttpConnectionManagerConfig>-->
+        <!--<tns:connectionKeepAlive value="false"/> -->
+    </tns:MultithreadedHttpConnectionManagerConfig>
 
     <!-- Process instance cleanup feature in WSO2 Business Process Server
          allows you to configure periodic process instance cleanup tasks based
@@ -100,8 +106,16 @@
     <!--tns:InMemoryInstanceTimeToLive>600000</tns:InMemoryInstanceTimeToLive-->
 
     <!-- This property  can be used to configure ode scheduler thread pool size  -->
-    <!--tns:ODESchedulerThreadPoolSize>0</tns:ODESchedulerThreadPoolSize-->
-     
+    <tns:ODESchedulerThreadPoolSize>50</tns:ODESchedulerThreadPoolSize>
+    
+    <!-- If you are using BPS in a clustered environment, then uncomment blow entry -->
+    <!-- <tns:UseDistributedLock>true</tns:UseDistributedLock> -->
+    
+    <!-- <tns:UseInstanceStateCache>true</tns:UseInstanceStateCache> -->
+
+    <!-- You can assign a unique id for each node in the cluster using NodeId property -->
+    <!-- <tns:NodeId></tns:NodeId>  -->
+
     <!-- Simple Scheduler related configuration -->
     <!--<tns:ODESchedulerConfiguration>-->
         <!-- Maximum number of jobs in the "near future" todo queue. -->
@@ -133,7 +147,7 @@
         <!--<tns:ODESchedulerImmediateTransactionRetryInterval>1000</tns:ODESchedulerImmediateTransactionRetryInterval>-->
 
     <!-- End of Simple Scheduler related configuration -->
-    <!--</tns:ODESchedulerConfiguration>-->
+    <!--</tns:ODESchedulerConfiguration>--> 
 
     <!--Configurations for BPEL UI-->
     <tns:BpelUI>
@@ -143,7 +157,7 @@
         <!--<tns:InstanceViewVariableLength>1000</tns:InstanceViewVariableLength>-->
 
         <!--This property specify the maximum number of BPEL process instances that can be deleted in a single delete instance-->
-        <!--request. Default value is 2000. Increase this with caution. It may result in various timeout exceptions.-->
+        <!--request. Default value is 1000. Increase this with caution. It may result in various timeout exceptions.-->
         <!--<tns:BpelInstanceDeletionLimit>1000</tns:BpelInstanceDeletionLimit>-->
     </tns:BpelUI>
 
