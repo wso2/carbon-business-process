@@ -1,5 +1,5 @@
-/*
- * Copyright (c) , WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/**
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Date;
  * DateConverter uses to convert given string date to Date format
  */
 public class DateConverter {
-    private static Log log = LogFactory.getLog(DateConverter.class);
+    private static final Log log = LogFactory.getLog(DateConverter.class);
 
     public static Date convertStringToDate(String dateString) {
         String[] dateStringArray = dateString.split(" ");
@@ -35,7 +35,6 @@ public class DateConverter {
                 dateStringArray[0] + ", " + dateStringArray[1] + " " + dateStringArray[2] + " " +
                         dateStringArray[5] + " " + dateStringArray[3];
         DateFormat df = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
-        Date date = null;
         try {
             return df.parse(modifiedDateString);
         } catch (ParseException e) {

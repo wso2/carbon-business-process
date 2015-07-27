@@ -1,5 +1,5 @@
-/*
- * Copyright (c) , WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/**
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,6 @@ public class AnalyticsPublisherConstants {
 
     public static final String DATA_RECEIVER_RESOURCE_PATH = "bpmn/BPMN_data_analytics_publisher";
     public static final String THRIFT_URL_PROPERTY = "data_receiver_thrift_url";
-    public static final String USER_NAME_PROPERTY = "password";
-    public static final String PASSWORD_PROPERTY = "username";
+    public static final String USER_NAME_PROPERTY = "username";
+    public static final String PASSWORD_PROPERTY = "password";
 }

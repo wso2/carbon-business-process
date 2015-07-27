@@ -1,5 +1,5 @@
-/*
- * Copyright (c) , WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/**
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,13 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  */
 public class BPMNAnalyticsServiceComponent {
-	private static Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
+	private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
 
 	protected void activate(ComponentContext ctxt) {
 		log.info("Initializing the BPMN Analytics Service component...");

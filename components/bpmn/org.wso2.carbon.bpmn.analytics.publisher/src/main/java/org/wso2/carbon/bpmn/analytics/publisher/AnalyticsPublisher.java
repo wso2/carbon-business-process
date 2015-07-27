@@ -1,5 +1,5 @@
-/*
- * Copyright (c) , WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/**
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import java.util.concurrent.Executors;
  * AnalyticsPublisher uses to publish events to the data receiver in data-bridge
  */
 public class AnalyticsPublisher {
-	private static Log log = LogFactory.getLog(AnalyticsPublisher.class);
+	private static final Log log = LogFactory.getLog(AnalyticsPublisher.class);
 
 	private String processInstanceStreamId;
 	private String taskInstanceStreamId;
@@ -78,9 +78,12 @@ public class AnalyticsPublisher {
 	 */
 	private void setPrivilegeContext(final int tenantId, final String tenantDomain,
 	                                 final Registry registry) {
-		log.debug("Run setPrivilegeContext method...");
+		if(log.isDebugEnabled()){
+			log.debug("Run setPrivilegeContext method...");
+		}
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
-			@Override public void run() {
+			@Override
+			public void run() {
 				try {
 					PrivilegedCarbonContext.startTenantFlow();
 					PrivilegedCarbonContext privilegedCarbonContext =
@@ -100,7 +103,9 @@ public class AnalyticsPublisher {
 	 * Polling for Process instances
 	 */
 	private void doPollingForInstances() {
-		log.debug("Start polling for process instances...");
+		if(log.isDebugEnabled()){
+			log.debug("Start polling for process instances...");
+		}
 		try {
 			Thread.sleep(AnalyticsPublisherConstants.DELAY);
 			while (true) {
@@ -138,13 +143,17 @@ public class AnalyticsPublisher {
 	private void publishBPMNProcessInstanceEvent(BPMNProcessInstance bpmnProcessInstance)
 			throws AgentException {
 		Object[] payload = new Object[] { bpmnProcessInstance.getProcessDefinitionId(),
-		                                  bpmnProcessInstance.getInstanceId(),
-		                                  bpmnProcessInstance.getStartTime().toString(),
-		                                  bpmnProcessInstance.getEndTime().toString(),
-		                                  bpmnProcessInstance.getDuration() };
-		log.debug("Start to Publish BPMN process instance event...");
+				bpmnProcessInstance.getInstanceId(),
+				bpmnProcessInstance.getStartTime().toString(),
+				bpmnProcessInstance.getEndTime().toString(),
+				bpmnProcessInstance.getDuration() };
+		if(log.isDebugEnabled()) {
+			log.debug("Start to Publish BPMN process instance event...");
+		}
 		dataPublisher.publish(processInstanceStreamId, getMeta(), null, payload);
-		log.debug("Published BPMN process instance event...");
+		if(log.isDebugEnabled()){
+			log.debug("Published BPMN process instance event...");
+		}
 	}
 
 	/**
@@ -161,9 +170,13 @@ public class AnalyticsPublisher {
 		                                  bpmnTaskInstance.getEndTime().toString(),
 		                                  bpmnTaskInstance.getDurationInMills(),
 		                                  bpmnTaskInstance.getAssignee() };
-		log.debug("Start to Publish BPMN task instance event...");
+		if(log.isDebugEnabled()) {
+			log.debug("Start to Publish BPMN task instance event...");
+		}
 		dataPublisher.publish(taskInstanceStreamId, getMeta(), null, payload);
-		log.debug("Published BPMN task instance event...");
+		if(log.isDebugEnabled()){
+			log.debug("Published BPMN task instance event...");
+		}
 	}
 
 	/**
@@ -184,9 +197,9 @@ public class AnalyticsPublisher {
 				                     AnalyticsPublisherConstants.STREAM_VERSION);
 		streamDefinition.setDescription(AnalyticsPublisherConstants.PROCESS_STREAM_DESCRIPTION);
 		streamDefinition.addPayloadData(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID,
-		                                AttributeType.STRING);
+				AttributeType.STRING);
 		streamDefinition.addPayloadData(AnalyticsPublisherConstants.PROCESS_INSTANCE_ID,
-		                                AttributeType.STRING);
+				AttributeType.STRING);
 		streamDefinition
 				.addPayloadData(AnalyticsPublisherConstants.START_TIME, AttributeType.STRING);
 		streamDefinition.addPayloadData(AnalyticsPublisherConstants.END_TIME, AttributeType.STRING);
@@ -256,18 +269,4 @@ public class AnalyticsPublisher {
 	private Object[] getMeta() {
 		return new Object[] {};
 	}
-
-	/**
-	 * Set trust store parameters as the system property for encryption
-	 */
-	private void setTrustStoreParams() {
-		File filePath = new File("src/main/resources");
-		if (!filePath.exists()) {
-			filePath = new File("resources");
-		}
-		String trustStore = filePath.getAbsolutePath();
-		System.setProperty("javax.net.ssl.trustStore", trustStore + "/client-truststore.jks");
-		System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
-	}
 }
-

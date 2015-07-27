@@ -95,6 +95,7 @@ WorkflowServiceClient client;
     <h2><fmt:message key="bpmn.deployed.processes"/></h2>
 
     <div id="workArea">
+
         <table class="styledLeft" id="moduleTable">
             <thead>
             <tr>

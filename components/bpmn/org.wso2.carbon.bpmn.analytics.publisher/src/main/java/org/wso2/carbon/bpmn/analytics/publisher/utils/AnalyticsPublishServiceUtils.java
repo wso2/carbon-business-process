@@ -1,5 +1,5 @@
-/*
- * Copyright (c) , WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/**
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import org.activiti.engine.history.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
-import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
 
@@ -41,7 +40,7 @@ import java.util.Map;
  * AnalyticsPublishServiceUtils is used by the AnalyticsPublisher to fetch the BPMN process instances and the task instances
  */
 public class AnalyticsPublishServiceUtils {
-	private static Log log = LogFactory.getLog(AnalyticsPublishServiceUtils.class);
+	private static final Log log = LogFactory.getLog(AnalyticsPublishServiceUtils.class);
 
 	/**
 	 * Get completed process instances which were finished after the given date and time
@@ -66,6 +65,9 @@ public class AnalyticsPublishServiceUtils {
 			Date timeInDateFormat = DateConverter.convertStringToDate(time);
 			int listSize = instanceQuery.finished().startedAfter(timeInDateFormat).list().size();
 			if (listSize != 0) {
+				//When using the startedAfter() method it returns the finished objects according to the time stored of
+				//last completed instance. But in this startedAfter() method always returns the objects which are completed from the last updated time.
+				//Therefore it sends the same object twice according to the time value stored in the carbon registry.
 				//avoid to return same object repeatedly if the list has only one object
 				if (listSize == 1) {
 					return null;
@@ -77,7 +79,9 @@ public class AnalyticsPublishServiceUtils {
 			}
 		}
 		if (historicProcessInstanceList != null) {
-			log.debug("Write BPMN process instance to the carbon registry...");
+			if(log.isDebugEnabled()){
+				log.debug("Write BPMN process instance to the carbon registry...");
+			}
 			writePublishTimeToRegistry(historicProcessInstanceList);
 			//return ProcessInstances set as BPMNProcessInstance array
 			return getBPMNProcessInstances(historicProcessInstanceList);
@@ -116,7 +120,9 @@ public class AnalyticsPublishServiceUtils {
 			}
 		}
 		if (historicTaskInstanceList != null) {
-			log.debug("Write BPMN task instance to the carbon registry...");
+			if(log.isDebugEnabled()){
+				log.debug("Write BPMN task instance to the carbon registry...");
+			}
 			writeTaskEndTimeToRegistry(historicTaskInstanceList);
 			return getBPMNTaskInstances(historicTaskInstanceList);
 		}
@@ -228,7 +234,9 @@ public class AnalyticsPublishServiceUtils {
 				                     String.valueOf(lastProcessInstancePublishTime));
 				registry.put(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH, resource);
 			}
-			log.debug("End of writing last completed process instance publish time...");
+			if(log.isDebugEnabled()){
+				log.debug("End of writing last completed process instance publish time...");
+			}
 		} catch (RegistryException e) {
 			String errMsg = "Registry error while writing the process instance publish time.";
 			log.error(errMsg, e);
@@ -241,7 +249,9 @@ public class AnalyticsPublishServiceUtils {
 	 * @param historicTaskInstanceList List of historic task instances
 	 */
 	private void writeTaskEndTimeToRegistry(List<HistoricTaskInstance> historicTaskInstanceList) {
-		log.debug("Start writing last completed task instance end time...");
+		if(log.isDebugEnabled()) {
+			log.debug("Start writing last completed task instance end time...");
+		}
 		Date lastTaskInstanceDate =
 				historicTaskInstanceList.get(historicTaskInstanceList.size() - 1).getEndTime();
 		try {
@@ -260,7 +270,9 @@ public class AnalyticsPublishServiceUtils {
 				                     String.valueOf(lastTaskInstanceDate));
 				registry.put(AnalyticsPublisherConstants.TASK_RESOURCE_PATH, resource);
 			}
-			log.debug("End of writing last completed task instance end time...");
+			if(log.isDebugEnabled()){
+				log.debug("End of writing last completed task instance end time...");
+			}
 		} catch (RegistryException e) {
 			String errMsg = "Registry error while writing the task instance end time.";
 			log.error(errMsg, e);
@@ -283,12 +295,16 @@ public class AnalyticsPublishServiceUtils {
 			Registry registry = carbonContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
 			if (registry != null) {
 				if (registry.resourceExists(resourcePath)) {
-					log.debug("Process instance resource path exists...");
+					if(log.isDebugEnabled()){
+						log.debug("Process instance resource path exists...");
+					}
 					Resource resource = registry.get(resourcePath);
 					time = resource.getProperty(propertyPath);
 				}
 			} else {
-				log.debug("Registry is null...");
+				if(log.isDebugEnabled()){
+					log.debug("Registry is null...");
+				}
 			}
 		} catch (RegistryException e) {
 			String errMsg = "Registry error while reading the process instance publish time.";
