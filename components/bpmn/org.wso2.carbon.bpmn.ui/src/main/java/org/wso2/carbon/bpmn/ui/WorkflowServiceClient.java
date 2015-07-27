@@ -73,6 +73,14 @@ public class WorkflowServiceClient {
         return  deploymentServiceStub.getDeployments();
     }
 
+    public BPMNDeployment[] getPaginatedDeployments(int start, int size) throws Exception {
+        return  deploymentServiceStub.getPaginatedDeployments(start, size);
+    }
+
+    public int getDeploymentCount() throws Exception {
+        return deploymentServiceStub.getDeploymentCount();
+    }
+
     public int getInstanceCount() throws Exception  {
         return instanceServiceStub.getInstanceCount();
     }
@@ -95,6 +103,18 @@ public class WorkflowServiceClient {
         return instanceServiceStub.getProcessInstances();
     }
 
+    public BPMNInstance[] getPaginatedInstances(int start, int size) throws Exception {
+        return instanceServiceStub.getPaginatedInstances(start, size);
+    }
+
+    public BPMNInstance[] getPaginatedHistoryInstances(int start, int size) throws Exception {
+        return instanceServiceStub.getPaginatedHistoryInstances(start, size);
+    }
+
+    public int getHistoryInstanceCount() throws Exception {
+        return instanceServiceStub.getHistoryInstanceCount();
+    }
+
     public BPMNInstance getProcessInstanceById(String instanceId) throws Exception {
         for(BPMNInstance instance: instanceServiceStub.getProcessInstances()){
             if(instance.getInstanceId().equals(instanceId)){
@@ -106,6 +126,14 @@ public class WorkflowServiceClient {
 
     public void deleteProcessInstance(String instanceID) throws Exception {
         instanceServiceStub.deleteProcessInstance(instanceID);
+    }
+
+    public void deleteCompletedInstance(String instanceID) throws Exception {
+        instanceServiceStub.deleteHistoryInstance(instanceID);
+    }
+
+    public void deleteAllCompletedInstances() throws Exception {
+        instanceServiceStub.deleteAllCompletedInstances();
     }
 
     public void deleteAllProcessInstances() throws Exception {

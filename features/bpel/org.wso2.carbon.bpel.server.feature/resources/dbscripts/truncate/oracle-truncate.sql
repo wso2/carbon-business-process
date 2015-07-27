@@ -1,0 +1,120 @@
+--
+-- Licensed to the Apache Software Foundation (ASF) under one
+-- or more contributor license agreements.  See the NOTICE file
+-- distributed with this work for additional information
+-- regarding copyright ownership.  The ASF licenses this file
+-- to you under the Apache License, Version 2.0 (the
+-- "License"); you may not use this file except in compliance
+-- with the License.  You may obtain a copy of the License at
+--
+--    http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing,
+-- software distributed under the License is distributed on an
+-- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+-- KIND, either express or implied.  See the License for the
+-- specific language governing permissions and limitations
+-- under the License.
+--
+
+--
+-- BPEL Related SQL scripts
+--
+
+TRUNCATE TABLE ODE_SCHEMA_VERSION
+/
+TRUNCATE TABLE ode_job
+/
+
+TRUNCATE TABLE TASK_ATTACHMENT
+/
+TRUNCATE TABLE ODE_PROCESS_INSTANCE
+/
+TRUNCATE TABLE ODE_SCOPE
+/
+TRUNCATE TABLE ODE_PARTNER_LINK
+/
+TRUNCATE TABLE ODE_PROCESS
+/
+TRUNCATE TABLE ODE_CORRELATOR
+/
+TRUNCATE TABLE ODE_MESSAGE_EXCHANGE
+/
+TRUNCATE TABLE ODE_MESSAGE
+/
+TRUNCATE TABLE ODE_ACTIVITY_RECOVERY
+/
+TRUNCATE TABLE ODE_CORRELATION_SET
+/
+TRUNCATE TABLE ODE_CORSET_PROP
+/
+TRUNCATE TABLE ODE_EVENT
+/
+TRUNCATE TABLE ODE_FAULT
+/
+TRUNCATE TABLE ODE_MESSAGE_ROUTE
+/
+TRUNCATE TABLE ODE_MEX_PROP
+/
+TRUNCATE TABLE ODE_XML_DATA
+/
+TRUNCATE TABLE ODE_XML_DATA_PROP
+/
+TRUNCATE TABLE OPENJPA_SEQUENCE_TABLE
+/
+TRUNCATE TABLE STORE_DU
+/
+TRUNCATE TABLE STORE_PROCESS
+/
+TRUNCATE TABLE STORE_PROCESS_PROP
+/
+TRUNCATE TABLE STORE_PROC_TO_PROP
+/
+TRUNCATE TABLE STORE_VERSIONS
+/
+
+--
+-- Human Task Related SQL Scripts
+--
+
+/
+TRUNCATE TABLE HT_DEADLINE
+/
+TRUNCATE TABLE HT_DEPLOYMENT_UNIT
+/
+TRUNCATE TABLE HT_EVENT
+/
+TRUNCATE TABLE HT_GENERIC_HUMAN_ROLE
+/
+TRUNCATE TABLE HT_HUMANROLE_ORGENTITY
+/
+TRUNCATE TABLE HT_JOB
+/
+TRUNCATE TABLE HT_MESSAGE
+/
+TRUNCATE TABLE HT_ORG_ENTITY
+/
+TRUNCATE TABLE HT_PRESENTATION_ELEMENT
+/
+TRUNCATE TABLE HT_PRESENTATION_PARAM
+/
+TRUNCATE TABLE HT_TASK
+/
+TRUNCATE TABLE HT_TASK_ATTACHMENT
+/
+TRUNCATE TABLE HT_TASK_COMMENT
+/
+TRUNCATE TABLE HT_VERSIONS
+/
+--
+-- Attachment Management Related SQL Scripts
+--
+
+TRUNCATE TABLE ATTACHMENT
+/
+
+--
+-- B4P Related SQL Scripts
+--
+TRUNCATE TABLE HT_COORDINATION_DATA
+/

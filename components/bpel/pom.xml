@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>carbon-business-process</artifactId>
-        <version>4.4.2-SNAPSHOT</version>
+        <version>4.4.3-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -37,7 +37,7 @@
         <module>org.wso2.carbon.bpel.cluster.notifier</module>
         <module>org.wso2.carbon.bpel.ui</module>
         <module>org.wso2.carbon.bpel.b4p</module>
-        <module>org.wso2.carbon.bpel.bam.publisher</module>
+        <module>org.wso2.carbon.bpel.analytics.publisher</module>
     </modules>
 
         <dependencies>

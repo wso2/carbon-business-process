@@ -13,6 +13,7 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+		<div style="height:50px">&nbsp;</div><!-- This line is added to avoid footer overlapping with page content-->
 		<div class="footer">
 			<div class="col-sm-12">
 				<div class="well well-sm"><%=data.app.footer%></div>
@@ -22,6 +23,7 @@
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.form.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/actions.js"></script>
 		<script>

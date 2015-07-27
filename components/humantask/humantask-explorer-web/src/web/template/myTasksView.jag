@@ -1,0 +1,105 @@
+<%
+/*
+ * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+%>
+  <!--<div class="row">
+   <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li class="active">Inbox</li>
+    </ol>
+</div> -->
+<div class="row">   
+    <div class="panel-inbox">
+        <!-- Default panel contents -->
+        <div class=" margin-left-double table-title">My Tasks</div>
+        <div class="table-body margin-left-double">
+            <div class="col-sm-2 col-md-2 col-lg-2 sidebar table-status-column ">
+              <ul class="nav nav-sidebar nav-pills nav-stacked margin-bottom-double margin-top-double">
+                <%
+function updateActiveStatusNavTab(status, button){
+    if (status != button) {
+        return "";
+    }
+    return "class=\"active\"";
+}
+%>
+                <li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="mytasks?status_query=RESERVED">Reserved </a> </li>
+                <br/>
+                <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="mytasks?status_query=IN_PROGRESS">In Progress</a></li>
+                <br/>
+                <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="mytasks?status_query=SUSPENDED">Suspended</a></li>
+                <br/>
+                <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="mytasks?status_query=COMPLETED">Completed </a></li>
+                <br/>
+                <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="mytasks?status_query=FAILED">Failed </a></li>
+              </ul>
+            </div>
+
+            <div class="col-sm-10 col-md-10 col-lg-10 main padding-none">
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr class="table-title-row">
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Task Name</th>
+                            <th>Subject</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%
+if (taskXMLList != null) {
+    for (var i=0; i<taskXMLList.length(); i++){ %>
+                        <tr class="white-bg" style="cursor:pointer;" onclick="window.location='task?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
+                            onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                            <td><%=taskXMLList[i].NS1_NS::id.toString()%></td>
+                            <td><%=taskXMLList[i].NS1_NS::taskType.text()%></td>
+                            <td><%=taskXMLList[i].NS1_NS::presentationName.text()%></td>
+                            <td><%=taskXMLList[i].NS1_NS::presentationSubject%></td>
+                            <td><%=taskXMLList[i].NS1_NS::priority%></td>
+                        </tr>
+                        <%
+    }
+}
+%>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<ul class="pagination">
+<% if (pagination != 1) { %>
+            <li><a href="mytasks?pagination=<%=pagination-1%>">&laquo;</a></li>
+        <% } else { %>
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        <% } %>
+        <% for (var i = 1; i<=paginatePageCount; i++){
+    if (pagination == i) { %>
+                    <li class="active"><a href="mytasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+            <% }else { %>
+                    <li><a href="mytasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+            <% } %>
+        <% } %>
+        <% if (pagination != paginatePageCount) { %>
+            <li><a href="mytasks?pagination=<%=pagination+1%>">&raquo;</a></li>
+        <% } else { %>
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        <% } %>
+    </ul>
+</div>

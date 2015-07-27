@@ -66,7 +66,8 @@
             </thead>
             <tbody>
             <tr>
-                <td><a href=<%="process_list_view.jsp?region=region1&item=bpmn_menu&operation=undeploy&deploymentName=" + deploymentName%>><fmt:message key="bpmn.package.undeploy"/></a></td>
+                <td><a href=<%="process_list_view.jsp?region=region1&item=bpmn_menu&operation=undeploy&deploymentName=" + deploymentName%>
+                        ><img src="images/undeploy.gif">&nbsp;<fmt:message key="bpmn.package.undeploy"/></a></td>
             </tr>
             </tbody>
         </table>

@@ -50,6 +50,7 @@ try {
         if (log.isDebugEnabled()) {
             log.debug('Session timed out for task'+ "" + taskID);
         }
+        session.put('authSuccess', false);
         response.sendRedirect('login');
     }
     var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::completeTaskResponse.success.text().toString();
@@ -58,7 +59,7 @@ try {
         log.error('Task Completion failed');
     }
 
-    response.sendRedirect('/' +data.app.webappUrlName + '/inboxtask?id=' + taskID);
+    response.sendRedirect('/' +data.app.webappUrlName + '/task?id=' + taskID);
 
     /*
             SAMPLE SUCCESS RESPONSE

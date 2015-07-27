@@ -49,15 +49,14 @@ public class HumanTaskDeployer extends AbstractDeployer {
             HumanTaskDeployerServiceComponent.getTenantRegistryLoader().
                     loadTenantRegistry(tenantId);
             createHumanTaskRepository(configurationContext);
+            HumanTaskServer humantaskServer = HumanTaskDeployerServiceComponent.getHumanTaskServer();
+            humanTaskStore = humantaskServer.getTaskStoreManager().createHumanTaskStoreForTenant(tenantId,
+                                                                                                 configurationContext);
         } catch (DeploymentException e) {
             log.warn(String.format("Human Task Repository creation failed for tenant id [%d]", tenantId), e);
         } catch (RegistryException e) {
-            log.warn("Initializing HumanTask Deployer failed for tenant " + tenantId);
+            log.warn("Initializing HumanTask Deployer failed for tenant " + tenantId, e);
         }
-        HumanTaskServer humantaskServer = HumanTaskDeployerServiceComponent.getHumanTaskServer();
-        humanTaskStore = humantaskServer.getTaskStoreManager().
-                createHumanTaskStoreForTenant(tenantId, configurationContext);
-
     }
 
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {

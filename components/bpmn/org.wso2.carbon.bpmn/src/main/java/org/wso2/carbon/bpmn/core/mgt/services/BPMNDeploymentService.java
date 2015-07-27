@@ -23,7 +23,7 @@ import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.deployment.TenantRepository;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
@@ -37,11 +37,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BPMNDeploymentService {
 
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
+    private int deploymentCount = -1;
 
     public BPMNDeployment[] getDeployments() {
 
@@ -57,10 +59,11 @@ public class BPMNDeploymentService {
             bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
             bpmnDeployments[i] = bpmnDeployment;
         }
+        deploymentCount = bpmnDeployments.length;
         return bpmnDeployments;
     }
 
-    public BPMNProcess[] getDeployedProcesses() throws BPSException {
+    public BPMNProcess[] getDeployedProcesses() throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
         List<ProcessDefinition> processDefinitions = tenantRepository.getDeployedProcessDefinitions();
@@ -79,7 +82,24 @@ public class BPMNDeploymentService {
 
     }
 
-    public String getProcessDiagram(String processId) throws BPSException {
+    public BPMNDeployment[] getPaginatedDeployments(int start, int size) throws BPSFault {
+        BPMNDeployment[] bpmnDeployments = getDeployments();
+        List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
+        for (int i = start; i < (start + size) && i < bpmnDeployments.length; i++) {
+            bpmnDeploymentList.add(bpmnDeployments[i]);
+        }
+        bpmnDeployments = bpmnDeploymentList.toArray(new BPMNDeployment[bpmnDeploymentList.size()]);
+        return bpmnDeployments;
+    }
+
+    public int getDeploymentCount() throws BPSFault {
+        if(deploymentCount == -1){
+            getDeployments();
+        }
+        return deploymentCount;
+    }
+
+    public String getProcessDiagram(String processId) throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
@@ -94,11 +114,11 @@ public class BPMNDeploymentService {
         catch (IOException e) {
             String msg = "Failed to create the diagram for process: " + processId;
 //            log.error(msg, e);
-            throw new BPSException(msg, e);
+            throw new BPSFault(msg, e);
         }
     }
 
-    public String getProcessModel(String processId) throws BPSException {
+    public String getProcessModel(String processId) throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         BufferedReader br = null;
         try {
@@ -120,7 +140,7 @@ public class BPMNDeploymentService {
 
             String msg = "Failed to create the diagram for process: " + processId;
             log.error(msg, e);
-            throw new BPSException(msg, e);
+            throw new BPSFault(msg, e);
 
         } finally {
             try {
@@ -133,7 +153,7 @@ public class BPMNDeploymentService {
         }
     }
 
-    public void undeploy (String deploymentName ) throws BPSException{
+    public void undeploy (String deploymentName ) throws BPSFault {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);

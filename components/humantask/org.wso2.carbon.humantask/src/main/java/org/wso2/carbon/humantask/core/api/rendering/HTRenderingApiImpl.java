@@ -34,6 +34,7 @@ import org.wso2.carbon.humantask.client.api.IllegalAccessFault;
 import org.wso2.carbon.humantask.client.api.IllegalArgumentFault;
 import org.wso2.carbon.humantask.client.api.IllegalOperationFault;
 import org.wso2.carbon.humantask.client.api.IllegalStateFault;
+import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.api.client.TaskOperationsImpl;
 import org.wso2.carbon.humantask.core.dao.HumanTaskDAOConnection;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
@@ -527,6 +528,13 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                                               String binding)
             throws IOException, SAXException {
         WSDLParser parser = new WSDLParser();
+
+        //BPS-677
+        int fileLocationPrefixIndex = SrcWsdl.indexOf(HumanTaskConstants.FILE_LOCATION_FILE_PREFIX);
+        if( SrcWsdl.indexOf(HumanTaskConstants.FILE_LOCATION_FILE_PREFIX) != -1 ){
+            SrcWsdl = SrcWsdl.substring( fileLocationPrefixIndex + HumanTaskConstants.FILE_LOCATION_FILE_PREFIX
+                    .length());
+        }
 
         Definitions wsdl = parser.parse(SrcWsdl);
 

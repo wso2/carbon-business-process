@@ -53,7 +53,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="setPriority(<%=id%>)" id="sePriorityBtn">Set</button>
+                <button type="button" class="btn btn-default" onclick="setPriority(<%=id%>)" id="sePriorityBtn">Set</button>
             </div>
         </div><!-- /.modal-content -->
     </div>

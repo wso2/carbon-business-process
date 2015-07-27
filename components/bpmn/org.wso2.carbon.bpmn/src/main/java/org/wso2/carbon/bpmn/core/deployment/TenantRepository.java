@@ -20,9 +20,6 @@ package org.wso2.carbon.bpmn.core.deployment;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -31,15 +28,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.Utils;
-import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
-import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
-import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 import org.wso2.carbon.registry.api.Collection;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
@@ -49,9 +41,7 @@ import org.wso2.carbon.registry.api.Resource;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -284,7 +274,7 @@ public class TenantRepository {
 //
 //	}
 
-    public void undeploy(String deploymentName, boolean force) throws BPSException {
+    public void undeploy(String deploymentName, boolean force) throws BPSFault {
 
         try {
             // Remove the deployment from the tenant's registry
@@ -314,12 +304,12 @@ public class TenantRepository {
         } catch (RegistryException e) {
             String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " + tenantId;
             log.error(msg, e);
-            throw new BPSException(msg, e);
+            throw new BPSFault(msg, e);
         }
 
     }
 
-    public List<Deployment> getDeployments() /*throws BPSException*/ {
+    public List<Deployment> getDeployments() /*throws BPSFault*/ {
 
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         List<Deployment> tenantDeployments = engine.getRepositoryService().createDeploymentQuery().
@@ -328,7 +318,7 @@ public class TenantRepository {
         return tenantDeployments;
     }
 
-	public List<ProcessDefinition> getDeployedProcessDefinitions() throws BPSException {
+	public List<ProcessDefinition> getDeployedProcessDefinitions() throws BPSFault {
 
 		ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
 		return engine.getRepositoryService().createProcessDefinitionQuery()
@@ -429,7 +419,7 @@ public class TenantRepository {
 //            }
 //        }
 //    }
-    public void fixDeployments() throws BPSException {
+    public void fixDeployments() throws BPSFault {
 
         // get all deployments in the deployment folder
         List<String> fileArchiveNames = new ArrayList<String>();
@@ -466,7 +456,7 @@ public class TenantRepository {
         } catch (RegistryException e) {
             String msg = "Failed to obtain BPMN deployments from the Registry.";
             log.error(msg, e);
-            throw new BPSException(msg, e);
+            throw new BPSFault(msg, e);
         }
 
         // construct the union of all deployments
@@ -497,10 +487,10 @@ public class TenantRepository {
                         undeploy(deploymentName, true);
                     }
                 }
-            } catch (BPSException e) {
+            } catch (BPSFault e) {
                 String msg = "Failed undeploy inconsistent deployment: " + deploymentName;
                 log.error(msg, e);
-                throw new BPSException(msg, e);
+                throw new BPSFault(msg, e);
             }
         }
     }

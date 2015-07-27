@@ -20,11 +20,6 @@
 	  <li class="active">Processes</li>
 	</ol-->
         <div class=" margin-left-double table-title">Processes
-        	  	<% 	var processStatus = session.get("processStatus");
-         			var processId = session.get("processId");
-          			session.put("processStatus","");
-          			session.put("processId","");
-       			%>
        	</div>
       	<div class="table-body margin-left-double">
 		  <!-- Table -->
@@ -60,17 +55,13 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-count].version%></td>
-							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
-							<% if (list[i-count].processId == processId ) { %>
-	                         <%=processStatus%>
-	                           <% } %>
-							</td>
+							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
 			    		%>
-			    			<tr>
+			    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
@@ -83,11 +74,7 @@
 				    				</a>
 				    			</td>
 								<td><%=list[i-j].version%></td>
-								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
-								<% if (list[i-j].processId == processId ) { %>
-	                      <%=processStatus%>
-	                          <% } %>
-								</td>
+								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
 			    		<%
 		    			}
@@ -95,7 +82,7 @@
 		    			previous = list[i].processName;
 		    		} %>
 		    		<% if (i >= list.length-1) { i++; %>
-		    			<tr>
+		    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 			    			<td rowspan="<%=count%>"><%=list[i-count].processName%> </td>
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
@@ -109,16 +96,12 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-count].version%></td>
-							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
-							<% if (list[i-count].processId == processId ) { %>
-	                         <%=processStatus%>
-	                          <% } %>
-							</td>
+							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
 			    	%>
-			    			<tr>
+			    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
@@ -131,11 +114,7 @@
 				    				</a>
 				    			</td>
 								<td><%=list[i-j].version%></td>
-								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a>
-								<% if (list[i-count].processId == processId ) { %>
-	                              <%=processStatus%>
-	                                <% } %>
-								</td>
+								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
 			    	<%
 		    			}
@@ -145,6 +124,32 @@
 		    <% } %>
 		  </table>
 		</div>
+		<%
+			var startProcess = request.getParameter("startProcess");
+			var errorProcess = request.getParameter("errorProcess");
+			if(startProcess != null && startProcess != ""){
+				%>
+					<script>
+						window.onload = function() {
+							$('.processStatus').html("Process Started");
+							$('#processStart').modal('show');
+							if (typeof (history.pushState) != "undefined") {
+								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
+								history.pushState(obj, obj.Title, obj.Url);
+							} else {
+								alert("Browser does not support HTML5.");
+							}
+						}
+					</script>
+				<%
+			}
+			if(errorProcess != null && errorProcess != ""){
+				%>
+					$('.processStatus').html("Error starting process");
+					$('#processStart').modal('show');
+				<%
+			}
+		%>
 		<ul class="pagination">
 		<% if (pagination != 1) { %>
 			<li><a href="process?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
@@ -179,6 +184,19 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    	</div><!-- /.modal -->
+    	<div class="modal fade bs-example-modal-sm" id="processStart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><span class="processStatus">Process</span></h4>
+                </div>
+                 <div class="modal-body">
+                    	<div><%=startProcess%></div>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

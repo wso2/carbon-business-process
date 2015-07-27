@@ -19,7 +19,7 @@ package org.wso2.carbon.bpel.core.ode.integration.store;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.ode.store.DeploymentUnitDir;
-import org.wso2.carbon.bpel.core.ode.integration.config.bam.BAMServerProfile;
+import org.wso2.carbon.bpel.core.ode.integration.config.analytics.AnalyticsServerProfile;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -102,11 +102,11 @@ public interface TenantProcessStore {
     ProcessConf removeProcessConfiguration(QName pid);
 
     /**
-     * Retrieve the BAM server profile with the provided name
-     * @param name BAM server profile name
-     * @return BAM server profile
+     * Retrieve the Analytics server profile with the provided name
+     * @param name Analytics server profile name
+     * @return Analytics server profile
      */
-    BAMServerProfile getBAMServerProfile(String name);
+    AnalyticsServerProfile getAnalyticsServerProfile(String name);
 
     Object getDataPublisher(String processName);
 

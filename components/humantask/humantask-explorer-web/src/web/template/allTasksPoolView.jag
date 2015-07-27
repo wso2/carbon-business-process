@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-2">
-                    <button type="submit" class="btn btn-primary btn-info">Search</button>
+                    <button type="submit" class="btn btn-default btn-info">Search</button>
                 </div>
             </form>
         </div>

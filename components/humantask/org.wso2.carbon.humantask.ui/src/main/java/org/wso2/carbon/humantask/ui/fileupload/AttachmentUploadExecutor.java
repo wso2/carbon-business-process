@@ -63,7 +63,7 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
             FileItemData fileToBeUpload = fileItemsMap.get(0);
 
             AttachmentUploadClient attachmentUploadClient = new AttachmentUploadClient(configurationContext,
-                                                                       serverURL + "AttachmentMgtService", cookie);
+                                                                       serverURL, cookie);
             HumanTaskClientAPIServiceClient taskOperationClient = new HumanTaskClientAPIServiceClient(cookie,
                                                                       serverURL, configurationContext);
 
@@ -73,7 +73,7 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
 
             String attachmentName = fileToBeUpload.getDataHandler().getName();
             String contentType = fileToBeUpload.getDataHandler().getContentType();
-            boolean isAdded = taskOperationClient.addAttachment(taskID, attachmentName, contentType, attachmentID);
+             boolean isAdded = taskOperationClient.addAttachment(taskID, attachmentName, contentType, attachmentID);
 
             String msg = "Your attachment has been uploaded successfully.";
 
@@ -81,9 +81,14 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
                 throw new Exception("Attachment was added successfully with id:" + attachmentID + ". But the task " +
                                     "with id: " + taskID + " was not associated with it correctly.");
             } else {
-                if (redirect != null) {
+                if (redirect != null && redirect.contains("humantask/basic_task_view.jsp")) {
+                    //redirection is going to the carbon mgt console
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request, response,
                                                         getContextRoot(request) + "/" + webContext + "/" + redirect);
+                } else if (redirect != null) {
+                    //redirection exists, not to carbon mgt console
+                    out.write(msg);
+                    response.sendRedirect(getContextRoot(request) + "/" + webContext + "/" + redirect);
                 } else {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request);
                 }

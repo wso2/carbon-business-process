@@ -55,7 +55,7 @@
             <require-permission>/permission/admin/manage/bpmn</require-permission>
         </menu>
         <menu>
-            <id>bpmn_instace_menu</id>
+            <id>bpmn_instance_menu</id>
             <i18n-key>bpmn.main</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
             <parent-menu>instances_menu</parent-menu>
@@ -76,6 +76,31 @@
             <link>../bpmn/data_publisher_view.jsp</link>
             <region>region1</region>
             <order>5</order>
+            <style-class>manage</style-class>
+            <icon>../bpmn/images/bpmn-instance.gif</icon>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
+        </menu>
+
+        <menu>
+            <id>bpmn_instance_active_menu</id>
+            <i18n-key>bpmn.active</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>bpmn_instance_menu</parent-menu>
+            <link>../bpmn/instance_list_view.jsp</link>
+            <region>region1</region>
+            <order>39</order>
+            <style-class>manage</style-class>
+            <icon>../bpmn/images/bpmn-instance.gif</icon>
+            <require-permission>/permission/admin/manage/bpmn</require-permission>
+        </menu>
+        <menu>
+            <id>bpmn_instance_complete_menu</id>
+            <i18n-key>bpmn.complete</i18n-key>
+            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
+            <parent-menu>bpmn_instance_menu</parent-menu>
+            <link>../bpmn/history_instance_list_view.jsp</link>
+            <region>region1</region>
+            <order>40</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn-instance.gif</icon>
             <require-permission>/permission/admin/manage/bpmn</require-permission>

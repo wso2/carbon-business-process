@@ -37,7 +37,13 @@
 
     String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String instanceId = CharacterEncoder.getSafeText(request.getParameter("instanceID"));
-
+    String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+    int currentPage = 0;
+    if(pageNumber != null && pageNumber != ""){
+        currentPage = Integer.parseInt(pageNumber);
+    }
+    int start = currentPage * 10;
+    int numberOfPages;
     try {
         client = new WorkflowServiceClient(cookie, serverURL, configContext);
 
@@ -52,7 +58,8 @@
             client.deleteAllProcessInstances();
         }
 
-        bpmnInstances = client.getProcessInstances();
+        bpmnInstances = client.getPaginatedInstances(start, 10);
+        numberOfPages = (int) Math.ceil(client.getInstanceCount()/10.0);
     } catch (Exception e) {
         CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
 %>
@@ -175,6 +182,12 @@
                 <% } %>
             </tbody>
         </table>
+        <br/>
+        <carbon:paginator pageNumber="<%=currentPage%>" numberOfPages="<%=numberOfPages%>"
+                          page="instance_list_view.jsp" pageNumberParameterName="pageNumber"
+                          resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
+                          prevKey="prev" nextKey="next"
+                          parameters="region=region1&item=bpmn_instace_menu"/>
         <% if(bpmnInstances!=null && bpmnInstances.length>0){ %>
             <br/>
             <a href="#" class="bpmn-icon-link" style="background-image:url(images/delete.gif);" onclick="deleteAllInstance()"><fmt:message key="bpmn.instance.deleteAll"/></a>

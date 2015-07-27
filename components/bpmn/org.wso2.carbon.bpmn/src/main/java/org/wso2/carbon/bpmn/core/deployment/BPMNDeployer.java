@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -64,7 +64,7 @@ public class BPMNDeployer extends AbstractDeployer {
              if (!CarbonUtils.isWorkerNode()) {
                 tenantRepository.fixDeployments();
             }
-        }  catch (BPSException e) {
+        }  catch (BPSFault e) {
             String msg = "Tenant Error: " + tenantId;
             log.error(msg, e);
         }
@@ -133,7 +133,7 @@ public class BPMNDeployer extends AbstractDeployer {
         String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
         try {
            tenantRepository.undeploy(deploymentName, true);
-        } catch (BPSException be) {
+        } catch (BPSFault be) {
             String errorMsg = "Error un deploying BPMN Package " + deploymentName;
             throw new DeploymentException(errorMsg, be);
         }
@@ -144,13 +144,13 @@ public class BPMNDeployer extends AbstractDeployer {
 	 *
 	 * @param configurationContext axis2 configurationContext
 	 * @return                     bpmn repo file
-	 * @throws BPSException        repo creation failure will result in this xception
+	 * @throws BPSFault        repo creation failure will result in this xception
 	 */
-    private File createTenantRepo(ConfigurationContext configurationContext) throws BPSException {
+    private File createTenantRepo(ConfigurationContext configurationContext) throws BPSFault {
         String axisRepoPath = configurationContext.getAxisConfiguration().getRepository().getPath();
         if (CarbonUtils.isURL(axisRepoPath)) {
             String msg = "URL Repositories are not supported: " + axisRepoPath;
-            throw new BPSException(msg);
+            throw new BPSFault(msg);
         }
         File tenantsRepository = new File(axisRepoPath);
         File bpmnRepo = new File(tenantsRepository, BPMNConstants.BPMN_REPO_NAME);
@@ -159,7 +159,7 @@ public class BPMNDeployer extends AbstractDeployer {
             boolean status = bpmnRepo.mkdir();
             if (!status) {
                 String msg = "Failed to create BPMN repository folder " + bpmnRepo.getAbsolutePath() + ".";
-                throw new BPSException(msg);
+                throw new BPSFault(msg);
             }
         }
         return bpmnRepo;

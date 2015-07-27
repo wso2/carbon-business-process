@@ -55,8 +55,10 @@
     } catch (e) {
         log.error('Error occurred in connection while logout from AuthenticationAdmin service : ');
         log.error(e);
+        session.put('authSuccess', false);
         response.sendRedirect('login');
     }
+    session.put('authSuccess', false);
     session.invalidate();
     response.sendRedirect("login");
 

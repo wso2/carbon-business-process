@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.wso2.carbon.business-process</groupId>
+        <artifactId>bpel</artifactId>
+        <version>4.4.3-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.wso2.carbon.bpel.analytics.publisher</artifactId>
+    <packaging>bundle</packaging>
+    <name>WSO2 Carbon - BPEL Analytics publishing Extension</name>
+    <url>http://wso2.org</url>
+    <description>BPEL Analytics Publishing Extension for BPEL Monitoring using analytics server</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.bpel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ode.wso2</groupId>
+            <artifactId>ode</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.commons</groupId>
+            <artifactId>org.wso2.carbon.databridge.commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.commons</groupId>
+            <artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Private-Package>
+                            org.wso2.carbon.bpel.analytics.publisher.internal
+                        </Private-Package>
+                        <Export-Package>
+                            !org.wso2.carbon.bpel.analytics.publisher.internal,
+                            org.wso2.carbon.bpel.analytics.publisher.*;
+                            version="${carbon.business-process.exp.pkg.version}"
+                        </Export-Package>
+                        <Import-Package>
+                            !org.wso2.carbon.bpel.analytics.publisher.*,
+                            org.wso2.carbon.bpel.core.*,
+                            org.wso2.carbon.analytics.*,
+                            org.wso2.carbon.agent.*,
+                            org.wso2.carbon.agent.core.*,
+                            org.wso2.carbon.agent.conf.*,
+                            org.wso2.carbon.agent.publish.*,
+                            org.wso2.carbon.analytics.service.*,
+                            org.apache.ode.*,
+                            org.apache.axis2.*; version="${axis2.osgi.version.range.bpel}",
+                            *;resolution:=optional
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

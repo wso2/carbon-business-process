@@ -22,7 +22,7 @@ import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNTask;
 import org.wso2.carbon.context.CarbonContext;
 
@@ -32,7 +32,7 @@ public class BPMNHumanTasksService {
 
     private static Log log = LogFactory.getLog(BPMNHumanTasksService.class);
 
-    public BPMNTask[] getTasksOfUser(String username) throws BPSException {
+    public BPMNTask[] getTasksOfUser(String username) throws BPSFault {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
@@ -53,7 +53,7 @@ public class BPMNHumanTasksService {
 
     }
 
-    public void completeTask(String taskId) throws BPSException {
+    public void completeTask(String taskId) throws BPSFault {
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             engine.getTaskService().complete(taskId);
     }

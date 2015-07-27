@@ -1,0 +1,66 @@
+<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+-->
+<div class="row">
+ 	<div class="panel-inbox">
+	<!--ol class="breadcrumb">
+	  <li><a href="stats">Home</a></li>
+	  <li class="active">Inbox</li>
+	</ol-->
+      	<div class=" margin-left-double table-title">My Tasks</div>
+    	<div class="table-body margin-left-double">
+
+	  	<!-- Table -->
+		  <table class="table">
+		    <thead>
+		    	<tr class="table-title-row">
+		    		<th>Task ID</th>
+		    		<th>Task Name</th>
+		    		<th>Due Date</th>
+		    	</tr>
+		    </thead>
+		    <tbody>
+		    	<% for (var i=0; i<task.length; i++) { %>
+		    	  	<tr class="white-bg" style="cursor:pointer;" onclick="window.location='task?id=<%=task[i].id%>'"
+	                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+		    			<td><%=task[i].id%></td>
+						<td><%=task[i].name%></td>
+						<td><%=task[i].date%></td>
+			    	</tr>
+		    	<% } %>
+		    </tbody>
+		  </table>
+		</div>
+		<ul class="pagination">
+			<% if (pagination != 1) { %>
+				<li><a href="myTasks?pagination=<%=parseInt(pagination) - 1%>">&laquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&laquo;</a></li>			
+			<% } %>
+			<% for (var i = 1; i <= paginatePageCount + 1; i++) {
+					if (pagination == i) { %>
+						<li class="active"><a href="myTasks?pagination=<%=i%>"><%=("" + i).split(".")[0]%></a></li>
+				<% } else { %>
+						<li><a href="myTasks?pagination=<%=i%>"><%=("" + i).split(".")[0]%></a></li>
+				<% } %>
+			<% } %>
+			<% if (pagination != paginatePageCount + 1) { %>
+				<li><a href="myTasks?pagination=<%=parseInt(pagination) + 1%>">&raquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&raquo;</a></li>			
+			<% } %>
+		</ul>
+	</div>	
+</div>

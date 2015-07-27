@@ -32,7 +32,7 @@ function claimTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             }
             else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
@@ -67,7 +67,7 @@ function startTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             }
             else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
@@ -100,7 +100,7 @@ function stopTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
 
             }
             else if (success === 'timeout') {
@@ -168,7 +168,7 @@ function suspendTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
@@ -204,7 +204,7 @@ function resumeTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
@@ -236,7 +236,7 @@ function failTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
@@ -463,6 +463,15 @@ function updateAttachments(id) {
                         + '</li>';
                 }
 
+                attachmentViewList = attachmentViewList + '<form id="attachment_upload_form" method="post" name="attachmentUpload" '
+                + 'action="../../fileupload/attachment-mgt" enctype="multipart/form-data" target="_self">'
+                + '<input type="hidden" id="uRedirect" name="redirect" value="../humantask-explorer/task?id='
+                + id + '#additionalInfoSection">'
+                + '<input type="hidden" id="taskID" name="taskID" value="' + id + '">'
+                + '<table><tbody><tr><td>File</td><td><input type="file" id="fileToUploadID" name="fileToUpload">'
+                + '</td></tr></tbody><tfoot><tr><td><input name="attachmentUploadButton" class="btn btn-info" type="button"'
+                + ' value="upload" onclick="uploadAttachment();"></td></tr></tfoot></table></form>';
+
                 $('#AttchmentsList').html(attachmentViewList);
             }else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
@@ -479,6 +488,22 @@ function updateAttachments(id) {
 
     });
 
+}
+
+/**
+ * function to upload attachment
+ * @returns {boolean}
+ */
+function uploadAttachment() {
+
+    if( $('#fileToUploadID').val() =='' || $('#fileToUploadID').length ==0)
+    {
+        $('#InfoErrMsg').html("Please select file to upload attachment.");
+        $('#additionalInfoErr').show();
+        return true ;
+    }
+    document.attachmentUpload.submit();
+    return true;
 }
 
 
@@ -687,7 +712,7 @@ function skipTask(id) {
             var success = data.firstChild.getElementsByTagName('success')[0].textContent;
             if (success === 'true') {
                 //successful
-                window.location = httpUrl + "/" + appName + "/inboxtask?id=" + id;
+                window.location = httpUrl + "/" + appName + "/task?id=" + id;
             } else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {

@@ -21,7 +21,7 @@
     <groupId>org.wso2.carbon.business-process</groupId>
     <artifactId>carbon-business-process</artifactId>
     <packaging>pom</packaging>
-    <version>4.4.2-SNAPSHOT</version>
+    <version>4.4.3-SNAPSHOT</version>
     <name>WSO2 Carbon Business Process Aggregator Pom</name>
     <url>http://wso2.org</url>
 
@@ -759,12 +759,12 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher</artifactId>
+                <artifactId>org.wso2.carbon.bpel.analytics.publisher</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpel.bam.publisher.skeleton</artifactId>
+                <artifactId>org.wso2.carbon.bpel.analytics.publisher.skeleton</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
@@ -1308,10 +1308,10 @@
 
     <properties>
 
-        <carbon.business-process.version>4.4.2-SNAPSHOT</carbon.business-process.version>
+        <carbon.business-process.version>4.4.3-SNAPSHOT</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.4.0,4.5.0)
         </carbon.business-process.imp.pkg.version>
-        <carbon.business-process.exp.pkg.version>4.4.0</carbon.business-process.exp.pkg.version>
+        <carbon.business-process.exp.pkg.version>4.4.2</carbon.business-process.exp.pkg.version>
 
         <version.jettison>1.3.4</version.jettison>
 
@@ -1324,19 +1324,19 @@
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.4.1</carbon.commons.version>
+        <carbon.commons.version>4.4.3</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 4.5.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.version>4.5.0</carbon.identity.version>
-        <carbon.identity.imp.pkg.version>[4.4.0, 4.5.0)</carbon.identity.imp.pkg.version>
+        <carbon.identity.version>4.5.2</carbon.identity.version>
+        <carbon.identity.imp.pkg.version>[4.5.0, 4.6.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
         <carbon.deployment.version>4.4.1</carbon.deployment.version>
         <carbon.deployment.imp.pkg.version>[4.4.0, 4.5.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
-        <carbon.registry.version>4.4.1</carbon.registry.version>
+        <carbon.registry.version>4.4.3</carbon.registry.version>
         <carbon.registry.imp.pkg.version>[4.4.0, 4.5.0)</carbon.registry.imp.pkg.version>
 
         <!-- Carbon mediation version -->
@@ -1368,7 +1368,7 @@
         <axis2.wso2.version>1.6.1-wso2v12</axis2.wso2.version>
         <exp.pkg.version.axis2>1.6.1-wso2v12</exp.pkg.version.axis2>
         <imp.pkg.version.axis2>[1.6.1.wso2v12, 1.7.0)</imp.pkg.version.axis2>
-        <axis2-transports.version>1.1.0-wso2v12</axis2-transports.version>
+        <axis2-transports.version>1.1.0-wso2v14</axis2-transports.version>
         <axis2.osgi.version.range>[1.6.1.wso2v12, 1.7.0)</axis2.osgi.version.range>
 
 
@@ -1549,7 +1549,7 @@
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
         <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>
-        <orbit.ode.version>1.3.5-wso2v14-SNAPSHOT</orbit.ode.version>
+        <orbit.ode.version>1.3.5-wso2v15-SNAPSHOT</orbit.ode.version>
 	<mybatis.version>3.2.5</mybatis.version>
 
 

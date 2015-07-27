@@ -24,13 +24,13 @@
 		<div class="panel-heading">Start Process</div>
 
 	  
-	  	<table style="margin-left:10px;">
-	  		<form >
+	  	<table style="margin-left:10px; margin-bottom:10px;">
+	  		<form>
 	  			<%=formContent%>
 	  		</form>
 	  		<tr>
 	  			<td align="center" colspan="2" style="padding-top:10px; padding-bottom:10px">
-	  				<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn btn-sm btn-primary">Start</button>
+	  				<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
 	  			</td>
 	  		</tr>
 	  	</table>

@@ -38,11 +38,11 @@ var loggedUser = session.get("userName");
 <body>
     <header>
     <div class="logo-wrapper app-logo">
-        <a href="inbox"><img src="images/logo-wso2.png"><h2 class="app-title"><%=data.app.title%></h2></a>
+        <a href="mytasks"><img src="images/logo-wso2.png"><h2 class="app-title"><%=data.app.title%></h2></a>
     </div>
         <% if (loggedUser != null) { %>
-            <div class="login-wrapper padding-top padding-left">
-                <img src="images/admin.png"/>
+            <div class="login-wrapper">
+					<i class="fw fw-user"></i>
                 <span class="padding-top margin-left margin-right"><%=loggedUser%></span>|
                 <span class="padding-top"><a href="logout">Logout</a></span>
             </div>

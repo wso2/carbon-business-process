@@ -64,6 +64,7 @@ public class AttachmentMgtDAOFactoryImpl implements AttachmentMgtDAOFactory {
                     attachmentDAO.setContentType(attachment.getContentType());
                     attachmentDAO.setUrl(URLGeneratorUtil.generateURL());
                     attachmentDAO.setContent(attachment.getContent());
+                    attachmentDAO.setCreatedTime(attachment.getCreatedTime());
 
                     entityManager.persist(attachmentDAO);
                     if (entityManager.contains(attachmentDAO)) {
