@@ -43,6 +43,7 @@
               if (log.isDebugEnabled()) {
                   log.debug('Session timed out for request'+ "" + htRequest);
               }
+              session.put('authSuccess', false);
               response.sendRedirect('login');
           }
         if (log.isDebugEnabled()) {
@@ -54,6 +55,7 @@
     } catch(e) {
         log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
         log.error(e);
+        session.put('authSuccess', false);
         response.sendRedirect('login');
     }
 %>

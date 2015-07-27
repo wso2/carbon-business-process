@@ -18,7 +18,7 @@
  */
 
     var authSuccess = session.get("authSuccess");
-var log = new Log();
+    var log = new Log();
     if (!authSuccess) {
         response.sendRedirect("login");
     } else {
