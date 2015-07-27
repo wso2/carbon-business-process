@@ -43,6 +43,7 @@
     } catch (e) {
         log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
         log.error(e);
+        session.put('authSuccess', false);
         response.sendRedirect('login');
     }
     try {
@@ -52,6 +53,7 @@
             if (log.isDebugEnabled()) {
                 log.debug('Session timed out for task'+ "" + id);
             }
+            session.put('authSuccess', false);
             response.sendRedirect('login');
         }
         var HTRenderingsXML = new XML(HTRenderingsMsg);
@@ -60,6 +62,7 @@
     } catch (e) {
         log.error('Error occurred while connecting to the back-end BPS HTRenderingAPI service : ');
         log.error(e);
+        session.put('authSuccess', false);
         response.sendRedirect('login');
     }
 %>

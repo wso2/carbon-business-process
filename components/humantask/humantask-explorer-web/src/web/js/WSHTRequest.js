@@ -153,6 +153,7 @@ function loadTask(id) {
 
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
     if (BPSResponse == null) {
+        session.put('authSuccess', false);
         response.sendRedirect('login');
     }
     else {
