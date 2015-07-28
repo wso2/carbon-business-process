@@ -166,7 +166,6 @@ public class TenantRepository {
         ZipInputStream archiveStream = null;
 
         try {
-            //TODO: validate package
 
             String deploymentName = FilenameUtils.getBaseName(deploymentContext.getBpmnArchive().getName());
 
