@@ -25,7 +25,9 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
+import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceBPSFaultException;
 import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceStub;
+import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceBPSFaultException;
 import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceStub;
 import org.wso2.carbon.utils.xml.XMLPrettyPrinter;
 import sun.misc.BASE64Decoder;
@@ -37,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,20 +68,40 @@ public class WorkflowServiceClient {
         option1.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, cookie);
     }
 
-    public void startProcess(String processId) throws Exception {
-        instanceServiceStub.startProcess(processId);
+    public void startProcess(String processId) {
+        try {
+            instanceServiceStub.startProcess(processId);
+        } catch (RemoteException e) {
+            log.error("Error starting process, RemoteException", e);
+        } catch (BPMNInstanceServiceBPSFaultException e) {
+            log.error("Error starting process, BPMNInstanceServiceBPSFaultException", e);
+        }
     }
 
     public BPMNDeployment[] getDeployments() throws Exception {
         return  deploymentServiceStub.getDeployments();
     }
 
-    public BPMNDeployment[] getPaginatedDeployments(int start, int size) throws Exception {
-        return  deploymentServiceStub.getPaginatedDeployments(start, size);
+    public BPMNDeployment[] getPaginatedDeployments(int start, int size) {
+        try {
+            return  deploymentServiceStub.getPaginatedDeployments(start, size);
+        } catch (RemoteException e) {
+            log.error("Error getting paginated deployments, RemoteException", e);
+        } catch (BPMNDeploymentServiceBPSFaultException e) {
+            log.error("Error getting paginated deployments, BPMNDeploymentServiceBPSFaultException", e);
+        }
+        return null;
     }
 
-    public int getDeploymentCount() throws Exception {
-        return deploymentServiceStub.getDeploymentCount();
+    public int getDeploymentCount() {
+        try {
+            return deploymentServiceStub.getDeploymentCount();
+        } catch (RemoteException e) {
+            log.error("Error getting deployments count, RemoteException", e);
+        } catch (BPMNDeploymentServiceBPSFaultException e) {
+            log.error("Error getting deployments count, BPMNDeploymentServiceBPSFaultException", e);
+        }
+        return 0;
     }
 
     public int getInstanceCount() throws Exception  {
@@ -153,13 +176,17 @@ public class WorkflowServiceClient {
         instanceServiceStub.activateProcessInstance(instanceID);
     }
 
-    public BPMNProcess[] getProcessListByDeploymentID(String deploymentID) throws Exception {
+    public BPMNProcess[] getProcessListByDeploymentID(String deploymentID) {
         List<BPMNProcess> processes = new ArrayList<BPMNProcess>();
-        for (BPMNProcess process : getProcesses()) {
-            if (process.getDeploymentId().equals(deploymentID)) {
-                processes.add(process);
-            }
+        try {
+            for (BPMNProcess process : getProcesses()) {
+                if (process.getDeploymentId().equals(deploymentID)) {
+                    processes.add(process);
+                }
 
+            }
+        } catch (Exception e) {
+            log.error("BPMN error getting process list by deployment ID", e);
         }
         return processes.toArray(new BPMNProcess[processes.size()]);
     }
@@ -195,15 +222,15 @@ public class WorkflowServiceClient {
     public String getProcessInstanceDiagram(String instanceId) throws Exception {
         ByteArrayOutputStream baos = null;
         String dataUri;
-        try{
-        String imageString = instanceServiceStub.getProcessInstanceDiagram(instanceId);
-        BufferedImage bufferedImage = decodeToImage(imageString);
-        baos = new ByteArrayOutputStream();
-        ImageIO.write( bufferedImage, "png", baos );
-        baos.flush();
-        dataUri = "data:image/png;base64," +
-                DatatypeConverter.printBase64Binary(baos.toByteArray());
-        }finally {
+        try {
+            String imageString = instanceServiceStub.getProcessInstanceDiagram(instanceId);
+            BufferedImage bufferedImage = decodeToImage(imageString);
+            baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", baos);
+            baos.flush();
+            dataUri = "data:image/png;base64," +
+                    DatatypeConverter.printBase64Binary(baos.toByteArray());
+        } finally {
             if (baos != null) {
                 try {
                     baos.close();
@@ -215,8 +242,15 @@ public class WorkflowServiceClient {
         return dataUri;
     }
 
-    public String getProcessModel(String processId) throws Exception {
-        String tRawXML = deploymentServiceStub.getProcessModel(processId);
+    public String getProcessModel(String processId) {
+        String tRawXML = null;
+        try {
+            tRawXML = deploymentServiceStub.getProcessModel(processId);
+        } catch (RemoteException e) {
+            log.error("BPMN Error getting process model, RemoteException", e);
+        } catch (BPMNDeploymentServiceBPSFaultException e) {
+            log.error("BPMN Error getting process model, BPMNDeploymentServiceBPSFaultException", e);
+        }
         tRawXML = tRawXML.replaceAll("\n|\\r|\\f|\\t", "");
         tRawXML = tRawXML.replaceAll("> +<", "><");
         InputStream xmlIn = new ByteArrayInputStream(tRawXML.getBytes());
@@ -225,8 +259,14 @@ public class WorkflowServiceClient {
         return tRawXML;
     }
 
-    public  void undeploy(String deploymentName) throws Exception {
-        deploymentServiceStub.undeploy(deploymentName);
+    public  void undeploy(String deploymentName) {
+        try {
+            deploymentServiceStub.undeploy(deploymentName);
+        } catch (RemoteException e) {
+            log.error("Error undeploy package, RemoteException", e);
+        } catch (BPMNDeploymentServiceBPSFaultException e) {
+            log.error("Error undeploy package, BPMNDeploymentServiceBPSFaultException", e);
+        }
     }
 
     private BufferedImage decodeToImage(String imageString) throws IOException{

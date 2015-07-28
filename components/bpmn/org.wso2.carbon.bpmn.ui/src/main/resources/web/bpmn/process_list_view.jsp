@@ -51,7 +51,7 @@ WorkflowServiceClient client;
     String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
     String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
     int currentPage = 0;
-    if(pageNumber != null && pageNumber != ""){
+    if(pageNumber != null && !pageNumber.equals("")){
         currentPage = Integer.parseInt(pageNumber);
     }
     int start = currentPage * 10;
@@ -90,7 +90,7 @@ WorkflowServiceClient client;
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.start.process"/> ' + pid + "?", startYes, null);
         }, "<fmt:message key="session.timed.out"/>");
         return false;
-    };
+    }
 </script>
 <jsp:include page="../dialog/display_messages.jsp"/>
     <carbon:breadcrumb
