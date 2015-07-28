@@ -23,7 +23,13 @@
 
     var username = request.getParameter("username");
     var password = request.getParameter("password");
-
+    var requestUrl = request.getHeader("Referer").split("requestUrl=")[1];
+    if(requestUrl != null && requestUrl != "null"){
+        requestUrl = requestUrl.replace("%3F", "?");
+    }
+    if(requestUrl == null || requestUrl == "null" || requestUrl == ""){
+        requestUrl = "mytasks";
+    }
     if (username === "" || password === "") {
         var authSuccess = false;
     } else {
@@ -37,11 +43,11 @@
     }
     if (!authSuccess) {
         session.put("loginFailed" ,true);
-        response.sendRedirect("login");
+        response.sendRedirect(requestUrl);
     } else {
         session.put('authSuccess', authSuccess);
         session.put('userName', username);
-        response.sendRedirect("mytasks");
+        response.sendRedirect(requestUrl);
     }
 
     /**
