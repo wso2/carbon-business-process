@@ -80,4 +80,8 @@
         var queryReceived = false;
     }
 
+    //Set current active veiw as Search list. 
+    //This is used to highlight current view which the user currently viewing in the navigation bar
+    searchNavActive = 'class="active"';
+
 %>

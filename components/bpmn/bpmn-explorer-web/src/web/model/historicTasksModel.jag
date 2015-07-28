@@ -35,4 +35,8 @@ for(var i=0; i < tasks.data.length; i++){
 }
 var taskCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((taskCount / 10));
+
+//Set current active veiw as completed task view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+completedTasksNavActive = 'class="active"';
 %>
