@@ -22,4 +22,12 @@ var data = require('../config/config.json'),
 	auth = session.get('auth'),
 	roles = session.get('roles'),
 	httpUrl = "https://"+localIP+":"+httpsPort;
+
+	//Following variable were used to highlight current page which user is currently in.
+    //these were set as 'active' at each corresponding task Model
+    var dashboardNavActive = ''; //Dashboard veiw [updated at statsModel and refered at navigation.jag]
+    var myTasksNavActive = ''; //My Tasks veiw [updated at myTasksModel, refered at navigation.jag]
+    var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTaskModel, refered at navigation.jag]
+    var completedTasksNavActive = ''; // Completed task view [updated at historicTasksModel, refered at navigation.jag]
+    var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
 %>

@@ -48,7 +48,6 @@
 <%
         return;
     }
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
 %>
 
@@ -126,7 +125,18 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><image src="<%=client.getProcessDiagram(processId)%>" /></td>
+                    <%
+                        try{
+                    %>
+                        <td><img src="<%=client.getProcessDiagram(processId)%>" /></td>
+                    <%
+                        } catch (Exception e){
+                    %>
+                        <td><fmt:message key="error.loading.image"/></td>
+                    <%
+                        }
+                    %>
+
                 </tr>
             </tbody>
         </table>

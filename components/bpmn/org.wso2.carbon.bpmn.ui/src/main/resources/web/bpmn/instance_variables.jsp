@@ -36,7 +36,7 @@
     WorkflowServiceClient client;
     BPMNInstance bpmnInstance;
     BPMNVariable[] variables;
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
+
     String instanceId = CharacterEncoder.getSafeText(request.getParameter("instanceID"));
 
     try {
@@ -94,7 +94,18 @@
             </thead>
             <tbody>
             <tr>
-                <td><image src="<%=client.getProcessInstanceDiagram(instanceId)%>" /></td>
+                <%
+                    try{
+                        String imgString = client.getProcessInstanceDiagram(instanceId);
+                %>
+                        <td><img src="<%=imgString%>"/></td>
+                <%
+                    } catch (Exception e){
+                %>
+                        <td><fmt:message key="error.loading.image"/></td>
+                <%
+                    }
+                %>
             </tr>
             </tbody>
         </table>

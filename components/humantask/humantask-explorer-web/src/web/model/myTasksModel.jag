@@ -93,5 +93,10 @@
         session.put('authSuccess', false);
         response.sendRedirect('login');
     }
+    
+    //Set current active veiw as myTasks. 
+    //This is used to highlight current view which the user currently viewing in the navigation bar
+    myTasksNavActive = 'class="active"';
+
 
 %>

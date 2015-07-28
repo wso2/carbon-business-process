@@ -14,9 +14,17 @@
  ~ limitations under the License.
 -->
 <%
+var authSuccess = session.get("authSuccess");
+//Check whether the user has already logged-in
+if (!authSuccess) {
+    //If not show login page
 	include("/model/common.jag");
 	include("/model/loginModel.jag");
 	include("/template/partials/header.jag");
 	include("/template/loginView.jag");
 	include("/template/partials/footer.jag");
+} else {
+    //If already logged-in, redirect to the myTasks view
+    response.sendRedirect("stats");
+}
 %>

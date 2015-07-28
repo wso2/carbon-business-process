@@ -57,4 +57,8 @@
         response.sendRedirect('login');
     }
 
+    //Set current active veiw as notifications list. 
+    //This is used to highlight current view which the user currently viewing in the navigation bar
+    notificationsListNavActive = 'class="active"';
+
 %>

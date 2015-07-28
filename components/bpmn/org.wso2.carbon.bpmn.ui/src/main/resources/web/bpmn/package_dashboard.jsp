@@ -27,25 +27,6 @@
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <%
-    String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
-    ConfigurationContext configContext =
-            (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
-    String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
-
-    WorkflowServiceClient client;
-    try {
-        client = new WorkflowServiceClient(cookie, serverURL, configContext);
-    } catch (Exception e) {
-        CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
-%>
-<script type="text/javascript">
-    location.href = "../admin/error.jsp";
-</script>
-<%
-        return;
-    }
-
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
 %>
     <carbon:breadcrumb
