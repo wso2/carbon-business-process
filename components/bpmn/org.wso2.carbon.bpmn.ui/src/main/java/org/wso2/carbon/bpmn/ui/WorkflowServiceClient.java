@@ -78,17 +78,11 @@ public class WorkflowServiceClient {
         }
     }
 
-    public BPMNDeployment[] getDeployments() throws Exception {
-        return  deploymentServiceStub.getDeployments();
-    }
-
-    public BPMNDeployment[] getPaginatedDeployments(int start, int size) {
+    public BPMNDeployment[] getPaginatedDeploymentsByFilter(String method, String filter, int start, int size) {
         try {
-            return  deploymentServiceStub.getPaginatedDeployments(start, size);
+            return  deploymentServiceStub.getPaginatedDeploymentsByFilter(method, filter, start, size);
         } catch (RemoteException e) {
             log.error("Error getting paginated deployments, RemoteException", e);
-        } catch (BPMNDeploymentServiceBPSFaultException e) {
-            log.error("Error getting paginated deployments, BPMNDeploymentServiceBPSFaultException", e);
         }
         return null;
     }
@@ -108,18 +102,8 @@ public class WorkflowServiceClient {
         return instanceServiceStub.getInstanceCount();
     }
 
-    public BPMNProcess[] getProcesses() throws Exception {
-        return  deploymentServiceStub.getDeployedProcesses();
-    }
-
     public BPMNProcess getProcessById(String processId) throws Exception {
-        BPMNProcess bpmnProcess = null;
-        for(BPMNProcess process:deploymentServiceStub.getDeployedProcesses()){
-            if(process.getProcessId().equals(processId)){
-                bpmnProcess = process;
-            }
-        }
-        return bpmnProcess;
+        return  deploymentServiceStub.getProcessById(processId);
     }
 
     public BPMNInstance[] getProcessInstances() throws Exception {
@@ -177,18 +161,12 @@ public class WorkflowServiceClient {
     }
 
     public BPMNProcess[] getProcessListByDeploymentID(String deploymentID) {
-        List<BPMNProcess> processes = new ArrayList<BPMNProcess>();
         try {
-            for (BPMNProcess process : getProcesses()) {
-                if (process.getDeploymentId().equals(deploymentID)) {
-                    processes.add(process);
-                }
-
-            }
-        } catch (Exception e) {
-            log.error("BPMN error getting process list by deployment ID", e);
+            return deploymentServiceStub.getProcessesByDeploymentId(deploymentID);
+        } catch (RemoteException e) {
+            log.error("Error getting process list for deployment id: " + deploymentID, e);
         }
-        return processes.toArray(new BPMNProcess[processes.size()]);
+        return null;
     }
 
     public String getProcessDiagram(String processId) {
