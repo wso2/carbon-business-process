@@ -95,7 +95,7 @@
    				<input type="file" id="files" name="file" />
    			</div>
    		</div>
-   		<div class="col-lg-1 right"><button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button></div>
+   		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button></div>
   		</form>
    </div>
   <!--  <ul class="nav nav-tabs" role="tablist">
