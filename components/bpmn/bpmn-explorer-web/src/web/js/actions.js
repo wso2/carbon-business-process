@@ -58,9 +58,6 @@ $( document ).ready(function() {
                 }
             }
 
-            setTimeout(function () {
-                $('.btn-primary').popover('hide')
-            }, 1000);
             var fileType = getFileType();
             if(fileType) {
                 arr.push({name: 'type', value: fileType})
