@@ -178,12 +178,17 @@ else{%>
                     Username <input type="textbox" id="transferName"/><br>
                 </div>
                 <div class="modal-footer">
+                	<div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
+		                <button type="button" class="close" onclick="$('#transferErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		                <p id="transferErrMsg"></p>
+		            </div>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-default" onclick="transfer($('#transferName').val(), <%=id%>);">Save</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
     <div class="modal fade" id="reassign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog model-center">
             <div class="modal-content">
@@ -195,6 +200,10 @@ else{%>
                     Username <input type="textbox" id="reassignName"/><br>
                 </div>
                 <div class="modal-footer">
+                	<div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
+		                <button type="button" class="close" onclick="$('#reassignErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		                <p id="reassignErrMsg"></p>
+		            </div>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-default" onclick="reassign($('#reassignName').val(), <%=id%>);">Save</button>
                 </div>
