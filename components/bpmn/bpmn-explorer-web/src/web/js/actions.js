@@ -32,17 +32,32 @@ $( document ).ready(function() {
         beforeSubmit: function(arr, formData, options) {
             for (var i=0; i < arr.length; i++) {
                 if (!arr[i].value) {
-                    $('#submit-attachment').popover({ content: "Please enter all values",
-                        placement: "right"});
-                    $('#submit-attachment').popover('show');
+
+                    var errorMessage = "Form incomplete"
+
+                    if (arr[i].name == "name") {
+                        errorMessage = "Please enter file name";
+                    } else if (arr[i].name == "file") {
+                        errorMessage = "Please select file";;
+                    }
+
+                    $('#submit-attachment-div').popover({ content: errorMessage,
+                                                            placement: "bottom",
+                                                            trigger:"manual",
+                                                            title:"Error"});
+
+                    $('#submit-attachment-div').popover('show');
+
+                    //popover is shown for 5 seconds with error message
+                    setTimeout(function () {
+                        $('#submit-attachment-div').popover('hide');
+                        $('#submit-attachment-div').popover('destroy');
+                    }, 5000);
 
                     return false;
                 }
             }
 
-            setTimeout(function () {
-                $('.btn-primary').popover('hide')
-            }, 1000);
             var fileType = getFileType();
             if(fileType) {
                 arr.push({name: 'type', value: fileType})
