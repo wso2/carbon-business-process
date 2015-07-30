@@ -50,5 +50,11 @@
     var htd = new Namespace('http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803');
     var rendering_NS = new Namespace('http://wso2.org/ht/schema/renderings/');
 
+    //Following variable were used to highlight current page which user is currently in.
+    //these were set as 'active' at each corresponding task Model
+    var myTasksNavActive = ''; //My Tasks veiw [updated at myTasksModel, refered at navigation.jag]
+    var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTasksModel, refered at navigation.jag]
+    var notificationsListNavActive = ''; // Notifications view [updated at notificationModel, refered at navigation.jag]
+    var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
 
 %>

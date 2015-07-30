@@ -50,7 +50,13 @@ try {
         if (log.isDebugEnabled()) {
             log.debug('Session timed out for task'+ "" + taskID);
         }
-        response.sendRedirect('login');
+        session.put('authSuccess', false);
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
     }
     var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::completeTaskResponse.success.text().toString();
 

@@ -37,6 +37,11 @@
         var queryOrderBy = requestParameters.queryOrderBy;
         var queryOrder = requestParameters.queryOrder;
 
+        if (log.isDebugEnabled()) {
+            log.debug("Search query received");
+            log.debug("Search query parameters : " + stringify(requestParameters));
+        }
+
         //new query string for pagination
         var newQueryString = 'taskName=' +taskName +'&taskStatus=' +taskStatus +'&taskCategory=' +taskCategory
                                 +'&craetedDate=' +createdDate +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;
@@ -60,6 +65,7 @@
                   if (log.isDebugEnabled()) {
                       log.debug('Session timed out for task'+ "" + taskName);
                   }
+                  session.put('authSuccess', false);
                   response.sendRedirect('login');
               }
             if (log.isDebugEnabled()) {
@@ -71,11 +77,16 @@
         } catch (e) {
             log.error('Error occurred while connecting to the back-end BPS HumanTaskClientAPIAdmin service : ');
             log.error(e);
+            session.put('authSuccess', false);
             response.sendRedirect('login');
         }
     } else {
         //no need to process search because user haven't enter search data
         var queryReceived = false;
     }
+
+    //Set current active veiw as Search list. 
+    //This is used to highlight current view which the user currently viewing in the navigation bar
+    searchNavActive = 'class="active"';
 
 %>

@@ -33,8 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * HumanTask Package is responsible for manage registry based human task deployment units
- * How HumanTask Packages will get stored in the registry
+ * HumanTask Package Repository is responsible for managing registry based human task deployment units
+ * HumanTask Packages will be stored in the registry as follows.
  * <p/>
  * <HumanTask_ROOT>/<HumanTask_PACKAGE_NAME>
  * |

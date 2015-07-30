@@ -37,16 +37,13 @@ if (formData.data.length <= 0) {
 
             log.debug("Unable to start process"+ " " + id + " : " + errorCode);
         }
-        var errorMessage = "Process failed";
-        session.put("processStatus", errorMessage);
+        response.sendRedirect("process?errorProcess=" + id);
     }
     else {
         var successMessage = "Process started";
         session.put("processStatus", successMessage);
-
-    }
-    session.put("processId", id);
-    response.sendRedirect("process");
+        response.sendRedirect("process?startProcess=" + id);
+    }    
 }
 
 else {

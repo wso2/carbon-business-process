@@ -1245,7 +1245,7 @@ public class HumanTaskStore {
         try {
             if (humanTaskDUDirectory.exists()) {
                 if (!tenantConfigRegistry.resourceExists(registryCollectionPath)) {
-                    // Import human task package content to from file system
+                    // Import human task package content to registry from file system
                     repository.restoreHumanTaskPackageContentInRegistry(dudao, archiveFile);
                 }
                 return humanTaskDUDirectory;

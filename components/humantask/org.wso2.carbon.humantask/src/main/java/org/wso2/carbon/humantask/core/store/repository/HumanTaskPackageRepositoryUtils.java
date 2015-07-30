@@ -35,7 +35,7 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
-     * Registry resource path for human task package parent collection on given deploymentDAO
+     * Registry resource path for human task package parent collection on given deploymentUnitDAO
      *
      * @param deploymentUnitDAO
      * @return registry resource path
@@ -55,7 +55,7 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
-     * Registry resource path for human task package zip file
+     * Registry resource path for human task package zip file on given package name
      *
      * @param humanTaskPackageName
      * @return registry resource path
@@ -66,7 +66,7 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
-     * Registry resource path for human task package versions collection
+     * Registry resource path for human task package versions collection on given humanTaskDeploymentUnit
      *
      * @param humanTaskDeploymentUnit
      * @return registry resource path
@@ -77,6 +77,8 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
+     * Registry resource path for human task package versions collection on given deploymentUnitDAO
+     *
      * @param deploymentUnitDAO
      * @return registry resource path
      */
@@ -86,7 +88,7 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
-     * Registry resource path for human task package content collection on given version
+     * Registry resource path for human task package content collection on given humanTaskDeploymentUnit
      *
      * @param humanTaskDeploymentUnit
      * @return registry resource path registry resource path
@@ -98,7 +100,7 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
-     * Registry resource path for human task package content collection on given version
+     * Registry resource path for human task package content collection on given deploymentUnitDAO
      *
      * @param deploymentUnitDAO
      * @return registry resource path
@@ -110,7 +112,7 @@ public class HumanTaskPackageRepositoryUtils {
     }
 
     /**
-     * Registry resource path for human task package content collection on given version
+     * Registry resource path for human task package content collection on given package name and version
      *
      * @param humanTaskPackageName
      * @param humanTaskPackageNameWithVersion

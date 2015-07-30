@@ -43,4 +43,8 @@ for(var i=0; i < tasks.data.length; i++){
 
 var taskCount = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
 var paginatePageCount = parseInt((taskCount / 10));
+
+//Set current active veiw as myTasks view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+myTasksNavActive = 'class="active"';
 %>

@@ -91,6 +91,6 @@ var taskData = {
 };
 var formGenTool = require("/assets/dynamicFormGen.js");
 var formData = get(httpUrl + "/bpmn/form/" + id + "/properties", null, headers, "json").data;
-var formContent = formGenTool.generateForm(formData.data);
+var formContent = formGenTool.generateForm(formData.data, false);
 
 %>

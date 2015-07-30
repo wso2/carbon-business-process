@@ -16,7 +16,12 @@
 <%
 	var authSuccess = session.get("authSuccess");
 	if(!authSuccess){
-		response.sendRedirect("login");
+		var queryParameters = request.getQueryString();
+		if(queryParameters == "null" || queryParameters == null){
+			response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+		} else{
+			response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+		}
 	} else {
 		include("/model/common.jag");
 		include("/model/myTasksModel.jag");

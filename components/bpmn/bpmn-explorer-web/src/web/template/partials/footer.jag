@@ -13,7 +13,7 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-		<div style="height:50px"></div><!-- This line is added to avoid footer overlapping with page content-->
+		<div style="height:50px">&nbsp;</div><!-- This line is added to avoid footer overlapping with page content-->
 		<div class="footer">
 			<div class="col-sm-12">
 				<div class="well well-sm"><%=data.app.footer%></div>

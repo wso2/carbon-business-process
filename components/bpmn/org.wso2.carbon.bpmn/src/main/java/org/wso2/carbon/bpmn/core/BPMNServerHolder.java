@@ -23,23 +23,21 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
-public class BPMNServerHolder {
+public final class BPMNServerHolder {
 
-    private static Log log = LogFactory.getLog(BPMNServerHolder.class);
+    private static final Log log = LogFactory.getLog(BPMNServerHolder.class);
+
+    private static BPMNServerHolder bpmnServerHolder = new BPMNServerHolder();
 
     private ProcessEngine engine = null;
     private TenantManager tenantManager = null;
     private RegistryService registryService = null;
 
-    private static BPMNServerHolder bpmnServerHolder = null;
 
     private BPMNServerHolder() {
     }
 
     public static BPMNServerHolder getInstance() {
-        if (bpmnServerHolder == null) {
-            bpmnServerHolder = new BPMNServerHolder();
-        }
         return bpmnServerHolder;
     }
 

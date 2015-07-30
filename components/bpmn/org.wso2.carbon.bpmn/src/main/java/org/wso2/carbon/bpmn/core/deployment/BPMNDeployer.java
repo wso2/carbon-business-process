@@ -25,8 +25,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -64,7 +66,7 @@ public class BPMNDeployer extends AbstractDeployer {
              if (!CarbonUtils.isWorkerNode()) {
                 tenantRepository.fixDeployments();
             }
-        }  catch (BPSException e) {
+        }  catch (BPSFault e) {
             String msg = "Tenant Error: " + tenantId;
             log.error(msg, e);
         }
@@ -82,9 +84,9 @@ public class BPMNDeployer extends AbstractDeployer {
 	    // information is shared though a persistence db and process is stored into the database, there
 	    // is no need to deploy process in worker nodes.
 
-        boolean isWorkerNode = CarbonUtils.isWorkerNode();
+
         // Worker nodes cannot deploy BPMN packages, hence return
-        if (isWorkerNode) {
+        if (isWorkerNode()) {
             return;
         }
 
@@ -114,9 +116,10 @@ public class BPMNDeployer extends AbstractDeployer {
     public void undeploy(String bpmnArchivePath) throws DeploymentException {
 
 	    // Worker nodes does not perform any action related to bpmn undeployment, manager node takes
-	    // care of all deployment/ undeployment actions
-	    boolean isWorkerNode = CarbonUtils.isWorkerNode();
-	    if (isWorkerNode) {
+	    // care of all deployment/undeployment actions
+
+
+	    if (isWorkerNode()) {
 		    return;
 	    }
         File bpmnArchiveFile = new File(bpmnArchivePath);
@@ -133,7 +136,7 @@ public class BPMNDeployer extends AbstractDeployer {
         String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
         try {
            tenantRepository.undeploy(deploymentName, true);
-        } catch (BPSException be) {
+        } catch (BPSFault be) {
             String errorMsg = "Error un deploying BPMN Package " + deploymentName;
             throw new DeploymentException(errorMsg, be);
         }
@@ -144,13 +147,13 @@ public class BPMNDeployer extends AbstractDeployer {
 	 *
 	 * @param configurationContext axis2 configurationContext
 	 * @return                     bpmn repo file
-	 * @throws BPSException        repo creation failure will result in this xception
+	 * @throws BPSFault        repo creation failure will result in this xception
 	 */
-    private File createTenantRepo(ConfigurationContext configurationContext) throws BPSException {
+    private File createTenantRepo(ConfigurationContext configurationContext) throws BPSFault {
         String axisRepoPath = configurationContext.getAxisConfiguration().getRepository().getPath();
         if (CarbonUtils.isURL(axisRepoPath)) {
             String msg = "URL Repositories are not supported: " + axisRepoPath;
-            throw new BPSException(msg);
+            throw new BPSFault(msg);
         }
         File tenantsRepository = new File(axisRepoPath);
         File bpmnRepo = new File(tenantsRepository, BPMNConstants.BPMN_REPO_NAME);
@@ -159,7 +162,7 @@ public class BPMNDeployer extends AbstractDeployer {
             boolean status = bpmnRepo.mkdir();
             if (!status) {
                 String msg = "Failed to create BPMN repository folder " + bpmnRepo.getAbsolutePath() + ".";
-                throw new BPSException(msg);
+                throw new BPSFault(msg);
             }
         }
         return bpmnRepo;
@@ -171,5 +174,21 @@ public class BPMNDeployer extends AbstractDeployer {
 
     @Override
     public void setExtension(String s) {
+    }
+
+    /**
+     * Whether a bps node is worker ( a node that does not participate in archive deployment and only handles
+     * input/output . This is determined by looking at the registry read/only property
+     * @return
+     */
+    private boolean isWorkerNode() {
+        RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
+        boolean isWorker = true;
+        try {
+            isWorker = (registryService.getConfigSystemRegistry().getRegistryContext().isReadOnly());
+        } catch (RegistryException e) {
+            log.error("Error accessing the configuration registry");
+        }
+        return isWorker;
     }
 }

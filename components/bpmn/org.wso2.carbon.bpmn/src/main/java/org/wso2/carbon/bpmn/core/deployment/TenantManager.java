@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.bpmn.core.deployment;
 
-import org.wso2.carbon.bpmn.core.BPSException;
+import org.wso2.carbon.bpmn.core.BPSFault;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class TenantManager {
         return tenantRepositories.get(tenantId);
     }
 
-    public TenantRepository createTenantRepository(Integer tenantId) throws BPSException {
+    public TenantRepository createTenantRepository(Integer tenantId) throws BPSFault {
         TenantRepository tenantRepository = new TenantRepository(tenantId);
         tenantRepositories.put(tenantId, tenantRepository);
         return tenantRepository;

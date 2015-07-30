@@ -17,6 +17,13 @@
 	var authentication = require("/assets/authentication.js");
 	var username = request.getParameter("username");
 	var password = request.getParameter("password");
+	var requestUrl = request.getHeader("Referer").split("requestUrl=")[1];
+	if(requestUrl != null && requestUrl != "null"){
+		requestUrl = requestUrl.replace("%3F", "?");
+	}
+	if(requestUrl == null || requestUrl == "null" || requestUrl == ""){
+		requestUrl = "stats";
+	}
 	var authSuccess=false;
 	var USER='user',
 	    AUTH='auth',
@@ -32,7 +39,7 @@
 		}
 		if(!authSuccess){
 			session.put("loginFailed" ,true);
-			response.sendRedirect("login");
+			response.sendRedirect(requestUrl);
 		} else {
 			var roles = authentication.getRoles(username,password);
 			var encoder = require("/assets/encoder.js");
@@ -41,11 +48,11 @@
 			session.put(AUTH, auth);
 			session.put(USER, username);
 			session.put(ROLES ,roles);
-			response.sendRedirect("stats");
+			response.sendRedirect(requestUrl);
 		}
 	
 	}catch(e){
 		session.put("loginFailed" ,true);
-		response.sendRedirect("login");
+		response.sendRedirect(requestUrl);
 	}
 %>

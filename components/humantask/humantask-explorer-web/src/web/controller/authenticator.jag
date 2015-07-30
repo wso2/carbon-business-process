@@ -23,7 +23,13 @@
 
     var username = request.getParameter("username");
     var password = request.getParameter("password");
-
+    var requestUrl = request.getHeader("Referer").split("requestUrl=")[1];
+    if(requestUrl != null && requestUrl != "null"){
+        requestUrl = requestUrl.replace("%3F", "?");
+    }
+    if(requestUrl == null || requestUrl == "null" || requestUrl == ""){
+        requestUrl = "mytasks";
+    }
     if (username === "" || password === "") {
         var authSuccess = false;
     } else {
@@ -37,11 +43,11 @@
     }
     if (!authSuccess) {
         session.put("loginFailed" ,true);
-        response.sendRedirect("login");
+        response.sendRedirect(requestUrl);
     } else {
         session.put('authSuccess', authSuccess);
         session.put('userName', username);
-        response.sendRedirect("mytasks");
+        response.sendRedirect(requestUrl);
     }
 
     /**
@@ -75,7 +81,7 @@
         httpAuth.send(payload);
         var BPSResponse = httpAuth.responseText;
         if (log.isDebugEnabled()) {
-            log.debug('Login RESPONSE:' + httpAuth.responseText.toString());
+            log.debug('Login RESPONSE:' + httpAuth.responseText);
         }
 
         var returnStart = BPSResponse.indexOf('<ns:return>') + '<ns:return>'.length;
@@ -124,7 +130,7 @@
         mgtAuth.send(payload);
 
         if (log.isDebugEnabled()) {
-            log.debug('Login via Mgt Console RESPONSE:' + mgtAuth.responseText.toString());
+            log.debug('Login via Mgt Console RESPONSE:' + mgtAuth.responseText);
         }
 
         return mgtAuth.getResponseHeader('Set-Cookie');

@@ -341,7 +341,7 @@ body {
 
 header {
     background-color: #282828;
-    height: 50px;
+    height: 45px;
     color: #fff;
 }
 
@@ -359,8 +359,8 @@ header {
     float: right;
     background-color: #272727;
     color: #fff;
-    height: 50px;
-    padding: 10px 15px;
+    height: 45px;
+    padding: 12px 5px;
 }
 
 .float-left {
@@ -378,7 +378,7 @@ header {
 }
 
 .app-logo {
-    height: 50px;
+    height: 45px;
     padding: 12px 10px;
 }
 
@@ -419,11 +419,11 @@ a.collapsing-h2 {
 
 .navbar-collapse {
     padding-left: 0;
-    padding-top: 5px;
 }
 
 .navbar {
-    max-height: 50px;
+    min-height: 45px;
+    overflow: hidden;
 }
 
 .navbar-default .navbar-nav > li > a {
@@ -436,20 +436,25 @@ a.collapsing-h2 {
 }
 
 .navbar-nav>li>a {
-    padding: 5px 15px;
+    padding: 5px 10px;
+}
+.navbar-nav>li>a:hover {
+    padding-top: 5px !important;
+    background-color: #333 !important;
 }
 
 .panel-primary > .panel-heading {
-    background: #f3f5f6;
+    background: #C6C6C6  ;
     border: 0px;
     border-radius: 0px;
-    color: #080808;
-    height: 55px;
-    margin-bottom: 10px;
+    color: #333;
+    height: 43px;
+    padding: 7px 0 0 10px;
+    font-size: 20px;
 }
 
 .heading-wrapper {
-    background: #f3f5f6;
+    background: #C6C6C6  ;
     border: 0px;
     border-radius: 0px;
     color: #080808;
@@ -471,20 +476,26 @@ a.collapsing-h2 {
     width: 99%
 }
 
-.table-title {
+.table-title,.panel-heading {
     background: #C6C6C6  ;
     border: 0px;
     border-radius: 0px;
     color: #333;
-    height: 55px;
-    padding: 10px 0 0px 10px;
+    height: 43px;
+    padding: 7px 0 0 10px;
     font-size: 20px;
 }
-
+.table-title>a {
+    color: #333;
+}
 .table-body {
     padding: 0px;
 }
 
+#attachmentList>.table-body {
+    padding: 0;
+    width: 97.6%;
+}
 .table-title-row {
     background: #f5f5f5;
     height: 50px;
@@ -501,7 +512,13 @@ a.collapsing-h2 {
     color: #fff;
     font-size: 16px;
 }
-
+.addAttachment{
+    margin:10px 20px;
+    float:left;
+    background-color: #fff;
+    border: 1px solid #cccccc;
+    width: 97.6%;
+}
 .main {
     height: 440px;
 }
@@ -512,7 +529,11 @@ a.collapsing-h2 {
     margin-left: 20px;
     border-radius: 0;
 }
+.barchart-wrapper{
+    width: 100%;
+    float: left;
 
+}
 .row {
     margin-right: 0px;
     margin-left: 0px;
@@ -559,13 +580,13 @@ footer {
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus {
     color: #f0f0f0;
-    opacity: 0.6;
 }
 
 .nav>li>a:hover,
 .nav>li>a:focus {
     text-decoration: none;
     background-color: #444444;
+    height: 47px !important;
 }
 
 .nav-pills>li>a {
@@ -613,6 +634,7 @@ footer {
     border: 1px solid #d2d2d2;
     background-color: #fff;
     padding-bottom: 40px;
+    margin-top: -10px;
 }
 
 .form-control {
@@ -832,9 +854,9 @@ i.cu-btn-exp-col {
     position: relative;
 }
 
-#diagram {
-    width: 100%;
-    height: 100%;
+.modal-content {
+  width: 150%;
+  margin-left: -25%;
 }
 
 #diagramScroll {
@@ -866,8 +888,44 @@ i.cu-btn-exp-col {
     border-color: #be2d28;
     border-radius: 0;
 }
-.btn-xs{background: #343434;border-color: #343434;}
-.btn-xs:hover{ background: #be2d28;border-color: #be2d28;   }
+.btn-info:hover{
+    background: #343434;
+    border-color: #343434;
+    border-radius: 0;
+}
+.btn-action {
+    background: #343434;
+    border-color: #343434;
+    border-radius: 0;
+    color: #fff;
+}
+.btn-action:hover {
+    background: #be2d28;
+    border-color: #be2d28;
+    border-radius: 0; color: #fff;
+}
+
+.btn-xs{background: #be2d28 none repeat scroll 0 0;
+    border-color: #be2d28;
+    font-weight: 300;
+    padding: 5px 15px;}
+.btn-xs:hover{ background: #343434;border-color: #343434;   }
+
+.btn-primary {background: #be2d28 none repeat scroll 0 0;
+    border-color: #be2d28;
+    font-weight: 300;
+    padding: 5px 15px;
+}
+a {
+    color: #6a0400;
+    text-decoration: none;
+}
+a:hover {
+    color: #be2d28;
+    text-decoration:none;
+}
+span>a{color: #ffffff; padding:10px 10px 16px 10px; height: 45px;}
+span>a:hover{color: #ffffff; background-color:#be2d28; }
 .padding-top-icon{padding-top: 8px;}
 
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
@@ -888,3 +946,10 @@ nav > li > a:hover, .nav > li > a:focus {
     text-decoration: none;
     background-color: #444;
     color: #fff;}
+
+.navbar-nav {
+    margin: -1.5px -11px !important;
+}
+.padding-left-none{padding-left: 0 !important;}
+
+.lable-wp{margin: 10px 0px; float: left; }

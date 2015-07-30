@@ -45,10 +45,10 @@ public class ActivitiEngineBuilder {
 	 * Instantiates the engine. Builds the state of the engine
 	 *
 	 * @return  ProcessEngineImpl object
-	 * @throws BPSException  Throws in the event of failure of ProcessEngine
+	 * @throws BPSFault  Throws in the event of failure of ProcessEngine
 	 */
 
-    public ProcessEngine buildEngine() throws BPSException {
+    public ProcessEngine buildEngine() throws BPSFault {
         ProcessEngine engine = null;
         try {
             String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
@@ -71,7 +71,7 @@ public class ActivitiEngineBuilder {
 
         } catch (FileNotFoundException e) {
             String msg = "Failed to create an Activiti engine. Activiti configuration file not found";
-            throw new BPSException(msg, e);
+            throw new BPSFault(msg, e);
         }
         return engine;
     }
