@@ -75,7 +75,7 @@
             <parent-menu>configure_menu</parent-menu>
             <link>../bpmn/data_publisher_view.jsp</link>
             <region>region1</region>
-            <order>5</order>
+            <order>35</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn-instance.gif</icon>
             <require-permission>/permission/admin/manage/bpmn</require-permission>
