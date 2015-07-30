@@ -20,9 +20,9 @@
   <!--<div class="row">
    <ol class="breadcrumb">
         <li><a href="#">Home</a></li>
-        <li><a href="taskpool">TaskPool</a></li>
+        <li><a href="claimabletasks">ClaimableTasks</a></li>
         <li class="active">Task : <%=id%></li>
-    </ol> 
+    </ol>
 </div>-->
 <div class="row">
     <div class="col-lg-9 ">

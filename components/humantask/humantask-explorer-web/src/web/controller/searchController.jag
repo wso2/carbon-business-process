@@ -27,10 +27,10 @@
         }
     } else {
         include("/model/common.jag");
-        include("/model/allTasksModel.jag");
+        include("/model/searchModel.jag");
         include("/template/partials/header.jag");
         include("/template/partials/navigation.jag");
-        include("/template/allTasksPoolView.jag");
+        include("/template/searchView.jag");
         include("/template/partials/footer.jag");
     }
 
