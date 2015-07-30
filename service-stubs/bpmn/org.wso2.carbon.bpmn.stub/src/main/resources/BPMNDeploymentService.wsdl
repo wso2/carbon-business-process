@@ -2,6 +2,13 @@
     <wsdl:documentation>BPMNDeploymentService</wsdl:documentation>
     <wsdl:types>
         <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd">
+            <xs:complexType name="BPMNDeployment">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="deploymentName" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="deploymentTime" nillable="true" type="xs:date"/>
+                </xs:sequence>
+            </xs:complexType>
             <xs:complexType name="BPMNProcess">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
@@ -13,13 +20,6 @@
                     <xs:element minOccurs="0" name="version" type="xs:int"/>
                 </xs:sequence>
             </xs:complexType>
-            <xs:complexType name="BPMNDeployment">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="deploymentName" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="deploymentTime" nillable="true" type="xs:date"/>
-                </xs:sequence>
-            </xs:complexType>
         </xs:schema>
         <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://core.bpmn.carbon.wso2.org/xsd">
             <xs:complexType name="BPSFault">
@@ -29,14 +29,31 @@
         <xs:schema xmlns:ax220="http://core.bpmn.carbon.wso2.org/xsd" xmlns:ax218="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
             <xs:import namespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd"/>
             <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"/>
-            <xs:element name="getProcessesByDeploymentId">
+            <xs:element name="getDeployments">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeploymentsResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax217:BPMNDeployment"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="getProcessesByDeploymentIdResponse">
+            <xs:element name="BPMNDeploymentServiceBPSFault">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="BPSFault" nillable="true" type="ax220:BPSFault"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeployedProcesses">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeployedProcessesResponse">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax217:BPMNProcess"/>
@@ -60,10 +77,31 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="BPMNDeploymentServiceBPSFault">
+            <xs:element name="getProcessById">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="BPSFault" nillable="true" type="ax220:BPSFault"/>
+                        <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessByIdResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax217:BPMNProcess"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessesByDeploymentId">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="deploymentId" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessesByDeploymentIdResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax217:BPMNProcess"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -76,32 +114,6 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="return" type="xs:int"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getDeployedProcesses">
-                <xs:complexType>
-                    <xs:sequence/>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getDeployedProcessesResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax217:BPMNProcess"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getProcessById">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getProcessByIdResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax217:BPMNProcess"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -190,6 +202,12 @@
     <wsdl:message name="getDeploymentCountResponse">
         <wsdl:part name="parameters" element="ns:getDeploymentCountResponse"/>
     </wsdl:message>
+    <wsdl:message name="getDeploymentsRequest">
+        <wsdl:part name="parameters" element="ns:getDeployments"/>
+    </wsdl:message>
+    <wsdl:message name="getDeploymentsResponse">
+        <wsdl:part name="parameters" element="ns:getDeploymentsResponse"/>
+    </wsdl:message>
     <wsdl:portType name="BPMNDeploymentServicePortType">
         <wsdl:operation name="getProcessesByDeploymentId">
             <wsdl:input message="ns:getProcessesByDeploymentIdRequest" wsaw:Action="urn:getProcessesByDeploymentId"/>
@@ -226,6 +244,10 @@
             <wsdl:input message="ns:getDeploymentCountRequest" wsaw:Action="urn:getDeploymentCount"/>
             <wsdl:output message="ns:getDeploymentCountResponse" wsaw:Action="urn:getDeploymentCountResponse"/>
             <wsdl:fault message="ns:BPMNDeploymentServiceBPSFault" name="BPMNDeploymentServiceBPSFault" wsaw:Action="urn:getDeploymentCountBPMNDeploymentServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <wsdl:input message="ns:getDeploymentsRequest" wsaw:Action="urn:getDeployments"/>
+            <wsdl:output message="ns:getDeploymentsResponse" wsaw:Action="urn:getDeploymentsResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="BPMNDeploymentServiceSoap11Binding" type="ns:BPMNDeploymentServicePortType">
@@ -314,6 +336,15 @@
                 <soap:fault use="literal" name="BPMNDeploymentServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <soap:operation soapAction="urn:getDeployments" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:binding name="BPMNDeploymentServiceSoap12Binding" type="ns:BPMNDeploymentServicePortType">
         <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
@@ -401,6 +432,15 @@
                 <soap12:fault use="literal" name="BPMNDeploymentServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <soap12:operation soapAction="urn:getDeployments" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:binding name="BPMNDeploymentServiceHttpBinding" type="ns:BPMNDeploymentServicePortType">
         <http:binding verb="POST"/>
@@ -473,16 +513,25 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getDeployments">
+            <http:operation location="getDeployments"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="BPMNDeploymentService">
         <wsdl:port name="BPMNDeploymentServiceHttpsSoap11Endpoint" binding="ns:BPMNDeploymentServiceSoap11Binding">
-            <soap:address location="https://192.168.1.6:9443/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap11Endpoint/"/>
+            <soap:address location="https://192.168.2.105:9443/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap11Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="BPMNDeploymentServiceHttpsSoap12Endpoint" binding="ns:BPMNDeploymentServiceSoap12Binding">
-            <soap12:address location="https://192.168.1.6:9443/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap12Endpoint/"/>
+            <soap12:address location="https://192.168.2.105:9443/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap12Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="BPMNDeploymentServiceHttpsEndpoint" binding="ns:BPMNDeploymentServiceHttpBinding">
-            <http:address location="https://192.168.1.6:9443/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsEndpoint/"/>
+            <http:address location="https://192.168.2.105:9443/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsEndpoint/"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

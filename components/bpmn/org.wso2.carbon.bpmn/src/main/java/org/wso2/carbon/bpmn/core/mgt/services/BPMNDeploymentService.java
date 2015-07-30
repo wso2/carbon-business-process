@@ -108,6 +108,22 @@ public class BPMNDeploymentService {
         return bpmnProcesses.toArray(new BPMNProcess[bpmnProcesses.size()]);
     }
 
+    public BPMNDeployment[] getDeployments(){
+        List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
+        query = query.deploymentTenantId(tenantId.toString());
+        List<Deployment> deployments = query.list();
+        for(Deployment deployment: deployments){
+            BPMNDeployment bpmnDeployment = new BPMNDeployment();
+            bpmnDeployment.setDeploymentId(deployment.getId());
+            bpmnDeployment.setDeploymentName(deployment.getName());
+            bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
+            bpmnDeploymentList.add(bpmnDeployment);
+        }
+        return bpmnDeploymentList.toArray(new BPMNDeployment[bpmnDeploymentList.size()]);
+    }
+
     public BPMNDeployment[] getPaginatedDeploymentsByFilter(String method, String filter, int start, int size) {
         List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();

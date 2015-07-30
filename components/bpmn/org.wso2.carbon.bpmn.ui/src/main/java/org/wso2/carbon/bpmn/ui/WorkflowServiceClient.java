@@ -78,6 +78,10 @@ public class WorkflowServiceClient {
         }
     }
 
+    public BPMNDeployment[] getDeployments() throws Exception{
+        return deploymentServiceStub.getDeployments();
+    }
+
     public BPMNDeployment[] getPaginatedDeploymentsByFilter(String method, String filter, int start, int size) {
         try {
             return  deploymentServiceStub.getPaginatedDeploymentsByFilter(method, filter, start, size);
