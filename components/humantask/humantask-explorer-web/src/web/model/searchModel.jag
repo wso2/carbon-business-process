@@ -37,6 +37,11 @@
         var queryOrderBy = requestParameters.queryOrderBy;
         var queryOrder = requestParameters.queryOrder;
 
+        if (log.isDebugEnabled()) {
+            log.debug("Search query received");
+            log.debug("Search query parameters : " + stringify(requestParameters));
+        }
+
         //new query string for pagination
         var newQueryString = 'taskName=' +taskName +'&taskStatus=' +taskStatus +'&taskCategory=' +taskCategory
                                 +'&craetedDate=' +createdDate +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;

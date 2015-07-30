@@ -81,7 +81,7 @@
         httpAuth.send(payload);
         var BPSResponse = httpAuth.responseText;
         if (log.isDebugEnabled()) {
-            log.debug('Login RESPONSE:' + httpAuth.responseText.toString());
+            log.debug('Login RESPONSE:' + httpAuth.responseText);
         }
 
         var returnStart = BPSResponse.indexOf('<ns:return>') + '<ns:return>'.length;
@@ -130,7 +130,7 @@
         mgtAuth.send(payload);
 
         if (log.isDebugEnabled()) {
-            log.debug('Login via Mgt Console RESPONSE:' + mgtAuth.responseText.toString());
+            log.debug('Login via Mgt Console RESPONSE:' + mgtAuth.responseText);
         }
 
         return mgtAuth.getResponseHeader('Set-Cookie');
