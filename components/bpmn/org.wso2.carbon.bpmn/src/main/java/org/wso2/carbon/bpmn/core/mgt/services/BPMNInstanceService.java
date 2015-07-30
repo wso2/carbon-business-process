@@ -87,7 +87,7 @@ public class BPMNInstanceService {
     public BPMNInstance[] getPaginatedHistoryInstances(int start, int size){
         BPMNInstance bpmnInstance;
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        List<BPMNInstance> bpmnInstances = new ArrayList<BPMNInstance>();
+        List<BPMNInstance> bpmnInstances = new ArrayList<>();
         HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
         HistoricProcessInstanceQuery query =
                 historyService.createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).finished();

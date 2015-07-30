@@ -39,7 +39,7 @@
     String instanceId = CharacterEncoder.getSafeText(request.getParameter("instanceID"));
     String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
     int currentPage = 0;
-    if(pageNumber != null && pageNumber != ""){
+    if(pageNumber != null && !pageNumber.equals("")){
         currentPage = Integer.parseInt(pageNumber);
     }
     int start = currentPage * 10;
@@ -77,7 +77,7 @@
 <%  }else{ %>
 <link rel="stylesheet" type="text/css" href="css/bpmn_icon_link.css" />
 <script>
-    function deleteAllInstance(iid) {
+    function deleteAllInstance() {
         function deleteYes() {
         $.ajax({
         type: 'POST',
@@ -91,7 +91,7 @@
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.delete.all.instances"/> ' + "?", deleteYes, null);
         }, "<fmt:message key="session.timed.out"/>");
         return false;
-    };
+    }
     function deleteInstance(iid) {
         function deleteYes() {
         $.ajax({
@@ -106,7 +106,7 @@
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.delete.instance"/> ' + iid + "?", deleteYes, null);
         }, "<fmt:message key="session.timed.out"/>");
         return false;
-    };
+    }
     function suspendInstance(iid) {
         function suspendYes() {
         $.ajax({
@@ -122,7 +122,7 @@
 
         }, "<fmt:message key="session.timed.out"/>");
         return false;
-    };
+    }
     function activateInstance(iid) {
             function activateYes() {
             $.ajax({
@@ -137,7 +137,7 @@
             CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.activate.instance"/> ' + iid + "?", activateYes, null);
             }, "<fmt:message key="session.timed.out"/>");
             return false;
-        };
+        }
 </script>
     <carbon:breadcrumb
             label="bpmn.instances.created"

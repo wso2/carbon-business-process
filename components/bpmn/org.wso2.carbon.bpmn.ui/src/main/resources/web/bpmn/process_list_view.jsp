@@ -50,8 +50,21 @@ WorkflowServiceClient client;
     String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
     String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
     String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+    String method = CharacterEncoder.getSafeText(request.getParameter("method"));
+    String filter = CharacterEncoder.getSafeText(request.getParameter("filter"));
+    String selected = "";
+    String parameters = "region=region1&item=bpmn_menu";
+    if(filter == null || filter.equals("") || method == null || method.equals("")){
+        filter = "";
+        method = "";
+    } else {
+        parameters += "&method=" + method + "&filter=" + filter;
+        if(method.equals("byProcessNameLike")){
+            selected = "selected";
+        }
+    }
     int currentPage = 0;
-    if(pageNumber != null && pageNumber != ""){
+    if(pageNumber != null && !pageNumber.equals("")){
         currentPage = Integer.parseInt(pageNumber);
     }
     int start = currentPage * 10;
@@ -62,7 +75,7 @@ WorkflowServiceClient client;
     if(operation != null && operation.equals("undeploy")){
             client.undeploy(deploymentName);
     }
-    deployments = client.getPaginatedDeployments(start, 10);
+    deployments = client.getPaginatedDeploymentsByFilter(method, filter, start, 10);
     int numberOfPages = (int) Math.ceil(client.getDeploymentCount()/10.0);
 %>
 <%
@@ -90,7 +103,13 @@ WorkflowServiceClient client;
         CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.start.process"/> ' + pid + "?", startYes, null);
         }, "<fmt:message key="session.timed.out"/>");
         return false;
-    };
+    }
+    function searchFilter(){
+        var searchMethod = document.getElementById("method").value;
+        var filterTxt = document.getElementById("filter").value;
+        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?method="
+                + searchMethod + "&filter=" + filterTxt;
+    }
 </script>
 <jsp:include page="../dialog/display_messages.jsp"/>
     <carbon:breadcrumb
@@ -103,13 +122,25 @@ WorkflowServiceClient client;
 
     <div id="workArea">
 
+        <form>
+            <fmt:message key="bpmn.search.by"/>&nbsp;
+            <select id="method">
+                <option value="byDeploymentNameLike"><fmt:message key="bpmn.package.name"/></option>
+                <option value="byProcessNameLike" <%=selected%>>
+                    <fmt:message key="bpmn.process.id"/></option>
+            </select>
+            <input type="text" id="filter" value="<%=filter%>"/>
+            <a href="#" onclick="searchFilter()" style="background-image: url('images/search.gif')">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </form>
+        <br/>
         <table class="styledLeft" id="moduleTable">
             <thead>
             <tr>
-                <th width="20%"><fmt:message key="bpmn.package.name"/></th>
-                <th width="30%"><fmt:message key="bpmn.process.id"/></th>
+                <th width="25%"><fmt:message key="bpmn.package.name"/></th>
+                <th width="25%"><fmt:message key="bpmn.process.name"/></th>
+                <th width="25%"><fmt:message key="bpmn.process.id"/></th>
                 <th width="10%"><fmt:message key="bpmn.process.version"/></th>
-                <th width="30%"><fmt:message key="bpmn.process.deployedDate"/></th>
+                <th width="15%"><fmt:message key="bpmn.process.deployedDate"/></th>
                 <!--th width="10%"><fmt:message key="bpmn.process.manage"/></th-->
             </tr>
             </thead>
@@ -126,6 +157,7 @@ WorkflowServiceClient client;
                                 <td rowspan=<%=processes.length%>><a href=<%="process_list_view.jsp?operation=packageInfo&deploymentName=" + deployment.getDeploymentName()%>><%=deployment.getDeploymentName() + "-" + deployment.getDeploymentId()%></a></td>
                                 <% firstRow = false; %>
                             <% } %>
+                            <td><%=process.getName()%></td>
                             <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + process.getProcessId()%>>
                                    <%=process.getProcessId()%></a></td>
                             <td><%=process.getVersion()%></td>
@@ -145,7 +177,7 @@ WorkflowServiceClient client;
                           page="process_list_view.jsp" pageNumberParameterName="pageNumber"
                           resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
                           prevKey="prev" nextKey="next"
-                          parameters="region=region1&item=bpmn_menu"/>
+                          parameters="<%=parameters%>"/>
     </div>
 </div>
 <%  } %>

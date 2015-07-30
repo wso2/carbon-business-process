@@ -16,9 +16,12 @@
 
 package org.wso2.carbon.bpmn.core.mgt.services;
 
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,25 +46,6 @@ import java.util.List;
 public class BPMNDeploymentService {
 
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
-    private int deploymentCount = -1;
-
-    public BPMNDeployment[] getDeployments() {
-
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
-        List<Deployment> deployments = tenantRepository.getDeployments();
-        BPMNDeployment[] bpmnDeployments = new BPMNDeployment[deployments.size()];
-        for (int i = 0; i < deployments.size(); i++) {
-            Deployment deployment = deployments.get(i);
-            BPMNDeployment bpmnDeployment = new BPMNDeployment();
-            bpmnDeployment.setDeploymentId(deployment.getId());
-            bpmnDeployment.setDeploymentName(deployment.getName());
-            bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
-            bpmnDeployments[i] = bpmnDeployment;
-        }
-        deploymentCount = bpmnDeployments.length;
-        return bpmnDeployments;
-    }
 
     public BPMNProcess[] getDeployedProcesses() throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
@@ -82,21 +66,91 @@ public class BPMNDeploymentService {
 
     }
 
-    public BPMNDeployment[] getPaginatedDeployments(int start, int size) throws BPSFault {
-        BPMNDeployment[] bpmnDeployments = getDeployments();
-        List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
-        for (int i = start; i < (start + size) && i < bpmnDeployments.length; i++) {
-            bpmnDeploymentList.add(bpmnDeployments[i]);
+    public BPMNProcess getProcessById(String processId) {
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        ProcessDefinitionQuery query = engine.getRepositoryService().createProcessDefinitionQuery();
+        ProcessDefinition process = query.processDefinitionTenantId(tenantId.toString())
+                .processDefinitionId(processId).singleResult();
+        DeploymentQuery deploymentQuery = engine.getRepositoryService().createDeploymentQuery();
+        Deployment deployment = deploymentQuery.deploymentId(process.getDeploymentId()).singleResult();
+        BPMNProcess bpmnProcess = new BPMNProcess();
+        bpmnProcess.setDeploymentId(process.getDeploymentId());
+        bpmnProcess.setName(process.getName());
+        bpmnProcess.setKey(process.getKey());
+        bpmnProcess.setProcessId(process.getId());
+        bpmnProcess.setVersion(process.getVersion());
+        bpmnProcess.setDeploymentTime(deployment.getDeploymentTime());
+        bpmnProcess.setDeploymentName(deployment.getName());
+        return bpmnProcess;
+    }
+
+    public BPMNProcess[] getProcessesByDeploymentId(String deploymentId) {
+        List<BPMNProcess> bpmnProcesses = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        ProcessDefinitionQuery query = engine.getRepositoryService().createProcessDefinitionQuery();
+        DeploymentQuery deploymentQuery = engine.getRepositoryService().createDeploymentQuery();
+        Deployment deployment = deploymentQuery.deploymentId(deploymentId).singleResult();
+        List<ProcessDefinition> processes = query.processDefinitionTenantId(tenantId.toString())
+                .deploymentId(deploymentId).list();
+        for(ProcessDefinition process: processes){
+            BPMNProcess bpmnProcess = new BPMNProcess();
+            bpmnProcess.setDeploymentId(process.getDeploymentId());
+            bpmnProcess.setName(process.getName());
+            bpmnProcess.setKey(process.getKey());
+            bpmnProcess.setProcessId(process.getId());
+            bpmnProcess.setVersion(process.getVersion());
+            bpmnProcess.setDeploymentTime(deployment.getDeploymentTime());
+            bpmnProcess.setDeploymentName(deployment.getName());
+            bpmnProcesses.add(bpmnProcess);
         }
-        bpmnDeployments = bpmnDeploymentList.toArray(new BPMNDeployment[bpmnDeploymentList.size()]);
-        return bpmnDeployments;
+        return bpmnProcesses.toArray(new BPMNProcess[bpmnProcesses.size()]);
+    }
+
+    public BPMNDeployment[] getDeployments(){
+        List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
+        query = query.deploymentTenantId(tenantId.toString());
+        List<Deployment> deployments = query.list();
+        for(Deployment deployment: deployments){
+            BPMNDeployment bpmnDeployment = new BPMNDeployment();
+            bpmnDeployment.setDeploymentId(deployment.getId());
+            bpmnDeployment.setDeploymentName(deployment.getName());
+            bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
+            bpmnDeploymentList.add(bpmnDeployment);
+        }
+        return bpmnDeploymentList.toArray(new BPMNDeployment[bpmnDeploymentList.size()]);
+    }
+
+    public BPMNDeployment[] getPaginatedDeploymentsByFilter(String method, String filter, int start, int size) {
+        List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
+        query = query.deploymentTenantId(tenantId.toString());
+        if(filter != null && !filter.equals("") && method != null && !method.equals("")){
+            if(method.equals("byDeploymentNameLike")){
+                query = query.deploymentNameLike("%" + filter + "%");
+            } else {
+                query = query.processDefinitionKeyLike("%" + filter + "%");
+            }
+        }
+        List<Deployment> deployments = query.listPage(start, size);
+        for(Deployment deployment: deployments){
+            BPMNDeployment bpmnDeployment = new BPMNDeployment();
+            bpmnDeployment.setDeploymentId(deployment.getId());
+            bpmnDeployment.setDeploymentName(deployment.getName());
+            bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
+            bpmnDeploymentList.add(bpmnDeployment);
+        }
+        return bpmnDeploymentList.toArray(new BPMNDeployment[bpmnDeploymentList.size()]);
     }
 
     public int getDeploymentCount() throws BPSFault {
-        if(deploymentCount == -1){
-            getDeployments();
-        }
-        return deploymentCount;
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
+        return  (int) query.deploymentTenantId(tenantId.toString()).count();
     }
 
     public String getProcessDiagram(String processId) throws BPSFault {

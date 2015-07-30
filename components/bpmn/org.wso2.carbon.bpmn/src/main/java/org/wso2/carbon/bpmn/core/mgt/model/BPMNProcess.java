@@ -16,12 +16,17 @@
 
 package org.wso2.carbon.bpmn.core.mgt.model;
 
+import java.util.Date;
+
 public class BPMNProcess {
 
     private String processId;
+    private String name;
     private String deploymentId;
     private String key;
     private int version;
+    private Date deploymentTime;
+    private String deploymentName;
 
     public String getProcessId() {
         return processId;
@@ -29,6 +34,14 @@ public class BPMNProcess {
 
     public void setProcessId(String processId) {
         this.processId = processId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDeploymentId() {
@@ -53,5 +66,21 @@ public class BPMNProcess {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public Date getDeploymentTime() {
+        return deploymentTime;
+    }
+
+    public void setDeploymentTime(Date deploymentTime) {
+        this.deploymentTime = deploymentTime;
+    }
+
+    public String getDeploymentName() {
+        return deploymentName;
+    }
+
+    public void setDeploymentName(String deploymentName) {
+        this.deploymentName = deploymentName;
     }
 }

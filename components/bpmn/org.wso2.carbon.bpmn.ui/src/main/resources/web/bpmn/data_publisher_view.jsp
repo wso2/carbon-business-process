@@ -31,7 +31,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
-
     <%
         String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
         ConfigurationContext configContext =
@@ -106,7 +105,6 @@
 
                 if ((processInstanceCheckBoxValues != null) && (processInstanceCheckBoxValues.length > 0)) {
                     for (String value : processInstanceCheckBoxValues) {
-//                        if(value.equals(resource.getProperty(value))){}
                         resource.setProperty(value, value);
                     }
                     configRegistry.put("bpmn/data_analytics_publisher/instance_properties", resource);
@@ -120,48 +118,40 @@
 
                 if (resource.getProperty("processInstanceId") != null) {
                     //Check if a user remove the selection of a check box, if so after save button clicked remove it from the registry else set checked is true
-                    if (isAvailableInResult(processInstanceCheckBoxValues, resource.getProperty("processInstanceId"))) {
-                         isProcessInstanceIdChecked = " checked";
-                    } else {
-                        resource.removeProperty("processInstanceId");
-                    }
+                    isProcessInstanceIdChecked = " checked disabled";
                 }
                 if (resource.getProperty("startActivityId") != null) {
-                    if(isAvailableInResult(processInstanceCheckBoxValues, resource.getProperty("startActivityId"))){
-                        isStartActivityIdChecked = " checked";
-                    }else {
-                        resource.removeProperty("startActivityId");
-                    }
+                    isStartActivityIdChecked = " checked disabled";
                 }
                 if (resource.getProperty("startUserId") != null) {
-                    isStartUserIdChecked = " checked";
+                    isStartUserIdChecked = " checked disabled";
                 }
                 if (resource.getProperty("processInstanceStartTime") != null) {
-                    isProcessStartTimeChecked = " checked";
+                    isProcessStartTimeChecked = " checked disabled";
                 }
                 if (resource.getProperty("processInstanceEndTime") != null) {
-                    isProcessEndTimeChecked = " checked";
+                    isProcessEndTimeChecked = " checked disabled";
                 }
                 if (resource.getProperty("processInstanceDuration") != null) {
-                    isProcessInstanceDurationChecked = " checked";
+                    isProcessInstanceDurationChecked = " checked disabled";
                 }
                 if (resource.getProperty("taskInstanceId") != null) {
-                    isTaskInstanceIdChecked = " checked";
+                    isTaskInstanceIdChecked = " checked disabled";
                 }
                 if (resource.getProperty("assignee") != null) {
-                    isAssigneeChecked = " checked";
+                    isAssigneeChecked = " checked disabled";
                 }
                 if (resource.getProperty("taskProcessInstanceId") != null) {
-                    isTaskProcessInstanceIdChecked = " checked";
+                    isTaskProcessInstanceIdChecked = " checked disabled";
                 }
                 if (resource.getProperty("taskInstanceStartTime") != null) {
-                    isTaskInstanceStartTimeChecked = " checked";
+                    isTaskInstanceStartTimeChecked = " checked disabled";
                 }
                 if (resource.getProperty("taskInstanceEndTime") != null) {
-                    isTaskInstanceEndTimeChecked = " checked";
+                    isTaskInstanceEndTimeChecked = " checked disabled";
                 }
                 if (resource.getProperty("taskInstanceDuration") != null) {
-                    isTaskInstanceDurationChecked = " checked";
+                    isTaskInstanceDurationChecked = " checked disabled";
                 }
 
             } else {
@@ -174,16 +164,7 @@
         }
 
     %>
-    <%!
-        private boolean isAvailableInResult(String[] result, String property) {
-            for (String checkedBox : result) {
-                if (checkedBox.equals(property)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    %>
+
     <script type="text/javascript">
         if (typeof String.prototype.startsWith != 'function') {
             String.prototype.startsWith = function (str) {

@@ -48,4 +48,8 @@ for (var j=0; j<processes.data.length; j++){
 		imageUrl: imageUrl
 	});
 }
+
+//Set current active veiw as process view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+processesNavActive = 'class="active"';
 %>

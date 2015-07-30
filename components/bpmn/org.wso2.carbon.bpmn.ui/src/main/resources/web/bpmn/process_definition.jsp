@@ -30,15 +30,16 @@
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <%
+    String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
     String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
     ConfigurationContext configContext =
             (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
     String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
     WorkflowServiceClient client;
-    BPMNDeployment[] deployments;
+    BPMNProcess process;
     try {
         client = new WorkflowServiceClient(cookie, serverURL, configContext);
-        deployments = client.getDeployments();
+        process = client.getProcessById(processId);
     } catch (Exception e) {
         CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
 %>
@@ -48,8 +49,6 @@
 <%
         return;
     }
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
-    String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
 %>
 
 <link href="css/prettify.css" type="text/css" rel="stylesheet" />
@@ -74,29 +73,21 @@
             </tr>
             </thead>
             <tbody>
-                <% for(BPMNDeployment deployment: deployments){
-                     BPMNProcess[] processes = client.getProcessListByDeploymentID(deployment.getDeploymentId());
-                     for(BPMNProcess process: processes){
-                        if(process.getProcessId().equals(processId)){
-                %>
                 <tr>
                     <td><fmt:message key="bpmn.process.id"/></td><td><%=process.getProcessId()%></td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="bpmn.process.name"/></td><td><%=process.getName()%></td>
                 </tr>
                 <tr>
                     <td><fmt:message key="bpmn.process.version"/></td><td><%=process.getVersion()%></td>
                 </tr>
                 <tr>
-                    <td><fmt:message key="bpmn.process.deployedDate"/></td><td><%=deployment.getDeploymentTime().toString()%></td>
+                    <td><fmt:message key="bpmn.process.deployedDate"/></td><td><%=process.getDeploymentTime().toString()%></td>
                 </tr>
                 <tr>
-                    <td><fmt:message key="bpmn.package.name"/></td><td><%=deployment.getDeploymentName() + "-" + deployment.getDeploymentId()%></td>
+                    <td><fmt:message key="bpmn.package.name"/></td><td><%=process.getDeploymentName() + "-" + process.getDeploymentId()%></td>
                 </tr>
-                <%
-                         break;
-                       }
-                     }
-                   }
-                %>
             </tbody>
         </table>
         <br/><br/>
@@ -126,7 +117,18 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><image src="<%=client.getProcessDiagram(processId)%>" /></td>
+                    <%
+                        try{
+                    %>
+                        <td><img src="<%=client.getProcessDiagram(processId)%>" /></td>
+                    <%
+                        } catch (Exception e){
+                    %>
+                        <td><fmt:message key="error.loading.image"/></td>
+                    <%
+                        }
+                    %>
+
                 </tr>
             </tbody>
         </table>

@@ -27,6 +27,8 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -82,9 +84,9 @@ public class BPMNDeployer extends AbstractDeployer {
 	    // information is shared though a persistence db and process is stored into the database, there
 	    // is no need to deploy process in worker nodes.
 
-        boolean isWorkerNode = CarbonUtils.isWorkerNode();
+
         // Worker nodes cannot deploy BPMN packages, hence return
-        if (isWorkerNode) {
+        if (isWorkerNode()) {
             return;
         }
 
@@ -114,9 +116,10 @@ public class BPMNDeployer extends AbstractDeployer {
     public void undeploy(String bpmnArchivePath) throws DeploymentException {
 
 	    // Worker nodes does not perform any action related to bpmn undeployment, manager node takes
-	    // care of all deployment/ undeployment actions
-	    boolean isWorkerNode = CarbonUtils.isWorkerNode();
-	    if (isWorkerNode) {
+	    // care of all deployment/undeployment actions
+
+
+	    if (isWorkerNode()) {
 		    return;
 	    }
         File bpmnArchiveFile = new File(bpmnArchivePath);
@@ -171,5 +174,21 @@ public class BPMNDeployer extends AbstractDeployer {
 
     @Override
     public void setExtension(String s) {
+    }
+
+    /**
+     * Whether a bps node is worker ( a node that does not participate in archive deployment and only handles
+     * input/output . This is determined by looking at the registry read/only property
+     * @return
+     */
+    private boolean isWorkerNode() {
+        RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
+        boolean isWorker = true;
+        try {
+            isWorker = (registryService.getConfigSystemRegistry().getRegistryContext().isReadOnly());
+        } catch (RegistryException e) {
+            log.error("Error accessing the configuration registry");
+        }
+        return isWorker;
     }
 }
