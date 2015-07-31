@@ -34,7 +34,7 @@
                 </span>
                 <span class="padding-left">My Tasks</span></a>
               </li>
-              <li <%=claimableTasksNavActive%>><a href="taskpool">
+              <li <%=claimableTasksNavActive%>><a href="claimabletasks">
                 <span class="fw-stack fw-lg">
                     <i class="fw fw-ring fw-stack-2x"></i>
                     <i class="fw fw-ticked-box fw-lg fw-stack-1x padding-top-icon"></i>
@@ -48,7 +48,7 @@
                 </span>
                 <span class="padding-left">Notifications</span></a>
               </li>
-              <li <%=searchNavActive%>><a href="alltasks">
+              <li <%=searchNavActive%>><a href="search">
                 <span class="fw-stack fw-lg">
                     <i class="fw fw-ring fw-stack-2x"></i>
                     <i class="fw fw-search fw-lg fw-stack-1x padding-top-icon"></i>
