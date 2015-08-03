@@ -54,13 +54,6 @@
         String thriftUrl = request.getParameter("thrift_url");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String isProcessInstanceIdChecked = "", isStartActivityIdChecked = "", isStartUserIdChecked = "",
-                isProcessStartTimeChecked = "", isProcessEndTimeChecked = "", isProcessInstanceDurationChecked = "",
-                isTaskInstanceIdChecked = "", isAssigneeChecked = "", isTaskProcessInstanceIdChecked = "",
-                isTaskInstanceStartTimeChecked = "", isTaskInstanceEndTimeChecked = "", isTaskInstanceDurationChecked = "";
-
-        String[] processInstanceCheckBoxValues = request.getParameterValues("processInstance");
-        String[] taskInstanceCheckBoxValues = request.getParameterValues("taskInstance");
 
         CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
         Registry configRegistry = context.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
@@ -97,66 +90,11 @@
                 //if resource doesn't exists then create a new resource and add properties to it.
                 if ((thriftUrl != null && (thriftUrl.startsWith("tcp://") || thriftUrl.startsWith("ssl://"))) || (username != null) || (password != null)) {
                     Resource resource = configRegistry.newResource();
+                    resource.addProperty("data_receiver_thrift_url", thriftUrl);
+                    resource.addProperty("username", username);
+                    resource.addProperty("password", password);
                     configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
                 }
-            }
-            if (configRegistry.resourceExists("bpmn/data_analytics_publisher/instance_properties")) {
-                Resource resource = configRegistry.get("bpmn/data_analytics_publisher/instance_properties");
-
-                if ((processInstanceCheckBoxValues != null) && (processInstanceCheckBoxValues.length > 0)) {
-                    for (String value : processInstanceCheckBoxValues) {
-                        resource.setProperty(value, value);
-                    }
-                    configRegistry.put("bpmn/data_analytics_publisher/instance_properties", resource);
-                }
-                if ((taskInstanceCheckBoxValues != null) && (taskInstanceCheckBoxValues.length > 0)) {
-                    for (String value : taskInstanceCheckBoxValues) {
-                        resource.setProperty(value, value);
-                    }
-                    configRegistry.put("bpmn/data_analytics_publisher/instance_properties", resource);
-                }
-
-                if (resource.getProperty("processInstanceId") != null) {
-                    //Check if a user remove the selection of a check box, if so after save button clicked remove it from the registry else set checked is true
-                    isProcessInstanceIdChecked = " checked disabled";
-                }
-                if (resource.getProperty("startActivityId") != null) {
-                    isStartActivityIdChecked = " checked disabled";
-                }
-                if (resource.getProperty("startUserId") != null) {
-                    isStartUserIdChecked = " checked disabled";
-                }
-                if (resource.getProperty("processInstanceStartTime") != null) {
-                    isProcessStartTimeChecked = " checked disabled";
-                }
-                if (resource.getProperty("processInstanceEndTime") != null) {
-                    isProcessEndTimeChecked = " checked disabled";
-                }
-                if (resource.getProperty("processInstanceDuration") != null) {
-                    isProcessInstanceDurationChecked = " checked disabled";
-                }
-                if (resource.getProperty("taskInstanceId") != null) {
-                    isTaskInstanceIdChecked = " checked disabled";
-                }
-                if (resource.getProperty("assignee") != null) {
-                    isAssigneeChecked = " checked disabled";
-                }
-                if (resource.getProperty("taskProcessInstanceId") != null) {
-                    isTaskProcessInstanceIdChecked = " checked disabled";
-                }
-                if (resource.getProperty("taskInstanceStartTime") != null) {
-                    isTaskInstanceStartTimeChecked = " checked disabled";
-                }
-                if (resource.getProperty("taskInstanceEndTime") != null) {
-                    isTaskInstanceEndTimeChecked = " checked disabled";
-                }
-                if (resource.getProperty("taskInstanceDuration") != null) {
-                    isTaskInstanceDurationChecked = " checked disabled";
-                }
-
-            } else {
-                Resource resource = configRegistry.newResource();
-                configRegistry.put("bpmn/data_analytics_publisher/instance_properties", resource);
             }
 
         } catch (RegistryException e) {
@@ -164,8 +102,8 @@
         }
 
     %>
-
     <script type="text/javascript">
+
         if (typeof String.prototype.startsWith != 'function') {
             String.prototype.startsWith = function (str) {
                 return str.length > 0 && this.substring(0, str.length) === str;
@@ -177,18 +115,8 @@
             var thriftUrl = document.bpmnDataPublisher.thrift_url.value;
             var username = document.bpmnDataPublisher.username.value;
             var password = document.bpmnDataPublisher.password.value;
-            var processInstanceCheckBoxes = document.bpmnDataPublisher.processInstance;
-            var taskInstanceCheckBoxes = document.bpmnDataPublisher.taskInstance;
-            var procCheckLength = 0, taskCheckLength = 0;
-            for (var i = 0; i < processInstanceCheckBoxes.length; i++) {
-                if (processInstanceCheckBoxes[i].checked)
-                    procCheckLength++;
-            }
-            for (var j = 0; j < taskInstanceCheckBoxes.length; j++) {
-                if (taskInstanceCheckBoxes[j].checked)
-                    taskCheckLength++;
-            }
-            if (((procCheckLength == 0) && (taskCheckLength == 0)) || (thriftUrl.length == 0) || (username.length == 0) || (password.length == 0)) {
+
+            if ((thriftUrl.length == 0) || (username.length == 0) || (password.length == 0)) {
                 CARBON.showWarningDialog('Please provide correct thrift API configuration or select required fields to publish bpmn instances.');
             } else if ((!thriftUrl.startsWith("tcp")) && (!thriftUrl.startsWith("ssl"))) {
                 CARBON.showWarningDialog('Incorrect thrift url is provided:' + (thriftUrl.startsWith("tcp")));
@@ -196,6 +124,7 @@
                 document.bpmnDataPublisher.submit();
             }
         }
+
     </script>
 
     <carbon:breadcrumb
@@ -252,74 +181,66 @@
 
                         <tr class="tableOddRow">
                             <td>
-                                <input value="processInstanceId" id="processInsId" type="checkbox"
-                                       name="processInstance" <%= isProcessInstanceIdChecked %>><fmt:message
-                                    key="bpmn.process.instance.id"/><br>
+                                <label><fmt:message key="bpmn.process.definition.id"/></label><br>
                             </td>
                             <td>
-                                <input value="taskInstanceId" id="taskInsId" type="checkbox"
-                                       name="taskInstance" <%= isTaskInstanceIdChecked %>><fmt:message
-                                    key="bpmn.task.instance.id"/><br>
+                                <label><fmt:message key="bpmn.task.definition.id"/></label><br>
                             </td>
                         </tr>
                         <tr class="tableEvenRow">
                             <td>
-                                <input value="startActivityId" id="startActId" type="checkbox"
-                                       name="processInstance" <%= isStartActivityIdChecked %>><fmt:message
-                                    key="bpmn.start.activity.id"/><br>
+                                <label><fmt:message key="bpmn.process.instance.id"/></label><br>
                             </td>
                             <td>
-                                <input value="assignee" id="assignee" type="checkbox"
-                                       name="taskInstance" <%= isAssigneeChecked %>><fmt:message
-                                    key="bpmn.task.instance.assignee"/><br>
+                                <label><fmt:message key="bpmn.task.instance.id"/></label><br>
                             </td>
                         </tr>
                         <tr class="tableOddRow">
                             <td>
-                                <input value="startUserId" id="startUserId" type="checkbox"
-                                       name="processInstance" <%= isStartUserIdChecked %>><fmt:message
-                                    key="bpmn.start.user.id"/><br>
+                                <label><fmt:message key="bpmn.process.tenant.id"/></label><br>
                             </td>
                             <td>
-                                <input value="taskProcessInstanceId" id="taskProcessId" type="checkbox"
-                                       name="taskInstance" <%= isTaskProcessInstanceIdChecked %>><fmt:message
-                                    key="bpmn.process.instance.id"/><br>
+                                <label><fmt:message key="bpmn.task.create.time"/></label><br>
                             </td>
                         </tr>
                         <tr class="tableEvenRow">
                             <td>
-                                <input value="processInstanceStartTime" id="processInstanceStartTime" type="checkbox"
-                                       name="processInstance" <%= isProcessStartTimeChecked %>><fmt:message
-                                    key="bpmn.instance.start.time"/><br>
+                                <label><fmt:message key="bpmn.start.activity.id"/></label><br>
                             </td>
                             <td>
-                                <input value="taskInstanceStartTime" id="taskInstanceStartTime" type="checkbox"
-                                       name="taskInstance" <%= isTaskInstanceStartTimeChecked %>><fmt:message
-                                    key="bpmn.instance.start.time"/><br>
+                                <label><fmt:message key="bpmn.task.instance.assignee"/></label><br>
                             </td>
                         </tr>
                         <tr class="tableOddRow">
                             <td>
-                                <input value="processInstanceEndTime" id="processInstanceEndTime" type="checkbox"
-                                       name="processInstance" <%= isProcessEndTimeChecked %>><fmt:message
-                                    key="bpmn.instance.end.time"/><br>
+                                <label><fmt:message key="bpmn.start.user.id"/></label><br>
                             </td>
                             <td>
-                                <input value="taskInstanceEndTime" id="taskInstanceEndTime" type="checkbox"
-                                       name="taskInstance" <%= isTaskInstanceEndTimeChecked %>><fmt:message
-                                    key="bpmn.instance.end.time"/><br>
+                                <label><fmt:message key="bpmn.process.instance.id"/></label><br>
                             </td>
                         </tr>
                         <tr class="tableEvenRow">
                             <td>
-                                <input value="processInstanceDuration" id="processInstanceDuration" type="checkbox"
-                                       name="processInstance" <%= isProcessInstanceDurationChecked %>><fmt:message
-                                    key="bpmn.instance.duration"/><br>
+                                <label><fmt:message key="bpmn.instance.start.time"/></label><br>
                             </td>
                             <td>
-                                <input value="taskInstanceDuration" id="taskInstanceDuration" type="checkbox"
-                                       name="taskInstance" <%= isTaskInstanceDurationChecked %>><fmt:message
-                                    key="bpmn.instance.duration"/><br>
+                                <label><fmt:message key="bpmn.instance.start.time"/></label><br>
+                            </td>
+                        </tr>
+                        <tr class="tableOddRow">
+                            <td>
+                                <label><fmt:message key="bpmn.instance.end.time"/></label><br>
+                            </td>
+                            <td>
+                                <label><fmt:message key="bpmn.instance.end.time"/></label><br>
+                            </td>
+                        </tr>
+                        <tr class="tableEvenRow">
+                            <td>
+                                <label><fmt:message key="bpmn.instance.duration"/></label><br>
+                            </td>
+                            <td>
+                                <label><fmt:message key="bpmn.instance.duration"/></label><br>
                             </td>
                         </tr>
                         </tbody>
