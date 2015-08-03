@@ -46,7 +46,7 @@ public class BPMNDataReceiverConfig {
                     registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
             url = resource.getProperty(AnalyticsPublisherConstants.THRIFT_URL_PROPERTY);
         } else {
-            url = AnalyticsPublisherConstants.LOCAL_THRIFT_URL;
+            url = null;
         }
 
         return url;

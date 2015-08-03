@@ -56,21 +56,26 @@ public class AnalyticsPublisher {
         try {
             RegistryUtils.setTrustStoreSystemProperties();
             dataPublisher = createDataPublisher();
-            processInstanceStreamId = getBPMNProcessInstanceStreamId();
-            taskInstanceStreamId = getBPMNTaskInstanceStreamId();
-            analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
-            int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-            String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-            Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
-                    .getGovernanceSystemRegistry();
-            if (processInstanceStreamId == null && taskInstanceStreamId == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Stream definitions are null...");
+            if(dataPublisher != null){
+                processInstanceStreamId = getBPMNProcessInstanceStreamId();
+                taskInstanceStreamId = getBPMNTaskInstanceStreamId();
+                analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
+                int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+                String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+                Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
+                        .getGovernanceSystemRegistry();
+                if (processInstanceStreamId == null && taskInstanceStreamId == null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Stream definitions are null...");
+                    }
+                } else {
+                    setPrivilegeContext(tenantId, tenantDomain, registry);
                 }
-            } else {
-                setPrivilegeContext(tenantId, tenantDomain, registry);
+            }else{
+             if(log.isDebugEnabled()){
+                 log.debug("Data Publisher object is null...");
+             }
             }
-
         } catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
                 DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
                 MalformedStreamDefinitionException | UserStoreException | RegistryException e) {
@@ -263,10 +268,12 @@ public class AnalyticsPublisher {
     private DataPublisher createDataPublisher()
             throws MalformedURLException, AgentException, AuthenticationException,
             TransportException, UserStoreException, RegistryException {
-        DataPublisher dataPublisher = new DataPublisher(BPMNDataReceiverConfig.getThriftURL(),
-                BPMNDataReceiverConfig.getUserName(),
-                BPMNDataReceiverConfig.getPassword());
-
+        DataPublisher dataPublisher = null;
+        if(BPMNDataReceiverConfig.getThriftURL() != null){
+            dataPublisher = new DataPublisher(BPMNDataReceiverConfig.getThriftURL(),
+                    BPMNDataReceiverConfig.getUserName(),
+                    BPMNDataReceiverConfig.getPassword());
+        }
         return dataPublisher;
     }
 
