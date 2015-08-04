@@ -106,7 +106,7 @@ WorkflowServiceClient client;
     }
     function searchFilter(){
         var searchMethod = document.getElementById("method").value;
-        var filterTxt = document.getElementById("filter").value;
+        var filterTxt = document.getElementById("filterProcess").value;
         window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?method="
                 + searchMethod + "&filter=" + filterTxt;
     }
@@ -128,7 +128,7 @@ WorkflowServiceClient client;
                 <option value="byProcessNameLike" <%=selected%>>
                     <fmt:message key="bpmn.process.id"/></option>
             </select>
-            <input type="text" id="filter" value="<%=filter%>"/>
+            <input type="text" id="filterProcess" value="<%=filter%>"/>
             <a href="#" onclick="searchFilter()" style="background-image: url('images/search.gif')">&nbsp;&nbsp;&nbsp;&nbsp;</a>
         </form>
         <br/>
