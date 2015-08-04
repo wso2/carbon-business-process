@@ -22,6 +22,7 @@ public class BPMNInstance {
 
     private String instanceId;
     private String processId;
+    private String processName;
     private BPMNVariable[] variables;
     private boolean suspended;
     private Date startTime;
@@ -41,6 +42,14 @@ public class BPMNInstance {
 
     public void setProcessId(String processId) {
         this.processId = processId;
+    }
+
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
     }
 
     public BPMNVariable[] getVariables() {
