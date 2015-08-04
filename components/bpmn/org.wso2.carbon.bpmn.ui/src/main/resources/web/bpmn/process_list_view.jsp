@@ -121,7 +121,6 @@ WorkflowServiceClient client;
     <h2><fmt:message key="bpmn.deployed.processes"/></h2>
 
     <div id="workArea">
-
         <form>
             <fmt:message key="bpmn.search.by"/>&nbsp;
             <select id="method">
@@ -132,6 +131,7 @@ WorkflowServiceClient client;
             <input type="text" id="filterProcess" value="<%=filter%>"/>
             <a href="#" onclick="searchFilter()" style="background-image: url('images/search.gif')">&nbsp;&nbsp;&nbsp;&nbsp;</a>
         </form>
+        <br>
         <table class="styledLeft" id="moduleTable">
             <thead>
             <tr>
