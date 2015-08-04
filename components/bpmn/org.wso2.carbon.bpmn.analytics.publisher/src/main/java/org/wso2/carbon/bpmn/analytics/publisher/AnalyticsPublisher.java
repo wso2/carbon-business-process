@@ -90,7 +90,7 @@ public class AnalyticsPublisher {
     private void setPrivilegeContext(final int tenantId, final String tenantDomain,
                                      final Registry registry) {
         if (log.isDebugEnabled()) {
-            log.debug("Run setPrivilegeContext method...");
+            log.debug("Run setPrivilegeContext method... " + tenantId+", "+tenantDomain + ", "+ registry);
         }
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -164,9 +164,13 @@ public class AnalyticsPublisher {
                 bpmnProcessInstance.getDuration(),
                 bpmnProcessInstance.getTenantId()
         };
-        log.debug("Start to Publish BPMN process instance event...");
+        if(log.isDebugEnabled()){
+            log.debug("Start to Publish BPMN process instance event... "+payload.toString());
+        }
         dataPublisher.publish(processInstanceStreamId, getMeta(), null, payload);
-        log.debug("Published BPMN process instance event...");
+        if(log.isDebugEnabled()){
+            log.debug("Published BPMN process instance event... " + payload.toString());
+        }
     }
 
     /**
@@ -188,9 +192,13 @@ public class AnalyticsPublisher {
                 bpmnTaskInstance.getAssignee()
 
         };
-        log.debug("Start to Publish BPMN task instance event...");
+        if(log.isDebugEnabled()){
+            log.debug("Start to Publish BPMN task instance event... "+payload.toString());
+        }
         dataPublisher.publish(taskInstanceStreamId, getMeta(), null, payload);
-        log.debug("Published BPMN task instance event...");
+        if(log.isDebugEnabled()){
+            log.debug("Published BPMN task instance event... "+payload.toString());
+        }
     }
 
     /**

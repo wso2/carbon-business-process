@@ -80,7 +80,7 @@ public class AnalyticsPublishServiceUtils {
         }
         if (historicProcessInstanceList != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Write BPMN process instance to the carbon registry...");
+                log.debug("Write BPMN process instance to the carbon registry..." + historicProcessInstanceList.toString());
             }
             writePublishTimeToRegistry(historicProcessInstanceList);
             //return ProcessInstances set as BPMNProcessInstance array
@@ -124,7 +124,7 @@ public class AnalyticsPublishServiceUtils {
         }
         if (historicTaskInstanceList != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Write BPMN task instance to the carbon registry...");
+                log.debug("Write BPMN task instance to the carbon registry..."+historicTaskInstanceList.toString());
             }
             writeTaskEndTimeToRegistry(historicTaskInstanceList);
             return getBPMNTaskInstances(historicTaskInstanceList);
@@ -218,7 +218,9 @@ public class AnalyticsPublishServiceUtils {
      */
     private void writePublishTimeToRegistry(
             List<HistoricProcessInstance> historicProcessInstanceList) {
-        log.debug("Start writing last completed process instance publish time...");
+        if(log.isDebugEnabled()){
+            log.debug("Start writing last completed process instance publish time...");
+        }
         Date lastProcessInstancePublishTime =
                 historicProcessInstanceList.get(historicProcessInstanceList.size() - 1)
                         .getStartTime();
@@ -299,7 +301,7 @@ public class AnalyticsPublishServiceUtils {
             if (registry != null) {
                 if (registry.resourceExists(resourcePath)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Process instance resource path exists...");
+                        log.debug("Process instance resource path exists..." + resourcePath);
                     }
                     Resource resource = registry.get(resourcePath);
                     time = resource.getProperty(propertyPath);

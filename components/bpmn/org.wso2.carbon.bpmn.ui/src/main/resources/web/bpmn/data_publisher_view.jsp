@@ -28,6 +28,7 @@
 <%@ page import="org.wso2.carbon.registry.api.RegistryException" %>
 <%@ page import="org.wso2.carbon.registry.core.utils.RegistryUtils" %>
 <%@ page import="org.wso2.carbon.registry.api.Resource" %>
+<%@ page import="org.wso2.carbon.core.util.CryptoUtil" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -64,7 +65,9 @@
                 Resource resource = configRegistry.get("bpmn/data_analytics_publisher/thrift_configuration");
                 if (thriftUrl == null) {
                     //if thrift url is null then set value from the registry
-                    thriftUrl = resource.getProperty("data_receiver_thrift_url");
+                    if(resource.getProperty("data_receiver_thrift_url") != null){
+                        thriftUrl = resource.getProperty("data_receiver_thrift_url");
+                    }
                 } else if (!thriftUrl.equals(resource.getProperty("data_receiver_thrift_url"))) {
                     //else if user updates the thrift url then update the registry property
                     resource.setProperty("data_receiver_thrift_url", thriftUrl);
@@ -72,7 +75,9 @@
                 }
                 if (username == null) {
                     //if username is null then set value from the registry
-                    username = resource.getProperty("username");
+                    if(resource.getProperty("username") != null){
+                        username = resource.getProperty("username");
+                    }
                 } else if (!username.equals(resource.getProperty("username"))) {
                     //else if user updates the username then update the registry property
                     resource.setProperty("username", username);
@@ -80,10 +85,14 @@
                 }
                 if (password == null) {
                     //if password is null then set value from the registry
-                    password = resource.getProperty("password");
+                    if(resource.getProperty("password") != null){
+                        byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(resource.getProperty("password"));
+                        password = new String(decryptedPassword);
+                    }
                 } else if (!password.equals(resource.getProperty("password"))) {
                     //else if user updates the password then update the registry property
-                    resource.setProperty("password", password);
+                    String encryptedPassword = CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes());
+                    resource.setProperty("password", encryptedPassword);
                     configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
                 }
             } else {
@@ -92,7 +101,7 @@
                     Resource resource = configRegistry.newResource();
                     resource.addProperty("data_receiver_thrift_url", thriftUrl);
                     resource.addProperty("username", username);
-                    resource.addProperty("password", password);
+                    resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes()));
                     configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
                 }
             }
