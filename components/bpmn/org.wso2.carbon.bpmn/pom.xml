@@ -65,10 +65,25 @@
             <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
         </dependency>
 
-	 <dependency>
+	    <dependency>
              <groupId>org.mybatis</groupId>
              <artifactId>mybatis</artifactId>
          </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents.wso2</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath.wso2</groupId>
+            <artifactId>json-path</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -106,7 +121,8 @@
                         <!--org.wso2.carbon.bpmn.core.deployment.Activator-->
                         <!--</Bundle-Activator>-->
                         <Private-Package>
-                            org.wso2.carbon.bpmn.core.internal
+                            org.wso2.carbon.bpmn.core.internal,
+                            org.wso2.carbon.bpmn.extensions
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpmn.core.internal,
@@ -118,9 +134,12 @@
                             version=${carbon.business-process.exp.pkg.version},
                             org.wso2.carbon.bpmn.core.deployment.*;
                             version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.extensions.rest.*;
+                            version=${carbon.business-process.exp.pkg.version},
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
+                            !org.wso2.carbon.bpmn.extensions,
                             org.wso2.carbon.ndatasource.*,
                             *;resolution:=optional
                         </Import-Package>

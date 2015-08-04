@@ -40,10 +40,14 @@ for (var j=0; j<processes.data.length; j++){
     }else{
         var imageUrl = processes.data[j].diagramResource.replace("resources", "resourcedata").split(":")[2].substring(4);
     }
+    var depId = processes.data[j].deploymentId;
+    var deployment = get( httpUrl + "/bpmn/repository/deployments/" + depId ,null, headers, "json" ).data;
+    var packageName = deployment.name + "-" + depId;
 
 	list.push({
 		processName: processes.data[j].name,
 		processId: processes.data[j].id,
+		packageName: packageName,
 		version: processes.data[j].version,
 		imageUrl: imageUrl
 	});

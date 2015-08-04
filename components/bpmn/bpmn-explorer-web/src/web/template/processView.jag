@@ -28,6 +28,7 @@
 		    	<tr class="table-title-row">
 		    		<th>Process Name</th>
 		    		<th>Process ID</th>
+		    		<th>Package Name</th>
 		    		<th>Version</th>
 		    		<th>Action</th>
 		    	</tr>
@@ -54,6 +55,7 @@
 			    					<%=list[i-count].processId%>
 			    				</a>
 			    			</td>
+			    			<td><%=list[i-count].packageName%></td>
 							<td><%=list[i-count].version%></td>
 							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 
@@ -73,6 +75,7 @@
 				    					<%=list[i-j].processId%>
 				    				</a>
 				    			</td>
+				    			<td><%=list[i-j].packageName%></td>
 								<td><%=list[i-j].version%></td>
 								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
@@ -95,6 +98,7 @@
 			    					<%=list[i-count].processId%>
 			    				</a>
 			    			</td>
+			    			<td><%=list[i-count].packageName%></td>
 							<td><%=list[i-count].version%></td>
 							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 						</tr>
@@ -113,6 +117,7 @@
 				    					<%=list[i-j].processId%>
 				    				</a>
 				    			</td>
+				    			<td><%=list[i-j].packageName%></td>
 								<td><%=list[i-j].version%></td>
 								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>

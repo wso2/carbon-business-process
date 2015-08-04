@@ -7,6 +7,7 @@
                     <xs:element minOccurs="0" name="endTime" nillable="true" type="xs:date"/>
                     <xs:element minOccurs="0" name="instanceId" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="processName" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="startTime" nillable="true" type="xs:date"/>
                     <xs:element minOccurs="0" name="suspended" type="xs:boolean"/>
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="variables" nillable="true" type="ax223:BPMNVariable"/>
@@ -34,6 +35,13 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="startProcess">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="processID" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="getProcessInstances">
                 <xs:complexType>
                     <xs:sequence/>
@@ -46,10 +54,25 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="startProcess">
+            <xs:element name="getPaginatedInstanceByFilter">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="processID" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="finished" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="instanceId" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="startAfter" nillable="true" type="xs:date"/>
+                        <xs:element minOccurs="0" name="startBefore" nillable="true" type="xs:date"/>
+                        <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="variable" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="start" type="xs:int"/>
+                        <xs:element minOccurs="0" name="size" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getPaginatedInstanceByFilterResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -214,6 +237,12 @@
     <wsdl:message name="startProcessRequest">
         <wsdl:part name="parameters" element="ns:startProcess"/>
     </wsdl:message>
+    <wsdl:message name="getPaginatedInstanceByFilterRequest">
+        <wsdl:part name="parameters" element="ns:getPaginatedInstanceByFilter"/>
+    </wsdl:message>
+    <wsdl:message name="getPaginatedInstanceByFilterResponse">
+        <wsdl:part name="parameters" element="ns:getPaginatedInstanceByFilterResponse"/>
+    </wsdl:message>
     <wsdl:message name="deleteProcessInstanceRequest">
         <wsdl:part name="parameters" element="ns:deleteProcessInstance"/>
     </wsdl:message>
@@ -269,6 +298,10 @@
         <wsdl:operation name="startProcess">
             <wsdl:input message="ns:startProcessRequest" wsaw:Action="urn:startProcess"/>
             <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:startProcessBPMNInstanceServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedInstanceByFilter">
+            <wsdl:input message="ns:getPaginatedInstanceByFilterRequest" wsaw:Action="urn:getPaginatedInstanceByFilter"/>
+            <wsdl:output message="ns:getPaginatedInstanceByFilterResponse" wsaw:Action="urn:getPaginatedInstanceByFilterResponse"/>
         </wsdl:operation>
         <wsdl:operation name="deleteProcessInstance">
             <wsdl:input message="ns:deleteProcessInstanceRequest" wsaw:Action="urn:deleteProcessInstance"/>
@@ -386,6 +419,15 @@
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
                 <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedInstanceByFilter">
+            <soap:operation soapAction="urn:getPaginatedInstanceByFilter" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getPaginatedInstances">
             <soap:operation soapAction="urn:getPaginatedInstances" style="document"/>
@@ -516,6 +558,15 @@
                 <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
+        <wsdl:operation name="getPaginatedInstanceByFilter">
+            <soap12:operation soapAction="urn:getPaginatedInstanceByFilter" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="getPaginatedInstances">
             <soap12:operation soapAction="urn:getPaginatedInstances" style="document"/>
             <wsdl:input>
@@ -621,6 +672,15 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
         </wsdl:operation>
+        <wsdl:operation name="getPaginatedInstanceByFilter">
+            <http:operation location="getPaginatedInstanceByFilter"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="getPaginatedInstances">
             <http:operation location="getPaginatedInstances"/>
             <wsdl:input>
@@ -639,13 +699,13 @@
     </wsdl:binding>
     <wsdl:service name="BPMNInstanceService">
         <wsdl:port name="BPMNInstanceServiceHttpsSoap11Endpoint" binding="ns:BPMNInstanceServiceSoap11Binding">
-            <soap:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap11Endpoint/"/>
+            <soap:address location="https://192.168.2.105:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap11Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="BPMNInstanceServiceHttpsSoap12Endpoint" binding="ns:BPMNInstanceServiceSoap12Binding">
-            <soap12:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap12Endpoint/"/>
+            <soap12:address location="https://192.168.2.105:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap12Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="BPMNInstanceServiceHttpsEndpoint" binding="ns:BPMNInstanceServiceHttpBinding">
-            <http:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsEndpoint/"/>
+            <http:address location="https://192.168.2.105:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsEndpoint/"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
