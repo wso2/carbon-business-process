@@ -131,7 +131,7 @@ WorkflowServiceClient client;
             <input type="text" id="filterProcess" value="<%=filter%>"/>
             <a href="#" onclick="searchFilter()" style="background-image: url('images/search.gif')">&nbsp;&nbsp;&nbsp;&nbsp;</a>
         </form>
-        <br>
+        <br/>
         <table class="styledLeft" id="moduleTable">
             <thead>
             <tr>
