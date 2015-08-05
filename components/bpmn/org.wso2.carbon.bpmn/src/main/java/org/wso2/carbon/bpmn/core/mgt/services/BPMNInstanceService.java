@@ -91,7 +91,7 @@ public class BPMNInstanceService {
                     .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
                     .processDefinitionId(instance.getProcessDefinitionId()).list();
             String processName = instance.getProcessDefinitionId();
-            if(!processes.isEmpty()) {
+            if (!processes.isEmpty()) {
                 processName = processes.get(0).getName();
             }
             bpmnInstance.setProcessName(processName);
@@ -126,7 +126,7 @@ public class BPMNInstanceService {
                         .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
                         .processDefinitionId(instance.getProcessDefinitionId()).list();
                 String processName = instance.getProcessDefinitionId();
-                if(!processes.isEmpty()) {
+                if (!processes.isEmpty()) {
                     processName = processes.get(0).getName();
                 }
                 bpmnInstance.setProcessName(processName);
@@ -155,9 +155,13 @@ public class BPMNInstanceService {
                 BPMNInstance bpmnInstance = new BPMNInstance();
                 bpmnInstance.setInstanceId(instance.getId());
                 bpmnInstance.setProcessId(instance.getProcessDefinitionId());
-                String processName = BPMNServerHolder.getInstance().getEngine().getRuntimeService()
-                        .createProcessInstanceQuery().processDefinitionId(instance.getProcessDefinitionId()).list()
-                        .get(0).getProcessDefinitionName();
+                List<ProcessDefinition> processes = BPMNServerHolder.getInstance().getEngine().getRepositoryService()
+                        .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
+                        .processDefinitionId(instance.getProcessDefinitionId()).list();
+                String processName = instance.getProcessDefinitionId();
+                if (!processes.isEmpty()) {
+                    processName = processes.get(0).getName();
+                }
                 bpmnInstance.setProcessName(processName);
                 if (!query.processInstanceId(instance.getId()).list().isEmpty()) {
                     bpmnInstance.setSuspended(query.processInstanceId(instance.getId()).list().get(0).isSuspended());
