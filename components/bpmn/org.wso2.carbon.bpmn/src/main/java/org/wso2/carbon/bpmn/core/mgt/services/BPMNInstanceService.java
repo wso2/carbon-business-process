@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNInstance;
-import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
 import org.wso2.carbon.context.CarbonContext;
 import sun.misc.BASE64Encoder;
