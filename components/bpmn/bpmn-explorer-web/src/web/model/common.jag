@@ -14,10 +14,25 @@
  ~ limitations under the License.
 -->
 <%
-var data = require('../config/config.json'),
+	var log = new Log();
+	var data = require('../config/config.json');
+
+    //construct backend URI (asume webapp deployed in BPS)
+    var BPSUrl = application.get('bpsURI');
+    if (BPSUrl == null || BPSUrl === "") {
+        var process = require("process");
+        var localIP = process.getProperty('carbon.local.ip');
+        var httpsPort = process.getProperty('mgt.transport.https.port');
+        BPSUrl = "https://" +localIP +":" +httpsPort;
+        application.put('bpsURI', BPSUrl);
+        if (log.isDebugEnabled()) {
+            log.debug("Back-end BPS URI :" + BPSUrl);
+        }
+    }
+
 	encoder = require("/assets/encoder.js"),
 	process = require('process'),
-    	localIP = process.getProperty('carbon.local.ip'),
+    localIP = process.getProperty('carbon.local.ip'),
 	httpsPort = process.getProperty('mgt.transport.https.port'),
 	auth = session.get('auth'),
 	roles = session.get('roles'),

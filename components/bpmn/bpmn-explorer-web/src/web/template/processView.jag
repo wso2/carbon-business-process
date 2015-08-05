@@ -49,8 +49,7 @@
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
 	                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 	                            <% } else { %>
-	                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-		    							'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+	                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
 			    					<%=list[i-count].processId%>
 			    				</a>
@@ -69,8 +68,7 @@
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
 	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 	                                <% } else { %>
-	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-				    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
+	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 				    				<% } %>
 				    					<%=list[i-j].processId%>
 				    				</a>
@@ -92,8 +90,7 @@
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
 			    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 			    				<% } else { %>
-			    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-			    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+			    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
 			    					<%=list[i-count].processId%>
 			    				</a>
@@ -111,8 +108,7 @@
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
 	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 	                                <% } else { %>
-	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-				    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
+	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 									<% } %>
 				    					<%=list[i-j].processId%>
 				    				</a>
