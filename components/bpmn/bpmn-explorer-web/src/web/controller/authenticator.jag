@@ -36,18 +36,14 @@
 		if(username == "" || password == ""){
 			authSuccess = false;
 		} else{
-<<<<<<< HEAD
-			authSuccess = authentication.authenticate(username,password,httpUrl);
-=======
 			try {
-				authSuccess = authentication.authenticate(username,password);
-	            authSuccess = HTTPAuthenticate(username, password, localIP);
+				authSuccess = authentication.authenticate(username,password,httpUrl);
+	            authSuccess = HTTPAuthenticate(username, password, bpsHost);
 	        } catch (e) {
 	            log.error('Error occured while connecting to the back-end BPS AuthenticationAdmin service : ');
 	            log.error(e);
 	            authSuccess = false;
 	        }
->>>>>>> 6e64eb1b5caa63586f17d7e7d2087f92ed762cdb
 		}
 		if(!authSuccess){
 			session.put("loginFailed" ,true);
@@ -79,7 +75,7 @@
     function HTTPAuthenticate(username, password, remoteAddr) {
 
         var httpAuth = new XMLHttpRequest();
-        var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
+        var endPoint = httpUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
 
         httpAuth.open('POST', endPoint, false);
         httpAuth.setRequestHeader('SOAPAction', 'urn:login');
