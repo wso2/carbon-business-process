@@ -107,7 +107,8 @@ WorkflowServiceClient client;
     function searchFilter(){
         var searchMethod = document.getElementById("method").value;
         var filterTxt = document.getElementById("filterProcess").value;
-        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?method="
+        window.location.href = location.protocol + "//" + location.host
+                + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu&method="
                 + searchMethod + "&filter=" + filterTxt;
     }
 </script>
@@ -123,13 +124,13 @@ WorkflowServiceClient client;
     <div id="workArea">
         <form>
             <fmt:message key="bpmn.search.by"/>&nbsp;
-            <select id="method">
+            <select name="method" id="method">
                 <option value="byDeploymentNameLike"><fmt:message key="bpmn.package.name"/></option>
                 <option value="byProcessNameLike" <%=selected%>>
                     <fmt:message key="bpmn.process.id"/></option>
             </select>
-            <input type="text" id="filterProcess" value="<%=filter%>"/>
-            <a href="#" onclick="searchFilter()" style="background-image: url('images/search.gif')">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+            <input name="filter" type="text" id="filterProcess" onkeypress="searchTrigger()" value="<%=filter%>"/>
+            <button type="submit" onclick="searchFilter()" id="searchButton">&nbsp;&nbsp;&nbsp;&nbsp;</button>
         </form>
         <br/>
         <table class="styledLeft" id="moduleTable">

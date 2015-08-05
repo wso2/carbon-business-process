@@ -30,3 +30,9 @@ a.bpmn-icon-link {
     padding-left: 20px !important;
     background-repeat: no-repeat;
 }
+#searchButton {
+    background-image: url('../images/search.gif');
+    background-repeat: no-repeat;
+    background-color: Transparent;
+    border: none;
+}
