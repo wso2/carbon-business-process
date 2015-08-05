@@ -14,6 +14,8 @@
  ~ limitations under the License.
 -->
 <%
+	var log = new Log();
+	include("/model/common.jag");
 	var authentication = require("/assets/authentication.js");
 	var username = request.getParameter("username");
 	var password = request.getParameter("password");
@@ -34,14 +36,13 @@
 		if(username == "" || password == ""){
 			authSuccess = false;
 		} else{
-			authSuccess = authentication.authenticate(username,password);
-				
+			authSuccess = authentication.authenticate(username,password,httpUrl);
 		}
 		if(!authSuccess){
 			session.put("loginFailed" ,true);
 			response.sendRedirect(requestUrl);
 		} else {
-			var roles = authentication.getRoles(username,password);
+			var roles = authentication.getRoles(username,password,httpUrl);
 			var encoder = require("/assets/encoder.js");
 			var auth = encoder.encode(username+':'+password);
 			session.put(AUTH_SUCCESS, authSuccess);
@@ -52,6 +53,7 @@
 		}
 	
 	}catch(e){
+		log.error(e);
 		session.put("loginFailed" ,true);
 		response.sendRedirect(requestUrl);
 	}
