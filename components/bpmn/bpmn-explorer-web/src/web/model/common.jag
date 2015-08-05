@@ -14,12 +14,11 @@
  ~ limitations under the License.
 -->
 <%
+
     var log = new Log();
     var data = require('../config/config.json'),
 	encoder = require("/assets/encoder.js"),
 	process = require('process'),
-    	localIP = process.getProperty('carbon.local.ip'),
-	httpsPort = process.getProperty('mgt.transport.https.port'),
 	auth = session.get('auth'),
 	roles = session.get('roles'),
         bpsHost = data.server.bpsHost,

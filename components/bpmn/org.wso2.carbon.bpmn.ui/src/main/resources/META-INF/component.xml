@@ -66,7 +66,7 @@
             <icon>../bpmn/images/bpmn-instance.gif</icon>
             <require-permission>/permission/admin/manage/bpmn</require-permission>
         </menu>
-        <menu>
+        <!--<menu>
             <id>bpmn_instance_active_menu</id>
             <i18n-key>bpmn.active</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
@@ -80,7 +80,7 @@
         </menu>
         <menu>
             <id>bpmn_instance_complete_menu</id>
-            <i18n-key>bpmn.complete</i18n-key>
+            <i18n-key>bpmn.completed</i18n-key>
             <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
             <parent-menu>bpmn_instance_menu</parent-menu>
             <link>../bpmn/history_instance_list_view.jsp</link>
@@ -89,7 +89,7 @@
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn-instance.gif</icon>
             <require-permission>/permission/admin/manage/bpmn</require-permission>
-        </menu>
+        </menu>-->
     </menus>
     <FileUploadConfig>
         <Mapping>

@@ -348,11 +348,24 @@
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.apache.httpcomponents</groupId>-->
+                <!--<artifactId>httpcore</artifactId>-->
+                <!--<version>${httpcore.version}</version>-->
+            <!--</dependency>-->
+
             <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>${httpcore.version}</version>
+                <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.wso2.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents.wso2</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.wso2.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore-nio</artifactId>
@@ -581,6 +594,11 @@
                 <artifactId>ode</artifactId>
                 <scope>test</scope>
                 <version>${orbit.ode.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath.wso2</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${jsonpath.wso2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.components.wso2</groupId>
@@ -1511,6 +1529,10 @@
         <httpcore.nio.version>4.2.4</httpcore.nio.version>
         <httpcore.version>4.2.4</httpcore.version>
         <httpclient.version>4.2.5</httpclient.version>
+
+        <httpcore.wso2.version>4.3.3.wso2v1</httpcore.wso2.version>
+        <httpclient.wso2.version>4.3.1.wso2v2</httpclient.wso2.version>
+
         <httpasyncclient.version>4.0-beta3</httpasyncclient.version>
         <ehcache.core.version>2.5.1</ehcache.core.version>
         <!--cxf.version>2.6.2</cxf.version-->
@@ -1550,7 +1572,8 @@
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
         <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>
         <orbit.ode.version>1.3.5-wso2v15-SNAPSHOT</orbit.ode.version>
-	<mybatis.version>3.2.5</mybatis.version>
+	    <mybatis.version>3.2.5</mybatis.version>
+        <jsonpath.wso2.version>1.2.0.wso2v1</jsonpath.wso2.version>
 
 
         <!-- Servlet API -->

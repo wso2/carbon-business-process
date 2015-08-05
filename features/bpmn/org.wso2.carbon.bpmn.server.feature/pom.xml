@@ -176,7 +176,10 @@
                                 <importBundleDef>commons-io:commons-io:2.0.1</importBundleDef>
                                 <importBundleDef>commons-fileupload:commons-fileupload:1.2.2</importBundleDef>
                                 <importBundleDef>org.codehaus.woodstox:stax2-api:3.1.1</importBundleDef>
-	
+
+                                <importBundleDef>com.jayway.jsonpath.wso2:json-path:1.2.0.wso2v1</importBundleDef>
+                                <importBundleDef>net.minidev:json-smart:2.2</importBundleDef>
+
                             </importBundles>
 
 
