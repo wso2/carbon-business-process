@@ -282,6 +282,7 @@
                 <td>
                     <select id="processId">
                         <option value="all">All</option>
+                        <% if (bpmnProcesses != null && bpmnProcesses.length > 0) { %>
                         <% for (BPMNProcess process: bpmnProcesses) {
                             if (pid != null && pid.equals(process.getProcessId())) {
                         %>
@@ -290,6 +291,7 @@
                                 <option value="<%=process.getProcessId()%>"><%=process.getProcessId()%></option>
                         <%     }
                             }
+                        }
                         %>
                     </select>
                 </td>
