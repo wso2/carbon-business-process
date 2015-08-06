@@ -20,14 +20,24 @@
     var log = new Log(),
         data = require('../config/config.json');
 
-    //construct backend URI (asume webapp deployed in BPS)
+    //construct backend URI using config.json
     var BPSUrl = application.get('bpsURI');
     if (BPSUrl == null || BPSUrl === "") {
-        var process = require("process");
-        var localIP = process.getProperty('carbon.local.ip');
-        var httpsPort = process.getProperty('mgt.transport.https.port');
-        BPSUrl = "https://" +localIP +":" +httpsPort;
+        var bpsHost = data.server.bpsHost;
+        var bpsPort = data.server.bpsPort;
+
+        if(bpsHost == null || bpsHost === "" || bpsPort == null || bpsPort === "") {
+            log.warn('BPS host info not configured. Using local host');
+            var process = require("process");
+            var localIP = process.getProperty('carbon.local.ip');
+            var httpsPort = process.getProperty('mgt.transport.https.port');
+            BPSUrl = "https://" +localIP +":" + httpsPort;
+        } else {
+            BPSUrl = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
+        }
+
         application.put('bpsURI', BPSUrl);
+
         if (log.isDebugEnabled()) {
             log.debug("Back-end BPS URI :" + BPSUrl);
         }

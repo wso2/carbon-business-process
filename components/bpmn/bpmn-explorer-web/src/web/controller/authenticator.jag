@@ -14,8 +14,8 @@
  ~ limitations under the License.
 -->
 <%
-	include ("/model/common.jag");
-
+	var log = new Log();
+	include("/model/common.jag");
 	var authentication = require("/assets/authentication.js");
 	var username = request.getParameter("username");
 	var password = request.getParameter("password");
@@ -37,8 +37,8 @@
 			authSuccess = false;
 		} else{
 			try {
-				authSuccess = authentication.authenticate(username,password);
-	            authSuccess = HTTPAuthenticate(username, password, localIP);
+				authSuccess = authentication.authenticate(username,password,httpUrl);
+	            authSuccess = HTTPAuthenticate(username, password, bpsHost);
 	        } catch (e) {
 	            log.error('Error occured while connecting to the back-end BPS AuthenticationAdmin service : ');
 	            log.error(e);
@@ -49,7 +49,7 @@
 			session.put("loginFailed" ,true);
 			response.sendRedirect(requestUrl);
 		} else {
-			var roles = authentication.getRoles(username,password);
+			var roles = authentication.getRoles(username,password,httpUrl);
 			var encoder = require("/assets/encoder.js");
 			var auth = encoder.encode(username+':'+password);
 			session.put(AUTH_SUCCESS, authSuccess);
@@ -60,6 +60,7 @@
 		}
 	
 	}catch(e){
+		log.error(e);
 		session.put("loginFailed" ,true);
 		response.sendRedirect(requestUrl);
 	}
@@ -74,7 +75,7 @@
     function HTTPAuthenticate(username, password, remoteAddr) {
 
         var httpAuth = new XMLHttpRequest();
-        var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
+        var endPoint = httpUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
 
         httpAuth.open('POST', endPoint, false);
         httpAuth.setRequestHeader('SOAPAction', 'urn:login');

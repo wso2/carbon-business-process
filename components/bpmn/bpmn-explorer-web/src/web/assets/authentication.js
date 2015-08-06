@@ -13,23 +13,17 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 */
-function authenticate(username, password){
+function authenticate(username, password, bpsUrl){
    var 	carbon = require('carbon'),
 	process = require('process'),
-	localIP = process.getProperty('carbon.local.ip'),
-   	httpsPort = process.getProperty('mgt.transport.https.port'),
-	httpsUrl = "https://"+localIP+":"+httpsPort,
-	srv = new carbon.server.Server({url: httpsUrl});
+	srv = new carbon.server.Server({url: bpsUrl});
 	return srv.authenticate(username, password);
 }
 
-function getRoles(username, password){
+function getRoles(username, password, bpsUrl){
    var 	carbon = require('carbon'),
 	process = require('process'),
-	localIP = process.getProperty('carbon.local.ip'),
-   	httpsPort = process.getProperty('mgt.transport.https.port'),
-	httpsUrl = "https://"+localIP+":"+httpsPort,
-	srv = new carbon.server.Server({url: httpsUrl}),
+	srv = new carbon.server.Server({url: bpsUrl}),
 	tenantId = carbon.server.tenantId(),
 	userManager = new carbon.user.UserManager(srv, tenantId),
 	user = new carbon.user.User(userManager, username),

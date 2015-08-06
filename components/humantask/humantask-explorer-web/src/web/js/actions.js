@@ -443,6 +443,7 @@ function updateAttachments(id) {
                 var ns1NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803';
                 var ns2NS = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803';
                 var attachmentList = data.firstChild.getElementsByTagNameNS(ns2NS, 'info');
+                var bpsUrl = data.firstChild.getElementsByTagName('bpsUrl')[0].textContent;
 
                 var attachmentViewList = '';
                 for (var i = 0; i < attachmentList.length; i++) {
@@ -463,14 +464,18 @@ function updateAttachments(id) {
                         + '</li>';
                 }
 
-                attachmentViewList = attachmentViewList + '<form id="attachment_upload_form" method="post" name="attachmentUpload" '
-                + 'action="../../fileupload/attachment-mgt" enctype="multipart/form-data" target="_self">'
-                + '<input type="hidden" id="uRedirect" name="redirect" value="../humantask-explorer/task?id='
+                attachmentViewList = attachmentViewList + '<li class="list-group-item"><form id="attachment_upload_form" method="post" name="attachmentUpload" '
+                + 'action="' + bpsUrl + '/fileupload/attachment-mgt" enctype="multipart/form-data" target="_self">'
+                + '<input type="hidden" id="uRedirect" name="redirect" value="'+ httpUrl +'/humantask-explorer/task?id='
                 + id + '#additionalInfoSection">'
                 + '<input type="hidden" id="taskID" name="taskID" value="' + id + '">'
-                + '<table><tbody><tr><td>File</td><td><input type="file" id="fileToUploadID" name="fileToUpload">'
-                + '</td></tr></tbody><tfoot><tr><td><input name="attachmentUploadButton" class="btn btn-info" type="button"'
-                + ' value="upload" onclick="uploadAttachment();"></td></tr></tfoot></table></form>';
+                + '<div class="row">'
+                + '<div class="col-lg-1">File</div>'
+                + '<div class="col-lg-4"><input type="file" class="filestyle" data-classButton="btn btn-primary" id="fileToUploadID" name="fileToUpload" class="btn btn-info"></div>'
+                + '<div><input name="attachmentUploadButton" class="btn btn-danger" style="float:right;" type="button"'
+                + ' value="upload" onclick="uploadAttachment();"></div>'
+                + '</div>'
+                + '</form></li>';
 
                 $('#AttchmentsList').html(attachmentViewList);
             }else if (success === 'timeout') {

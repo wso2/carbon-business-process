@@ -14,7 +14,8 @@
  ~ limitations under the License.
 -->
 <%
-     log = new Log();
+var log = new Log();
+include("/model/common.jag");
 
 if(!session.get("authSuccess")){
 	var queryParameters = request.getQueryString();
@@ -26,9 +27,6 @@ if(!session.get("authSuccess")){
 } else {
 
     var process = require('process'),
-	localIP = process.getProperty('carbon.local.ip'),
-   	httpPort = process.getProperty('mgt.transport.http.port'),
-	httpUrl = "http://"+localIP+":"+httpPort,
 	encoder = require("/assets/encoder.js"),
 	auth = session.get('auth'),
 	contentType = request.getContentType(),	

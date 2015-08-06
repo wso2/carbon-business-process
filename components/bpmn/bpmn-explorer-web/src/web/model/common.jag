@@ -14,29 +14,20 @@
  ~ limitations under the License.
 -->
 <%
-	var log = new Log();
-	var data = require('../config/config.json');
 
-    //construct backend URI (asume webapp deployed in BPS)
-    var BPSUrl = application.get('bpsURI');
-    if (BPSUrl == null || BPSUrl === "") {
-        var process = require("process");
-        var localIP = process.getProperty('carbon.local.ip');
-        var httpsPort = process.getProperty('mgt.transport.https.port');
-        BPSUrl = "https://" +localIP +":" +httpsPort;
-        application.put('bpsURI', BPSUrl);
-        if (log.isDebugEnabled()) {
-            log.debug("Back-end BPS URI :" + BPSUrl);
-        }
-    }
-
+    var log = new Log();
+    var data = require('../config/config.json'),
 	encoder = require("/assets/encoder.js"),
 	process = require('process'),
-    localIP = process.getProperty('carbon.local.ip'),
-	httpsPort = process.getProperty('mgt.transport.https.port'),
 	auth = session.get('auth'),
 	roles = session.get('roles'),
-	httpUrl = "https://"+localIP+":"+httpsPort;
+        bpsHost = data.server.bpsHost,
+    bpsPort = data.server.bpsPort;
+	httpUrl = "https://"+bpsHost+":"+bpsPort;
+
+    if(log.isDebugEnabled()) {
+        log.debug("BPS URL:"+ httpUrl);
+    }
 
 	//Following variable were used to highlight current page which user is currently in.
     //these were set as 'active' at each corresponding task Model
