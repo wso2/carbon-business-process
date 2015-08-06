@@ -132,6 +132,7 @@ public class WorkflowServiceClient {
                                                        String startBefore, String processId, String variable,
                                                        String value, int start, int size) {
         BPMNInstance[] bpmnInstances = null;
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
         Date after = null;
         if (startAfter != null && !startAfter.equals("")) {
@@ -188,7 +189,7 @@ public class WorkflowServiceClient {
     }
 
     public void deleteAllProcessInstances() throws Exception {
-        BPMNInstance[] instances = getProcessInstances();
+        BPMNInstance[] instances = getPaginatedInstanceByFilter(true, null, null, null, null, null, null, 0, 100);
         List<String> instanceIds = new ArrayList<String>();
         for(BPMNInstance instance : instances){
             instanceIds.add(instance.getInstanceId());

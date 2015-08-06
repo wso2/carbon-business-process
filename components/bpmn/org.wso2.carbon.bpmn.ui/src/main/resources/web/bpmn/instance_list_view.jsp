@@ -253,11 +253,13 @@
                                  style="background-image: url('images/bpmn-ins-completed.gif')">
                     <fmt:message key="bpmn.completed"/>
                 </a></td>
+                <% if(finished) { %>
                 <td id="cell">&nbsp;</td>
                 <td id="cell" style="border-right: none">
                     <a href="#" id="cellLink" style="background-image:url(images/delete.gif);" onclick="deleteAllInstance()">
                         <fmt:message key="bpmn.instance.deleteAll"/></a>
                 </td>
+                <% } %>
             </tr>
             </tbody>
         </table>
