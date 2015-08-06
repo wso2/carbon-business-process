@@ -20,6 +20,9 @@
             <transport>https</transport>
         </transports>
         <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService</parameter>
+        <parameter name="AuthorizationAction" locked="true">
+            /permission/admin/manage/bpmn,/permission/admin/manage/bpmn/process
+        </parameter>
     </service>
 
     <service name="BPMNInstanceService" scope="transportsession">
@@ -27,6 +30,9 @@
             <transport>https</transport>
         </transports>
         <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNInstanceService</parameter>
+        <parameter name="AuthorizationAction" locked="true">
+            /permission/admin/manage/bpmn,/permission/admin/manage/bpmn/instance
+        </parameter>
     </service>
 
     <service name="BPMNHumanTasksService" scope="transportsession">
@@ -34,6 +40,9 @@
             <transport>https</transport>
         </transports>
         <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNHumanTasksService</parameter>
+        <parameter name="AuthorizationAction" locked="true">
+            /permission/admin/manage/bpmn,/permission/admin/manage/bpmn/humantask
+        </parameter>
     </service>
 
     <service name="BPMNUploaderService" scope="transportsession">
@@ -41,9 +50,11 @@
             <transport>https</transport>
         </transports>
         <parameter name="ServiceClass">org.wso2.carbon.bpmn.core.mgt.services.BPMNUploader</parameter>
+        <parameter name="AuthorizationAction" locked="true">
+            /permission/admin/manage/bpmn,/permission/admin/manage/bpmn/uploader
+        </parameter>
     </service>
     
     <parameter name="adminService" locked="true">true</parameter>
     <parameter name="hiddenService" locked="true">true</parameter>
-    <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/bpmn</parameter>
 </serviceGroup>

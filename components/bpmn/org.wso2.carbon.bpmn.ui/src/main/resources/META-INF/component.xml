@@ -17,19 +17,6 @@
  -->
 <component xmlns="http://products.wso2.org/carbon">
     <menus>
-        <!--<menu>
-            <id>instance_menu</id>
-            <i18n-key>bpmn.instance</i18n-key>
-            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>manage_menu</parent-menu>
-            <link>#</link>
-            <region>region1</region>
-            <order>30</order>
-            <style-class>manage</style-class>
-            <icon>../bpel/images/bpmn-instance.gif</icon>
-            <skip-authentication>false</skip-authentication>
-            &lt;!&ndash;<require-permission>/permission/admin/manage/bpel</require-permission>&ndash;&gt;
-        </menu>-->
         <menu>
             <id>bpmn_menu</id>
             <i18n-key>bpmn.main</i18n-key>
@@ -40,7 +27,7 @@
             <order>3</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn.gif</icon>
-            <require-permission>/permission/admin/manage/bpmn</require-permission>
+            <require-permission>/permission/admin/manage/bpmn,/permission/admin/manage/bpmn/process</require-permission>
         </menu>
         <menu>
             <id>bpmn_upload_menu</id>
@@ -52,7 +39,7 @@
             <order>3</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn.gif</icon>
-            <require-permission>/permission/admin/manage/bpmn</require-permission>
+            <require-permission>/permission/admin/manage/bpmn,/permission/admin/manage/bpmn/uploader</require-permission>
         </menu>
         <menu>
             <id>bpmn_instance_menu</id>
@@ -64,7 +51,7 @@
             <order>38</order>
             <style-class>manage</style-class>
             <icon>../bpmn/images/bpmn-instance.gif</icon>
-            <require-permission>/permission/admin/manage/bpmn</require-permission>
+            <require-permission>/permission/admin/manage/bpmn,/permission/admin/manage/bpmn/instance</require-permission>
         </menu>
 
         <!-- add new menu item called Data Publisher -->
@@ -81,31 +68,6 @@
             <require-permission>/permission/admin/manage/bpmn</require-permission>
         </menu>
 
-        <!--<menu>
->>>>>>> ee676f7bfd3a57fca12a9bcf8720e126745e0083
-            <id>bpmn_instance_active_menu</id>
-            <i18n-key>bpmn.active</i18n-key>
-            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>bpmn_instance_menu</parent-menu>
-            <link>../bpmn/instance_list_view.jsp</link>
-            <region>region1</region>
-            <order>39</order>
-            <style-class>manage</style-class>
-            <icon>../bpmn/images/bpmn-instance.gif</icon>
-            <require-permission>/permission/admin/manage/bpmn</require-permission>
-        </menu>
-        <menu>
-            <id>bpmn_instance_complete_menu</id>
-            <i18n-key>bpmn.completed</i18n-key>
-            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>bpmn_instance_menu</parent-menu>
-            <link>../bpmn/history_instance_list_view.jsp</link>
-            <region>region1</region>
-            <order>40</order>
-            <style-class>manage</style-class>
-            <icon>../bpmn/images/bpmn-instance.gif</icon>
-            <require-permission>/permission/admin/manage/bpmn</require-permission>
-        </menu>-->
     </menus>
     <FileUploadConfig>
         <Mapping>
