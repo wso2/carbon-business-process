@@ -362,7 +362,7 @@ public class BPMNInstanceService {
             List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
                     .processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
-                String msg = "No process instances with the ID: " + instanceId;
+                String msg = "No process instance diagram for ID: " + instanceId;
                 log.info(msg);
                 return null;
             }
