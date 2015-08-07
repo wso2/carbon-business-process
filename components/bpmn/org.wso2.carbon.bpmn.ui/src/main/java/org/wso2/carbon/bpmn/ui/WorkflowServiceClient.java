@@ -168,12 +168,13 @@ public class WorkflowServiceClient {
     }
 
     public BPMNInstance getProcessInstanceById(String instanceId) throws Exception {
-        for(BPMNInstance instance: instanceServiceStub.getProcessInstances()){
-            if(instance.getInstanceId().equals(instanceId)){
-                return instance;
-            }
+        BPMNInstance[] bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(true, instanceId, null,
+                null, null, null, null, 0, 1);
+        if (bpmnInstances == null || bpmnInstances.length <= 0) {
+            bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(false, instanceId, null, null, null,
+                    null, null, 0, 1);
         }
-        return null;
+        return bpmnInstances[0];
     }
 
     public void deleteProcessInstance(String instanceID) throws Exception {

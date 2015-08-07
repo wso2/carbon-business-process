@@ -359,11 +359,7 @@
                 <%  for(BPMNInstance bpmnInstance: bpmnInstances){ %>
                     <tr>
                         <td>
-                            <% if (!finished) { %>
                             <a href=<%="instance_list_view.jsp?operation=instanceInfo&instanceID=" + bpmnInstance.getInstanceId()%>><%=bpmnInstance.getInstanceId()%></a>
-                            <% } else { %>
-                            <%=bpmnInstance.getInstanceId()%>
-                            <% } %>
                         </td>
                         <td><%=bpmnInstance.getProcessName().toString()%></td>
                         <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + bpmnInstance.getProcessId()%>><%=bpmnInstance.getProcessId()%></a></td>
