@@ -1,0 +1,74 @@
+<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+-->
+<div class="row">
+ 	<div class="panel-inbox">
+	   	<div class="table-body margin-left-double">
+	      <div class="table-title"><%=taskListData.name%></div>
+		  <table class="table">
+		    <tbody>
+		    	<tr class="white-bg">
+		    		<th>Task Definition Key:</th>
+		    		<td colspan = '2'><%=taskListData.definitionKey%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Process Instance Id:</th>
+		    		<td colspan = '2'><%=taskListData.processInstanceId%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Task description:</th>
+		    		<td colspan = '2'><%=taskListData.description%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Assignee:</th>
+		    		<td colspan = '2'><%=taskListData.assignee%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Duration in Milliseconds:</th>
+					<td colspan = '2'><%=taskListData.duration%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Claim TIme in Milliseconds:</th>
+					<td colspan = '2'><%=taskListData.claimTime%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Work Time in Milliseconds:</th>
+					<td colspan = '2'><%=taskListData.workTime%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Due Date:</th>
+					<td colspan = '2'><%=taskListData.dueDate%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Tenant Id:</th>
+		    		<td colspan = '2'><%=taskListData.tenantId%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Execution Id:</th>
+		    		<td colspan = '2'><%=taskListData.executionId%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Priority:</th>
+		    		<td colspan = '2'><%=taskListData.priority%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Deletion Reason:</th>
+		    		<td colspan = '2'><%=taskListData.deleteReason%></td>
+		    	</tr>
+		    </tbody>
+		  </table>
+		</div>
+	</div>
+</div>
