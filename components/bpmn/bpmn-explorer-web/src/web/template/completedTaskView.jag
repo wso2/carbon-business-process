@@ -64,7 +64,7 @@
 		    		<td colspan = '2'><%=taskListData.priority%></td>
 		    	</tr>
 		    	<tr class="white-bg">
-		    		<th>Deletion Reason:</th>
+		    		<th>Status:</th>
 		    		<td colspan = '2'><%=taskListData.deleteReason%></td>
 		    	</tr>
 		    </tbody>
