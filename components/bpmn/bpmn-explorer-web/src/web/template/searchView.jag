@@ -1,0 +1,207 @@
+<%
+/*
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ %>
+
+ <div class="row">   
+    <div class="panel-inbox">
+        <div class=" margin-left-double table-title">Advance Search</div>
+        <div class="table-body margin-left-double">
+            <form role="form" class="" action="search" method="GET">
+
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label for="taskName" class="control-label">Task Name</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="taskName" name="nameLike" placeholder="Enter Task Name">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label for="taskDescription" class="control-label">Task Description</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="taskDescription" name="description" placeholder="Enter Task Description">
+                        </div>
+                    </div>
+                </div>
+
+                <!--Script to disable #taskAssignee if user checked #taskUnassigned-->
+                <script>
+                    function unassignedCheckChange(val) {
+                        if (val == true){
+                            document.getElementById("taskAssignee").disabled = true;
+                        } else {
+                            document.getElementById("taskAssignee").disabled = false;
+                        }
+
+                    }
+                </script>
+
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="taskAssignee" class="control-label">Assignee</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="taskAssignee" name="assignee" placeholder="Enter Task Assignee">
+                            <div class="input-group-addon"><input type="checkbox" id="taskUnassigned" name="unassigned" onchange="unassignedCheckChange(this.checked)"> Unassigned Tasks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="taskCandidateUserGroup" class="control-label">Candidate User / Groups</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="taskCandidateUserGroup" name="candidateOrAssigned" placeholder="Enter Candidate User or Process">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="taskOwner" class="control-label">Owner</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="taskOwner" name="owner" placeholder="Enter Task Owner">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="taskProcessDefName" class="control-label">Process Definition Name</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="taskProcessDefName" name="processDefinitionNameLike" placeholder="Enter Process Definition Name">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label for="taskProcessInstanceID" class="control-label">Process Instance ID</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="taskProcessInstanceID" name="processInstanceId" placeholder="Enter Process Instance ID">
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="col-sm-2 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label for="instanceSuspensionStatus" class="control-label">Process Instance Status</label>
+
+                        <select id="instanceSuspensionStatus" name="active" class="form-control">
+                            <option value="" selected>ACTIVE / SUSPENDED</option>
+                            <option value="true">ACTIVE</option>
+                            <option value="false">SUSPENDED</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-1 col-md-1 col-lg-1">
+                    <div class="form-group">
+                        <label for="taskMinPriority" class="control-label">Min. Priority</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="taskMinPriority" name="minimumPriority" placeholder="Min Priority">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1 col-md-1 col-lg-1">
+                    <div class="form-group">
+                        <label for="taskMaxPriority" class="control-label">Max. Priority</label>
+                        <div class="">
+                            <input type="number" class="form-control" id="taskMaxPriority" name="maximumPriority" placeholder="Max Priority">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input id="startDate" name="startDate" type="date" class="form-control">
+                        <input id="startDateISO" name="createdAfter" type="hidden" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input id="endDate" name="endDate" type="date" class="form-control">
+                        <input id="endDateISO" name="createdBefore" type="hidden" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-2">
+                    <button type="submit" class="btn btn-default btn-info" onclick="processSearch()">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<% if (queryReceived == true && numOfTasks > 0) { %>
+<div class="row">
+    <div class="panel-inbox">
+            
+        <div class=" margin-left-double table-title margin-top-double">Search Results</div>
+        <div class="table-body margin-left-double">
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                    <tr class="table-title-row">
+                        <th>Task ID</th>
+                        <th>Task Name</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i=0; i < numOfTasks; i++) { %>
+                    <tr class="white-bg" style="cursor:pointer;" onclick="window.location='task?id=<%=taskListResponse.data[i].id%>'"
+                        onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                        <td><%=taskListResponse.data[i].id%></td>
+                        <td><%=taskListResponse.data[i].name%></td>
+                        <td><%=taskListResponse.data[i].id%></td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>               
+    	</div>  
+    </div>
+
+    <ul class="pagination">
+        <% if (pagination != 1) { %>
+            <li><a href="search?<%=newQueryString%>&pagination=<%=pagination-1%>">&laquo;</a></li>
+        <% } else { %>
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        <% } %>
+        <% for (var i = 1; i<=paginatePageCount; i++){
+                if (pagination == i) { %>
+                    <li class="active"><a href="search?<%=newQueryString%>&pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+            <%  } else { %>
+                    <li><a href="search?<%=newQueryString%>&pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
+            <%  } %>
+        <% } %>
+        <% if (pagination != paginatePageCount){ %>
+            <li><a href="search?<%=newQueryString%>&pagination=<%=pagination+1%>">&raquo;</a></li>
+        <% } else { %>
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        <% } %>
+    </ul>
+
+</div>
+<% } %>
+
