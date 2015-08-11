@@ -19,6 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.core.util.CryptoException;
+import org.wso2.carbon.core.util.CryptoUtil;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
@@ -89,7 +91,19 @@ public class BPMNDataReceiverConfig {
         if (registry.resourceExists(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH)) {
             Resource resource =
                     registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
-            password = resource.getProperty(AnalyticsPublisherConstants.PASSWORD_PROPERTY);
+            try {
+                String encryptedPassword = resource.
+                        getProperty(AnalyticsPublisherConstants.PASSWORD_PROPERTY);
+                byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil(BPMNAnalyticsHolder.getInstance().
+                        getServerConfigurationService(), BPMNAnalyticsHolder.getInstance().getRegistryService()).
+                        base64DecodeAndDecrypt(encryptedPassword);
+                password = new String(decryptedPassword);
+            } catch (CryptoException e) {
+                password = AnalyticsPublisherConstants.PASSWORD;
+                String errMsg = "CryptoUtils Error while reading the password from the carbon registry.";
+                log.error(errMsg, e);
+            }
+
         } else {
             password = AnalyticsPublisherConstants.PASSWORD;
         }

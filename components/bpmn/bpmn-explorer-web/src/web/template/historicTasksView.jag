@@ -33,7 +33,8 @@
 		    </thead>
 		    <tbody>
 		    	<% for (var i=0; i<task.length; i++) { %>
-		    	<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+		    	<tr class="white-bg" style="cursor:pointer;" onclick="window.location='completedTask?id=<%=task[i].id%>'"
+		    	onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 	    			<td><%=task[i].id%></td>
 					<td><%=task[i].processDefinitionId%></td>
 					<td><%=task[i].startTime%></td>

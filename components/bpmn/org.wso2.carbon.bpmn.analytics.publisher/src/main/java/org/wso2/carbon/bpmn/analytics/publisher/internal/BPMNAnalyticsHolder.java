@@ -17,8 +17,10 @@ package org.wso2.carbon.bpmn.analytics.publisher.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.concurrent.ExecutorService;
 
@@ -31,6 +33,8 @@ public class BPMNAnalyticsHolder {
 	private static BPMNAnalyticsHolder bpmnAnalyticsHolder = null;
 
 	private RegistryService registryService;
+	private RealmService realmService;
+	private ServerConfigurationService serverConfigurationService;
 	private ExecutorService executorService = null;
 
 	private BPMNAnalyticsHolder(){
@@ -47,8 +51,24 @@ public class BPMNAnalyticsHolder {
 		return registryService;
 	}
 
+	public RealmService getRealmService(){
+		return realmService;
+	}
+
+	public ServerConfigurationService getServerConfigurationService(){
+		return serverConfigurationService;
+	}
+
 	public void setRegistryService(RegistryService registryService) {
 		this.registryService = registryService;
+	}
+
+	public void setRealmService(RealmService realmService){
+		this.realmService = realmService;
+	}
+
+	public void setServerConfiguration(ServerConfigurationService serverConfiguration){
+		this.serverConfigurationService = serverConfiguration;
 	}
 
 	public void setExecutorService(ExecutorService executorService){
