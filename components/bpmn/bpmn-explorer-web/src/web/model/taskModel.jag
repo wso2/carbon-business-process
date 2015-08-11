@@ -33,17 +33,7 @@ if (pagination > 0) {
 var attachments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments", null, headers, "json").data;
 var attachmentList = [];
 if (attachments) {
-    // if total data count reaches maxLimit and is not the first page
-    if (attachments.length > MAX_SIZE && start > 9) {
-        attachments.splice(0, start);
-
-    }
-    //first page and total count reaches limit
-    else if (attachments.length > MAX_SIZE && start == 0) {
-        var newLimit = attachments.length - MAX_SIZE;
-        attachments.splice(10, newLimit);
-    }
-    for (var i = 0; i < attachments.length; i++) {
+    for (var i = start; (i < attachments.length) && (i < start + 10); i++) {
         var attachmentId = JSON.parse(attachments[i].id);
         var attachmentName = attachments[i].name;
         var attachmentType = attachments[i].type;
@@ -59,8 +49,8 @@ if (attachments) {
 
     }
 
-    var attachmentCount = attachmentList.length;
-    var paginatePageCount = parseInt((attachmentCount / 10));
+    var attachmentCount = attachments.length;
+    var paginatePageCount = Math.ceil(attachmentCount / 10);
 
 }
 else {
