@@ -160,7 +160,7 @@
                             <td>
                                 <input id="thriftUrl" type="text" style="width:100%" name="thrift_url"
                                        value="<%=(thriftUrl == null) ? "" : thriftUrl%>"
-                                       placeholder="tcp://<ip address>/7611">
+                                       placeholder="tcp://<ip address>:7611">
                             </td>
                             <td>Username</td>
                             <td>
