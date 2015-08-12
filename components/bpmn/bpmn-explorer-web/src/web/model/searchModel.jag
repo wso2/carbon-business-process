@@ -46,7 +46,8 @@ if (request.getQueryString() != null) {
 	}
 
 	//split query string with "&pagination" to remove pagination part from the query string
-	newQueryString = request.getQueryString().split("&pagination")[0];
+	var qs = request.getQueryString();
+	newQueryString = qs.substring( qs.indexOf('&') + 1 );
 
 	//create REST request query string parameters
 	restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize + "&" + newQueryString;
