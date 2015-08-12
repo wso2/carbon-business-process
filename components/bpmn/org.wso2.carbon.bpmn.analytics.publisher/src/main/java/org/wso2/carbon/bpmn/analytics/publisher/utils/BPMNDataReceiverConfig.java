@@ -20,7 +20,6 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
