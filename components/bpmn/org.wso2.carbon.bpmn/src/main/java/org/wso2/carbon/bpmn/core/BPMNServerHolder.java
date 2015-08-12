@@ -68,5 +68,4 @@ public final class BPMNServerHolder {
     public RegistryService getRegistryService() {
         return registryService;
     }
-
 }
