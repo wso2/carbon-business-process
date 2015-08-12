@@ -52,4 +52,14 @@ public class AnalyticsPublisherConstants {
     public static final String THRIFT_URL_PROPERTY = "data_receiver_thrift_url";
     public static final String USER_NAME_PROPERTY = "username";
     public static final String PASSWORD_PROPERTY = "password";
+
+    public static final String SPRING_NAMESPACE = "http://www.springframework.org/schema/beans";
+    public static final String BEAN = "bean";
+    public static final String BEAN_ID = "id";
+    public static final String BEAN_ID_VALUE = "bpmnDataPublisherConfiguration";
+    public static final String ACTIVATE = "activation";
+    public static final String NAME = "name";
+    public static final String TRUE = "true";
+    public static final String VALUE = "value";
+    public static final String PROPERTY = "property";
 }

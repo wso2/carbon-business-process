@@ -35,6 +35,8 @@ import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.api.UserStoreException;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.Executors;
 
@@ -54,31 +56,38 @@ public class AnalyticsPublisher {
      */
     public void initialize() {
         try {
-            RegistryUtils.setTrustStoreSystemProperties();
-            dataPublisher = createDataPublisher();
-            if(dataPublisher != null){
-                processInstanceStreamId = getBPMNProcessInstanceStreamId();
-                taskInstanceStreamId = getBPMNTaskInstanceStreamId();
-                analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
-                int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-                String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-                Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
-                        .getGovernanceSystemRegistry();
-                if (processInstanceStreamId == null && taskInstanceStreamId == null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Stream definitions are null...");
+            if(BPMNDataReceiverConfig.isDASPublisherActivated()) {
+                RegistryUtils.setTrustStoreSystemProperties();
+                dataPublisher = createDataPublisher();
+                if (dataPublisher != null) {
+                    processInstanceStreamId = getBPMNProcessInstanceStreamId();
+                    taskInstanceStreamId = getBPMNTaskInstanceStreamId();
+                    analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
+                    int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+                    String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+                    Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
+                            .getGovernanceSystemRegistry();
+                    if (processInstanceStreamId == null && taskInstanceStreamId == null) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Stream definitions are null...");
+                        }
+                    } else {
+                        setPrivilegeContext(tenantId, tenantDomain, registry);
                     }
                 } else {
-                    setPrivilegeContext(tenantId, tenantDomain, registry);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Data Publisher object is null...");
+                    }
                 }
             }else{
-             if(log.isDebugEnabled()){
-                 log.debug("Data Publisher object is null...");
-             }
+                if(log.isDebugEnabled()){
+                    log.debug("BPMN Data Publisher is not activated...");
+                }
             }
-        } catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
+        } catch (IOException | AgentException | AuthenticationException | TransportException |
                 DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
-                MalformedStreamDefinitionException | UserStoreException | RegistryException e) {
+                MalformedStreamDefinitionException | UserStoreException | RegistryException | XMLStreamException
+                e) {
             String errMsg = "Data publisher objects initialization error.";
             log.error(errMsg, e);
         }
