@@ -36,4 +36,5 @@
     var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTaskModel, refered at navigation.jag]
     var completedTasksNavActive = ''; // Completed task view [updated at historicTasksModel, refered at navigation.jag]
     var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
+    var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
 %>

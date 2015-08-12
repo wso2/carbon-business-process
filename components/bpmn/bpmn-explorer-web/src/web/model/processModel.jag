@@ -28,7 +28,7 @@ if(pagination > 0){
 var headers = {"Authorization":"Basic " + auth};
 
 var processCount = get( httpUrl + "/bpmn/repository/process-definitions" ,null, headers, "json" ).data.total;
-var paginatePageCount = parseInt((processCount / 10));
+var paginatePageCount = Math.ceil(processCount / 10);
 
 
 
@@ -52,7 +52,6 @@ for (var j=0; j<processes.data.length; j++){
 		if (log.isDebugEnabled()) {
 		    log.debug('BPS RESPONSE : ' + BPSResponseXML);
 		}
-        var imageUrl = processes.data[j].diagramResource.replace("resources", "resourcedata").split(":")[2].substring(4);
         var imageData = BPSResponseXML.toString().split(":return")[1];
 		var imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
     }

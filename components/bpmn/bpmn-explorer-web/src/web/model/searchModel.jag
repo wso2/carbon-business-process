@@ -1,0 +1,139 @@
+<%
+/*
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+
+var log = new Log();
+
+var queryReceived = false; //At first request (or without query parameters) no need to load task list
+
+if (request.getQueryString() != null) {
+
+	//If query received need to process query
+	queryReceived = true;
+	var pagination = request.getParameter("pagination");
+
+	var restRequestParameters =  '?';
+	var requestParameters = request.getAllParameters();
+	var newQueryString = ""; //query string used for pagination
+	var pageSize = 10;//page size (currently it's hard coded to 10 untill we make it configurable)
+
+	if (log.isDebugEnabled()){
+		log.debug("Request parameters:" +stringify(requestParameters));
+		log.debug("Request parameters:" +request.getQueryString());
+	}
+
+	//set pagination
+	if (pagination == null || pagination == "") {
+		pagination = 1;
+	} else {
+		pagination = parseInt(pagination);
+	}
+
+	//split query string with "&pagination" to remove pagination part from the query string
+	var qs = request.getQueryString();
+	newQueryString = qs.substring( qs.indexOf('&') + 1 );
+
+	//create REST request query string parameters
+	restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize + "&" + newQueryString;
+
+	//Use following if you need to restrict api calls from the browser
+	/*if (requestParameters.nameLike !== undefined && requestParameters.nameLike.length > 0) {
+		restRequestParameters += "nameLike=%" + requestParameters.nameLike + "%&";
+		newQueryString += "nameLike=%" + requestParameters.nameLike + "%&";
+	}
+	if (requestParameters.description !== undefined && requestParameters.description.length > 0) {
+		restRequestParameters += "description=" + requestParameters.description + "&";
+		newQueryString += "description=" + requestParameters.description + "&";
+	}
+	if (requestParameters.assignee !== undefined && requestParameters.assignee.length > 0) {
+		restRequestParameters += "assignee=" + requestParameters.assignee + "&";
+		newQueryString += "assignee=" + requestParameters.assignee + "&";
+	} else if (requestParameters.unassigned === "on"){
+		restRequestParameters += "assignee=&";
+		newQueryString += "assignee=&";
+	}
+	if (requestParameters.owner !== undefined && requestParameters.owner.length > 0) {
+		restRequestParameters += "owner=" + requestParameters.owner + "&";
+		newQueryString += "owner=" + requestParameters.owner + "&";
+	}
+	if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
+		restRequestParameters += "processInstanceId=" + requestParameters.processInstanceId + "&";
+		newQueryString += "processInstanceId=" + requestParameters.processInstanceId + "&";
+	}
+	if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
+		restRequestParameters += "processDefinitionNameLike=%" + requestParameters.processDefinitionNameLike + "%&";
+		newQueryString += "processDefinitionNameLike=%" + requestParameters.processDefinitionNameLike + "%&";
+	}
+	if (requestParameters.active !== undefined && requestParameters.active.length > 0) {
+		restRequestParameters += "active=" + requestParameters.active + "&";
+		newQueryString += "active=" + requestParameters.active + "&";
+	}
+	if (requestParameters.candidateOrAssigned !== undefined && requestParameters.candidateOrAssigned.length > 0) {
+		restRequestParameters += "candidateOrAssigned=" + requestParameters.candidateOrAssigned + "&";
+		newQueryString += "candidateOrAssigned=" + requestParameters.candidateOrAssigned + "&";
+	}
+	if (requestParameters.minimumPriority !== undefined && requestParameters.minimumPriority.length > 0) {
+		restRequestParameters += "minimumPriority=" + requestParameters.minimumPriority + "&";
+		newQueryString += "minimumPriority=" + requestParameters.minimumPriority + "&";
+	}
+	if (requestParameters.maximumPriority !== undefined && requestParameters.maximumPriority.length > 0) {
+		restRequestParameters += "maximumPriority=" + requestParameters.maximumPriority + "&";
+		newQueryString += "maximumPriority=" + requestParameters.maximumPriority + "&";
+	}
+	if (requestParameters.createdAfter !== undefined && requestParameters.createdAfter.length > 0) {
+		restRequestParameters += "createdAfter=" + requestParameters.createdAfter + "&";
+		newQueryString += "createdAfter=" + requestParameters.createdAfter + "&";
+	}
+	if (requestParameters.createdBefore !== undefined && requestParameters.createdBefore.length > 0) {
+		restRequestParameters += "createdBefore=" + requestParameters.createdBefore + "&";
+		newQueryString += "createdBefore=" + requestParameters.createdBefore + "&";
+	}*/
+
+	//create REST request query string parameters END
+
+	var headers = {"Authorization":"Basic " + auth};
+	var requestUrl = httpUrl + "/bpmn/runtime/tasks" + restRequestParameters;
+
+	if (log.isDebugEnabled()) {
+		log.debug("BPMN Rest API Request: " + requestUrl);
+	}
+
+	//make rest call
+	var taskListResponse = get(requestUrl, null, headers, "json").data;
+	var numOfTasks = 0;//used to display tasks in searchView 
+	var paginatePageCount = 0; //used to display tasks in pagination 
+
+	if (log.isDebugEnabled()) {
+		log.debug("BPMN Rest API Response: " + stringify(taskListResponse));
+	}
+
+	if (taskListResponse.data !== undefined) {
+		numOfTasks = taskListResponse.data.length;
+		//calculate pagination page count
+		paginatePageCount = parseInt(taskListResponse.total / 10);
+		if ((taskListResponse.total % pageSize) > 0) {
+			paginatePageCount += 1;
+		}
+	}
+}
+
+//Set current active veiw as search view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+searchNavActive = 'class="active"';
+ %>

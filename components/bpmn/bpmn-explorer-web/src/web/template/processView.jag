@@ -151,25 +151,15 @@
 				<%
 			}
 		%>
-		<ul class="pagination">
-		<% if (pagination != 1) { %>
-			<li><a href="process?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&laquo;</a></li>			
-		<% } %>
-		<% for (var i = 1; i<=paginatePageCount+1; i++) {
-				if (pagination == i) { %>
-					<li class="active"><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% } else { %>
-					<li><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% } %>
-		<% } %>
-		<% if (pagination != paginatePageCount+1) { %>
-			<li><a href="process?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&raquo;</a></li>			
-		<% } %>
-		</ul>
+		<%
+			var numberOfPages = paginatePageCount;
+			var currentPage = parseInt(pagination);
+			var redirectPage = "process";
+			var queryParams = "";
+
+		%>
+		<% include("/template/partials/pagination.jag"); %>
+		
 		<div class="modal fade" id="diagram" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog model-center">
             <div class="modal-content">
