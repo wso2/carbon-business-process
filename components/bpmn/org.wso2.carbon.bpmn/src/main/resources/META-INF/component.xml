@@ -23,14 +23,26 @@
             <class>org.wso2.carbon.bpmn.core.deployment.BPMNDeployer</class>
         </deployer>
     </deployers>
-    <!--<ManagementPermissions>-->
-        <!--<ManagementPermission>-->
-            <!--<DisplayName>BPEL</DisplayName>-->
-            <!--<ResourceId>/permission/admin/manage/bpel</ResourceId>-->
-        <!--</ManagementPermission>-->
-        <!--<ManagementPermission>-->
-            <!--<DisplayName>Add BPEL</DisplayName>-->
-            <!--<ResourceId>/permission/admin/manage/bpel/add</ResourceId>-->
-        <!--</ManagementPermission>-->
-    <!--</ManagementPermissions>-->
+    <ManagementPermissions>
+        <ManagementPermission>
+            <DisplayName>BPMN</DisplayName>
+            <ResourceId>/permission/admin/manage/bpmn</ResourceId>
+        </ManagementPermission>
+        <ManagementPermission>
+            <DisplayName>Manage BPMN Processes</DisplayName>
+            <ResourceId>/permission/admin/manage/bpmn/process</ResourceId>
+        </ManagementPermission>
+        <ManagementPermission>
+            <DisplayName>Manage BPMN Process Instances</DisplayName>
+            <ResourceId>/permission/admin/manage/bpmn/instance</ResourceId>
+        </ManagementPermission>
+        <ManagementPermission>
+            <DisplayName>Manage BPMN Packages</DisplayName>
+            <ResourceId>/permission/admin/manage/bpmn/uploader</ResourceId>
+        </ManagementPermission>
+        <ManagementPermission>
+            <DisplayName>Manage BPMN Humantasks</DisplayName>
+            <ResourceId>/permission/admin/manage/bpmn/humantask</ResourceId>
+        </ManagementPermission>
+    </ManagementPermissions>
 </component>

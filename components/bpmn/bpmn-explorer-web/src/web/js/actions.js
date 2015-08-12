@@ -105,6 +105,8 @@ function completeTask(data, id) {
 }
 
 function reassign(username, id) {
+    
+    username = username.trim();
     if (username.length > 0) {
         var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
         var body = {
@@ -221,4 +223,91 @@ function startProcessWithData(data, id) {
         }
 
     });
+}
+
+
+
+
+/**
+ * Function to process search inputs before submission
+ */
+function processSearch(){
+    //disable startDate input to avoid adding it to the query parameters
+    document.getElementById("startDate").disabled = true;
+    document.getElementById("endDate").disabled = true;
+
+    //disable form inputs if user havn't entered values
+    if (document.getElementById("taskName").value.length == 0) {
+        document.getElementById("taskName").disabled = true;
+    } else {
+        var tempTaskName = document.getElementById("taskName").value;
+        document.getElementById("taskName").value = "%" + tempTaskName + "%";
+    }
+    if (document.getElementById("taskDescription").value.length == 0) {
+        document.getElementById("taskDescription").disabled = true;
+    }
+    if (document.getElementById("taskCandidateUserGroup").value.length == 0) {
+        document.getElementById("taskCandidateUserGroup").disabled = true;
+    }
+    if (document.getElementById("taskAssignee").value.length == 0) {
+        if (document.getElementById("taskUnassigned").checked == true) {
+            document.getElementById("taskAssignee").disabled = false;
+            document.getElementById("taskUnassigned").disabled = true;
+        } else {
+            document.getElementById("taskAssignee").disabled = true;
+        }      
+    }
+    if (document.getElementById("taskOwner").value.length == 0) {
+        document.getElementById("taskOwner").disabled = true;
+    }
+    if (document.getElementById("taskProcessDefName").value.length == 0) {
+        document.getElementById("taskProcessDefName").disabled = true;
+    } else {
+        var tempTaskDefName = document.getElementById("taskProcessDefName").value;
+        document.getElementById("taskProcessDefName").value = "%" + tempTaskDefName + "%";
+    }
+    if (document.getElementById("taskProcessInstanceID").value.length == 0) {
+        document.getElementById("taskProcessInstanceID").disabled = true;
+    }
+    if (document.getElementById("instanceSuspensionStatus").value.length == 0) {
+        document.getElementById("instanceSuspensionStatus").disabled = true;
+    }
+    if (document.getElementById("taskMinPriority").value.length == 0) {
+        document.getElementById("taskMinPriority").disabled = true;
+    }
+    if (document.getElementById("taskMaxPriority").value.length == 0) {
+        document.getElementById("taskMaxPriority").disabled = true;
+    }
+    if (document.getElementById("taskProcessDefName").value.length == 0) {
+        document.getElementById("taskProcessDefName").disabled = true;
+    }
+
+    //add start date in ISO Date format
+    var SDate = document.getElementById("startDate");
+    if (SDate.value.length > 0) {
+        var startDateTemp = new Date(SDate.value);
+        var startDateISOTemp = document.getElementById("startDateISO");
+        startDateISOTemp.value = startDateTemp.toISOString();                       
+    } else {
+        //disable startDateISO since it's not entered by the user
+        document.getElementById("startDateISO").disabled = true;
+    }
+
+    //add end date in ISO Date format
+    var EDate = document.getElementById("endDate");
+    if (EDate.value.length > 0) {
+        var endDateTemp = new Date(EDate.value);
+        endDateTemp.setHours(23);
+        endDateTemp.setMinutes(59);
+        endDateTemp.setSeconds(59);
+        console.log(endDateTemp);
+        console.log(endDateTemp.toISOString());
+        var endDateISOTemp = document.getElementById("endDateISO");
+        endDateISOTemp.value = endDateTemp.toISOString();                       
+    } else {
+        //disable startDateISO since it's not entered by the user
+        document.getElementById("endDateISO").disabled = true;
+    }
+
+
 }

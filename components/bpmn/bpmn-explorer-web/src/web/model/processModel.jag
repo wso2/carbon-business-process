@@ -14,6 +14,9 @@
  ~ limitations under the License.
 -->
 <%
+var wsRequest = require ('/assets/wsRequest.js');
+wsRequest.initHTServerInfo(httpUrl, session.get('BPSSessionCookie'));
+
 var pagination = request.getParameter("pagination");
 if (pagination == null || pagination == ""){
 	pagination = 1;
@@ -25,7 +28,7 @@ if(pagination > 0){
 var headers = {"Authorization":"Basic " + auth};
 
 var processCount = get( httpUrl + "/bpmn/repository/process-definitions" ,null, headers, "json" ).data.total;
-var paginatePageCount = parseInt((processCount / 10));
+var paginatePageCount = Math.ceil(processCount / 10);
 
 
 
@@ -38,12 +41,28 @@ for (var j=0; j<processes.data.length; j++){
 	if(processes.data[j].diagramResource == null){
         imageUrl = "not supported";
     }else{
-        var imageUrl = processes.data[j].diagramResource.replace("resources", "resourcedata").split(":")[2].substring(4);
+    	var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(processes.data[j].id));
+    	if(BPSResponseXML == null || BPSResponseXML == ""){
+		   if (log.isDebugEnabled()) {
+		       log.debug('Session timed out for request' + wsRequest);
+		   }
+		   session.put('authSuccess', false);
+		   response.sendRedirect('login');
+		}
+		if (log.isDebugEnabled()) {
+		    log.debug('BPS RESPONSE : ' + BPSResponseXML);
+		}
+        var imageData = BPSResponseXML.toString().split(":return")[1];
+		var imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
     }
+    var depId = processes.data[j].deploymentId;
+    var deployment = get( httpUrl + "/bpmn/repository/deployments/" + depId ,null, headers, "json" ).data;
+    var packageName = deployment.name + "-" + depId;
 
 	list.push({
 		processName: processes.data[j].name,
 		processId: processes.data[j].id,
+		packageName: packageName,
 		version: processes.data[j].version,
 		imageUrl: imageUrl
 	});

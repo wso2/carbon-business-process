@@ -40,7 +40,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -110,12 +113,50 @@ public class WorkflowServiceClient {
         return  deploymentServiceStub.getProcessById(processId);
     }
 
+    public BPMNProcess[] getProcessList() {
+        try {
+            return deploymentServiceStub.getDeployedProcesses();
+        } catch (RemoteException e) {
+            log.error("Error getting process list, RemoteException", e);
+        } catch (BPMNDeploymentServiceBPSFaultException e) {
+            log.error("Error getting process list, BPMNDeploymentServiceBPSFaultException", e);
+        }
+        return null;
+    }
+
     public BPMNInstance[] getProcessInstances() throws Exception {
         return instanceServiceStub.getProcessInstances();
     }
 
-    public BPMNInstance[] getPaginatedInstances(int start, int size) throws Exception {
-        return instanceServiceStub.getPaginatedInstances(start, size);
+    public BPMNInstance[] getPaginatedInstanceByFilter(boolean finished, String instanceId,  String startAfter,
+                                                       String startBefore, String processId, String variable,
+                                                       String value, int start, int size) {
+        BPMNInstance[] bpmnInstances = null;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+        Date after = null;
+        if (startAfter != null && !startAfter.equals("")) {
+            try {
+                after = formatter.parse(startAfter);
+            } catch (ParseException e) {
+                log.error("Error converting date filter string, ParseException", e);
+            }
+        }
+        Date before = null;
+        if (startBefore != null && !startBefore.equals("")) {
+            try {
+                before = formatter.parse(startBefore);
+            } catch (ParseException e) {
+                log.error("Error converting date filter string, ParseException", e);
+            }
+        }
+        try {
+            bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(finished, instanceId, after, before, processId,
+                    variable, value, start, size);
+        } catch (RemoteException e) {
+            log.error("Error getting process list by filter, RemoteException", e);
+        }
+        return bpmnInstances;
     }
 
     public BPMNInstance[] getPaginatedHistoryInstances(int start, int size) throws Exception {
@@ -127,12 +168,13 @@ public class WorkflowServiceClient {
     }
 
     public BPMNInstance getProcessInstanceById(String instanceId) throws Exception {
-        for(BPMNInstance instance: instanceServiceStub.getProcessInstances()){
-            if(instance.getInstanceId().equals(instanceId)){
-                return instance;
-            }
+        BPMNInstance[] bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(true, instanceId, null,
+                null, null, null, null, 0, 1);
+        if (bpmnInstances == null || bpmnInstances.length <= 0) {
+            bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(false, instanceId, null, null, null,
+                    null, null, 0, 1);
         }
-        return null;
+        return bpmnInstances[0];
     }
 
     public void deleteProcessInstance(String instanceID) throws Exception {
@@ -148,7 +190,7 @@ public class WorkflowServiceClient {
     }
 
     public void deleteAllProcessInstances() throws Exception {
-        BPMNInstance[] instances = getProcessInstances();
+        BPMNInstance[] instances = getPaginatedInstanceByFilter(true, null, null, null, null, null, null, 0, 100);
         List<String> instanceIds = new ArrayList<String>();
         for(BPMNInstance instance : instances){
             instanceIds.add(instance.getInstanceId());

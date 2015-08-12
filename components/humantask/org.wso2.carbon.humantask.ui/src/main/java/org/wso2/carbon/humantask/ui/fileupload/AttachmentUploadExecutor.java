@@ -88,7 +88,7 @@ public class AttachmentUploadExecutor extends AbstractFileUploadExecutor {
                 } else if (redirect != null) {
                     //redirection exists, not to carbon mgt console
                     out.write(msg);
-                    response.sendRedirect(getContextRoot(request) + "/" + webContext + "/" + redirect);
+                    response.sendRedirect(redirect);
                 } else {
                     CarbonUIMessage.sendCarbonUIMessage(msg, CarbonUIMessage.INFO, request);
                 }

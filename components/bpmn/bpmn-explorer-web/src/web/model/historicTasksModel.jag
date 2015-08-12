@@ -23,8 +23,9 @@ if(pagination > 0){
 	start = (pagination - 1)*10 ;
 }
 var headers = {"Authorization":"Basic " + auth};
+var user = session.get("user");
 var task = [];
-var tasks = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" + "&active=true&sort=endTime&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+var tasks = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10" ,null, headers, "json" ).data;
 for(var i=0; i < tasks.data.length; i++){
 	task.push({
 		id:tasks.data[i].id,
@@ -33,8 +34,8 @@ for(var i=0; i < tasks.data.length; i++){
 		endTime:tasks.data[i].endTime
 	});
 }
-var taskCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
-var paginatePageCount = parseInt((taskCount / 10));
+var taskCount = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&finished=true" ,null, headers, "json" ).data.total;
+var paginatePageCount = Math.ceil(taskCount / 10);
 
 //Set current active veiw as completed task view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar

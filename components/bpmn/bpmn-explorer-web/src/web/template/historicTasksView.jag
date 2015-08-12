@@ -33,7 +33,8 @@
 		    </thead>
 		    <tbody>
 		    	<% for (var i=0; i<task.length; i++) { %>
-		    	<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+		    	<tr class="white-bg" style="cursor:pointer;" onclick="window.location='completedTask?id=<%=task[i].id%>'"
+		    	onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 	    			<td><%=task[i].id%></td>
 					<td><%=task[i].processDefinitionId%></td>
 					<td><%=task[i].startTime%></td>
@@ -43,24 +44,13 @@
 		    </tbody>
 		  </table>
 		</div>
-		<ul class="pagination">
-			<% if (pagination != 1) { %>
-				<li><a href="historicTasks?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
-			<% } else { %>
-				<li class="disabled"><a href="#">&laquo;</a></li>			
-			<% } %>
-			<% for (var i = 1; i<=paginatePageCount+1; i++) {
-					if (pagination == i) { %>
-						<li class="active"><a href="historicTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-				<% } else { %>
-						<li><a href="historicTasks?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-				<% } %>
-			<% } %>
-			<% if (pagination != paginatePageCount+1) { %>
-				<li><a href="historicTasks?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
-			<% } else { %>
-				<li class="disabled"><a href="#">&raquo;</a></li>			
-			<% } %>
-		</ul>
+		<%
+			var numberOfPages = paginatePageCount;
+			var currentPage = parseInt(pagination);
+			var redirectPage = "historicTasks";
+			var queryParams = "";
+
+		%>
+		<% include("/template/partials/pagination.jag"); %>
 	</div>
 </div>

@@ -46,6 +46,7 @@ import java.util.List;
 public class BPMNDeploymentService {
 
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
+    private int deploymentCount = -1;
 
     public BPMNProcess[] getDeployedProcesses() throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
@@ -108,7 +109,7 @@ public class BPMNDeploymentService {
         return bpmnProcesses.toArray(new BPMNProcess[bpmnProcesses.size()]);
     }
 
-    public BPMNDeployment[] getDeployments(){
+    public BPMNDeployment[] getDeployments() {
         List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
@@ -136,6 +137,7 @@ public class BPMNDeploymentService {
                 query = query.processDefinitionKeyLike("%" + filter + "%");
             }
         }
+        deploymentCount = (int) query.count();
         List<Deployment> deployments = query.listPage(start, size);
         for(Deployment deployment: deployments){
             BPMNDeployment bpmnDeployment = new BPMNDeployment();
@@ -148,9 +150,12 @@ public class BPMNDeploymentService {
     }
 
     public int getDeploymentCount() throws BPSFault {
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
-        return  (int) query.deploymentTenantId(tenantId.toString()).count();
+        if (deploymentCount == -1) {
+            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService().createDeploymentQuery();
+            deploymentCount = (int) query.deploymentTenantId(tenantId.toString()).count();
+        }
+        return deploymentCount;
     }
 
     public String getProcessDiagram(String processId) throws BPSFault {

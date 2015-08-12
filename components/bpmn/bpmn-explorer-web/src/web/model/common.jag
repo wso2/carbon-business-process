@@ -14,14 +14,20 @@
  ~ limitations under the License.
 -->
 <%
-var data = require('../config/config.json'),
+
+    var log = new Log();
+    var data = require('../config/config.json'),
 	encoder = require("/assets/encoder.js"),
 	process = require('process'),
-    	localIP = process.getProperty('carbon.local.ip'),
-	httpsPort = process.getProperty('mgt.transport.https.port'),
 	auth = session.get('auth'),
 	roles = session.get('roles'),
-	httpUrl = "https://"+localIP+":"+httpsPort;
+        bpsHost = data.server.bpsHost,
+    bpsPort = data.server.bpsPort;
+	httpUrl = "https://"+bpsHost+":"+bpsPort;
+
+    if(log.isDebugEnabled()) {
+        log.debug("BPS URL:"+ httpUrl);
+    }
 
 	//Following variable were used to highlight current page which user is currently in.
     //these were set as 'active' at each corresponding task Model
@@ -30,4 +36,5 @@ var data = require('../config/config.json'),
     var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTaskModel, refered at navigation.jag]
     var completedTasksNavActive = ''; // Completed task view [updated at historicTasksModel, refered at navigation.jag]
     var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
+    var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
 %>

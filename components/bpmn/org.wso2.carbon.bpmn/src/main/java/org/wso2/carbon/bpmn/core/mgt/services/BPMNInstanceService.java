@@ -24,7 +24,9 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,23 +66,170 @@ public class BPMNInstanceService {
         RuntimeService runtimeService = engine.getRuntimeService();
         List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).list();
         BPMNInstance[] bpmnInstances = getTenantBPMNInstances(instances);
-        processInstanceCount = bpmnInstances.length;
         return bpmnInstances;
     }
 
-    public BPMNInstance[] getPaginatedInstances(int start, int size) throws BPSFault {
-        BPMNInstance[] processInstances = getProcessInstances();
+    public BPMNInstance[] getPaginatedInstanceByFilter(boolean finished, String instanceId,  Date startAfter,
+                                                       Date startBefore, String processId, String variable,
+                                                       String value, int start, int size) {
         List<BPMNInstance> bpmnInstanceList = new ArrayList<>();
-        for (int i = start; i < (start + size) && i < processInstances.length; i++) {
-            bpmnInstanceList.add(processInstances[i]);
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString());
+        HistoricProcessInstanceQuery historicQuery = BPMNServerHolder.getInstance().getEngine().getHistoryService()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).includeProcessVariables();
+        query = query.includeProcessVariables();
+        if (finished) {
+            historicQuery = historicQuery.finished();
+            if (instanceId != null && !instanceId.equals("")) {
+                return getInstanceById(instanceId , finished);
+            }
+            if (processId != null && !processId.equals("")) {
+                historicQuery = historicQuery.processDefinitionId(processId);
+            }
+            if (variable != null && !variable.equals("") && value != null && !value.equals("")) {
+                historicQuery = historicQuery.variableValueLike(variable, "%" + value + "%");
+            }
+            if (startAfter != null) {
+                historicQuery = historicQuery.startedAfter(startAfter);
+            }
+            if (startBefore != null) {
+                historicQuery = historicQuery.startedBefore(startBefore);
+            }
+            processInstanceCount = (int) historicQuery.count();
+            List<HistoricProcessInstance> instances = historicQuery.listPage(start, size);
+            for (HistoricProcessInstance instance: instances) {
+                BPMNInstance bpmnInstance = new BPMNInstance();
+                bpmnInstance.setInstanceId(instance.getId());
+                bpmnInstance.setProcessId(instance.getProcessDefinitionId());
+                List<ProcessDefinition> processes = BPMNServerHolder.getInstance().getEngine().getRepositoryService()
+                        .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
+                        .processDefinitionId(instance.getProcessDefinitionId()).list();
+                String processName = instance.getProcessDefinitionId();
+                if (!processes.isEmpty()) {
+                    processName = processes.get(0).getName();
+                }
+                bpmnInstance.setProcessName(processName);
+                bpmnInstance.setStartTime(instance.getStartTime());
+                bpmnInstance.setEndTime(instance.getEndTime());
+                bpmnInstance.setVariables(formatVariables(instance.getProcessVariables()));
+                bpmnInstanceList.add(bpmnInstance);
+            }
+        } else {
+            historicQuery = historicQuery.unfinished();
+            if (instanceId != null && !instanceId.equals("")) {
+                return getInstanceById(instanceId, finished);
+            }
+            if (processId != null && !processId.equals("")) {
+                historicQuery = historicQuery.processDefinitionId(processId);
+            }
+            if (variable != null && !variable.equals("") && value != null && !value.equals("")) {
+                historicQuery = historicQuery.variableValueLike(variable, "%" + value + "%");
+            }
+            if (startAfter != null) {
+                historicQuery = historicQuery.startedAfter(startAfter);
+            }
+            if (startBefore != null) {
+                historicQuery = historicQuery.startedBefore(startBefore);
+            }
+            processInstanceCount = (int) historicQuery.count();
+            List<HistoricProcessInstance> instances = historicQuery.listPage(start, size);
+            for (HistoricProcessInstance instance: instances) {
+                BPMNInstance bpmnInstance = new BPMNInstance();
+                bpmnInstance.setInstanceId(instance.getId());
+                bpmnInstance.setProcessId(instance.getProcessDefinitionId());
+                List<ProcessDefinition> processes = BPMNServerHolder.getInstance().getEngine().getRepositoryService()
+                        .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
+                        .processDefinitionId(instance.getProcessDefinitionId()).list();
+                String processName = instance.getProcessDefinitionId();
+                if (!processes.isEmpty()) {
+                    processName = processes.get(0).getName();
+                }
+                bpmnInstance.setProcessName(processName);
+                if (!query.processInstanceId(instance.getId()).list().isEmpty()) {
+                    bpmnInstance.setSuspended(query.processInstanceId(instance.getId()).list().get(0).isSuspended());
+                }
+                bpmnInstance.setStartTime(instance.getStartTime());
+                bpmnInstance.setEndTime(instance.getEndTime());
+                bpmnInstance.setVariables(formatVariables(instance.getProcessVariables()));
+                bpmnInstanceList.add(bpmnInstance);
+            }
         }
-        processInstances = bpmnInstanceList.toArray(new BPMNInstance[bpmnInstanceList.size()]);
-        return processInstances;
+        return bpmnInstanceList.toArray(new BPMNInstance[bpmnInstanceList.size()]);
+    }
+
+    private BPMNInstance[] getInstanceById(String instanceId, boolean finished) {
+        List<BPMNInstance> bpmnInstanceList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString());
+        HistoricProcessInstanceQuery historicQuery = BPMNServerHolder.getInstance().getEngine().getHistoryService()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).includeProcessVariables();
+        query = query.includeProcessVariables();
+        if (finished) {
+            historicQuery.finished();
+        } else {
+            historicQuery.unfinished();
+        }
+        historicQuery = historicQuery.processInstanceId(instanceId);
+        HistoricProcessInstance instance = historicQuery.singleResult();
+        if (instance != null) {
+            processInstanceCount = 1;
+            BPMNInstance bpmnInstance = new BPMNInstance();
+            bpmnInstance.setInstanceId(instance.getId());
+            bpmnInstance.setProcessId(instance.getProcessDefinitionId());
+            List<ProcessDefinition> processes = BPMNServerHolder.getInstance().getEngine().getRepositoryService()
+                    .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
+                    .processDefinitionId(instance.getProcessDefinitionId()).list();
+            String processName = instance.getProcessDefinitionId();
+            if (!processes.isEmpty()) {
+                processName = processes.get(0).getName();
+            }
+            bpmnInstance.setProcessName(processName);
+            if (!query.processInstanceId(instance.getId()).list().isEmpty()) {
+                bpmnInstance.setSuspended(query.processInstanceId(instance.getId()).list().get(0).isSuspended());
+            }
+            bpmnInstance.setStartTime(instance.getStartTime());
+            bpmnInstance.setEndTime(instance.getEndTime());
+            bpmnInstance.setVariables(formatVariables(instance.getProcessVariables()));
+            bpmnInstanceList.add(bpmnInstance);
+        } else {
+            processInstanceCount = 0;
+        }
+        return bpmnInstanceList.toArray(new BPMNInstance[bpmnInstanceList.size()]);
+    }
+
+    public BPMNInstance[] getPaginatedInstances(int start, int size) throws BPSFault {
+        List<BPMNInstance> bpmnInstanceList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString());
+        HistoricProcessInstanceQuery historicQuery = BPMNServerHolder.getInstance().getEngine().getHistoryService()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString());
+        processInstanceCount = (int) query.count();
+        List<ProcessInstance> instances = query.includeProcessVariables().listPage(start, size);
+        for (ProcessInstance instance: instances) {
+            BPMNInstance bpmnInstance = new BPMNInstance();
+            bpmnInstance.setInstanceId(instance.getId());
+            bpmnInstance.setProcessId(instance.getProcessDefinitionId());
+            bpmnInstance.setSuspended(instance.isSuspended());
+            bpmnInstance.setStartTime(historicQuery.processInstanceId(instance.getId()).singleResult().getStartTime());
+            bpmnInstance.setVariables(formatVariables(instance.getProcessVariables()));
+            bpmnInstanceList.add(bpmnInstance);
+        }
+        return bpmnInstanceList.toArray(new BPMNInstance[bpmnInstanceList.size()]);
     }
 
     public int getInstanceCount() throws BPSFault {
-        if(processInstanceCount == -1){
-            getProcessInstances();
+        if(processInstanceCount == -1) {
+            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+            RuntimeService runtimeService = engine.getRuntimeService();
+            ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString());
+            processInstanceCount = (int) query.includeProcessVariables().count();
         }
         return processInstanceCount;
     }
@@ -90,7 +240,8 @@ public class BPMNInstanceService {
         List<BPMNInstance> bpmnInstances = new ArrayList<>();
         HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
         HistoricProcessInstanceQuery query =
-                historyService.createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).finished();
+                historyService.createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString())
+                        .finished().includeProcessVariables();
         historyInstanceCount = (int) query.count();
         List<HistoricProcessInstance> historicProcessInstances = query.listPage(start, size);
         for(HistoricProcessInstance instance: historicProcessInstances){
@@ -170,14 +321,22 @@ public class BPMNInstanceService {
 
     public void deleteProcessInstance(String instanceId) throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-            RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
-            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
-            if (processInstances.isEmpty()) {
+        RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
+                .processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
+        if (processInstances.isEmpty()) {
+            HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
+            List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
+                    .processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
+            if (historicProcessInstances.isEmpty()) {
                 String msg = "No process instances with the ID: " + instanceId;
                 log.error(msg);
                 throw new BPSFault(msg);
             }
-            runtimeService.deleteProcessInstance(instanceId, "Deleted by user.");
+            historyService.deleteHistoricProcessInstance(instanceId);
+            return;
+        }
+        runtimeService.deleteProcessInstance(instanceId, "Deleted by user: " + tenantId);
     }
 
     public void activateProcessInstance(String instanceId) throws BPSFault {
@@ -203,7 +362,7 @@ public class BPMNInstanceService {
             List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
                     .processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
             if (processInstances.isEmpty()) {
-                String msg = "No process instances with the ID: " + instanceId;
+                String msg = "No process instance diagram for ID: " + instanceId;
                 log.info(msg);
                 return null;
             }

@@ -28,6 +28,7 @@
 		    	<tr class="table-title-row">
 		    		<th>Process Name</th>
 		    		<th>Process ID</th>
+		    		<th>Package Name</th>
 		    		<th>Version</th>
 		    		<th>Action</th>
 		    	</tr>
@@ -48,12 +49,12 @@
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
 	                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 	                            <% } else { %>
-	                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-		    							'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+	                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
 			    					<%=list[i-count].processId%>
 			    				</a>
 			    			</td>
+			    			<td><%=list[i-count].packageName%></td>
 							<td><%=list[i-count].version%></td>
 							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 
@@ -67,12 +68,12 @@
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
 	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 	                                <% } else { %>
-	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-				    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
+	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 				    				<% } %>
 				    					<%=list[i-j].processId%>
 				    				</a>
 				    			</td>
+				    			<td><%=list[i-j].packageName%></td>
 								<td><%=list[i-j].version%></td>
 								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
@@ -89,12 +90,12 @@
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
 			    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 			    				<% } else { %>
-			    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-			    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-count].imageUrl%>');">
+			    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
 			    					<%=list[i-count].processId%>
 			    				</a>
 			    			</td>
+			    			<td><%=list[i-count].packageName%></td>
 							<td><%=list[i-count].version%></td>
 							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 						</tr>
@@ -107,12 +108,12 @@
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
 	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
 	                                <% } else { %>
-	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src',
-				    						'http://<%=localIP + ':' + process.getProperty('mgt.transport.http.port')%><%=list[i-j].imageUrl%>');">
+	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 									<% } %>
 				    					<%=list[i-j].processId%>
 				    				</a>
 				    			</td>
+				    			<td><%=list[i-j].packageName%></td>
 								<td><%=list[i-j].version%></td>
 								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
@@ -150,25 +151,15 @@
 				<%
 			}
 		%>
-		<ul class="pagination">
-		<% if (pagination != 1) { %>
-			<li><a href="process?pagination=<%=parseInt(pagination)-1%>">&laquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&laquo;</a></li>			
-		<% } %>
-		<% for (var i = 1; i<=paginatePageCount+1; i++) {
-				if (pagination == i) { %>
-					<li class="active"><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% } else { %>
-					<li><a href="process?pagination=<%=i%>"><%=(""+i).split(".")[0]%></a></li>
-			<% } %>
-		<% } %>
-		<% if (pagination != paginatePageCount+1) { %>
-			<li><a href="process?pagination=<%=parseInt(pagination)+1%>">&raquo;</a></li>
-		<% } else { %>
-			<li class="disabled"><a href="#">&raquo;</a></li>			
-		<% } %>
-		</ul>
+		<%
+			var numberOfPages = paginatePageCount;
+			var currentPage = parseInt(pagination);
+			var redirectPage = "process";
+			var queryParams = "";
+
+		%>
+		<% include("/template/partials/pagination.jag"); %>
+		
 		<div class="modal fade" id="diagram" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog model-center">
             <div class="modal-content">
