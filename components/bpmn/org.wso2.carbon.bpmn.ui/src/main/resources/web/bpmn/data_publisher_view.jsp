@@ -69,14 +69,12 @@
                         String passwordFromReg = resource.getProperty("password");
                         byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(passwordFromReg);
                         String decryptedPlainPassword = new String(decryptedPasswordBinary);
-
                         if (thriftUrl.equals(resource.getProperty("data_receiver_thrift_url")) &&
                                 username.equals(resource.getProperty("username")) &&
                                 password.equals(decryptedPlainPassword)) {
                         %>
                         <script type="text/javascript">CARBON.showInfoDialog("Thrift Configuration is already exists.");</script>
                         <%
-
                         } else {
                         %>
                         <script type="text/javascript">CARBON.showInfoDialog("Thrift Configuration is saved successfully.");</script>

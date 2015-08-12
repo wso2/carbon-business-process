@@ -286,10 +286,11 @@ public class AnalyticsPublisher {
             throws MalformedURLException, AgentException, AuthenticationException,
             TransportException, UserStoreException, RegistryException {
         DataPublisher dataPublisher = null;
-        if(BPMNDataReceiverConfig.getThriftURL() != null){
-            dataPublisher = new DataPublisher(BPMNDataReceiverConfig.getThriftURL(),
-                    BPMNDataReceiverConfig.getUserName(),
-                    BPMNDataReceiverConfig.getPassword());
+        String thriftURL = BPMNDataReceiverConfig.getThriftURL();
+        String username = BPMNDataReceiverConfig.getUserName();
+        String password = BPMNDataReceiverConfig.getPassword();
+        if(thriftURL != null && username != null && password != null){
+            dataPublisher = new DataPublisher(thriftURL, username, password);
         }
         return dataPublisher;
     }

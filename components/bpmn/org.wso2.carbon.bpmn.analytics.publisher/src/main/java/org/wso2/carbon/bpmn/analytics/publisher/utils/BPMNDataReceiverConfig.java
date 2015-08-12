@@ -50,7 +50,7 @@ public class BPMNDataReceiverConfig {
      * @throws RegistryException
      */
     public static String getThriftURL() throws RegistryException {
-        String url;
+        String url = null;
         Registry registry =
                 BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry();
 
@@ -58,10 +58,7 @@ public class BPMNDataReceiverConfig {
             Resource resource =
                     registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
             url = resource.getProperty(AnalyticsPublisherConstants.THRIFT_URL_PROPERTY);
-        } else {
-            url = null;
         }
-
         return url;
     }
 
@@ -73,7 +70,7 @@ public class BPMNDataReceiverConfig {
      * @throws UserStoreException
      */
     public static String getUserName() throws RegistryException, UserStoreException {
-        String userName;
+        String userName = null;
         Registry registry =
                 BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry();
 
@@ -81,8 +78,6 @@ public class BPMNDataReceiverConfig {
             Resource resource =
                     registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
             userName = resource.getProperty(AnalyticsPublisherConstants.USER_NAME_PROPERTY);
-        } else {
-            userName = AnalyticsPublisherConstants.USER_NAME;
         }
         return userName;
     }
@@ -95,7 +90,7 @@ public class BPMNDataReceiverConfig {
      * @throws UserStoreException
      */
     public static String getPassword() throws RegistryException, UserStoreException {
-        String password;
+        String password = null;
         Registry registry =
                 BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry();
 
@@ -114,9 +109,6 @@ public class BPMNDataReceiverConfig {
                 String errMsg = "CryptoUtils Error while reading the password from the carbon registry.";
                 log.error(errMsg, e);
             }
-
-        } else {
-            password = AnalyticsPublisherConstants.PASSWORD;
         }
         return password;
     }
