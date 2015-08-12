@@ -50,7 +50,7 @@
 			<li><a href="<%=(redirectPage + '?pagination=' + i + queryParams)%>"><%=("" + i).split(".")[0]%></a></li>
 	<% } %>
 
-	<% if(currentPage != paginatePageCount) { %>
+	<% if(currentPage < paginatePageCount) { %>
 		<li><a href="<%=(redirectPage + '?pagination=' + (currentPage + 1) + queryParams)%>">&raquo;</a></li>
 		<li><a href="<%=(redirectPage + '?pagination=' + paginatePageCount + queryParams)%>">&raquo;&raquo;</a></li>
 	<% } else { %>
