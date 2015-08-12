@@ -15,4 +15,9 @@
 
     </bean>
 
+    <bean id="restClientConfiguration">
+        <property name="maxTotalConnections" value="200"/>
+        <property name="maxConnectionsPerRoute" value="200"/>
+    </bean>
+
 </beans>

@@ -23,10 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
-import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
-import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
+import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
+import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 /**
@@ -45,6 +44,10 @@ public class BPMNServiceComponent {
             ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
             holder.setEngine(activitiEngineBuilder.buildEngine());
             holder.setTenantManager(new TenantManager());
+
+            BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
+
+            restHolder.setRestInvoker(new RESTInvoker());
 
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
 //            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());

@@ -15,6 +15,10 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -25,10 +29,17 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.utils.CarbonUtils;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Iterator;
 
 /**
  * Utility class for invoking HTTP endpoints.
@@ -39,20 +50,57 @@ public class RESTInvoker {
 
     private final CloseableHttpClient client;
 
-    public RESTInvoker(int maxTotal, int maxTotalPerRoute) {
+    public RESTInvoker() throws IOException, XMLStreamException {
+
+        int maxTotal = 100;
+        int maxTotalPerRoute = 100;
+
+        String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+        String activitiConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+        File configFile = new File(activitiConfigPath);
+        String configContent = FileUtils.readFileToString(configFile);
+        OMElement configElement = AXIOMUtil.stringToOM(configContent);
+        Iterator beans = configElement.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "bean"));
+        while (beans.hasNext()) {
+            OMElement bean = (OMElement) beans.next();
+            String beanId = bean.getAttributeValue(new QName(null, "id"));
+            if (beanId.equals("restClientConfiguration")) {
+                Iterator beanProps = bean.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "property"));
+                while (beanProps.hasNext()) {
+                    OMElement beanProp = (OMElement) beanProps.next();
+                    if (beanProp.getAttributeValue(new QName(null, "name")).equals("maxTotalConnections")) {
+                        String value = beanProp.getAttributeValue(new QName(null, "value"));
+                        maxTotal = Integer.parseInt(value);
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals("maxConnectionsPerRoute")) {
+                        String value = beanProp.getAttributeValue(new QName(null, "value"));
+                        maxTotalPerRoute = Integer.parseInt(value);
+                    }
+                }
+            }
+        }
+
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setDefaultMaxPerRoute(maxTotalPerRoute);
         cm.setMaxTotal(maxTotal);
         client = HttpClients.custom().setConnectionManager(cm).build();
+
+        if (log.isDebugEnabled()) {
+            log.debug("BPMN REST client initialized with maxTotalConnection = " + maxTotal + " and maxConnectionsPerRoute = " + maxTotalPerRoute);
+        }
     }
 
-    public String invokeGET(URI uri) throws Exception {
+    public String invokeGET(URI uri, String username, String password) throws Exception {
 
         HttpGet httpGet = null;
         CloseableHttpResponse response = null;
         String output = "";
         try {
             httpGet = new HttpGet(uri);
+            if (username != null && password != null) {
+                String combinedCredentials = username + ":" + password;
+                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
+                httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
+            }
             response = client.execute(httpGet);
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             StringBuffer result = new StringBuffer();
@@ -78,7 +126,7 @@ public class RESTInvoker {
         return output;
     }
 
-    public String invokePOST(URI uri, String payload) throws Exception {
+    public String invokePOST(URI uri, String username, String password, String payload) throws Exception {
 
         HttpPost httpPost = null;
         CloseableHttpResponse response = null;
@@ -86,6 +134,11 @@ public class RESTInvoker {
         try {
             httpPost = new HttpPost(uri);
             httpPost.setEntity(new StringEntity(payload));
+            if (username != null && password != null) {
+                String combinedCredentials = username + ":" + password;
+                String encodedCredentials = new String(Base64.encodeBase64(combinedCredentials.getBytes()));
+                httpPost.addHeader("Authorization", "Basic " + encodedCredentials);
+            }
             response = client.execute(httpPost);
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
