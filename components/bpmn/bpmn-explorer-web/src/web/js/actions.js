@@ -243,9 +243,9 @@ function processSearch(){
         var tempTaskName = document.getElementById("taskName").value;
         document.getElementById("taskName").value = "%" + tempTaskName + "%";
     }
-    if (document.getElementById("taskDescription").value.length == 0) {
+    /*if (document.getElementById("taskDescription").value.length == 0) {
         document.getElementById("taskDescription").disabled = true;
-    }
+    }*/
     if (document.getElementById("taskCandidateUserGroup").value.length == 0) {
         document.getElementById("taskCandidateUserGroup").disabled = true;
     }

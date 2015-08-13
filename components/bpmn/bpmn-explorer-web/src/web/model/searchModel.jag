@@ -21,6 +21,7 @@
 var log = new Log();
 
 var queryReceived = false; //At first request (or without query parameters) no need to load task list
+var onclickUrl = ''; //used to hold onclick window redirect urls in results list table in searchView
 
 if (request.getQueryString() != null) {
 
@@ -32,6 +33,8 @@ if (request.getQueryString() != null) {
 	var requestParameters = request.getAllParameters();
 	var newQueryString = ""; //query string used for pagination
 	var pageSize = 10;//page size (currently it's hard coded to 10 untill we make it configurable)
+	var searchActiveTasks = true;//state that the user is searching for active tasks or completed historic tasks
+	var requestUrl = '';//BPS BPMN REST API call url
 
 	if (log.isDebugEnabled()){
 		log.debug("Request parameters:" +stringify(requestParameters));
@@ -45,71 +48,79 @@ if (request.getQueryString() != null) {
 		pagination = parseInt(pagination);
 	}
 
-	//split query string with "&pagination" to remove pagination part from the query string
-	var qs = request.getQueryString();
-	newQueryString = qs.substring( qs.indexOf('&') + 1 );
+	//remove pagiantion parameter if exists
+	if (request.getParameter("pagination") !== null){
+		//split query string with "&" to remove pagination part from the query string
+		var qs = request.getQueryString();
+		newQueryString = qs.substring( qs.indexOf('&') + 1 );
+	} else {
+		newQueryString = request.getQueryString();
+	}
 
-	//create REST request query string parameters
-	restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize + "&" + newQueryString;
+	if (request.getParameter("taskStatus") === "COMPLETED"){
 
-	//Use following if you need to restrict api calls from the browser
-	/*if (requestParameters.nameLike !== undefined && requestParameters.nameLike.length > 0) {
-		restRequestParameters += "nameLike=%" + requestParameters.nameLike + "%&";
-		newQueryString += "nameLike=%" + requestParameters.nameLike + "%&";
-	}
-	if (requestParameters.description !== undefined && requestParameters.description.length > 0) {
-		restRequestParameters += "description=" + requestParameters.description + "&";
-		newQueryString += "description=" + requestParameters.description + "&";
-	}
-	if (requestParameters.assignee !== undefined && requestParameters.assignee.length > 0) {
-		restRequestParameters += "assignee=" + requestParameters.assignee + "&";
-		newQueryString += "assignee=" + requestParameters.assignee + "&";
-	} else if (requestParameters.unassigned === "on"){
-		restRequestParameters += "assignee=&";
-		newQueryString += "assignee=&";
-	}
-	if (requestParameters.owner !== undefined && requestParameters.owner.length > 0) {
-		restRequestParameters += "owner=" + requestParameters.owner + "&";
-		newQueryString += "owner=" + requestParameters.owner + "&";
-	}
-	if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
-		restRequestParameters += "processInstanceId=" + requestParameters.processInstanceId + "&";
-		newQueryString += "processInstanceId=" + requestParameters.processInstanceId + "&";
-	}
-	if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
-		restRequestParameters += "processDefinitionNameLike=%" + requestParameters.processDefinitionNameLike + "%&";
-		newQueryString += "processDefinitionNameLike=%" + requestParameters.processDefinitionNameLike + "%&";
-	}
-	if (requestParameters.active !== undefined && requestParameters.active.length > 0) {
-		restRequestParameters += "active=" + requestParameters.active + "&";
-		newQueryString += "active=" + requestParameters.active + "&";
-	}
-	if (requestParameters.candidateOrAssigned !== undefined && requestParameters.candidateOrAssigned.length > 0) {
-		restRequestParameters += "candidateOrAssigned=" + requestParameters.candidateOrAssigned + "&";
-		newQueryString += "candidateOrAssigned=" + requestParameters.candidateOrAssigned + "&";
-	}
-	if (requestParameters.minimumPriority !== undefined && requestParameters.minimumPriority.length > 0) {
-		restRequestParameters += "minimumPriority=" + requestParameters.minimumPriority + "&";
-		newQueryString += "minimumPriority=" + requestParameters.minimumPriority + "&";
-	}
-	if (requestParameters.maximumPriority !== undefined && requestParameters.maximumPriority.length > 0) {
-		restRequestParameters += "maximumPriority=" + requestParameters.maximumPriority + "&";
-		newQueryString += "maximumPriority=" + requestParameters.maximumPriority + "&";
-	}
-	if (requestParameters.createdAfter !== undefined && requestParameters.createdAfter.length > 0) {
-		restRequestParameters += "createdAfter=" + requestParameters.createdAfter + "&";
-		newQueryString += "createdAfter=" + requestParameters.createdAfter + "&";
-	}
-	if (requestParameters.createdBefore !== undefined && requestParameters.createdBefore.length > 0) {
-		restRequestParameters += "createdBefore=" + requestParameters.createdBefore + "&";
-		newQueryString += "createdBefore=" + requestParameters.createdBefore + "&";
-	}*/
+		searchActiveTasks = false;
+		//newQueryString = '';
+		var paramsWithSpecialChars = ''; //string that used to hold query parameters that 
+											//have special characters that encodeURI() cannot encode
+		onclickUrl = 'completedTask';
+		//create REST request query string parameters
+		
+		//Need to build query strings to search completed tasks
+		if (requestParameters.nameLike !== undefined && requestParameters.nameLike.length > 0) {
+			restRequestParameters += "taskNameLike=" + requestParameters.nameLike + "&";
+		}
 
-	//create REST request query string parameters END
+		if (requestParameters.assignee !== undefined && requestParameters.assignee.length > 0) {
+			restRequestParameters += "taskAssigneeLike=%" + requestParameters.assignee + "%&";
+		} else if (requestParameters.unassigned === "on") {
+			restRequestParameters += "taskAssigneeLike=&";
+		}
+
+		if (requestParameters.owner !== undefined && requestParameters.owner.length > 0) {
+			restRequestParameters += "taskOwnerLike=%" + requestParameters.owner + "%&";
+		}
+
+		if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
+			restRequestParameters += "processInstanceId=" + requestParameters.processInstanceId + "&";
+		}
+
+		if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
+			restRequestParameters += "processDefinitionNameLike=" + requestParameters.processDefinitionNameLike + "&";
+		}
+
+		if (requestParameters.minimumPriority !== undefined && requestParameters.minimumPriority.length > 0) {
+			restRequestParameters += "taskPriority=" + requestParameters.minimumPriority + "&";
+		}
+
+		if (requestParameters.createdAfter !== undefined && requestParameters.createdAfter.length > 0) {
+			paramsWithSpecialChars += "taskCreatedAfter=" + requestParameters.createdAfter + "&";
+		}
+
+		if (requestParameters.createdBefore !== undefined && requestParameters.createdBefore.length > 0) {
+			paramsWithSpecialChars += "taskCreatedBefore=" + requestParameters.createdBefore + "&";
+		}
+		//create REST request query string parameters END
+
+		//add parameters with special characters
+		//replace ':' with %3A
+		var regex = new RegExp(':', 'g');
+		paramsWithSpecialChars = paramsWithSpecialChars.replace(regex, '%3A');
+
+		restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize;
+		requestUrl = httpUrl + "/bpmn/history/historic-task-instances" + encodeURI(restRequestParameters) + "&" + paramsWithSpecialChars;
+
+	} else {
+		//searching active tasks
+		onclickUrl = 'task';
+		
+		restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize + "&" + newQueryString;
+		requestUrl = httpUrl + "/bpmn/runtime/tasks" + restRequestParameters;
+
+	}
 
 	var headers = {"Authorization":"Basic " + auth};
-	var requestUrl = httpUrl + "/bpmn/runtime/tasks" + restRequestParameters;
-
+	
 	if (log.isDebugEnabled()) {
 		log.debug("BPMN Rest API Request: " + requestUrl);
 	}
