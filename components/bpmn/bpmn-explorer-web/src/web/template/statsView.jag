@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2015  WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -165,7 +165,7 @@
               <div class="table-title" style="width:100%">Task Instance Status </div>
               <div id="taskInstancesChart" style="height:33% " ></div>
               <br>
-               <div class="table-title"  style="width:100%"> Task Durations Of Completed Process </div>
+               <div class="table-title"  style="width:100%"> Task Duration Of Completed Processes </div>
                <br>
               
               <form>

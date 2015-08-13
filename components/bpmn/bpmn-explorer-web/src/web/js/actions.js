@@ -1,5 +1,5 @@
 /*
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2015  WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -192,6 +192,7 @@ function startProcessWithData(data, id) {
 
     });
 }
+//Get the Task Durations Of Completed Processes
 function selectProcessForChart() {
     var x = document.getElementById("selectProcess").value;
     var url = httpUrl + "/" + CONTEXT + "/stats?update=true&id=" + x;

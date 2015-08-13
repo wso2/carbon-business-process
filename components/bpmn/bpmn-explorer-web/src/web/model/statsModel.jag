@@ -1,5 +1,5 @@
 <%/*<!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2015  WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -39,7 +39,9 @@ for(var i=0; i<processNames.data.length; i++){
 		name, processCount
 	]);
 }
+//Average Time Duration Of Completed Processes Bar Chart //
 
+//Retrieves the completed processes by calling the REST api
 var listProcess = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0" ,null, headers, "json" );
 var distListProcess = get( httpUrl + "/bpmn/repository/process-definitions?finished=true&size=0" ,null, headers, "json" );
 
@@ -49,8 +51,9 @@ var taskArray={};
 for (var i in listProcess.data.data){
    var totalTime = 0;
    var processName=listProcess.data.data[i].processDefinitionId;
+   //Get the process instance count of each completed process
    var count = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
-  
+   //Get the time duration of each process
    var timeduration= get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" );
 
       for(var i in timeduration.data.data){
@@ -59,6 +62,7 @@ for (var i in listProcess.data.data){
         totalTime=totalTime+timeInMinutes;
       }
 
+   //Get the average duration time for each process
    var averageTime=totalTime/count;
    var avgRoundedTime=Math.round(averageTime*1000)/1000;
 
@@ -71,7 +75,7 @@ for (var i in listProcess.data.data){
      ]);
     }
  }
-
+  //Checks for multiple process instances of the same process
   function checkForDuplicates(processBarChartAvgTime,processName){
      var counter = 0;
      for (var i = 0; i < processBarChartAvgTime.length; i++) {
@@ -91,7 +95,7 @@ for (var i in listProcess.data.data){
  var sortedAscendingArray= [];
  var sortedDescendingArray=[];
    
-
+//Select specific order i.e. top 10 processes in ascending or descending order
  var option = request.getParameter("option");  
 
   if(option == "shortTime") {
@@ -103,10 +107,38 @@ for (var i in listProcess.data.data){
       sortedDescendingArray=processBarChartAvgTime.slice(0,10);
       processBarChartAvgTime = sortedDescendingArray;
   }
+
+  //Sort the process array according to the shortest time duration
+  function sortAscending(processBarChartAvgTime) {
+    var length = processBarChartAvgTime.length;
+    for(var i = 1; i < length; ++i) {
+      var temp = processBarChartAvgTime[i][1];
+      var j = i - 1;
+      for(; j >= 0 && processBarChartAvgTime[j][1] > temp; --j) {
+        processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
+      }
+      processBarChartAvgTime[j+1][1]= temp;
+    }
+  }
+  //Sort the process array according to the longest time duration
+  function sortDescending(processBarChartAvgTime) {
+    var length = processBarChartAvgTime.length;
+    for(var i = 1; i < length; ++i) {
+      var temp = processBarChartAvgTime[i][1];
+      var j = i - 1;
+      for(; j >= 0 && processBarChartAvgTime[j][1] < temp; --j) {
+        processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
+      }
+      processBarChartAvgTime[j+1][1]= temp;
+    }
+  }
+
+  //Average Task Durations Of Completed Process :Pie Chart//
   var avgTimeDataPerProcess = {};
   for (var j in distListProcess.data.data){
 
     var processName=distListProcess.data.data[j].id;
+    //Gets the completed task instances of each completed process
     var taskList=get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId=" + processName ,null, headers, "json" );
 
     var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
@@ -120,7 +152,7 @@ for (var i in listProcess.data.data){
        var taskName= taskList.data.data[i].name;
        var taskDuration=taskList.data.data[i].durationInMillis;
        var taskKey= taskList.data.data[i].taskDefinitionKey;
-
+       //Stores the task key and duration as key-value pairs
        if(taskArray[taskKey] > 0) {
             taskArray[taskKey] = taskArray[taskKey] + taskDuration;
             taskInstanceCountArray[taskKey] =taskInstanceCountArray[taskKey]+1;  
@@ -132,7 +164,7 @@ for (var i in listProcess.data.data){
 
        }
   }
-  
+    //Get the average task duration of each task in a process
     for(var i in keyList){
     taskArray[keyList[i]] = taskArray[keyList[i]]/taskInstanceCountArray[keyList[i]];
     } 
@@ -142,45 +174,22 @@ for (var i in listProcess.data.data){
       }
     }
 
+    //Remove completed processes which do not contain tasks
     for (key in avgTimeDataPerProcess){
       if(JSON.stringify(avgTimeDataPerProcess[key]) === '{}'){
         delete avgTimeDataPerProcess[key];
       }
      
     }
-
+    //Select the process to display the average time duration of tasks
     var update = request.getParameter("update");
     if(update != null && update === "true"){
        var resultArray=[];
        var x = request.getParameter("id");
-      
+
       for (subkey in avgTimeDataPerProcess[x]){
         resultArray.push([subkey, avgTimeDataPerProcess[x][subkey]]);
       }
     }
-
-  function sortAscending(processBarChartAvgTime) {
-    var length = processBarChartAvgTime.length;
-    for(var i = 1; i < length; ++i) {
-      var temp = processBarChartAvgTime[i][1];
-      var j = i - 1;
-      for(; j >= 0 && processBarChartAvgTime[j][1] > temp; --j) {
-        processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
-      }
-      processBarChartAvgTime[j+1][1]= temp;
-    }
-  }
-
-  function sortDescending(processBarChartAvgTime) {
-    var length = processBarChartAvgTime.length;
-    for(var i = 1; i < length; ++i) {
-      var temp = processBarChartAvgTime[i][1];
-      var j = i - 1;
-      for(; j >= 0 && processBarChartAvgTime[j][1] < temp; --j) {
-        processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
-      }
-      processBarChartAvgTime[j+1][1]= temp;
-    }
-  }
 
 %>
