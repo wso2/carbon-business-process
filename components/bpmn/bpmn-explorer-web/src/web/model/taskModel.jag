@@ -21,6 +21,11 @@ var MAX_SIZE = 10; //Max count of data per page
 
 var headers = {"Authorization": "Basic " + auth};
 var task = get(httpUrl + "/bpmn/task/" + id, null, headers, "json").data;
+
+if (log.isDebugEnabled()) {
+    log.debug("BPS BPMN REST API request" + httpUrl + "/bpmn/task/" + id);
+    log.debug("BPS BPMN REST API response:" + stringify(task));
+}
 //for attachments table
 var pagination = request.getParameter("pagination");
 if (pagination == null || pagination == "") {
@@ -54,7 +59,7 @@ if (attachments) {
 
 }
 else {
-    if (isDebugEnabled()) {
+    if (log.isDebugEnabled()) {
         log.debug("No attachments found for task" + id);
     }
 }

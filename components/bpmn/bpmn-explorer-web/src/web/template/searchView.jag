@@ -33,12 +33,40 @@
                     </div>
                 </div>
 
+                <!--Script to disable change elements depending on the task status selection in #taskStatus-->
+                <script>
+                    function taskStatusChange(val) {
+                        console.log(val);
+                        if (val === "COMPLETED"){
+                            //disable #taskCandidateUserGroup
+                            document.getElementById("taskCandidateUserGroup").disabled = true;
+                            //disable #instanceSuspensionStatus
+                            document.getElementById("instanceSuspensionStatus").disabled = true;
+                            //disable #taskMaxPriority
+                            document.getElementById("taskMaxPriority").disabled = true;
+                            //change "Min. Priority" to "Priority" in #taskMinPriorityLabel
+                            document.getElementById("taskMinPriorityLabel").innerHTML = "Priority";
+                        } else {
+                            //enable #taskCandidateUserGroup
+                            document.getElementById("taskCandidateUserGroup").disabled = false;
+                            //enable #instanceSuspensionStatus
+                            document.getElementById("instanceSuspensionStatus").disabled = false;
+                            //enable #taskMaxPriority
+                            document.getElementById("taskMaxPriority").disabled = false;
+                            //change "Priority" to "Min. Priority" in #taskMinPriorityLabel
+                            document.getElementById("taskMinPriorityLabel").innerHTML = "Min. Priority";
+                        }
+
+                    }
+                </script>
                 <div class="col-sm-6 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label for="taskDescription" class="control-label">Task Description</label>
-                        <div class="">
-                            <input type="text" class="form-control" id="taskDescription" name="description" placeholder="Enter Task Description">
-                        </div>
+                        <label for="taskStatus" class="control-label">Task Status</label>
+
+                        <select id="taskStatus" name="taskStatus" class="form-control" onchange="taskStatusChange(this.value)">
+                            <option value="IN_PROGRESS">In-Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
                     </div>
                 </div>
 
@@ -50,7 +78,6 @@
                         } else {
                             document.getElementById("taskAssignee").disabled = false;
                         }
-
                     }
                 </script>
 
@@ -115,7 +142,7 @@
 
                 <div class="col-sm-1 col-md-1 col-lg-1">
                     <div class="form-group">
-                        <label for="taskMinPriority" class="control-label">Min. Priority</label>
+                        <label for="taskMinPriority" class="control-label" id="taskMinPriorityLabel">Min. Priority</label>
                         <div class="input-group">
                             <input type="number" class="form-control" id="taskMinPriority" name="minimumPriority" placeholder="Min Priority">
                         </div>
@@ -170,7 +197,7 @@
                 </thead>
                 <tbody>
                     <% for (var i=0; i < numOfTasks; i++) { %>
-                    <tr class="white-bg" style="cursor:pointer;" onclick="window.location='task?id=<%=taskListResponse.data[i].id%>'"
+                    <tr class="white-bg" style="cursor:pointer;" onclick="window.location='<%=onclickUrl%>?id=<%=taskListResponse.data[i].id%>'"
                         onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
                         <td><%=taskListResponse.data[i].id%></td>
                         <td><%=taskListResponse.data[i].name%></td>
