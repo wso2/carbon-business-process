@@ -58,3 +58,11 @@
     var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
 
 %>
+
+<%
+    //format date strings
+    function formatDate(dateString) {
+        var date = new Date();
+        return date.toDateString() +  ' ' + date.toLocaleTimeString();
+    }
+%>
