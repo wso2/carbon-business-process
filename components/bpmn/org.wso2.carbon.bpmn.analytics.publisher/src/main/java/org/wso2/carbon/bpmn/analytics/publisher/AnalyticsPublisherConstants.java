@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,4 +52,14 @@ public class AnalyticsPublisherConstants {
     public static final String THRIFT_URL_PROPERTY = "data_receiver_thrift_url";
     public static final String USER_NAME_PROPERTY = "username";
     public static final String PASSWORD_PROPERTY = "password";
+
+    public static final String SPRING_NAMESPACE = "http://www.springframework.org/schema/beans";
+    public static final String BEAN = "bean";
+    public static final String BEAN_ID = "id";
+    public static final String BEAN_ID_VALUE = "bpmnDataPublisherConfiguration";
+    public static final String ACTIVATE = "activation";
+    public static final String NAME = "name";
+    public static final String TRUE = "true";
+    public static final String VALUE = "value";
+    public static final String PROPERTY = "property";
 }

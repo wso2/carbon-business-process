@@ -29,6 +29,7 @@
 <%@ page import="org.wso2.carbon.registry.core.utils.RegistryUtils" %>
 <%@ page import="org.wso2.carbon.registry.api.Resource" %>
 <%@ page import="org.wso2.carbon.core.util.CryptoUtil" %>
+<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -52,20 +53,39 @@
         }
         RegistryUtils.setTrustStoreSystemProperties();
 
-        String thriftUrl = request.getParameter("thrift_url");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String thriftUrl = CharacterEncoder.getSafeText(request.getParameter("thrift_url"));
+        String username = CharacterEncoder.getSafeText(request.getParameter("username"));
+        String password = CharacterEncoder.getSafeText(request.getParameter("password"));
+        String buttonVal = CharacterEncoder.getSafeText(request.getParameter("publishBtn"));
 
         CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
         Registry configRegistry = context.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
 
         try {
             if (configRegistry.resourceExists("bpmn/data_analytics_publisher/thrift_configuration")) {
-                //if resource is available then get properties and set them to the text fields
                 Resource resource = configRegistry.get("bpmn/data_analytics_publisher/thrift_configuration");
+                if ("POST".equalsIgnoreCase(request.getMethod()) && "Save".equalsIgnoreCase(buttonVal)) {
+                    if (thriftUrl != null && username != null && password != null) {
+                        String passwordFromReg = resource.getProperty("password");
+                        byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(passwordFromReg);
+                        String decryptedPlainPassword = new String(decryptedPasswordBinary);
+                        if (thriftUrl.equals(resource.getProperty("data_receiver_thrift_url")) &&
+                                username.equals(resource.getProperty("username")) &&
+                                password.equals(decryptedPlainPassword)) {
+                        %>
+                        <script type="text/javascript">CARBON.showInfoDialog("Thrift Configuration is already exists.");</script>
+                        <%
+                        } else {
+                        %>
+                        <script type="text/javascript">CARBON.showInfoDialog("Thrift Configuration is saved successfully.");</script>
+                        <%
+                        }
+                    }
+                }
+                //if resource is available then get properties and set them to the text fields
                 if (thriftUrl == null) {
                     //if thrift url is null then set value from the registry
-                    if(resource.getProperty("data_receiver_thrift_url") != null){
+                    if (resource.getProperty("data_receiver_thrift_url") != null) {
                         thriftUrl = resource.getProperty("data_receiver_thrift_url");
                     }
                 } else if (!thriftUrl.equals(resource.getProperty("data_receiver_thrift_url"))) {
@@ -75,7 +95,7 @@
                 }
                 if (username == null) {
                     //if username is null then set value from the registry
-                    if(resource.getProperty("username") != null){
+                    if (resource.getProperty("username") != null) {
                         username = resource.getProperty("username");
                     }
                 } else if (!username.equals(resource.getProperty("username"))) {
@@ -85,7 +105,7 @@
                 }
                 if (password == null) {
                     //if password is null then set value from the registry
-                    if(resource.getProperty("password") != null){
+                    if (resource.getProperty("password") != null) {
                         byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(resource.getProperty("password"));
                         password = new String(decryptedPassword);
                     }
@@ -105,11 +125,9 @@
                     configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
                 }
             }
-
         } catch (RegistryException e) {
             CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
         }
-
     %>
     <script type="text/javascript">
 
@@ -130,7 +148,9 @@
             } else if ((!thriftUrl.startsWith("tcp")) && (!thriftUrl.startsWith("ssl"))) {
                 CARBON.showWarningDialog('Incorrect thrift url is provided:' + (thriftUrl.startsWith("tcp")));
             } else {
+                document.bpmnDataPublisher.publishBtn.value = document.bpmnDataPublisher.publish.value;
                 document.bpmnDataPublisher.submit();
+                // CARBON.showInfoDialog("Thrift Configuration is saved successfully.");
             }
         }
 
@@ -254,7 +274,7 @@
                         </tr>
                         </tbody>
                     </table>
-
+                    <input name="publishBtn" type="hidden">
                     <table class="styledLeft">
                         <tr>
                             <td class="buttonRow">
