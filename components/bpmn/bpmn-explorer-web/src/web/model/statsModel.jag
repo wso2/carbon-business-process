@@ -1,4 +1,4 @@
-<!--
+<%/*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,10 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->
+-->*/%>
 <%
 var headers = {"Authorization":"Basic " + auth};
-
+var start = 0;
 var completedProcesses = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true" ,null, headers, "json" ).data.total;
 var activeProcesses = get( httpUrl + "/bpmn/runtime/process-instances?suspended=false" ,null, headers, "json" ).data.total;
 var suspendProcesses = get( httpUrl + "/bpmn/runtime/process-instances?suspended=true" ,null, headers, "json" ).data.total;
@@ -39,4 +39,148 @@ for(var i=0; i<processNames.data.length; i++){
 		name, processCount
 	]);
 }
+
+var listProcess = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0" ,null, headers, "json" );
+var distListProcess = get( httpUrl + "/bpmn/repository/process-definitions?finished=true&size=0" ,null, headers, "json" );
+
+var processBarChartAvgTime = [];
+var taskArray={};
+
+for (var i in listProcess.data.data){
+   var totalTime = 0;
+   var processName=listProcess.data.data[i].processDefinitionId;
+   var count = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
+  
+   var timeduration= get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" );
+
+      for(var i in timeduration.data.data){
+        var timeForOne=timeduration.data.data[i].durationInMillis;
+        var timeInMinutes=((timeForOne /(1000*60))%60);
+        totalTime=totalTime+timeInMinutes;
+      }
+
+   var averageTime=totalTime/count;
+   var avgRoundedTime=Math.round(averageTime*1000)/1000;
+
+    if(checkForDuplicates(processBarChartAvgTime,processName)==1){
+
+    }else{
+
+     	processBarChartAvgTime.push([
+  		processName, avgRoundedTime
+     ]);
+    }
+ }
+
+  function checkForDuplicates(processBarChartAvgTime,processName){
+     var counter = 0;
+     for (var i = 0; i < processBarChartAvgTime.length; i++) {
+
+          if (processName == processBarChartAvgTime[i][0]) {
+              counter++;
+          }
+      }
+
+      if(counter > 0){
+          return 1;
+      }else {
+          return 0;
+      }
+  }
+
+ var sortedAscendingArray= [];
+ var sortedDescendingArray=[];
+   
+
+ var option = request.getParameter("option");  
+
+  if(option == "shortTime") {
+      sortAscending(processBarChartAvgTime);
+      sortedAscendingArray=processBarChartAvgTime.slice(0,10);
+      processBarChartAvgTime = sortedAscendingArray;
+  }else if(option =="longTime"){
+      sortDescending(processBarChartAvgTime);
+      sortedDescendingArray=processBarChartAvgTime.slice(0,10);
+      processBarChartAvgTime = sortedDescendingArray;
+  }
+  var avgTimeDataPerProcess = {};
+  for (var j in distListProcess.data.data){
+
+    var processName=distListProcess.data.data[j].id;
+    var taskList=get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId=" + processName ,null, headers, "json" );
+
+    var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
+  
+    taskArray ={};
+    var keyList = [];
+    var taskInstanceCountArray=[];
+
+  for(var i in taskList.data.data){
+    
+       var taskName= taskList.data.data[i].name;
+       var taskDuration=taskList.data.data[i].durationInMillis;
+       var taskKey= taskList.data.data[i].taskDefinitionKey;
+
+       if(taskArray[taskKey] > 0) {
+            taskArray[taskKey] = taskArray[taskKey] + taskDuration;
+            taskInstanceCountArray[taskKey] =taskInstanceCountArray[taskKey]+1;  
+       }
+       else{
+         taskArray[taskKey]=taskDuration;
+         taskInstanceCountArray[taskKey] = 1;
+         keyList.push([taskKey]);
+
+       }
+  }
+  
+    for(var i in keyList){
+    taskArray[keyList[i]] = taskArray[keyList[i]]/taskInstanceCountArray[keyList[i]];
+    } 
+
+    if(insCount>0){
+        avgTimeDataPerProcess[processName] = taskArray;
+      }
+    }
+
+    for (key in avgTimeDataPerProcess){
+      if(JSON.stringify(avgTimeDataPerProcess[key]) === '{}'){
+        delete avgTimeDataPerProcess[key];
+      }
+     
+    }
+
+    var update = request.getParameter("update");
+    if(update != null && update === "true"){
+       var resultArray=[];
+       var x = request.getParameter("id");
+      
+      for (subkey in avgTimeDataPerProcess[x]){
+        resultArray.push([subkey, avgTimeDataPerProcess[x][subkey]]);
+      }
+    }
+
+  function sortAscending(processBarChartAvgTime) {
+    var length = processBarChartAvgTime.length;
+    for(var i = 1; i < length; ++i) {
+      var temp = processBarChartAvgTime[i][1];
+      var j = i - 1;
+      for(; j >= 0 && processBarChartAvgTime[j][1] > temp; --j) {
+        processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
+      }
+      processBarChartAvgTime[j+1][1]= temp;
+    }
+  }
+
+  function sortDescending(processBarChartAvgTime) {
+    var length = processBarChartAvgTime.length;
+    for(var i = 1; i < length; ++i) {
+      var temp = processBarChartAvgTime[i][1];
+      var j = i - 1;
+      for(; j >= 0 && processBarChartAvgTime[j][1] < temp; --j) {
+        processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
+      }
+      processBarChartAvgTime[j+1][1]= temp;
+    }
+  }
+
 %>

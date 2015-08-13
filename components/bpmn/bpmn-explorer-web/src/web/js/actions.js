@@ -18,22 +18,25 @@ var httpUrl = location.protocol + "//" + location.host;
 var CONTEXT = "bpmn-explorer";
 
 
-$( document ).ready(function() {
+$(document).ready(function () {
 
-    function getFileType(){
+    function getFileType() {
         var fileName = document.getElementById('files').value;
-        if(fileName!== null) {
+        if (fileName !== null) {
             var extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
             return extension;
         }
     }
+
     // Send attachment info the server
     $('#attachForm').ajaxForm({
-        beforeSubmit: function(arr, formData, options) {
-            for (var i=0; i < arr.length; i++) {
+        beforeSubmit: function (arr, formData, options) {
+            for (var i = 0; i < arr.length; i++) {
                 if (!arr[i].value) {
-                    $('#submit-attachment').popover({ content: "Please enter all values",
-                        placement: "right"});
+                    $('#submit-attachment').popover({
+                        content: "Please enter all values",
+                        placement: "right"
+                    });
                     $('#submit-attachment').popover('show');
 
                     return false;
@@ -44,25 +47,25 @@ $( document ).ready(function() {
                 $('.btn-primary').popover('hide')
             }, 1000);
             var fileType = getFileType();
-            if(fileType) {
+            if (fileType) {
                 arr.push({name: 'type', value: fileType})
             }
         },
 
-        success : function(res){
+        success: function (res) {
             var taskUrl = res.taskUrl;
             var taskId = taskUrl.substr(taskUrl.lastIndexOf('/') + 1);
-            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + taskId ;
+            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + taskId;
 
         },
-        error :  function(res){
-            document.getElementById("error_content").style.visibility='visible';
+        error: function (res) {
+            document.getElementById("error_content").style.visibility = 'visible';
         }
     });
 });
 
-function displayAttachmentData(id){
-   window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
+function displayAttachmentData(id) {
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
 }
 function completeTask(data, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
@@ -106,10 +109,10 @@ function reassign(username, id) {
     });
 }
 
-function claim(username, id){
+function claim(username, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
-        "assignee" : username
+        "assignee": username
     };
 
     $.ajax({
@@ -117,7 +120,7 @@ function claim(username, id){
         contentType: "application/json",
         url: httpUrl + url,
         data: JSON.stringify(body),
-        success: function(data){
+        success: function (data) {
             window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
         }
     });
@@ -187,5 +190,41 @@ function startProcessWithData(data, id) {
             window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id;
         }
 
+    });
+}
+function selectProcessForChart() {
+    var x = document.getElementById("selectProcess").value;
+    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&id=" + x;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+            function drawChart(data) {
+                var dataArr = [['Task Key', 'Avg Duration']];
+                for (var i = 0; i < data.length; i++) {
+                    dataArr.push([data[i][0], data[i][1]]);
+
+                }
+
+                var data = google.visualization.arrayToDataTable(dataArr);
+
+                var options = {
+                    title: x,
+                    pieHole: 0.6,
+                    pieSliceTextStyle: {
+                        color: 'black'
+                    }
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('taskDurationChart'));
+                chart.draw(data, options);
+            }
+        }
     });
 }
