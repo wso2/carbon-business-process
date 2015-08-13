@@ -301,9 +301,9 @@
                                         </small></p>
                                         <p><small><%=taskAbstract.NS1_NS::status.text()%></small></p>
                                         <p><small><%=taskAbstract.NS1_NS::priority.text()%></small></p>
-                                        <p><small><%print(formatDate(taskAbstract.NS1_NS::createdTime.text()));%></small></p>
-                                        <p><small><%print(formatDate(taskAbstract.NS1_NS::activationTime.text()));%></small></p>
-                                        <p><small><%print(formatDate(taskAbstract.NS1_NS::updatedTime.text()));%></small></p>
+                                        <p><small><%=formatDate(taskAbstract.NS1_NS::createdTime.text())%></small></p>
+                                        <p><small><%=formatDate(taskAbstract.NS1_NS::activationTime.text())%></small></p>
+                                        <p><small><%=formatDate(taskAbstract.NS1_NS::updatedTime.text())%></small></p>
                                     </td>
                                 </tr>
                             </tbody>
