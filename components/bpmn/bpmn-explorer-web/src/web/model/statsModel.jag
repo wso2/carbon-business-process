@@ -32,7 +32,7 @@ var failedTasks = 0; //get( httpUrl + "/bpmn/history/historic-task-instances" ,n
 
 var processNames = get( httpUrl + "/bpmn/repository/process-definitions" ,null, headers, "json" ).data;
 var processBarChart = [];
-for(var i=0; i<processNames.data.length; i++){
+for(var i = 0; i<processNames.data.length; i++){
 	var name = processNames.data[i].id;
 	var processCount = get( httpUrl + "/bpmn/history/historic-process-instances?processDefinitionId=" + name ,null, headers, "json" ).data.total;
 	processBarChart.push([
@@ -46,27 +46,27 @@ var listProcess = get( httpUrl + "/bpmn/history/historic-process-instances?finis
 var distListProcess = get( httpUrl + "/bpmn/repository/process-definitions?finished=true&size=0" ,null, headers, "json" );
 
 var processBarChartAvgTime = [];
-var taskArray={};
+var taskArray = {};
 
 for (var i in listProcess.data.data){
    var totalTime = 0;
-   var processName=listProcess.data.data[i].processDefinitionId;
+   var processName = listProcess.data.data[i].processDefinitionId;
    //Get the process instance count of each completed process
    var count = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
    //Get the time duration of each process
-   var timeduration= get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" );
+   var timeduration = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" );
 
       for(var i in timeduration.data.data){
-        var timeForOne=timeduration.data.data[i].durationInMillis;
-        var timeInMinutes=((timeForOne /(1000*60))%60);
-        totalTime=totalTime+timeInMinutes;
+        var timeForOne = timeduration.data.data[i].durationInMillis;
+        var timeInMinutes = ((timeForOne /(1000 * 60)) % 60);
+        totalTime = totalTime + timeInMinutes;
       }
 
    //Get the average duration time for each process
-   var averageTime=totalTime/count;
-   var avgRoundedTime=Math.round(averageTime*1000)/1000;
+   var averageTime = totalTime/count;
+   var avgRoundedTime = Math.round(averageTime*1000)/1000;
 
-    if(checkForDuplicates(processBarChartAvgTime,processName)==1){
+    if(checkForDuplicates(processBarChartAvgTime,processName) == 1){
 
     }else{
 
@@ -92,19 +92,19 @@ for (var i in listProcess.data.data){
       }
   }
 
- var sortedAscendingArray= [];
- var sortedDescendingArray=[];
+ var sortedAscendingArray = [];
+ var sortedDescendingArray = [];
    
 //Select specific order i.e. top 10 processes in ascending or descending order
  var option = request.getParameter("option");  
 
   if(option == "shortTime") {
       sortAscending(processBarChartAvgTime);
-      sortedAscendingArray=processBarChartAvgTime.slice(0,10);
+      sortedAscendingArray = processBarChartAvgTime.slice(0,10);
       processBarChartAvgTime = sortedAscendingArray;
   }else if(option =="longTime"){
       sortDescending(processBarChartAvgTime);
-      sortedDescendingArray=processBarChartAvgTime.slice(0,10);
+      sortedDescendingArray = processBarChartAvgTime.slice(0,10);
       processBarChartAvgTime = sortedDescendingArray;
   }
 
@@ -117,7 +117,7 @@ for (var i in listProcess.data.data){
       for(; j >= 0 && processBarChartAvgTime[j][1] > temp; --j) {
         processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
       }
-      processBarChartAvgTime[j+1][1]= temp;
+      processBarChartAvgTime[j+1][1] = temp;
     }
   }
   //Sort the process array according to the longest time duration
@@ -129,7 +129,7 @@ for (var i in listProcess.data.data){
       for(; j >= 0 && processBarChartAvgTime[j][1] < temp; --j) {
         processBarChartAvgTime[j+1][1] = processBarChartAvgTime[j][1];
       }
-      processBarChartAvgTime[j+1][1]= temp;
+      processBarChartAvgTime[j+1][1] = temp;
     }
   }
 
@@ -137,28 +137,28 @@ for (var i in listProcess.data.data){
   var avgTimeDataPerProcess = {};
   for (var j in distListProcess.data.data){
 
-    var processName=distListProcess.data.data[j].id;
+    var processName = distListProcess.data.data[j].id;
     //Gets the completed task instances of each completed process
-    var taskList=get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId=" + processName ,null, headers, "json" );
+    var taskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId=" + processName ,null, headers, "json" );
 
     var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
   
-    taskArray ={};
+    taskArray =  {};
     var keyList = [];
-    var taskInstanceCountArray=[];
+    var taskInstanceCountArray = [];
 
   for(var i in taskList.data.data){
     
-       var taskName= taskList.data.data[i].name;
-       var taskDuration=taskList.data.data[i].durationInMillis;
-       var taskKey= taskList.data.data[i].taskDefinitionKey;
+       var taskName = taskList.data.data[i].name;
+       var taskDuration = taskList.data.data[i].durationInMillis;
+       var taskKey = taskList.data.data[i].taskDefinitionKey;
        //Stores the task key and duration as key-value pairs
        if(taskArray[taskKey] > 0) {
             taskArray[taskKey] = taskArray[taskKey] + taskDuration;
-            taskInstanceCountArray[taskKey] =taskInstanceCountArray[taskKey]+1;  
+            taskInstanceCountArray[taskKey] = taskInstanceCountArray[taskKey] + 1;
        }
        else{
-         taskArray[taskKey]=taskDuration;
+         taskArray[taskKey] = taskDuration;
          taskInstanceCountArray[taskKey] = 1;
          keyList.push([taskKey]);
 
@@ -184,7 +184,7 @@ for (var i in listProcess.data.data){
     //Select the process to display the average time duration of tasks
     var update = request.getParameter("update");
     if(update != null && update === "true"){
-       var resultArray=[];
+       var resultArray = [];
        var x = request.getParameter("id");
 
       for (subkey in avgTimeDataPerProcess[x]){
