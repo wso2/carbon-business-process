@@ -92,7 +92,7 @@
    		<div class="col-lg-8">
    			<span class="float-left padding-right">Select File:</span>
    			<div class="float-left">
-   				<input type="file" id="files" name="file" />
+   				<input type="file" id="files" name="file" onchange="javascript:document.getElementById('name').value = this.value.split(/[\/\\]/).pop();"/>
    			</div>
    		</div>
    		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button></div>
