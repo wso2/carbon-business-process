@@ -124,7 +124,7 @@ public class AnalyticsPublishServiceUtils {
         }
         if (historicTaskInstanceList != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Write BPMN task instance to the carbon registry..."+historicTaskInstanceList.toString());
+                log.debug("Write BPMN task instance to the carbon registry..." + historicTaskInstanceList.toString());
             }
             writeTaskEndTimeToRegistry(historicTaskInstanceList);
             return getBPMNTaskInstances(historicTaskInstanceList);
@@ -218,7 +218,7 @@ public class AnalyticsPublishServiceUtils {
      */
     private void writePublishTimeToRegistry(
             List<HistoricProcessInstance> historicProcessInstanceList) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("Start writing last completed process instance publish time...");
         }
         Date lastProcessInstancePublishTime =

@@ -128,10 +128,10 @@ public class BPMNDataReceiverConfig {
         OMElement configElement = AXIOMUtil.stringToOM(configContent);
         Iterator beans = configElement.getChildrenWithName(new QName(AnalyticsPublisherConstants.SPRING_NAMESPACE,
                 AnalyticsPublisherConstants.BEAN));
-        while (beans.hasNext()){
+        while (beans.hasNext()) {
             OMElement bean = (OMElement) beans.next();
             String beanId = bean.getAttributeValue(new QName(null, AnalyticsPublisherConstants.BEAN_ID));
-            if(AnalyticsPublisherConstants.BEAN_ID_VALUE.equals(beanId)){
+            if (AnalyticsPublisherConstants.BEAN_ID_VALUE.equals(beanId)) {
                 Iterator beanProps = bean.getChildrenWithName(new QName(AnalyticsPublisherConstants.SPRING_NAMESPACE,
                         AnalyticsPublisherConstants.PROPERTY));
                 while (beanProps.hasNext()) {
@@ -139,7 +139,7 @@ public class BPMNDataReceiverConfig {
                     if (AnalyticsPublisherConstants.ACTIVATE.
                             equals(beanProp.getAttributeValue(new QName(null, AnalyticsPublisherConstants.NAME)))) {
                         String value = beanProp.getAttributeValue(new QName(null, AnalyticsPublisherConstants.VALUE));
-                        if(AnalyticsPublisherConstants.TRUE.equals(value)){
+                        if (AnalyticsPublisherConstants.TRUE.equals(value)) {
                             return true;
                         }
                     }
