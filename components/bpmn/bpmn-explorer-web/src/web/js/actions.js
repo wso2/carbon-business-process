@@ -311,3 +311,40 @@ function processSearch(){
 
 
 }
+
+function selectProcessForChart(){
+    var x= document.getElementById("selectProcess").value;
+    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&id=" + x ;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array= eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+            function drawChart(data) {
+                var dataArr=[['Task Key', 'Avg Duration']];
+                for(var i=0;i<data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1]]);
+
+                }
+
+                var data = google.visualization.arrayToDataTable(dataArr);
+
+                var options = {
+                    title:x,
+                    pieHole: 0.6,
+                    pieSliceTextStyle: {
+                        color: 'black'
+                    }
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('taskDurationChart'));
+                chart.draw(data, options);
+            }
+        }
+    });
+}
