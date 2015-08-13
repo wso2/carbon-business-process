@@ -244,7 +244,7 @@
                                 <time id="time">
                                     <script>
                                         var d = new Date("<%=commentList[i].NS1_NS::addedTime.text()%>");
-                                        document.write(d);
+                                        document.write(d.toDateString() +  ' ' + d.toLocaleTimeString());
                                     </script>
                                 </time>
                                 <a href="#additionalInfoSection" onclick="deleteComment(<%=id%>, <%=commentID%>)">
@@ -301,9 +301,9 @@
                                         </small></p>
                                         <p><small><%=taskAbstract.NS1_NS::status.text()%></small></p>
                                         <p><small><%=taskAbstract.NS1_NS::priority.text()%></small></p>
-                                        <p><small><%=taskAbstract.NS1_NS::createdTime.text()%></small></p>
-                                        <p><small><%=taskAbstract.NS1_NS::activationTime.text()%></small></p>
-                                        <p><small><%=taskAbstract.NS1_NS::updatedTime.text()%></small></p>
+                                        <p><small><%print(formatDate(taskAbstract.NS1_NS::createdTime.text()));%></small></p>
+                                        <p><small><%print(formatDate(taskAbstract.NS1_NS::activationTime.text()));%></small></p>
+                                        <p><small><%print(formatDate(taskAbstract.NS1_NS::updatedTime.text()));%></small></p>
                                     </td>
                                 </tr>
                             </tbody>
