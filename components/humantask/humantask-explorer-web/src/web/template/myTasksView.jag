@@ -48,7 +48,7 @@ function updateActiveStatusNavTab(status, button){
                 <br/>
                 <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="mytasks?status_query=FAILED">Failed </a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "OBSOLETE")%>><a href="mytasks?status_query=OBSOLETE">OBSOLETE </a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "OBSOLETE")%>><a href="mytasks?status_query=OBSOLETE">Obsolete </a></li>
               </ul>
             </div>
 
