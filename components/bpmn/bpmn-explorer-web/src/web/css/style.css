@@ -888,6 +888,15 @@ i.cu-btn-exp-col {
     border-color: #be2d28;
     border-radius: 0;
 }
+
+.btn-info.disabled {
+    cursor:not-allowed;
+    background: #C2C2C2;
+    border-color: #C2C2C2;
+    color:#333333;
+
+}
+
 .btn-info:hover{
     background: #343434;
     border-color: #343434;

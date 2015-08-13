@@ -57,12 +57,19 @@ if (attachments) {
     var attachmentCount = attachments.length;
     var paginatePageCount = Math.ceil(attachmentCount / 10);
 
-}
-else {
+} else {
     if (log.isDebugEnabled()) {
         log.debug("No attachments found for task" + id);
     }
 }
+
+//get task meta info
+var taskInfo = get(httpUrl + "/bpmn/runtime/tasks/" + id, null, headers, "json").data;
+if (log.isDebugEnabled()) {
+    log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/runtime/tasks/" + id);
+    log.debug("Task meta info:" +stringify(taskInfo));
+}
+
 
 var taskDesc = task.description;
 if (taskDesc == null) {
@@ -76,9 +83,19 @@ var taskName = task.name;
 if (taskName == null) {
     taskName = "Not available";
 }
+var processState = 'ACTIVE';
+var taskInputsDisabled = ''; // this is used to disable user inputs when process instance is in suspended state
+if (taskInfo.suspended === true) {
+    processState = 'SUSPENDED';
+    taskInputsDisabled = 'disabled';
+}
 var taskData = {
+    id: task.id,
+    processInstanceId: task.processInstanceId,
+    processState: processState,
     name: taskName,
     desc: taskDesc,
+    priority: task.priority,
     pid: task.processDefinitionId,
     owner: taskOwner,
     assignee: task.assignee,
