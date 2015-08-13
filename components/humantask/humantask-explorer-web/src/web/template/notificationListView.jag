@@ -20,7 +20,7 @@
 <div class="row">
  <div class="panel-inbox">
     <!-- Default panel contents -->
-    <div class=" margin-left-double table-title">Claimble Tasks</div>
+    <div class=" margin-left-double table-title">Notifications List</div>
     <div class="table-body margin-left-double">
         <!-- Table -->
         <table class="table white-bg">
