@@ -128,11 +128,11 @@
 		<%
 			var startProcess = request.getParameter("startProcess");
 			var errorProcess = request.getParameter("errorProcess");
-			if(startProcess != null && startProcess != ""){
+			if (startProcess != null && startProcess != "") {
 				%>
 					<script>
 						window.onload = function() {
-							$('.processStatus').html("<b>Process Started:</b> <%=startProcess%>");
+							$('.processStatus').html("<b>Process Started: </b> <%=startProcess%>");
 							$('#processStart').modal('show');
 							if (typeof (history.pushState) != "undefined") {
 								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
@@ -143,11 +143,21 @@
 						}
 					</script>
 				<%
-			}
-			if(errorProcess != null && errorProcess != ""){
+			} else if (errorProcess != null && errorProcess != "") {
+				var errorMessage = request.getParameter("errorMessage");
 				%>
-					$('.processStatus').html("Error starting process");
-					$('#processStart').modal('show');
+					<script>
+						window.onload = function() {
+							$('#processStartErrorMsg').html("<b>Error starting process: </b><%=errorMessage%>");
+							$('#processStartError').modal('show');
+							if (typeof (history.pushState) != "undefined") {
+								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
+								history.pushState(obj, obj.Title, obj.Url);
+							} else {
+								alert("Browser does not support HTML5.");
+							}
+						}
+					</script>
 				<%
 			}
 		%>
@@ -179,6 +189,7 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     	</div><!-- /.modal -->
+
     	<div class="modal fade bs-example-modal-sm" id="processStart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -191,5 +202,24 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     	</div><!-- /.modal -->
+
+    	<div class="modal fade bs-example-modal-sm" id="processStartError" tabindex="-1" role="dialog" aria-labelledby="processStartErrorLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="processStartErrorLabel" style="color: #a94442;"><span class="processStatusError">Error Occured</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left">
+                        <p id="processStartErrorMsg" style="text-align:center"></p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="text-align:center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    	</div><!-- /.modal -->
+
 	</div>
 </div	
