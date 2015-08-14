@@ -22,32 +22,31 @@ var headers = {"Authorization": "Basic " + auth,
 };
 var formGenTool = require("/assets/dynamicFormGen.js");
 var formData = get(httpUrl + "/bpmn/process-definition/" + id + "/properties", null, headers, "json").data;
+if (formData.data == undefined && formData.errorMessage != undefined) {
+    response.sendRedirect("process?errorProcess=" + id + "&errorMessage=" + formData.errorMessage);
+} else {
+    if (formData.data.length <= 0) {
+        var url = "/bpmn/runtime/process-instances";
+        var body = {
+            "processDefinitionId": id
+        };
+        var result = post(httpUrl + url, JSON.stringify(body), headers, "application/json");
 
-if (formData.data.length <= 0) {
-    var url = "/bpmn/runtime/process-instances";
-    var body = {
-        "processDefinitionId": id
-    };
-    var result = post(httpUrl + url, JSON.stringify(body), headers, "application/json");
+        result = parse(result.data);
+        if (result.error) {
+            if (log.isDebugEnabeld()) {
+                var errorCode = result.xhr().statusCode();
 
-    result = parse(result.data);
-    if (result.error) {
-        if (log.isDebugEnabeld()) {
-            var errorCode = result.xhr().statusCode();
-
-            log.debug("Unable to start process"+ " " + id + " : " + errorCode);
-        }
-        response.sendRedirect("process?errorProcess=" + id);
+                log.debug("Unable to start process " + id + " : " + errorCode);
+            }
+            response.sendRedirect("process?errorProcess=" + id);
+        } else {
+            var successMessage = "Process started";
+            session.put("processStatus", successMessage);
+            response.sendRedirect("process?startProcess=" + id);
+        }    
+    } else {
+        var formContent = formGenTool.generateForm(formData.data);
     }
-    else {
-        var successMessage = "Process started";
-        session.put("processStatus", successMessage);
-        response.sendRedirect("process?startProcess=" + id);
-    }    
 }
-
-else {
-    var formContent = formGenTool.generateForm(formData.data);
-}
-
 %>
