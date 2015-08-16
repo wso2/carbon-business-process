@@ -39,62 +39,62 @@ if (log.isDebugEnabled()) {
 var paginatePageCount = Math.ceil(processCount.total / 10);
 */
 try {
-	var list = [];
+    var list = [];
 
-	var processes = get( httpUrl + "/bpmn/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc"
-		,null, headers, "json" ).data;
+    var processes = get( httpUrl + "/bpmn/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc"
+        ,null, headers, "json" ).data;
 
-	if (log.isDebugEnabled()) {
-	    log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc");
-	    log.debug("BPS BPMN REST API response: " +stringify(processes));
-	}
-	//Check for error response
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/repository/process-definitions?sort=name&start=" + start + "&size=10&order=asc");
+        log.debug("BPS BPMN REST API response: " +stringify(processes));
+    }
+    //Check for error response
     if (processes.errorMessage != undefined) {
         throw "Error " + processes.statusCode + " : " + processes.errorMessage;
     }
 
-	var paginatePageCount = Math.ceil(processes.total / 10);
+    var paginatePageCount = Math.ceil(processes.total / 10);
 
-	for (var j=0; j<processes.data.length; j++) {
-		if(processes.data[j].diagramResource == null){
-	        imageUrl = "not supported";
-	    }else{
-	    	var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(processes.data[j].id));
-	    	if(BPSResponseXML == null || BPSResponseXML == ""){
-			   if (log.isDebugEnabled()) {
-			       log.debug('Session timed out for request' + wsRequest);
-			   }
-			   session.put('authSuccess', false);
-			   response.sendRedirect('login');
-			}
-			if (log.isDebugEnabled()) {
-			    log.debug('BPS RESPONSE : ' + BPSResponseXML);
-			}
-	        var imageData = BPSResponseXML.toString().split(":return")[1];
-			var imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
-	    }
-	    var depId = processes.data[j].deploymentId;
-	    var deployment = get( httpUrl + "/bpmn/repository/deployments/" + depId ,null, headers, "json" ).data;
+    for (var j=0; j<processes.data.length; j++) {
+        if(processes.data[j].diagramResource == null){
+            imageUrl = "not supported";
+        }else{
+            var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(processes.data[j].id));
+            if(BPSResponseXML == null || BPSResponseXML == ""){
+               if (log.isDebugEnabled()) {
+                   log.debug('Session timed out for request' + wsRequest);
+               }
+               session.put('authSuccess', false);
+               response.sendRedirect('login');
+            }
+            if (log.isDebugEnabled()) {
+                log.debug('BPS RESPONSE : ' + BPSResponseXML);
+            }
+            var imageData = BPSResponseXML.toString().split(":return")[1];
+            var imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
+        }
+        var depId = processes.data[j].deploymentId;
+        var deployment = get( httpUrl + "/bpmn/repository/deployments/" + depId ,null, headers, "json" ).data;
 
-	    if (log.isDebugEnabled()) {
-		    log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/repository/deployments/" + depId);
-		    log.debug("BPS BPMN REST API response: " +stringify(processes));
-		}
-	    //Check for error response
-	    if (deployment.errorMessage != undefined) {
-	        throw "Error " + deployment.statusCode + " : " + deployment.errorMessage;
-	    }
+        if (log.isDebugEnabled()) {
+            log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/repository/deployments/" + depId);
+            log.debug("BPS BPMN REST API response: " +stringify(processes));
+        }
+        //Check for error response
+        if (deployment.errorMessage != undefined) {
+            throw "Error " + deployment.statusCode + " : " + deployment.errorMessage;
+        }
 
-	    var packageName = deployment.name + "-" + depId;
+        var packageName = deployment.name + "-" + depId;
 
-		list.push({
-			processName: processes.data[j].name,
-			processId: processes.data[j].id,
-			packageName: packageName,
-			version: processes.data[j].version,
-			imageUrl: imageUrl
-		});
-	}
+        list.push({
+            processName: processes.data[j].name,
+            processId: processes.data[j].id,
+            packageName: packageName,
+            version: processes.data[j].version,
+            imageUrl: imageUrl
+        });
+    }
 } catch (e) {
     if (log.isDebugEnabled()) {
         log.debug("User Error Occured : " + e);
