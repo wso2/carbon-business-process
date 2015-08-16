@@ -13,6 +13,12 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="errorMsg"><%=commonErrorMessage%></p>
+    </div>
+</div>
 <div class="col-sm-12">
 	<!--ol class="breadcrumb">
 	  <li><a href="stats">Home</a></li>
