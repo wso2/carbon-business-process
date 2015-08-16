@@ -20,89 +20,121 @@ var start = 0;
 var MAX_SIZE = 10; //Max count of data per page
 
 var headers = {"Authorization": "Basic " + auth};
-var task = get(httpUrl + "/bpmn/task/" + id, null, headers, "json").data;
 
-if (log.isDebugEnabled()) {
-    log.debug("BPS BPMN REST API request" + httpUrl + "/bpmn/task/" + id);
-    log.debug("BPS BPMN REST API response:" + stringify(task));
-}
-//for attachments table
-var pagination = request.getParameter("pagination");
-if (pagination == null || pagination == "") {
-    pagination = 1;
-}
-if (pagination > 0) {
-    start = (pagination - 1) * 10;
-}
+try {
+    var task = get(httpUrl + "/bpmn/task/" + id, null, headers, "json").data;
 
-var attachments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments", null, headers, "json").data;
-var attachmentList = [];
-if (attachments) {
-    for (var i = start; (i < attachments.length) && (i < start + 10); i++) {
-        var attachmentId = JSON.parse(attachments[i].id);
-        var attachmentName = attachments[i].name;
-        var attachmentType = attachments[i].type;
-        var contentUrl = attachments[i].contentUrl;
-
-        //
-        attachmentList.push({
-            id: attachmentId,
-            name: attachmentName,
-            type: attachmentType,
-            url: contentUrl
-        });
-
-    }
-
-    var attachmentCount = attachments.length;
-    var paginatePageCount = Math.ceil(attachmentCount / 10);
-
-} else {
     if (log.isDebugEnabled()) {
-        log.debug("No attachments found for task" + id);
+        log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/task/" + id);
+        log.debug("BPS BPMN REST API response: " + stringify(task));
     }
-}
 
-//get task meta info
-var taskInfo = get(httpUrl + "/bpmn/runtime/tasks/" + id, null, headers, "json").data;
-if (log.isDebugEnabled()) {
-    log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/runtime/tasks/" + id);
-    log.debug("Task meta info:" +stringify(taskInfo));
-}
+    //Check for error response
+    if (task.errorMessage != undefined) {
+        throw "Error " + task.statusCode + " : " + task.errorMessage;
+    }
 
+    //for attachments table
+    var pagination = request.getParameter("pagination");
+    if (pagination == null || pagination == "") {
+        pagination = 1;
+    }
+    if (pagination > 0) {
+        start = (pagination - 1) * 10;
+    }
 
-var taskDesc = task.description;
-if (taskDesc == null) {
-    taskDesc = "Description not available";
-}
-var taskOwner = task.owner;
-if (taskOwner == null) {
-    taskOwner = "Not available";
-}
-var taskName = task.name;
-if (taskName == null) {
-    taskName = "Not available";
-}
-var processState = 'ACTIVE';
-var taskInputsDisabled = ''; // this is used to disable user inputs when process instance is in suspended state
-if (taskInfo.suspended === true) {
-    processState = 'SUSPENDED';
-    taskInputsDisabled = 'disabled';
-}
-var taskData = {
-    id: task.id,
-    processInstanceId: task.processInstanceId,
-    processState: processState,
-    name: taskName,
-    desc: taskDesc,
-    priority: task.priority,
-    pid: task.processDefinitionId,
-    owner: taskOwner,
-    assignee: task.assignee,
-    subtask: task.subtaskList
-};
-var formGenTool = require("/assets/dynamicFormGen.js");
-var formData = get(httpUrl + "/bpmn/form/" + id + "/properties", null, headers, "json").data;
-var formContent = formGenTool.generateForm(formData.data, false);
+    var attachments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments", null, headers, "json").data;
 
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST request: "+ httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments");
+        log.debug("BPS BPMN REST API response: " +stringify(attachments));
+    }
+
+    //Check for error response
+    if (attachments.errorMessage != undefined) {
+        throw "Error " + attachments.statusCode + " : " + attachments.errorMessage;
+    }
+
+    var attachmentList = [];
+    if (attachments) {
+        for (var i = start; (i < attachments.length) && (i < start + 10); i++) {
+            var attachmentId = JSON.parse(attachments[i].id);
+            var attachmentName = attachments[i].name;
+            var attachmentType = attachments[i].type;
+            var contentUrl = attachments[i].contentUrl;
+
+            //
+            attachmentList.push({
+                id: attachmentId,
+                name: attachmentName,
+                type: attachmentType,
+                url: contentUrl
+            });
+
+        }
+
+        var attachmentCount = attachments.length;
+        var paginatePageCount = Math.ceil(attachmentCount / 10);
+
+    } else {
+        if (log.isDebugEnabled()) {
+            log.debug("No attachments found for task" + id);
+        }
+    }
+
+    //get task meta info
+    var taskInfo = get(httpUrl + "/bpmn/runtime/tasks/" + id, null, headers, "json").data;
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/runtime/tasks/" + id);
+        log.debug("BPS BPMN REST API response: " +stringify(taskInfo));
+    }
+
+    //Check for error response
+    if (taskInfo.errorMessage != undefined) {
+        throw "Error " + taskInfo.statusCode + " : " + taskInfo.errorMessage;
+    }
+
+    var taskDesc = task.description;
+    if (taskDesc == null) {
+        taskDesc = "Description not available";
+    }
+    var taskOwner = task.owner;
+    if (taskOwner == null) {
+        taskOwner = "Not available";
+    }
+    var taskName = task.name;
+    if (taskName == null) {
+        taskName = "Not available";
+    }
+    var processState = 'ACTIVE';
+    var taskInputsDisabled = ''; // this is used to disable user inputs when process instance is in suspended state
+    if (taskInfo.suspended === true) {
+        processState = 'SUSPENDED';
+        taskInputsDisabled = 'disabled';
+    }
+    var taskData = {
+        id: task.id,
+        processInstanceId: task.processInstanceId,
+        processState: processState,
+        name: taskName,
+        desc: taskDesc,
+        priority: task.priority,
+        pid: task.processDefinitionId,
+        owner: taskOwner,
+        assignee: task.assignee,
+        subtask: task.subtaskList
+    };
+    var formGenTool = require("/assets/dynamicFormGen.js");
+    var formData = get(httpUrl + "/bpmn/form/" + id + "/properties", null, headers, "json").data;
+    var formContent = formGenTool.generateForm(formData.data, false);
+
+} catch (e) {
+    if (log.isDebugEnabled()) {
+        log.debug("User Error Occured : " + e);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = getCommonErrorContent(e);
+    errorDisplayEnable = '';
+}
 %>

@@ -13,6 +13,14 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+<!--Area to display common errors-->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="errorMsg"><%=commonErrorMessage%></p>
+    </div>
+</div>
+<%if (commonErrorMessage == null) {%>
 <div class="row">
  	<div class="panel-inbox">
 	<!--ol class="breadcrumb">
@@ -212,3 +220,5 @@ else{%>
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 </div>
+
+<%}%>

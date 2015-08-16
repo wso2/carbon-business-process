@@ -125,22 +125,36 @@ if (request.getQueryString() != null) {
 		log.debug("BPMN Rest API Request: " + requestUrl);
 	}
 
-	//make rest call
-	var taskListResponse = get(requestUrl, null, headers, "json").data;
-	var numOfTasks = 0;//used to display tasks in searchView 
-	var paginatePageCount = 0; //used to display tasks in pagination 
+	try {
+		//make rest call
+		var taskListResponse = get(requestUrl, null, headers, "json").data;
+		var numOfTasks = 0;//used to display tasks in searchView 
+		var paginatePageCount = 0; //used to display tasks in pagination 
 
-	if (log.isDebugEnabled()) {
-		log.debug("BPMN Rest API Response: " + stringify(taskListResponse));
-	}
-
-	if (taskListResponse.data !== undefined) {
-		numOfTasks = taskListResponse.data.length;
-		//calculate pagination page count
-		paginatePageCount = parseInt(taskListResponse.total / 10);
-		if ((taskListResponse.total % pageSize) > 0) {
-			paginatePageCount += 1;
+		if (log.isDebugEnabled()) {
+			log.debug("BPMN Rest API Response: " + stringify(taskListResponse));
 		}
+
+		//Check for error response
+	    if (taskListResponse.errorMessage != undefined) {
+	        throw "Error " + taskListResponse.statusCode + " : " + taskListResponse.errorMessage;
+	    }
+
+		if (taskListResponse.data !== undefined) {
+			numOfTasks = taskListResponse.data.length;
+			//calculate pagination page count
+			paginatePageCount = parseInt(taskListResponse.total / 10);
+			if ((taskListResponse.total % pageSize) > 0) {
+				paginatePageCount += 1;
+			}
+		}
+	} catch (e) {
+		if (log.isDebugEnabled()) {
+	        log.debug("User Error Occured : " + e);
+	    }
+	    //Enable and display error in common error display area in view
+	    commonErrorMessage = getCommonErrorContent(e);
+	    errorDisplayEnable = '';
 	}
 }
 

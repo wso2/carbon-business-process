@@ -17,8 +17,13 @@
  * under the License.
  */
  %>
-
- <div class="row">   
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="errorMsg"><%=commonErrorMessage%></p>
+    </div>
+</div>
+ <div class="row">
     <div class="panel-inbox">
         <div class=" margin-left-double table-title">Advance Search</div>
         <div class="table-body margin-left-double">
@@ -180,7 +185,7 @@
     </div>
 </div>
 
-<% if (queryReceived == true && numOfTasks > 0) { %>
+<% if (commonErrorMessage == null && queryReceived == true && numOfTasks > 0) { %>
 <div class="row">
     <div class="panel-inbox">
             
