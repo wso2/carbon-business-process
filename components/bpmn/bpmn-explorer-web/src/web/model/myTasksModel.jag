@@ -25,25 +25,44 @@ if(pagination > 0){
 var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
 var task = [];
-var tasks = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+try {
+	var tasks = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10", null, headers, "json" ).data;
+	if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10");
+        log.debug("BPS BPMN REST API response: " + stringify(tasks));
+    }
 
-for(var i=0; i < tasks.data.length; i++){
-	var dueDate = tasks.data[i].dueDate;
-	if(dueDate == null){ dueDate = "Not available"; }
-	var taskName = tasks.data[i].name;
-	if(taskName == null){ taskName = "Not available"; }
-	task.push({
-		id:tasks.data[i].id,
-		name:taskName,
-		date:dueDate
-	});
+    //Check for error response
+    if (tasks.errorMessage != undefined) {
+        throw "Error " + tasks.statusCode + " : " + tasks.errorMessage;
+    }
+	for(var i=0; i < tasks.data.length; i++){
+		var dueDate = tasks.data[i].dueDate;
+		if(dueDate == null){ dueDate = "Not available"; }
+		var taskName = tasks.data[i].name;
+		if(taskName == null){ taskName = "Not available"; }
+		task.push({
+			id:tasks.data[i].id,
+			name:taskName,
+			date:dueDate
+		});
+	}
+
+	/* COMMENTED SINCE TOTAL TASK COUNT IS RETURED IN ABOVE REST RESPONSE, SINCE NO NEED TO RECALL THIS REST CALL
+	var taskCount = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
+	
+	var paginatePageCount = Math.ceil(taskCount / 10);
+	*/
+	var paginatePageCount = Math.ceil(tasks.total / 10);
+
+} catch (e) {
+    if (log.isDebugEnabled()) {
+        log.debug("User Error Occured : " + e);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = getCommonErrorContent(e);
+    errorDisplayEnable = '';
 }
-
-
-
-var taskCount = get( httpUrl + "/bpmn/runtime/tasks?assignee=" + user + "&active=true" ,null, headers, "json" ).data.total;
-var paginatePageCount = Math.ceil(taskCount / 10);
-
 //Set current active veiw as myTasks view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
 myTasksNavActive = 'class="active"';

@@ -19,6 +19,7 @@
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
+<%if (commonErrorMessage == null) {%>
 <div class="row">
  	<div class="panel-inbox">
 	<!--ol class="breadcrumb">
@@ -77,3 +78,4 @@
 		</div>
 	</div>
 </div>
+<%}%>

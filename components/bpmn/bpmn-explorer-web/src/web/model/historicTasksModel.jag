@@ -25,18 +25,45 @@ if(pagination > 0){
 var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
 var task = [];
-var tasks = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10" ,null, headers, "json" ).data;
-for(var i=0; i < tasks.data.length; i++){
-	task.push({
-		id:tasks.data[i].id,
-		processDefinitionId:tasks.data[i].processDefinitionId,
-		startTime:tasks.data[i].startTime,
-		endTime:tasks.data[i].endTime
-	});
-}
-var taskCount = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&finished=true" ,null, headers, "json" ).data.total;
-var paginatePageCount = Math.ceil(taskCount / 10);
 
+try {
+	var tasks = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10" ,null, headers, "json" ).data;
+
+	if (log.isDebugEnabled()) {
+	    log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10");
+	    log.debug("BPS BPMN REST API response: " +stringify(tasks));
+	}
+	//Check for error response
+    if (tasks.errorMessage != undefined) {
+        throw "Error " + tasks.statusCode + " : " + tasks.errorMessage;
+    }
+    
+	for(var i=0; i < tasks.data.length; i++){
+		task.push({
+			id:tasks.data[i].id,
+			processDefinitionId:tasks.data[i].processDefinitionId,
+			startTime:tasks.data[i].startTime,
+			endTime:tasks.data[i].endTime
+		});
+	}
+
+	/* COMMENTED SINCE TOTAL TASK COUNT IS RETURED IN ABOVE REST RESPONSE, SINCE NO NEED TO RECALL THIS REST CALL
+	var taskCount = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&finished=true" ,null, headers, "json" ).data.total;
+	if (log.isDebugEnabled()) {
+	    log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&finished=true");
+	    log.debug("BPS BPMN REST API response: " +stringify(taskCount));
+	}
+	var paginatePageCount = Math.ceil(taskCount / 10);
+	*/
+	var paginatePageCount = Math.ceil(tasks.total / 10);
+} catch (e) {
+	if (log.isDebugEnabled()) {
+        log.debug("Error Occured : " + e);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = getCommonErrorContent(e);
+    errorDisplayEnable = '';
+}
 //Set current active veiw as completed task view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
 completedTasksNavActive = 'class="active"';

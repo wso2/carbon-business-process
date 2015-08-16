@@ -17,22 +17,55 @@
 var id = request.getParameter("id");
 var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
-var task = get( httpUrl + "/bpmn/task/" + id ,null, headers, "json" ).data;
-var taskDesc = task.description;
-if(taskDesc == null) { taskDesc = "Description not available"; }
-var taskOwner = task.owner;
-if(taskOwner == null) { taskOwner = "Not available"; }
-var taskName = task.name;
-if(taskName == null) { taskName = "Not available"; }
-var taskData = {
-	name:taskName,
-	desc:taskDesc,
-	pid:task.processDefinitionId,
-	owner:taskOwner,
-	assignee:task.assignee,
-	subtask:task.subtaskList
-};
-var formGenTool = require("/assets/dynamicFormGen.js");
-var formData = get( httpUrl + "/bpmn/form/" + id + "/properties" ,null, headers, "json" ).data;
-var formContent = formGenTool.generateForm(formData.data, true);
+try {
+	var task = get( httpUrl + "/bpmn/task/" + id ,null, headers, "json" ).data;
+
+	if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/task/" + id);
+        log.debug("BPS BPMN REST API response: " +stringify(task));
+    }
+
+    //Check for error response
+    if (task.errorMessage != undefined) {
+        throw "Error " + task.statusCode + " : " + task.errorMessage;
+    }
+
+	var taskDesc = task.description;
+	if(taskDesc == null) { taskDesc = "Description not available"; }
+	var taskOwner = task.owner;
+	if(taskOwner == null) { taskOwner = "Not available"; }
+	var taskName = task.name;
+	if(taskName == null) { taskName = "Not available"; }
+	var taskData = {
+		name:taskName,
+		desc:taskDesc,
+		pid:task.processDefinitionId,
+		owner:taskOwner,
+		assignee:task.assignee,
+		subtask:task.subtaskList
+	};
+
+	var formGenTool = require("/assets/dynamicFormGen.js");
+	var formData = get( httpUrl + "/bpmn/form/" + id + "/properties" ,null, headers, "json" ).data;
+
+	if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/form/" + id + "/properties");
+        log.debug("BPS BPMN REST API response: " +stringify(formData));
+    }
+
+    //Check for error response
+    if (formData.errorMessage != undefined) {
+        throw "Error " + formData.statusCode + " : " + formData.errorMessage;
+    }
+
+	var formContent = formGenTool.generateForm(formData.data, true);
+	
+} catch (e) {
+    if (log.isDebugEnabled()) {
+        log.debug("User Error Occured : " + e);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = getCommonErrorContent(e);
+    errorDisplayEnable = '';
+}
 %>

@@ -39,7 +39,7 @@
 		    		<th>Action</th>
 		    	</tr>
 		    </thead>
-		    <% if (list.length > 0) { %>
+		    <% if (commonErrorMessage == null && list.length > 0) { %>
 		    <tbody>
 		    	<% var previous = list[0].processName; var count = 0;%>
 		    	<% for (var i=0; i<list.length; i++) { %>
