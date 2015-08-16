@@ -38,53 +38,53 @@ for(var j = 0; j < roles.length; j++){
 }
 
 try {
-	var tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+    var tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 
-	if (log.isDebugEnabled()) {
-	    log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10");
-	    log.debug("BPS BPMN REST API response: " + stringify(tasks));
-	}
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true&sort=id&order=asc&start=" + start + "&size=10");
+        log.debug("BPS BPMN REST API response: " + stringify(tasks));
+    }
 
-	//Check for error response
-	if (tasks.errorMessage != undefined) {
-	    throw "Error " + tasks.statusCode + " : " + tasks.errorMessage;
-	}
+    //Check for error response
+    if (tasks.errorMessage != undefined) {
+        throw "Error " + tasks.statusCode + " : " + tasks.errorMessage;
+    }
 
-	for(var i=0; i < tasks.data.length; i++){
-		var taskName = tasks.data[i].name;
-		if(taskName == null){ taskName = "Not available"; }
-		if(task.indexOf(tasks.data[i].id) == -1)
-		task.push({
-			id:tasks.data[i].id,
-			name:taskName,
-		});
-	}
+    for(var i=0; i < tasks.data.length; i++){
+        var taskName = tasks.data[i].name;
+        if(taskName == null){ taskName = "Not available"; }
+        if(task.indexOf(tasks.data[i].id) == -1)
+        task.push({
+            id:tasks.data[i].id,
+            name:taskName,
+        });
+    }
 
-	/*
-	According to the activiti documentation candidateUser includes both tasks where the user is an explicit candidate
-	for and task that are claimable by a group that the user is a member of.
-	Hence we do not need to get tasks of candidateGroups which may cause duplicate tasks in claimable task view.
-	 */
-	/*
-	tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
+    /*
+    According to the activiti documentation candidateUser includes both tasks where the user is an explicit candidate
+    for and task that are claimable by a group that the user is a member of.
+    Hence we do not need to get tasks of candidateGroups which may cause duplicate tasks in claimable task view.
+     */
+    /*
+    tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true&sort=id&order=asc&start=" + start + "&size=10" ,null, headers, "json" ).data;
 
-	for(var i=0; i < tasks.data.length; i++){
-		var taskName = tasks.data[i].name;
-		if(taskName == null){ taskName = "Not available"; }
-		if(task.indexOf(tasks.data[i].id) == -1)
-		task.push({
-			id:tasks.data[i].id,
-			name:taskName,
-		});
-	}
+    for(var i=0; i < tasks.data.length; i++){
+        var taskName = tasks.data[i].name;
+        if(taskName == null){ taskName = "Not available"; }
+        if(task.indexOf(tasks.data[i].id) == -1)
+        task.push({
+            id:tasks.data[i].id,
+            name:taskName,
+        });
+    }
 
-	var taskCount = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true" ,null, headers, "json" ).data.total;
-	*/
-	/* COMMENTED SINCE TOTAL TASK COUNT IS RETURED IN ABOVE REST RESPONSE, SINCE NO NEED TO RECALL THIS REST CALL
-	var taskCount = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true" ,null, headers, "json" ).data.total;
-	var paginatePageCount = Math.ceil(taskCount / 10);
-	*/
-	var paginatePageCount = Math.ceil(tasks.total / 10);
+    var taskCount = get( httpUrl + "/bpmn/runtime/tasks?candidateGroups=" + groups + "&active=true" ,null, headers, "json" ).data.total;
+    */
+    /* COMMENTED SINCE TOTAL TASK COUNT IS RETURED IN ABOVE REST RESPONSE, SINCE NO NEED TO RECALL THIS REST CALL
+    var taskCount = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true" ,null, headers, "json" ).data.total;
+    var paginatePageCount = Math.ceil(taskCount / 10);
+    */
+    var paginatePageCount = Math.ceil(tasks.total / 10);
 
 } catch (e) {
 
