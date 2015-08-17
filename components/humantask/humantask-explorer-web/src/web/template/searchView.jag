@@ -73,7 +73,8 @@
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="craetedDate">Created Date</label>
-                        <input id="craetedDate" name="craetedDate" type="datetime-local" class="form-control">
+                        <input id="craetedDate" name="craetedDate" type="text" class="form-control" 
+                                                        onfocus="setDatePicker('craetedDate')" placeholder="MM/DD/YYYY">
                     </div>
                 </div>
 
