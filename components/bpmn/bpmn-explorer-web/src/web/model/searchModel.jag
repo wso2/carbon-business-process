@@ -58,7 +58,7 @@ if (request.getQueryString() != null) {
     }
 
     if (request.getParameter("taskStatus") === "COMPLETED"){
-    
+
         searchActiveTasks = false;
         //newQueryString = '';
         var paramsWithSpecialChars = ''; //string that used to hold query parameters that
