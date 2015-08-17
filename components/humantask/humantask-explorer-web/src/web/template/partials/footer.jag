@@ -26,6 +26,8 @@
         <script src="js/actions.js"></script>
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/moment.min.js"></script>
+        <script src="js/daterangepicker.js"></script>
         <script>
             $("td:contains('null')").html($("td:contains('null')").html().replace("null", "Not available "));
         </script>

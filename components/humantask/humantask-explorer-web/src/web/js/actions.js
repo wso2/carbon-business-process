@@ -732,3 +732,19 @@ function skipTask(id) {
         }
     });
 }
+
+
+
+/**
+ Function to set date picker to date input elements
+ */
+function setDatePicker (dateElement) {
+    var elementID = '#' + dateElement;
+    $(elementID).daterangepicker({
+                                     singleDatePicker: true,
+                                     showDropdowns: true,
+                                     locale: {
+                                         format: 'MM/DD/YYYY'
+                                     }
+                                 });
+}
