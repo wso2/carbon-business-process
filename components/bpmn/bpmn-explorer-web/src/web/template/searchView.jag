@@ -165,14 +165,14 @@
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="startDate">Start Date</label>
-                        <input id="startDate" name="startDate" type="date" class="form-control">
+                        <input id="startDate" name="startDate" type="text" class="form-control" onfocus="setDatePicker('startDate')" placeholder="MM/DD/YYYY">
                         <input id="startDateISO" name="createdAfter" type="hidden" class="form-control">
                     </div>
                 </div>
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="endDate">End Date</label>
-                        <input id="endDate" name="endDate" type="date" class="form-control">
+                        <input id="endDate" name="endDate" type="text" class="form-control" onfocus="setDatePicker('endDate')" placeholder="MM/DD/YYYY">
                         <input id="endDateISO" name="createdBefore" type="hidden" class="form-control">
                     </div>
                 </div>
