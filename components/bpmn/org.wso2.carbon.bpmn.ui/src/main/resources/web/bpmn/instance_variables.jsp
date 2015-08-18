@@ -25,6 +25,10 @@
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNVariable" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="java.util.Collections" %>
+<%@ page import="java.util.Comparator" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Arrays" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -72,7 +76,15 @@
             </thead>
             <tbody>
                 <% if(variables != null && variables.length>0){ %>
-                <% for(BPMNVariable variable: variables){ %>
+                <%
+                    List<BPMNVariable> bpmnVariableList = Arrays.asList(variables);
+                    Collections.sort(bpmnVariableList, new Comparator<BPMNVariable>() {
+                        public int compare(BPMNVariable a, BPMNVariable b) {
+                            return a.getName().compareToIgnoreCase(b.getName());
+                        }
+                    });
+                %>
+                <% for(BPMNVariable variable: bpmnVariableList){ %>
                     <tr>
                         <td><%=variable.getName()%></td>
                         <td><%=variable.getValue()%></td>
