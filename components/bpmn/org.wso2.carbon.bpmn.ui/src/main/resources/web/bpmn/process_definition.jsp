@@ -25,11 +25,7 @@
 <%@ page import="org.wso2.carbon.bpmn.ui.WorkflowServiceClient" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment" %>
-<%@ page import="org.apache.axiom.om.OMElement" %>
-<%@ page import="javax.xml.namespace.QName" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
-<%@ page import="org.apache.axiom.om.util.AXIOMUtil" %>
-<%@ page import="javax.xml.stream.XMLStreamException" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
