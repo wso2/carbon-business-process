@@ -86,26 +86,38 @@
             </tbody>
         </table>
         <br/><br/>
+        <%
+            String imgString;
+            String titleKey;
+            try {
+                imgString = client.getProcessInstanceDiagram(instanceId);
+                titleKey = "bpmn.process.active.diagram";
+            } catch (Exception e) {
+                //could not load instance Diagram, try to load process diagram
+                try {
+                    String processId = client.getProcessInstanceById(instanceId).getProcessId();
+                    imgString = client.getProcessDiagram(processId);
+                    titleKey = "bpmn.process.diagram";
+                } catch (Exception e1) {
+                    //handled if imageString null
+                    titleKey = "bpmn.process.active.diagram";
+                    imgString = null;
+                }
+            }
+        %>
         <table class="styledLeft" id="moduleTable">
             <thead>
             <tr>
-                <th width="100%"><fmt:message key="bpmn.process.active.diagram"/></th>
+                <th width="100%"><fmt:message key="<%=titleKey%>"/></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <%
-                    try{
-                        String imgString = client.getProcessInstanceDiagram(instanceId);
-                %>
-                        <td><img src="<%=imgString%>"/></td>
-                <%
-                    } catch (Exception e){
-                %>
-                        <td><fmt:message key="error.loading.image"/></td>
-                <%
-                    }
-                %>
+                <% if (imgString != null) { %>
+                <td><img src="<%=imgString%>"/></td>
+                <% } else { %>
+                <td><fmt:message key="error.loading.image"/></td>
+                <% } %>
             </tr>
             </tbody>
         </table>
