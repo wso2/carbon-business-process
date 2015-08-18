@@ -222,6 +222,21 @@
         document.getElementById("variableName").value = "";
         document.getElementById("variableValue").value = "";
     }
+
+    //set datepicker for start date in advanced search
+    $(function() {
+        $( "#startAfter" ).datepicker({
+            showButtonPanel: true
+        });
+    });
+
+    //set datepicker for before date in advanced search
+    $(function() {
+        $( "#startBefore" ).datepicker({
+            showButtonPanel: true
+        });
+    });
+
 </script>
     <carbon:breadcrumb
             label="bpmn.instances.created"
@@ -301,13 +316,21 @@
             <tr>
                 <td><fmt:message key="bpmn.stated.after"/></td>
                 <td>
-                    <input type="date" id="startAfter" value="<%=startAfter%>"/>
+                    <input type="text" id="startAfter" value="<%if (startAfter == null) {
+                                                                    out.print("");
+                                                                } else {
+                                                                    out.print(startAfter);
+                                                                }%>" placeholder="mm/dd/yyyy"/>
                 </td>
             </tr>
             <tr>
                 <td><fmt:message key="bpmn.stated.before"/></td>
                 <td>
-                    <input type="date" id="startBefore" value="<%=startBefore%>"/>
+                    <input type="text" id="startBefore" value="<%if (startBefore == null) {
+                                                                    out.print("");
+                                                                 } else {
+                                                                    out.print(startBefore);
+                                                                 }%>" placeholder="mm/dd/yyyy"/>
                 </td>
             </tr>
             <tr>
