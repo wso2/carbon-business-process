@@ -121,7 +121,7 @@
         type: 'POST',
         url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteAllProcessInstances",
         success: function(data){
-            window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu";
+            window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_menu&state=completed";
            }
         });
         }
@@ -136,7 +136,7 @@
         type: 'POST',
         url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteProcessInstance&instanceID=" + iid,
         success: function(data){
-	        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu";
+	        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&state=completed";
            }
         });
         }
