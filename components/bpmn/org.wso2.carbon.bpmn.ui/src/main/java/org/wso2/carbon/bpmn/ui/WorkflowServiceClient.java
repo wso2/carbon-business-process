@@ -133,7 +133,7 @@ public class WorkflowServiceClient {
                                                        String value, int start, int size) {
         BPMNInstance[] bpmnInstances = null;
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date after = null;
         if (startAfter != null && !startAfter.equals("")) {
             try {

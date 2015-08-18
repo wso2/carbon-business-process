@@ -962,3 +962,8 @@ nav > li > a:hover, .nav > li > a:focus {
 .padding-left-none{padding-left: 0 !important;}
 
 .lable-wp{margin: 10px 0px; float: left; }
+
+
+.daterangepicker .calendar {
+    max-width: 306px;
+}

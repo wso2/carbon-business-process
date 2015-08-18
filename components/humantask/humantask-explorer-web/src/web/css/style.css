@@ -977,3 +977,7 @@ input[type="radio"], input[type="checkbox"] {
 .btn-sec:hover{ background: #be2d28;border-color: #be2d28; color: #fff;   }
 .list-group,.list-group-item:first-child,.list-group-item:last-child{border-radius: 0 !important;}
 .list-group-item:first-child{border-top: 0px;}
+
+.daterangepicker .calendar {
+    max-width: 306px;
+}
