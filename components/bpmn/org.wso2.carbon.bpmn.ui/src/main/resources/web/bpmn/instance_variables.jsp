@@ -47,7 +47,6 @@
         client = new WorkflowServiceClient(cookie, serverURL, configContext);
         bpmnInstance = client.getProcessInstanceById(instanceId);
         variables = bpmnInstance.getVariables();
-
     } catch (Exception e) {
         CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
 %>
