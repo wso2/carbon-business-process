@@ -121,7 +121,7 @@
         type: 'POST',
         url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteAllProcessInstances",
         success: function(data){
-            window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu";
+            window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_menu&state=completed";
            }
         });
         }
@@ -136,7 +136,7 @@
         type: 'POST',
         url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteProcessInstance&instanceID=" + iid,
         success: function(data){
-	        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu";
+	        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&state=completed";
            }
         });
         }
@@ -222,6 +222,21 @@
         document.getElementById("variableName").value = "";
         document.getElementById("variableValue").value = "";
     }
+
+    //set datepicker for start date in advanced search
+    $(function() {
+        $( "#startAfter" ).datepicker({
+            showButtonPanel: true
+        });
+    });
+
+    //set datepicker for before date in advanced search
+    $(function() {
+        $( "#startBefore" ).datepicker({
+            showButtonPanel: true
+        });
+    });
+
 </script>
     <carbon:breadcrumb
             label="bpmn.instances.created"
@@ -301,13 +316,21 @@
             <tr>
                 <td><fmt:message key="bpmn.stated.after"/></td>
                 <td>
-                    <input type="date" id="startAfter" value="<%=startAfter%>"/>
+                    <input type="text" id="startAfter" value="<%if (startAfter == null) {
+                                                                    out.print("");
+                                                                } else {
+                                                                    out.print(startAfter);
+                                                                }%>" placeholder="mm/dd/yyyy"/>
                 </td>
             </tr>
             <tr>
                 <td><fmt:message key="bpmn.stated.before"/></td>
                 <td>
-                    <input type="date" id="startBefore" value="<%=startBefore%>"/>
+                    <input type="text" id="startBefore" value="<%if (startBefore == null) {
+                                                                    out.print("");
+                                                                 } else {
+                                                                    out.print(startBefore);
+                                                                 }%>" placeholder="mm/dd/yyyy"/>
                 </td>
             </tr>
             <tr>
