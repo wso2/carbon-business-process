@@ -361,7 +361,11 @@
                         <td>
                             <a href=<%="instance_list_view.jsp?operation=instanceInfo&instanceID=" + bpmnInstance.getInstanceId()%>><%=bpmnInstance.getInstanceId()%></a>
                         </td>
-                        <td><%=bpmnInstance.getProcessName().toString()%></td>
+                        <td><%if(bpmnInstance.getProcessName()!=null) {
+                                    out.print(bpmnInstance.getProcessName().toString());
+                                } else {
+                                    out.print("Not Available");
+                                }%></td>
                         <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + bpmnInstance.getProcessId()%>><%=bpmnInstance.getProcessId()%></a></td>
                         <td><%=bpmnInstance.getStartTime().toString()%></td>
                         <% if (!finished) { %>
