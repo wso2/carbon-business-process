@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -77,6 +77,120 @@
       }
     </script>
 
+    
+    <script type="text/javascript">
+
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart(){
+        var data = google.visualization.arrayToDataTable([
+          ['User', 'No. of tasks completed todate'],
+          <% for(var j=0; j<userVsTaskCount.length; j++){ %>
+            <%=JSON.stringify(userVsTaskCount[j]) %>
+            <% if(j<userVsTaskCount.length){ %> ,<% } %>
+            <% } %>
+           ]);
+
+        var options = {
+          vAxis: {title: 'User',  titleTextStyle: { color: 'grey' }},
+          hAxis: {title: 'No. of tasks completed todate', titleTextStyle: {color: 'grey'}},
+          colors:['#be2d28'],
+          bar: {groupWidth: "40%"},
+
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('colChartUserVsTasks'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+
+    <script type="text/javascript">
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['User', 'Average time taken to complete tasks'],
+          <% for(var j=0; j<userResultArray.length; j++){ %>
+            <%=JSON.stringify(userResultArray[j]) %>
+            <% if(j<userResultArray.length){ %> ,<% } %>
+            <% } %>
+           ]);
+        var options = {
+          lineWidth:4,
+          pointSize:10,
+          vAxis:{title: "Average Time in Seconds"},
+          hAxis:{title: "Users"},
+          colors:['#be2d28']
+          
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('lineGraph'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+     <script type="text/javascript">
+      google.load("visualization", "1.1", {packages:["bar"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Months', 'Completed Tasks','Tasks Started'],
+          <% for(var j=0; j<arrayOfTaskCount.length; j++){ %>
+
+            <%=JSON.stringify(arrayOfTaskCount[j]) %>
+            <% if(j<arrayOfTaskCount.length){ %> ,<% } %>
+            <% } %>
+           ]);
+        var options = {
+          
+          bars: 'vertical',
+          vAxis: {format: 'decimal'},
+          bar: {groupWidth: "60%"}
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('taskVariationOverTime'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+   
+     <script type="text/javascript">
+      google.load("visualization", "1.1", {packages:["bar"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Months', 'Completed Processes','Started Processes'],
+          <% for(var j=0; j<arrayOfProcessCount.length; j++){ %>
+
+            <%=JSON.stringify(arrayOfProcessCount[j]) %>
+            <% if(j<arrayOfProcessCount.length){ %> ,<% } %>
+            <% } %>
+           ]);
+        var options = {
+          
+          bars: 'vertical',
+          vAxis: {format: 'decimal'},
+          bar: {groupWidth: "60%"},
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('processVariationOverTime'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
       <div class="col-lg-8 float-left">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Process Instance Count </div>
@@ -102,9 +216,20 @@
                    </select>                  
                  </form>
             <div id="barChartAvgTime" style="height: 100%"></div>
+            <br>
+            <div class="table-title"  style="width:100%">  User Vs No. Of Tasks Completed </div>
+            <div id="colChartUserVsTasks" style="height: 74%"></div>
+            <br>
+            <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
+            <div id="lineGraph" style="height: 74%"></div>
+            <br>
+            <div class="table-title"  style="width:100%"> Task Demand Variation Over Time </div>
+            <div id="taskVariationOverTime" style="height: 74%"></div>
+            <br>
+            <div class="table-title"  style="width:100%"> Process Demand Variation Over Time </div>
+            <div id="processVariationOverTime" style="height: 74%"></div>
       </div>
 
-      
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -175,7 +300,7 @@
                   <% } %>
                   </select>
                  </form>
-                  <div id="taskDurationChart" style="height:33%"></div>
+                  <div id="taskDurationChart" style="height:33%" > Select a process to view the task duration</div>
               </div>
     <% }else{ %>
       <br/>
