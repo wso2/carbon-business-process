@@ -313,9 +313,11 @@ function processSearch(){
 
 }
 
+//Average Task duration for each process
+
 function selectProcessForChart(){
-    var x= document.getElementById("selectProcess").value;
-    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&id=" + x ;
+    var x = document.getElementById("selectProcess").value;
+    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=taskduration&id=" + x ;
 
     $.ajax({
         type: 'GET',
@@ -323,13 +325,13 @@ function selectProcessForChart(){
         url: url,
         success: function (data) {
 
-            var array= eval('('+data+')');
+            var array = eval('('+data+')');
             google.load("visualization", "1", {packages:["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
-                var dataArr=[['Task Key', 'Avg Duration']];
-                for(var i=0;i<data.length;i++){
+                var dataArr = [['Task Key', 'Avg Duration']];
+                for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1]]);
 
                 }
@@ -350,6 +352,81 @@ function selectProcessForChart(){
     });
 }
 
+//User Performance Over time
+
+function selectUserForPerformance(){
+    var x = document.getElementById("selectUser").value;
+    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=userperformance&id=" + x ;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+            var array = eval('('+data+')');
+            google.load("visualization", "1.1", {packages:["bar"]});
+            google.setOnLoadCallback(drawChart(array));
+
+            function drawChart(data) {
+
+                var dataArr = [['Month', 'Completed Tasks', 'Started Tasks']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1], data[i][2]]);
+
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+
+                var options = {
+
+                    bars: 'vertical',
+                    vAxis: {format: 'decimal'},
+                    bar: {groupWidth: "60%"},
+                };
+
+                var chart = new google.charts.Bar(document.getElementById('taskOfUserVariation'));
+
+                chart.draw(data, options);
+            }
+        }
+    });
+}
+
+// Average duration of Processes
+
+function selectProcessForAvgTimeDuration(){
+    var x = document.getElementById("selectOption").value;
+    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=avgprocessduration&id=" + x ;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+            function drawChart(data) {
+                var dataArr = [['Process Name', 'Time Duration in Minutes']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1]]);
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+                var options = {
+                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28']
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
+                chart.draw(data, options);
+
+            }
+        }
+    });
+}
+
 /**
     Function to set date picker to date input elements
  */
@@ -363,3 +440,5 @@ function setDatePicker (dateElement) {
         }
     });
 }
+
+
