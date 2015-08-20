@@ -192,7 +192,8 @@ function startProcess(processDefId) {
             window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + processDefId;
         },
         error: function (xhr, status, error) {
-            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + processDefId;
+           var errorJson = eval("(" + xhr.responseText + ")");
+           window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
         }
     });
 }
@@ -219,9 +220,9 @@ function startProcessWithData(data, id) {
             window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
         },
         error: function (xhr, status, error) {
-            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id;
+            var errorJson = eval("(" + xhr.responseText + ")");
+            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
         }
-
     });
 }
 
