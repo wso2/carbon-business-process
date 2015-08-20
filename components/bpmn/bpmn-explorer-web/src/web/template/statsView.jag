@@ -1,5 +1,5 @@
-<!--
- ~ Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+<%/*<!--
+ ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->
+-->*/%>
 <div class="col-sm-12">
   <div class="row">
     <% if(processNames.data.length > 0 && (activeProcesses > 0 || suspendProcesses > 0 || completedProcesses > 0)) { %>
@@ -27,9 +27,9 @@
       function drawChart(){
         var data = google.visualization.arrayToDataTable([
           ['Process Name', 'Instance Count'],
-          <% for(var j=0; j<processBarChart.length; j++){ %>
+          <% for(var j = 0; j < processBarChart.length; j++){ %>
             <%=JSON.stringify(processBarChart[j]) %>
-            <% if(j<processBarChart.length){ %> ,<% } %>
+            <% if(j < processBarChart.length){ %> ,<% } %>
           <% } %>
         ]);
 
@@ -46,22 +46,15 @@
     </script>
 
     <script type="text/javascript">
-      function loadData() {
-        var selectedOrder = document.getElementById("selectOption").value;
-        window.location.href = "stats?option=" + selectedOrder+"#taskDurationOfCompleted";
-      }
-    </script>
-
-    <script type="text/javascript">
 
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart(){
         var data = google.visualization.arrayToDataTable([
           ['Process Name', 'Time Duration in Minutes'],
-          <% for(var j=0; j<processBarChartAvgTime.length; j++){ %>
+          <% for(var j = 0; j < processBarChartAvgTime.length; j++){ %>
             <%=JSON.stringify(processBarChartAvgTime[j]) %>
-            <% if(j<processBarChartAvgTime.length){ %> ,<% } %>
+            <% if(j < processBarChartAvgTime.length){ %> ,<% } %>
             <% } %>
            ]);
 
@@ -85,9 +78,9 @@
       function drawChart(){
         var data = google.visualization.arrayToDataTable([
           ['User', 'No. of tasks completed todate'],
-          <% for(var j=0; j<userVsTaskCount.length; j++){ %>
+          <% for(var j = 0; j < userVsTaskCount.length; j++){ %>
             <%=JSON.stringify(userVsTaskCount[j]) %>
-            <% if(j<userVsTaskCount.length){ %> ,<% } %>
+            <% if(j < userVsTaskCount.length){ %> ,<% } %>
             <% } %>
            ]);
 
@@ -120,9 +113,9 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['User', 'Average time taken to complete tasks'],
-          <% for(var j=0; j<userResultArray.length; j++){ %>
+          <% for(var j = 0; j < userResultArray.length; j++){ %>
             <%=JSON.stringify(userResultArray[j]) %>
-            <% if(j<userResultArray.length){ %> ,<% } %>
+            <% if(j < userResultArray.length){ %> ,<% } %>
             <% } %>
            ]);
         var options = {
@@ -134,7 +127,7 @@
           
         };
 
-        var chart = new google.visualization.AreaChart(document.getElementById('lineGraph'));
+        var chart = new google.visualization.AreaChart(document.getElementById('userVsAvgTaskDuration'));
 
         chart.draw(data, options);
       }
@@ -146,10 +139,10 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Months', 'Completed Tasks','Tasks Started'],
-          <% for(var j=0; j<arrayOfTaskCount.length; j++){ %>
+          <% for(var j = 0; j < arrayOfTaskCount.length; j++){ %>
 
             <%=JSON.stringify(arrayOfTaskCount[j]) %>
-            <% if(j<arrayOfTaskCount.length){ %> ,<% } %>
+            <% if(j < arrayOfTaskCount.length){ %> ,<% } %>
             <% } %>
            ]);
         var options = {
@@ -172,10 +165,10 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Months', 'Completed Processes','Started Processes'],
-          <% for(var j=0; j<arrayOfProcessCount.length; j++){ %>
+          <% for(var j = 0; j < arrayOfProcessCount.length; j++){ %>
 
             <%=JSON.stringify(arrayOfProcessCount[j]) %>
-            <% if(j<arrayOfProcessCount.length){ %> ,<% } %>
+            <% if(j < arrayOfProcessCount.length){ %> ,<% } %>
             <% } %>
            ]);
         var options = {
@@ -199,16 +192,16 @@
             <div class="table-title"  style="width:100%" id="taskDurationOfCompleted"> Average Time Duration Of Completed Processes </div>
             <br>
              <form>
-                <select id="selectOption" class="form-control" onchange="javascript:loadData()">
+                <select id="selectOption" name="selectOption" class="form-control" onchange="selectProcessForAvgTimeDuration()">
                     <option value="allProcesses">All processes</option>
 
-                    <% if(option == "shortTime") {%>
+                    <% if(selectedProcess == "shortTime") {%>
                       <option value="shortTime" selected>Short time duration:Ascending</option>
                     <% } else { %>
                       <option value="shortTime">Short time duration:Ascending</option>
                     <% } %>
                    
-                    <% if(option == "longTime") {%>
+                    <% if(selectedProcess == "longTime") {%>
                       <option value="longTime" selected>Long time duration:Descending</option>
                     <% } else { %>
                       <option value="longTime">Long time duration:Descending</option>
@@ -216,18 +209,30 @@
                    </select>                  
                  </form>
             <div id="barChartAvgTime" style="height: 100%"></div>
+            
             <br>
             <div class="table-title"  style="width:100%">  User Vs No. Of Tasks Completed </div>
             <div id="colChartUserVsTasks" style="height: 74%"></div>
             <br>
             <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
-            <div id="lineGraph" style="height: 74%"></div>
+            <div id="userVsAvgTaskDuration" style="height: 74%"></div>
             <br>
             <div class="table-title"  style="width:100%"> Task Demand Variation Over Time </div>
             <div id="taskVariationOverTime" style="height: 74%"></div>
             <br>
             <div class="table-title"  style="width:100%"> Process Demand Variation Over Time </div>
             <div id="processVariationOverTime" style="height: 74%"></div>
+            <br>
+            <div class="table-title"  style="width:100%"> User Performance Of Tasks Over Time </div>
+                <form>
+                <select id="selectUser" name="selectUser" class="form-control" onchange="selectUserForPerformance()">
+                 <option value="" disabled selected>Select a User</option>
+                <% for(var j = 0; j < userArray.length; j++){ %>
+                <option value="<%=userArray[j]%>"><%=userArray[j]%></option>
+            <% } %>
+                  </select>
+                 </form>
+            <div id="taskOfUserVariation" style="height: 74%"></div>
       </div>
 
     <script type="text/javascript">
@@ -295,6 +300,7 @@
               
               <form>
                 <select id="selectProcess" name="selectProcess" class="form-control" onchange="selectProcessForChart()">
+                <option value="" disabled selected>Select a Process</option>
                 <% for(var key in avgTimeDataPerProcess) { %>
                 <option value="<%=key%>"><%=key%></option>
                   <% } %>
