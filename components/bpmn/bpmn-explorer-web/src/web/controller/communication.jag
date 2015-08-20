@@ -1,4 +1,4 @@
-<!--
+/*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->
+-->*/
 <%
 var log = new Log();
 include("/model/common.jag");
@@ -39,15 +39,22 @@ if(!session.get("authSuccess")){
 		     req = request.getParameter("req");
 		     url = req;
 		     data = request.getContent();
-		     result = post( httpUrl + url, JSON.stringify(data), headers, "text");
-		log.debug("BPMN Rest POST results: " + result);
+                     result = post( httpUrl + url, JSON.stringify(data), headers, "json").data;
+		     log.debug("BPMN Rest POST results: " + stringify(result));
 	}
 	if(run == "PUT"){
 		     req = request.getParameter("req");
 		     url = req;
 		     data = request.getContent();
-		     result = put( httpUrl + url, JSON.stringify(data), headers, "text");
-		log.debug("BPMN Rest PUT results: " + result);
+                     result = put( httpUrl + url, JSON.stringify(data), headers, "json").data;
+		     log.debug("BPMN Rest PUT results: " + stringify(result));
 	}
+
+        if ( result.errorMessage != undefined ) {
+                response.status = 500;
+        }
+     
+        response.content = result;
+
 }
 %>
