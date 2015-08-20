@@ -57,7 +57,7 @@ public class AnalyticsPublisherConstants {
     public static final String BEAN = "bean";
     public static final String BEAN_ID = "id";
     public static final String BEAN_ID_VALUE = "bpmnDataPublisherConfiguration";
-    public static final String ACTIVATE = "activation";
+    public static final String ACTIVATE = "dataPublishingEnabled";
     public static final String NAME = "name";
     public static final String TRUE = "true";
     public static final String VALUE = "value";
