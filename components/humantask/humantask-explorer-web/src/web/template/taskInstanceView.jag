@@ -195,7 +195,7 @@
                                             </td>
                                         </tr>    
                                     <% }
-                                    if (taskStatus == 'IN_PROGRESS') {
+                                    if (taskStatus == 'IN_PROGRESS' && wso2OutputRenderList.length() > 0) {
                                     %>
                                         <tr>
                                             <td>
