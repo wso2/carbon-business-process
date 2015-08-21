@@ -32,11 +32,17 @@
             <% if(j < processBarChart.length){ %> ,<% } %>
           <% } %>
         ]);
+        var chartAreaHeight = data.getNumberOfRows() * 30;
+        var chartHeight = chartAreaHeight + 20;
 
         var options = {
           vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
           hAxis: {title: 'Process instance count', titleTextStyle: {color: 'grey'}},
-          colors:['#be2d28']
+          colors:['#be2d28'],
+          height: chartHeight,
+          chartArea: {
+              height: chartAreaHeight
+          }
         };
 
         var chart = new google.visualization.BarChart(document.getElementById('barChart'));
@@ -58,10 +64,17 @@
             <% } %>
            ]);
 
+        var chartAreaHeight = data.getNumberOfRows() * 30;
+        var chartHeight = chartAreaHeight + 20;
+
         var options = {
           vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
           hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
-          colors:['#be2d28']
+          colors:['#be2d28'],
+          height: chartHeight,
+          chartArea: {
+              height: chartAreaHeight
+          }
         };
 
         var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
@@ -118,6 +131,7 @@
             <% if(j < userResultArray.length){ %> ,<% } %>
             <% } %>
            ]);
+
         var options = {
           lineWidth:4,
           pointSize:10,
@@ -145,13 +159,19 @@
             <% if(j < arrayOfTaskCount.length){ %> ,<% } %>
             <% } %>
            ]);
+
+        var chartAreaHeight = data.getNumberOfRows() * 30;
+        var chartHeight = chartAreaHeight + 20;
         var options = {
           
           bars: 'vertical',
           vAxis: {format: 'decimal'},
-          bar: {groupWidth: "60%"}
+          bar: {groupWidth: "60%"},
+          height: chartHeight,
+          chartArea: {
+              height: chartAreaHeight
+          }
         };
-
         var chart = new google.charts.Bar(document.getElementById('taskVariationOverTime'));
 
         chart.draw(data, options);
@@ -171,11 +191,18 @@
             <% if(j < arrayOfProcessCount.length){ %> ,<% } %>
             <% } %>
            ]);
+        var chartAreaHeight = data.getNumberOfRows() * 30;
+        var chartHeight = chartAreaHeight + 20;
+
         var options = {
           
           bars: 'vertical',
           vAxis: {format: 'decimal'},
           bar: {groupWidth: "60%"},
+          height: chartHeight,
+          chartArea: {
+              height: chartAreaHeight
+          }
         };
 
         var chart = new google.charts.Bar(document.getElementById('processVariationOverTime'));
@@ -187,7 +214,7 @@
       <div class="col-lg-8 float-left">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Process Instance Count </div>
-            <div id="barChart" style="height: 74%"></div>
+            <div id="barChart"></div>
             <br>
             <div class="table-title"  style="width:100%" id="taskDurationOfCompleted"> Average Time Duration Of Completed Processes </div>
             <br>
@@ -208,7 +235,7 @@
                     <% } %>
                    </select>                  
                  </form>
-            <div id="barChartAvgTime" style="height: 100%"></div>
+            <div id="barChartAvgTime"></div>
             
             <br>
             <div class="table-title"  style="width:100%">  User Vs No. Of Tasks Completed </div>
@@ -217,13 +244,13 @@
             <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
             <div id="userVsAvgTaskDuration" style="height: 74%"></div>
             <br>
-            <div class="table-title"  style="width:100%"> Task Instance Variation Over Time </div>
-            <div id="taskVariationOverTime" style="height: 74%"></div>
+            <div class="table-title"  style="width:100%"> Task Instance Count Variation Over Time </div>
+            <div id="taskVariationOverTime"></div>
             <br>
-            <div class="table-title"  style="width:100%"> Process Instance Variation Over Time </div>
-            <div id="processVariationOverTime" style="height: 74%"></div>
+            <div class="table-title"  style="width:100%"> Process Instance Count Variation Over Time </div>
+            <div id="processVariationOverTime"></div>
             <br>
-            <div class="table-title"  style="width:100%"> User Performance Of Task Instances Over Time </div>
+            <div class="table-title"  style="width:100%"> User Performance Of Tasks Instances Over Time </div>
                 <form>
                 <select id="selectUser" name="selectUser" class="form-control" onchange="selectUserForPerformance()">
                  <option value="" disabled selected>Select a User</option>
@@ -232,7 +259,9 @@
             <% } %>
                   </select>
                  </form>
-            <div id="taskOfUserVariation" style="height: 74%"></div>
+            <div id="taskOfUserVariation" >
+            <div style="height: 74%"> </div>
+            </div>
       </div>
 
     <script type="text/javascript">
