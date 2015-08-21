@@ -1,5 +1,5 @@
 <!--
-~ Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+~ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
 ~ WSO2 Inc. licenses this file to you under the Apache License,
 ~ Version 2.0 (the "License"); you may not use this file except
@@ -24,73 +24,81 @@
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
+<carbon:breadcrumb
+        label="bpmn.newpackage"
+        resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
+        topPage="true"
+        request="<%=request%>"/>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <script type="text/javascript" src="js/bpmn-main.js"></script>
-<script>
-function validate() {
-    var validFileNames = true;
-    if (!(document.bpmnUpload.bpmnFileName instanceof NodeList)) {
-        var jarInput = document.bpmnUpload.bpmnFileName.value;
-        if (jarInput == null || jarInput == '') {
-            CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
-            validFileNames = false;
-        } else if (jarInput.lastIndexOf(".bar") == -1) {
-            CARBON.showWarningDialog('Please select a .bar file');
-            validFileNames = false;
-        }
-    } else if ((document.bpmnUpload.bpmnFileName instanceof NodeList) && (document.bpmnUpload.bpmnFileName.length > 0)) {
-        //multiple package upload
-        var validFileNames = true;
-        for (var i = 0; i < document.bpmnUpload.bpmnFileName.length; i++) {
-            var jarInput = document.bpmnUpload.bpmnFileName[i].value;
-            if (jarInput == null || jarInput == '') {
-                CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
+
+<div id="middle">
+    <%
+        boolean isAuthorizedToAddPackages =
+                CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/bpmn/uploader");
+        if (isAuthorizedToAddPackages) {
+    %>
+    <script>
+        function validate() {
+            var validFileNames = true;
+            if (!(document.bpmnUpload.bpmnFileName instanceof NodeList)) {
+                var jarInput = document.bpmnUpload.bpmnFileName.value;
+                if (jarInput == null || jarInput == '') {
+                    CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
+                    validFileNames = false;
+                } else if (jarInput.lastIndexOf(".bar") == -1) {
+                    CARBON.showWarningDialog('Please select a .bar file');
+                    validFileNames = false;
+                }
+            } else if ((document.bpmnUpload.bpmnFileName instanceof NodeList) && (document.bpmnUpload.bpmnFileName.length > 0)) {
+                //multiple package upload
+                var validFileNames = true;
+                for (var i = 0; i < document.bpmnUpload.bpmnFileName.length; i++) {
+                    var jarInput = document.bpmnUpload.bpmnFileName[i].value;
+                    if (jarInput == null || jarInput == '') {
+                        CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
+                        validFileNames = false;
+                        break;
+                    } else if (jarInput.lastIndexOf(".bar") == -1) {
+                        CARBON.showWarningDialog('Please select a .bar file');
+                        validFileNames = false;
+                        break;
+                    }
+                }
+            } else {
+                CARBON.showWarningDialog('Unexpected error occurred');
                 validFileNames = false;
-                break;
-            } else if (jarInput.lastIndexOf(".bar") == -1) {
-                CARBON.showWarningDialog('Please select a .bar file');
-                validFileNames = false;
-                break;
+            }
+            if(validFileNames){
+                document.bpmnUpload.submit();
             }
         }
-    } else {
-        CARBON.showWarningDialog('Unexpected error occurred');
-        validFileNames = false;
-    }
-    if(validFileNames){
-        document.bpmnUpload.submit();
-    }
-}
-var rows = 0;
-function addNewRow() {
-    rows++;
+        var rows = 0;
+        function addNewRow() {
+            rows++;
 
-    //add a row to the rows collection and get a reference to the newly added row
-    var newRow = document.getElementById("bpmnTbl").insertRow(-1);
-    newRow.id = 'file' + rows;
+            //add a row to the rows collection and get a reference to the newly added row
+            var newRow = document.getElementById("bpmnTbl").insertRow(-1);
+            newRow.id = 'file' + rows;
 
-    var oCell = newRow.insertCell(-1);
-    oCell.innerHTML = '<label>BPMN Package(.bar)<font color="red">*</font></label>';
-    oCell.className = "formRow";
+            var oCell = newRow.insertCell(-1);
+            oCell.innerHTML = '<label>BPMN Package(.bar)<font color="red">*</font></label>';
+            oCell.className = "formRow";
 
-    oCell = newRow.insertCell(-1);
-    oCell.innerHTML = "<input type='file' name='bpmnFileName' size='50'/>&nbsp;&nbsp;<input type='button' width='20px' class='button' value='  -  ' onclick=\"deleteThisRow('file" + rows + "');\" />";
-    oCell.className = "formRow";
+            oCell = newRow.insertCell(-1);
+            oCell.innerHTML = "<input type='file' name='bpmnFileName' size='50'/>&nbsp;&nbsp;<input type='button' width='20px' class='button' value='  -  ' onclick=\"deleteThisRow('file" + rows + "');\" />";
+            oCell.className = "formRow";
 
-    alternateTableRows('bpmnTbl', 'tableEvenRow', 'tableOddRow');
-}
-function deleteThisRow(rowId) {
-    var tableRow = document.getElementById(rowId);
-    tableRow.parentNode.deleteRow(tableRow.rowIndex);
-    alternateTableRows('bpmnTbl', 'tableEvenRow', 'tableOddRow');
-}
-</script>
-    <carbon:breadcrumb
-            label="bpmn.newpackage"
-            resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
-            topPage="true"
-            request="<%=request%>"/>
-<div id="middle">
+            alternateTableRows('bpmnTbl', 'tableEvenRow', 'tableOddRow');
+        }
+        function deleteThisRow(rowId) {
+            var tableRow = document.getElementById(rowId);
+            tableRow.parentNode.deleteRow(tableRow.rowIndex);
+            alternateTableRows('bpmnTbl', 'tableEvenRow', 'tableOddRow');
+        }
+    </script>
+
+
     <h2><fmt:message key="bpmn.newpackage"/></h2>
     <div id="workArea">
         <div id="formset">
@@ -126,5 +134,12 @@ function deleteThisRow(rowId) {
             </form>
         </div>
     </div>
+    <%
+        } else {
+    %>
+    <p><fmt:message key="do.not.have.permission.to.deploy.bpmn.packages"/></p>
+    <%
+        }
+    %>
 </div>
 </fmt:bundle>
