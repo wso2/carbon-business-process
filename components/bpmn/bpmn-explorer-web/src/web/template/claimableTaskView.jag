@@ -13,13 +13,6 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<div class="row" name="commonErrorSection">
-    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      <p id="errorMsg"><%=commonErrorMessage%></p>
-    </div>
-</div>
-<%if (commonErrorMessage == null) {%>
 <div class="row">
  	<div class="panel-inbox">
       	<div class=" margin-left-double table-title">Claimable Tasks</div>
@@ -43,15 +36,24 @@
 		    </tbody>
 		  </table>
 		</div>
-
-		<%
-			var numberOfPages = paginatePageCount;
-			var currentPage = parseInt(pagination);
-			var redirectPage = "claimableTask";
-			var queryParams = "";
-
-		%>
-		<% include("/template/partials/pagination.jag"); %>
+		<ul class="pagination">
+			<% if (pagination != 1) { %>
+				<li><a href="claimableTask?pagination=<%=parseInt(pagination) - 1%>">&laquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&laquo;</a></li>			
+			<% } %>
+			<% for (var i = 1; i <= paginatePageCount + 1; i++) {
+					if (pagination == i) { %>
+						<li class="active"><a href="claimableTask?pagination=<%=i%>"><%=("" + i).split(".")[0]%></a></li>
+				<% } else { %>
+						<li><a href="claimableTask?pagination=<%=i%>"><%=("" + i).split(".")[0]%></a></li>
+				<% } %>
+			<% } %>
+			<% if (pagination != paginatePageCount + 1) { %>
+				<li><a href="claimableTask?pagination=<%=parseInt(pagination) + 1%>">&raquo;</a></li>
+			<% } else { %>
+				<li class="disabled"><a href="#">&raquo;</a></li>			
+			<% } %>
+		</ul>
 	</div>
 </div>
-<%}%>

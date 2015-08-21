@@ -13,13 +13,7 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<div class="row" name="commonErrorSection">
-    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      <p id="errorMsg"><%=commonErrorMessage%></p>
-    </div>
-</div>
-<div class="col-sm-12">
+<div class="col-lg-12">
 	<!--ol class="breadcrumb">
 	  <li><a href="stats">Home</a></li>
 	  <li><a href="process">Processes</a></li>
@@ -29,17 +23,22 @@
 		<!-- Default panel contents -->
 		<div class="panel-heading">Start Process</div>
 
-	  
-	  	<table style="margin-left:10px; margin-bottom:10px;">
-	  		<form>
-	  			<%=formContent%>
+		<div class="row" style="margin-left:10px margin-bottom:10px;">
+	  	<div style="margin-left:10px margin-bottom:10px;">
+	  		<div class="col-lg-12">
+
+			 <form >
+			 <div class="col-lg-12">
+	  			<%=formContent%></div>
 	  		</form>
-	  		<tr>
-	  			<td align="center" colspan="2" style="padding-top:10px; padding-bottom:10px">
+	  		</div>
+	  		<div class="col-lg-12 padding-top padding-bottom">
+	  			<div class="col-lg-4">
 	  				<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
-	  			</td>
-	  		</tr>
-	  	</table>
+	  			</div>
+	  		</div>
+	  	</div>
+	  	</div>
 	  
 	</div>
 </div>
