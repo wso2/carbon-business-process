@@ -468,9 +468,16 @@ function updateAttachments(id) {
                 + '<input type="hidden" id="uRedirect" name="redirect" value="../humantask-explorer/task?id='
                 + id + '#additionalInfoSection">'
                 + '<input type="hidden" id="taskID" name="taskID" value="' + id + '">'
-                + '<table><tbody><tr><td>File</td><td><input type="file" id="fileToUploadID" name="fileToUpload">'
-                + '</td></tr></tbody><tfoot><tr><td><input name="attachmentUploadButton" class="btn btn-info" type="button"'
-                + ' value="upload" onclick="uploadAttachment();"></td></tr></tfoot></table></form>';
+                + '<div class="row">' +
+                    '<div class="col-lg-12 margin-top-double margin-bottom-double">' +
+                    '<div class="col-lg-1 padding-top">File:</div>' +
+                    '<div class="col-lg-4 padding-top"><input type="file" id="fileToUploadID" name="fileToUpload">'
+                + '</div>' +
+                    '<div class="col-lg-4 "><input name="attachmentUploadButton" class="btn btn-info" type="button" value="upload" onclick="uploadAttachment();">' +
+                    '</div>'
+                    '</div>' +
+                    '</div>' +
+                    '</form>';
 
                 $('#AttchmentsList').html(attachmentViewList);
             }else if (success === 'timeout') {

@@ -51,12 +51,12 @@ function genCheckboxWithValues(data) {
 }
 
 function genTextBox(data) {
-    var content = "<tr>";
-    content += "<td style='padding-right:15px; padding-top:10px;'>";
+    var content = "<div class='small-med'>";
+    content += "<div class='small-col' style='padding-right:15px; padding-top:10px;'>";
     content += data.name + ": ";
-    content += "</td><td style='padding-top:10px'>";
+    content += "</div><div class='small-col' style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\" type=\"text\"  class=\"form-control\"/>";
-    content += "</td></tr>";
+    content += "</div></div>";
     if(data.writable == false){
         content = content.replace("input", "input disabled=\"true\"");
     }
@@ -76,12 +76,12 @@ function genTextBoxWithValues(data) {
 }
 
 function genNumberBox(data) {
-    var content = "<tr>";
-    content += "<td style='padding-right:15px; padding-top:10px;'>";
+    var content = "<div class='small-med'>";
+    content += "<div class='small-col' style='padding-right:15px; padding-top:10px;'>";
     content += data.name + ": ";
-    content += "</td><td style='padding-top:10px'>";
+    content += "</div><div class='small-col' style='padding-top:10px'>";
     content += "<input name=\"" + data.id + "\"  type=\"number\"  class=\"form-control\"/>";
-    content += "</td></tr>";
+    content += "</div></div>";
     if(data.writable == false){
         content = content.replace("input", "input disabled=\"true\"");
     }
@@ -151,7 +151,6 @@ function generateForm(data, disabled) {
             else {
                 formContent += genNumberBox(data[i]);
             }
-
         } else if (data[i].type == "enum") {
             formContent += genSelect(data[i]);
         } else if (data[i].type == "date") {
@@ -161,7 +160,6 @@ function generateForm(data, disabled) {
             else {
                 formContent += genDatepicker(data[i]);
             }
-
         }
     }
     if(disabled){
