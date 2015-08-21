@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ WSO2 Inc. licenses this file to you under the Apache License,
  ~ Version 2.0 (the "License"); you may not use this file except
@@ -25,8 +25,8 @@
     <title>Human Task Component User Guide</title>
     <link href="../../admin/css/documentation.css" rel="stylesheet" type="text/css" media="all"/>
     <style type="text/css">
-        img{
-            padding:20px;            
+        img {
+            padding: 20px;
         }
     </style>
 </head>
@@ -34,12 +34,58 @@
 <h1>WSO2 Human Task Component User Guide</h1>
 
 
-<p>WSO2 Business Process commponent implements the WS-Human Task specification. It has WS-Human Task API and UI which expose the functionalities in Task Management API.
-</p>
-<p>
-For complete documentation, please refer documentation package of WSO2 Business Process Server.
+<p>WSO2 Human Task commponent implements the WS-Human Task specification. It has WS-Human Task API and UI which expose
+    the functionalities in Task Management API.
 </p>
 
+<p>
+    For complete documentation, please refer documentation package of WSO2 Business Process Server.
+</p>
+
+<h2>Deploying Human Task Artifacts</h2>
+
+<p>Go to Main -> Human Tasks -> Add.</p>
+
+<p>Browse to and select Human Task archive, and click Upload.
+
+<p>Click OK in the confirmation message and then refresh the page.</p>
+
+<p>The deployed task definitions appear in the deployed task configurations list as shown below.</p>
+
+<img src="images/humentask_after_deploy.png" alt="Deployed Tasks List" border="1"/>
+
+<p>You can click a task definition to view it. The definition of ApproveClaim task sample looks like this:</p>
+
+<img src="images/task-definition.png" alt="Task Definition" border="1"/>
+
+
+<h2>Human Task List</h2>
+
+<p>Human tasks can be created by invoking the corresponding human task's web service (usually via a BPEL process).
+    Permitted users can view and change the status of each tasks. There are two options to view the human tasks.</p>
+
+
+<h3>View Human Tasks from Web Application</h3>
+
+<p>Human Task Explorer web application can be used to view and manipulate human tasks for end users. It is implemented
+    in a more user friendly manner than the management console. Same credentials for the management console can be used
+    to ligin to the web application. Default url of the Human Task explorer is <a
+            href="https://localhost:9443/humantask-explorer/">https://&ltbps-host&gt:&ltbps_port&gt/humantask-explorer/</a>
+</p>
+<img src="images/ht-explorer.png" alt="Human Task Explorer" border="1"/>
+
+
+<h3>View Human Tasks from Management Console</h3>
+
+<p>Go to Main -> Human Tasks -> List (be sure to click the link lower down in the left navigation pane, not the one in
+    the Manage group).</p>
+<img src="images/HumanTasksList.png" alt="Human Task List Link" border="1"/>
+
+<p>The tasks appear in the My Tasks list.</p>
+<img src="images/taskListView.png" alt="Human Task List" border="1"/>
+
+<p>In the Task ID column, click the link to view task info and do changes for a task.</p>
+<img src="images/taskInfo.png" alt="Human Task Info" border="1"/>
 </body>
 </html>
 
