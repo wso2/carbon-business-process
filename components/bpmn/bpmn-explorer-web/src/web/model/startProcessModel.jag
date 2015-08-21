@@ -45,7 +45,6 @@ if (formData.data.length <= 0) {
         response.sendRedirect("process?startProcess=" + id);
     }    
 }
-
 else {
     var formContent = formGenTool.generateForm(formData.data);
 }

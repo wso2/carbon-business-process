@@ -99,7 +99,6 @@ function genNumberBoxWithValues(data) {
     }
     return content;
 }
-
 function genDatepicker(data) {
     var content = "<tr>";
     content += "<td style='padding-right:15px; padding-top:10px;'>";
