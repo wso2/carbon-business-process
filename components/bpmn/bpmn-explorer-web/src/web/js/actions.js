@@ -375,12 +375,18 @@ function selectUserForPerformance(){
 
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+                var chartAreaHeight = data.getNumberOfRows() * 30;
+                var chartHeight = chartAreaHeight + 20;
 
                 var options = {
 
                     bars: 'vertical',
                     vAxis: {format: 'decimal'},
                     bar: {groupWidth: "60%"},
+                    height: chartHeight,
+                    chartArea: {
+                        height: chartAreaHeight
+                    }
                 };
 
                 var chart = new google.charts.Bar(document.getElementById('taskOfUserVariation'));
@@ -407,16 +413,24 @@ function selectProcessForAvgTimeDuration(){
             google.load("visualization", "1", {packages:["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
+
             function drawChart(data) {
                 var dataArr = [['Process Name', 'Time Duration in Minutes']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+                var chartAreaHeight = data.getNumberOfRows() * 30;
+                var chartHeight = chartAreaHeight + 20;
+
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
-                    colors:['#be2d28']
+                    colors:['#be2d28'],
+                    height: chartHeight,
+                    chartArea: {
+                        height: chartAreaHeight
+                    }
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
