@@ -29,7 +29,7 @@
 <script>
 function validate() {
     var validFileNames = true;
-    if (document.bpmnUpload.bpmnFileName.value != null && document.bpmnUpload.bpmnFileName.value != '') {
+    if (!(document.bpmnUpload.bpmnFileName instanceof NodeList)) {
         var jarInput = document.bpmnUpload.bpmnFileName.value;
         if (jarInput == null || jarInput == '') {
             CARBON.showWarningDialog('Please select required fields to upload a bpmn package');
@@ -38,7 +38,8 @@ function validate() {
             CARBON.showWarningDialog('Please select a .bar file');
             validFileNames = false;
         }
-    } else if (document.bpmnUpload.bpmnFileName[0].value != null) {
+    } else if ((document.bpmnUpload.bpmnFileName instanceof NodeList) && (document.bpmnUpload.bpmnFileName.length > 0)) {
+        //multiple package upload
         var validFileNames = true;
         for (var i = 0; i < document.bpmnUpload.bpmnFileName.length; i++) {
             var jarInput = document.bpmnUpload.bpmnFileName[i].value;
@@ -52,6 +53,9 @@ function validate() {
                 break;
             }
         }
+    } else {
+        CARBON.showWarningDialog('Unexpected error occurred');
+        validFileNames = false;
     }
     if(validFileNames){
         document.bpmnUpload.submit();
