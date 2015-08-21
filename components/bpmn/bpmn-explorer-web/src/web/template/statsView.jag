@@ -217,13 +217,13 @@
             <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
             <div id="userVsAvgTaskDuration" style="height: 74%"></div>
             <br>
-            <div class="table-title"  style="width:100%"> Task Demand Variation Over Time </div>
+            <div class="table-title"  style="width:100%"> Task Instance Variation Over Time </div>
             <div id="taskVariationOverTime" style="height: 74%"></div>
             <br>
-            <div class="table-title"  style="width:100%"> Process Demand Variation Over Time </div>
+            <div class="table-title"  style="width:100%"> Process Instance Variation Over Time </div>
             <div id="processVariationOverTime" style="height: 74%"></div>
             <br>
-            <div class="table-title"  style="width:100%"> User Performance Of Tasks Over Time </div>
+            <div class="table-title"  style="width:100%"> User Performance Of Task Instances Over Time </div>
                 <form>
                 <select id="selectUser" name="selectUser" class="form-control" onchange="selectUserForPerformance()">
                  <option value="" disabled selected>Select a User</option>
