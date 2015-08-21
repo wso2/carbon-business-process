@@ -97,7 +97,7 @@
 
             function validate() {
 
-                if (document.humantaskUpload.humantaskFileName.value != null) {
+                if (!(document.humantaskUpload.humantaskFileName instanceof NodeList)) {
                     var jarinput = document.humantaskUpload.humantaskFileName.value;
                     if (jarinput == '') {
                         CARBON.showWarningDialog('Please select required fields to upload a Humantask package');
@@ -106,7 +106,7 @@
                     } else {
                         document.humantaskUpload.submit();
                     }
-                } else if (document.humantaskUpload.humantaskFileName[0].value != null) {
+                } else if ((document.humantaskUpload.humantaskFileName instanceof NodeList) && document.humantaskUpload.humantaskFileName.length > 0) {
                     var validFileNames = true;
                     for (var i = 0; i < document.humantaskUpload.humantaskFileName.length; i++) {
                         var jarinput = document.humantaskUpload.humantaskFileName[i].value;
@@ -118,10 +118,13 @@
                             CARBON.showWarningDialog('Please select a .zip file');
                             validFileNames = false;
                             break;
-                        } else {
-                            document.humantaskUpload.submit();
                         }
                     }
+                    if (validFileNames == true) {
+                        document.humantaskUpload.submit();
+                    }
+                } else {
+                    CARBON.showWarningDialog('Unexpected error occurred');
                 }
             }
 
