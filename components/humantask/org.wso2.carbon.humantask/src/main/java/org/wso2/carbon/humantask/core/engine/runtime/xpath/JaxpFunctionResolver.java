@@ -184,7 +184,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             String partName = (String) args.get(0);
             Node matchingElement = null;
             if (StringUtils.isNullOrEmpty(partName)) {
-                throw new HumanTaskRuntimeException("The getInput function should be provided with" + " the part name");
+                throw new HumanTaskRuntimeException("The getInput function should be provided with the part name");
             }
 
             if (inputMsg.getBodyData().hasChildNodes()) {
@@ -199,7 +199,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
             if (matchingElement == null || matchingElement.getFirstChild() == null) {
                 throw new HumanTaskRuntimeException(
-                        "Cannot find a matching Element for " + "expression evaluation: getInput");
+                        "Cannot find a matching Element for expression evaluation: getInput");
             }
 
             return matchingElement.getFirstChild();
@@ -221,7 +221,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             Node matchingElement = null;
             if (StringUtils.isNullOrEmpty(partName)) {
                 throw new HumanTaskRuntimeException(
-                        "The getOutput function should be provided with" + " the part name");
+                        "The getOutput function should be provided with the part name");
             }
 
             if (outputMsg.getBodyData().hasChildNodes()) {
@@ -235,7 +235,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
             if (matchingElement == null || matchingElement.getFirstChild() == null) {
                 throw new HumanTaskRuntimeException(
-                        "Cannot find a matching Element for " + "expression evaluation: getOutput");
+                        "Cannot find a matching Element for expression evaluation: getOutput");
             }
 
             return matchingElement.getFirstChild();
@@ -634,7 +634,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 }
             } else {
                 throw new HumanTaskRuntimeException(
-                        "this function should be provided with htt:organizationalEntity or htt:user element as an argument");
+                        "This function should be provided with htt:organizationalEntity or htt:user element as an argument.");
             }
         }
     }
