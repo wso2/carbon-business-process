@@ -480,9 +480,8 @@ public class HumanTaskStore {
                 log.debug("humanTask:" + humanTaskFile.getName()
                         + " deployment failed, removing the extracted human task directory.");
             }
-            String versionedName =
-                    FilenameUtils.removeExtension(humanTaskFile.getName()) + HumanTaskConstants.VERSION_SEPARATOR
-                            + version;
+            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName())
+                    + HumanTaskConstants.VERSION_SEPARATOR + version;
             deleteHumanTaskPackageFromRepo(versionedName);
             throw deploymentException;
         }
