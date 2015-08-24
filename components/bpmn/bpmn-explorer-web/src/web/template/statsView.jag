@@ -148,7 +148,7 @@
     </script>
 
      <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["bar"]});
+      google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
@@ -160,19 +160,23 @@
             <% } %>
            ]);
 
-        var chartAreaHeight = data.getNumberOfRows() * 30;
-        var chartHeight = chartAreaHeight + 20;
-        var options = {
-          
-          bars: 'vertical',
-          vAxis: {format: 'decimal'},
-          bar: {groupWidth: "60%"},
-          height: chartHeight,
-          chartArea: {
-              height: chartAreaHeight
-          }
-        };
-        var chart = new google.charts.Bar(document.getElementById('taskVariationOverTime'));
+          var chartAreaHeight = data.getNumberOfRows() * 32;
+          var chartHeight = chartAreaHeight + 32;
+
+           var options = {
+                 vAxis: {title: 'No.of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
+                 hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
+                 colors:['#be2d28','#afaeae'],
+                 height: chartHeight,
+                 bar: {groupWidth: "70%"},
+                 chartArea: {
+                     width: '75%'
+                 },
+                 legend: { position: "top"},
+                 format: 'decimal'
+            };
+
+           var chart = new google.visualization.ColumnChart(document.getElementById('taskVariationOverTime'));
 
         chart.draw(data, options);
       }
@@ -180,7 +184,7 @@
 
    
      <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["bar"]});
+      google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
@@ -191,21 +195,23 @@
             <% if(j < arrayOfProcessCount.length){ %> ,<% } %>
             <% } %>
            ]);
-        var chartAreaHeight = data.getNumberOfRows() * 30;
-        var chartHeight = chartAreaHeight + 20;
+         var chartAreaHeight = data.getNumberOfRows() * 32;
+         var chartHeight = chartAreaHeight + 32;
 
-        var options = {
-          
-          bars: 'vertical',
-          vAxis: {format: 'decimal'},
-          bar: {groupWidth: "60%"},
-          height: chartHeight,
-          chartArea: {
-              height: chartAreaHeight
-          }
-        };
+         var options = {
+                  vAxis: {title: 'No.of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
+                  hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
+                  colors:['#be2d28','#afaeae'],
+                  height: chartHeight,
+                  bar: {groupWidth: "70%"},
+                  chartArea: {
+                      width: '75%'
+                  },
+                  legend: { position: "top"},
+                  format: 'decimal'
 
-        var chart = new google.charts.Bar(document.getElementById('processVariationOverTime'));
+                };
+         var chart = new google.visualization.ColumnChart(document.getElementById('processVariationOverTime'));
 
         chart.draw(data, options);
       }
@@ -214,6 +220,23 @@
       <div class="col-lg-8 float-left">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Process Instance Count </div>
+                <form>
+                   <select id="processInstanceCount" name="processForDuration" class="form-control" onchange="selectProcessForInstanceCount()">
+                      <option value="AllProcesses">All processes</option>
+
+                          <% if(pInstanceCount == "min") {%>
+                            <option value="min" selected>10 Processes with a Minimum No. of Instances</option>
+                          <% } else { %>
+                             <option value="min">10 Processes with a Minimum No. of Instances</option>
+                          <% } %>
+
+                          <% if(pInstanceCount == "max") {%>
+                              <option value="max" selected>10 Processes with a Maximum No. of Instances</option>
+                           <% } else { %>
+                              <option value="max">10 Processes with a Maximum No. of Instances</option>
+                          <% } %>
+                    </select>
+                </form>
             <div id="barChart"></div>
             <br>
             <div class="table-title"  style="width:100%" id="taskDurationOfCompleted"> Average Time Duration Of Completed Processes </div>
