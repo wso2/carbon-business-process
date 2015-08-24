@@ -364,7 +364,7 @@ function selectUserForPerformance(){
         url: url,
         success: function (data) {
             var array = eval('('+data+')');
-            google.load("visualization", "1.1", {packages:["bar"]});
+            google.load("visualization", "1", {packages:["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
@@ -375,22 +375,22 @@ function selectUserForPerformance(){
 
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                var chartAreaHeight = data.getNumberOfRows() * 30;
-                var chartHeight = chartAreaHeight + 20;
+                var chartAreaHeight = data.getNumberOfRows() * 32;
+                var chartHeight = chartAreaHeight + 30;
 
                 var options = {
-
-                    bars: 'vertical',
-                    vAxis: {format: 'decimal'},
-                    bar: {groupWidth: "60%"},
+                    vAxis: {title: 'No.of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28','#afaeae'],
                     height: chartHeight,
+                    bar: {groupWidth: "70%"},
                     chartArea: {
-                        height: chartAreaHeight
-                    }
+                        width: '75%'
+                    },
+                    legend: { position: "top"}
+
                 };
-
-                var chart = new google.charts.Bar(document.getElementById('taskOfUserVariation'));
-
+                var chart = new google.visualization.ColumnChart(document.getElementById('taskOfUserVariation'));
                 chart.draw(data, options);
             }
         }
@@ -455,4 +455,46 @@ function setDatePicker (dateElement) {
     });
 }
 
+//Process Instance Count
+function selectProcessForInstanceCount(){
+    var x = document.getElementById("processInstanceCount").value;
+    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=processinstancecount&id=" + x ;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+
+            function drawChart(data) {
+                var dataArr = [['Process Name', 'Instance Count']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1]]);
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+                var chartAreaHeight = data.getNumberOfRows() * 30;
+                var chartHeight = chartAreaHeight + 20;
+
+                var options = {
+                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'Process Instance Count', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28'],
+                    height: chartHeight,
+                    chartArea: {
+                        height: chartAreaHeight
+                    }
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('barChart'));
+                chart.draw(data, options);
+
+            }
+        }
+    });
+}
 
