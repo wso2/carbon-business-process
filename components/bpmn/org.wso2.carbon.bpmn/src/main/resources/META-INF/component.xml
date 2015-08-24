@@ -40,9 +40,12 @@
             <DisplayName>Manage BPMN Packages</DisplayName>
             <ResourceId>/permission/admin/manage/bpmn/uploader</ResourceId>
         </ManagementPermission>
+        <!--
+        This permission removed since it affect permissions to unused BPMNHumanTasksService admin service
         <ManagementPermission>
             <DisplayName>Manage BPMN Humantasks</DisplayName>
             <ResourceId>/permission/admin/manage/bpmn/humantask</ResourceId>
         </ManagementPermission>
+        -->
     </ManagementPermissions>
 </component>
