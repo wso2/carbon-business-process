@@ -13,6 +13,13 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="errorMsg"><%=commonErrorMessage%></p>
+    </div>
+</div>
+<%if (commonErrorMessage == null) {%>
 <div class="row">
  	<div class="panel-inbox">
 	<!--ol class="breadcrumb">
@@ -22,48 +29,53 @@
 	</ol-->
 	   	<div class="table-body margin-left-double">
 	      <div class="table-title"><%=taskData.name%></div>
-	      <div class="col-lg-12 white-bg">
-	      		<div class="col-lg-12 margin-bottom margin-top">
-					<div class="col-lg-2 padding-top "><h3>Description:</h3></div>
-					<div class="col-lg-4 padding-top "><%=taskData.desc%></div>
-				</div>
-				<hr>
-				<div class="col-lg-12 margin-bottom ">
-					<div class="col-lg-2 "><h3>Process ID:</h3></div>
-					<div class="col-lg-4 "><%=taskData.pid%></div>
-				</div>
-				<hr>
-				<div class="col-lg-12">
-					<div class="col-lg-2 margin-bottom-double padding-bottom-double"><h3>People:</h3></div>
-					<div class="col-lg-10 margin-bottom">
-						<div class="col-lg-12 margin-left-none padding-left-none"><%=taskData.owner%></div>
+		  <table class="table">
+		    <tbody>
+		    	<tr class="white-bg">
+		    		<th>Description:</th>
+					<td colspan = '2'><%=taskData.desc%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Process ID:</th>
+		    		<td colspan = '2'><%=taskData.pid%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>People:</th>
+		    		<td>
+		    			<div class="col-lg-12 margin-left-none padding-left-none"><%=taskData.owner%></div>
 		    			<div class="col-lg-12 margin-left-none padding-left-none"><%=taskData.assignee%></div>
-					</div>
-				</div>
-				<hr>
 
-				<div class="col-lg-12 margin-bottom">
-					<div class="col-lg-2 "><h3>Subtasks:</h3></div>
-					<div class="col-lg-4 ">
-						<% if (taskData.subtask == null) { %>
+		    		</td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
+		    		<td colspan = '2'>
+		    			<% if (taskData.subtask == null) { %>
 		    				No sub tasks
 		    			<% } else { %>
-		    				<% for (var i=0; i<taskData.subtask.length; i++) { %>
+		    				<% for (var i = 0; i < taskData.subtask.length; i++) { %>
 		    					<%=taskData.subtask[i].id + " "%>
 		    					<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button-->
 		    				<% } %>
-		    			<% } %></div>
-				</div>
-				<hr>
-				<div class="col-lg-12 margin-bottom ">
-					<div class="col-lg-2  "><h3>Fill in the form:</h3></div>
-					<div class="col-lg-4 "><%=formContent%></div>
-				</div>
-				<hr>
-				<div class="col-lg-12 right margin-bottom">
-					<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double">Claim Task</button>
-				</div>
-			</div>
+		    			<% } %>
+		    		</td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Fill in the form:</th>
+		    		<td colspan = '2'>
+		    			<form>
+		    				<table><%=formContent%></table>
+		    			</form>
+		    		</td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<td align = 'right' colspan = '3'>
+		    			<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double">Claim Task</button>
+		    		</td>
+		    	</tr>
+		    </tbody>
+		  </table>
 		</div>
 	</div>
 </div>
+<%}%>
