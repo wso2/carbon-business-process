@@ -29,9 +29,9 @@
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <%
-    boolean isAuthorizedToAddPackages =
+    boolean isAuthorizedForProcesses =
             CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/bpmn/process");
-    if (isAuthorizedToAddPackages) {
+    if (isAuthorizedForProcesses) {
         String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
         ConfigurationContext configContext =
                 (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
