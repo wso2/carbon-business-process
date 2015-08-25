@@ -41,6 +41,27 @@ for(var i= 0; i < processNames.data.length; i++){
 	]);
 }
 
+var minProcessCount = [];
+var maxProcessCount = [];
+
+
+ var update = request.getParameter("update");
+  if(update != null && update === "true"){
+    if(option === "processinstancecount"){
+
+    var pInstanceCount = request.getParameter("id");
+    if(pInstanceCount == "min") {
+      sortAscending(processBarChart);
+      minProcessCount = processBarChart.slice(0,10);
+      processBarChart = minProcessCount;
+    }else if(pInstanceCount =="max"){
+      sortDescending(processBarChart);
+      maxProcessCount = processBarChart.slice(0,10);
+      processBarChart = maxProcessCount;
+    }
+  }
+}
+
 var listProcess = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0" ,null, headers, "json" );
 var distListProcess = get( httpUrl + "/bpmn/repository/process-definitions?finished=true&size=0" ,null, headers, "json" );
 
