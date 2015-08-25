@@ -29,17 +29,16 @@
 		<!-- Default panel contents -->
 		<div class="panel-heading">Start Process</div>
 
-	  
-	  	<table style="margin-left:10px; margin-bottom:10px;">
+	  	<div class="col-lg-12 white-bg margin-bottom">
 	  		<form>
+	  		<div class="col-lg-12">
 	  			<%=formContent%>
+	  			</div>
 	  		</form>
-	  		<tr>
-	  			<td align="center" colspan="2" style="padding-top:10px; padding-bottom:10px">
-	  				<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
-	  			</td>
-	  		</tr>
-	  	</table>
-	  
+	  		<div class="col-lg-12 margin-bottom-double">
+	  			<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
+			</div>
+	  		</div>
+
 	</div>
 </div>
