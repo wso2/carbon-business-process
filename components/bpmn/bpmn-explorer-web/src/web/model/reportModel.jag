@@ -426,7 +426,4 @@ userArray.sort();
     }
   }
 
-  //Set current active veiw as report view.
-//This is used to highlight current view which the user currently viewing in the navigation bar
-reportNavActive = 'class="active"';
 %>
