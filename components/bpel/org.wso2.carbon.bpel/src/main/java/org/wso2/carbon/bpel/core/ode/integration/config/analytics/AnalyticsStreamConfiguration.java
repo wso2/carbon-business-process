@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010 - 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,10 @@ public class AnalyticsStreamConfiguration {
         metaAnalyticsKeyList.add(AnalyticsKey);
     }
 
+    /**
+     * Adda a list of meta analytics keys.
+     * @param AnalyticsKeys
+     */
     public void addAllMetaAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
         metaAnalyticsKeyList.addAll(AnalyticsKeys);
     }
@@ -71,22 +75,42 @@ public class AnalyticsStreamConfiguration {
         return correlationAnalyticsKeyList;
     }
 
+    /**
+     * Add the given correlation key to the configuration.
+     * @param AnalyticsKey
+     */
     public void addCorrelationAnalyticsKey(AnalyticsKey AnalyticsKey) {
         correlationAnalyticsKeyList.add(AnalyticsKey);
     }
 
+    /**
+     * Add a list of correlation keys to the configuration.
+     * @param AnalyticsKeys
+     */
     public void addAllCorrelationAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
         correlationAnalyticsKeyList.addAll(AnalyticsKeys);
     }
 
+    /**
+     * Get payload analytics key list.
+     * @return payloadAnalyticsKeyList
+     */
     public List<AnalyticsKey> getPayloadAnalyticsKeyList() {
         return payloadAnalyticsKeyList;
     }
 
+    /**
+     * Add a payload analytics key to the key list.
+     * @param AnalyticsKey
+     */
     public void addPayloadAnalyticsKey(AnalyticsKey AnalyticsKey) {
         payloadAnalyticsKeyList.add(AnalyticsKey);
     }
 
+    /**
+     * Add a list of AnalyticsKeys to the payload analytics list.
+     * @param AnalyticsKeys
+     */
     public void addAllPayloadAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
         payloadAnalyticsKeyList.addAll(AnalyticsKeys);
     }

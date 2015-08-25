@@ -17,7 +17,7 @@
 package org.wso2.carbon.humantask.core.engine.runtime.xpath;
 
 /**
- *
+ * Constants used for human task xpath evaluations
  */
 public final class XPath2Constants {
     private XPath2Constants() {

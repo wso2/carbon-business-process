@@ -43,7 +43,6 @@
 <jsp:setProperty name="instanceFilter" property="*"/>
 <jsp:include page="../dialog/display_messages.jsp"/>
 
-
 <%
     response.setHeader("Cache-Control",
             "no-store, max-age=0, no-cache, must-revalidate");
@@ -246,7 +245,7 @@
 
 } else if (operation.equals("deleteInstances")) {
     try {
-        int deletedCount = 0;
+        int deletedCount;
         retryActivityFlag = false;
         if (deleteMex == null) {
             deletedCount = client.deleteInstances(instanceListFilter, false);
