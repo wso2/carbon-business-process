@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2011-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -733,9 +733,8 @@ public class HumanTaskStore {
         }
 
         Set<String> exposedTransports = getTenantAxisConfig().getTransportsIn().keySet();
-        /**
-         * Add the transports to axis2 service by reading from the tenant transport config
-         */
+
+         //Add the transports to axis2 service by reading from the tenant transport config
         for (String transport : exposedTransports) {
             axisService.addExposedTransport(transport);
         }
