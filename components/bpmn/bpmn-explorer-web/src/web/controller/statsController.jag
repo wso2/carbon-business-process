@@ -25,35 +25,11 @@
         	}
 	} else {
 		include("/model/common.jag");
-
-		var update = request.getParameter("update");
-		var option = request.getParameter("option");
-
 		include("/model/statsModel.jag");
-
-		var select = request.getParameter("select");
-
-		if(update != null && update === "true"){
-			if( option === "userperformance"){
-				response.content = arrayOfTaskCountPerUser;
-			}
-			else if( option === "taskduration"){
-				response.content = resultArray;
-			}
-			else if( option === "avgprocessduration"){
-				response.content = processBarChartAvgTime;
-			}
-			else if(option === "processinstancecount"){
-            				response.content = processBarChart;
-            }
-		}
-		
-		else{
-			include("/template/partials/header.jag");
-			include("/template/partials/navigation.jag");
-			include("/template/statsView.jag");
-			include("/template/partials/footer.jag");
-	  	}
+		include("/template/partials/header.jag");
+		include("/template/partials/navigation.jag");
+		include("/template/statsView.jag");
+		include("/template/partials/footer.jag");
 	}
 %>
 

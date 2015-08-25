@@ -317,7 +317,7 @@ function processSearch(){
 
 function selectProcessForChart(){
     var x = document.getElementById("selectProcess").value;
-    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=taskduration&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=taskduration&id=" + x ;
 
     $.ajax({
         type: 'GET',
@@ -356,7 +356,7 @@ function selectProcessForChart(){
 
 function selectUserForPerformance(){
     var x = document.getElementById("selectUser").value;
-    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=userperformance&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + x ;
 
     $.ajax({
         type: 'GET',
@@ -379,7 +379,7 @@ function selectUserForPerformance(){
                 var chartHeight = chartAreaHeight + 30;
 
                 var options = {
-                    vAxis: {title: 'No.of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: 'No.of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
@@ -401,7 +401,7 @@ function selectUserForPerformance(){
 
 function selectProcessForAvgTimeDuration(){
     var x = document.getElementById("selectOption").value;
-    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=avgprocessduration&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=avgprocessduration&id=" + x ;
 
     $.ajax({
         type: 'GET',
@@ -420,16 +420,16 @@ function selectProcessForAvgTimeDuration(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                var chartAreaHeight = data.getNumberOfRows() * 30;
-                var chartHeight = chartAreaHeight + 20;
+                // var chartAreaHeight = data.getNumberOfRows() * 30;
+                //var chartHeight = chartAreaHeight + 20;
 
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    height: chartHeight,
+                    //height: chartHeight,
                     chartArea: {
-                        height: chartAreaHeight
+                        height: 100
                     }
                 };
 
@@ -442,7 +442,7 @@ function selectProcessForAvgTimeDuration(){
 }
 
 /**
-    Function to set date picker to date input elements
+ Function to set date picker to date input elements
  */
 function setDatePicker (dateElement) {
     var elementID = '#' + dateElement;
@@ -458,7 +458,7 @@ function setDatePicker (dateElement) {
 //Process Instance Count
 function selectProcessForInstanceCount(){
     var x = document.getElementById("processInstanceCount").value;
-    var url = httpUrl + "/" + CONTEXT + "/stats?update=true&option=processinstancecount&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processinstancecount&id=" + x ;
 
     $.ajax({
         type: 'GET',
@@ -477,16 +477,15 @@ function selectProcessForInstanceCount(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                var chartAreaHeight = data.getNumberOfRows() * 30;
-                var chartHeight = chartAreaHeight + 20;
-
+                // var chartAreaHeight = data.getNumberOfRows() * 30;
+                //var chartHeight = chartAreaHeight + 100;
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Process Instance Count', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    height: chartHeight,
+                    //height: chartHeight,
                     chartArea: {
-                        height: chartAreaHeight
+                        height: 100
                     }
                 };
 
@@ -498,3 +497,163 @@ function selectProcessForInstanceCount(){
     });
 }
 
+function userVsTasksCompleted(){
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=uservstaskscompleted";
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+
+            function drawChart(data) {
+                var dataArr = [['User', 'No. of tasks completed todate']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1]]);
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+                var options = {
+                    vAxis: {title: 'No. of tasks completed todate',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28'],
+                    bar: {groupWidth: "40%"},
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('colChartUserVsTasks'));
+                chart.draw(data, options);
+
+            }
+        }
+    });
+}
+
+function avgTimeForUserForTasks(){
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=uservsavgtime";
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+
+            function drawChart(data) {
+                var dataArr = [['User', 'Average Time Taken to Complete Tasks in Seconds']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1]]);
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+                var options = {
+                    vAxis: {title: 'Average Time Taken to Complete Tasks',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28'],
+                    bar: {groupWidth: "40%"},
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('userVsAvgTaskDuration'));
+                chart.draw(data, options);
+
+            }
+        }
+    });
+}
+
+function taskVariationOverTime(){
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=taskvariation";
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+
+            function drawChart(data) {
+                var dataArr = [['Months', 'Completed Tasks','Tasks Started']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1],data[i][2]]);
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+
+                var chartAreaHeight = data.getNumberOfRows() * 32;
+                var chartHeight = chartAreaHeight + 32;
+
+                var options = {
+                    vAxis: {title: 'No.of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28','#afaeae'],
+                    height: chartHeight,
+                    bar: {groupWidth: "70%"},
+                    chartArea: {
+                        width: '75%'
+                    },
+                    legend: { position: "top"},
+                    format: 'decimal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('taskVariationOverTime'));
+
+                chart.draw(data, options);
+
+            }
+        }
+    });
+}
+
+function processVariationOverTime(){
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processvariation";
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: url,
+        success: function (data) {
+
+            var array = eval('('+data+')');
+            google.load("visualization", "1", {packages:["corechart"]});
+            google.setOnLoadCallback(drawChart(array));
+
+            function drawChart(data) {
+                var dataArr = [['Months', 'Completed Processes','Started Processes']];
+                for(var i = 0;i < data.length;i++){
+                    dataArr.push([data[i][0] , data[i][1],data[i][2]]);
+                }
+                var data = google.visualization.arrayToDataTable(dataArr);
+
+                var chartAreaHeight = data.getNumberOfRows() * 32;
+                var chartHeight = chartAreaHeight + 32;
+
+                var options = {
+                    vAxis: {title: 'No.of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
+                    colors:['#be2d28','#afaeae'],
+                    height: chartHeight,
+                    bar: {groupWidth: "70%"},
+                    chartArea: {
+                        width: '75%'
+                    },
+                    legend: { position: "top"},
+                    format: 'decimal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('processVariationOverTime'));
+
+                chart.draw(data, options);
+
+            }
+        }
+    });
+}
