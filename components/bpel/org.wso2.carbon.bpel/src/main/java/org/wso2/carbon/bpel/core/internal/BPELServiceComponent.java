@@ -76,11 +76,10 @@ public class BPELServiceComponent {
                 registerBPELServerService();
             }
 
-            bundleContext.registerService(ServerStartupObserver.class.getName(),
-                    new BPELSchedulerInitializer(), null);
+            bundleContext.registerService(ServerStartupObserver.class.getName(), new BPELSchedulerInitializer(), null);
             //registering service to shutdown ode scheduler, before server shutdown
-            bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(),
-                    new BPELSchedulerShutdown(), null);
+            bundleContext
+                    .registerService(WaitBeforeShutdownObserver.class.getName(), new BPELSchedulerShutdown(), null);
 
         } catch (Throwable t) {
             log.error("Failed to activate BPEL Core bundle", t);
