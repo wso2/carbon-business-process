@@ -25,6 +25,7 @@
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.apache.commons.httpclient.HttpStatus" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -76,7 +77,11 @@
         }
         String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
         if (operation != null && operation.equals("undeploy")) {
-                client.undeploy(deploymentName);
+             try{
+               client.undeploy(deploymentName);
+             } catch (Exception e) {
+             CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
+             }
         }
         deployments = client.getPaginatedDeploymentsByFilter(method, filter, start, 10);
         int numberOfPages = (int) Math.ceil(client.getDeploymentCount()/10.0);

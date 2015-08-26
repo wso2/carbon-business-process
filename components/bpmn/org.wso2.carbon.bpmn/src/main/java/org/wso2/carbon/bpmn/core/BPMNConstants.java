@@ -37,4 +37,17 @@ public class BPMNConstants {
     public static final int    SUPER_TENANT_ID = -1234;
 
 	public static final String BPS_BPMN_DEPLOYMENT_METADATA_TABLE = "BPS_BPMN_DEPLOYMENT_METADATA";
+    public static final String SPRING_NAMESPACE = "http://www.springframework.org/schema/beans";
+    public static final String BEAN = "bean";
+    public static final String BEAN_ID = "id";
+    public static final String BEAN_CLASS = "class";
+    public static final String PROPERTY = "property";
+    public static final String NAME = "name";
+    public static final String VALUE = "value";
+
+    public static final String NOT_DEFINED_VAR = "NOT_DEFINED";
+
+    public static final int ACTIVITI_INSTANCE_MAX_DELETE_COUNT = 1000;
+    public static final String ACTIVITI_INSTANCE_MAX_DELETE_CONFIG = "activitiInstanceDeleteConfig";
+    public static final String ACTIVITI_INSTANCE_MAX_DELETE_CONFIG_MAX_COUNT_PROPERTY = "maxCount";
 }

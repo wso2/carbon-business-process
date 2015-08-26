@@ -24,6 +24,7 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
+import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
