@@ -30,45 +30,43 @@
 	</ol-->
 	   	<div class="table-body margin-left-double">
 	      <div class="table-title"><%=taskData.name%> |   <%=taskData.id%></div>
-	        <table class="table">
-		    <tbody>
-		    	<tr class="white-bg">
-		    		<th>Description:</th>
-					<td colspan='2'><%=taskData.desc%></td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<th>Task Priority:</th>
-		    		<td colspan='2'><%=taskData.priority%></td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<th>Process:</th>
-		    		<td colspan='2'><%=taskData.pid%></td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<th>Process Instance ID:</th>
-		    		<td colspan='2'><%=taskData.processInstanceId%></td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<th>Process Status:</th>
-		    		<td colspan='2'><%=taskData.processState%></td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<th>People:</th>
-		    		<td>
-		    		<div class="col-lg-8 padding-left-none">
-		    			<div class="col-lg-3 padding-left-none"><b>Owner: </b><%=taskData.owner%> </div>
-		    			<div class="col-lg-3"><button class="btn btn-action" data-toggle="modal" data-target="#transfer">Transfer</button></div>
-					</div>
-					<div class="col-lg-8 padding-top padding-left-none">
-		    			<div class="col-lg-3 padding-left-none"><b>Assignee: </b><%=taskData.assignee%></div>
-		    			<div class="col-lg-3"> <button class="btn btn-action" data-toggle="modal" data-target="#reassign">Reassign</button></div>
-					</div>
-
-		    		</td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<th>Subtasks: <!--button class="btn btn-xs btn-info">+</button--></th>
-		    		<td colspan='2'>
+	      <div class="col-lg-12 white-bg">
+				<div class="col-lg-12 margin-bottom margin-top padding-left-none">
+					<div class="col-lg-2 padding-top padding-left-none"><h3>Description:</h3></div>
+					<div class="col-lg-4 padding-top "><%=taskData.desc%></div>
+				</div>
+				<hr>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Process ID:</h3></div>
+					<div class="col-lg-4 "><%=taskData.pid%></div>
+				</div>
+				<hr>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Process Instance ID:</h3></div>
+					<div class="col-lg-4 "><%=taskData.processInstanceId%></div>
+				</div>
+				<hr>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Process Status:</h3></div>
+					<div class="col-lg-4 "><%=taskData.processState%></div>
+				</div>
+				<hr>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+				<div class="col-lg-2 margin-bottom-double padding-bottom-double padding-left-none">
+				<h3>People:</h3></div>
+					<div class="col-lg-10 margin-bottom">
+						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Owner: </b><%=taskData.owner%></div>
+						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#transfer">Transfer</button></div>
+ 					</div>
+ 					<div class="col-lg-10 margin-bottom">
+						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Assignee: </b><%=taskData.assignee%></div>
+						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#transfer">Transfer</button></div>
+ 					</div>
+	      		</div>
+	      		<hr>
+	      		<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Subtasks:</h3></div>
+					<div class="col-lg-4 ">
 		    			<% if (taskData.subtask == null) { %>
 		    				No sub tasks
 		    			<% } else { %>
@@ -77,27 +75,28 @@
 		    					<!--a href="#">subtask </a><button class="btn btn-xs btn-info">Remove</button-->
 		    				<% } %>
 		    			<% } %>
-		    		</td>
-		    	</tr>
-		     	<tr class="white-bg">
-		    		<th>Fill in the form:</th>
-		    		<td colspan='2'>
-		    			<form>
-		    				<table><%=formContent%></table>
-		    			</form>
-		    		</td>
-		    	</tr>
-		    	<tr class="white-bg">
-		    		<td align='right' colspan='3'>
-		    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double <%=taskInputsDisabled%>">Complete task</button>
-		    		</td>
-		    	</tr>
-		    </tbody>
-		  </table>
+					</div>
+				</div>
+				<hr>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Process Instance ID:</h3></div>
+					<div class="col-lg-4 "><%=taskData.processInstanceId%></div>
+				</div>
+				<hr>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Fill in the form:</h3></div>
+					<div class="col-lg-4"><%=formContent%></div>
+				</div>
+				<hr>
+				<div class="col-lg-12 right margin-bottom">
+					<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">
+					Complete task</button></div>
+				</div>
+	      		</div>
 	</div>
  </div>
  <!-- Adding attachments tab -->
- <div class="row" name="additionalInfoSection">
+ <div class="row secondry-table" name="additionalInfoSection">
   	<div class="table-title margin-left-double margin-right-double">
 	 	<a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
 	</div>
