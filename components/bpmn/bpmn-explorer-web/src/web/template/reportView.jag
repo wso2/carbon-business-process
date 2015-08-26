@@ -13,7 +13,7 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->*/%>
-<script src="js/reportGenerator.js"></script>
+
 <div class="col-sm-12">
    <div class="row">
 
@@ -25,31 +25,7 @@
     <script src="js/corechartEn.js"></script>
     <link rel="stylesheet" href="css/chart.css">
 
-    <script type="text/javascript">
-      function generateReport(){
-      selectProcessForInstanceCount();
-      selectProcessForAvgTimeDuration();
-      userVsTasksCompleted();
-      avgTimeForUserForTasks();
-      taskVariationOverTime();
-      processVariationOverTime();
-
-      var barChartDisplay= document.getElementById("barChartDisplay");
-      barChartDisplay.hidden= false;
-
-      var pieChartDisplay= document.getElementById("pieChartDisplay");
-      pieChartDisplay.hidden= false;
-
-      var genButton= document.getElementById("generate")
-      genButton.hidden= true;
-
-      var h3= document.getElementById("h3")
-      h3.hidden= true;
-
-    }
-    </script>
-
-      <div class="col-lg-8 float-left" id="barChartDisplay" hidden>
+     <div class="col-lg-8 float-left" id="barChartDisplay" hidden>
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Process Instance Count </div>
                 <form>

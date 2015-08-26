@@ -657,3 +657,26 @@ function processVariationOverTime(){
         }
     });
 }
+
+function generateReport(){
+
+        selectProcessForInstanceCount();
+        selectProcessForAvgTimeDuration();
+        userVsTasksCompleted();
+        avgTimeForUserForTasks();
+        taskVariationOverTime();
+        processVariationOverTime();
+
+        var barChartDisplay= document.getElementById("barChartDisplay");
+        barChartDisplay.hidden= false;
+
+        var pieChartDisplay= document.getElementById("pieChartDisplay");
+        pieChartDisplay.hidden= false;
+
+        var genButton= document.getElementById("generate")
+        genButton.hidden= true;
+
+        var h3= document.getElementById("h3")
+        h3.hidden= true;
+
+}
