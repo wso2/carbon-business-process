@@ -130,7 +130,7 @@ public class RESTTask implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         if (log.isDebugEnabled()) {
-            log.debug("Executing RESTInvokeTask " + method + " - " + serviceURL.getValue(execution).toString());
+            log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " + serviceURL.getValue(execution).toString());
         }
 
         String output = "";
@@ -206,7 +206,7 @@ public class RESTTask implements JavaDelegate {
                 }
             }
         } catch (Exception e) {
-            String errorMessage = "Failed to execute " + method + " " + url + " within task " + getTaskDetails(execution);
+            String errorMessage = "Failed to execute " + method.getValue(execution).toString() + " " + url + " within task " + getTaskDetails(execution);
             log.error(errorMessage, e);
             throw new BpmnError(REST_INVOKE_ERROR, errorMessage);
         }

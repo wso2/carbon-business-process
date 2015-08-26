@@ -37,4 +37,8 @@ public class BPMNConstants {
     public static final int    SUPER_TENANT_ID = -1234;
 
 	public static final String BPS_BPMN_DEPLOYMENT_METADATA_TABLE = "BPS_BPMN_DEPLOYMENT_METADATA";
+
+	public static final String REST_CLIENT_CONFIG_ELEMENT = "restClientConfiguration";
+	public static final String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
+	public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
 }
