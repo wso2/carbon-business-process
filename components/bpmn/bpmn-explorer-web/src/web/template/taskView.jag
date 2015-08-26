@@ -13,6 +13,14 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+<!--Area to display common errors-->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="errorMsg"><%=commonErrorMessage%></p>
+    </div>
+</div>
+<%if (commonErrorMessage == null) {%>
 <div class="row">
  	<div class="panel-inbox">
 	<!--ol class="breadcrumb">
@@ -21,7 +29,7 @@
 	  <li class="active">Task:<%=id%></li>
 	</ol-->
 	   	<div class="table-body margin-left-double">
-	      <div class="table-title"><%=taskData.name%></div>
+	      <div class="table-title"><%=taskData.name%> |   <%=taskData.id%></div>
 	        <table class="table">
 		    <tbody>
 		    	<tr class="white-bg">
@@ -29,8 +37,20 @@
 					<td colspan='2'><%=taskData.desc%></td>
 		    	</tr>
 		    	<tr class="white-bg">
-		    		<th>Process ID:</th>
+		    		<th>Task Priority:</th>
+		    		<td colspan='2'><%=taskData.priority%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Process:</th>
 		    		<td colspan='2'><%=taskData.pid%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Process Instance ID:</th>
+		    		<td colspan='2'><%=taskData.processInstanceId%></td>
+		    	</tr>
+		    	<tr class="white-bg">
+		    		<th>Process Status:</th>
+		    		<td colspan='2'><%=taskData.processState%></td>
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<th>People:</th>
@@ -69,7 +89,7 @@
 		    	</tr>
 		    	<tr class="white-bg">
 		    		<td align='right' colspan='3'>
-		    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">Complete task</button>
+		    			<button onclick="completeTask($('form').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double <%=taskInputsDisabled%>">Complete task</button>
 		    		</td>
 		    	</tr>
 		    </tbody>
@@ -84,18 +104,18 @@
 
 	<div id="addAttachment" class="addAttachment padding-double">
    		<form id="attachForm" style="margin-left: 10px;" method="POST" action="/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
-   		<div class="col-lg-3">File Name:
-   			<span class="padding-left">
-   				<input type="text" id="name" name="name"/>
-   			</span>
-   		</div>
-   		<div class="col-lg-8">
-   			<span class="float-left padding-right">Select File:</span>
-   			<div class="float-left">
-   				<input type="file" id="files" name="file" onchange="javascript:document.getElementById('name').value = this.value.split(/[\/\\]/).pop();"/>
-   			</div>
-   		</div>
-   		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info">Upload</button></div>
+	   		<div class="col-lg-3">File Name:
+	   			<span class="padding-left">
+	   				<input type="text" id="name" name="name" <%=taskInputsDisabled%>/>
+	   			</span>
+	   		</div>
+	   		<div class="col-lg-8">
+	   			<span class="float-left padding-right">Select File:</span>
+	   			<div class="float-left">
+	   				<input type="file" id="files" name="file" onchange="javascript:document.getElementById('name').value = this.value.split(/[\/\\]/).pop();" <%=taskInputsDisabled%>/>
+	   			</div>
+	   		</div>
+	   		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info <%=taskInputsDisabled%>">Upload</button></div>
   		</form>
    </div>
   <!--  <ul class="nav nav-tabs" role="tablist">
@@ -200,3 +220,5 @@ else{%>
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 </div>
+
+<%}%>

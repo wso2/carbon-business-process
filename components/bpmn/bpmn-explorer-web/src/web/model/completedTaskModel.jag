@@ -17,46 +17,67 @@
 var id = request.getParameter("id");
 var headers = {"Authorization":"Basic " + auth};
 var user = session.get("user");
-var taskList = get( httpUrl + "/bpmn/history/historic-task-instances/" + id ,null, headers, "json" ).data;
-var taskDesc = taskList.description;
-if (taskDesc == null) {
-    taskDesc = "Description not available";
-}
-var taskOwner = taskList.owner;
-if (taskOwner == null) {
-    taskOwner = "Not available";
-}
-var taskName = taskList.name;
-if (taskName == null) {
-    taskName = "Task name not available";
-}
-var taskClaimTIme = taskList.claimTime;
-if(taskClaimTIme == null){
-	taskClaimTIme = "Not available";
-}
-var taskDueDate = taskList.dueDate;
-if(taskDueDate == null){
-	taskDueDate = "Not available";
-}
-var taskWorkTime = taskList.workTimeInMillis;
-if(taskWorkTime == null){
-	taskWorkTime = "Not available";
-}
 
-var taskListData = {
-	name:taskName,
-	processInstanceId:taskList.processInstanceId,
-	description:taskDesc,
-	duration:taskList.durationInMillis,
-	claimTime:taskClaimTIme,
-	dueDate:taskDueDate,
-	workTime:taskWorkTime,
-	assignee:taskList.assignee,
-	owner:taskOwner,
-	definitionKey:taskList.taskDefinitionKey,
-	tenantId:taskList.tenantId,
-	executionId:taskList.executionId,
-	priority:taskList.priority,
-	deleteReason:taskList.deleteReason
-};
+try {
+    var taskList = get( httpUrl + "/bpmn/history/historic-task-instances/" + id ,null, headers, "json" ).data;
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/history/historic-task-instances/" + id);
+        log.debug("BPS BPMN REST API response: " + stringify(taskList));
+    }
+
+    //Check for error response
+    if (taskList.errorMessage != undefined) {
+        throw "Error " + taskList.statusCode + " : " + taskList.errorMessage;
+    }
+
+    var taskDesc = taskList.description;
+    if (taskDesc == null) {
+        taskDesc = "Description not available";
+    }
+    var taskOwner = taskList.owner;
+    if (taskOwner == null) {
+        taskOwner = "Not available";
+    }
+    var taskName = taskList.name;
+    if (taskName == null) {
+        taskName = "Task name not available";
+    }
+    var taskClaimTIme = taskList.claimTime;
+    if(taskClaimTIme == null){
+        taskClaimTIme = "Not available";
+    }
+    var taskDueDate = taskList.dueDate;
+    if(taskDueDate == null){
+        taskDueDate = "Not available";
+    }
+    var taskWorkTime = taskList.workTimeInMillis;
+    if(taskWorkTime == null){
+        taskWorkTime = "Not available";
+    }
+
+    var taskListData = {
+        name:taskName,
+        processInstanceId:taskList.processInstanceId,
+        description:taskDesc,
+        duration:taskList.durationInMillis,
+        claimTime:taskClaimTIme,
+        dueDate:taskDueDate,
+        workTime:taskWorkTime,
+        assignee:taskList.assignee,
+        owner:taskOwner,
+        definitionKey:taskList.taskDefinitionKey,
+        tenantId:taskList.tenantId,
+        executionId:taskList.executionId,
+        priority:taskList.priority,
+        deleteReason:taskList.deleteReason
+    };
+} catch (e) {
+    if (log.isDebugEnabled()) {
+        log.debug("User Error Occured : " + e);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = getCommonErrorContent(e);
+    errorDisplayEnable = '';
+}
 %>

@@ -97,7 +97,7 @@
 
             function validate() {
 
-                if (document.bpelUpload.bpelFileName.value != null) {
+                if (!(document.bpelUpload.bpelFileName instanceof NodeList)) {
                     var jarinput = document.bpelUpload.bpelFileName.value;
                     if (jarinput == '') {
                         CARBON.showWarningDialog('Please select required fields to upload a BPEL package');
@@ -106,7 +106,7 @@
                     } else {
                         document.bpelUpload.submit();
                     }
-                } else if (document.bpelUpload.bpelFileName[0].value != null) {
+                } else if ((document.bpelUpload.bpelFileName instanceof NodeList) && (document.bpelUpload.bpelFileName.length > 0)) {
                     var validFileNames = true;
                     for (var i = 0; i < document.bpelUpload.bpelFileName.length; i++) {
                         var jarinput = document.bpelUpload.bpelFileName[i].value;
@@ -118,10 +118,13 @@
                             CARBON.showWarningDialog('Please select a .zip file');
                             validFileNames = false;
                             break;
-                        } else {
-                            document.bpelUpload.submit();
                         }
                     }
+                    if (validFileNames == true) {
+                        document.bpelUpload.submit();
+                    }
+                } else {
+                    CARBON.showWarningDialog('Unexpected error occurred');
                 }
             }
 

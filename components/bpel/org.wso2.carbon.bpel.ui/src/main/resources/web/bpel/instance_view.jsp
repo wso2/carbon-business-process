@@ -600,7 +600,7 @@
                                     <td><%=varInfo.getSelf().getName()%>
                                     </td>
                                     <%
-                                        String varStr = "<div>Nil</div>";
+                                        String variableString = "<div>Nil</div>";
                                         if (varInfo.getValue() != null && varInfo.getValue().getExtraElement() != null
                                                 && varInfo.getValue().getExtraElement()[0] != null) {
                                             String id = varInfo.getSelf().getName() + "_HiddenField";
@@ -614,25 +614,25 @@
                                             }
                                             boolean isEmpty = false;
                                             if (varValue == null || varValue.length() == 0 || varValue.equals("Nil")) {
-                                                varStr = "<div>Nil</div>";
+                                                variableString = "<div>Nil</div>";
                                                 isEmpty = true;
                                             } else if (varValue.equals("<empty-value>Nil</empty-value>")) {
                                                 isEmpty = true;
                                             } else {
                                                 //TODO pretty print here
         ////                                        XMLPrettyPrinter xmlPP = new XMLPrettyPrinter(new ByteArrayInputStream(varValue.getBytes()));
-        ////                                        varStr = BpelUIUtil.encodeHTML(xmlPP.xmlFormat());
+        ////                                        variableString = BpelUIUtil.encodeHTML(xmlPP.xmlFormat());
         //                                        XMLPrettyPrinter xmlPP = new XMLPrettyPrinter(new ByteArrayInputStream(varValue.getBytes()));
         //                                        String ppedStr = xmlPP.xmlFormat();
         //                                        StringReader sr = new StringReader(ppedStr);
         //                                        StringWriter sw = new StringWriter();
         //                                        PrettyXML.writeFancily(sr, sw);
         //                                        sr.close();
-        //                                        varStr = sw.toString();
+        //                                        variableString = sw.toString();
                                                 try {
                                                     //read the max variable length from configuration
                                                     int maxSize = client.getInstanceViewVariableLength() * 1000;
-                                                    varStr = BpelUIUtil.encodeHTML(BpelUIUtil
+                                                    variableString = BpelUIUtil.encodeHTML(BpelUIUtil
                                                             .truncateString(BpelUIUtil.prettyPrint(varValue), maxSize));
                                                 } catch (Exception e) {
 
@@ -641,7 +641,7 @@
                                                             e.getMessage(), e);
                                                     session.setAttribute(CarbonUIMessage.ID, uiMsg);
                                                 }
-        //                                        varStr = varStr.replaceAll("\n", "<br/>");
+        //                                        variableString = variableString.replaceAll("\n", "<br/>");
 
                                             }
                                     %>
@@ -655,7 +655,7 @@
                                         %>
                                         <div id='dialog<%=id%>Parent'>
                                             <div id='dialog<%=id%>' title='Value of <%=varInfo.getSelf().getName()%>'
-                                                 style="display: none;"><pre><%=varStr%></pre>
+                                                 style="display: none;"><pre><%=variableString%></pre>
                                             </div>
                                         </div>
 

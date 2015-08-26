@@ -661,14 +661,12 @@ a.collapsing-h2 {
 .form-control {
     line-height: normal;
     width: 100%;
-    /*padding: 15px;*/
     font-size: 15px;
     border: 1px solid #ccc;
     border-radius: 0;
     box-shadow: none;
     color: #555;
     display: block;
-    /*height: 57px;*/
 }
 
 .wr-btn {
@@ -977,3 +975,7 @@ input[type="radio"], input[type="checkbox"] {
 .btn-sec:hover{ background: #be2d28;border-color: #be2d28; color: #fff;   }
 .list-group,.list-group-item:first-child,.list-group-item:last-child{border-radius: 0 !important;}
 .list-group-item:first-child{border-top: 0px;}
+
+.daterangepicker .calendar {
+    max-width: 306px;
+}

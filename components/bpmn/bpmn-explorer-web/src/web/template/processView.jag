@@ -13,6 +13,12 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <p id="errorMsg"><%=commonErrorMessage%></p>
+    </div>
+</div>
 <div class="row">
  	<div class="panel-inbox">
 	<!--<ol class="breadcrumb">
@@ -33,7 +39,7 @@
 		    		<th>Action</th>
 		    	</tr>
 		    </thead>
-		    <% if (list.length > 0) { %>
+		    <% if (commonErrorMessage == null && list.length > 0) { %>
 		    <tbody>
 		    	<% var previous = list[0].processName; var count = 0;%>
 		    	<% for (var i=0; i<list.length; i++) { %>
@@ -47,7 +53,7 @@
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram"
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
-	                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+	                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
 	                            <% } else { %>
 	                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
@@ -66,7 +72,7 @@
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
-	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
 	                                <% } else { %>
 	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 				    				<% } %>
@@ -88,7 +94,7 @@
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
-			    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+			    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
 			    				<% } else { %>
 			    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
@@ -106,7 +112,7 @@
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
-	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('Not Available');">
+	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
 	                                <% } else { %>
 	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 									<% } %>
@@ -128,11 +134,11 @@
 		<%
 			var startProcess = request.getParameter("startProcess");
 			var errorProcess = request.getParameter("errorProcess");
-			if(startProcess != null && startProcess != ""){
+			if (startProcess != null && startProcess != "") {
 				%>
 					<script>
 						window.onload = function() {
-							$('.processStatus').html("<b>Process Started:</b> <%=startProcess%>");
+							$('.processStatus').html("<b>Process Started: </b> <%=startProcess%>");
 							$('#processStart').modal('show');
 							if (typeof (history.pushState) != "undefined") {
 								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
@@ -143,11 +149,21 @@
 						}
 					</script>
 				<%
-			}
-			if(errorProcess != null && errorProcess != ""){
+			} else if (errorProcess != null && errorProcess != "") {
+				var errorMessage = request.getParameter("errorMessage");
 				%>
-					$('.processStatus').html("Error starting process");
-					$('#processStart').modal('show');
+					<script>
+						window.onload = function() {
+							$('#processStartErrorMsg').html("<b>Error starting process: </b><%=errorMessage%>");
+							$('#processStartError').modal('show');
+							if (typeof (history.pushState) != "undefined") {
+								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
+								history.pushState(obj, obj.Title, obj.Url);
+							} else {
+								alert("Browser does not support HTML5.");
+							}
+						}
+					</script>
 				<%
 			}
 		%>
@@ -179,6 +195,7 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     	</div><!-- /.modal -->
+
     	<div class="modal fade bs-example-modal-sm" id="processStart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -191,5 +208,24 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     	</div><!-- /.modal -->
+
+    	<div class="modal fade bs-example-modal-sm" id="processStartError" tabindex="-1" role="dialog" aria-labelledby="processStartErrorLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="processStartErrorLabel" style="color: #a94442;"><span class="processStatusError">Error Occured</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left">
+                        <p id="processStartErrorMsg" style="text-align:center"></p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="text-align:center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    	</div><!-- /.modal -->
+
 	</div>
 </div	

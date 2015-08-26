@@ -35,6 +35,8 @@ import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.api.UserStoreException;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.Executors;
 
@@ -54,31 +56,38 @@ public class AnalyticsPublisher {
      */
     public void initialize() {
         try {
-            RegistryUtils.setTrustStoreSystemProperties();
-            dataPublisher = createDataPublisher();
-            if(dataPublisher != null){
-                processInstanceStreamId = getBPMNProcessInstanceStreamId();
-                taskInstanceStreamId = getBPMNTaskInstanceStreamId();
-                analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
-                int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-                String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-                Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
-                        .getGovernanceSystemRegistry();
-                if (processInstanceStreamId == null && taskInstanceStreamId == null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Stream definitions are null...");
+            if (BPMNDataReceiverConfig.isDASPublisherActivated()) {
+                RegistryUtils.setTrustStoreSystemProperties();
+                dataPublisher = createDataPublisher();
+                if (dataPublisher != null) {
+                    processInstanceStreamId = getBPMNProcessInstanceStreamId();
+                    taskInstanceStreamId = getBPMNTaskInstanceStreamId();
+                    analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
+                    int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+                    String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+                    Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
+                            .getGovernanceSystemRegistry();
+                    if (processInstanceStreamId == null && taskInstanceStreamId == null) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Stream definitions are null...");
+                        }
+                    } else {
+                        setPrivilegeContext(tenantId, tenantDomain, registry);
                     }
                 } else {
-                    setPrivilegeContext(tenantId, tenantDomain, registry);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Data Publisher object is null...");
+                    }
                 }
-            }else{
-             if(log.isDebugEnabled()){
-                 log.debug("Data Publisher object is null...");
-             }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("BPMN Data Publisher is not activated...");
+                }
             }
-        } catch (MalformedURLException | AgentException | AuthenticationException | TransportException |
+        } catch (IOException | AgentException | AuthenticationException | TransportException |
                 DifferentStreamDefinitionAlreadyDefinedException | StreamDefinitionException |
-                MalformedStreamDefinitionException | UserStoreException | RegistryException e) {
+                MalformedStreamDefinitionException | UserStoreException | RegistryException | XMLStreamException
+                e) {
             String errMsg = "Data publisher objects initialization error.";
             log.error(errMsg, e);
         }
@@ -90,7 +99,7 @@ public class AnalyticsPublisher {
     private void setPrivilegeContext(final int tenantId, final String tenantDomain,
                                      final Registry registry) {
         if (log.isDebugEnabled()) {
-            log.debug("Run setPrivilegeContext method... " + tenantId+", "+tenantDomain + ", "+ registry);
+            log.debug("Run setPrivilegeContext method... " + tenantId + ", " + tenantDomain + ", " + registry);
         }
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -154,7 +163,7 @@ public class AnalyticsPublisher {
     private void publishBPMNProcessInstanceEvent(BPMNProcessInstance bpmnProcessInstance)
             throws AgentException {
 
-        Object[] payload = new Object[] {
+        Object[] payload = new Object[]{
                 bpmnProcessInstance.getProcessDefinitionId(),
                 bpmnProcessInstance.getInstanceId(),
                 bpmnProcessInstance.getStartActivityId(),
@@ -164,11 +173,11 @@ public class AnalyticsPublisher {
                 bpmnProcessInstance.getDuration(),
                 bpmnProcessInstance.getTenantId()
         };
-        if(log.isDebugEnabled()){
-            log.debug("Start to Publish BPMN process instance event... "+payload.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("Start to Publish BPMN process instance event... " + payload.toString());
         }
         dataPublisher.publish(processInstanceStreamId, getMeta(), null, payload);
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("Published BPMN process instance event... " + payload.toString());
         }
     }
@@ -181,7 +190,7 @@ public class AnalyticsPublisher {
      */
     private void publishBPMNTaskInstanceEvent(BPMNTaskInstance bpmnTaskInstance)
             throws AgentException {
-        Object[] payload = new Object[] {
+        Object[] payload = new Object[]{
                 bpmnTaskInstance.getTaskDefinitionKey(),
                 bpmnTaskInstance.getTaskInstanceId(),
                 bpmnTaskInstance.getProcessInstanceId(),
@@ -192,12 +201,12 @@ public class AnalyticsPublisher {
                 bpmnTaskInstance.getAssignee()
 
         };
-        if(log.isDebugEnabled()){
-            log.debug("Start to Publish BPMN task instance event... "+payload.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("Start to Publish BPMN task instance event... " + payload.toString());
         }
         dataPublisher.publish(taskInstanceStreamId, getMeta(), null, payload);
-        if(log.isDebugEnabled()){
-            log.debug("Published BPMN task instance event... "+payload.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("Published BPMN task instance event... " + payload.toString());
         }
     }
 
@@ -277,10 +286,11 @@ public class AnalyticsPublisher {
             throws MalformedURLException, AgentException, AuthenticationException,
             TransportException, UserStoreException, RegistryException {
         DataPublisher dataPublisher = null;
-        if(BPMNDataReceiverConfig.getThriftURL() != null){
-            dataPublisher = new DataPublisher(BPMNDataReceiverConfig.getThriftURL(),
-                    BPMNDataReceiverConfig.getUserName(),
-                    BPMNDataReceiverConfig.getPassword());
+        String thriftURL = BPMNDataReceiverConfig.getThriftURL();
+        String username = BPMNDataReceiverConfig.getUserName();
+        String password = BPMNDataReceiverConfig.getPassword();
+        if (thriftURL != null && username != null && password != null) {
+            dataPublisher = new DataPublisher(thriftURL, username, password);
         }
         return dataPublisher;
     }

@@ -285,7 +285,7 @@ function updateComments(id) {
 
                     commentViewList = commentViewList + '<li class="list-group-item" id="comment_' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + '">\
                                                                 <div>' + commentList[i].getElementsByTagNameNS(ns1NS, 'addedBy')[0].textContent + ' added a comment - \
-                                                                    <time>' + dateInfo + '</time>\
+                                                                    <time>' + dateInfo.toDateString() + ' ' + dateInfo.toLocaleTimeString() + '</time>\
                                                                     <a href="#additionalInfoSection" onclick="deleteComment(' + id + ',' + commentList[i].getElementsByTagNameNS(ns1NS, 'id')[0].textContent + ')">\
                                                                         <span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>\
                                                                     </a>\
@@ -389,7 +389,7 @@ function updateHistory(id) {
                         + historyList[i].getElementsByTagName('eventType')[0].textContent
                         + '</div>\
                                                             <div> <b>Time : </b>'
-                        + '<time>' + dateInfo + '</time>'
+                        + '<time>' + dateInfo.toDateString() + ' ' + dateInfo.toLocaleTimeString() + '</time>'
                         + '</div>\
                                                             <div> <b>Old State : </b>'
                         + historyList[i].getElementsByTagName('oldState')[0].textContent
@@ -459,7 +459,7 @@ function updateAttachments(id) {
                         + '</div>'
                         + '<div style="color:#B0B0B0;">'
                         + 'added by ' + attachmentList[i].getElementsByTagNameNS(ns1NS, 'attachedBy')[0].textContent
-                        + ' on <time>' + dateInfo + '</time>'
+                        + ' on <time>' + dateInfo.toDateString() + ' ' + dateInfo.toLocaleTimeString() + '</time>'
                         + '</div>'
                         + '</li>';
                 }
@@ -731,4 +731,20 @@ function skipTask(id) {
             $('#additionalInfoErr').show();
         }
     });
+}
+
+
+
+/**
+ Function to set date picker to date input elements
+ */
+function setDatePicker (dateElement) {
+    var elementID = '#' + dateElement;
+    $(elementID).daterangepicker({
+                                     singleDatePicker: true,
+                                     showDropdowns: true,
+                                     locale: {
+                                         format: 'MM/DD/YYYY'
+                                     }
+                                 });
 }

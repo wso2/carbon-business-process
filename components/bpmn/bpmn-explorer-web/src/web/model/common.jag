@@ -1,4 +1,5 @@
-<!--
+<%
+/*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +13,7 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->
-<%
+-->*/
 
     var log = new Log();
     var data = require('../config/config.json'),
@@ -37,4 +37,20 @@
     var completedTasksNavActive = ''; // Completed task view [updated at historicTasksModel, refered at navigation.jag]
     var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
     var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
+
+    var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErrorSection section in each view
+                                   // errorDisplayEnable = '' to display
+    var commonErrorMessage = null; //Common error message if exists
+
+
+    //START COMMON FUNCTIONS
+
+    /**
+     * Function to get common error message display content
+    */
+    function getCommonErrorContent (errorMsg) {
+        return errorMsg   + '<br><br> <div align="right">'
+                            + ' <button class="btn btn-info" onclick="window.history.back();">&lt;&lt; Go back to previous page</button> '
+                            + ' <a class="btn btn-info" href="stats">Go to home</a></div>';
+    }
 %>

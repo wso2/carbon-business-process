@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,62 +28,62 @@ import java.util.concurrent.ExecutorService;
  *
  */
 public class BPMNAnalyticsHolder {
-	private static final Log log = LogFactory.getLog(BPMNAnalyticsHolder.class);
+    private static final Log log = LogFactory.getLog(BPMNAnalyticsHolder.class);
 
-	private static BPMNAnalyticsHolder bpmnAnalyticsHolder = null;
+    private static BPMNAnalyticsHolder bpmnAnalyticsHolder = null;
 
-	private RegistryService registryService;
-	private RealmService realmService;
-	private ServerConfigurationService serverConfigurationService;
-	private ExecutorService executorService = null;
+    private RegistryService registryService;
+    private RealmService realmService;
+    private ServerConfigurationService serverConfigurationService;
+    private ExecutorService executorService = null;
 
-	private BPMNAnalyticsHolder(){
-	}
+    private BPMNAnalyticsHolder() {
+    }
 
-	public static BPMNAnalyticsHolder getInstance(){
-		if(bpmnAnalyticsHolder == null){
-			bpmnAnalyticsHolder = new BPMNAnalyticsHolder();
-		}
-		return bpmnAnalyticsHolder;
-	}
+    public static BPMNAnalyticsHolder getInstance() {
+        if (bpmnAnalyticsHolder == null) {
+            bpmnAnalyticsHolder = new BPMNAnalyticsHolder();
+        }
+        return bpmnAnalyticsHolder;
+    }
 
-	public RegistryService getRegistryService() {
-		return registryService;
-	}
+    public RegistryService getRegistryService() {
+        return registryService;
+    }
 
-	public RealmService getRealmService(){
-		return realmService;
-	}
+    public RealmService getRealmService() {
+        return realmService;
+    }
 
-	public ServerConfigurationService getServerConfigurationService(){
-		return serverConfigurationService;
-	}
+    public ServerConfigurationService getServerConfigurationService() {
+        return serverConfigurationService;
+    }
 
-	public void setRegistryService(RegistryService registryService) {
-		this.registryService = registryService;
-	}
+    public void setRegistryService(RegistryService registryService) {
+        this.registryService = registryService;
+    }
 
-	public void setRealmService(RealmService realmService){
-		this.realmService = realmService;
-	}
+    public void setRealmService(RealmService realmService) {
+        this.realmService = realmService;
+    }
 
-	public void setServerConfiguration(ServerConfigurationService serverConfiguration){
-		this.serverConfigurationService = serverConfiguration;
-	}
+    public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
+        this.serverConfigurationService = serverConfiguration;
+    }
 
-	public void setExecutorService(ExecutorService executorService){
-		this.executorService = executorService;
-	}
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
 
-	public ExecutorService getExecutorService() {
-		return executorService;
-	}
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
 
-	private static class BPMNServerInstanceHolder{
-		private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
-	}
+    private static class BPMNServerInstanceHolder {
+        private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
+    }
 
-	public static BPMNServerHolder getThreadSafeBPMNServerInstance(){
-		return BPMNServerInstanceHolder.INSTANCE;
-	}
+    public static BPMNServerHolder getThreadSafeBPMNServerInstance() {
+        return BPMNServerInstanceHolder.INSTANCE;
+    }
 }

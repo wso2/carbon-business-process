@@ -10,6 +10,11 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <%@ page import="java.net.URLEncoder" %>
+<%@ page import="org.wso2.carbon.registry.core.utils.RegistryUtils" %>
+<%@ page import="org.wso2.carbon.context.CarbonContext" %>
+<%@ page import="org.wso2.carbon.registry.api.Registry" %>
+<%@ page import="org.wso2.carbon.context.RegistryType" %>
+<%@ page import="org.wso2.carbon.registry.api.RegistryException" %>
 <!--
  ~ Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -140,12 +145,26 @@
     if (isAuthorizedToManageProcesses && operation != null && client != null) {
         String pid = CharacterEncoder.getSafeText(request.getParameter("processID"));
         if (operation.toLowerCase().trim().equals("retire")) {
-            if (pid != null && pid.length() > 0) {
+            String rowPackageName =
+                    CharacterEncoder.getSafeText(request.getParameter("retiredPackageName"));
+            if (rowPackageName != null) {
+                RegistryUtils.setTrustStoreSystemProperties();
+                CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
+                Registry configRegistry = context.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
+
+                String regPath =
+                        "bpel/packages/" + rowPackageName.split("-\\d*$")[0] + "/versions/" +
+                        rowPackageName;
                 try {
-                    client.retireProcess(BpelUIUtil.stringToQName(pid));
-                } catch (Exception e) {
+                    if (configRegistry.resourceExists(regPath)) {
+                        if (pid != null && pid.length() > 0) {
+                            client.retireProcess(BpelUIUtil.stringToQName(pid));
+                        }
+                    }
+                } catch (RegistryException e) {
                     response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                    CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
+                    CarbonUIMessage uiMsg =
+                            new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
                     session.setAttribute(CarbonUIMessage.ID, uiMsg);
 %>
 <jsp:include page="../admin/error.jsp"/>
@@ -356,7 +375,7 @@
 <%
                     if(processInfo.getStatus().toString().trim().equals("ACTIVE")){
 %>
-                                <a id="<%=linkID%>" class="icon-link-nofloat" style="background-image:url(images/deactivate.gif);" href="<%=BpelUIUtil.getRetireLink(processInfo.getPid(), processListFilter, processListOrderBy, pageNumberInt)%>">Retire</a>
+                                <a id="<%=linkID%>" class="icon-link-nofloat" style="background-image:url(images/deactivate.gif);" href="<%=BpelUIUtil.getRetireLink(processInfo.getPid(), processListFilter, processListOrderBy, pageNumberInt, processInfo.getPackageName())%>">Retire</a>
                                 <script type="text/javascript">
                                     jQuery('#<%=linkID%>').click(function(){
                                         function handleYes<%=linkID%>(){

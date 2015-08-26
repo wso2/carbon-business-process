@@ -491,8 +491,8 @@ public final class CommonTaskUtil {
             Number priority = expLangRuntime.evaluateAsNumber(priorityDef.newCursor().
                     getTextValue().trim(), evalCtx);
             if (priority.intValue() > 10 || priority.intValue() < 0) {
-                log.warn(String.format("Ignoring the task priority value " +
-                                       ":[%d] The task priority has to be with 0 and 10. Setting to default:[%d].",
+                log.warn(String.format(
+                        "Ignoring the task priority value :[%d] The task priority has to be with 0 and 10. Setting to default:[%d].",
                         priority.intValue(), HumanTaskConstants.DEFAULT_TASK_PRIORITY));
             } else {
                 taskPriorityInt = priority.intValue();

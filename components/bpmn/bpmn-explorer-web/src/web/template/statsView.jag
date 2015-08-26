@@ -1,4 +1,4 @@
-<!--
+<%/*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->
+-->*/%>
 <div class="col-sm-12">
   <div class="row">
     <% if(processNames.data.length > 0 && (activeProcesses > 0 || suspendProcesses > 0 || completedProcesses > 0)) { %>
@@ -27,16 +27,16 @@
       function drawChart(){
         var data = google.visualization.arrayToDataTable([
           ['Process Name', 'Instance Count'],
-          <% for(var j=0; j<processBarChart.length; j++){ %>
+          <% for(var j = 0; j < processBarChart.length; j++){ %>
             <%=JSON.stringify(processBarChart[j]) %>
-            <% if(j<processBarChart.length){ %> ,<% } %>
+            <% if(j < processBarChart.length){ %> ,<% } %>
           <% } %>
         ]);
-
+      
         var options = {
           vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
           hAxis: {title: 'Process instance count', titleTextStyle: {color: 'grey'}},
-          colors:['#333']
+          colors:['#be2d28'],
         };
 
         var chart = new google.visualization.BarChart(document.getElementById('barChart'));
@@ -44,10 +44,12 @@
         chart.draw(data, options);
       }
     </script>
-      <div class="col-sm-12 col-md-8 col-lg-8 ">
+
+    
+      <div class="col-lg-8 float-left">
             <!-- Default panel contents -->
-            <div class="table-title"  style="width:100%">  Process Instance Count</div>
-            <div id="barChart" style="height: 74%; width: 100%;"></div>
+            <div class="table-title"  style="width:100%">  Process Instance Count </div>
+            <div id="barChart" style="height: 74%"></div>            
       </div>
 
     <script type="text/javascript">
@@ -66,20 +68,22 @@
           pieSliceTextStyle: {
             color: 'white'
           },
-          colors:['#333','#dddddd','#afaeae','#be2d28']
+          colors:['#be2d28','#dddddd','#afaeae','#333']
         };
+
         var chart = new google.visualization.PieChart(document.getElementById('processInstanceChart'));
         chart.draw(data, options);
       }
     </script>
-      <div class="col-sm-12 col-md-4 col-lg-4 float-left">
-           <div class="col-sm-6 col-md-12 col-lg-12 float-left margin-bottom-double">
-              <div class="row" name="TaskInstancesChart">
-              <!-- Default panel contents -->
-                  <div class="table-title"  style="width:100%"> Process Instance Status</div>
-                  <div id="processInstanceChart" style="height:33%"></div>
-              </div>
-          </div>
+
+      <div class="col-lg-4 float-left">
+          <div class="row" name="TaskInstancesChart">
+          <!-- Default panel contents -->
+              <div class="table-title"  style="width:100%"> Process Instance Status </div>
+              <div id="processInstanceChart" style="height:33%"></div>
+          </div> 
+          <br>
+
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -96,18 +100,17 @@
           pieSliceTextStyle: {
             color: 'white'
           },
-           colors:['#333','#dddddd','#afaeae','#be2d28']
+          colors:['#be2d28','#dddddd','#afaeae','#333']
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('taskInstancesChart'));
         chart.draw(data, options);
       }
     </script>
-          <div class="col-sm-6 col-md-12 col-lg-12 float-left">
-              <div class="row" name="TaskInstancesChart">
-                  <div class="table-title" style="width:100%">Task Instance Status</div>
-                  <div id="taskInstancesChart" style="height:33% " ></div>
-              </div>
+
+          <div class="row" name="TaskInstancesChart">
+              <div class="table-title" style="width:100%">Task Instance Status </div>
+              <div id="taskInstancesChart" style="height:33% " ></div>
           </div>
     <% }else{ %>
       <br/>
@@ -115,4 +118,4 @@
       <br/><br/>
     <% }%>
   </div>
-</div>
+  </div>
