@@ -483,7 +483,7 @@ a.collapsing-h2 {
     height: 43px;
     padding: 7px 0 0 10px;
     font-size: 20px;
-    float: left;
+    //float: left;
     width: 99.9%;
 }
 .table-title>a {
