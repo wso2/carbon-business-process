@@ -191,7 +191,7 @@ public final class BpelUIUtil {
         return "process_list.jsp?operation=undeploy&packageName=" + packageName;
     }
 
-    public static String getRetireLink(String pid, String filter, String order, int pageNumber) {
+    public static String getRetireLink(String pid, String filter, String order, int pageNumber, String packageName) {
         String encodedPid = pid;
         try {
             encodedPid = URLEncoder.encode(pid,"UTF-8");
@@ -199,7 +199,7 @@ public final class BpelUIUtil {
             log.error("Error encoding the url " + pid + e);
         }
         String link = "process_list.jsp?operation=retire&processID=" + encodedPid + "&filter=" + filter +
-                "&order=" + order + "&pageNumber=" + pageNumber;
+                "&order=" + order + "&pageNumber=" + pageNumber + "&retiredPackageName=" + packageName;
 
         return link;
     }

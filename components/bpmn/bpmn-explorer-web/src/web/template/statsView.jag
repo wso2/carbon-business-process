@@ -32,17 +32,11 @@
             <% if(j < processBarChart.length){ %> ,<% } %>
           <% } %>
         ]);
-        var chartAreaHeight = data.getNumberOfRows() * 30;
-        var chartHeight = chartAreaHeight + 20;
-
+      
         var options = {
           vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
           hAxis: {title: 'Process instance count', titleTextStyle: {color: 'grey'}},
           colors:['#be2d28'],
-          height: chartHeight,
-          chartArea: {
-              height: chartAreaHeight
-          }
         };
 
         var chart = new google.visualization.BarChart(document.getElementById('barChart'));
@@ -51,217 +45,11 @@
       }
     </script>
 
-    <script type="text/javascript">
-
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart(){
-        var data = google.visualization.arrayToDataTable([
-          ['Process Name', 'Time Duration in Minutes'],
-          <% for(var j = 0; j < processBarChartAvgTime.length; j++){ %>
-            <%=JSON.stringify(processBarChartAvgTime[j]) %>
-            <% if(j < processBarChartAvgTime.length){ %> ,<% } %>
-            <% } %>
-           ]);
-
-        var chartAreaHeight = data.getNumberOfRows() * 30;
-        var chartHeight = chartAreaHeight + 20;
-
-        var options = {
-          vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
-          hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
-          colors:['#be2d28'],
-          height: chartHeight,
-          chartArea: {
-              height: chartAreaHeight
-          }
-        };
-
-        var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
-
-        chart.draw(data, options);
-      }
-    </script>
-
     
-    <script type="text/javascript">
-
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart(){
-        var data = google.visualization.arrayToDataTable([
-          ['User', 'No. of tasks completed todate'],
-          <% for(var j = 0; j < userVsTaskCount.length; j++){ %>
-            <%=JSON.stringify(userVsTaskCount[j]) %>
-            <% if(j < userVsTaskCount.length){ %> ,<% } %>
-            <% } %>
-           ]);
-
-        var options = {
-          vAxis: {title: 'User',  titleTextStyle: { color: 'grey' }},
-          hAxis: {title: 'No. of tasks completed todate', titleTextStyle: {color: 'grey'}},
-          colors:['#be2d28'],
-          bar: {groupWidth: "40%"},
-
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('colChartUserVsTasks'));
-
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script type="text/javascript"
-          src="https://www.google.com/jsapi?autoload={
-            'modules':[{
-              'name':'visualization',
-              'version':'1',
-              'packages':['corechart']
-            }]
-          }"></script>
-
-    <script type="text/javascript">
-      google.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['User', 'Average time taken to complete tasks'],
-          <% for(var j = 0; j < userResultArray.length; j++){ %>
-            <%=JSON.stringify(userResultArray[j]) %>
-            <% if(j < userResultArray.length){ %> ,<% } %>
-            <% } %>
-           ]);
-
-        var options = {
-          lineWidth:4,
-          pointSize:10,
-          vAxis:{title: "Average Time in Seconds"},
-          hAxis:{title: "Users"},
-          colors:['#be2d28']
-          
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('userVsAvgTaskDuration'));
-
-        chart.draw(data, options);
-      }
-    </script>
-
-     <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["bar"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Months', 'Completed Tasks','Tasks Started'],
-          <% for(var j = 0; j < arrayOfTaskCount.length; j++){ %>
-
-            <%=JSON.stringify(arrayOfTaskCount[j]) %>
-            <% if(j < arrayOfTaskCount.length){ %> ,<% } %>
-            <% } %>
-           ]);
-
-        var chartAreaHeight = data.getNumberOfRows() * 30;
-        var chartHeight = chartAreaHeight + 20;
-        var options = {
-          
-          bars: 'vertical',
-          vAxis: {format: 'decimal'},
-          bar: {groupWidth: "60%"},
-          height: chartHeight,
-          chartArea: {
-              height: chartAreaHeight
-          }
-        };
-        var chart = new google.charts.Bar(document.getElementById('taskVariationOverTime'));
-
-        chart.draw(data, options);
-      }
-    </script>
-
-   
-     <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["bar"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Months', 'Completed Processes','Started Processes'],
-          <% for(var j = 0; j < arrayOfProcessCount.length; j++){ %>
-
-            <%=JSON.stringify(arrayOfProcessCount[j]) %>
-            <% if(j < arrayOfProcessCount.length){ %> ,<% } %>
-            <% } %>
-           ]);
-        var chartAreaHeight = data.getNumberOfRows() * 30;
-        var chartHeight = chartAreaHeight + 20;
-
-        var options = {
-          
-          bars: 'vertical',
-          vAxis: {format: 'decimal'},
-          bar: {groupWidth: "60%"},
-          height: chartHeight,
-          chartArea: {
-              height: chartAreaHeight
-          }
-        };
-
-        var chart = new google.charts.Bar(document.getElementById('processVariationOverTime'));
-
-        chart.draw(data, options);
-      }
-    </script>
-
       <div class="col-lg-8 float-left">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Process Instance Count </div>
-            <div id="barChart"></div>
-            <br>
-            <div class="table-title"  style="width:100%" id="taskDurationOfCompleted"> Average Time Duration Of Completed Processes </div>
-            <br>
-             <form>
-                <select id="selectOption" name="selectOption" class="form-control" onchange="selectProcessForAvgTimeDuration()">
-                    <option value="allProcesses">All processes</option>
-
-                    <% if(selectedProcess == "shortTime") {%>
-                      <option value="shortTime" selected>Short time duration:Ascending</option>
-                    <% } else { %>
-                      <option value="shortTime">Short time duration:Ascending</option>
-                    <% } %>
-                   
-                    <% if(selectedProcess == "longTime") {%>
-                      <option value="longTime" selected>Long time duration:Descending</option>
-                    <% } else { %>
-                      <option value="longTime">Long time duration:Descending</option>
-                    <% } %>
-                   </select>                  
-                 </form>
-            <div id="barChartAvgTime"></div>
-            
-            <br>
-            <div class="table-title"  style="width:100%">  User Vs No. Of Tasks Completed </div>
-            <div id="colChartUserVsTasks" style="height: 74%"></div>
-            <br>
-            <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
-            <div id="userVsAvgTaskDuration" style="height: 74%"></div>
-            <br>
-            <div class="table-title"  style="width:100%"> Task Instance Count Variation Over Time </div>
-            <div id="taskVariationOverTime"></div>
-            <br>
-            <div class="table-title"  style="width:100%"> Process Instance Count Variation Over Time </div>
-            <div id="processVariationOverTime"></div>
-            <br>
-            <div class="table-title"  style="width:100%"> User Performance Of Tasks Instances Over Time </div>
-                <form>
-                <select id="selectUser" name="selectUser" class="form-control" onchange="selectUserForPerformance()">
-                 <option value="" disabled selected>Select a User</option>
-                <% for(var j = 0; j < userArray.length; j++){ %>
-                <option value="<%=userArray[j]%>"><%=userArray[j]%></option>
-            <% } %>
-                  </select>
-                 </form>
-            <div id="taskOfUserVariation" >
-            <div style="height: 74%"> </div>
-            </div>
+            <div id="barChart" style="height: 74%"></div>            
       </div>
 
     <script type="text/javascript">
@@ -323,20 +111,7 @@
           <div class="row" name="TaskInstancesChart">
               <div class="table-title" style="width:100%">Task Instance Status </div>
               <div id="taskInstancesChart" style="height:33% " ></div>
-              <br>
-               <div class="table-title"  style="width:100%"> Task Durations Of Completed Process </div>
-               <br>
-              
-              <form>
-                <select id="selectProcess" name="selectProcess" class="form-control" onchange="selectProcessForChart()">
-                <option value="" disabled selected>Select a Process</option>
-                <% for(var key in avgTimeDataPerProcess) { %>
-                <option value="<%=key%>"><%=key%></option>
-                  <% } %>
-                  </select>
-                 </form>
-                  <div id="taskDurationChart" style="height:33%" > Select a process to view the task duration</div>
-              </div>
+          </div>
     <% }else{ %>
       <br/>
       &nbsp;&nbsp;Welcome to BPMN Explorer statistical view. Please deploy processes from admin view and create tasks to generate statistics.

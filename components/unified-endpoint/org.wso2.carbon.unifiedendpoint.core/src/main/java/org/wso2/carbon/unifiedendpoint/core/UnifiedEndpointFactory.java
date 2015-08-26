@@ -56,10 +56,8 @@ public class UnifiedEndpointFactory {
                 OMElement omElem = getOmFromFile(filePath);
                 realUEP = createEndpoint(omElem);
 
-            } catch (XMLStreamException e) {
-                throw new AxisFault("Could not create endpoint from file path", e);
-            } catch (IOException e) {
-                throw new AxisFault("Could not create endpoint from file path", e);
+            } catch (XMLStreamException | IOException e) {
+                throw new AxisFault("Could not create endpoint from file path:" + filePath, e);
             }
         }
         return realUEP;

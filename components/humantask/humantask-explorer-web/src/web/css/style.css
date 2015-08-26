@@ -661,14 +661,12 @@ a.collapsing-h2 {
 .form-control {
     line-height: normal;
     width: 100%;
-    /*padding: 15px;*/
     font-size: 15px;
     border: 1px solid #ccc;
     border-radius: 0;
     box-shadow: none;
     color: #555;
     display: block;
-    /*height: 57px;*/
 }
 
 .wr-btn {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -644,14 +644,14 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
 
         final Date deployDate = new Date();
         // Create the DU and compile/scan it before doing any other work.
-        final DeploymentUnitDir du = new DeploymentUnitDir(bpelPackage);
+        final DeploymentUnitDir deploymentUnitDir = new DeploymentUnitDir(bpelPackage);
         // Before coming to this stage, we create the bpel package directory with the static version
         // so we don't need to get the version from database. We can directly use static version
         // calculated from bpel package directory name.
-        du.setVersion(du.getStaticVersion());
+        deploymentUnitDir.setVersion(deploymentUnitDir.getStaticVersion());
 
         try {
-            du.compile();
+            deploymentUnitDir.compile();
         } catch (CompilationException ce) {
             String logMessage = "Deployment failed due to compilation issues. " + ce.getMessage();
             log.error(logMessage, ce);
@@ -662,14 +662,14 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             throw new BPELDeploymentException(logMessage, ce);
         }
 
-        du.scan();
-        DeployDocument dd = du.getDeploymentDescriptor();
+        deploymentUnitDir.scan();
+        DeployDocument deployDocument = deploymentUnitDir.getDeploymentDescriptor();
         List<ProcessConfigurationImpl> processConfs = new ArrayList<ProcessConfigurationImpl>();
         List<QName> processIds = new ArrayList<QName>();
 
-        if (deploymentUnits.containsKey(du.getName())) {
+        if (deploymentUnits.containsKey(deploymentUnitDir.getName())) {
             String logMessage = "Aborting deployment. Duplicate Deployment unit "
-                    + du.getName() + ".";
+                    + deploymentUnitDir.getName() + ".";
             log.error(logMessage);
             deploymentContext.setFailed(true);
             deploymentContext.setDeploymentFailureCause(logMessage);
@@ -678,22 +678,22 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         }
 
         // Validate BPEL package partially before retiring old versions.
-        validateBPELPackage(du);
+        validateBPELPackage(deploymentUnitDir);
 
         if (deploymentContext.isExistingPackage()) {
             reloadExistingVersionsOfBPELPackage(deploymentContext);
         }
 
         // Before updating a BPEL package we need to retire processes in old version
-        retirePreviousPackageVersions(du);
+        retirePreviousPackageVersions(deploymentUnitDir);
 
-        for (TDeployment.Process processDD : dd.getDeploy().getProcessList()) {
-            QName processId = Utils.toPid(processDD.getName(), du.getVersion());
+        for (TDeployment.Process processDD : deployDocument.getDeploy().getProcessList()) {
+            QName processId = Utils.toPid(processDD.getName(), deploymentUnitDir.getVersion());
 
             ProcessConfigurationImpl processConf = new ProcessConfigurationImpl(
                     tenantId,
                     processDD,
-                    du,
+                    deploymentUnitDir,
                     deployDate,
                     parentProcessStore.getEndpointReferenceContext(),
                     tenantConfigContext);
@@ -701,11 +701,11 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             processIds.add(processId);
             processConfs.add(processConf);
 
-            readAnalyticsServerProfiles(processDD, du);
+            readAnalyticsServerProfiles(processDD, deploymentUnitDir);
         }
 
-        deploymentUnits.put(du.getName(), du);
-        processesInDeploymentUnit.put(du.getName(), processIds);
+        deploymentUnits.put(deploymentUnitDir.getName(), deploymentUnitDir);
+        processesInDeploymentUnit.put(deploymentUnitDir.getName(), processIds);
         for (ProcessConfigurationImpl processConf : processConfs) {
             processConfigMap.put(processConf.getProcessId(), processConf);
             deploymentContext.addProcessId(processConf.getProcessId());
@@ -715,7 +715,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         try {
             parentProcessStore.onBPELPackageDeployment(
                     tenantId,
-                    du.getName(),
+                    deploymentUnitDir.getName(),
                     BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext),
                     processConfs);
         } catch (ContextException ce) {

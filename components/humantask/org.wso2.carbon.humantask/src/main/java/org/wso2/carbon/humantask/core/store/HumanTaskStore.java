@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2011-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -468,10 +468,8 @@ public class HumanTaskStore {
      * @return
      * @throws HumanTaskDeploymentException
      */
-    public HumanTaskDeploymentUnit createNewDeploymentUnit(File humanTaskFile,
-                                                           int tenantId,
-                                                           long version,
-                                                           String md5sum) throws HumanTaskDeploymentException {
+    public HumanTaskDeploymentUnit createNewDeploymentUnit(File humanTaskFile, int tenantId, long version,
+            String md5sum) throws HumanTaskDeploymentException {
         try {
             ArchiveBasedHumanTaskDeploymentUnitBuilder builder = new ArchiveBasedHumanTaskDeploymentUnitBuilder(
                     humanTaskFile, tenantId, version, md5sum);
@@ -482,11 +480,11 @@ public class HumanTaskStore {
                 log.debug("humanTask:" + humanTaskFile.getName()
                         + " deployment failed, removing the extracted human task directory.");
             }
-            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName()) + HumanTaskConstants.VERSION_SEPARATOR + version;
+            String versionedName = FilenameUtils.removeExtension(humanTaskFile.getName())
+                    + HumanTaskConstants.VERSION_SEPARATOR + version;
             deleteHumanTaskPackageFromRepo(versionedName);
             throw deploymentException;
         }
-
     }
 
     /**
@@ -735,9 +733,8 @@ public class HumanTaskStore {
         }
 
         Set<String> exposedTransports = getTenantAxisConfig().getTransportsIn().keySet();
-        /**
-         * Add the transports to axis2 service by reading from the tenant transport config
-         */
+
+         //Add the transports to axis2 service by reading from the tenant transport config
         for (String transport : exposedTransports) {
             axisService.addExposedTransport(transport);
         }

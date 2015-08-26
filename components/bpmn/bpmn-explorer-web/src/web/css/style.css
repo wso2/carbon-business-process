@@ -140,9 +140,10 @@ h2 {
 }
 
 h3 {
-    font-size: 15px;
+    font-size: 16px;
     line-height: Auto;
-    font-weight: 400;
+    font-weight: 500;
+    margin: 0px;
 }
 
 h4 {
@@ -283,7 +284,6 @@ h5 {
     float: right;
 }
 /*  _____________________________________________________________________________
-
      BACKGROUND
     _____________________________________________________________________________  */
 
@@ -331,7 +331,6 @@ h5 {
     background-color: #be2d28;
 }
 /*  _____________________________________________________________________________
-
      Main
     _____________________________________________________________________________  */
 
@@ -360,7 +359,7 @@ header {
     background-color: #272727;
     color: #fff;
     height: 45px;
-    padding: 12px 5px;
+    padding: 10px 5px;
 }
 
 .float-left {
@@ -484,6 +483,8 @@ a.collapsing-h2 {
     height: 43px;
     padding: 7px 0 0 10px;
     font-size: 20px;
+    //float: left;
+    width: 99.9%;
 }
 .table-title>a {
     color: #333;
@@ -513,11 +514,11 @@ a.collapsing-h2 {
     font-size: 16px;
 }
 .addAttachment{
-    margin:10px 20px;
+    margin:0px 20px;
     float:left;
     background-color: #fff;
     border: 1px solid #cccccc;
-    width: 97.6%;
+    width: 99.9%;
 }
 .main {
     height: 440px;
@@ -647,7 +648,6 @@ footer {
     box-shadow: none;
     color: #555;
     display: block;
-    /*height: 57px;*/
 }
 
 .wr-btn {
@@ -670,7 +670,6 @@ footer {
     border-bottom: 2px solid #d8371d;
 }
 /*  ____________________________________________________________________________
-
      padding-margin
     _____________________________________________________________________________  */
 
@@ -765,7 +764,6 @@ footer {
 .margin-top-double {
     margin-top: 20px;
 }
-
 .margin-bottom-double {
     margin-bottom: 20px;
 }
@@ -855,8 +853,8 @@ i.cu-btn-exp-col {
 }
 
 .modal-content {
-  width: 150%;
-  margin-left: -25%;
+    width: 150%;
+    margin-left: -25%;
 }
 
 #diagramScroll {
@@ -888,15 +886,6 @@ i.cu-btn-exp-col {
     border-color: #be2d28;
     border-radius: 0;
 }
-
-.btn-info.disabled {
-    cursor:not-allowed;
-    background: #C2C2C2;
-    border-color: #C2C2C2;
-    color:#333333;
-
-}
-
 .btn-info:hover{
     background: #343434;
     border-color: #343434;
@@ -962,8 +951,31 @@ nav > li > a:hover, .nav > li > a:focus {
 .padding-left-none{padding-left: 0 !important;}
 
 .lable-wp{margin: 10px 0px; float: left; }
-
-
-.daterangepicker .calendar {
-    max-width: 306px;
+.small-col {
+    width: 176px;
+    position: relative;
+    min-height: 1px;
+    /* padding-right: 15px; */
+    /* padding-left: 15px; */
+    float: left;
 }
+.small-med {
+    width: 100%;
+    position: relative;
+    min-height: 1px;
+    float: left;
+}
+hr {
+    border: 1px solid #eee;
+}
+.secondry-table {
+    padding: 0px;
+    width: 98%;
+}
+.list-group {
+    border-radius: 0px;
+    -webkit-box-shadow:none;
+    box-shadow: none ;
+    border: 0;
+}
+.capitalize{text-transform: capitalize}

@@ -25,14 +25,15 @@
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment" %>
 <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
-<%@ page import="org.apache.commons.httpclient.HttpStatus" %>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <%
-    boolean isAuthorizedToAddPackages =
+    boolean isAuthorizedForProcesses =
             CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/bpmn/process");
-    if (isAuthorizedToAddPackages) {
+    if (isAuthorizedForProcesses) {
         String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
         ConfigurationContext configContext =
                 (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
@@ -175,7 +176,8 @@
                                 <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + process.getProcessId()%>>
                                        <%=process.getProcessId()%></a></td>
                                 <td><%=process.getVersion()%></td>
-                                <td><%=deployment.getDeploymentTime().toString()%></td>
+                                <% DateFormat dateOutputFormatter = new SimpleDateFormat("MM/dd/yyyy"); %>
+                                <td><%=dateOutputFormatter.format(deployment.getDeploymentTime())%></td>
                                 <!--td><a class="bpmn-icon-link" style="background-image:url(images/start.gif);" href="#" onclick="startProcess('<%=process.getProcessId()%>');"><fmt:message key="bpmn.process.start"/></a></td-->
                             </tr>
                         <% }} %>

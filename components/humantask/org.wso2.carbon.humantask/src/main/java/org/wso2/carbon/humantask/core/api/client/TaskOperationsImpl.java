@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2011-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -532,7 +532,7 @@ public class TaskOperationsImpl extends AbstractAdmin
                     });
             return TransformerUtils.transformTask(task, getCaller());
         } catch (Exception ex) {
-            log.error("Error occurred while load task.",ex);
+            log.error("Error occurred while loading task: "+ taskIdURI, ex);
             handleException(ex);
         }
         return null;
@@ -569,8 +569,6 @@ public class TaskOperationsImpl extends AbstractAdmin
         }
 
     }
-
-
 
     public TTaskDetails[] getMyTaskDetails(String s, String s1, String s2, TStatus[] tStatuses,
                                            String s3, String s4, String s5, int i, int i1)

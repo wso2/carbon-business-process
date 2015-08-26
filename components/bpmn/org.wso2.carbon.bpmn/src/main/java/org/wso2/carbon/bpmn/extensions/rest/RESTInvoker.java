@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -32,6 +33,7 @@ import org.apache.http.util.EntityUtils;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.utils.CarbonUtils;
 
+import javax.net.ssl.SSLSocketFactory;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
@@ -64,14 +66,14 @@ public class RESTInvoker {
         while (beans.hasNext()) {
             OMElement bean = (OMElement) beans.next();
             String beanId = bean.getAttributeValue(new QName(null, "id"));
-            if (beanId.equals("restClientConfiguration")) {
+            if (beanId.equals(BPMNConstants.REST_CLIENT_CONFIG_ELEMENT)) {
                 Iterator beanProps = bean.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "property"));
                 while (beanProps.hasNext()) {
                     OMElement beanProp = (OMElement) beanProps.next();
-                    if (beanProp.getAttributeValue(new QName(null, "name")).equals("maxTotalConnections")) {
+                    if (beanProp.getAttributeValue(new QName(null, "name")).equals(BPMNConstants.REST_CLIENT_MAX_TOTAL_CONNECTIONS)) {
                         String value = beanProp.getAttributeValue(new QName(null, "value"));
                         maxTotal = Integer.parseInt(value);
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals("maxConnectionsPerRoute")) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(BPMNConstants.REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE)) {
                         String value = beanProp.getAttributeValue(new QName(null, "value"));
                         maxTotalPerRoute = Integer.parseInt(value);
                     }

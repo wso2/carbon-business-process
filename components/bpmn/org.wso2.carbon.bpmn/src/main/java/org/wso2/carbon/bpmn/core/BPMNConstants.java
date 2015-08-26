@@ -50,4 +50,8 @@ public class BPMNConstants {
     public static final int ACTIVITI_INSTANCE_MAX_DELETE_COUNT = 1000;
     public static final String ACTIVITI_INSTANCE_MAX_DELETE_CONFIG = "activitiInstanceDeleteConfig";
     public static final String ACTIVITI_INSTANCE_MAX_DELETE_CONFIG_MAX_COUNT_PROPERTY = "maxCount";
+
+	public static final String REST_CLIENT_CONFIG_ELEMENT = "restClientConfiguration";
+	public static final String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
+	public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
 }

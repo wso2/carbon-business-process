@@ -204,10 +204,13 @@ public class BPELServerConfiguration {
         this.keepAlive = keepAlive;
     }
 
+    /**
+     * Returns the maximum length of a variable that is displayed in the UI
+     * @return variable length
+     */
     public int getInstanceViewVariableLength() {
         return instanceViewVariableLength;
     }
-
 
 //    public List<String> getExtensionBundleValidators() {
 //        return extensionBundleValidators;
@@ -464,6 +467,9 @@ public class BPELServerConfiguration {
         populateTransactionManagerTimeout();
     }
 
+    /**
+     * Fetch the transaction timeout from configuration file.
+     */
     private void populateTransactionManagerTimeout() {
         if (bpsConfigDocument.getWSO2BPS().isSetTransactionManagerTimeout()) {
             this.transactionManagerTimeout = bpsConfigDocument.getWSO2BPS().
@@ -699,6 +705,9 @@ public class BPELServerConfiguration {
         }
     }
 
+    /**
+     * Fetch configuration value for variable display length.
+     */
     private void populateInstanceViewVariableLength() {
         TBpelUI bpelUI = bpsConfigDocument.getWSO2BPS().getBpelUI();
         if (bpelUI != null && bpelUI.isSetInstanceViewVariableLength()) {
