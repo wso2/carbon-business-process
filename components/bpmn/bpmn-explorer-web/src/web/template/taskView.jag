@@ -60,7 +60,7 @@
  					</div>
  					<div class="col-lg-10 margin-bottom">
 						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Assignee: </b><%=taskData.assignee%></div>
-						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#transfer">Transfer</button></div>
+						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#reassign">Reassign</button></div>
  					</div>
 	      		</div>
 	      		<hr>
