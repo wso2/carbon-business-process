@@ -78,7 +78,11 @@
         }
         String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
         if (operation != null && operation.equals("undeploy")) {
-                client.undeploy(deploymentName);
+             try{
+               client.undeploy(deploymentName);
+             } catch (Exception e) {
+             CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
+             }
         }
         deployments = client.getPaginatedDeploymentsByFilter(method, filter, start, 10);
         int numberOfPages = (int) Math.ceil(client.getDeploymentCount()/10.0);

@@ -126,19 +126,19 @@ public class BPMNDataReceiverConfig {
         File configFile = new File(activitiConfigPath);
         String configContent = FileUtils.readFileToString(configFile);
         OMElement configElement = AXIOMUtil.stringToOM(configContent);
-        Iterator beans = configElement.getChildrenWithName(new QName(AnalyticsPublisherConstants.SPRING_NAMESPACE,
-                AnalyticsPublisherConstants.BEAN));
+        Iterator beans = configElement.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE,
+                BPMNConstants.BEAN));
         while (beans.hasNext()) {
             OMElement bean = (OMElement) beans.next();
-            String beanId = bean.getAttributeValue(new QName(null, AnalyticsPublisherConstants.BEAN_ID));
+            String beanId = bean.getAttributeValue(new QName(null, BPMNConstants.BEAN_ID));
             if (AnalyticsPublisherConstants.BEAN_ID_VALUE.equals(beanId)) {
-                Iterator beanProps = bean.getChildrenWithName(new QName(AnalyticsPublisherConstants.SPRING_NAMESPACE,
-                        AnalyticsPublisherConstants.PROPERTY));
+                Iterator beanProps = bean.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE,
+                        BPMNConstants.PROPERTY));
                 while (beanProps.hasNext()) {
                     OMElement beanProp = (OMElement) beanProps.next();
                     if (AnalyticsPublisherConstants.ACTIVATE.
-                            equals(beanProp.getAttributeValue(new QName(null, AnalyticsPublisherConstants.NAME)))) {
-                        String value = beanProp.getAttributeValue(new QName(null, AnalyticsPublisherConstants.VALUE));
+                            equals(beanProp.getAttributeValue(new QName(null, BPMNConstants.NAME)))) {
+                        String value = beanProp.getAttributeValue(new QName(null, BPMNConstants.VALUE));
                         if (AnalyticsPublisherConstants.TRUE.equals(value)) {
                             return true;
                         }

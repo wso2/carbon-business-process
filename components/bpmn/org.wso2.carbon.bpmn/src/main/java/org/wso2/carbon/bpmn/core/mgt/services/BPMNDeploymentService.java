@@ -16,20 +16,28 @@
 
 package org.wso2.carbon.bpmn.core.mgt.services;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.deployment.TenantRepository;
+import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeletableInstances;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
+import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import org.wso2.carbon.context.CarbonContext;
 
 import javax.imageio.ImageIO;
@@ -47,6 +55,11 @@ public class BPMNDeploymentService {
 
     private static Log log = LogFactory.getLog(BPMNDeploymentService.class);
     private int deploymentCount = -1;
+    private int maximumDeleteCount = BPMNConstants.ACTIVITI_INSTANCE_MAX_DELETE_COUNT;
+
+    public BPMNDeploymentService(){
+        initializeVariable();
+    }
 
     public BPMNProcess[] getDeployedProcesses() throws BPSFault {
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
@@ -215,8 +228,145 @@ public class BPMNDeploymentService {
     public void undeploy (String deploymentName ) throws BPSFault {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
+        ProcessEngine processEngine = BPMNServerHolder.getInstance().getEngine();
+        DeploymentQuery query = processEngine.getRepositoryService().createDeploymentQuery();
+        query = query.deploymentTenantId(tenantId.toString());
+        query = query.deploymentNameLike("%" + deploymentName + "%");
+        int deploymentCount = (int) query.count();
+
+        log.info("Package " + deploymentName + " id going to be undeployed for the deployment count : " + deploymentCount);
+        BPMNDeletableInstances bpmnDeletableInstances = new BPMNDeletableInstances();
+        bpmnDeletableInstances.setTenantId(tenantId);
+
+        List<Deployment> deployments = query.listPage(0, deploymentCount+1);
+        for(Deployment deployment: deployments){
+            aggregateRemovableProcessInstances(bpmnDeletableInstances, deployment.getId(), tenantId, processEngine);
+        }
+
+        if( (bpmnDeletableInstances.getActiveInstanceCount() + bpmnDeletableInstances.getCompletedInstanceCount()) > maximumDeleteCount){
+            String errorMessage = " Failed to un deploy the package. Please delete the instances before un deploying " +
+                    "the package";
+            throw  new BPSFault(errorMessage, new Exception(errorMessage));
+        }
+
+        deleteInstances(bpmnDeletableInstances, processEngine);
         TenantRepository tenantRepository = BPMNServerHolder.getInstance().getTenantManager().getTenantRepository(tenantId);
         tenantRepository.undeploy(deploymentName, false);
+    }
+
+
+    private void aggregateRemovableProcessInstances(BPMNDeletableInstances bpmnDeletableInstances, String
+            deploymentId, Integer tenantId, ProcessEngine processEngine) throws BPSFault {
+        ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        List<ProcessDefinition> processes = query.processDefinitionTenantId(tenantId.toString())
+                .deploymentId(deploymentId).list();
+
+        for(ProcessDefinition process: processes){
+            if( !constructBPMNInstancesByProcessID(bpmnDeletableInstances, process.getId(), tenantId, processEngine) ){
+                String errorMessage = " Failed to undeploy the package. Please delete the instances before undeploying " +
+                        "the package";
+                throw  new BPSFault(errorMessage);
+            }
+        }
+    }
+
+    private boolean constructBPMNInstancesByProcessID(BPMNDeletableInstances bpmnDeletableInstances, String processId, Integer
+            tenantId, ProcessEngine processEngine){
+
+        //first going to get the instances list of unfinished instances
+        HistoricProcessInstanceQuery runtimeQuery = processEngine.getHistoryService()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString())
+                .includeProcessVariables().unfinished().processDefinitionId(processId);
+        int processInstanceCount = (int) runtimeQuery.count();
+        bpmnDeletableInstances.setActiveInstanceCount(processInstanceCount);
+
+        if(bpmnDeletableInstances.getActiveInstanceCount() > maximumDeleteCount){
+            return false;
+        }
+        if(log.isDebugEnabled()){
+            log.debug("Process ID has un completed instances count : " + processInstanceCount);
+        }
+        if(processInstanceCount > 0){
+            List<HistoricProcessInstance> instances = runtimeQuery.listPage(0, processInstanceCount + 1);
+            bpmnDeletableInstances.setActiveProcessInstance(instances);
+        }
+
+        //next get the count of finished instance for the same process id
+        runtimeQuery =  processEngine.getHistoryService()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString())
+                .includeProcessVariables().finished().processDefinitionId(processId);
+        int completedProcessInstanceCount = (int) runtimeQuery.count();
+
+        if((completedProcessInstanceCount + bpmnDeletableInstances.getActiveInstanceCount()) > maximumDeleteCount){
+            return false;
+        }
+
+        bpmnDeletableInstances.setCompletedInstanceCount(completedProcessInstanceCount);
+        bpmnDeletableInstances.addCompletedProcessDefinitionIds(processId);
+
+        if(log.isDebugEnabled()){
+            log.debug("Process ID has completed instances count : " + completedProcessInstanceCount);
+        }
+
+        log.info("Process ID has completed instances count : " + completedProcessInstanceCount);
+
+        return true;
+    }
+
+    private void initializeVariable(){
+
+        BPMNActivitiConfiguration bpmnActivitiConfiguration = BPMNActivitiConfiguration.getInstance();
+
+        if(bpmnActivitiConfiguration != null){
+            String countPropertyValue = bpmnActivitiConfiguration.getBPMNPropertyValue(BPMNConstants
+                    .ACTIVITI_INSTANCE_MAX_DELETE_CONFIG, BPMNConstants
+                    .ACTIVITI_INSTANCE_MAX_DELETE_CONFIG_MAX_COUNT_PROPERTY);
+
+            if(countPropertyValue != null) {
+                maximumDeleteCount = Integer.valueOf(countPropertyValue);
+            }
+        }
+
+        log.info("Maximum Delete count : " + maximumDeleteCount);
+    }
+
+    private void deleteInstances(BPMNDeletableInstances bpmnDeletableInstances, ProcessEngine processEngine){
+
+        List<HistoricProcessInstance> activeHistoricProcessInstance = bpmnDeletableInstances
+                .getActiveHistoricProcessInstance();
+
+        for (HistoricProcessInstance instance: activeHistoricProcessInstance) {
+            String instanceId = instance.getId();
+            RuntimeService runtimeService = processEngine.getRuntimeService();
+            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
+                    .processInstanceTenantId(bpmnDeletableInstances.getTenantId().toString()).processInstanceId
+                            (instanceId).list();
+
+            if(!processInstances.isEmpty()){
+                runtimeService.deleteProcessInstance(instance.getId(), "Deleted by user: " + bpmnDeletableInstances.getTenantId());
+            }
+        }
+
+        List<String> completedProcessDefinitionIds = bpmnDeletableInstances.getCompletedProcessDefinitionIds();
+        for (String processId:completedProcessDefinitionIds){
+            HistoricProcessInstanceQuery runtimeQuery =  processEngine.getHistoryService()
+                    .createHistoricProcessInstanceQuery().processInstanceTenantId(bpmnDeletableInstances.getTenantId()
+                            .toString()).includeProcessVariables().finished().processDefinitionId(processId);
+
+            int completedProcessInstanceCount = (int) runtimeQuery.count();
+
+            if(completedProcessInstanceCount > 0){
+
+                List<HistoricProcessInstance> instances = runtimeQuery.listPage(0, completedProcessInstanceCount + 1);
+                HistoryService historyService = processEngine.getHistoryService();
+                for (HistoricProcessInstance instance: instances) {
+                    String instanceId = instance.getId();
+                    historyService.deleteHistoricProcessInstance(instanceId);
+                }
+            }
+
+        }
     }
 
     private String encodeToString(BufferedImage image, String type) {
@@ -238,4 +388,6 @@ public class BPMNDeploymentService {
         }
         return imageString;
     }
+
+
 }
