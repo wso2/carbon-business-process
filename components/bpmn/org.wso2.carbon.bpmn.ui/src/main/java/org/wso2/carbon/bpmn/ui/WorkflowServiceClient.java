@@ -283,14 +283,8 @@ public class WorkflowServiceClient {
         return tRawXML;
     }
 
-    public  void undeploy(String deploymentName) {
-        try {
-            deploymentServiceStub.undeploy(deploymentName);
-        } catch (RemoteException e) {
-            log.error("Error undeploy package, RemoteException", e);
-        } catch (BPMNDeploymentServiceBPSFaultException e) {
-            log.error("Error undeploy package, BPMNDeploymentServiceBPSFaultException", e);
-        }
+    public  void undeploy(String deploymentName) throws RemoteException, BPMNDeploymentServiceBPSFaultException{
+        deploymentServiceStub.undeploy(deploymentName);
     }
 
     private BufferedImage decodeToImage(String imageString) throws IOException{
