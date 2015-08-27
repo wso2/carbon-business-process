@@ -16,10 +16,11 @@
 
 <div class="col-sm-12">
    <div class="row">
-
+    <h3 id="h3">Click to generate reports</h3>
+    <br/>
     <button id="generate" onclick="generateReport()">Generate Report</button>
-    <h3 id="h3">Click on the button to generate reports</h3>
-    <% if(processNames.data.length > 0) { %>
+    <br/>
+    <% if(processNames.data.length > 0 && taskInstancesList.data.data.length > 0) { %>
     <link rel="stylesheet" href="css/tooltip.css">
     <script src="js/pieChartGen.js"></script>
     <script src="js/corechartEn.js"></script>
@@ -97,11 +98,10 @@
             <% } %>
                   </select>
                  </form>
-            <div id="taskOfUserVariation" >
+            <div id="taskOfUserVariation"> Select a user to view the performance
             <div style="height: 74%"> </div>
             </div>
       </div>
-
 
       <div class="col-lg-4 float-left" id="pieChartDisplay" hidden>
 
@@ -120,8 +120,11 @@
               </div>
     <% }else{ %>
       <br/>
-      &nbsp;&nbsp;Welcome to BPMN Explorer report view. Please deploy processes from admin view and create tasks to generate statistics.
-      <br/><br/>
+      <font color="red">
+         Currently there are no processes or tasks completed to generate statistics.
+         <br/>
+         &nbsp;Please deploy processes from admin view to generate statistics.
+      </font>
     <% }%>
   </div>
   </div>
