@@ -454,7 +454,8 @@
                    </soapenv:Body>
                 </soapenv:Envelope>
             */
-        } else if (actionType === "set_priority") {
+
+        } else if ( actionType === "set_priority" ) {
             var priority = request.getParameter('priority');
             var result = new XML(htRequest.setPriority(taskId, priority));
             var resultCheck = result.SOAPENV_NS::Body.NS2_NS::setPriorityResponse;
@@ -464,16 +465,12 @@
                 responseMsg =  '<set_priorityResponse>\
                                     <success>true</success>\
                                 </set_priorityResponse>';
-            }
-
-            else {
+            } else {
                 responseMsg = '<set_priorityResponse>\
                                     <success>false</success>\
                                     <data>' + result.SOAPENV_NS::Body + '</data>\
                                 </set_priorityResponse>';
             }
-
-
             response.contentType = 'text/xml';
             response.content = responseMsg;
 
@@ -485,12 +482,12 @@
              </soapenv:Body>
              </soapenv:Envelope>
              */
+
         } else if (actionType === 'skip_task') {
             var result = new XML(htRequest.skipTask(taskId));
             var resultCheck = result.SOAPENV_NS::Body.NS2_NS::skipResponse;
 
-            if (resultCheck.length() > 0) {
-                //skip successfull
+            if (resultCheck.length() > 0) { //skip successfull
                 responseMsg = '<skip_taskResponse><success>true</success></skip_taskResponse>';
             } else {
                 if(result == null || result == '') { // session timeout
@@ -498,9 +495,7 @@
                         log.debug('Session timed out for task'+ "" + taskId);
                     }
                     responseMsg = '<skip_taskResponse><success>timeout</success></skip_taskResponse>';
-                }
-                else {
-                    //skip unsuccessfull
+                } else { //skip unsuccessfull
                     responseMsg = '<skip_taskResponse><success>false</success></skip_taskResponse>';
                 }
             }
@@ -526,8 +521,8 @@
              </soapenv:Fault>
              </soapenv:Body>
              </soapenv:Envelope>
-
              */
+
         } else {
             responseMsg = '<unknownTaskResponse>\
                                 <success>false</success>\
