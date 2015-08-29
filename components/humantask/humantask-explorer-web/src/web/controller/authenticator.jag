@@ -99,7 +99,11 @@
 
             //authenticate again via managment console login. Required for attachment handling
             var mgtCookie = AuthenticateForAttachment(username, password);
-
+            if (mgtCookie == null) {
+                //AuthenticateForAttachment failed therefore overall authentication marked as failed
+                session.remove('BPSSessionCookie');
+                return false;
+            }
             response.addHeader('Set-Cookie', mgtCookie);
             return true;
         } else {
@@ -118,8 +122,8 @@
     * @return session cookie from response
     */
     function AuthenticateForAttachment(userName, password) {
-
-        var endPoint = BPSUrl + '/carbon/admin/login_action.jsp'
+        
+        var endPoint = application.get('hostServer') + '/carbon/admin/login_action.jsp'
         var mgtAuth = new XMLHttpRequest();
 
         mgtAuth.open('POST', endPoint, false);
@@ -130,9 +134,16 @@
         mgtAuth.send(payload);
 
         if (log.isDebugEnabled()) {
-            log.debug('Login via Mgt Console RESPONSE:' + mgtAuth.responseText);
+            log.debug('Login via Mgt Console RESPONSE:' + mgtAuth.status + ' - ' + mgtAuth.statusText);
+            log.debug("Redirection Location : " + mgtAuth.getResponseHeader("Location"));
+            log.debug("Login status : " + mgtAuth.getResponseHeader("Location").split('loginStatus=')[1]);
         }
 
-        return mgtAuth.getResponseHeader('Set-Cookie');
+        if (mgtAuth.getResponseHeader("Location").split('loginStatus=')[1] === "true"){
+            log.debug("/carbon/admin/login_action.jsp login success");
+            return mgtAuth.getResponseHeader('Set-Cookie');
+        } 
+        
+        return null;
     }
 %>

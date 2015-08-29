@@ -52,18 +52,21 @@ try {
         session.put('authSuccess', false);
         var queryParameters = request.getQueryString();
         if(queryParameters == "null" || queryParameters == null){
-            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+            //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../login
+            response.sendRedirect("../../login?requestUrl=" + request.getRequestURI());
         } else{
-            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+            //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../login
+            response.sendRedirect("../../login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
         }
-    }
-    var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::setTaskOutputResponse.success.text().toString();
+    } else {
+        var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::setTaskOutputResponse.success.text().toString();
 
-    if (success != null && success === 'false') {
-        log.error('Task output message saving failed');
+        if (success != null && success === 'false') {
+            log.error('Task output message saving failed');
+        }
+        //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../task
+        response.sendRedirect('../../task?id=' + taskID);
     }
-
-    response.sendRedirect('/' +data.app.webappUrlName + '/task?id=' + taskID);
 
     /*
         SAMPLE setTaskOutput RESPONSE
