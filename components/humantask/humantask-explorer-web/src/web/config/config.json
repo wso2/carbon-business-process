@@ -8,8 +8,9 @@
     "server": {
         "https": "%https.host%",
         "http": "%http.host%",
-        "bpsHost": "localhost",
-        "bpsPort": "9443"
+        "bpsHost": "",
+        "bpsPort": "",
+        "bpsTenant": ""
     }
 }
 

@@ -18,7 +18,7 @@
  */
 
     var log = new Log(),
-        data = require('../config/config.json');
+    data = require('../config/config.json');
 
     //construct backend URI using config.json
     var BPSUrl = application.get('bpsURI');
@@ -26,17 +26,29 @@
         var bpsHost = data.server.bpsHost;
         var bpsPort = data.server.bpsPort;
 
+        var bpsTenant = data.server.bpsTenant;
+        var tenantUrlPart = '';
+        //check for tenant domain
+        if (bpsTenant != undefined && bpsTenant.length > 0) {
+            tenantUrlPart = "/t/" + bpsTenant;
+        }
+
+        var hostServer = null;
         if(bpsHost == null || bpsHost === "" || bpsPort == null || bpsPort === "") {
             log.warn('BPS host info not configured. Using local host');
             var process = require("process");
             var localIP = process.getProperty('carbon.local.ip');
             var httpsPort = process.getProperty('mgt.transport.https.port');
-            BPSUrl = "https://" +localIP +":" + httpsPort;
+            BPSUrl = "https://" +localIP +":" + httpsPort + tenantUrlPart;
+            hostServer = "https://" +localIP +":" + httpsPort;
         } else {
-            BPSUrl = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
+            BPSUrl = "https://" + data.server.bpsHost + ":" + data.server.bpsPort + tenantUrlPart;
+            hostServer = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
         }
 
         application.put('bpsURI', BPSUrl);
+        application.put('hostServer', hostServer);
+        application.put('bpsTenant', bpsTenant);
 
         if (log.isDebugEnabled()) {
             log.debug("Back-end BPS URI :" + BPSUrl);
