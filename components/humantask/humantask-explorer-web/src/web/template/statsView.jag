@@ -1,0 +1,94 @@
+<div class="col-sm-12">
+  <div class="row">
+    <% if(readyTaskList.length() > 0 || completedTaskList.length() > 0 || reservedTaskList.length() > 0 ||
+      suspendedTaskList.length() > 0 || inProgressTaskList.length() > 0 || failedTaskList.length > 0 || obsoleteTaskList.length() > 0) { %>
+    <link rel="stylesheet" href="css/tooltip.css">
+    <script src="js/pieChartGen.js"></script>
+    <script src="js/corechartEn.js"></script>
+    <link rel="stylesheet" href="css/chart.css">
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart(){
+        var data = google.visualization.arrayToDataTable([
+          ['Status Of the Task', ' Task Count'],         
+          <% for(var j = 0; j < statusArrayBar.length; j++){ %>
+            <%=JSON.stringify(statusArrayBar[j]) %>
+            <% if(j < statusArrayBar.length){ %> ,<% } %>
+          <% } %>
+        ]);
+        
+        var options = {
+          vAxis: {title: 'Status Of the Task',  titleTextStyle: { color: 'grey' }},
+          hAxis: {title: 'Task count', titleTextStyle: {color: 'grey'}},
+          colors:['#be2d28'],
+          bar: {groupWidth: "65%"},
+          legend: { position: "none" }
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('taskStatusCountBar'));
+        chart.draw(data, options);
+      }
+    </script>
+
+      <div class="col-lg-12 float-left">
+            <!-- Default panel contents -->
+            <div class="table-title"  style="width:100%">  Task Status Count </div>
+            <div id="taskStatusCountBar" style="height: 84%"></div>            
+      
+    <script type="text/javascript">
+      google.setOnLoadCallback(drawChart);
+     function drawChart(){
+        var data = google.visualization.arrayToDataTable([
+          ['Status Of the Task', ' Task Count'],
+         
+          <% for(var j = 0; j < statusArrayPie.length; j++){ %>
+            <%=JSON.stringify(statusArrayPie[j]) %>
+            <% if(j < statusArrayPie.length){ %> ,<% } %>
+          <% } %>
+        ]);
+        var chart = new google.visualization.PieChart(document.getElementById('taskStatusCountPie'));
+
+        var options = {
+          pieHole: 0.4,
+          pieSliceTextStyle: {
+            color: 'black'
+          },
+            tooltip: { 
+          	trigger: 'selection',
+          	textStyle: { fontName: 'verdana', fontSize: 16 }
+      	  }
+        };
+
+        chart.setAction({
+          id: 'taskList',
+          text: 'View Tasks',
+          action: function() {
+            selection = chart.getSelection();
+            switch (selection[0].row) {
+              case 0:location.href = "claimabletasks"; break; 
+              case 1:location.href = "mytasks?status_query=COMPLETED"; break; 
+              case 2:location.href = "mytasks?status_query=RESERVED"; break; 
+              case 3:location.href = "mytasks?status_query=IN_PROGRESS"; break; 
+              case 4:location.href = "mytasks?status_query=SUSPENDED"; break; 
+              case 5:location.href = "mytasks?status_query=FAILED"; break; 
+              case 6:location.href = "mytasks?status_query=OBSOLETE"; break; 
+            }
+          }
+        });
+        chart.draw(data, options);
+      }
+    </script>
+
+            <div class="table-subtitle"  style="width:100%"> View the Tasks in Each State By Clicking on the Tooltip of the PieChart </div>
+            <div id="taskStatusCountPie" style="height: 500px;"></div>
+        </div>
+   
+    <% }else{ %>
+      <br/>
+      &nbsp;&nbsp;Welcome to Human Explorer statistical view. Please deploy human tasks from admin view to generate statistics.
+      <br/><br/>
+    <% }%>
+  </div>
+  </div>

@@ -649,3 +649,33 @@ function completeTask(id, valuesXmlListMessagePart) {
         return BPSResponse;
     }
 }
+
+/* 
+Retrieves the status of tasks for the dashboard
+*/
+function taskStatusQuery(status,pageSize,pageNumber) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                                    xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
+                                    xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
+                       <soapenv:Header/>\
+                       <soapenv:Body>\
+                          <ns:simpleQuery>\
+                             <ns:simpleQueryInput>\
+                                <ns1:status>' + status + '</ns1:status>\
+                                <ns1:pageSize>' + pageSize + '</ns1:pageSize>\
+                                <ns1:pageNumber>' + pageNumber + '</ns1:pageNumber>\
+                          </ns:simpleQueryInput>\
+                          </ns:simpleQuery>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
+
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery';
+    var BPSResponse;
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    }
+    else {
+        return BPSResponse;
+    }
+}
