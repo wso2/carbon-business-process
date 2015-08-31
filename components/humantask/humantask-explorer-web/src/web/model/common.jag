@@ -68,6 +68,7 @@
     var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTasksModel, refered at navigation.jag]
     var notificationsListNavActive = ''; // Notifications view [updated at notificationModel, refered at navigation.jag]
     var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
+    var dashboardNavActive=''; //Dashboard view [updated at statsModel, refered at navigation.jag]
 
 %>
 
