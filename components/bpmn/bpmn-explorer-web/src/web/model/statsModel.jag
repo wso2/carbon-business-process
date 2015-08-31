@@ -40,4 +40,7 @@ for(var i= 0; i < processNames.data.length; i++){
 		name, processCount
 	]);
 }
+//Set current active view as stats view.
+//This is used to highlight current view which the user currently viewing in the navigation bar
+dashboardNavActive = 'class="active"';
 %>

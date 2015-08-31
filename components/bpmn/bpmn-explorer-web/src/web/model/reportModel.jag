@@ -18,7 +18,7 @@ var update = request.getParameter("update");
 var headers = {"Authorization":"Basic " + auth};
 var start = 0;
 
-
+//Process Instance Count
 var processNames = get( httpUrl + "/bpmn/repository/process-definitions?size=0" ,null, headers, "json" ).data;
 var processBarChart = [];
 for(var i= 0; i < processNames.data.length; i++){
@@ -29,6 +29,7 @@ for(var i= 0; i < processNames.data.length; i++){
 	]);
 }
 
+//Filters the 10 processes with the maximum and the minimum process instances
 var minProcessCount = [];
 var maxProcessCount = [];
 
@@ -40,17 +41,17 @@ var maxProcessCount = [];
       sortAscending(processBarChart);
       minProcessCount = processBarChart.slice(0,10);
       processBarChart = minProcessCount;
-    }else if(pInstanceCount =="max"){
+    }else if(pInstanceCount == "max"){
       sortDescending(processBarChart);
       maxProcessCount = processBarChart.slice(0,10);
       processBarChart = maxProcessCount;
-    }
-    else if(pInstanceCount=="all"){
-      processBarChart=processBarChart;
+    }else if(pInstanceCount == "all"){
+      processBarChart = processBarChart;
     }
   }
 }
 
+//Average time of the completed processes
 var listProcess = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0" ,null, headers, "json" );
 var distListProcess = get( httpUrl + "/bpmn/repository/process-definitions?finished=true&size=0" ,null, headers, "json" );
 
@@ -82,7 +83,7 @@ for (var i in listProcess.data.data){
      ]);
     }
  }
-
+  //Eliminates duplicate processes
   function checkForDuplicates(processBarChartAvgTime,processName){
      var counter = 0;
      for (var i = 0; i < processBarChartAvgTime.length; i++) {
@@ -99,6 +100,7 @@ for (var i in listProcess.data.data){
       }
   }
 
+//Filters the processes according to the average time durations i.e. 10 processes that finished within a short and a long time
  var sortedAscendingArray = [];
  var sortedDescendingArray = [];
 
@@ -115,11 +117,12 @@ for (var i in listProcess.data.data){
       sortedDescendingArray = processBarChartAvgTime.slice(0,10);
       processBarChartAvgTime = sortedDescendingArray;
     }else if(selectedProcess =="allProcesses"){
-      processBarChartAvgTime=processBarChartAvgTime;
+      processBarChartAvgTime = processBarChartAvgTime;
     }
   }
 }
 
+//Average task duration for completed processes
   var avgTimeDataPerProcess = {};
   for (var j in distListProcess.data.data){
 
@@ -177,6 +180,7 @@ for (var i in listProcess.data.data){
       }
     }
 
+//Sorts the processes according to the average time duration in ascending order
   function sortAscending(processBarChartAvgTime) {
     var length = processBarChartAvgTime.length;
     for(var i = 1; i < length; ++i) {
@@ -192,6 +196,7 @@ for (var i in listProcess.data.data){
     }
   }
 
+//Sorts the processes according to the average time duration in descending order
   function sortDescending(processBarChartAvgTime) {
     var length = processBarChartAvgTime.length;
     for(var i = 1; i < length; ++i) {
@@ -219,16 +224,18 @@ users.forEach(function(x) {
   uniqueUser[x] = (uniqueUser[x] || 0)+1;
   });
 
+//User vs tasks completed uptodate
 if(update != null && update === "true"){
-if(option === "uservstaskscompleted"){
+    if(option === "uservstaskscompleted"){
 
-var userVsTaskCount = [];
-  for (key in uniqueUser){
-    userVsTaskCount.push([key , uniqueUser[key]]);
-  }
-}
+    var userVsTaskCount = [];
+      for (key in uniqueUser){
+        userVsTaskCount.push([key , uniqueUser[key]]);
+      }
+    }
 }
 
+//User vs average time taken to complete tasks
 var userWithTaskTime = {};
 var keyListForUsers = [];
 var userCountArray = [];
@@ -269,7 +276,7 @@ var average = [];
 
 var MONTHS = ["Jan","Feb","March", "April", "May" , "June", "July" ,"Aug" , "Sep" , "Oct" , "Nov" , "Dec"];
 
-//Task Demand Variation Over Time
+//Task Demand Variation Over Time i.e. tasks started and completed
 var completedTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0" ,null, headers, "json" );
 var finishedDate = [];
 
@@ -279,6 +286,8 @@ var finishedDate = [];
     finishedDate.push(month - 1);
   }
 finishedDate.sort();
+
+//Task Instances Completed
 var uniqueMonthsForCompleted = {};
 finishedDate.forEach(function(x) {
   uniqueMonthsForCompleted[x] = (uniqueMonthsForCompleted[x] || 0)+1;
@@ -294,6 +303,7 @@ var startedDate = [];
 
 startedDate.sort();
 
+//Process Instances Started
 var uniqueMonthsForStarted = {};
 startedDate.forEach(function(x) {
   uniqueMonthsForStarted[x] = (uniqueMonthsForStarted[x] || 0)+1;
@@ -313,7 +323,7 @@ startedDate.forEach(function(x) {
 }
 }
 
-//Process Demand Variation Over Time
+//Process Demand Variation Over Time i.e. processes started and completed
 
 var processFinishedDate = [];
   for(var i in listProcess.data.data){
@@ -323,6 +333,7 @@ var processFinishedDate = [];
   }
 processFinishedDate.sort();
 
+//Process Instances Completed
 var uniqueMonthForCompletedProcess = {};
 processFinishedDate.forEach(function(x) {
   uniqueMonthForCompletedProcess[x] = (uniqueMonthForCompletedProcess[x] || 0)+1;
@@ -338,6 +349,7 @@ var startedProcessList = get( httpUrl + "/bpmn/history/historic-process-instance
 
 processStartedDate.sort();
 
+//Process Instances Started
 var uniqueMonthForStartedProcess = {};
 processStartedDate.forEach(function(x) {
   uniqueMonthForStartedProcess[x] = (uniqueMonthForStartedProcess[x] || 0)+1;
@@ -345,16 +357,15 @@ processStartedDate.forEach(function(x) {
 
   if(update != null && update === "true"){
   if(option === "processvariation"){
-var arrayOfProcessCount = [];
-  for(var i = 0;i < MONTHS.length;i++){
-    if(uniqueMonthForCompletedProcess[i] == null && uniqueMonthForStartedProcess[i] == null){
+  var arrayOfProcessCount = [];
+    for(var i = 0;i < MONTHS.length;i++){
+      if(uniqueMonthForCompletedProcess[i] == null && uniqueMonthForStartedProcess[i] == null){
     arrayOfProcessCount.push([MONTHS[i],0,0]);
-    }else{
+        }else{
     arrayOfProcessCount.push([MONTHS[i],uniqueMonthForCompletedProcess[i],uniqueMonthForStartedProcess[i]]);
+        }
+      }
     }
-  }
-
-}
 }
 //Populate Users to Combo Box
 
@@ -376,12 +387,14 @@ var arrayOfProcessCount = [];
 var userArray = eliminateDuplicates(users);
 userArray.sort();
 
-//User Performance of Tasks over time
+//User Performance of Tasks over time i.e. tasks started and completed by the user
 
   if(update != null && update === "true"){
     if(option === "userperformance"){
 
     var selectedUser = request.getParameter("id");
+
+     //Task instances completed by the user
     var userTaskCompletedArray = [];
     var finishedTaskDate = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&taskAssignee=" +selectedUser  ,null, headers, "json" );
 
@@ -397,7 +410,7 @@ userArray.sort();
       uniqueUserMonthForFinishedTask[x] = (uniqueUserMonthForFinishedTask[x] || 0)+1;
     });
 
-    //Task instances started
+    //Task instances started by the user
 
     var userTaskStartedArray = [];
     var startedTaskDate = get( httpUrl + "/bpmn/history/historic-task-instances?started=true&size=0&taskAssignee=" +selectedUser  ,null, headers, "json" );
@@ -426,4 +439,7 @@ userArray.sort();
     }
   }
 
+//Set current active veiw as report view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+reportNavActive = 'class="active"';
 %>

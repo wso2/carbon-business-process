@@ -352,7 +352,7 @@ function selectProcessForChart(){
     });
 }
 
-//User Performance Over time
+//User Performance of Tasks Completed and Tasks Started Over time i.e. months
 
 function selectUserForPerformance(){
     var x = document.getElementById("selectUser").value;
@@ -397,7 +397,7 @@ function selectUserForPerformance(){
     });
 }
 
-// Average duration of Processes
+// Average duration of Processes Instances
 
 function selectProcessForAvgTimeDuration(){
     var x = document.getElementById("selectOption").value;
@@ -455,7 +455,7 @@ function setDatePicker (dateElement) {
     });
 }
 
-//Process Instance Count
+//Process Instance Count : Filters the 10 processes with the maximum and the minimum instance counts
 function selectProcessForInstanceCount(){
     var x = document.getElementById("processInstanceCount").value;
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processinstancecount&id=" + x ;
@@ -477,26 +477,22 @@ function selectProcessForInstanceCount(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                // var chartAreaHeight = data.getNumberOfRows() * 30;
-                //var chartHeight = chartAreaHeight + 100;
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Process Instance Count', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    //height: chartHeight,
                     chartArea: {
                         height: 100
                     }
                 };
-
                 var chart = new google.visualization.BarChart(document.getElementById('barChart'));
                 chart.draw(data, options);
-
             }
         }
     });
 }
 
+//User Vs Number of tasks completed uptodate
 function userVsTasksCompleted(){
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=uservstaskscompleted";
 
@@ -532,6 +528,7 @@ function userVsTasksCompleted(){
     });
 }
 
+// Average time taken by user to complete tasks
 function avgTimeForUserForTasks(){
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=uservsavgtime";
 
@@ -567,6 +564,7 @@ function avgTimeForUserForTasks(){
     });
 }
 
+// No.of tasks started and completed overtime
 function taskVariationOverTime(){
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=taskvariation";
 
@@ -613,6 +611,7 @@ function taskVariationOverTime(){
     });
 }
 
+// No.of processes started and completed overtime
 function processVariationOverTime(){
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processvariation";
 
@@ -658,6 +657,7 @@ function processVariationOverTime(){
     });
 }
 
+// Generate the report view by displaying the graphs
 function generateReport(){
 
         selectProcessForInstanceCount();
