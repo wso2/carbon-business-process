@@ -17,7 +17,13 @@
  */
 
 var httpUrl = window.location.protocol + "//" + window.location.host;
-var appName = "humantask-explorer"; //TODO finalize appName
+if (BPSTenant != undefined && BPSTenant.length > 0) {
+    //BPSTenant is defined in template/partials/header.jag to transfer tenant domain to browser side javascripts
+    var appName = "t/" + BPSTenant + "/jaggeryapps/humantask-explorer"; //TODO finalize appName
+} else {
+    var appName = "humantask-explorer"; //TODO finalize appName
+}
+
 
 /**
  * function to make ajax call to claim task
@@ -466,7 +472,7 @@ function updateAttachments(id) {
 
                 attachmentViewList = attachmentViewList + '<li class="list-group-item"><form id="attachment_upload_form" method="post" name="attachmentUpload" '
                 + 'action="' + bpsUrl + '/fileupload/attachment-mgt" enctype="multipart/form-data" target="_self">'
-                + '<input type="hidden" id="uRedirect" name="redirect" value="'+ httpUrl +'/humantask-explorer/task?id='
+                + '<input type="hidden" id="uRedirect" name="redirect" value="'+ httpUrl + "/" + appName +'/task?id='
                 + id + '#additionalInfoSection">'
                 + '<input type="hidden" id="taskID" name="taskID" value="' + id + '">'
                 + '<div class="row">'
