@@ -1,7 +1,9 @@
 <div class="col-sm-12">
   <div class="row">
+
     <% if(readyTaskList.length() > 0 || completedTaskList.length() > 0 || reservedTaskList.length() > 0 ||
       suspendedTaskList.length() > 0 || inProgressTaskList.length() > 0 || failedTaskList.length > 0 || obsoleteTaskList.length() > 0) { %>
+
     <link rel="stylesheet" href="css/tooltip.css">
     <script src="js/pieChartGen.js"></script>
     <script src="js/corechartEn.js"></script>
@@ -61,24 +63,30 @@
       	  }
         };
 
-        chart.setAction({
-          id: 'taskList',
-          text: 'View Tasks',
-          action: function() {
-            selection = chart.getSelection();
-            switch (selection[0].row) {
-              case 0:location.href = "claimabletasks"; break; 
-              case 1:location.href = "mytasks?status_query=COMPLETED"; break; 
-              case 2:location.href = "mytasks?status_query=RESERVED"; break; 
-              case 3:location.href = "mytasks?status_query=IN_PROGRESS"; break; 
-              case 4:location.href = "mytasks?status_query=SUSPENDED"; break; 
-              case 5:location.href = "mytasks?status_query=FAILED"; break; 
-              case 6:location.href = "mytasks?status_query=OBSOLETE"; break; 
-            }
-          }
-        });
-        chart.draw(data, options);
-      }
+       chart.setAction({
+                 id: 'taskList',
+                 text: 'View Tasks',
+                 action: function() {
+                   selection = chart.getSelection();
+                   switch (selection[0].row) {
+                     case 0:location.href = "search?taskName=&taskStatus=READY&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+                     case 1:location.href = "search?taskName=&taskStatus=COMPLETED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+                     case 2:location.href = "search?taskName=&taskStatus=RESERVED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+                     case 3:location.href = "search?taskName=&taskStatus=IN_PROGRESS&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+                     case 4:location.href = "search?taskName=&taskStatus=SUSPENDED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+                     case 5:location.href = "search?taskName=&taskStatus=FAILED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+                     case 6:location.href = "search?taskName=&taskStatus=OBSOLETE&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+                   }
+                 }
+               });
+               chart.draw(data, options);
+       }
     </script>
 
             <div class="table-subtitle"  style="width:100%"> View the Tasks in Each State By Clicking on the Tooltip of the PieChart </div>
