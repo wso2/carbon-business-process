@@ -67,13 +67,19 @@
           action: function() {
             selection = chart.getSelection();
             switch (selection[0].row) {
-              case 0:location.href = "claimabletasks"; break; 
-              case 1:location.href = "mytasks?status_query=COMPLETED"; break; 
-              case 2:location.href = "mytasks?status_query=RESERVED"; break; 
-              case 3:location.href = "mytasks?status_query=IN_PROGRESS"; break; 
-              case 4:location.href = "mytasks?status_query=SUSPENDED"; break; 
-              case 5:location.href = "mytasks?status_query=FAILED"; break; 
-              case 6:location.href = "mytasks?status_query=OBSOLETE"; break; 
+             case 0:location.href = "search?taskName=&taskStatus=READY&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+             case 1:location.href = "search?taskName=&taskStatus=COMPLETED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+             case 2:location.href = "search?taskName=&taskStatus=RESERVED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+             case 3:location.href = "search?taskName=&taskStatus=IN_PROGRESS&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+             case 4:location.href = "search?taskName=&taskStatus=SUSPENDED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+             case 5:location.href = "search?taskName=&taskStatus=FAILED&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
+
+             case 6:location.href = "search?taskName=&taskStatus=OBSOLETE&taskCategory=ALL_TASKS&craetedDate=&queryOrderBy=CREATED_DATE&queryOrder=ASCENDING"; break;
             }
           }
         });
