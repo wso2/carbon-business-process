@@ -35,7 +35,7 @@
       
         var options = {
           vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' },textStyle: { fontSize:12}},
-          hAxis: {title: 'Process instance count (log scale)', titleTextStyle: {color: 'grey'},logScale:true },
+          hAxis: {title: 'Process instance count', titleTextStyle: {color: 'grey'} },
           colors:['#be2d28'],
           height: ((data.getNumberOfRows()+2) * 120)
         };
