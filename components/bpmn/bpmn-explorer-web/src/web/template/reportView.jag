@@ -38,19 +38,21 @@
                              <option value="all">All processes</option>
                           <% } %>
                           <% if(pInstanceCount == "min") {%>
-                            <option value="min" selected>10 Processes with a Minimum No. of Instances</option>
+                            <option value="min" selected>10 Processes with a Minimum Number of Instances</option>
                           <% } else { %>
-                             <option value="min">10 Processes with a Minimum No. of Instances</option>
+                             <option value="min">10 Processes with a Minimum Number of Instances</option>
                           <% } %>
 
                           <% if(pInstanceCount == "max") {%>
-                              <option value="max" selected>10 Processes with a Maximum No. of Instances</option>
+                              <option value="max" selected>10 Processes with a Maximum Number of Instances</option>
                            <% } else { %>
-                              <option value="max">10 Processes with a Maximum No. of Instances</option>
+                              <option value="max">10 Processes with a Maximum Number of Instances</option>
                           <% } %>
                     </select>
                 </form>
-            <div id="barChart" style="height: 80%"></div>
+            <div id="barChart">
+            <div style="height: 20%"></div>
+            </div>
             <br>
             <div class="table-title"  style="width:100%" id="taskDurationOfCompleted"> Average Time Duration Of Completed Processes </div>
             <br>
@@ -74,10 +76,12 @@
                     <% } %>
                    </select>
                  </form>
-            <div id="barChartAvgTime" style="height: 80%"></div>
+            <div id="barChartAvgTime">
+            <div style="height: 20%"> </div>
+            </div>
 
             <br>
-            <div class="table-title"  style="width:100%">  User Vs No. Of Tasks Completed </div>
+            <div class="table-title"  style="width:100%">  User Vs Number Of Tasks Completed </div>
             <div id="colChartUserVsTasks" style="height: 74%"></div>
             <br>
             <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
@@ -98,9 +102,9 @@
             <% } %>
                   </select>
                  </form>
-            <div id="taskOfUserVariation"> Select a user to view the performance
-            <div style="height: 74%"> </div>
-            </div>
+            <div id="taskOfUserVariation"> Select a user to view the performance </div>
+            <div style="height: 50%"> </div>
+
       </div>
 
       <div class="col-lg-4 float-left" id="pieChartDisplay" hidden>

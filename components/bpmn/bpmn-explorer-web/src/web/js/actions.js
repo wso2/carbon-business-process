@@ -379,7 +379,7 @@ function selectUserForPerformance(){
                 var chartHeight = chartAreaHeight + 30;
 
                 var options = {
-                    vAxis: {title: 'No.of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: 'Number of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
@@ -420,17 +420,12 @@ function selectProcessForAvgTimeDuration(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                // var chartAreaHeight = data.getNumberOfRows() * 30;
-                //var chartHeight = chartAreaHeight + 20;
 
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    //height: chartHeight,
-                    chartArea: {
-                        height: 100
-                    }
+                    height: ((data.getNumberOfRows()+2) * 120)
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
@@ -481,9 +476,7 @@ function selectProcessForInstanceCount(){
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Process Instance Count', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    chartArea: {
-                        height: 100
-                    }
+                    height: ((data.getNumberOfRows()+2) * 120)
                 };
                 var chart = new google.visualization.BarChart(document.getElementById('barChart'));
                 chart.draw(data, options);
@@ -514,7 +507,7 @@ function userVsTasksCompleted(){
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
                 var options = {
-                    vAxis: {title: 'No. of tasks completed todate',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: 'Number of tasks completed todate',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
                     bar: {groupWidth: "40%"},
@@ -590,7 +583,7 @@ function taskVariationOverTime(){
                 var chartHeight = chartAreaHeight + 32;
 
                 var options = {
-                    vAxis: {title: 'No.of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: 'Number of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
@@ -636,7 +629,7 @@ function processVariationOverTime(){
                 var chartHeight = chartAreaHeight + 32;
 
                 var options = {
-                    vAxis: {title: 'No.of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: 'Number of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
