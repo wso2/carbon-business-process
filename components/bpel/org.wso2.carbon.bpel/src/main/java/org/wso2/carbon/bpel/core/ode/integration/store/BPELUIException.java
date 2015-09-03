@@ -18,7 +18,11 @@ package org.wso2.carbon.bpel.core.ode.integration.store;
 /**
  * Throws when there are BPEL UI related problem occurred.
  */
-public class BPELUIException extends RuntimeException {
+public class BPELUIException extends Exception {
+
+    public BPELUIException(String s, Exception ex) {
+        super(s, ex);
+    }
 
     public BPELUIException(String s) {
         super(s);

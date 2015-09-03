@@ -25,10 +25,9 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.attachment.mgt.stub.AttachmentMgtException;
 import org.wso2.carbon.attachment.mgt.stub.AttachmentMgtServiceStub;
 import org.wso2.carbon.attachment.mgt.stub.types.TAttachment;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.commons.stub.loggeduserinfo.ExceptionException;
 import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfoAdminStub;
+import org.wso2.carbon.humantask.ui.constants.HumanTaskUIConstants;
 import org.wso2.carbon.utils.FileItemData;
 
 import javax.activation.DataHandler;
@@ -46,8 +45,10 @@ public class AttachmentUploadClient {
     private LoggedUserInfoAdminStub userInfoAdminStub;
 
     public AttachmentUploadClient(ConfigurationContext configurationContext, String serverURL, String cookie) throws AxisFault {
-        stub = new AttachmentMgtServiceStub(configurationContext, serverURL + "AttachmentMgtService");
-        userInfoAdminStub = new LoggedUserInfoAdminStub(configurationContext, serverURL + "LoggedUserInfoAdmin");
+        stub = new AttachmentMgtServiceStub(configurationContext,
+                serverURL + HumanTaskUIConstants.SERVICE_NAMES.ATTACHMENT_MGT_SERVICE_NAME);
+        userInfoAdminStub = new LoggedUserInfoAdminStub(configurationContext,
+                serverURL + HumanTaskUIConstants.SERVICE_NAMES.LOGGED_USER_INFO_SERVICE_NAME);
 
         Options options = stub._getServiceClient().getOptions();
         options.setManageSession(true);
