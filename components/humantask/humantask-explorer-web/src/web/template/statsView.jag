@@ -23,7 +23,7 @@
         
         var options = {
           vAxis: {title: 'Status Of the Task',  titleTextStyle: { color: 'grey' }},
-          hAxis: {title: 'Task count', titleTextStyle: {color: 'grey'}},
+          hAxis: {title: 'Task count', titleTextStyle: {color: 'grey'},logScale:true},
           colors:['#be2d28'],
           bar: {groupWidth: "65%"},
           legend: { position: "none" }
@@ -60,7 +60,8 @@
             tooltip: { 
           	trigger: 'selection',
           	textStyle: { fontName: 'verdana', fontSize: 16 }
-      	  }
+      	  },
+      	  sliceVisibilityThreshold: 0
         };
 
        chart.setAction({
