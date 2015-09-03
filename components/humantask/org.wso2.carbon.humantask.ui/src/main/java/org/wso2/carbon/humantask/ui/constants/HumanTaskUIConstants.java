@@ -66,6 +66,10 @@ public final class HumanTaskUIConstants {
         public static final String HUMANTASK_MANAGEMENT_SERVICE = "HumanTaskPackageManagement";
 
         public static final String HUMANTASK_UPLOADER_SERVICE_NAME = "HumanTaskUploader";
+
+        public static final String ATTACHMENT_MGT_SERVICE_NAME = "AttachmentMgtService";
+
+        public static final String LOGGED_USER_INFO_SERVICE_NAME = "LoggedUserInfoAdmin";
     }
 
     /**
