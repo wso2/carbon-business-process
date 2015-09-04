@@ -82,10 +82,10 @@
 
             <br>
             <div class="table-title"  style="width:100%">  User Vs Number Of Tasks Completed </div>
-            <div id="colChartUserVsTasks" style="height: 74%"></div>
+            <div id="colChartUserVsTasks" style="height: 400px"></div>
             <br>
             <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
-            <div id="userVsAvgTaskDuration" style="height: 74%"></div>
+            <div id="userVsAvgTaskDuration"  style="height: 400px"></div>
             <br>
             <div class="table-title"  style="width:100%"> Task Instance Count Variation Over Time </div>
             <div id="taskVariationOverTime"></div>
@@ -120,7 +120,7 @@
                   <% } %>
                   </select>
                  </form>
-                  <div id="taskDurationChart" style="height:33%" > Select a process to view the task duration</div>
+                  <div id="taskDurationChart" style="height: 300px" > Select a process to view the task duration</div>
               </div>
     <% }else{ %>
       <br/>

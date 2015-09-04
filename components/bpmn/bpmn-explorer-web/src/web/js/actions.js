@@ -510,7 +510,7 @@ function userVsTasksCompleted(){
                     vAxis: {title: 'Number of tasks completed todate',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    bar: {groupWidth: "40%"},
+                    bar: {groupWidth: "40%"}
                 };
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('colChartUserVsTasks'));
@@ -546,7 +546,7 @@ function avgTimeForUserForTasks(){
                     vAxis: {title: 'Average Time Taken to Complete Tasks',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    bar: {groupWidth: "40%"},
+                    bar: {groupWidth: "40%"}
                 };
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('userVsAvgTaskDuration'));
