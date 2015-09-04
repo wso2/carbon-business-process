@@ -313,6 +313,20 @@ function processSearch(){
 
 }
 
+/**
+ Function to set date picker to date input elements
+ */
+function setDatePicker (dateElement) {
+    var elementID = '#' + dateElement;
+    $(elementID).daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'MM/DD/YYYY'
+        }
+    });
+}
+
 //Average Task duration for each process
 
 function selectProcessForChart(){
@@ -421,9 +435,24 @@ function selectProcessForAvgTimeDuration(){
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
 
+                var max=0;
+                for(var i=0; i<dataArr.length;i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                }
+                if(max >= 100){
+                    var hTitle='Average Time Time Duration in Minutes(log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var hTitle='Average Time Time Duration in Minutes';
+                    var logScaleEnabled = false;
+                }
+
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
-                    hAxis: {title: 'Time Duration', titleTextStyle: {color: 'grey'}},
+                    hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                     colors:['#be2d28'],
                     height: ((data.getNumberOfRows()+2) * 120)
                 };
@@ -436,19 +465,7 @@ function selectProcessForAvgTimeDuration(){
     });
 }
 
-/**
- Function to set date picker to date input elements
- */
-function setDatePicker (dateElement) {
-    var elementID = '#' + dateElement;
-    $(elementID).daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'MM/DD/YYYY'
-        }
-    });
-}
+
 
 //Process Instance Count : Filters the 10 processes with the maximum and the minimum instance counts
 function selectProcessForInstanceCount(){
@@ -472,12 +489,34 @@ function selectProcessForInstanceCount(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+                var max=0;
+                var count=0;
+
+                for(var i=0; i<dataArr.length;i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                    if(dataArr[i][1]>0){
+                        count++;
+                    }
+                }
+
+                if(max >= 100 && count > 1){
+                    var hTitle='Process instance count (log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var hTitle='Process instance count';
+                    var logScaleEnabled = false;
+                }
+
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
-                    hAxis: {title: 'Process Instance Count', titleTextStyle: {color: 'grey'}},
+                    hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                     colors:['#be2d28'],
                     height: ((data.getNumberOfRows()+2) * 120)
                 };
+
                 var chart = new google.visualization.BarChart(document.getElementById('barChart'));
                 chart.draw(data, options);
             }
@@ -506,11 +545,13 @@ function userVsTasksCompleted(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+
                 var options = {
                     vAxis: {title: 'Number of tasks completed todate',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
-                    bar: {groupWidth: "40%"}
+                    bar: {groupWidth: "40%"},
+
                 };
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('colChartUserVsTasks'));
@@ -542,12 +583,32 @@ function avgTimeForUserForTasks(){
                     dataArr.push([data[i][0] , data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+
+                var max=0;
+
+                for(var i=0; i<dataArr.length;i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                }
+
+                if(max >= 100){
+                    var vTitle='Average Time Taken to Complete Tasks in Seconds(log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var vTitle='Average Time Taken to Complete Tasks in Seconds';
+                    var logScaleEnabled = false;
+                }
+
                 var options = {
-                    vAxis: {title: 'Average Time Taken to Complete Tasks',  titleTextStyle: { color: 'grey' }},
-                    hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
+                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
+                    hAxis: {title: 'Users', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
                     bar: {groupWidth: "40%"}
                 };
+
+
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('userVsAvgTaskDuration'));
                 chart.draw(data, options);
@@ -653,23 +714,23 @@ function processVariationOverTime(){
 // Generate the report view by displaying the graphs
 function generateReport(){
 
-        selectProcessForInstanceCount();
-        selectProcessForAvgTimeDuration();
-        userVsTasksCompleted();
-        avgTimeForUserForTasks();
-        taskVariationOverTime();
-        processVariationOverTime();
+    selectProcessForInstanceCount();
+    selectProcessForAvgTimeDuration();
+    userVsTasksCompleted();
+    avgTimeForUserForTasks();
+    taskVariationOverTime();
+    processVariationOverTime();
 
-        var barChartDisplay= document.getElementById("barChartDisplay");
-        barChartDisplay.hidden= false;
+    var barChartDisplay= document.getElementById("barChartDisplay");
+    barChartDisplay.hidden= false;
 
-        var pieChartDisplay= document.getElementById("pieChartDisplay");
-        pieChartDisplay.hidden= false;
+    var pieChartDisplay= document.getElementById("pieChartDisplay");
+    pieChartDisplay.hidden= false;
 
-        var genButton= document.getElementById("generate")
-        genButton.hidden= true;
+    var genButton= document.getElementById("generate")
+    genButton.hidden= true;
 
-        var h3= document.getElementById("h3")
-        h3.hidden= true;
+    var h3= document.getElementById("h3")
+    h3.hidden= true;
 
 }
