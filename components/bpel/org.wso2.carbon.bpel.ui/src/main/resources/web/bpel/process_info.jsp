@@ -35,7 +35,8 @@
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 
-    <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
+    <jsp:include page="../resources/resources-i18n-ajaxprocessor.jsp"/>
+    <jsp:include page="../dialog/display_messages.jsp"/>
 
     <%
         response.setHeader("Cache-Control", "no-cache");
@@ -129,11 +130,34 @@
                 try {
                     processInfo = processMgtClient.getProcessInfo(pid);
                 } catch (Exception e) {
-                    response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                    CarbonUIMessage uiMsg = new CarbonUIMessage(CarbonUIMessage.ERROR, e.getMessage(), e);
-                    session.setAttribute(CarbonUIMessage.ID, uiMsg);
+                    //real error is logged in backend logs
     %>
-    <jsp:include page="../admin/error.jsp"/>
+    <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
+        <carbon:breadcrumb
+                label="bpel.process_info"
+                resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
+                topPage="false"
+                request="<%=request%>"/>
+
+        <table id="packageErrorTable" class="styledLeft" width="100%" style="color:red" width="100%" cellspacing="0"
+               cellpadding="0" border="0">
+            <thead>
+            <tr>
+                <th>
+                    <nobr><fmt:message key="process.definition.error"/></nobr>
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>
+                    <fmt:message key="process.definition.error.detailed"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </fmt:bundle>
     <%
                     return;
                 }
@@ -276,12 +300,13 @@
 
     <link type="text/css" rel="stylesheet" href="css/style.css"/>
     <%--<link media="all" type="text/css" rel="stylesheet" href="css/xmlverbatim.css">--%>
+    <fmt:bundle basename="org.wso2.carbon.bpel.ui.i18n.Resources">
     <carbon:breadcrumb
             label="bpel.process_info"
             resourceBundle="org.wso2.carbon.bpel.ui.i18n.Resources"
             topPage="false"
             request="<%=request%>"/>
-    <jsp:include page="../dialog/display_messages.jsp"/>
+
     <link href="css/prettify.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="js/prettify.js"></script>
     <script type="text/javascript" src="js/run_prettify.js"></script>
