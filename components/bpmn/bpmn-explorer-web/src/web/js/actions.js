@@ -482,12 +482,13 @@ function selectProcessForAvgTimeDuration(){
                     var hTitle='Average Time Time Duration in Minutes';
                     var logScaleEnabled = false;
                 }
-
+                var chartAreaHeight=((data.getNumberOfRows()+2) * 120);
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                     colors:['#be2d28'],
-                    height: ((data.getNumberOfRows()+2) * 120)
+                    height: ((data.getNumberOfRows()+2) * 120) + 200,
+                    chartArea:{top:10,height:chartAreaHeight}
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
@@ -542,12 +543,13 @@ function selectProcessForInstanceCount(){
                     var hTitle='Process instance count';
                     var logScaleEnabled = false;
                 }
-
+                var chartAreaHeight=((data.getNumberOfRows()+2) * 120);
                 var options = {
                     vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                     colors:['#be2d28'],
-                    height: ((data.getNumberOfRows()+2) * 120)
+                    height: ((data.getNumberOfRows()+2) * 120) + 200,
+                    chartArea:{top:10,height:chartAreaHeight}
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('barChart'));
