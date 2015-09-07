@@ -10,34 +10,55 @@
     <link rel="stylesheet" href="css/chart.css">
 
     <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart(){
-        var data = google.visualization.arrayToDataTable([
-          ['Status Of the Task', ' Task Count'],         
-          <% for(var j = 0; j < statusArrayBar.length; j++){ %>
-            <%=JSON.stringify(statusArrayBar[j]) %>
-            <% if(j < statusArrayBar.length){ %> ,<% } %>
-          <% } %>
-        ]);
-        
-        var options = {
-          vAxis: {title: 'Status Of the Task',  titleTextStyle: { color: 'grey' }},
-          hAxis: {title: 'Task count', titleTextStyle: {color: 'grey'},logScale:true},
-          colors:['#be2d28'],
-          bar: {groupWidth: "65%"},
-          legend: { position: "none" }
-        };
+          google.load("visualization", "1", {packages:["corechart"]});
+          google.setOnLoadCallback(drawChart);
 
-        var chart = new google.visualization.BarChart(document.getElementById('taskStatusCountBar'));
-        chart.draw(data, options);
-      }
-    </script>
+          var dataArr = [['Status of the task', 'Task Count']];
+           <% for(var j = 0; j < statusArrayBar.length; j++){ %>
+
+                dataArr.push(['<%=statusArrayBar[j][0]%>',<%=statusArrayBar[j][1]%>]);
+
+              <% } %>
+
+          function drawChart(){
+            var data = google.visualization.arrayToDataTable(dataArr);
+            var max=0;
+            var count=0;
+
+            for(var i=0; i<dataArr.length;i++){
+              if (dataArr[i][1] > max) {
+                max = dataArr[i][1];
+              }
+              if(dataArr[i][1]>0){
+                count++;
+              }                
+            }
+
+           if(max >= 100 && count > 1){
+              var hTitle='Task instance count (log scale)';
+              var logScaleEnabled = true;
+            }
+            else{
+              var hTitle='Task instance count';
+              var logScaleEnabled = false;
+            }
+
+            var options = {
+              vAxis: {title: 'Status of the Task',  titleTextStyle: { color: 'grey' }},
+              hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
+              colors:['#be2d28']
+              };
+
+            var chart = new google.visualization.BarChart(document.getElementById('taskStatusCountBar'));
+            chart.draw(data, options);
+          }
+        </script>
+    
 
       <div class="col-lg-12 float-left">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  Task Status Count </div>
-            <div id="taskStatusCountBar" style="height: 84%"></div>            
+            <div id="taskStatusCountBar" style="height: 500px"></div>            
       
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
