@@ -389,11 +389,38 @@ function selectUserForPerformance(){
 
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+                var max=0;
+                var count = 0;
+
+                for(var i=0; i<dataArr.length;i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                    if(dataArr[i][2] > max){
+                        max = dataArr[i][2];
+                    }
+                    if(dataArr[i][1] > 0 ){
+                        count++;
+                    }
+                    if(dataArr[i][2] > 0 ){
+                        count++;
+                    }
+                }
+
+                if(max >= 100 && count > 1){
+                    var vTitle='Number of Tasks Completed/Started(log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var vTitle='Number of Tasks Completed/Started';
+                    var logScaleEnabled = false;
+                }
+
                 var chartAreaHeight = data.getNumberOfRows() * 32;
                 var chartHeight = chartAreaHeight + 30;
 
                 var options = {
-                    vAxis: {title: 'Number of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
@@ -436,12 +463,18 @@ function selectProcessForAvgTimeDuration(){
                 var data = google.visualization.arrayToDataTable(dataArr);
 
                 var max=0;
+                var count=0;
                 for(var i=0; i<dataArr.length;i++){
                     if (dataArr[i][1] > max) {
                         max = dataArr[i][1];
                     }
+
+                    if(dataArr[i][1]>0){
+                        count++;
+                    }
+
                 }
-                if(max >= 100){
+                if(max >= 100 && count > 1){
                     var hTitle='Average Time Time Duration in Minutes(log scale)';
                     var logScaleEnabled = true;
                 }
@@ -546,8 +579,29 @@ function userVsTasksCompleted(){
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
 
+                var max = 0;
+                var count = 0;
+                for(var i = 0; i < dataArr.length; i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                    if(dataArr[i][1] > 0){
+                        count++;
+                    }
+                }
+
+                if(max >= 100 && count > 1){
+                    var vTitle='Number of tasks completed todate(log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var vTitle ='Number of tasks completed todate';
+                    var logScaleEnabled = false;
+                }
+
+
                 var options = {
-                    vAxis: {title: 'Number of tasks completed todate',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: vTitle, titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
                     hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28'],
                     bar: {groupWidth: "40%"},
@@ -585,14 +639,18 @@ function avgTimeForUserForTasks(){
                 var data = google.visualization.arrayToDataTable(dataArr);
 
                 var max=0;
+                var count = 0;
 
                 for(var i=0; i<dataArr.length;i++){
                     if (dataArr[i][1] > max) {
                         max = dataArr[i][1];
                     }
+                    if(dataArr[i][1] > 0){
+                        count++;
+                    }
                 }
 
-                if(max >= 100){
+                if(max >= 100 && count > 1){
                     var vTitle='Average Time Taken to Complete Tasks in Seconds(log scale)';
                     var logScaleEnabled = true;
                 }
@@ -640,11 +698,38 @@ function taskVariationOverTime(){
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
 
+                var max=0;
+                var count = 0;
+
+                for(var i=0; i<dataArr.length;i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                    if(dataArr[i][2] > max){
+                        max = dataArr[i][2];
+                    }
+                    if(dataArr[i][1] > 0 ){
+                        count++;
+                    }
+                    if(dataArr[i][2] > 0 ){
+                        count++;
+                    }
+                }
+
+                if(max >= 100 && count > 1){
+                    var vTitle='Number of Tasks Completed/Started(log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var vTitle='Number of Tasks Completed/Started';
+                    var logScaleEnabled = false;
+                }
+
                 var chartAreaHeight = data.getNumberOfRows() * 32;
                 var chartHeight = chartAreaHeight + 32;
 
                 var options = {
-                    vAxis: {title: 'Number of Tasks Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
@@ -685,12 +770,38 @@ function processVariationOverTime(){
                     dataArr.push([data[i][0] , data[i][1],data[i][2]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
+                var max=0;
+                var count = 0;
+
+                for(var i=0; i<dataArr.length;i++){
+                    if (dataArr[i][1] > max) {
+                        max = dataArr[i][1];
+                    }
+                    if(dataArr[i][2] > max){
+                        max = dataArr[i][2];
+                    }
+                    if(dataArr[i][1] > 0 ){
+                        count++;
+                    }
+                    if(dataArr[i][2] > 0 ){
+                        count++;
+                    }
+                }
+
+                if(max >= 100 && count > 1){
+                    var vTitle='Number of Processes Completed/Started(log scale)';
+                    var logScaleEnabled = true;
+                }
+                else{
+                    var vTitle='Number of Processes Completed/Started';
+                    var logScaleEnabled = false;
+                }
 
                 var chartAreaHeight = data.getNumberOfRows() * 32;
                 var chartHeight = chartAreaHeight + 32;
 
                 var options = {
-                    vAxis: {title: 'Number of Processes Completed/Started',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
                     colors:['#be2d28','#afaeae'],
                     height: chartHeight,
