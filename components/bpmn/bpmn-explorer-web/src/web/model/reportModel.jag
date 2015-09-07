@@ -33,19 +33,19 @@ for(var i= 0; i < processNames.data.length; i++){
 var minProcessCount = [];
 var maxProcessCount = [];
 
-  if(update != null && update === "true"){
-    if(option === "processinstancecount"){
+  if (update != null && update === "true") {
+    if (option === "processinstancecount") {
 
     var pInstanceCount = request.getParameter("id");
-    if(pInstanceCount == "min") {
+    if (pInstanceCount == "min") {
       sortAscending(processBarChart);
       minProcessCount = processBarChart.slice(0,10);
       processBarChart = minProcessCount;
-    }else if(pInstanceCount == "max"){
+    } else if (pInstanceCount == "max") {
       sortDescending(processBarChart);
       maxProcessCount = processBarChart.slice(0,10);
       processBarChart = maxProcessCount;
-    }else if(pInstanceCount == "all"){
+    } else if (pInstanceCount == "all") {
       processBarChart = processBarChart;
     }
   }
@@ -76,7 +76,7 @@ for (var i in listProcess.data.data){
 
     if(checkForDuplicates(processBarChartAvgTime,processName) == 1){
 
-    }else{
+    } else {
 
      	processBarChartAvgTime.push([
   		processName, avgRoundedTime
@@ -93,9 +93,9 @@ for (var i in listProcess.data.data){
           }
       }
 
-      if(counter > 0){
+      if (counter > 0) {
           return 1;
-      }else {
+      } else {
           return 0;
       }
   }
@@ -104,19 +104,19 @@ for (var i in listProcess.data.data){
  var sortedAscendingArray = [];
  var sortedDescendingArray = [];
 
-  if(update != null && update === "true"){
-    if(option === "avgprocessduration"){
+  if (update != null && update === "true") {
+    if (option === "avgprocessduration") {
 
     var selectedProcess = request.getParameter("id");
-    if(selectedProcess == "shortTime") {
+    if (selectedProcess == "shortTime") {
       sortAscending(processBarChartAvgTime);
       sortedAscendingArray = processBarChartAvgTime.slice(0,10);
       processBarChartAvgTime = sortedAscendingArray;
-    }else if(selectedProcess =="longTime"){
+    } else if (selectedProcess =="longTime") {
       sortDescending(processBarChartAvgTime);
       sortedDescendingArray = processBarChartAvgTime.slice(0,10);
       processBarChartAvgTime = sortedDescendingArray;
-    }else if(selectedProcess =="allProcesses"){
+    } else if (selectedProcess =="allProcesses") {
       processBarChartAvgTime = processBarChartAvgTime;
     }
   }
@@ -135,42 +135,41 @@ for (var i in listProcess.data.data){
     var keyList = [];
     var taskInstanceCountArray = [];
 
-  for(var i in taskList.data.data){
+     for(var i in taskList.data.data){
 
        var taskName = taskList.data.data[i].name;
        var taskDuration = taskList.data.data[i].durationInMillis;
        var taskKey = taskList.data.data[i].taskDefinitionKey;
 
-       if(taskArray[taskKey] > 0) {
+       if (taskArray[taskKey] > 0) {
             taskArray[taskKey] = taskArray[taskKey] + taskDuration;
             taskInstanceCountArray[taskKey] = taskInstanceCountArray[taskKey] + 1;
-       }
-       else{
+       } else {
          taskArray[taskKey] = taskDuration;
          taskInstanceCountArray[taskKey] = 1;
          keyList.push([taskKey]);
 
        }
-  }
-
-    for(var i in keyList){
-    taskArray[keyList[i]] = taskArray[keyList[i]] / taskInstanceCountArray[keyList[i]];
     }
 
-    if(insCount > 0){
-        avgTimeDataPerProcess[processName] = taskArray;
-      }
+        for(var i in keyList) {
+        taskArray[keyList[i]] = taskArray[keyList[i]] / taskInstanceCountArray[keyList[i]];
+        }
+
+        if (insCount > 0) {
+            avgTimeDataPerProcess[processName] = taskArray;
+        }
     }
 
     for (key in avgTimeDataPerProcess){
-      if(JSON.stringify(avgTimeDataPerProcess[key]) === '{}'){
+      if (JSON.stringify(avgTimeDataPerProcess[key]) === '{}') {
         delete avgTimeDataPerProcess[key];
       }
 
     }
 
-    if(update != null && update === "true"){
-      if(option === "taskduration"){
+    if (update != null && update === "true") {
+      if (option === "taskduration") {
        var resultArray = [];
        var x = request.getParameter("id");
 
@@ -225,8 +224,8 @@ users.forEach(function(x) {
   });
 
 //User vs tasks completed uptodate
-if(update != null && update === "true"){
-    if(option === "uservstaskscompleted"){
+if (update != null && update === "true") {
+    if (option === "uservstaskscompleted") {
 
     var userVsTaskCount = [];
       for (key in uniqueUser){
@@ -245,15 +244,13 @@ var average = [];
     var assName = taskInstancesList.data.data[i].assignee;
     var taskDuration = ((taskInstancesList.data.data[i].durationInMillis) / 1000) %60;
 
-       if(userWithTaskTime[assName] > 0) {
+       if (userWithTaskTime[assName] > 0) {
             userWithTaskTime[assName] = userWithTaskTime[assName] + taskDuration;
             userCountArray[assName] = userCountArray[assName] + 1;
-       }
-       else{
+       } else {
             userWithTaskTime[assName] = taskDuration;
             userCountArray[assName] = 1;
             keyListForUsers.push([assName]);
-
        }
     }
 
@@ -263,15 +260,15 @@ var average = [];
 
    average[assName] = userWithTaskTime;
 
-  if(update != null && update === "true"){
-  if(option === "uservsavgtime"){
+  if (update != null && update === "true") {
+    if (option === "uservsavgtime") {
 
-    for (key in average){
-        for (subkey in average[key]){
-          userResultArray.push([subkey,average[key][subkey]]);
+        for (key in average){
+            for (subkey in average[key]){
+              userResultArray.push([subkey,average[key][subkey]]);
+            }
         }
     }
-  }
 }
 
 var MONTHS = ["Jan","Feb","March", "April", "May" , "June", "July" ,"Aug" , "Sep" , "Oct" , "Nov" , "Dec"];
@@ -310,17 +307,17 @@ startedDate.forEach(function(x) {
   });
 
 
-  if(update != null && update === "true"){
-  if(option === "taskvariation"){
-  var arrayOfTaskCount = [];
-  for(var i = 0;i < MONTHS.length;i++){
-    if(uniqueMonthsForCompleted[i] == null && uniqueMonthsForStarted[i] == null){
-      arrayOfTaskCount.push([MONTHS[i],0,0]);
-    }else{
-      arrayOfTaskCount.push([MONTHS[i],uniqueMonthsForCompleted[i],uniqueMonthsForStarted[i]]);
+  if (update != null && update === "true") {
+      if (option === "taskvariation") {
+      var arrayOfTaskCount = [];
+      for(var i = 0;i < MONTHS.length;i++){
+        if (uniqueMonthsForCompleted[i] == null && uniqueMonthsForStarted[i] == null) {
+          arrayOfTaskCount.push([MONTHS[i],0,0]);
+        } else {
+          arrayOfTaskCount.push([MONTHS[i],uniqueMonthsForCompleted[i],uniqueMonthsForStarted[i]]);
+        }
+      }
     }
-  }
-}
 }
 
 //Process Demand Variation Over Time i.e. processes started and completed
@@ -355,17 +352,17 @@ processStartedDate.forEach(function(x) {
   uniqueMonthForStartedProcess[x] = (uniqueMonthForStartedProcess[x] || 0)+1;
   });
 
-  if(update != null && update === "true"){
-  if(option === "processvariation"){
-  var arrayOfProcessCount = [];
-    for(var i = 0;i < MONTHS.length;i++){
-      if(uniqueMonthForCompletedProcess[i] == null && uniqueMonthForStartedProcess[i] == null){
-    arrayOfProcessCount.push([MONTHS[i],0,0]);
-        }else{
-    arrayOfProcessCount.push([MONTHS[i],uniqueMonthForCompletedProcess[i],uniqueMonthForStartedProcess[i]]);
+  if (update != null && update === "true") {
+      if (option === "processvariation") {
+      var arrayOfProcessCount = [];
+        for(var i = 0;i < MONTHS.length;i++){
+          if (uniqueMonthForCompletedProcess[i] == null && uniqueMonthForStartedProcess[i] == null) {
+        arrayOfProcessCount.push([MONTHS[i],0,0]);
+            } else {
+        arrayOfProcessCount.push([MONTHS[i],uniqueMonthForCompletedProcess[i],uniqueMonthForStartedProcess[i]]);
+            }
+          }
         }
-      }
-    }
 }
 //Populate Users to Combo Box
 
@@ -389,8 +386,8 @@ userArray.sort();
 
 //User Performance of Tasks over time i.e. tasks started and completed by the user
 
-  if(update != null && update === "true"){
-    if(option === "userperformance"){
+  if (update != null && update === "true") {
+    if (option === "userperformance") {
 
     var selectedUser = request.getParameter("id");
 
@@ -429,10 +426,9 @@ userArray.sort();
 
     var arrayOfTaskCountPerUser = [];
       for(var i = 0;i < MONTHS.length;i++){
-        if(uniqueUserMonthForFinishedTask[i] == null && uniqueUserMonthForStartedTask[i] == null){
+        if (uniqueUserMonthForFinishedTask[i] == null && uniqueUserMonthForStartedTask[i] == null) {
           arrayOfTaskCountPerUser.push([MONTHS[i],0,0]);
-
-        }else{
+        } else {
             arrayOfTaskCountPerUser.push([MONTHS[i],uniqueUserMonthForFinishedTask[i],uniqueUserMonthForStartedTask[i]]);
         }
       }
