@@ -17,19 +17,33 @@
 
     var log = new Log();
     var data = require('../config/config.json'),
-	encoder = require("/assets/encoder.js"),
-	process = require('process'),
-	auth = session.get('auth'),
-	roles = session.get('roles'),
-        bpsHost = data.server.bpsHost,
-    bpsPort = data.server.bpsPort;
-	httpUrl = "https://"+bpsHost+":"+bpsPort;
+    encoder = require("/assets/encoder.js"),
+    process = require('process'),
+    auth = session.get('auth'),
+    roles = session.get('roles'),
+    bpsHost = data.server.bpsHost,
+    bpsPort = data.server.bpsPort,
+    bpsTenantID = data.server.bpsTenantId,
+    bpsTenantDomain = data.server.bpsTenantDomain;
 
+    var bpsTenantUrlPart = "";//this holds the tenant part of the bps url
+    if (bpsTenantDomain.length > 0) {
+        bpsTenantUrlPart = "/t/" + bpsTenantDomain;
+    }
+    application.put('bpsTenantUrlPart', bpsTenantUrlPart);
+
+    if (bpsTenantID.length > 0) {
+        application.put('bpsTenantID', bpsTenantID);
+    } else {
+        application.put('bpsTenantID', '-1234');
+    }
+
+    var httpUrl = "https://"+ bpsHost+ ":"+ bpsPort + bpsTenantUrlPart;
     if(log.isDebugEnabled()) {
         log.debug("BPS URL:"+ httpUrl);
     }
 
-	//Following variable were used to highlight current page which user is currently in.
+    //Following variable were used to highlight current page which user is currently in.
     //these were set as 'active' at each corresponding task Model
     var dashboardNavActive = ''; //Dashboard veiw [updated at statsModel and refered at navigation.jag]
     var myTasksNavActive = ''; //My Tasks veiw [updated at myTasksModel, refered at navigation.jag]
