@@ -36,6 +36,7 @@
         application.put('bpsTenantID', bpsTenantID);
     } else {
         application.put('bpsTenantID', '-1234');
+        bpsTenantID = '-1234';
     }
 
     var httpUrl = "https://"+ bpsHost+ ":"+ bpsPort + bpsTenantUrlPart;
