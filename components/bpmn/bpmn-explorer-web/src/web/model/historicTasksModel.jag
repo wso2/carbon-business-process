@@ -27,10 +27,13 @@ var user = session.get("user");
 var task = [];
 
 try {
-    var tasks = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10" ,null, headers, "json" ).data;
+    var tasks = get( httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user+
+                                "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10&tenantId="+ bpsTenantID,
+                                null, headers, "json" ).data;
 
     if (log.isDebugEnabled()) {
-        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user + "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10");
+        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/history/historic-task-instances?taskAssignee=" + user+ 
+                            "&includeProcessVariables=true&finished=true&sort=endTime&start=" + start + "&size=10&tenantId="+ bpsTenantID);
         log.debug("BPS BPMN REST API response: " +stringify(tasks));
     }
     //Check for error response

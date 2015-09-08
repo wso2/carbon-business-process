@@ -13,10 +13,15 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
  */
-
+var appName = "bpmn-explorer";
 var httpUrl = location.protocol + "//" + location.host;
-var CONTEXT = "bpmn-explorer";
+var CONTEXT = "";
 
+if (BPSTenant != undefined && BPSTenant.length > 0) {
+    CONTEXT = "t/" + BPSTenant + "/jaggeryapps/" + appName;
+} else {
+    CONTEXT = appName;
+}
 
 $( document ).ready(function() {
 

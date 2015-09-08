@@ -35,10 +35,10 @@
 
 		if(update != null && update === "true"){
 			if( option === "userperformance"){
-				response.content = arrayOfTaskCountPerUser;
+				response.content = userTasksOverMonths;
 			}
 			else if( option === "taskduration"){
-				response.content = resultArray;
+				response.content = avgTaskDurationPerProcess;
 			}
 			else if( option === "avgprocessduration"){
 				response.content = processBarChartAvgTime;
@@ -50,13 +50,13 @@
             	response.content = userVsTaskCount;
             }
             else if(option === "uservsavgtime"){
-            	response.content = userResultArray;
+            	response.content = userAvgTaskTime;
             }
             else if(option === "taskvariation"){
-            	response.content = arrayOfTaskCount;
+            	response.content = tasksOverMonths;
             }
              else if(option === "processvariation"){
-            	response.content = arrayOfProcessCount;
+            	response.content = processesOverMonths;
             }
 
 		}

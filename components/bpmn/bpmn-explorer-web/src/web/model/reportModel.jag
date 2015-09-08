@@ -1,5 +1,5 @@
 <%/*<!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -17,167 +17,365 @@
 var update = request.getParameter("update");
 var headers = {"Authorization":"Basic " + auth};
 var start = 0;
+var isProcessesDeployed = false;
 
-//Process Instance Count
-var processNames = get( httpUrl + "/bpmn/repository/process-definitions?size=0" ,null, headers, "json" ).data;
-var processBarChart = [];
-for(var i= 0; i < processNames.data.length; i++){
-	var name = processNames.data[i].id;
-	var processCount = get( httpUrl + "/bpmn/history/historic-process-instances?processDefinitionId=" + name ,null, headers, "json" ).data.total;
-	processBarChart.push([
-		name, processCount
-	]);
-}
+//list of process definitions belong to the current tenant
+// processDefinition name, total process count, completed process count
+var processDefinitionList = [];
 
-//Filters the 10 processes with the maximum and the minimum process instances
-var minProcessCount = [];
-var maxProcessCount = [];
+if (update != null && update === "true") {
+    if (option === "processinstancecount" || option === "avgprocessduration" || option === "taskduration") {
 
-  if (update != null && update === "true") {
-    if (option === "processinstancecount") {
-
-    var pInstanceCount = request.getParameter("id");
-    if (pInstanceCount == "min") {
-      sortAscending(processBarChart);
-      minProcessCount = processBarChart.slice(0,10);
-      processBarChart = minProcessCount;
-    } else if (pInstanceCount == "max") {
-      sortDescending(processBarChart);
-      maxProcessCount = processBarChart.slice(0,10);
-      processBarChart = maxProcessCount;
-    } else if (pInstanceCount == "all") {
-      processBarChart = processBarChart;
-    }
-  }
-}
-
-//Average time of the completed processes
-var listProcess = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0" ,null, headers, "json" );
-var distListProcess = get( httpUrl + "/bpmn/repository/process-definitions?finished=true&size=0" ,null, headers, "json" );
-
-var processBarChartAvgTime = [];
-var taskArray = {};
-
-for (var i in listProcess.data.data){
-   var totalTime = 0;
-   var processName = listProcess.data.data[i].processDefinitionId;
-   var count = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
-
-   var timeduration = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" );
-
-      for(var i in timeduration.data.data){
-        var timeForOne = timeduration.data.data[i].durationInMillis;
-        var timeInMinutes = ((timeForOne /(1000*60))%60);
-        totalTime = totalTime + timeInMinutes;
-      }
-
-   var averageTime = totalTime / count;
-   var avgRoundedTime = Math.round(averageTime * 1000) / 1000;
-
-    if(checkForDuplicates(processBarChartAvgTime,processName) == 1){
-
-    } else {
-
-     	processBarChartAvgTime.push([
-  		processName, avgRoundedTime
-     ]);
-    }
- }
-  //Eliminates duplicate processes
-  function checkForDuplicates(processBarChartAvgTime,processName){
-     var counter = 0;
-     for (var i = 0; i < processBarChartAvgTime.length; i++) {
-
-          if (processName == processBarChartAvgTime[i][0]) {
-              counter++;
-          }
-      }
-
-      if (counter > 0) {
-          return 1;
-      } else {
-          return 0;
-      }
-  }
-
-//Filters the processes according to the average time durations i.e. 10 processes that finished within a short and a long time
- var sortedAscendingArray = [];
- var sortedDescendingArray = [];
-
-  if (update != null && update === "true") {
-    if (option === "avgprocessduration") {
-
-    var selectedProcess = request.getParameter("id");
-    if (selectedProcess == "shortTime") {
-      sortAscending(processBarChartAvgTime);
-      sortedAscendingArray = processBarChartAvgTime.slice(0,10);
-      processBarChartAvgTime = sortedAscendingArray;
-    } else if (selectedProcess =="longTime") {
-      sortDescending(processBarChartAvgTime);
-      sortedDescendingArray = processBarChartAvgTime.slice(0,10);
-      processBarChartAvgTime = sortedDescendingArray;
-    } else if (selectedProcess =="allProcesses") {
-      processBarChartAvgTime = processBarChartAvgTime;
-    }
-  }
-}
-
-//Average task duration for completed processes
-  var avgTimeDataPerProcess = {};
-  for (var j in distListProcess.data.data){
-
-    var processName = distListProcess.data.data[j].id;
-    var taskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId=" + processName ,null, headers, "json" );
-
-    var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" + processName ,null, headers, "json" ).data.total;
-
-    taskArray = {};
-    var keyList = [];
-    var taskInstanceCountArray = [];
-
-     for(var i in taskList.data.data){
-
-       var taskName = taskList.data.data[i].name;
-       var taskDuration = taskList.data.data[i].durationInMillis;
-       var taskKey = taskList.data.data[i].taskDefinitionKey;
-
-       if (taskArray[taskKey] > 0) {
-            taskArray[taskKey] = taskArray[taskKey] + taskDuration;
-            taskInstanceCountArray[taskKey] = taskInstanceCountArray[taskKey] + 1;
-       } else {
-         taskArray[taskKey] = taskDuration;
-         taskInstanceCountArray[taskKey] = 1;
-         keyList.push([taskKey]);
-
-       }
-    }
-
-        for(var i in keyList) {
-        taskArray[keyList[i]] = taskArray[keyList[i]] / taskInstanceCountArray[keyList[i]];
+        //Process Instance Count
+        var processNames = get(httpUrl + "/bpmn/repository/process-definitions?size=0", null, headers, "json").data;
+        if (log.isDebugEnabled()) {
+            log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/repository/process-definitions?size=0");
+            log.debug("BPS BPMN REST API response: " + stringify(processNames));
         }
 
-        if (insCount > 0) {
-            avgTimeDataPerProcess[processName] = taskArray;
+        var processBarChart = [];
+        for (var i = 0; i < processNames.data.length; i++) {
+            var name = processNames.data[i].id;
+            var processCount = get(httpUrl + "/bpmn/history/historic-process-instances?processDefinitionId=" + name + "&tenantId=" +
+                                                                    application.get('bpsTenantID'), null, headers, "json").data.total;
+            if (processCount == 0) {
+                /*need to check whether the process definition belong to the current tenant because process count can be 0 due to 0 process
+                 instances or due to process not belong to current tenant. Therefor need to retrrieve deployment information of the process definition*/
+                var deploymentInfo = get(httpUrl + "/bpmn/repository/deployments/" + processNames.data[i].deploymentId, null, headers, "json").data;
+                if (deploymentInfo.tenantId === application.get('bpsTenantID')) {
+                    //process definition belong to current(id with bpsTenantID) tenant
+                    processBarChart.push([name, processCount]);
+
+                    //add to process definition list of this tenant
+                    processDefinitionList.push([name, processCount, null]);
+                }
+            } else {
+                //process definition belong to current(id with bpsTenantID) tenant
+                processBarChart.push([name, processCount]);
+
+                //add to process definition list of this tenant
+                processDefinitionList.push([name, processCount, null]);
+            }
+        }
+
+        if (option === "processinstancecount") {    //check whether request for process instance count
+            //Filters the 10 processes with the maximum and the minimum process instances
+            var pInstanceCount = request.getParameter("id");
+            if (pInstanceCount == "min") {
+
+                sortAscending(processBarChart);
+                var orderedProcessList = processBarChart.slice(0, 10);
+                processBarChart = orderedProcessList;
+
+            } else if (pInstanceCount == "max") {
+
+                sortDescending(processBarChart);
+                var orderedProcessList = processBarChart.slice(0, 10);
+                processBarChart = orderedProcessList;
+
+            } else if (pInstanceCount == "all") {
+
+                processBarChart = processBarChart;
+
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("Calculate process instance count");
+                log.debug("Process Instance Count Chart data : " + stringify(processBarChart));
+            }
+        } else if (option === "avgprocessduration") {   //check whether request for process average duration
+            //Average time of the completed processes
+            var processBarChartAvgTime = [];
+
+            for (var j in processDefinitionList) {
+                var totalTime = 0;
+                var processesList = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0&processDefinitionId="+
+                                                                             processDefinitionList[j][0]+ "&tenantId="+ application.get('bpsTenantID'),
+                                                                             null, headers, "json" ).data;
+                var count = processesList.total;
+                if (count > 0) {
+                    for (var i in processesList.data) {
+                        var timeForOne = processesList.data[i].durationInMillis;
+                        //TODO check below time calculation is correct or not
+                        var timeInMinutes = timeForOne /(1000*60);
+                        totalTime = totalTime + timeInMinutes;
+                    }
+                    var averageTime = totalTime / count;
+                    var avgRoundedTime = Math.round(averageTime * 1000) / 1000;
+                    processBarChartAvgTime.push([processDefinitionList[j][0], avgRoundedTime]);
+                }
+            }
+            //Filters the processes according to the average time durations i.e. 10 processes that finished within a short and a long time
+            var selectedProcess = request.getParameter("id");
+            if (selectedProcess == "shortTime") {
+
+                sortAscending(processBarChartAvgTime);
+                var sortedAscendingArray = processBarChartAvgTime.slice(0,10);
+                processBarChartAvgTime = sortedAscendingArray;
+
+            } else if (selectedProcess =="longTime") {
+
+                sortDescending(processBarChartAvgTime);
+                var sortedDescendingArray = processBarChartAvgTime.slice(0,10);
+                processBarChartAvgTime = sortedDescendingArray;
+
+            } else if (selectedProcess =="allProcesses") {
+
+                processBarChartAvgTime = processBarChartAvgTime;
+
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("Calculate average process duration");
+                log.debug("Average Time Duration Of Completed Processes Chart data : " + stringify(processBarChartAvgTime));
+            }
+        } else if (option === "taskduration") {  //check whether request for Task Durations Of Completed Process
+
+            //Average task duration for completed processes
+            var avgTimeDataPerProcess = {};
+
+            for (var j in processDefinitionList){
+
+                var processName = processDefinitionList[j][0];
+                //retrieve task instances belong to interested process definition
+                var taskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId="+ processName+
+                                                                        "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
+                //retrieve number of process instances of interested process definition
+                var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=1&processDefinitionId=" + processName+
+                                                                        "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" ).data.total;
+
+                var taskArray = {};
+                var keyList = [];
+                var taskInstanceCountArray = [];
+                for(var i in taskList.data.data){
+
+                    var taskName = taskList.data.data[i].name;
+                    var taskDuration = taskList.data.data[i].durationInMillis;
+                    var taskKey = taskList.data.data[i].taskDefinitionKey;
+
+                    if (taskArray[taskKey] > 0) {
+                        taskArray[taskKey] = taskArray[taskKey] + taskDuration;
+                        taskInstanceCountArray[taskKey] = taskInstanceCountArray[taskKey] + 1;
+                    } else {
+                        taskArray[taskKey] = taskDuration;
+                        taskInstanceCountArray[taskKey] = 1;
+                        keyList.push([taskKey]);
+
+                    }
+                }
+
+                for(var i in keyList) {
+                    taskArray[keyList[i]] = taskArray[keyList[i]] / taskInstanceCountArray[keyList[i]];
+                }
+
+                if (insCount > 0) {
+                    avgTimeDataPerProcess[processName] = taskArray;
+                }
+            }
+
+            //TODO : This loop does not needed
+            for (key in avgTimeDataPerProcess){
+                if (JSON.stringify(avgTimeDataPerProcess[key]) === '{}') {
+                    delete avgTimeDataPerProcess[key];
+                }
+            }
+
+            var avgTaskDurationPerProcess = [];
+            var x = request.getParameter("id");
+
+            for (subkey in avgTimeDataPerProcess[x]){
+                avgTaskDurationPerProcess.push([subkey, avgTimeDataPerProcess[x][subkey]]);
+            }
+
+        }
+
+    } else if (option === "uservstaskscompleted" || option === "uservsavgtime") {
+
+        //User Monitoring START
+        var users = [];
+        //Task information related to the user [task count, task duration, average time per task]
+        var userTaskInfo = {};
+        var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&tenantId="+
+                                                                        application.get('bpsTenantID') ,null, headers, "json" );
+
+        for (var i in taskInstancesList.data.data) {
+            var assigneeName = taskInstancesList.data.data[i].assignee;
+
+            var taskDuration = (taskInstancesList.data.data[i].durationInMillis) / 1000;
+
+            if (userTaskInfo[assigneeName] == undefined) {
+                userTaskInfo[assigneeName] = [1, taskDuration];
+            } else {
+                userTaskInfo[assigneeName][0] += 1;
+                userTaskInfo[assigneeName][1] += taskDuration;
+            }
+        }
+
+        if (option === "uservstaskscompleted") {    //User vs tasks completed uptodate
+
+            var userVsTaskCount = [];
+            for (key in userTaskInfo){
+                userVsTaskCount.push([key , userTaskInfo[key][0]]);
+            }
+
+        } else if (option === "uservsavgtime") {    //User vs average time taken to complete tasks
+
+            var  userAvgTaskTime = [];
+            for (var i in userTaskInfo) {
+                //update average time
+                userTaskInfo[i][2] = Math.round((userTaskInfo[i][1] / userTaskInfo[i][0]) * 100) / 100;
+                userAvgTaskTime.push([i, userTaskInfo[i][2]])
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("User Vs Average Time Taken to Complete Tasks chart data: "+ stringify(userAvgTaskTime));
+            }
+        }
+
+
+    } else if (option === "taskvariation" || option === "processvariation" || option === "userperformance") {
+
+        var MONTHS = ["Jan","Feb","March", "April", "May" , "June", "July" ,"Aug" , "Sep" , "Oct" , "Nov" , "Dec"];
+
+
+        var currentDate = new Date();
+        var startDate = null;
+        var endDate = null;
+        var startDateStr = '';
+        var endtDateStr = '';
+        var regex = new RegExp(':', 'g');
+
+        if (option === "taskvariation") {   //Task Demand Variation Over Time i.e. tasks started and completed
+            var tasksOverMonths = [];
+            for (var i = 0; i < 12; i++) {
+                startDate = new Date(currentDate.getFullYear(), i, 1);
+                endDate = new Date(currentDate.getFullYear(), i + 1, 0, 23, 59, 59, 59);
+                //add parameters with special characters
+                //replace ':' with %3A
+                startDateStr = startDate.toISOString().replace(regex, '%3A');
+                endtDateStr = endDate.toISOString().replace(regex, '%3A');
+                //Task Instances Completed
+                var completedTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=1&taskCompletedAfter="+
+                                                                                  startDateStr + "&taskCompletedBefore="+ endtDateStr+
+                                                                                  "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
+
+                //Task Instances Created
+                var createdTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?size=1&taskCreatedAfter="+
+                                                                                  startDateStr + "&taskCreatedBefore="+ endtDateStr+
+                                                                                  "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
+                tasksOverMonths.push([MONTHS[i], completedTaskList.data.total, createdTaskList.data.total]);
+            }
+        } else if (option === "processvariation") { //Process Demand Variation Over Time i.e. processes started and completed
+            var processesOverMonths = [];
+            for (var i = 0; i < 12; i++) {
+                startDate = new Date(currentDate.getFullYear(), i, 1);
+                endDate = new Date(currentDate.getFullYear(), i + 1, 0, 23, 59, 59, 59);
+                //add parameters with special characters
+                //replace ':' with %3A
+                startDateStr = startDate.toISOString().replace(regex, '%3A');
+                endtDateStr = endDate.toISOString().replace(regex, '%3A');
+
+                //Process Instances Started
+                var completedProcessList = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=1&finishedAfter="+
+                                                                                  startDateStr + "&finishedBefore="+ endtDateStr+
+                                                                                  "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
+
+                //Process Instances Started
+                var createdProcessList = get( httpUrl + "/bpmn/history/historic-process-instances?size=1&startedAfter="+
+                                                                                  startDateStr + "&startedBefore="+ endtDateStr+
+                                                                                  "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
+                processesOverMonths.push([MONTHS[i], completedProcessList.data.total, createdProcessList.data.total]);
+            }
+
+        } else if (option === "userperformance") { //User Performance of Tasks over time i.e. tasks started and completed by the user
+
+            var selectedUser = request.getParameter("id");
+
+            var userTasksOverMonths = [];
+            for (var i = 0; i < 12; i++) {
+                startDate = new Date(currentDate.getFullYear(), i, 1);
+                endDate = new Date(currentDate.getFullYear(), i + 1, 0, 23, 59, 59, 59);
+                //add parameters with special characters
+                //replace ':' with %3A
+                startDateStr = startDate.toISOString().replace(regex, '%3A');
+                endtDateStr = endDate.toISOString().replace(regex, '%3A');
+
+                //Task instances completed by the user
+                var completedUserTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=1&taskCompletedAfter="+
+                                                                              startDateStr + "&taskCompletedBefore="+ endtDateStr+
+                                                                              "&tenantId="+ application.get('bpsTenantID')+
+                                                                              "&taskAssignee=" +selectedUser, null, headers, "json" );
+
+                //Task instances started by the user
+                var startedUserTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?size=1&taskCreatedAfter="+
+                                                                              startDateStr + "&taskCreatedBefore="+ endtDateStr+
+                                                                              "&tenantId="+ application.get('bpsTenantID')+
+                                                                              "&taskAssignee=" +selectedUser, null, headers, "json" );
+
+                userTasksOverMonths.push([MONTHS[i], completedUserTaskList.data.total, startedUserTaskList.data.total]);
+            }
+        }
+
+    }
+
+
+
+
+
+
+} else {
+    //Process Instance Count
+    var processNames = get(httpUrl + "/bpmn/repository/process-definitions?size=0", null, headers, "json").data;
+    if (log.isDebugEnabled()) {
+        log.debug("Retrieve process definitions");
+        log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/repository/process-definitions?size=0");
+        log.debug("BPS BPMN REST API response: " + stringify(processNames));
+    }
+    for (var i = 0; i < processNames.data.length; i++) {
+        var deploymentInfo = get(httpUrl + "/bpmn/repository/deployments/" + processNames.data[i].deploymentId, null, headers, "json").data;
+        if (deploymentInfo.tenantId === application.get('bpsTenantID')) {
+            //There is atleast one process deployed in the system (considering tenants)
+            isProcessesDeployed = true;
+            //add to process definition list of this tenant
+            processDefinitionList.push([processNames.data[i].id, null, null]);
+        }
+    }
+    if (log.isDebugEnabled()) {
+        log.debug("Process Definition List: "+ stringify(processDefinitionList));
+    }
+
+    var users = [];
+    //Task information related to the user [task count, task duration, average time per task]
+    var userTaskInfo = {};
+    var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&tenantId="+
+                                 application.get('bpsTenantID') ,null, headers, "json" );
+
+    for (var i in taskInstancesList.data.data) {
+        var assigneeName = taskInstancesList.data.data[i].assignee;
+
+        var taskDuration = (taskInstancesList.data.data[i].durationInMillis) / 1000;
+
+        if (userTaskInfo[assigneeName] == undefined) {
+            userTaskInfo[assigneeName] = [1, taskDuration];
+        } else {
+            userTaskInfo[assigneeName][0] += 1;
+            userTaskInfo[assigneeName][1] += taskDuration;
         }
     }
 
-    for (key in avgTimeDataPerProcess){
-      if (JSON.stringify(avgTimeDataPerProcess[key]) === '{}') {
-        delete avgTimeDataPerProcess[key];
-      }
-
+    if (log.isDebugEnabled()) {
+        log.debug("User Information : "+ stringify(userTaskInfo));
     }
 
-    if (update != null && update === "true") {
-      if (option === "taskduration") {
-       var resultArray = [];
-       var x = request.getParameter("id");
-
-        for (subkey in avgTimeDataPerProcess[x]){
-        resultArray.push([subkey, avgTimeDataPerProcess[x][subkey]]);
-        }
-      }
+    //Populate Users to Combo Box
+    //Used in reportView
+    var userArray = [];
+    for (var userName in userTaskInfo) {
+        userArray.push(userName);
     }
+    userArray.sort();
+}
+
 
 //Sorts the processes according to the average time duration in ascending order
   function sortAscending(processBarChartAvgTime) {
@@ -209,231 +407,7 @@ for (var i in listProcess.data.data){
       processBarChartAvgTime[j+1][0] = tempName;
     }
   }
-//User Monitoring
-var users = [];
-var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0" ,null, headers, "json" );
 
-  for(var i in taskInstancesList.data.data){
-    var assName = taskInstancesList.data.data[i].assignee;
-    users.push(assName);
-  }
-
-var uniqueUser = {};
-users.forEach(function(x) {
-  uniqueUser[x] = (uniqueUser[x] || 0)+1;
-  });
-
-//User vs tasks completed uptodate
-if (update != null && update === "true") {
-    if (option === "uservstaskscompleted") {
-
-    var userVsTaskCount = [];
-      for (key in uniqueUser){
-        userVsTaskCount.push([key , uniqueUser[key]]);
-      }
-    }
-}
-
-//User vs average time taken to complete tasks
-var userWithTaskTime = {};
-var keyListForUsers = [];
-var userCountArray = [];
-var  userResultArray = [];
-var average = [];
-  for(var i in taskInstancesList.data.data){
-    var assName = taskInstancesList.data.data[i].assignee;
-    var taskDuration = ((taskInstancesList.data.data[i].durationInMillis) / 1000) %60;
-
-       if (userWithTaskTime[assName] > 0) {
-            userWithTaskTime[assName] = userWithTaskTime[assName] + taskDuration;
-            userCountArray[assName] = userCountArray[assName] + 1;
-       } else {
-            userWithTaskTime[assName] = taskDuration;
-            userCountArray[assName] = 1;
-            keyListForUsers.push([assName]);
-       }
-    }
-
-    for(var i in keyListForUsers){
-      userWithTaskTime[keyListForUsers[i]] = userWithTaskTime[keyListForUsers[i]] / userCountArray[keyListForUsers[i]];
-    }
-
-   average[assName] = userWithTaskTime;
-
-  if (update != null && update === "true") {
-    if (option === "uservsavgtime") {
-
-        for (key in average){
-            for (subkey in average[key]){
-              userResultArray.push([subkey,average[key][subkey]]);
-            }
-        }
-    }
-}
-
-var MONTHS = ["Jan","Feb","March", "April", "May" , "June", "July" ,"Aug" , "Sep" , "Oct" , "Nov" , "Dec"];
-
-//Task Demand Variation Over Time i.e. tasks started and completed
-var completedTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0" ,null, headers, "json" );
-var finishedDate = [];
-
-  for(var i in completedTaskList.data.data){
-    var taskDurationForCompleted = completedTaskList.data.data[i].endTime;
-    var month = taskDurationForCompleted.substring(5,7);
-    finishedDate.push(month - 1);
-  }
-finishedDate.sort();
-
-//Task Instances Completed
-var uniqueMonthsForCompleted = {};
-finishedDate.forEach(function(x) {
-  uniqueMonthsForCompleted[x] = (uniqueMonthsForCompleted[x] || 0)+1;
-  });
-
-var startedTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?started=true&size=0" ,null, headers, "json" );
-var startedDate = [];
-  for(var i in startedTaskList.data.data){
-    var taskDurationForStarted = startedTaskList.data.data[i].startTime;
-    var monthForStarted = taskDurationForStarted.substring(5,7);
-    startedDate.push(monthForStarted - 1);
-  }
-
-startedDate.sort();
-
-//Process Instances Started
-var uniqueMonthsForStarted = {};
-startedDate.forEach(function(x) {
-  uniqueMonthsForStarted[x] = (uniqueMonthsForStarted[x] || 0)+1;
-  });
-
-
-  if (update != null && update === "true") {
-      if (option === "taskvariation") {
-      var arrayOfTaskCount = [];
-      for(var i = 0;i < MONTHS.length;i++){
-        if (uniqueMonthsForCompleted[i] == null && uniqueMonthsForStarted[i] == null) {
-          arrayOfTaskCount.push([MONTHS[i],0,0]);
-        } else {
-          arrayOfTaskCount.push([MONTHS[i],uniqueMonthsForCompleted[i],uniqueMonthsForStarted[i]]);
-        }
-      }
-    }
-}
-
-//Process Demand Variation Over Time i.e. processes started and completed
-
-var processFinishedDate = [];
-  for(var i in listProcess.data.data){
-    var endTimeForProcess = listProcess.data.data[i].endTime;
-    var monthForFinishedProcess = endTimeForProcess.substring(5,7);
-    processFinishedDate.push(monthForFinishedProcess-1);
-  }
-processFinishedDate.sort();
-
-//Process Instances Completed
-var uniqueMonthForCompletedProcess = {};
-processFinishedDate.forEach(function(x) {
-  uniqueMonthForCompletedProcess[x] = (uniqueMonthForCompletedProcess[x] || 0)+1;
-  });
-
-var processStartedDate = [];
-var startedProcessList = get( httpUrl + "/bpmn/history/historic-process-instances?started=true&size=0" ,null, headers, "json" );
-  for(var i in startedProcessList.data.data){
-    var startTimeForProcess = startedProcessList.data.data[i].startTime;
-    var monthForStartedProcess = startTimeForProcess.substring(5,7);
-    processStartedDate.push(monthForStartedProcess-1);
-  }
-
-processStartedDate.sort();
-
-//Process Instances Started
-var uniqueMonthForStartedProcess = {};
-processStartedDate.forEach(function(x) {
-  uniqueMonthForStartedProcess[x] = (uniqueMonthForStartedProcess[x] || 0)+1;
-  });
-
-  if (update != null && update === "true") {
-      if (option === "processvariation") {
-      var arrayOfProcessCount = [];
-        for(var i = 0;i < MONTHS.length;i++){
-          if (uniqueMonthForCompletedProcess[i] == null && uniqueMonthForStartedProcess[i] == null) {
-        arrayOfProcessCount.push([MONTHS[i],0,0]);
-            } else {
-        arrayOfProcessCount.push([MONTHS[i],uniqueMonthForCompletedProcess[i],uniqueMonthForStartedProcess[i]]);
-            }
-          }
-        }
-}
-//Populate Users to Combo Box
-
-  function eliminateDuplicates(arr) {
-    var i,
-        len = arr.length,
-        out = [],
-        obj = {};
-
-    for (i = 0;i < len;i++) {
-      obj[arr[i]] = 0;
-    }
-    for (i in obj) {
-      out.push(i);
-    }
-    return out;
-  }
-
-var userArray = eliminateDuplicates(users);
-userArray.sort();
-
-//User Performance of Tasks over time i.e. tasks started and completed by the user
-
-  if (update != null && update === "true") {
-    if (option === "userperformance") {
-
-    var selectedUser = request.getParameter("id");
-
-     //Task instances completed by the user
-    var userTaskCompletedArray = [];
-    var finishedTaskDate = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&taskAssignee=" +selectedUser  ,null, headers, "json" );
-
-      for(var i in finishedTaskDate.data.data){
-        var finishForUser = finishedTaskDate.data.data[i].endTime;
-        var monthForUser = finishForUser.substring(5,7);
-        userTaskCompletedArray.push(monthForUser-1);
-      }
-
-    userTaskCompletedArray.sort();
-    var uniqueUserMonthForFinishedTask = {};
-    userTaskCompletedArray.forEach(function(x) {
-      uniqueUserMonthForFinishedTask[x] = (uniqueUserMonthForFinishedTask[x] || 0)+1;
-    });
-
-    //Task instances started by the user
-
-    var userTaskStartedArray = [];
-    var startedTaskDate = get( httpUrl + "/bpmn/history/historic-task-instances?started=true&size=0&taskAssignee=" +selectedUser  ,null, headers, "json" );
-
-      for(var i in startedTaskDate.data.data){
-        var startedForUser = startedTaskDate.data.data[i].startTime;
-        var monthStartedForUser = startedForUser.substring(5,7);
-        userTaskStartedArray.push(monthStartedForUser-1);
-      }
-
-    userTaskStartedArray.sort();
-    var uniqueUserMonthForStartedTask = {};
-    userTaskStartedArray.forEach(function(x) {
-      uniqueUserMonthForStartedTask[x] = (uniqueUserMonthForStartedTask[x] || 0)+1;
-    });
-
-    var arrayOfTaskCountPerUser = [];
-      for(var i = 0;i < MONTHS.length;i++){
-        if (uniqueUserMonthForFinishedTask[i] == null && uniqueUserMonthForStartedTask[i] == null) {
-          arrayOfTaskCountPerUser.push([MONTHS[i],0,0]);
-        } else {
-            arrayOfTaskCountPerUser.push([MONTHS[i],uniqueUserMonthForFinishedTask[i],uniqueUserMonthForStartedTask[i]]);
-        }
-      }
-    }
-  }
 
 //Set current active veiw as report view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar

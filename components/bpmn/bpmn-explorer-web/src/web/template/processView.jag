@@ -32,24 +32,25 @@
 		  <table class="table">
 		    <thead>
 		    	<tr class="table-title-row">
+		    		<th>Package Name</th>
 		    		<th>Process Name</th>
 		    		<th>Process ID</th>
-		    		<th>Package Name</th>
 		    		<th>Version</th>
 		    		<th>Action</th>
 		    	</tr>
 		    </thead>
 		    <% if (commonErrorMessage == null && list.length > 0) { %>
 		    <tbody>
-		    	<% var previous = list[0].processName; var count = 0;%>
+		    	<% var previous = list[0].packageName; var count = 0;%>
 		    	<% for (var i=0; i<list.length; i++) { %>
-		    		<% if (previous == list[i].processName) {
-		    			count++;
-		    		} else {
+		    		<% 	if (previous == list[i].packageName) {
+		    				count++;
+		    			} else {
 		    		%>
 		    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-			    			<td rowspan="<%=count%>"><%=list[i-count].processName%>
+			    			<td rowspan="<%=count%>"><%=list[i-count].packageName%>
 	                        </td>
+	                        <td><%=list[i-count].processName%></td>
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram"
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
@@ -60,15 +61,14 @@
 			    					<%=list[i-count].processId%>
 			    				</a>
 			    			</td>
-			    			<td><%=list[i-count].packageName%></td>
 							<td><%=list[i-count].version%></td>
 							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
-
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
 			    		%>
 			    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+			    				<td><%=list[i-j].processName%></td>
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
@@ -79,18 +79,18 @@
 				    					<%=list[i-j].processId%>
 				    				</a>
 				    			</td>
-				    			<td><%=list[i-j].packageName%></td>
 								<td><%=list[i-j].version%></td>
 								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
 			    		<%
 		    			}
 		    			count = 1;
-		    			previous = list[i].processName;
+		    			previous = list[i].packageName;
 		    		} %>
 		    		<% if (i >= list.length-1) { i++; %>
 		    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-			    			<td rowspan="<%=count%>"><%=list[i-count].processName%> </td>
+			    			<td rowspan="<%=count%>"><%=list[i-count].packageName%> </td>
+			    			<td><%=list[i-count].processName%></td>
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
@@ -101,7 +101,6 @@
 			    					<%=list[i-count].processId%>
 			    				</a>
 			    			</td>
-			    			<td><%=list[i-count].packageName%></td>
 							<td><%=list[i-count].version%></td>
 							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 						</tr>
@@ -109,6 +108,7 @@
 		    			for (var j=count-1; j>0; j--) {
 			    	%>
 			    			<tr class="white-bg" onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+			    				<td><%=list[i-j].processName%></td>
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
@@ -119,7 +119,6 @@
 				    					<%=list[i-j].processId%>
 				    				</a>
 				    			</td>
-				    			<td><%=list[i-j].packageName%></td>
 								<td><%=list[i-j].version%></td>
 								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
 							</tr>
