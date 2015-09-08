@@ -1346,12 +1346,12 @@
         <carbon.commons.imp.pkg.version>[4.4.0, 4.5.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.version>4.5.6</carbon.identity.version>
+        <carbon.identity.version>4.5.5</carbon.identity.version>
         <carbon.identity.imp.pkg.version>[4.5.0, 4.6.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
-        <carbon.deployment.version>4.5.2</carbon.deployment.version>
-        <carbon.deployment.imp.pkg.version>[4.5.0, 4.6.0)</carbon.deployment.imp.pkg.version>
+        <carbon.deployment.version>4.4.1</carbon.deployment.version>
+        <carbon.deployment.imp.pkg.version>[4.4.0, 4.5.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
         <carbon.registry.version>4.4.5</carbon.registry.version>
