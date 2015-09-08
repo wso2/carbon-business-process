@@ -1350,7 +1350,7 @@
         <carbon.identity.imp.pkg.version>[4.5.0, 4.6.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
-        <carbon.deployment.version>4.4.1</carbon.deployment.version>
+        <carbon.deployment.version>4.5.2</carbon.deployment.version>
         <carbon.deployment.imp.pkg.version>[4.4.0, 4.5.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
@@ -1367,8 +1367,8 @@
 
         <!-- Carbon Event-processing version-->
         <!--carbon.event.processing.version>2.0.4-SNAPSHOT</carbon.event.processing.version-->
-        <carbon.analytics.common.version>1.0.0</carbon.analytics.common.version>
-        <carbon.analytics.common.imp.pkg.version>[1.0.0, 1.1.0)</carbon.analytics.common.imp.pkg.version>
+        <carbon.analytics.common.version>5.0.0</carbon.analytics.common.version>
+        <carbon.analytics.common.imp.pkg.version>[5.0.0, 5.1.0)</carbon.analytics.common.imp.pkg.version>
 
         <!-- Axiom Version -->
 
