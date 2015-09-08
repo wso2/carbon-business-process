@@ -8,7 +8,9 @@
         "https": "%https.host%",
         "http": "%http.host%",
         "bpsHost":"localhost",
-        "bpsPort":"9443"
+        "bpsPort":"9443",
+        "bpsTenantDomain": "",
+        "bpsTenantId" : ""
     }
 }
 

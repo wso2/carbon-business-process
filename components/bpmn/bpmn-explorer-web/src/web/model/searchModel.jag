@@ -108,14 +108,15 @@ if (request.getQueryString() != null) {
         paramsWithSpecialChars = paramsWithSpecialChars.replace(regex, '%3A');
 
         restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize;
-        requestUrl = httpUrl + "/bpmn/history/historic-task-instances" + encodeURI(restRequestParameters) + "&" + paramsWithSpecialChars;
+        requestUrl = httpUrl + "/bpmn/history/historic-task-instances" + encodeURI(restRequestParameters) + "&" + paramsWithSpecialChars+ 
+                                                                                                "&tenantId=" + bpsTenantID;
 
     } else {
         //searching active tasks
         onclickUrl = 'task';
 
         restRequestParameters += "start=" + ((pagination - 1) * pageSize) + "&size=" + pageSize + "&" + newQueryString;
-        requestUrl = httpUrl + "/bpmn/runtime/tasks" + restRequestParameters;
+        requestUrl = httpUrl + "/bpmn/runtime/tasks" + restRequestParameters+ "&tenantId=" + bpsTenantID;
 
     }
 

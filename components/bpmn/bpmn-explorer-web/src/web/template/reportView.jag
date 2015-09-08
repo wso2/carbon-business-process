@@ -20,7 +20,7 @@
     <br/>
     <button id="generate" onclick="generateReport()">Generate Report</button>
     <br/>
-    <% if(processNames.data.length > 0 && taskInstancesList.data.data.length > 0) { %>
+    <% if(isProcessesDeployed == true) { %>
     <link rel="stylesheet" href="css/tooltip.css">
     <script src="js/pieChartGen.js"></script>
     <script src="js/corechartEn.js"></script>
@@ -115,8 +115,8 @@
               <form>
                 <select id="selectProcess" name="selectProcess" class="form-control" onchange="selectProcessForChart()">
                 <option value="" disabled selected>Select a Process</option>
-                <% for(var key in avgTimeDataPerProcess) { %>
-                <option value="<%=key%>"><%=key%></option>
+                <% for(var key in processDefinitionList) { %>
+                <option value="<%=processDefinitionList[key][0]%>"><%=processDefinitionList[key][0]%></option>
                   <% } %>
                   </select>
                  </form>

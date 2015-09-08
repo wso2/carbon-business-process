@@ -33,6 +33,9 @@ var loggedUser = session.get("user");
 	<!-- Custom theme -->
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
+    <script>
+        var BPSTenant = "<%=bpsTenantDomain%>";
+    </script>
 </head>
 <body>
 	<header>
