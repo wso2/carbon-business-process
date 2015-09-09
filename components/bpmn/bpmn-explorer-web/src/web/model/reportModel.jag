@@ -27,36 +27,52 @@ if (update != null && update === "true") {
     if (option === "processinstancecount" || option === "avgprocessduration" || option === "taskduration") {
 
         //Process Instance Count
-        var processNames = get(httpUrl + "/bpmn/repository/process-definitions?size=0", null, headers, "json").data;
-        if (log.isDebugEnabled()) {
-            log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/repository/process-definitions?size=0");
-            log.debug("BPS BPMN REST API response: " + stringify(processNames));
-        }
-
+        var start = 0;
+        var total = 0;
+        var size = 100; //TODO Decide size
+        var processNames = null;
         var processBarChart = [];
-        for (var i = 0; i < processNames.data.length; i++) {
-            var name = processNames.data[i].id;
-            var processCount = get(httpUrl + "/bpmn/history/historic-process-instances?processDefinitionId=" + name + "&tenantId=" +
-                                                                    application.get('bpsTenantID'), null, headers, "json").data.total;
-            if (processCount == 0) {
-                /*need to check whether the process definition belong to the current tenant because process count can be 0 due to 0 process
-                 instances or due to process not belong to current tenant. Therefor need to retrrieve deployment information of the process definition*/
-                var deploymentInfo = get(httpUrl + "/bpmn/repository/deployments/" + processNames.data[i].deploymentId, null, headers, "json").data;
-                if (deploymentInfo.tenantId === application.get('bpsTenantID')) {
+        do {
+            //retrieve first 100 process definitions
+            processNames = get(httpUrl + "/bpmn/repository/process-definitions?size=" + size + "&start=" + start, null, headers, "json").data;
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieve process definitions");
+                log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/repository/process-definitions?size=" + size + "&start=" + start);
+                log.debug("BPS BPMN REST API response: " + stringify(processNames));
+            }
+
+            start = processNames.start;
+            total = processNames.total;
+            size = processNames.size;
+            
+            for (var i = 0; i < processNames.data.length; i++) {
+                var name = processNames.data[i].id;
+                var processCount = get(httpUrl + "/bpmn/history/historic-process-instances?processDefinitionId=" + name + "&tenantId=" +
+                                                                        application.get('bpsTenantID'), null, headers, "json").data.total;
+                if (processCount == 0) {
+                    /*need to check whether the process definition belong to the current tenant because process count can be 0 due to 0 process
+                     instances or due to process not belong to current tenant. Therefor need to retrrieve deployment information of the process definition*/
+                    var deploymentInfo = get(httpUrl + "/bpmn/repository/deployments/" + processNames.data[i].deploymentId, null, headers, "json").data;
+                    if (deploymentInfo.tenantId === application.get('bpsTenantID')) {
+                        //process definition belong to current(id with bpsTenantID) tenant
+                        processBarChart.push([name, processCount]);
+
+                        //add to process definition list of this tenant
+                        processDefinitionList.push([name, processCount, null]);
+                    }
+                } else {
                     //process definition belong to current(id with bpsTenantID) tenant
                     processBarChart.push([name, processCount]);
 
                     //add to process definition list of this tenant
                     processDefinitionList.push([name, processCount, null]);
                 }
-            } else {
-                //process definition belong to current(id with bpsTenantID) tenant
-                processBarChart.push([name, processCount]);
-
-                //add to process definition list of this tenant
-                processDefinitionList.push([name, processCount, null]);
             }
-        }
+
+            //start page of next batch of process definitions
+            start = start + size;
+
+        } while (start < total);
 
         if (option === "processinstancecount") {    //check whether request for process instance count
             //Filters the 10 processes with the maximum and the minimum process instances
@@ -89,22 +105,41 @@ if (update != null && update === "true") {
 
             for (var j in processDefinitionList) {
                 var totalTime = 0;
-                var processesList = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=0&processDefinitionId="+
-                                                                             processDefinitionList[j][0]+ "&tenantId="+ application.get('bpsTenantID'),
-                                                                             null, headers, "json" ).data;
-                var count = processesList.total;
-                if (count > 0) {
-                    for (var i in processesList.data) {
-                        var timeForOne = processesList.data[i].durationInMillis;
-                        //TODO check below time calculation is correct or not
-                        var timeInMinutes = timeForOne /(1000*60);
-                        totalTime = totalTime + timeInMinutes;
+                var totalCount = 0;
+                var processesList = null;
+                start = 0;
+                total = 0;
+                size = 100; //TODO Decide size
+                do {
+                    processesList = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=" + size + 
+                                                            "&start=" + start + "&processDefinitionId="+ processDefinitionList[j][0] + 
+                                                            "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" ).data;
+                    start = processNames.start;
+                    total = processNames.total;
+                    size = processNames.size;
+
+                    var count = processesList.size;
+                    if (count > 0) {
+                        for (var i in processesList.data) {
+                            var timeForOne = processesList.data[i].durationInMillis;
+                            //TODO check below time calculation is correct or not
+                            var timeInMinutes = timeForOne /(1000*60);
+                            totalTime = totalTime + timeInMinutes;
+                        }
+                        totalCount += count;  
                     }
-                    var averageTime = totalTime / count;
+
+                    //start page of next batch of process instances
+                    start = start + size;
+
+                } while (start < total);
+                if (totalCount > 0) {
+                    var averageTime = totalTime / totalCount;
                     var avgRoundedTime = Math.round(averageTime * 1000) / 1000;
                     processBarChartAvgTime.push([processDefinitionList[j][0], avgRoundedTime]);
                 }
             }
+
             //Filters the processes according to the average time durations i.e. 10 processes that finished within a short and a long time
             var selectedProcess = request.getParameter("id");
             if (selectedProcess == "shortTime") {
@@ -137,32 +172,48 @@ if (update != null && update === "true") {
             for (var j in processDefinitionList){
 
                 var processName = processDefinitionList[j][0];
-                //retrieve task instances belong to interested process definition
-                var taskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&processDefinitionId="+ processName+
-                                                                        "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
                 //retrieve number of process instances of interested process definition
                 var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=1&processDefinitionId=" + processName+
-                                                                        "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" ).data.total;
-
+                                                            "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" ).data.total;
+                start = 0;
+                total = 0;
+                size = 100; //TODO Decide size
                 var taskArray = {};
                 var keyList = [];
                 var taskInstanceCountArray = [];
-                for(var i in taskList.data.data){
 
-                    var taskName = taskList.data.data[i].name;
-                    var taskDuration = taskList.data.data[i].durationInMillis;
-                    var taskKey = taskList.data.data[i].taskDefinitionKey;
+                do {
+                    //retrieve task instances belong to interested process definition
+                    var taskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=" + size + "&start=" + start + 
+                                        "&processDefinitionId=" + processName + "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" );
+                    //retrieve number of process instances of interested process definition
+                    /*var insCount = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=1&processDefinitionId=" + processName+
+                                                                "&tenantId="+ application.get('bpsTenantID'), null, headers, "json" ).data.total;*/
+                    start = taskList.data.start;
+                    total = taskList.data.total;
+                    size = taskList.data.size;
 
-                    if (taskArray[taskKey] > 0) {
-                        taskArray[taskKey] = taskArray[taskKey] + taskDuration;
-                        taskInstanceCountArray[taskKey] = taskInstanceCountArray[taskKey] + 1;
-                    } else {
-                        taskArray[taskKey] = taskDuration;
-                        taskInstanceCountArray[taskKey] = 1;
-                        keyList.push([taskKey]);
+                    for(var i in taskList.data.data){
 
+                        //var taskName = taskList.data.data[i].name;
+                        var taskDuration = taskList.data.data[i].durationInMillis;
+                        var taskKey = taskList.data.data[i].taskDefinitionKey;
+
+                        if (taskArray[taskKey] > 0) {
+                            taskArray[taskKey] = taskArray[taskKey] + taskDuration;
+                            taskInstanceCountArray[taskKey] = taskInstanceCountArray[taskKey] + 1;
+                        } else {
+                            taskArray[taskKey] = taskDuration;
+                            taskInstanceCountArray[taskKey] = 1;
+                            keyList.push([taskKey]);
+
+                        }
                     }
-                }
+
+                    //start page of next batch of task instances
+                    start = start + size;
+
+                } while (start < total);
 
                 for(var i in keyList) {
                     taskArray[keyList[i]] = taskArray[keyList[i]] / taskInstanceCountArray[keyList[i]];
@@ -192,24 +243,38 @@ if (update != null && update === "true") {
     } else if (option === "uservstaskscompleted" || option === "uservsavgtime") {
 
         //User Monitoring START
-        var users = [];
+        //var users = [];
         //Task information related to the user [task count, task duration, average time per task]
         var userTaskInfo = {};
-        var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&tenantId="+
-                                                                        application.get('bpsTenantID') ,null, headers, "json" );
 
-        for (var i in taskInstancesList.data.data) {
-            var assigneeName = taskInstancesList.data.data[i].assignee;
+        var start = 0;
+        var total = 0;
+        var size = 100; //TODO Decide size
 
-            var taskDuration = (taskInstancesList.data.data[i].durationInMillis) / 1000;
+        do {
+            var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=" + size + "&start=" + start + 
+                                                                "&tenantId="+ application.get('bpsTenantID') ,null, headers, "json" );
+            start = taskInstancesList.data.start;
+            total = taskInstancesList.data.total;
+            size = taskInstancesList.data.size;
 
-            if (userTaskInfo[assigneeName] == undefined) {
-                userTaskInfo[assigneeName] = [1, taskDuration];
-            } else {
-                userTaskInfo[assigneeName][0] += 1;
-                userTaskInfo[assigneeName][1] += taskDuration;
+            for (var i in taskInstancesList.data.data) {
+                var assigneeName = taskInstancesList.data.data[i].assignee;
+
+                var taskDuration = (taskInstancesList.data.data[i].durationInMillis) / 1000;
+
+                if (userTaskInfo[assigneeName] == undefined) {
+                    userTaskInfo[assigneeName] = [1, taskDuration];
+                } else {
+                    userTaskInfo[assigneeName][0] += 1;
+                    userTaskInfo[assigneeName][1] += taskDuration;
+                }
             }
-        }
+
+            //start page of next batch of task instances
+            start = start + size;
+
+        } while (start < total);
 
         if (option === "uservstaskscompleted") {    //User vs tasks completed uptodate
 
@@ -321,47 +386,75 @@ if (update != null && update === "true") {
 
 
 
-
-
 } else {
-    //Process Instance Count
-    var processNames = get(httpUrl + "/bpmn/repository/process-definitions?size=0", null, headers, "json").data;
-    if (log.isDebugEnabled()) {
-        log.debug("Retrieve process definitions");
-        log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/repository/process-definitions?size=0");
-        log.debug("BPS BPMN REST API response: " + stringify(processNames));
-    }
-    for (var i = 0; i < processNames.data.length; i++) {
-        var deploymentInfo = get(httpUrl + "/bpmn/repository/deployments/" + processNames.data[i].deploymentId, null, headers, "json").data;
-        if (deploymentInfo.tenantId === application.get('bpsTenantID')) {
-            //There is atleast one process deployed in the system (considering tenants)
-            isProcessesDeployed = true;
-            //add to process definition list of this tenant
-            processDefinitionList.push([processNames.data[i].id, null, null]);
+    //Retrieve process definition list
+    var start = 0;
+    var total = 0;
+    var size = 100;
+    var processNames = null;
+    do {
+        //retrieve first 100 process definitions
+        processNames = get(httpUrl + "/bpmn/repository/process-definitions?size=" + size + "&start=" + start, null, headers, "json").data;
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieve process definitions");
+            log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/repository/process-definitions?size=" + size + "&start=" + start);
+            log.debug("BPS BPMN REST API response: " + stringify(processNames));
         }
-    }
+
+        start = processNames.start;
+        total = processNames.total;
+        size = processNames.size;
+
+        for (var i = 0; i < processNames.data.length; i++) {
+            var deploymentInfo = get(httpUrl + "/bpmn/repository/deployments/" + processNames.data[i].deploymentId, null, headers, "json").data;
+            if (deploymentInfo.tenantId === application.get('bpsTenantID')) {
+                //There is atleast one process deployed in the system (considering tenants)
+                isProcessesDeployed = true;
+                //add to process definition list of this tenant
+                processDefinitionList.push([processNames.data[i].id, null, null]);
+            }
+        }
+
+        //start page of next batch of process definitions
+        start = start + size;
+
+    } while (start < total);
+
     if (log.isDebugEnabled()) {
         log.debug("Process Definition List: "+ stringify(processDefinitionList));
     }
 
-    var users = [];
+    //var users = [];
     //Task information related to the user [task count, task duration, average time per task]
     var userTaskInfo = {};
-    var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=0&tenantId="+
-                                 application.get('bpsTenantID') ,null, headers, "json" );
+    start = 0;
+    total = 0;
+    size = 100;
+    do {
+        var taskInstancesList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=" + size + "&start=" + 
+                                                    start + "&tenantId="+ application.get('bpsTenantID') ,null, headers, "json" );
 
-    for (var i in taskInstancesList.data.data) {
-        var assigneeName = taskInstancesList.data.data[i].assignee;
+        start = taskInstancesList.data.start;
+        total = taskInstancesList.data.total;
+        size = taskInstancesList.data.size;
 
-        var taskDuration = (taskInstancesList.data.data[i].durationInMillis) / 1000;
+        for (var i in taskInstancesList.data.data) {
+            var assigneeName = taskInstancesList.data.data[i].assignee;
 
-        if (userTaskInfo[assigneeName] == undefined) {
-            userTaskInfo[assigneeName] = [1, taskDuration];
-        } else {
-            userTaskInfo[assigneeName][0] += 1;
-            userTaskInfo[assigneeName][1] += taskDuration;
+            var taskDuration = (taskInstancesList.data.data[i].durationInMillis) / 1000;
+
+            if (userTaskInfo[assigneeName] == undefined) {
+                userTaskInfo[assigneeName] = [1, taskDuration];
+            } else {
+                userTaskInfo[assigneeName][0] += 1;
+                userTaskInfo[assigneeName][1] += taskDuration;
+            }
         }
-    }
+
+        //start page of next batch of task instances
+        start = start + size;
+
+    } while (start < total);
 
     if (log.isDebugEnabled()) {
         log.debug("User Information : "+ stringify(userTaskInfo));
