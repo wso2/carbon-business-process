@@ -15,7 +15,7 @@
 -->*/%>
 <div class="col-sm-12">
   <div class="row">
-    <% if(processNames.data.length > 0 && (activeProcesses > 0 || suspendProcesses > 0 || completedProcesses > 0)) { %>
+    <% if(isProcessesDeployed == true) { %>
     <link rel="stylesheet" href="css/tooltip.css">
     <script src="js/pieChartGen.js"></script>
     <script src="js/corechartEn.js"></script>
