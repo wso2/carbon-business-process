@@ -152,26 +152,29 @@
                 <thead>
                 <tr>
                     <th width="25%"><fmt:message key="bpmn.package.name"/></th>
-                    <th width="25%"><fmt:message key="bpmn.process.name"/></th>
-                    <th width="25%"><fmt:message key="bpmn.process.id"/></th>
+                    <th width="10%"><fmt:message key="bpmn.package.deployment.id"/></th>
+                    <th width="20%"><fmt:message key="bpmn.process.name"/></th>
+                    <th width="20%"><fmt:message key="bpmn.process.id"/></th>
                     <th width="10%"><fmt:message key="bpmn.process.version"/></th>
                     <th width="15%"><fmt:message key="bpmn.process.deployedDate"/></th>
                     <!--th width="10%"><fmt:message key="bpmn.process.manage"/></th-->
                 </tr>
                 </thead>
                 <tbody>
-                    <% if(deployments!=null && deployments.length>0){ %>
-                    <% for(BPMNDeployment deployment: deployments){ %>
-                        <% BPMNProcess[] processes = client.getProcessListByDeploymentID(deployment.getDeploymentId());
+                    <% if(deployments!=null && deployments.length>0){
+                      for(BPMNDeployment deployment: deployments){
+                           BPMNProcess[] processes = client.getProcessListByDeploymentID(deployment.getDeploymentId());
                            boolean firstRow = true;
-                        %>
-                        <% if(processes!=null && processes.length>0){ %>
-                        <% for(BPMNProcess process: processes){ %>
+
+                          if(processes!=null && processes.length>0){
+                          for(BPMNProcess process: processes){ %>
                             <tr>
                                 <% if(firstRow){ %>
                                     <td rowspan=<%=processes.length%>><a href=<%="process_list_view.jsp?operation=packageInfo&deploymentName=" + deployment.getDeploymentName()%>><%=deployment.getDeploymentName() + "-" + deployment.getDeploymentId()%></a></td>
+
                                     <% firstRow = false; %>
                                 <% } %>
+                                <td><%=process.getDeploymentId()%></td>
                                 <td><%=process.getName()%></td>
                                 <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + process.getProcessId()%>>
                                        <%=process.getProcessId()%></a></td>
@@ -183,7 +186,7 @@
                         <% }} %>
                     <% }}else{ %>
                         <tr>
-                            <td colspan="5"><fmt:message key="processes.available.state"/></td>
+                            <td colspan="6"><fmt:message key="processes.available.state"/></td>
                         </tr>
                     <% } %>
                 </tbody>
