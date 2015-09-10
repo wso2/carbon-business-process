@@ -33,7 +33,7 @@
 		    <thead>
 		    	<tr class="table-title-row">
 		    		<th>ID</th>
-		    		<th>Process Name</th>
+		    		<th>Process Definition ID</th>
 		    		<th>Start Time</th>
 		    		<th>End Time</th>
 		    	</tr>
