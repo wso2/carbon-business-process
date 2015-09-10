@@ -8,7 +8,7 @@
 <%@ page import="org.wso2.carbon.bpel.stub.mgt.types.PaginatedInstanceList" %>
 <%@ page import="org.wso2.carbon.bpel.ui.BpelUIUtil" %>
 <%@ page import="org.json.simple.JSONObject" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
@@ -42,7 +42,7 @@
      */
     if (isAuthenticatedForInstanceMonitor && (isAuthenticatedForInstanceManagement ||
                                               isAuthenticatedForProcessManagement)) {
-        String processId = Encode.forXml(request.getParameter("processId"));
+        String processId = CharacterEncoder.getSafeText(request.getParameter("processId"));
         if (processId == null) {
             processId = "all";
         }

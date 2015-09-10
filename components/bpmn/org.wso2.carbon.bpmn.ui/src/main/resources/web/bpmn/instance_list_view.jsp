@@ -23,7 +23,7 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="org.wso2.carbon.bpmn.ui.WorkflowServiceClient" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -42,16 +42,16 @@
         BPMNInstance[] bpmnInstances;
         BPMNProcess[] bpmnProcesses;
 
-        String operation = Encode.forXml(request.getParameter("operation"));
-        String instanceId = Encode.forXml(request.getParameter("instanceID"));
-        String pageNumber = Encode.forXml(request.getParameter("pageNumber"));
-        String state = Encode.forXml(request.getParameter("state"));
-        String iid = Encode.forXml(request.getParameter("iid"));
-        String pid = Encode.forXml(request.getParameter("pid"));
-        String startAfter = Encode.forXml(request.getParameter("startAfter"));
-        String startBefore = Encode.forXml(request.getParameter("startBefore"));
-        String variableName = Encode.forXml(request.getParameter("variable"));
-        String variableValue = Encode.forXml(request.getParameter("value"));
+        String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
+        String instanceId = CharacterEncoder.getSafeText(request.getParameter("instanceID"));
+        String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+        String state = CharacterEncoder.getSafeText(request.getParameter("state"));
+        String iid = CharacterEncoder.getSafeText(request.getParameter("iid"));
+        String pid = CharacterEncoder.getSafeText(request.getParameter("pid"));
+        String startAfter = CharacterEncoder.getSafeText(request.getParameter("startAfter"));
+        String startBefore = CharacterEncoder.getSafeText(request.getParameter("startBefore"));
+        String variableName = CharacterEncoder.getSafeText(request.getParameter("variable"));
+        String variableValue = CharacterEncoder.getSafeText(request.getParameter("value"));
 
         String parameters = "region=region1&item=bpmn_menu";
         boolean finished = false;

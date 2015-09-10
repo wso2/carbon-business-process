@@ -110,6 +110,8 @@
                             org.json.simple.*,
                             org.wso2.carbon.bpel.stub.*;
                             version="${carbon.business-process.imp.pkg.version}",
+                            org.wso2.carbon.businessprocesses.common.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Embed-Dependency>org.wso2.carbon.bpel.stub;scope=compile|runtime;inline=true</Embed-Dependency>-->

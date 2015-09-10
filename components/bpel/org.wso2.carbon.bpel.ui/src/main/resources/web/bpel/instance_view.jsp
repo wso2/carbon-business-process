@@ -25,7 +25,7 @@
 <%@ page import="org.wso2.carbon.bpel.stub.mgt.types.*" %>
 <%@ page import="org.apache.axiom.om.OMElement" %>
 <%@ page import="org.wso2.carbon.bpel.ui.BpelUIUtil" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page import="javax.xml.namespace.QName" %>
@@ -51,9 +51,9 @@
     ScopeInfoType scopeInfo;
     EventInfo[] infoArray = null;
     
-    String instanceId = Encode.forXml(request.getParameter("iid"));
-    String operation = Encode.forXml(request.getParameter("operation"));
-    String activityId = Encode.forXml(request.getParameter("aid"));
+    String instanceId = CharacterEncoder.getSafeText(request.getParameter("iid"));
+    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
+    String activityId = CharacterEncoder.getSafeText(request.getParameter("aid"));
 
     Comparator<EventInfo> activityInfoComparator = new Comparator<EventInfo>() {
 

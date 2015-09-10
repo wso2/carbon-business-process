@@ -11,7 +11,7 @@
 <%@ page import="org.wso2.carbon.bpel.stub.mgt.types.InstanceSummaryE" %>
 <%@ page import="org.json.simple.JSONObject" %>
 <%@ page import="org.wso2.carbon.bpel.ui.BpelUIUtil" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
@@ -26,7 +26,7 @@
     response.setContentType("application/json; charset=UTF-8");
 
     // Can use to filter instance summary based on processes
-    String processId = Encode.forXml(request.getParameter("processId")).trim();
+    String processId = CharacterEncoder.getSafeText(request.getParameter("processId")).trim();
 
     String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
     ConfigurationContext configContext =

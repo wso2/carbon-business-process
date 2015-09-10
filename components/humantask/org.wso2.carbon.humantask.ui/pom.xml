@@ -111,6 +111,8 @@
                             org.json.simple.*,
                             org.wso2.carbon.humantask.stub.*;
                             version="${carbon.business-process.imp.pkg.version}",
+                            org.wso2.carbon.businessprocesses.common.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                             *;resolution:=optional
                         </Import-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>

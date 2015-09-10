@@ -20,7 +20,7 @@
 <%@ page import="org.apache.axis2.client.Options" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
 <%@ page import="org.wso2.carbon.CarbonConstants" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ page
         import="org.wso2.carbon.authenticator.stub.AuthenticationAdminStub" %>
 <%@ page
@@ -47,7 +47,7 @@
 
     // Pagination related;
     int numberOfPages = 0;
-    String pageNumber =  Encode.forXml(request.getParameter("pageNumber"));
+    String pageNumber =  CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
     int pageNumberInt = 0;
     String parameters = null;
 
@@ -61,7 +61,7 @@
 
     }
 
-    String queryType =  Encode.forXml(request.getParameter("queryType"));
+    String queryType =  CharacterEncoder.getSafeText(request.getParameter("queryType"));
 
     boolean isAuthorisedToViewTaskList = CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/humantask/viewtasks");
 

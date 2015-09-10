@@ -24,7 +24,7 @@
 <%@ page import="org.wso2.carbon.bpmn.ui.WorkflowServiceClient" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -52,11 +52,11 @@
             return;
         }
 
-        String operation = Encode.forXml(request.getParameter("operation"));
-        String processId = Encode.forXml(request.getParameter("processID"));
-        String pageNumber = Encode.forXml(request.getParameter("pageNumber"));
-        String method = Encode.forXml(request.getParameter("method"));
-        String filter = Encode.forXml(request.getParameter("filter"));
+        String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
+        String processId = CharacterEncoder.getSafeText(request.getParameter("processID"));
+        String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+        String method = CharacterEncoder.getSafeText(request.getParameter("method"));
+        String filter = CharacterEncoder.getSafeText(request.getParameter("filter"));
         String selected = "";
         String parameters = "region=region1&item=bpmn_menu";
         if (filter == null || filter.equals("") || method == null || method.equals("")) {
@@ -76,7 +76,7 @@
         if (operation != null && operation.equals("startProcess")) {
             client.startProcess(processId);
         }
-        String deploymentName = Encode.forXml(request.getParameter("deploymentName"));
+        String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
         if (operation != null && operation.equals("undeploy")) {
              try{
                client.undeploy(deploymentName);

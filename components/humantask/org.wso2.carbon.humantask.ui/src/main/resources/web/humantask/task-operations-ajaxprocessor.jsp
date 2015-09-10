@@ -10,7 +10,7 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
@@ -30,12 +30,10 @@
             (ConfigurationContext) config.getServletContext().
                     getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
 
-    //String payLoad = Encode.forXml(request.getParameter("payLoad"));
-    String payLoad = Encode.forXml(request.getParameter("payLoad"));
-    System.out.println("Encoded payload:" + payLoad);
-    String taskId =  Encode.forXml(request.getParameter("taskId"));
-    String operation =  Encode.forXml(request.getParameter("operation"));
-    String taskClient =  Encode.forXml(request.getParameter("taskClient"));
+    String payLoad = CharacterEncoder.getSafeText(request.getParameter("payLoad"));
+    String taskId =  CharacterEncoder.getSafeText(request.getParameter("taskId"));
+    String operation =  CharacterEncoder.getSafeText(request.getParameter("operation"));
+    String taskClient =  CharacterEncoder.getSafeText(request.getParameter("taskClient"));
     String webContext = (String) request.getAttribute(CarbonConstants.WEB_CONTEXT);
 
     String cookie = null;

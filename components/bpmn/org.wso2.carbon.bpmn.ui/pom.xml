@@ -108,6 +108,8 @@
                         <!--org.wso2.carbon.bpmn.stub.*,*;resolution:=optional-->
                         <!--</Import-Package>-->
                         <Import-Package>
+                            org.wso2.carbon.businessprocesses.common.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                             *;resolution:=optional
                         </Import-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>

@@ -3,7 +3,7 @@
 <%@ page import="org.wso2.carbon.humantask.ui.clients.HumanTaskPackageManagementServiceClient" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 
 <%
     String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
@@ -13,7 +13,7 @@
     String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
     HumanTaskPackageManagementServiceClient packageManagementServiceClient;
 
-    String humanTaskPackageName =  Encode.forXml(request.getParameter("packageName"));
+    String humanTaskPackageName =  CharacterEncoder.getSafeText(request.getParameter("packageName"));
     out.clear();
     out = pageContext.pushBody();
     out.clearBuffer();
