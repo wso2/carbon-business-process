@@ -11,7 +11,7 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.wso2.carbon.registry.core.RegistryConstants" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <!--
 ~ Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
@@ -52,8 +52,8 @@
     PackageType processesInPackage = null;
     LimitedProcessInfoType[] processList = null;
 
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
-    String packageName = CharacterEncoder.getSafeText(request.getParameter("packageName"));
+    String operation = Encode.forXml(request.getParameter("operation"));
+    String packageName = Encode.forXml(request.getParameter("packageName"));
 
     boolean isAuthorizedToManagePackages =
             CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/bpel/packages");

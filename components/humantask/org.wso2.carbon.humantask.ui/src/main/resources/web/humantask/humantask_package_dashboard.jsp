@@ -7,7 +7,7 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
@@ -47,8 +47,8 @@
         Task_type0[] taskDefinitionsInPackage = null;
 
 
-        String packageName = CharacterEncoder.getSafeText(request.getParameter("packageName"));
-        String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
+        String packageName =  Encode.forXml(request.getParameter("packageName"));
+        String operation =  Encode.forXml(request.getParameter("operation"));
         boolean isErroneous = false;
 
         boolean isAuthorizedToManagePackages =

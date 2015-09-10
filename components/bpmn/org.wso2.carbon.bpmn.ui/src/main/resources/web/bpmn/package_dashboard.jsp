@@ -22,12 +22,12 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="org.wso2.carbon.bpmn.ui.WorkflowServiceClient" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
 <%
-    String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
+    String deploymentName = Encode.forXml(request.getParameter("deploymentName"));
 %>
     <carbon:breadcrumb
             label="bpmn.package.dashboard"

@@ -17,10 +17,10 @@
 -->
 <!DOCTYPE HTML>
 
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%
-    String displayMessage = CharacterEncoder.getSafeText(request.getParameter("displayMsg"));
+    String displayMessage =  Encode.forXml(request.getParameter("displayMsg"));
 
 %>
 <html>

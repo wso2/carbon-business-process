@@ -24,7 +24,7 @@
 <%@ page import="org.wso2.carbon.bpmn.ui.WorkflowServiceClient" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNVariable" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page import="java.util.List" %>
@@ -41,7 +41,7 @@
     BPMNInstance bpmnInstance;
     BPMNVariable[] variables;
 
-    String instanceId = CharacterEncoder.getSafeText(request.getParameter("instanceID"));
+    String instanceId = Encode.forXml(request.getParameter("instanceID"));
 
     try {
         client = new WorkflowServiceClient(cookie, serverURL, configContext);

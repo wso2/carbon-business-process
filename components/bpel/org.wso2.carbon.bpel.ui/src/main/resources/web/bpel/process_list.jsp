@@ -8,7 +8,7 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="org.wso2.carbon.registry.core.utils.RegistryUtils" %>
 <%@ page import="org.wso2.carbon.context.CarbonContext" %>
@@ -62,10 +62,10 @@
     int pageNumberInt = 0;
     int linkNum = 0;
 
-    String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
-    String packageName = CharacterEncoder.getSafeText(request.getParameter("packageName"));
-    String packageSearchString = CharacterEncoder.getSafeText(request.getParameter("packageSearchString"));
+    String pageNumber = Encode.forXml(request.getParameter("pageNumber"));
+    String operation = Encode.forXml(request.getParameter("operation"));
+    String packageName = Encode.forXml(request.getParameter("packageName"));
+    String packageSearchString = Encode.forXml(request.getParameter("packageSearchString"));
     if (packageSearchString == null) {
     packageSearchString = "";
     }
@@ -143,10 +143,10 @@
         }
 
     if (isAuthorizedToManageProcesses && operation != null && client != null) {
-        String pid = CharacterEncoder.getSafeText(request.getParameter("processID"));
+        String pid = Encode.forXml(request.getParameter("processID"));
         if (operation.toLowerCase().trim().equals("retire")) {
             String rowPackageName =
-                    CharacterEncoder.getSafeText(request.getParameter("retiredPackageName"));
+                    Encode.forXml(request.getParameter("retiredPackageName"));
             if (rowPackageName != null) {
                 RegistryUtils.setTrustStoreSystemProperties();
                 CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
@@ -199,12 +199,12 @@
         } catch (NumberFormatException ignored){
         }
 
-        processListFilter = CharacterEncoder.getSafeText(request.getParameter("filter"));
+        processListFilter = Encode.forXml(request.getParameter("filter"));
         if(processListFilter == null || processListFilter.length() == 0){
             processListFilter = "name}}* namespace=*";
         }
 
-        processListOrderBy = CharacterEncoder.getSafeText(request.getParameter("order"));
+        processListOrderBy = Encode.forXml(request.getParameter("order"));
         if(processListOrderBy == null || processListOrderBy.length() == 0) {
             processListOrderBy = "-deployed";
         }

@@ -34,17 +34,17 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.apache.commons.logging.LogFactory" %>
 <%@ page import="org.apache.commons.logging.Log" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%
 
 
     String cookie = request.getHeader("Cookie");
     String requestSessionId = HumanTaskUIUtil.getCookieSessionId(cookie);
 
-    String userName = CharacterEncoder.getSafeText(request.getParameter("userName"));
-    String password = CharacterEncoder.getSafeText(request.getParameter("password"));
-    String queryType = CharacterEncoder.getSafeText(request.getParameter("queryType"));
-    String logoutParam = CharacterEncoder.getSafeText(request.getParameter("logout"));
+    String userName =  Encode.forXml(request.getParameter("userName"));
+    String password =  Encode.forXml(request.getParameter("password"));
+    String queryType =  Encode.forXml(request.getParameter("queryType"));
+    String logoutParam =  Encode.forXml(request.getParameter("logout"));
     Log log = LogFactory.getLog("GADGET.jsp");
     String logoutLink = "/carbon/humantask/task-list-gadget-ajaxprocessor.jsp?logout=true";
 
@@ -102,7 +102,7 @@
 
     // Pagination related;
     int numberOfPages = 0;
-    String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+    String pageNumber =  Encode.forXml(request.getParameter("pageNumber"));
     int pageNumberInt = 0;
     String parameters = null;
 

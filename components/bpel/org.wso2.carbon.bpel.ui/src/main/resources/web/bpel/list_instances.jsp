@@ -31,7 +31,7 @@
 <%@ page import="org.wso2.carbon.bpel.ui.InstanceFilterUtil" %>
 <%@ page import="org.apache.commons.httpclient.HttpStatus" %>
 <%@ page import="org.wso2.carbon.bpel.ui.InstanceFilter" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <%@ page import="javax.xml.namespace.QName" %>
@@ -64,12 +64,12 @@
     Boolean retryActivityFlag = false; // check filtering of retry tab
     Boolean failedActivityExists = false; //check if there are failed activities at page load
 
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
-    String deleteMex = CharacterEncoder.getSafeText(request.getParameter("deleteMex"));
-    String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
+    String operation = Encode.forXml(request.getParameter("operation"));
+    String deleteMex = Encode.forXml(request.getParameter("deleteMex"));
+    String pageNumber = Encode.forXml(request.getParameter("pageNumber"));
     int pageNumberInt = 0;
-    String instanceListFilter = CharacterEncoder.getSafeText(request.getParameter("filter"));
-    String instanceListOrderBy = CharacterEncoder.getSafeText(request.getParameter("order"));
+    String instanceListFilter = Encode.forXml(request.getParameter("filter"));
+    String instanceListOrderBy = Encode.forXml(request.getParameter("order"));
 
     String parameters = null;
     String parameters1 = null; //create list of encode strings of retry page
@@ -180,7 +180,7 @@
     }
 
     if ((operation != null) && isAuthenticatedForInstanceManagement) {
-        String iid = CharacterEncoder.getSafeText(request.getParameter("iid"));
+        String iid = Encode.forXml(request.getParameter("iid"));
         if (iid != null && !operation.equals("reset")) {
             Long instanceId = Long.parseLong(iid.trim());
             if (operation.trim().equals("suspend")) {

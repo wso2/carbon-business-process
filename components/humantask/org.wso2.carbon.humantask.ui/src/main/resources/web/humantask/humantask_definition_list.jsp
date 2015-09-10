@@ -9,7 +9,7 @@
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskDefinition_type0" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.UndeployStatus_type0" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskStatusType" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskConfigInfoResponse" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -55,9 +55,9 @@
     int pageNumberInt = 0;
     int linkNum = 0;
 
-    String pageNumber = CharacterEncoder.getSafeText(request.getParameter("pageNumber"));
-    String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
-    String packageName = CharacterEncoder.getSafeText(request.getParameter("packageName"));
+    String pageNumber =  Encode.forXml(request.getParameter("pageNumber"));
+    String operation =  Encode.forXml(request.getParameter("operation"));
+    String packageName =  Encode.forXml(request.getParameter("packageName"));
 
 
     boolean isAuthorizedToManagePackages =
