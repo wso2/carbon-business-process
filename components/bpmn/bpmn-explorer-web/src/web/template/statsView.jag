@@ -57,14 +57,15 @@
               var hTitle='Process instance count';
               var logScaleEnabled = false;
             }
-            var chartAreaHeight=((data.getNumberOfRows()+2) * 120);
-            var options = {
+           var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
+           var options = {
               vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' },textStyle: { fontSize:11}},
               hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
               colors:['#be2d28'],
-              height: ((data.getNumberOfRows()+2) * 120) + 200,
-              chartArea:{top:10,height:chartAreaHeight}
-              };
+              height: ((data.getNumberOfRows()+2) * 100) + 200,
+              chartArea:{top:10,height:chartAreaHeight},
+              bar: {groupWidth: "35%"},
+           };
 
             var chart = new google.visualization.BarChart(document.getElementById('barChart'));
             chart.draw(data, options);

@@ -471,7 +471,8 @@ function selectProcessForAvgTimeDuration(){
                         dataArr.push([data[i][0], data[i][1]]);
                     }
                     var data = google.visualization.arrayToDataTable(dataArr);
-                    var chartAreaHeight = ((data.getNumberOfRows() + 2) * 120);
+
+                    var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
                     var options = {
                         vAxis: {
                             title: 'Process Name',
@@ -481,9 +482,10 @@ function selectProcessForAvgTimeDuration(){
                             title: 'Average Time Time Duration in Minutes',
                             titleTextStyle: {color: 'grey'}
                         },
-                        colors: ['#be2d28'],
-                        height: ((data.getNumberOfRows() + 2) * 120) + 200,
-                        chartArea: {top: 10, height: chartAreaHeight}
+                        height: ((data.getNumberOfRows()+2) * 100) + 200,
+                        chartArea:{top:10,height:chartAreaHeight},
+                        bar: {groupWidth: "30%"},
+                        colors: ['#be2d28']
                     };
 
                     var chart = new google.visualization.BarChart(document.getElementById('barChartAvgTime'));
@@ -538,13 +540,14 @@ function selectProcessForInstanceCount(){
                     var hTitle='Process instance count';
                     var logScaleEnabled = false;
                 }
-                var chartAreaHeight=((data.getNumberOfRows()+2) * 120);
+                var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
                 var options = {
-                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
+                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' },textStyle: { fontSize:11}},
                     hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                     colors:['#be2d28'],
-                    height: ((data.getNumberOfRows()+2) * 120) + 200,
-                    chartArea:{top:10,height:chartAreaHeight}
+                    height: ((data.getNumberOfRows()+2) * 100) + 200,
+                    chartArea:{top:10,height:chartAreaHeight},
+                    bar: {groupWidth: "35%"}
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('barChart'));
