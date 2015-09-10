@@ -148,21 +148,23 @@
             </form>
             <br/>
             <% } %>
-            <table class="styledLeft" id="moduleTable">
-                <thead>
-                <tr>
-                    <th width="25%"><fmt:message key="bpmn.package.name"/></th>
-                    <th width="10%"><fmt:message key="bpmn.package.deployment.id"/></th>
-                    <th width="20%"><fmt:message key="bpmn.process.name"/></th>
-                    <th width="20%"><fmt:message key="bpmn.process.id"/></th>
-                    <th width="10%"><fmt:message key="bpmn.process.version"/></th>
-                    <th width="15%"><fmt:message key="bpmn.process.deployedDate"/></th>
-                    <!--th width="10%"><fmt:message key="bpmn.process.manage"/></th-->
-                </tr>
-                </thead>
-                <tbody>
-                    <% if(deployments!=null && deployments.length>0){
-                      for(BPMNDeployment deployment: deployments){
+
+                    <% if(deployments!=null && deployments.length>0){ %>
+                    <table class="styledLeft" id="moduleTable">
+                        <thead>
+                        <tr>
+                            <th width="25%"><fmt:message key="bpmn.package.name"/></th>
+                            <th width="10%"><fmt:message key="bpmn.package.deployment.id"/></th>
+                            <th width="20%"><fmt:message key="bpmn.process.name"/></th>
+                            <th width="20%"><fmt:message key="bpmn.process.id"/></th>
+                            <th width="10%"><fmt:message key="bpmn.process.version"/></th>
+                            <th width="15%"><fmt:message key="bpmn.process.deployedDate"/></th>
+                            <!--th width="10%"><fmt:message key="bpmn.process.manage"/></th-->
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                     <% for(BPMNDeployment deployment: deployments){
                            BPMNProcess[] processes = client.getProcessListByDeploymentID(deployment.getDeploymentId());
                            boolean firstRow = true;
 
@@ -184,13 +186,15 @@
                                 <!--td><a class="bpmn-icon-link" style="background-image:url(images/start.gif);" href="#" onclick="startProcess('<%=process.getProcessId()%>');"><fmt:message key="bpmn.process.start"/></a></td-->
                             </tr>
                         <% }} %>
-                    <% }}else{ %>
-                        <tr>
-                            <td colspan="6"><fmt:message key="processes.available.state"/></td>
-                        </tr>
                     <% } %>
                 </tbody>
-            </table>
+                </table>
+                    <% }else{ %>
+
+                        <p><fmt:message key="there.are.no.processes.available"/></p>
+
+                    <% } %>
+
             <br/>
             <carbon:paginator pageNumber="<%=currentPage%>" numberOfPages="<%=numberOfPages%>"
                               page="process_list_view.jsp" pageNumberParameterName="pageNumber"
