@@ -16,30 +16,71 @@
 -->*/
 
     var log = new Log();
-    var data = require('../config/config.json'),
-    encoder = require("/assets/encoder.js"),
+    var encoder = require("/assets/encoder.js"),
     process = require('process'),
     auth = session.get('auth'),
-    roles = session.get('roles'),
-    bpsHost = data.server.bpsHost,
-    bpsPort = data.server.bpsPort,
-    bpsTenantID = data.server.bpsTenantId,
-    bpsTenantDomain = data.server.bpsTenantDomain;
+    roles = session.get('roles');
 
-    var bpsTenantUrlPart = "";//this holds the tenant part of the bps url
-    if (bpsTenantDomain.length > 0) {
-        bpsTenantUrlPart = "/t/" + bpsTenantDomain;
+    var data = application.get('appConfig');
+    var bpsHost = application.get('bpsHost');
+    var bpsPort = application.get('bpsPort');
+    var httpUrl = application.get('httpUrl');
+    var bpsTenantID = application.get('bpsTenantID');
+    var bpsTenantDomain = application.get('bpsTenantDomain');
+    var bpsTenantUrlPart = application.get('bpsTenantUrlPart'); //this holds the tenant part of the bps url
+
+    if (httpUrl == null || httpUrl === "") {
+        
+        appConfig = require('../config/config.json');
+        application.put('appConfig', appConfig);
+
+        //Retrieve configuration 
+        bpsHost = appConfig.server.bpsHost;
+        bpsPort = appConfig.server.bpsPort;
+        bpsTenantID = appConfig.server.bpsTenantId;
+        bpsTenantDomain = appConfig.server.bpsTenantDomain;
+        data = appConfig;
+
+        if(bpsHost == null || bpsHost === "" || bpsPort == null || bpsPort === "") {
+            //retrieve host name and the port from the deployed server assuming it's a BPS
+            log.warn('BPS host info not configured. Using local host');
+            var process = require("process");
+            bpsHost = process.getProperty('carbon.local.ip');
+            bpsPort = process.getProperty('mgt.transport.https.port');
+        }
+
+        if (bpsTenantDomain.length > 0) {
+            bpsTenantUrlPart = "/t/" + bpsTenantDomain;
+        } else {
+            bpsTenantUrlPart = "";
+        }
+
+        application.put('bpsTenantUrlPart', bpsTenantUrlPart);
+        application.put('bpsTenantDomain', bpsTenantDomain);
+
+        if (bpsTenantID.length > 0) {
+            application.put('bpsTenantID', bpsTenantID);
+        } else {
+            //assume super tenant
+            bpsTenantID = '-1234';
+            application.put('bpsTenantID', bpsTenantID);
+            
+        }
+
+        httpUrl = "https://"+ bpsHost+ ":"+ bpsPort + bpsTenantUrlPart;
+        application.put('httpUrl', httpUrl);
+        application.put('bpsHost', bpsHost);
+        application.put('bpsPort', bpsPort);
+
+        if(log.isDebugEnabled()) {
+            log.info("BPS server host : " + bpsHost);
+            log.info("BPS server port : " + bpsPort);
+            log.info("BPS server bpsTenantID : " + bpsTenantID);
+            log.info("BPS server bpsTenantDomain : " + bpsTenantDomain);
+        }
+
     }
-    application.put('bpsTenantUrlPart', bpsTenantUrlPart);
 
-    if (bpsTenantID.length > 0) {
-        application.put('bpsTenantID', bpsTenantID);
-    } else {
-        application.put('bpsTenantID', '-1234');
-        bpsTenantID = '-1234';
-    }
-
-    var httpUrl = "https://"+ bpsHost+ ":"+ bpsPort + bpsTenantUrlPart;
     if(log.isDebugEnabled()) {
         log.debug("BPS URL:"+ httpUrl);
     }
