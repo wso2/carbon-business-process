@@ -132,10 +132,6 @@
 
         <div id="workArea">
 
-            <%
-                //Search fields are removed if no processes
-                if(deployments!=null && deployments.length>0){
-            %>
             <form>
                 <fmt:message key="bpmn.search.by"/>&nbsp;
                 <select name="method" id="method">
@@ -147,7 +143,6 @@
                 <button type="submit" onclick="searchFilter()" id="searchButton">&nbsp;&nbsp;&nbsp;&nbsp;</button>
             </form>
             <br/>
-            <% } %>
 
                     <% if(deployments!=null && deployments.length>0){ %>
                     <table class="styledLeft" id="moduleTable">
