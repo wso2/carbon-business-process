@@ -37,7 +37,7 @@
     var statusObsolete="OBSOLETE";
     
     var pageSize = 1;
-    var pageNumber = 1;
+    var pageNumber = 0;
 
     
     try {
