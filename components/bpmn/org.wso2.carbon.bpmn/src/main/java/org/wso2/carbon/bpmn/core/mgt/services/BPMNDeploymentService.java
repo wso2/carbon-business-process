@@ -327,8 +327,9 @@ public class BPMNDeploymentService {
                 maximumDeleteCount = Integer.valueOf(countPropertyValue);
             }
         }
-
-        log.info("Maximum Delete count : " + maximumDeleteCount);
+        if (log.isDebugEnabled()) {
+            log.debug("Maximum Delete count : " + maximumDeleteCount);
+        }
     }
 
     private void deleteInstances(BPMNDeletableInstances bpmnDeletableInstances, ProcessEngine processEngine){

@@ -125,9 +125,9 @@
     <% }else{ %>
       <br/>
       <font color="red">
-         Currently there are no processes or tasks completed to generate statistics.
+         Currently there are no processes deployed to generate statistics.
          <br/>
-         &nbsp;Please deploy processes from admin view to generate statistics.
+         Please deploy processes from admin view to generate statistics.
       </font>
     <% }%>
   </div>

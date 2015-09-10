@@ -25,6 +25,8 @@
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -395,7 +397,8 @@
                                         out.print("Not Available");
                                     }%></td>
                             <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + bpmnInstance.getProcessId()%>><%=bpmnInstance.getProcessId()%></a></td>
-                            <td><%=bpmnInstance.getStartTime().toString()%></td>
+                            <% DateFormat dateOutputFormatter = new SimpleDateFormat("MM/dd/yyyy"); %>
+                            <td><%=dateOutputFormatter.format(bpmnInstance.getStartTime())%></td>
                             <% if (!finished) { %>
                             <td>
                                 <% if(!bpmnInstance.getSuspended()){ %>
@@ -405,7 +408,7 @@
                                 <% } %>
                             </td>
                             <% } else { %>
-                                <td><%=bpmnInstance.getEndTime().toString()%></td>
+                                <td><%=dateOutputFormatter.format(bpmnInstance.getEndTime())%></td>
                             <% } %>
                             <td>
                                 [&nbsp;<a href="#" class="bpmn-icon-link" style="background-image:url(images/delete.gif);" onclick="deleteInstance('<%=bpmnInstance.getInstanceId()%>')"><fmt:message key="bpmn.instance.delete"/></a>&nbsp;]
