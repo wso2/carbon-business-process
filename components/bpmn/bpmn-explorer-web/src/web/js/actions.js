@@ -273,8 +273,7 @@ function processSearch(){
         var selectState=document.getElementById("taskStatus").value;
         if(selectState == "COMPLETED"){
             document.getElementById("taskProcessDefName").value = tempTaskDefName;
-        }
-        else{
+        } else {
             document.getElementById("taskProcessDefName").value = "%" + tempTaskDefName + "%";
         }
     }
