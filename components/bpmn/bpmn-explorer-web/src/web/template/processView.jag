@@ -34,7 +34,7 @@
 		    	<tr class="table-title-row">
 		    		<th>Package Name</th>
 		    		<th>Process Name</th>
-		    		<th>Process ID</th>
+		    		<th>Process Definition ID</th>
 		    		<th>Version</th>
 		    		<th>Action</th>
 		    	</tr>
