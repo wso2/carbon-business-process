@@ -206,7 +206,7 @@
                         onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
                         <td><%=taskListResponse.data[i].id%></td>
                         <td><%=taskListResponse.data[i].name%></td>
-                        <td><%=taskListResponse.data[i].id%></td>
+                        <td><%=taskListResponse.data[i].dueDate%></td>
                     </tr>
                     <% } %>
                 </tbody>
