@@ -26,7 +26,6 @@
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment" %>
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
