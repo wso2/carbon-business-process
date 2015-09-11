@@ -270,7 +270,12 @@ function processSearch(){
         document.getElementById("taskProcessDefName").disabled = true;
     } else {
         var tempTaskDefName = document.getElementById("taskProcessDefName").value;
-        document.getElementById("taskProcessDefName").value = "%" + tempTaskDefName + "%";
+        var selectState=document.getElementById("taskStatus").value;
+        if(selectState == "COMPLETED"){
+            document.getElementById("taskProcessDefName").value = tempTaskDefName;
+        } else {
+            document.getElementById("taskProcessDefName").value = "%" + tempTaskDefName + "%";
+        }
     }
     if (document.getElementById("taskProcessInstanceID").value.length == 0) {
         document.getElementById("taskProcessInstanceID").disabled = true;
