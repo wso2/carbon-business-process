@@ -86,7 +86,14 @@ if (request.getQueryString() != null) {
         }
 
         if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
-            restRequestParameters += "processDefinitionNameLike=" + requestParameters.processDefinitionNameLike + "&";
+             restRequestParameters += "processDefinitionName=" + requestParameters.processDefinitionNameLike + "&";
+
+             //  restRequestParameters += "processDefinitionNameLike=" + requestParameters.processDefinitionNameLike + "&";
+
+             /*
+                processDefinitionNameLike doesnot work when searching for completed tasks of a particular process but it works when searching for tasks in-progress.
+                Jira associated with this issue: https://wso2.org/jira/browse/BPS-843
+              */
         }
 
         if (requestParameters.minimumPriority !== undefined && requestParameters.minimumPriority.length > 0) {
