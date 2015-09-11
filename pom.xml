@@ -1085,7 +1085,6 @@
                 <artifactId>org.wso2.carbon.event.output.adapter.sms</artifactId>
                 <version>${carbon.analytics.common.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

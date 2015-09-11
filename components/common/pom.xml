@@ -84,6 +84,10 @@
                             !org.wso2.carbon.bpel.common.internal,
                             org.wso2.carbon.bpel.common.*;
                             version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.businessprocesses.common.*;
+                            version="${carbon.business-process.exp.pkg.version}",
+                            org.wso2.carbon.businessprocesses.common.utils.*;
+                            version="${carbon.business-process.exp.pkg.version}",
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.common,
