@@ -27,7 +27,7 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="javax.xml.namespace.QName" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 

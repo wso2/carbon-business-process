@@ -11,7 +11,7 @@
 <%@ page import="org.wso2.carbon.bpel.stub.mgt.types.InstanceSummaryE" %>
 <%@ page import="org.json.simple.JSONObject" %>
 <%@ page import="org.wso2.carbon.bpel.ui.BpelUIUtil" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>

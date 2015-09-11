@@ -116,9 +116,9 @@
 
                 <div class="col-sm-3 col-md-3 col-lg-3 margin-top">
                     <div class="form-group">
-                        <label for="taskProcessDefName" class="control-label">Process Definition Name</label>
+                        <label for="taskProcessDefName" class="control-label">Process Name</label>
                         <div class="">
-                            <input type="text" class="form-control" id="taskProcessDefName" name="processDefinitionNameLike" placeholder="Enter Process Definition Name">
+                            <input type="text" class="form-control" id="taskProcessDefName" name="processDefinitionNameLike" placeholder="Enter Process Name">
                         </div>
                     </div>
                 </div>

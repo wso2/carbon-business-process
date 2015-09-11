@@ -11,7 +11,7 @@
 <%@ page import="org.apache.http.HttpStatus" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
-<%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%-- Imports for WSDLs --%>
 <%@ page import="org.wso2.carbon.service.mgt.ui.ServiceAdminClient" %>
 <%@ page import="org.wso2.carbon.service.mgt.stub.types.carbon.ServiceMetaData" %>
@@ -58,7 +58,7 @@
     String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
 
 
-    String taskDefId = CharacterEncoder.getSafeText(request.getParameter("taskDefId"));
+    String taskDefId =  CharacterEncoder.getSafeText(request.getParameter("taskDefId"));
 
     QName taskId = QName.valueOf(taskDefId);
     TaskInfoType taskInfoType = null;

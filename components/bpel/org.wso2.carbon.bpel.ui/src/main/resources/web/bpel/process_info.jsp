@@ -31,7 +31,7 @@
     <%@ page import="java.util.HashMap" %>
     <%@ page import="java.util.Map" %>
     <%@ page import="java.util.TreeMap" %>
-    <%@ page import="org.wso2.carbon.ui.util.CharacterEncoder" %>
+    <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 
