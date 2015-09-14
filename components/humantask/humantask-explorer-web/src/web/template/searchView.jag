@@ -26,7 +26,8 @@
 </div>-->
 <div class="row">   
     <div class="panel-inbox">
-        <div class=" margin-left-double table-title">Advance Search</div>
+        <div class=" margin-left-double table-title">Advanced Search</div>
+        <div class=" margin-left-double table-title">Advanced Search</div>
         <div class="table-body margin-left-double">
             <form role="form" class="" action="search" method="GET">
                 <div class="col-sm-12 col-md-12 col-lg-12">
