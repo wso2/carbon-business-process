@@ -97,7 +97,7 @@ function simpleQueryBasic(status, pageSize, pageNumber, queryCategory, queryOrde
  * @returns  response payload
  * @throws {exception java.net.ConnectException} if connection error occurred
  */
-function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy, createdDate, taskName) {
+function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOrder, queryOrderBy, taskName) {
     var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
                             xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
                             xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
@@ -105,7 +105,6 @@ function simpleQueryAdvance(status, pageSize, pageNumber, queryCategory, queryOr
                             <ns:simpleQuery>\
                                 <ns:simpleQueryInput>\
                                     <ns1:status>' + status + '</ns1:status>\
-                                    <ns1:createdDate>' + createdDate + '</ns1:createdDate>\
                                     <ns1:undatedDate></ns1:undatedDate>\
                                     <ns1:taskName>' + taskName + '</ns1:taskName>\
                                     <ns1:pageSize>' + pageSize + '</ns1:pageSize>\

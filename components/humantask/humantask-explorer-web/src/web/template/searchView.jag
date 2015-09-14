@@ -26,7 +26,7 @@
 </div>-->
 <div class="row">   
     <div class="panel-inbox">
-        <div class=" margin-left-double table-title">Advance Search</div>
+        <div class=" margin-left-double table-title">Advanced Search</div>
         <div class="table-body margin-left-double">
             <form role="form" class="" action="search" method="GET">
                 <div class="col-sm-12 col-md-12 col-lg-12">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="taskStatus" class="control-label">Status</label>
 
@@ -63,22 +63,23 @@
                         <label for="taskCategory">Category</label>
                         <select id="taskCategory" name="taskCategory" class="form-control">
                             <option value="ASSIGNED_TO_ME">ASSIGNED TO ME</option>
-                            <option value="ASSIGNABLE">ASSIGNABLE</option>
+                            <option value="ASSIGNABLE">ADMIN TASKS</option>
                             <option value="CLAIMABLE">CLAIMABLE</option>
                             <option value="ALL_TASKS" selected>ALL TASKS</option>
                             <option value="NOTIFICATIONS">NOTIFICATIONS</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-sm-3 col-md-3 col-lg-3">
+                <!-- Filtering tasks according to the created date-->
+                <!--div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="craetedDate">Created Date</label>
                         <input id="craetedDate" name="craetedDate" type="text" class="form-control" 
                                                         onfocus="setDatePicker('craetedDate')" placeholder="MM/DD/YYYY">
                     </div>
-                </div>
+                </div-->
 
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="queryOrderBy">Order</label>
                         <select id="queryOrderBy" name="queryOrderBy" class="form-control">
@@ -90,7 +91,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="queryOrder">Order</label>
                         <select id="queryOrder" name="queryOrder" class="form-control">
@@ -99,7 +100,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-12 col-lg-2">
+                <div class="col-sm-12 col-md-12">
+                    <br/>
                     <button type="submit" class="btn btn-default btn-info">Search</button>
                 </div>
             </form>
