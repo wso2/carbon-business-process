@@ -43,8 +43,8 @@
                     function taskStatusChange(val) {
                         console.log(val);
                         if (val === "COMPLETED"){
-                            //disable #taskCandidateUserGroup
-                            document.getElementById("taskCandidateUserGroup").disabled = true;
+                            //disable #taskCandidateUser
+                            document.getElementById("taskCandidateUser").disabled = true;
                             //disable #instanceSuspensionStatus
                             document.getElementById("instanceSuspensionStatus").disabled = true;
                             //disable #taskMaxPriority
@@ -52,8 +52,8 @@
                             //change "Min. Priority" to "Priority" in #taskMinPriorityLabel
                             document.getElementById("taskMinPriorityLabel").innerHTML = "Priority";
                         } else {
-                            //enable #taskCandidateUserGroup
-                            document.getElementById("taskCandidateUserGroup").disabled = false;
+                            //enable #taskCandidateUser
+                            document.getElementById("taskCandidateUser").disabled = false;
                             //enable #instanceSuspensionStatus
                             document.getElementById("instanceSuspensionStatus").disabled = false;
                             //enable #taskMaxPriority
@@ -98,9 +98,9 @@
 
                 <div class="col-sm-3 col-md-3 col-lg-3 margin-top">
                     <div class="form-group">
-                        <label for="taskCandidateUserGroup" class="control-label">Candidate User / Groups</label>
+                        <label for="taskCandidateUser" class="control-label">Candidate User</label>
                         <div class="">
-                            <input type="text" class="form-control" id="taskCandidateUserGroup" name="candidateOrAssigned" placeholder="Enter Candidate User or Process">
+                            <input type="text" class="form-control" id="taskCandidateUser" name="candidateUser" placeholder="Enter Candidate User">
                         </div>
                     </div>
                 </div>

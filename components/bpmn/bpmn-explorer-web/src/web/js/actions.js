@@ -252,8 +252,8 @@ function processSearch(){
     /*if (document.getElementById("taskDescription").value.length == 0) {
         document.getElementById("taskDescription").disabled = true;
     }*/
-    if (document.getElementById("taskCandidateUserGroup").value.length == 0) {
-        document.getElementById("taskCandidateUserGroup").disabled = true;
+    if (document.getElementById("taskCandidateUser").value.length == 0) {
+        document.getElementById("taskCandidateUser").disabled = true;
     }
     if (document.getElementById("taskAssignee").value.length == 0) {
         if (document.getElementById("taskUnassigned").checked == true) {
