@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="taskStatus" class="control-label">Status</label>
 
@@ -79,7 +79,7 @@
                     </div>
                 </div-->
 
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="queryOrderBy">Order</label>
                         <select id="queryOrderBy" name="queryOrderBy" class="form-control">
@@ -91,7 +91,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label for="queryOrder">Order</label>
                         <select id="queryOrder" name="queryOrder" class="form-control">
