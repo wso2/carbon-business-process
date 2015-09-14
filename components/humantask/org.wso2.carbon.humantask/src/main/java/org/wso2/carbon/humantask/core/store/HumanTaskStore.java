@@ -273,6 +273,7 @@ public class HumanTaskStore {
     public void validateTaskConfig(HumanTaskDeploymentUnit humanTaskDU) throws HumanTaskDeploymentException, AxisFault {
         boolean validateTask = HumanTaskServiceComponent.getHumanTaskServer().getServerConfig().getEnableTaskValidationBeforeDeployment();
         if(validateTask){
+
             TTask[] tasks = humanTaskDU.getTasks();
             if (tasks != null) {
                 for (TTask task : tasks) {
@@ -291,6 +292,7 @@ public class HumanTaskStore {
                     if(taskConf.isErroneous()){
                         throw new HumanTaskDeploymentException(taskConf.getDeploymentError());
                     }
+                    validateServiceCreationForTaskConfig(taskConf);
                 }
             }
 
@@ -312,6 +314,7 @@ public class HumanTaskStore {
                     if (notificationConf.isErroneous()) {
                         throw new HumanTaskDeploymentException(notificationConf.getDeploymentError());
                     }
+                    validateServiceCreationForTaskConfig(notificationConf);
                 }
             }
 
@@ -332,9 +335,29 @@ public class HumanTaskStore {
                 if(notificationConf.isErroneous()){
                     throw new HumanTaskDeploymentException(notificationConf.getDeploymentError());
                 }
+                validateServiceCreationForTaskConfig(notificationConf);
             }
+
+
         }
         return;
+    }
+
+    /**
+     * When wsdl errors are there in the package, we use a dummy service creation step to validate all required parts
+     * are available in the wsdl
+     * @param taskConfig Task configuration object for this task package
+     * @throws HumanTaskDeploymentException HumanTaskDeployment Exception is thrown when an error happens
+     */
+
+    private void validateServiceCreationForTaskConfig(HumanTaskBaseConfiguration taskConfig) throws HumanTaskDeploymentException {
+        try {
+            WSDL11ToAxisServiceBuilder serviceBuilder = createAxisServiceBuilder(taskConfig, taskConfig.getWSDL());
+            serviceBuilder.populateService();
+        } catch (AxisFault e) {
+            String errorMsg = "Error validating wsdl " + e.getMessage();
+            throw  new HumanTaskDeploymentException(errorMsg, e);
+        }
     }
 
     /**
