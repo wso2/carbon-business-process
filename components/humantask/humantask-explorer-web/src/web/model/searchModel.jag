@@ -33,7 +33,7 @@
         var taskName = requestParameters.taskName;
         var taskStatus = requestParameters.taskStatus;
         var taskCategory = requestParameters.taskCategory;
-        var createdDate = requestParameters.craetedDate;
+        //var createdDate = requestParameters.craetedDate;
         var queryOrderBy = requestParameters.queryOrderBy;
         var queryOrder = requestParameters.queryOrder;
 
@@ -43,8 +43,12 @@
         }
 
         //new query string for pagination
-        var newQueryString = 'taskName=' +taskName +'&taskStatus=' +taskStatus +'&taskCategory=' +taskCategory
-                                +'&craetedDate=' +createdDate +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;
+        /*var newQueryString = 'taskName=' +taskName +'&taskStatus=' +taskStatus +'&taskCategory=' +taskCategory
+                                +'&craetedDate=' +createdDate +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;*/
+
+        //Query string without filtering records by created date
+           var newQueryString = 'taskName=' +taskName +'&taskStatus=' +taskStatus +'&taskCategory=' +taskCategory
+                                        +'&queryOrderBy=' +queryOrderBy +'&queryOrder=' +queryOrder;
 
         var paginationStr = requestParameters.pagination;
         if (paginationStr == null || paginationStr === "") {
@@ -59,8 +63,11 @@
         try {
             var taskXMLList = null;
             var paginatePageCount = 0;
+           /* var BPSResponseXML = new XML(htRequest.simpleQueryAdvance(taskStatus, pageSize, pageNumber, taskCategory,
+                                                                        queryOrder, queryOrderBy, createdDate, taskName));*/
+
             var BPSResponseXML = new XML(htRequest.simpleQueryAdvance(taskStatus, pageSize, pageNumber, taskCategory,
-                                                                        queryOrder, queryOrderBy, createdDate, taskName));
+                                                                                    queryOrder, queryOrderBy, taskName));
               if(BPSResponseXML == null || BPSResponseXML == ""){
                   if (log.isDebugEnabled()) {
                       log.debug('Session timed out for task'+ "" + taskName);

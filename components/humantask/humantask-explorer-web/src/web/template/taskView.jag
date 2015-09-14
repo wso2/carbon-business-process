@@ -115,7 +115,6 @@
                 <li class="list-group-item">not updated !</li>
             </ul>
             <ul class="list-group" id="AttchmentsList" hidden>
-                <li class="list-group-item">not implemented !</li>
             </ul>
         </div>
     </div>
