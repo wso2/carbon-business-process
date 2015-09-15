@@ -79,13 +79,16 @@
             <div id="barChartAvgTime">
             <div style="height: 20%"> </div>
             </div>
-
             <br>
             <div class="table-title"  style="width:100%">  User Vs Number Of Tasks Completed </div>
-            <div id="colChartUserVsTasks" style="height: 400px"></div>
+            <div id="colChartUserVsTasks">
+            <div style="height: 20%"> </div>
+            </div>
             <br>
             <div class="table-title"  style="width:100%">  User Vs Average Time Taken to Complete Tasks </div>
-            <div id="userVsAvgTaskDuration"  style="height: 400px"></div>
+            <div id="userVsAvgTaskDuration">
+            <div style="height: 20%"> </div>
+            </div>
             <br>
             <div class="table-title"  style="width:100%"> Task Instance Count Variation Over Time </div>
             <div id="taskVariationOverTime"></div>
