@@ -48,9 +48,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * BPEL ProcessStore implementation which support multi-tenancy. Multi-tenancy features are achived
- * via TenantProcessStores and this process store implementation is composed out of tenant process
- * stores.
+ * This class implements multi-tenancy supported BPEL Process Store .Multi-tenancy features are achieved
+ * via TenantProcessStores and this process store implementation is composed out of tenant process stores.
  */
 public class ProcessStoreImpl implements ProcessStore, MultiTenantProcessStore {
     private static final Log log = LogFactory.getLog(ProcessStoreImpl.class);
@@ -310,6 +309,11 @@ public class ProcessStoreImpl implements ProcessStore, MultiTenantProcessStore {
         Collections.sort(pConfs, BY_DEPLOYEDDATE);
         for (ProcessConfigurationImpl processConfiguration : pConfs) {
             try {
+                if(log.isDebugEnabled()) {
+                    log.debug("Firing state change event --" + processConfiguration.getState()  +
+                              "--  for process conf " + processConfiguration.getPackage() +
+                              "located at " + processConfiguration.getAbsolutePathForBpelArchive());
+                }
                 fireStateChange(processConfiguration.getProcessId(),
                         processConfiguration.getState(),
                         duName);
