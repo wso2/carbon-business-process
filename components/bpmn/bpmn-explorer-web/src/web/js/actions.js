@@ -367,7 +367,8 @@ function selectProcessForChart(){
                     pieHole: 0.6,
                     pieSliceTextStyle: {
                         color: 'black'
-                    }
+                    },
+                    sliceVisibilityThreshold: 0
                 };
                 var chart = new google.visualization.PieChart(document.getElementById('taskDurationChart'));
                 chart.draw(data, options);
@@ -603,27 +604,28 @@ function userVsTasksCompleted(){
                     }
 
                     if (max >= 100 && count > 1) {
-                        var vTitle = 'Number of tasks completed todate(log scale)';
+                        var hTitle = 'Number of tasks completed todate(log scale)';
                         var logScaleEnabled = true;
                     }
                     else {
-                        var vTitle = 'Number of tasks completed todate';
+                        var hTitle = 'Number of tasks completed todate';
                         var logScaleEnabled = false;
                     }
-
-
+                    var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
                     var options = {
-                        vAxis: {
-                            title: vTitle,
+                        hAxis: {
+                            title: hTitle,
                             titleTextStyle: {color: 'grey'},
                             logScale: logScaleEnabled
                         },
-                        hAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
+                        vAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                         colors: ['#be2d28'],
-                        bar: {groupWidth: "25%"}
+                        height: ((data.getNumberOfRows()+2) * 100) + 200,
+                        chartArea:{top:10,height:chartAreaHeight},
+                        bar: {groupWidth: "35%"}
                     };
 
-                    var chart = new google.visualization.ColumnChart(document.getElementById('colChartUserVsTasks'));
+                    var chart = new google.visualization.BarChart(document.getElementById('colChartUserVsTasks'));
                     chart.draw(data, options);
 
                 }
@@ -659,20 +661,42 @@ function avgTimeForUserForTasks(){
                         dataArr.push([data[i][0], data[i][1]]);
                     }
                     var data = google.visualization.arrayToDataTable(dataArr);
+                    var max = 0;
+                    var count = 0;
+                    for (var i = 0; i < dataArr.length; i++) {
+                        if (dataArr[i][1] > max) {
+                            max = dataArr[i][1];
+                        }
+                        if (dataArr[i][1] > 0) {
+                            count++;
+                        }
+                    }
+
+                    if (max >= 100 && count > 1) {
+                        var hTitle = 'Average Time Taken to Complete Tasks in Seconds(log scale)';
+                        var logScaleEnabled = true;
+                    }
+                    else {
+                        var hTitle = 'Average Time Taken to Complete Tasks in Seconds';
+                        var logScaleEnabled = false;
+                    }
+                    var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
                     var options = {
-                        vAxis: {
-                            title: 'Average Time Taken to Complete Tasks in Seconds',
+                        hAxis: {
+                            title: hTitle,
                             titleTextStyle: {color: 'grey'}
                         },
-                        hAxis: {
+                        vAxis: {
                             title: 'Users',
                             titleTextStyle: {color: 'grey'}
                         },
                         colors: ['#be2d28'],
-                        bar: {groupWidth: "25%"}
+                        height: ((data.getNumberOfRows()+2) * 100) + 200,
+                        chartArea:{top:10,height:chartAreaHeight},
+                        bar: {groupWidth: "35%"}
                     };
 
-                    var chart = new google.visualization.ColumnChart(document.getElementById('userVsAvgTaskDuration'));
+                    var chart = new google.visualization.BarChart(document.getElementById('userVsAvgTaskDuration'));
                     chart.draw(data, options);
 
                 }
