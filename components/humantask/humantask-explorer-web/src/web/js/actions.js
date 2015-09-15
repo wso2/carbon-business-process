@@ -336,6 +336,7 @@ function addComment(id) {
             if (success === 'true') {
                 //successful
                 $('#addCommentModal').modal('hide');
+                document.getElementById("addCommentTextArea").value='';
             }else if (success === 'timeout') {
                 window.location = httpUrl + "/" + appName + "/login";
             } else {
