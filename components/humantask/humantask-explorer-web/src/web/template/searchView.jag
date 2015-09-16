@@ -127,10 +127,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for (var i=0; i<taskXMLList.length(); i++) {
-                                var redirctURL="taskview";
+                                <% for (var i = 0; i < taskXMLList.length(); i++) {
+                                var redirctURL = "taskview";
                                 if (taskXMLList[i].NS1_NS::taskType.text() == "NOTIFICATION") {
-                                    redirctURL="notificationview";
+                                    redirctURL = "notificationview";
                                 }
                                 %>
                                 <tr class="white-bg" style="cursor:pointer;" onclick="window.location='<%=redirctURL%>?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
