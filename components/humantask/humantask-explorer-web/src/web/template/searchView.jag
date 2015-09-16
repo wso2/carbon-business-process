@@ -87,7 +87,8 @@
                             <option value="CREATED_DATE" selected>CREATED DATE</option>
                             <option value="UPDATED_DATE">UPDATED DATE</option>
                             <option value="PRIORITY">PRIORITY</option>
-                            <option value="STATUS">STATUS</option>
+                            <!--option value="STATUS">STATUS</option-->
+                            <!-- Querying by STATUS doesnt give a proper order of tasks-->
                         </select>
                     </div>
                 </div>
