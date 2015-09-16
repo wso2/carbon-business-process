@@ -95,20 +95,13 @@ public class BPELPackageRepository {
 
     private void addLatestArchiveToRegistryCollection(BPELDeploymentContext bpelDeploymentContext)
             throws FileNotFoundException, RegistryException {
+
         Resource latestBPELArchive = configRegistry.newResource();
         latestBPELArchive.setContent(new FileInputStream(bpelDeploymentContext.getBpelArchive()));
         configRegistry.put(BPELPackageRepositoryUtils.
                 getBPELPackageArchiveResourcePath(bpelDeploymentContext.getBpelPackageName()),
                 latestBPELArchive);
     }
-
-//    private File buildBPELDeploymentUnitPath(String bpelArchiveName, long version) {
-//        return new File(bpelDURepo,
-//                        bpelArchiveName.substring(0,
-//                                                  bpelArchiveName.lastIndexOf("." +
-//                                                          BPELConstants.BPEL_PACKAGE_EXTENSION)) +
-//                                "-" + version);
-//    }
 
     /**
      * Handles deployment of new BPEL packages. Stores all the meta data and BPEL Package content
@@ -125,7 +118,6 @@ public class BPELPackageRepository {
                 createBPELPackageParentCollectionWithProperties(deploymentContext);
                 addLatestArchiveToRegistryCollection(deploymentContext);
                 createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);
-                //createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -155,7 +147,6 @@ public class BPELPackageRepository {
                 updateBPELPackageProperties(deploymentContext);
                 addLatestArchiveToRegistryCollection(deploymentContext);
                 createCollectionWithBPELPackageContentForCurrentVersion(deploymentContext);
-                //createCollectionWithBPELPackageWithoutContentForCurrentVersion(deploymentContext);
                 configRegistry.commitTransaction();
             }
         } catch (RegistryException re) {
@@ -198,21 +189,26 @@ public class BPELPackageRepository {
         }
     }
 
+    /**
+     * At bpel package undeployment, remove the entires created in registry corresponding to the given BPEL package
+     * @param packageName
+     * @throws RegistryException
+     */
     public void handleBPELPackageUndeploy(String packageName) throws RegistryException {
-        // TODO : Change this to correct logic after deciding re-deploying logic.
+
         try {
             String packageLocation =
                     BPELPackageRepositoryUtils.getResourcePathForBPELPackage(packageName);
-            if (!configRegistry.getRegistryContext().isReadOnly() && configRegistry.resourceExists(packageLocation)) {
+            if (!configRegistry.getRegistryContext().isReadOnly() &&
+                configRegistry.resourceExists(packageLocation)) {
                 configRegistry.delete(packageLocation);
             } else {
-                //TODO fix this logic
                 throw new IllegalAccessException();
             }
 
         } catch (RegistryException re) {
-            String errMessage = "Unable to access registry for handling BPEL package undeployment."
-                    + " Package: " + packageName;
+            String errMessage = "Unable to access registry for handling BPEL package " +
+                                "undeployment for Package: " + packageName;
             log.error(errMessage, re);
             throw re;
         } catch (IllegalAccessException e) {
@@ -257,14 +253,12 @@ public class BPELPackageRepository {
             throws RegistryException, IOException, NoSuchAlgorithmException {
         String resourceLocation =
                 BPELPackageRepositoryUtils.getResourcePathForBPELPackage(deploymentContext);
+        if(log.isDebugEnabled()) {
+            log.debug("BPEL Package resource location : " + resourceLocation);
+        }
         if (configRegistry.resourceExists(resourceLocation)) {
             String md5Checksum = configRegistry.get(resourceLocation).
                     getProperty(BPELConstants.BPEL_PACKAGE_PROP_LATEST_CHECKSUM);
-            if (md5Checksum == null) {
-                //To make it backward compatible with carbon 3.1.0
-                md5Checksum = configRegistry.get(resourceLocation).
-                        getProperty(BPELConstants.BPEL_PACKAGE_PROP_LATEST_CHECKSUM_DEPRECATED);
-            }
             if (log.isDebugEnabled()) {
                 log.debug(deploymentContext.getBpelPackageName() + " Checksum in registry: " +
                         md5Checksum + " : File checksum: " +
@@ -364,16 +358,6 @@ public class BPELPackageRepository {
                 return;
             }
 
-//            Resource latestArchive = configRegistry.get(bpelPackageZipLocation);
-//            InputStream bpelArchiveInputStream = latestArchive.getContentStream();
-//            FileOutputStream bpelArchiveOutputStream = new FileOutputStream(bpelArchive);
-//            byte[] buffer = new byte[1024];
-//            int len;
-//            while ((len = bpelArchiveInputStream.read(buffer)) > 0) {
-//                bpelArchiveOutputStream.write(buffer, 0, len);
-//            }
-//            bpelArchiveOutputStream.close();
-//            bpelArchiveInputStream.close();
             RegistryClientUtils.exportFromRegistry(new File(bpelArchiveRepo,
                     bpelPackage.getBPELArchiveFileName()), bpelPackageZipLocation, configRegistry);
 
