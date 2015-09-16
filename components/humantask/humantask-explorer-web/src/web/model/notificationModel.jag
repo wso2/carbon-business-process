@@ -26,12 +26,28 @@
         var taskAbstract = null;
         var authorisedActions = null;
 
+        var notificationRecepientXML = null;
+        var recepient = '';
+        var recepientTitle = null;
+
         //Retrieve task Details
         var result = new XML(htRequest.loadTask(id));
         if (log.isDebugEnabled()) {
             log.debug('loadTask BPS RESPONSE : ' + result);
         }
         taskAbstract = result.SOAPENV_NS::Body.NS2_NS::loadTaskResponse.NS2_NS::taskAbstract;
+
+        notificationRecepientXML = result.SOAPENV_NS::Body.NS2_NS::loadTaskResponse.NS2_NS::taskAbstract.NS1_NS::notificationRecipients.NS1_NS::user.text();
+        if (notificationRecepientXML.length() == 0) {
+           recepient = taskAbstract.NS1_NS::notificationRecipients.NS1_NS::group.text();
+           recepientTitle = "Recepient Group";
+        } else {
+           recepient += notificationRecepientXML[0];
+           for (var i = 1; i < notificationRecepientXML.length(); i++) {
+                recepient += ", "  + notificationRecepientXML[i];
+           }
+            recepientTitle = "Owners";
+         }
 
         //retrieve authorized actions for currrent user
         var authParamResult = new XML(htRequest.loadAuthorisationParams(id));
