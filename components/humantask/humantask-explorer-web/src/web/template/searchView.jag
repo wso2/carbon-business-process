@@ -127,8 +127,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for (var i=0; i<taskXMLList.length(); i++) { %>
-                                <tr class="white-bg" style="cursor:pointer;" onclick="window.location='taskview?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
+                                <% for (var i=0; i<taskXMLList.length(); i++) {
+                                var redirctURL="taskview";
+                                if (taskXMLList[i].NS1_NS::taskType.text() == "NOTIFICATION") {
+                                    redirctURL="notificationview";
+                                }
+                                %>
+                                <tr class="white-bg" style="cursor:pointer;" onclick="window.location='<%=redirctURL%>?id=<%=taskXMLList[i].NS1_NS::id.toString()%>'"
                                     onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
                                     <td><%=taskXMLList[i].NS1_NS::id.toString()%></td>
                                     <td><%=taskXMLList[i].NS1_NS::taskType.text()%></td>
