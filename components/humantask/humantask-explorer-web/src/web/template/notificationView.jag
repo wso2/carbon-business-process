@@ -65,24 +65,34 @@
                     <table class="table white-bg">
                         <tbody>
                             <tr class="white-bg">
-                                <td colspan='1'>
-                                    <p><small><b>Type : </b></small></p>
-                                    <p><small><b>Owner : </b></small></p>
-                                    <p><small><b>Status : </b></small></p>
-                                    <p><small><b>Priority : </b></small></p>
-                                    <p><small><b>Created Time: </b></small></p>
-                                    <p><small><b>Activation Time: </b></small></p>
-                                    <p><small><b>Last Modified: </b></small></p>
-                                </td>
-                                 <td colspan='1'>
-                                    <p><small><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::actualOwner.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::status.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::priority.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::createdTime.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::activationTime.text()%></small></p>
-                                    <p><small><%=taskAbstract.NS1_NS::updatedTime.text()%></small></p>
-                                </td>
+                               <tr>
+                                <td><small><b>Type : </b></small></td>
+                                <td><small><%=taskAbstract.NS1_NS::taskType.text()%></small></td>
+                               </tr>
+                               <tr>
+                                <td style="border-top:0px"><small><b><%=recepientTitle%>: </b></small></td>
+                                <td style="border-top:0px"><small><%=recepient%></small></td>
+                               </tr>
+                               <tr>
+                                <td style="border-top:0px"><small><b>Status : </b></small></td>
+                                <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::status.text()%></small></td>
+                               </tr>
+                               <tr>
+                                <td style="border-top:0px"><small><b>Priority : </b></small></td>
+                                <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::priority.text()%></small></td>
+                               </tr>
+                               <tr>
+                                 <td style="border-top:0px"><small><b>Created Time: </b></small></td>
+                                 <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::createdTime.text()%></small></td>
+                               </tr>
+                               <tr>
+                                 <td style="border-top:0px"><small><b>Activation Time:</b></small></td>
+                                 <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::activationTime.text()%></small></td>
+                               </tr>
+                               <tr>
+                                 <td style="border-top:0px"><small><b>Last Modified: </b></small></td>
+                                 <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::updatedTime.text()%> </small></td>
+                               </tr>
                             </tr>
                         </tbody>
                     </table>

@@ -548,7 +548,7 @@ function selectProcessForInstanceCount(){
                 }
                 var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
                 var options = {
-                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' },textStyle: { fontSize:11}},
+                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
                     hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                     colors:['#be2d28'],
                     height: ((data.getNumberOfRows()+2) * 100) + 200,
