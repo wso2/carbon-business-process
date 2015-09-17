@@ -83,9 +83,16 @@
 					<div class="col-lg-4"><form  id="formForTask"><%=formContent%></form></div>
 				</div>
 				<hr>
-				<div class="col-lg-12 right margin-bottom">
+				<% var taskAssignee = session.get("user");
+				   if ((taskData.assignee == null) || (taskData.assignee != taskAssignee )) { %>
+					<div class="col-lg-12 right margin-bottom-double white-bg">
+					<button onclick = "claim(&quot;<%=taskAssignee%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double">Claim Task</button>
+					</div>
+				<% } else { %>
+					<div class="col-lg-12 right margin-bottom">
 					<button onclick="completeTask($('#formForTask').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">
 					Complete task</button></div>
+				<% } %>
 				</div>
 	      		</div>
 	</div>
