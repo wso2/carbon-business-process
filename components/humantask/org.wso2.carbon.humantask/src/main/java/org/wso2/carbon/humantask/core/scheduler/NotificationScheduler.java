@@ -138,7 +138,7 @@ public class NotificationScheduler {
                     log.debug("Parsing SMS notification rendering element 'receiver' for notification id " +
                                                 task.getId());
                 }
-                NodeList smsReceiverList = rootSMS.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
+                NodeList smsReceiverList = rootSMS.getElementsByTagNameNS(HumanTaskConstants.HTD_NAMESPACE,
                                                                           HumanTaskConstants.SMS_RECEIVER_TAG);
                 if(smsReceiverList != null && smsReceiverList.getLength() > 0) {
                     smsReceiver = smsReceiverList.item(0).getTextContent();
@@ -147,7 +147,7 @@ public class NotificationScheduler {
                             task.getId());
                 }
 
-                NodeList smsBodyList = rootSMS.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
+                NodeList smsBodyList = rootSMS.getElementsByTagNameNS(HumanTaskConstants.HTD_NAMESPACE,
                                                                       HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG);
                 if(log.isDebugEnabled()) {
                     log.debug("Parsing SMS notification rendering element 'body' for notification id " +
@@ -199,7 +199,7 @@ public class NotificationScheduler {
                 String emailBody = null;
                 String mailSubject = null;
                 String mailTo = null;
-                NodeList mailToList = root.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
+                NodeList mailToList = root.getElementsByTagNameNS(HumanTaskConstants.HTD_NAMESPACE,
                                                                   HumanTaskConstants.EMAIL_TO_TAG);
                 if(log.isDebugEnabled()) {
                     log.debug("Parsing Email notification rendering element to for notification id " + task.getId());
@@ -211,7 +211,7 @@ public class NotificationScheduler {
                                   task.getId());
                 }
 
-                NodeList mailSubjectList = root.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
+                NodeList mailSubjectList = root.getElementsByTagNameNS(HumanTaskConstants.HTD_NAMESPACE,
                                                                        HumanTaskConstants.EMAIL_SUBJECT_TAG);
                 if(log.isDebugEnabled()) {
                     log.debug("Paring Email notification rendering element subject " + task.getId());
@@ -227,7 +227,7 @@ public class NotificationScheduler {
                     log.debug("Parsing Email notification rendering element body tag for notification id " +
                               task.getId());
                 }
-                NodeList emailBodyList = root.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
+                NodeList emailBodyList = root.getElementsByTagNameNS(HumanTaskConstants.HTD_NAMESPACE,
                                                                      HumanTaskConstants.EMAIL_OR_SMS_BODY_TAG);
 
                 if(emailBodyList != null && emailBodyList.getLength() > 0) {
