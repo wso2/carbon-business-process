@@ -325,13 +325,9 @@ public class HumanTaskServer {
      * The shutdown logic for the human task server.
      */
     public void shutdown() {
-        //TODO add shutdown hook
-
         if (scheduler != null) {
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("shutting down scheduler.");
-                }
+                log.debug("shutting down scheduler.");
                 scheduler.shutdown();
                 scheduler = null;
             } catch (Exception ex) {
