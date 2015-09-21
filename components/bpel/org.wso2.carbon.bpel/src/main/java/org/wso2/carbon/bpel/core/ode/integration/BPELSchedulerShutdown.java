@@ -37,9 +37,7 @@ public class BPELSchedulerShutdown implements WaitBeforeShutdownObserver{
     public void startingShutdown() {
         Scheduler scheduler = ((BPELServerImpl) BPELServiceComponent.getBPELServer()).getScheduler();
         if (scheduler != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Shutting down quartz scheduler.");
-            }
+            log.info("Shutting down ode job scheduler.");
             scheduler.shutdown();
         }
         status = true;
