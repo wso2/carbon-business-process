@@ -20,13 +20,16 @@ package org.wso2.carbon.bpmn.core.internal;
 import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
+import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
 import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
@@ -40,6 +43,7 @@ public class BPMNServiceComponent {
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN core component...");
         try {
+            BundleContext bundleContext = ctxt.getBundleContext();
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
             ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
             holder.setEngine(activitiEngineBuilder.buildEngine());
@@ -48,6 +52,7 @@ public class BPMNServiceComponent {
             BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             restHolder.setRestInvoker(new RESTInvoker());
+            bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(), new BPMNEngineShutdown(), null);
 
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
 //            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
@@ -63,7 +68,7 @@ public class BPMNServiceComponent {
 
 	protected void deactivate(ComponentContext ctxt) {
 		log.info("Stopping the BPMN core component...");
-		ProcessEngines.destroy();
+//		ProcessEngines.destroy();
 	}
 
     protected void setRegistryService(RegistryService registrySvc) {
