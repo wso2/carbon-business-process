@@ -35,7 +35,7 @@
 
         var hostServer = null;
         if(bpsHost == null || bpsHost === "" || bpsPort == null || bpsPort === "") {
-            log.warn('BPS host info not configured. Using local host');
+            log.info('Starting Humantask-explorer in default configuration');
             var process = require("process");
             var localIP = process.getProperty('carbon.local.ip');
             var httpsPort = process.getProperty('mgt.transport.https.port');
