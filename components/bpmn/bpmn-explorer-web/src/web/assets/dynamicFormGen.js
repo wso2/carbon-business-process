@@ -48,7 +48,7 @@ function genCheckbox(data, disabled) {
     if (data.value != null && data.value === "true"){
         checked = 'checked';
     }
-    if (disabled == true || data.writable == false) {
+    if (disabled == true || data.writable == "false") {
          content += "<input value=\"true\" name=\"" + data.id + "\" type=\"checkbox\" disabled=\"true\" "+checked +"/> " + data.name;
     } else {
          content += "<input value=\"true\" name=\"" + data.id + "\" type=\"checkbox\" "+checked +"/> " + data.name;
@@ -63,7 +63,7 @@ function genCheckboxWithValues(data, disabled) {
     }
     var content = "<tr>";
     content += "<td/><td style='padding-right:15px; padding-top:10px;' colspan='2'>";
-    if (disabled == true || data.writable == false) {
+    if (disabled == true || data.writable == "false") {
          content += "<input value=\"true\" name=\"" + data.id + "\" type=\"checkbox\" disabled=\"true\" "+checked +"/> " + data.name;
     } else {
          content += "<input value=\"true\" name=\"" + data.id + "\"  type=\"checkbox\" "+checked +"/> " + data.name;
