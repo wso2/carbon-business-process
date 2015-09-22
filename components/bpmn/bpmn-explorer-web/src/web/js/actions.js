@@ -87,26 +87,37 @@ function displayAttachmentData(id){
 function completeTask(data, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var variables = [];
+    var emptyVar=true;
     for (var i = 0; i < data.length; i++) {
+
+        if (data[i].value == "") {
+            document.getElementById("commonErrorSection").hidden = false;
+            document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the fields";
+            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            emptyVar = false;
+            break;
+        }
         variables.push({
             "name": data[i].name,
             "value": data[i].value
         });
     }
-    var body = {
-        "action": "complete",
-        "variables": variables
-    };
+    if (emptyVar == true) {
+        var body = {
+            "action": "complete",
+            "variables": variables
+        };
 
-    $.ajax({
-        type: 'POST',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(body),
-        success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
-        }
-    });
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: httpUrl + url,
+            data: JSON.stringify(body),
+            success: function (data) {
+                window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+            }
+        });
+    }
 }
 
 function reassign(username, id) {
