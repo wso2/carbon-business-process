@@ -654,10 +654,8 @@ public class SimpleScheduler implements Scheduler, TaskRunner {
         processedSinceLastLoadTask.clear();
         outstandingJobs.clear();
 
-        // disable because this is not the right way to do it
-        // will be fixed by ODE-595
-        // graceful shutdown; any new submits will throw RejectedExecutionExceptions
-//        _exec.shutdown();
+
+        exec.shutdown();
         running = false;
     }
 

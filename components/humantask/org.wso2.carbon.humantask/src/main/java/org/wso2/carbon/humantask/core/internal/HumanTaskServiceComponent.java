@@ -33,6 +33,8 @@ import org.wso2.carbon.ui.util.UIResourceProvider;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 import org.wso2.carbon.utils.MBeanRegistrar;
+import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
+
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.NotCompliantMBeanException;
@@ -90,7 +92,10 @@ public class HumanTaskServiceComponent {
                 if(HumanTaskServerHolder.getInstance().getHtServer().getServerConfig().isUiRenderingEnabled()) {
                     registerHumanTaskUIResourceProvider(htServerHolder);
                 }
-                bundleContext.registerService(ServerStartupObserver.class.getName(), new HumanTaskSchedulerInitializer(), null);
+                bundleContext.registerService(ServerStartupObserver.class.getName(),
+                                              new HumanTaskSchedulerInitializer(), null);
+                bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(),
+                                              new HumanTaskServerShutdown(), null);
 
             } else {
                 log.warn("Couldn't initialize Human Task Server, " +
