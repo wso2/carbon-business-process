@@ -8,7 +8,7 @@
 
         <property name="databaseSchemaUpdate" value="true"/>
 
-        <property name="jobExecutorActivate" value="true"/>
+        <property name="jobExecutorActivate" value="false"/>
 
         <property name="mailServerHost" value="mail.my-corp.com"/>
         <property name="mailServerPort" value="5025"/>
