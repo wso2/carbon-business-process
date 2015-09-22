@@ -43,7 +43,7 @@
 
         if(bpsHost == null || bpsHost === "" || bpsPort == null || bpsPort === "") {
             //retrieve host name and the port from the deployed server assuming it's a BPS
-            log.warn('BPS host info not configured. Using local host');
+            log.info('Starting BPMN-explorer in default configuration');
             var process = require("process");
             bpsHost = process.getProperty('carbon.local.ip');
             bpsPort = process.getProperty('mgt.transport.https.port');
