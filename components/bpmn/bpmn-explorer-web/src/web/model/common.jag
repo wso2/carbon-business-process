@@ -67,10 +67,16 @@
             
         }
 
+        //retrieve explorer deployed server
+        var carbon = require('carbon');
+        var serverAddress = carbon.server.address('https');
+
+
         httpUrl = "https://"+ bpsHost+ ":"+ bpsPort + bpsTenantUrlPart;
         application.put('httpUrl', httpUrl);
         application.put('bpsHost', bpsHost);
         application.put('bpsPort', bpsPort);
+        application.put('serverAddress', serverAddress);
 
         if(log.isDebugEnabled()) {
             log.info("BPS server host : " + bpsHost);

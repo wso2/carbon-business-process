@@ -14,8 +14,21 @@
  ~ limitations under the License.
 -->
 <%
+include("/model/common.jag");
+
+if (request.isSecure()) {//check whether the request is secure or not
+
 	session.put("authSuccess" ,false);
 	session.put("user", null);
 	session.invalidate();
 	response.sendRedirect("login");
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
 %>
