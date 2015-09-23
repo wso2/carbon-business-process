@@ -17,9 +17,9 @@
  * under the License.
  */
 
-    include ("/model/common.jag");
+include ("/model/common.jag");
 
-    var log = new Log();
+if (request.isSecure()) {//check whether the request is secure or not
 
     //initialize BPS HT service request creator
     var htRequest = require ('/js/WSHTRequest.js');
@@ -541,5 +541,16 @@
         response.contentType = 'text/xml';
         response.content = responseMsg;
     }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    responseMsg = '<actionTaskResponse>\
+                      <success>false</success>\
+                      <data>Unsecure request, use https</data>\
+                  </actionTaskResponse>';
+    response.contentType = 'text/xml';
+    response.status = 500;
+    response.content = responseMsg;
+}
 
 %>

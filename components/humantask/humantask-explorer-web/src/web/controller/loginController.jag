@@ -17,18 +17,30 @@
  * under the License.
  */
 
-var authSuccess = session.get("authSuccess");
+include("/model/common.jag");
 
-//Check whether the user has already logged-in
-if (!authSuccess) {
-    //If not show login page
-    include("/model/common.jag");
-    include("/model/loginModel.jag");
-    include("/template/partials/header.jag");
-    include("/template/loginView.jag");
-    include("/template/partials/footer.jag");
+if (request.isSecure()) {//check whether the request is secure or not
+
+    var authSuccess = session.get("authSuccess");
+
+    //Check whether the user has already logged-in
+    if (!authSuccess) {
+        //If not show login page
+        include("/model/loginModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/loginView.jag");
+        include("/template/partials/footer.jag");
+    } else {
+        //If already logged-in, redirect to the myTasks view
+        response.sendRedirect("mytasks");
+    }
+
 } else {
-    //If already logged-in, redirect to the myTasks view
-    response.sendRedirect("mytasks");
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
 }
 %>
