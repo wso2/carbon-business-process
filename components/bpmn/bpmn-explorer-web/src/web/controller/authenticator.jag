@@ -14,8 +14,10 @@
  ~ limitations under the License.
 -->
 <%
-	var log = new Log();
-	include("/model/common.jag");
+include("/model/common.jag");
+
+if (request.isSecure()) {//check whether the request is secure or not
+
 	var authentication = require("/assets/authentication.js");
 	var username = request.getParameter("username");
 	var password = request.getParameter("password");
@@ -64,6 +66,15 @@
 		session.put("loginFailed" ,true);
 		response.sendRedirect(requestUrl);
 	}
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
 
 	/**
      * function to make login request to AuthenticationAdmin
