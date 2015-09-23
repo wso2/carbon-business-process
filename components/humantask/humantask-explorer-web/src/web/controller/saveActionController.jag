@@ -19,78 +19,87 @@
 
 include ("/model/common.jag");
 
-var log = new Log();
+if (request.isSecure()) {//check whether the request is secure or not
 
-//initialize BPS HT service request creator
-var htRequest = require ('/js/WSHTRequest.js');
-htRequest.initHTServerInfo(BPSUrl, session.get('BPSSessionCookie'));
+    //initialize BPS HT service request creator
+    var htRequest = require ('/js/WSHTRequest.js');
+    htRequest.initHTServerInfo(BPSUrl, session.get('BPSSessionCookie'));
 
-try {
+    try {
 
-    var formParameters = request.getAllParameters();
-    var valueList = '';
-    var taskID = '';
+        var formParameters = request.getAllParameters();
+        var valueList = '';
+        var taskID = '';
 
-    for (var i in formParameters) {
+        for (var i in formParameters) {
 
-        //wso2_WS_HumanTask_Task_Identifier is predefined input name used in HT rendering form
-        //therefor HT definition author should not use wso2_WS_HumanTask_Task_Identifier as unique identifier (id) for
-        //ht output rendering elements
-        if (i.toString() === 'wso2_WS_HumanTask_Task_Identifier'){
-            taskID = formParameters[i];
+            //wso2_WS_HumanTask_Task_Identifier is predefined input name used in HT rendering form
+            //therefor HT definition author should not use wso2_WS_HumanTask_Task_Identifier as unique identifier (id) for
+            //ht output rendering elements
+            if (i.toString() === 'wso2_WS_HumanTask_Task_Identifier'){
+                taskID = formParameters[i];
+            } else {
+                valueList += '<value id="' + i + '">' + formParameters[i] + '</value>';
+            }
+
+        }
+
+        var bpsResponse = new XML(htRequest.setTaskOutput (taskID, valueList));
+        if(bpsResponse == null || bpsResponse == ""){
+            if (log.isDebugEnabled()) {
+                log.debug('Session timed out for task'+ "" + taskID);
+            }
+            session.put('authSuccess', false);
+            var queryParameters = request.getQueryString();
+            if(queryParameters == "null" || queryParameters == null){
+                //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../login
+                response.sendRedirect("../../login?requestUrl=" + request.getRequestURI());
+            } else{
+                //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../login
+                response.sendRedirect("../../login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+            }
         } else {
-            valueList += '<value id="' + i + '">' + formParameters[i] + '</value>';
+            var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::setTaskOutputResponse.success.text().toString();
+
+            if (success != null && success === 'false') {
+                log.error('Task output message saving failed');
+            }
+            //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../task
+            response.sendRedirect('../../task?id=' + taskID);
         }
 
+        /*
+            SAMPLE setTaskOutput RESPONSE
+             <?xml version="1.0" encoding="UTF-8"?>
+             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                 <soapenv:Body>
+                    <ns1:setTaskOutputResponse xmlns:ns1="http://wso2.org/ht/schema/renderings/">
+                        <success>true</success>
+                    </ns1:setTaskOutputResponse>
+                 </soapenv:Body>
+             </soapenv:Envelope>
+
+         */
+    } catch(e) {
+        log.error('Error occurred while connecting to the back-end BPS HumanTaskRenderingAPI service : ');
+        log.error(e);
+        var responseMsg = '<fault_taskSaveResponse>\
+                                    <success>false</success>\
+                                    <data>' + e.message + '</data>\
+                                </fault_taskSaveResponse>';
+        response.contentType = 'text/xml';
+        response.content = responseMsg;
     }
 
-    var bpsResponse = new XML(htRequest.setTaskOutput (taskID, valueList));
-    if(bpsResponse == null || bpsResponse == ""){
-        if (log.isDebugEnabled()) {
-            log.debug('Session timed out for task'+ "" + taskID);
-        }
-        session.put('authSuccess', false);
-        var queryParameters = request.getQueryString();
-        if(queryParameters == "null" || queryParameters == null){
-            //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../login
-            response.sendRedirect("../../login?requestUrl=" + request.getRequestURI());
-        } else{
-            //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../login
-            response.sendRedirect("../../login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
-        }
-    } else {
-        var success = bpsResponse.SOAPENV_NS::Body.rendering_NS::setTaskOutputResponse.success.text().toString();
-
-        if (success != null && success === 'false') {
-            log.error('Task output message saving failed');
-        }
-        //current url is humantask-explorer/action/save/ need to navigate from the root of the webapp, therefore ../../task
-        response.sendRedirect('../../task?id=' + taskID);
-    }
-
-    /*
-        SAMPLE setTaskOutput RESPONSE
-         <?xml version="1.0" encoding="UTF-8"?>
-         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-             <soapenv:Body>
-                <ns1:setTaskOutputResponse xmlns:ns1="http://wso2.org/ht/schema/renderings/">
-                    <success>true</success>
-                </ns1:setTaskOutputResponse>
-             </soapenv:Body>
-         </soapenv:Envelope>
-
-     */
-} catch(e) {
-    log.error('Error occurred while connecting to the back-end BPS HumanTaskRenderingAPI service : ');
-    log.error(e);
+} else {
+    //request is not secured, therefore need redirect to the secure channel
     var responseMsg = '<fault_taskSaveResponse>\
-                                <success>false</success>\
-                                <data>' + e.message + '</data>\
-                            </fault_taskSaveResponse>';
+                            <success>false</success>\
+                            <data>Unsecure request, use https</data>\
+                        </fault_taskSaveResponse>';
     response.contentType = 'text/xml';
+    response.status = 500;
     response.content = responseMsg;
 }
-
-
 
 %>

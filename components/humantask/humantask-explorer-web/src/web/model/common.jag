@@ -46,9 +46,14 @@
             hostServer = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
         }
 
+        //retrieve explorer deployed server
+        var carbon = require('carbon');
+        var serverAddress = carbon.server.address('https');
+
         application.put('bpsURI', BPSUrl);
         application.put('hostServer', hostServer);
         application.put('bpsTenant', bpsTenant);
+        application.put('serverAddress', serverAddress);
 
         if (log.isDebugEnabled()) {
             log.debug("Back-end BPS URI :" + BPSUrl);

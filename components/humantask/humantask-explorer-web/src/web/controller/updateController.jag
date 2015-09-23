@@ -17,7 +17,10 @@
  * under the License.
  */
 
-    include ("/model/common.jag");
+include ("/model/common.jag");
+
+if (request.isSecure()) {//check whether the request is secure or not
+
     include("/model/BPSWSRequest.jag");
 
     var log = new Log();
@@ -233,6 +236,17 @@
         response.contentType = 'text/xml';
         response.content = responseMsg;
     }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var responseMsg = '<fault_Response>\
+                            <success>false</success>\
+                            <data>Unsecure request, use https</data>\
+                        </fault_Response>';
+    response.contentType = 'text/xml';
+    response.status = 500;
+    response.content = responseMsg;
+}
 
 /**
  * function to retrieve comments
