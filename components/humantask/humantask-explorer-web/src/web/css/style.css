@@ -982,7 +982,9 @@ input[type="radio"], input[type="checkbox"] {
     color: #fff;}
 .btn-pri:hover{ background: #343434;border-color: #343434; color: #fff;  }
 
-.btn-sec{background: #343434 none repeat scroll 0 0;
+.btn-sec,
+.btn-sec:focus{
+    background: #343434 none repeat scroll 0 0;
     border-color: #343434;
     font-weight: 300;
     padding: 5px 15px;
