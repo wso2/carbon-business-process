@@ -24,6 +24,7 @@ if (request.isSecure()) {//check whether the request is secure or not
     var username = request.getParameter("username");
     var password = request.getParameter("password");
     var requestUrl = request.getHeader("Referer").split("requestUrl=")[1];
+    var authSuccess = false;
     if(requestUrl != null && requestUrl != "null"){
         requestUrl = requestUrl.replace("%3F", "?");
     }
@@ -31,14 +32,22 @@ if (request.isSecure()) {//check whether the request is secure or not
         requestUrl = "mytasks";
     }
     if (username === "" || password === "") {
-        var authSuccess = false;
+        authSuccess = false;
     } else {
-        try {
-            var authSuccess = HTTPAuthenticate(username, password, 'localhost');
-        } catch (e) {
-            log.error('Error occured while connecting to the back-end BPS AuthenticationAdmin service : ');
-            log.error(e);
-            var authSuccess = false;
+
+        var carbon = require('carbon');
+        var userTenantInfo = carbon.server.tenantUser(username);
+
+        if (userTenantInfo.domain == carbon.server.tenantDomain() && userTenantInfo.tenantId == carbon.server.tenantId()) {
+            
+            try {
+                authSuccess = HTTPAuthenticate(username, password, 'localhost');
+            } catch (e) {
+                log.error('Error occured while connecting to the back-end BPS AuthenticationAdmin service : ');
+                log.error(e);
+                authSuccess = false;
+            }
+
         }
     }
     if (!authSuccess) {
