@@ -92,7 +92,7 @@
                                 <th>Description</th>
                                 <td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
                             </tr>
-                            <% if (taskStatus == 'IN_PROGRESS') {
+                            <% if (taskStatus == 'IN_PROGRESS' && authorisedActions.NS1_NS::authorisedToComplete.text() == 'true') {
                                 for (var i = 0; i < wso2InputRenderList.length(); i++) { %>
                                     <tr class="white-bg">
                                         <th width="50%"><%=wso2InputRenderList[i].label.text()%></th>
@@ -112,7 +112,7 @@
                     <p id="InfoErrMsg"></p>
                 </div>
             </div>
-            <% if (taskStatus == 'IN_PROGRESS' || taskStatus == 'COMPLETED') {
+            <% if ((taskStatus == 'IN_PROGRESS' || taskStatus == 'COMPLETED') && (authorisedActions.NS1_NS::authorisedToComplete.text() == 'true')) {
                 var disabled = '';
                 if (taskStatus == 'COMPLETED') {
                     disabled = 'disabled';
