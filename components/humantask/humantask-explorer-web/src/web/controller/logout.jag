@@ -32,35 +32,37 @@
                     </soapenv:Envelope>';
 
     var BPSSessionCookie = session.get('BPSSessionCookie');
-    var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
-    var soapAction = 'urn:logout';
+    if(BPSSessionCookie != null) {
+        var endPoint = BPSUrl + '/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/';
+        var soapAction = 'urn:logout';
 
-    var httpClient = new XMLHttpRequest();
-    httpClient.open('POST', endPoint, false);
-    httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
-    httpClient.setRequestHeader('SOAPAction', soapAction);
-    httpClient.setRequestHeader('Content-Type','text/xml');
+        var httpClient = new XMLHttpRequest();
+        httpClient.open('POST', endPoint, false);
+        httpClient.setRequestHeader('COOKIE', BPSSessionCookie);
+        httpClient.setRequestHeader('SOAPAction', soapAction);
+        httpClient.setRequestHeader('Content-Type','text/xml');
 
-    try {
-        httpClient.send(payload);
-        var BPSResponse = httpClient.responseText;
-        var responseStatus = httpClient.statusText;
-        if (httpClient.statusText.valueOf() === "Accepted") {
-            if (log.isDebugEnabled()) {
-                log.debug('LOGOUT SUCCESS');
+        try {
+            httpClient.send(payload);
+            var BPSResponse = httpClient.responseText;
+            var responseStatus = httpClient.statusText;
+            if (httpClient.statusText.valueOf() === "Accepted") {
+                if (log.isDebugEnabled()) {
+                    log.debug('LOGOUT SUCCESS');
+                }
+            } else {
+                log.error('LOGOUT FAILED : BPS AuthenticationAdmin service logout request failed');
             }
-        } else {
-            log.error('LOGOUT FAILED : BPS AuthenticationAdmin service logout request failed');
-        }
-    } catch (e) {
-        log.error('Error occurred in connection while logout from AuthenticationAdmin service : ');
-        log.error(e);
-        session.put('authSuccess', false);
-        var queryParameters = request.getQueryString();
-        if(queryParameters == "null" || queryParameters == null){
-            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
-        } else{
-            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        } catch (e) {
+            log.error('Error occurred in connection while logout from AuthenticationAdmin service : ');
+            log.error(e);
+            session.put('authSuccess', false);
+            var queryParameters = request.getQueryString();
+            if(queryParameters == "null" || queryParameters == null){
+                response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+            } else{
+                response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+            }
         }
     }
     session.put('authSuccess', false);
