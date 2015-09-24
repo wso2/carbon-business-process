@@ -51,7 +51,7 @@
                         <td><%=taskXMLList[i].NS1_NS::presentationSubject%></td>
                         <td><%=taskXMLList[i].NS1_NS::status%></td>
                         <td><%=taskXMLList[i].NS1_NS::priority%></td>
-                        <td><button onclick="claimTask(<%=taskXMLList[i].NS1_NS::id.text()%>)" class="btn btn-xs btn-info">Claim</button></td>
+                        <td></td>
                     </tr>
                 <% } %>
             </tbody>
