@@ -46,14 +46,32 @@
             hostServer = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
         }
 
-        //retrieve explorer deployed server
-        var carbon = require('carbon');
-        var serverAddress = carbon.server.address('https');
+        
+        var serverAddress = '';
+        //If the BPS fronted by proxy (or load balance eg: nginx) server Address should match hostname and port
+        var deployedServerInfo = getDeployedServerInfo (); 
+        
+        if (log.isDebugEnabled()) {
+            log.debug("Deployed server info :" + stringify(deployedServerInfo));
+        }
+
+        if (deployedServerInfo.HostName == null || deployedServerInfo.ProxyPort < 0) { //server not fronted by proxy
+
+            //retrieve explorer deployed server
+            var carbon = require('carbon');
+            serverAddress = carbon.server.address('https');
+
+        } else {
+
+            serverAddress = "https://" + deployedServerInfo.HostName + ":" + deployedServerInfo.ProxyPort;
+
+        }
 
         application.put('bpsURI', BPSUrl);
         application.put('hostServer', hostServer);
         application.put('bpsTenant', bpsTenant);
         application.put('serverAddress', serverAddress);
+        application.put('tenantUrlPart', tenantUrlPart);
 
         if (log.isDebugEnabled()) {
             log.debug("Back-end BPS URI :" + BPSUrl);
@@ -75,4 +93,26 @@
     var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
     var dashboardNavActive=''; //Dashboard view [updated at statsModel, refered at navigation.jag]
 
+
+
+
+    //function to retrieve and update explorer webapp deployed server
+    function getDeployedServerInfo () {
+
+        var carbon = require('carbon');
+
+        var serverConfigService = carbon.server.osgiService('org.wso2.carbon.base.api.ServerConfigurationService');
+        var hostName = serverConfigService.getFirstProperty("HostName");
+
+        var configContextService = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+        var configContext = configContextService.getServerConfigContext();
+
+        //retrieve https proxy port
+        var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+        var httpsProxyPort = CarbonUtils.getTransportProxyPort(configContext, "https");
+        
+        var serverInfo = {"HostName" : hostName, "ProxyPort" : httpsProxyPort}
+
+        return serverInfo;
+    }
 %>
