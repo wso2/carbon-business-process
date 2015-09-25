@@ -184,7 +184,7 @@ if (request.isSecure()) {//check whether the request is secure or not
                 //comment retrieval success
                 responseMsg = '<update_attachmentsResponse>\
                                     <success>true</success>\
-                                    <bpsUrl>' + BPSUrl + '</bpsUrl>\
+                                    <bpsUrl>' + application.get('serverAddress') + application.get('tenantUrlPart') + '</bpsUrl>\
                         <data>' +result.SOAPENV_NS::Body.NS2_NS::getAttachmentInfosResponse +'</data>\
                                 </update_attachmentsResponse>';
             } else {
