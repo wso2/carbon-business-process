@@ -101,7 +101,7 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.ode.wso2</groupId>
+                <groupId>org.wso2.orbit.org.apache.ode</groupId>
                 <artifactId>ode</artifactId>
                 <exclusions>
                     <exclusion>
