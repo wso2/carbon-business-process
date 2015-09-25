@@ -36,7 +36,7 @@ var loggedUser = session.get("userName");
     <link rel="stylesheet" href="css/style.css">
     <link rel="ICON" href="images/favicon.ico" type="image/ico" />
     <script>
-        <%//This BPSTenant is used by js scripts to identify tenant domain%>
+        //This BPSTenant is used by js scripts to identify tenant domain
         var BPSTenant = "<%=application.get('bpsTenant')%>";
     </script>
 </head>

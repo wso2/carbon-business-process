@@ -26,6 +26,9 @@ if (request.isSecure()) {//check whether the request is secure or not
     //Check whether the user has already logged-in
     if (!authSuccess) {
         //If not show login page
+        if(session.get("userName")!=null) {
+           session.put("userName", null);
+        }
         include("/model/loginModel.jag");
         include("/template/partials/header.jag");
         include("/template/loginView.jag");
