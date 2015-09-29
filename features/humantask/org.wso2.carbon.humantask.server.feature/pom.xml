@@ -210,7 +210,7 @@
                                 <importBundleDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.unifiedendpoint.core
                                 </importBundleDef>
-                                <importBundleDef>org.apache.ode.wso2:ode:${orbit.ode.version}
+                                <importBundleDef>org.wso2.orbit.org.apache.ode:ode:${orbit.ode.version}
                                 </importBundleDef>
                                 <importBundleDef>net.sf.saxon.wso2:saxon.he</importBundleDef>
                                 <importBundleDef>
