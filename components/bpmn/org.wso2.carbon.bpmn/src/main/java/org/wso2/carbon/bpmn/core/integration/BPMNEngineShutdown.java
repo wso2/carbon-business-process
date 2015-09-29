@@ -17,6 +17,7 @@
 package org.wso2.carbon.bpmn.core.integration;
 
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.context.Context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
@@ -29,6 +30,11 @@ public class BPMNEngineShutdown implements WaitBeforeShutdownObserver{
     @Override
     public void startingShutdown() {
         log.info("Shutting down activiti process engine");
+        log.info("Beginning to close down the command context");
+        if(Context.getCommandContext() != null){
+            Context.getCommandContext().close();
+            log.info("Completed the closing of command context");
+        }
         ProcessEngines.destroy();
         status = true;
     }
