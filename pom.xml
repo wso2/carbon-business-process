@@ -590,7 +590,7 @@
                 <version>${version.log4j}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.ode.wso2</groupId>
+                <groupId>org.wso2.orbit.org.apache.ode</groupId>
                 <artifactId>ode</artifactId>
                 <scope>test</scope>
                 <version>${orbit.ode.version}</version>
@@ -1542,7 +1542,7 @@
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
         <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>
-        <orbit.ode.version>1.3.5-wso2v15-SNAPSHOT</orbit.ode.version>
+        <orbit.ode.version>1.3.5-wso2v15</orbit.ode.version>
         <mybatis.version>3.2.5</mybatis.version>
         <jsonpath.wso2.version>1.2.0.wso2v1</jsonpath.wso2.version>
 
