@@ -58,7 +58,7 @@
             <artifactId>org.wso2.carbon.bpel.cluster.notifier</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.ode.wso2</groupId>
+            <groupId>org.wso2.orbit.org.apache.ode</groupId>
             <artifactId>ode</artifactId>
             <exclusions>
                 <exclusion>
@@ -199,7 +199,7 @@
                                 </bundleDef>
                             </bundles>
                             <importBundles>
-                                <importBundleDef>org.apache.ode.wso2:ode</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.org.apache.ode:ode</importBundleDef>
                                 <importBundleDef>asm.wso2:asm</importBundleDef>
                                 <importBundleDef>cglib.wso2:cglib</importBundleDef>
                                 <!--importBundleDef>org.apache.axis2.wso2:axis2-jibx</importBundleDef-->
