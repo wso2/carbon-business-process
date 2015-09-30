@@ -167,7 +167,7 @@
                            BPMNProcess[] processes = client.getProcessListByDeploymentID(deployment.getDeploymentId());
                            boolean firstRow = true;
 
-                          if(processes!=null && processes.length>0){
+                          if(processes != null && processes.length>0){
                           for(BPMNProcess process: processes){ %>
                             <tr>
                                 <% if(firstRow){ %>
