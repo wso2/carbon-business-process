@@ -391,7 +391,7 @@
                             <td>
                                 <a href=<%="instance_list_view.jsp?operation=instanceInfo&instanceID=" + bpmnInstance.getInstanceId()%>><%=bpmnInstance.getInstanceId()%></a>
                             </td>
-                            <td><%if(bpmnInstance.getProcessName()!=null) {
+                            <td><%if(bpmnInstance.getProcessName() != null) {
                                         out.print(bpmnInstance.getProcessName().toString());
                                     } else {
                                         out.print("Not Available");
