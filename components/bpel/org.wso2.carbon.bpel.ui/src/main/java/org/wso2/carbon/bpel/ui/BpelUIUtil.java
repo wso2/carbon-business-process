@@ -51,13 +51,13 @@ public final class BpelUIUtil {
      * @param maxSize
      * @return Truncated string
      */
-    public static String truncateString(String text,int maxSize) {
+    public static String truncateString(String text, int maxSize) {
         long strLength = text.length();
         if (strLength > maxSize) {
             if (log.isDebugEnabled()) {
-                log.debug("Limiting variable size of the instance to:"+ maxSize);
+                log.debug("Limiting variable size of the instance to:" + maxSize);
             }
-            return text.substring(0,maxSize) + " ...";
+            return text.substring(0, maxSize) + " ...";
         }
         return text;
     }
