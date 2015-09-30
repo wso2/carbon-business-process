@@ -409,9 +409,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
         public Object evaluate(List args) throws XPathFunctionException {
             String username = "";
-            if (args.size() == 0)
+            if (args.size() == 0) {
                 username = getUserNameFromCtx();
-            else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
                 String taskName = (String) args.get(0);
                 if (evalCtx.getTask().getName().equals(taskName)) {
                     //Case 2 : TaskName equals to current task, consider current task
