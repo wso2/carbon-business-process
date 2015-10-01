@@ -256,9 +256,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             if (args.size() == 0) {
                 // Case 1: consider current Task.
                 potentialOwners = getPotentialOwnersFromCtx();
-            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+            } else if (taskDAO != null && (args.size() == 1) && (args.get(0) instanceof String)) {
                 String taskName = (String) args.get(0);
-                if (taskName.equals(taskDAO.getName())) {
+                if (taskDAO.getName().equals(taskName)) {
                     //Case 2: TaskName equals to current task, consider current task
                     potentialOwners = getPotentialOwnersFromCtx();
                 } else if (!StringUtils.isNullOrEmpty(taskName)) {
@@ -570,7 +570,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() != 2) {
                 throw new HumanTaskRuntimeException(
-                        "Invalid number of arguments :" + args.size() + ", for expression: except");
+                        "Invalid number of arguments: " + args.size() + ", for expression: except");
             }
             if (!(args.get(0) instanceof Node && args.get(1) instanceof Node)) {
                 throw new HumanTaskRuntimeException(
