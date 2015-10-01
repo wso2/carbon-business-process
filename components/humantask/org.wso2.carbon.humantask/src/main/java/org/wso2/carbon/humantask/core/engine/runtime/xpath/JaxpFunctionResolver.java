@@ -1145,13 +1145,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             return false;
                         } else {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid argument :" + nodeValue + " for function and(), only booleans allowed");
+                                    "Invalid argument: " + nodeValue + " for function and(), only booleans allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function and()",
                                 e);
                     } catch (ClassCastException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function and()",
                                 e);
                     }
                 }
@@ -1189,19 +1189,19 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             result = false;
                         } else {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid argument:" + nodeValue + " for function or(), only boolean nodes allowed");
+                                    "Invalid argument: " + nodeValue + " for function or(), only boolean nodes allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function or()",
                                 e);
                     } catch (ClassCastException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function or()",
                                 e);
                     }
                 }
                 return result;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:" + args + ", for function or()");
+                throw new HumanTaskRuntimeException("Invalid arguments: " + args + ", for function or()");
             }
 
         }
@@ -1235,14 +1235,14 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                         } else {
                             //invalid
                             throw new HumanTaskRuntimeException(
-                                    "Invalid argument:" + nodeValue + ", only boolean nodes allowed");
+                                    "Invalid argument: " + nodeValue + ", only boolean nodes allowed");
                         }
                     } catch (DOMException e) {
                         throw new HumanTaskRuntimeException(
-                                "Invalid arguments:" + args.get(0) + ", for function vote()", e);
+                                "Invalid arguments: " + args.get(0) + ", for function vote()", e);
                     } catch (ClassCastException e) {
                         throw new HumanTaskRuntimeException(
-                                "Invalid arguments:" + args.get(0) + ", for function vote()", e);
+                                "Invalid arguments: " + args.get(0) + ", for function vote()", e);
                     }
                 }
 
@@ -1255,7 +1255,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 //no point of evaluating for false, anyway false returned
                 return false;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments :" + args + ", for function vote()");
+                throw new HumanTaskRuntimeException("Invalid arguments: " + args + ", for function vote()");
             }
         }
     }
@@ -1282,13 +1282,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                         return sum / list.size();
 
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function avg()",
                                 e);
                     } catch (NumberFormatException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function avg()",
                                 e);
                     } catch (ClassCastException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function avg()",
                                 e);
                     }
                 }
@@ -1322,13 +1322,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             }
                         } catch (DOMException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function max()", e);
                         } catch (NumberFormatException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function max()", e);
                         } catch (ClassCastException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function max()", e);
                         }
                     }
                     return max;
@@ -1364,13 +1364,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             }
                         } catch (DOMException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function min()", e);
                         } catch (NumberFormatException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function min()", e);
                         } catch (ClassCastException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function min()", e);
                         }
                     }
                     return min;
@@ -1403,20 +1403,20 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             sum += nodeValue;
                         } catch (DOMException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function sum()", e);
                         } catch (NumberFormatException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function sum()", e);
                         } catch (ClassCastException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function sum()", e);
                         }
                     }
                     return sum;
                 }
                 return Double.NaN;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:" + args + " for function sum()");
+                throw new HumanTaskRuntimeException("Invalid arguments: " + args + " for function sum()");
             }
 
         }
