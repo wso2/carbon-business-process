@@ -855,14 +855,18 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             } else {
                 //invalid argument
                 throw new HumanTaskRuntimeException(
-                        "Invalid argument : " + arg + ", for function getCountOfSubTasksInState()");
+                        "Invalid argument: " + arg + ", for function getCountOfSubTasksInState()");
             }
 
             return count;
         }
     }
 
-    //check the validity of a given task status
+    /**
+     * check the validity of a given task status
+     * @param status
+     * @return true for valid tasks
+     */
     private boolean isValidStatus(String status) {
         for (TaskStatus taskStatus : TaskStatus.values()) {
             if (status.equalsIgnoreCase(taskStatus.name())) {
@@ -1133,10 +1137,10 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                     try {
                         //iterate through node list
                         String nodeValue = ((Element) list.get(i)).getTextContent();
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
+                        if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_TRUE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ONE)) {
                             //true
                             result = true;
-                        } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
+                        } else if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_FALSE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ZERO)) {
                             //false, no point of continuing
                             return false;
                         } else {
@@ -1177,10 +1181,10 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                     try {
                         //iterate through element list
                         String nodeValue = ((Element) list.get(i)).getTextContent();
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
+                        if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_TRUE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ONE)) {
                             //true, no point of continuing
                             return true;
-                        } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
+                        } else if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_FALSE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ZERO)) {
                             //false,
                             result = false;
                         } else {
@@ -1222,10 +1226,10 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 for (int i = 0; i < list.size(); i++) {
                     try {
                         String nodeValue = ((Element) list.get(i)).getTextContent();
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
+                        if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_TRUE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ONE)) {
                             //true
                             trueCount++;
-                        } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
+                        } else if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_FALSE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ZERO)) {
                             //false
                             falseCount++;
                         } else {
