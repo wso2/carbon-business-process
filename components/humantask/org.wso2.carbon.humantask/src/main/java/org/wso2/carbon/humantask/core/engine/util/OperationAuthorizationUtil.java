@@ -373,6 +373,7 @@ public final class OperationAuthorizationUtil {
 
         List<GenericHumanRoleDAO.GenericHumanRoleType> allowedRoles = new ArrayList<GenericHumanRoleDAO.GenericHumanRoleType>();
         allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.BUSINESS_ADMINISTRATORS);
+        allowedRoles.add(GenericHumanRoleDAO.GenericHumanRoleType.NOTIFICATION_RECIPIENTS);
         return authoriseUser(task, caller, allowedRoles, pqe);
     }
 

@@ -571,6 +571,33 @@ function skipTask(id) {
     }
 }
 
+/**
+ * Function to remove a task notification by the given id
+ * @param id - ID of the notification to remove
+ * @returns response payload from HumanTaskClientAPIAdmin service
+ */
+function removeNotification(id) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                                             xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"\
+                                             xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">\
+                       <soapenv:Header/>\
+                       <soapenv:Body>\
+                          <ns:remove>\
+                             <ns:identifier>' + id + '</ns:identifier>\
+                          </ns:remove>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
+    var soapAction = 'http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/remove';
+    var BPSResponse = null;
+
+    BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    } else {
+        return BPSResponse;
+    }
+}
+
 /**********************************************************************************************************************
  START web service requests to HumanTaskRenderingAPI admin service
  **********************************************************************************************************************/

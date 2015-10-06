@@ -523,6 +523,35 @@ if (request.isSecure()) {//check whether the request is secure or not
              </soapenv:Envelope>
              */
 
+        } else if (actionType === 'remove_notification') {
+            var result = new XML(htRequest.removeNotification(taskId));
+            var resultCheck = result.SOAPENV_NS::Body.NS2_NS::removeResponse;
+
+            if (resultCheck.length() > 0) { //request successfull
+                responseMsg = '<remove_notificationResponse><success>true</success></remove_notificationResponse>';
+            } else {
+                if(result == null || result == '') { // session timeout
+                    if (log.isDebugEnabled()) {
+                        log.debug('Session timed out for notificaation'+ "" + taskId);
+                    }
+                    responseMsg = '<remove_notificationResponse><success>timeout</success></remove_notificationResponse>';
+                } else { //skip unsuccessfull
+                    responseMsg = '<remove_notificationResponse><success>false</success></remove_notificationResponse>';
+                }
+            }
+
+            response.contentType = 'text/xml';
+            response.content = responseMsg;
+
+            /*
+             * SAMPLE SUCCESS RESPONSE
+             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+             <soapenv:Body>
+             <ns2:removeResponse xmlns:ns2="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803"/>
+             </soapenv:Body>
+             </soapenv:Envelope>
+             */
+
         } else {
             responseMsg = '<unknownTaskResponse>\
                                 <success>false</success>\

@@ -755,3 +755,37 @@ function setDatePicker (dateElement) {
                                      }
                                  });
 }
+
+/**
+ * function to make ajax call to remove a notification
+ * @param id target notification id
+ */
+function removeNotification(id) {
+    var requestUrl = "/" + appName + "/action?type=remove_notification&tid=" + id;
+    $.ajax({
+        type: 'POST',
+        url: httpUrl + requestUrl,
+        success: function (data) {
+            var success = data.firstChild.getElementsByTagName('success')[0].textContent;
+            if (success === 'true') {
+                //successful
+                window.location = httpUrl + "/" + appName + "/notificationview?id=" + id;
+            }
+            else if (success === 'timeout') {
+                window.location = httpUrl + "/" + appName + "/login";
+            }
+            else {
+                //unsuccessful
+                $('#InfoErrMsg').html("ERROR : Unable to remove notification");
+                $('#additionalInfoErr').show();
+            }
+        },
+
+        error: function (response) {
+            $('#InfoErrMsg').html("CONNECTION ERROR : please refresh page");
+            $('#additionalInfoErr').show();
+        }
+
+
+    });
+}
