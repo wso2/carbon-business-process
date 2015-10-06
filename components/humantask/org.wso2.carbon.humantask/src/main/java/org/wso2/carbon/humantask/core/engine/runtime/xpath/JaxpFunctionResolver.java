@@ -256,9 +256,9 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             if (args.size() == 0) {
                 // Case 1: consider current Task.
                 potentialOwners = getPotentialOwnersFromCtx();
-            } else if ((args.size() == 1) && (args.get(0) instanceof String)) {
+            } else if (taskDAO != null && (args.size() == 1) && (args.get(0) instanceof String)) {
                 String taskName = (String) args.get(0);
-                if (taskName.equals(taskDAO.getName())) {
+                if (taskDAO.getName().equals(taskName)) {
                     //Case 2: TaskName equals to current task, consider current task
                     potentialOwners = getPotentialOwnersFromCtx();
                 } else if (!StringUtils.isNullOrEmpty(taskName)) {
@@ -570,7 +570,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
         public Object evaluate(List args) throws XPathFunctionException {
             if (args.size() != 2) {
                 throw new HumanTaskRuntimeException(
-                        "Invalid number of arguments :" + args.size() + ", for expression: except");
+                        "Invalid number of arguments: " + args.size() + ", for expression: except");
             }
             if (!(args.get(0) instanceof Node && args.get(1) instanceof Node)) {
                 throw new HumanTaskRuntimeException(
@@ -855,14 +855,18 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
             } else {
                 //invalid argument
                 throw new HumanTaskRuntimeException(
-                        "Invalid argument : " + arg + ", for function getCountOfSubTasksInState()");
+                        "Invalid argument: " + arg + ", for function getCountOfSubTasksInState()");
             }
 
             return count;
         }
     }
 
-    //check the validity of a given task status
+    /**
+     * check the validity of a given task status
+     * @param status
+     * @return true for valid tasks
+     */
     private boolean isValidStatus(String status) {
         for (TaskStatus taskStatus : TaskStatus.values()) {
             if (status.equalsIgnoreCase(taskStatus.name())) {
@@ -1133,21 +1137,21 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                     try {
                         //iterate through node list
                         String nodeValue = ((Element) list.get(i)).getTextContent();
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
+                        if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_TRUE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ONE)) {
                             //true
                             result = true;
-                        } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
+                        } else if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_FALSE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ZERO)) {
                             //false, no point of continuing
                             return false;
                         } else {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid argument :" + nodeValue + " for function and(), only booleans allowed");
+                                    "Invalid argument: " + nodeValue + " for function and(), only booleans allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function and()",
                                 e);
                     } catch (ClassCastException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function and()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function and()",
                                 e);
                     }
                 }
@@ -1177,27 +1181,27 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                     try {
                         //iterate through element list
                         String nodeValue = ((Element) list.get(i)).getTextContent();
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
+                        if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_TRUE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ONE)) {
                             //true, no point of continuing
                             return true;
-                        } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
+                        } else if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_FALSE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ZERO)) {
                             //false,
                             result = false;
                         } else {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid argument:" + nodeValue + " for function or(), only boolean nodes allowed");
+                                    "Invalid argument: " + nodeValue + " for function or(), only boolean nodes allowed");
                         }
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function or()",
                                 e);
                     } catch (ClassCastException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function or()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function or()",
                                 e);
                     }
                 }
                 return result;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:" + args + ", for function or()");
+                throw new HumanTaskRuntimeException("Invalid arguments: " + args + ", for function or()");
             }
 
         }
@@ -1222,23 +1226,23 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 for (int i = 0; i < list.size(); i++) {
                     try {
                         String nodeValue = ((Element) list.get(i)).getTextContent();
-                        if (nodeValue.equalsIgnoreCase("true") || nodeValue.equalsIgnoreCase("1")) {
+                        if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_TRUE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ONE)) {
                             //true
                             trueCount++;
-                        } else if (nodeValue.equalsIgnoreCase("false") || nodeValue.equalsIgnoreCase("0")) {
+                        } else if (nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_FALSE) || nodeValue.equalsIgnoreCase(XPath2Constants.NODE_VALUE_ZERO)) {
                             //false
                             falseCount++;
                         } else {
                             //invalid
                             throw new HumanTaskRuntimeException(
-                                    "Invalid argument:" + nodeValue + ", only boolean nodes allowed");
+                                    "Invalid argument: " + nodeValue + ", only boolean nodes allowed");
                         }
                     } catch (DOMException e) {
                         throw new HumanTaskRuntimeException(
-                                "Invalid arguments:" + args.get(0) + ", for function vote()", e);
+                                "Invalid arguments: " + args.get(0) + ", for function vote()", e);
                     } catch (ClassCastException e) {
                         throw new HumanTaskRuntimeException(
-                                "Invalid arguments:" + args.get(0) + ", for function vote()", e);
+                                "Invalid arguments: " + args.get(0) + ", for function vote()", e);
                     }
                 }
 
@@ -1251,7 +1255,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                 //no point of evaluating for false, anyway false returned
                 return false;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments :" + args + ", for function vote()");
+                throw new HumanTaskRuntimeException("Invalid arguments: " + args + ", for function vote()");
             }
         }
     }
@@ -1278,13 +1282,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                         return sum / list.size();
 
                     } catch (DOMException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function avg()",
                                 e);
                     } catch (NumberFormatException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function avg()",
                                 e);
                     } catch (ClassCastException e) {
-                        throw new HumanTaskRuntimeException("Invalid arguments:" + args.get(0) + ", for function avg()",
+                        throw new HumanTaskRuntimeException("Invalid arguments: " + args.get(0) + ", for function avg()",
                                 e);
                     }
                 }
@@ -1318,13 +1322,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             }
                         } catch (DOMException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function max()", e);
                         } catch (NumberFormatException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function max()", e);
                         } catch (ClassCastException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function max()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function max()", e);
                         }
                     }
                     return max;
@@ -1360,13 +1364,13 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             }
                         } catch (DOMException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function min()", e);
                         } catch (NumberFormatException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function min()", e);
                         } catch (ClassCastException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function min()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function min()", e);
                         }
                     }
                     return min;
@@ -1399,20 +1403,20 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
                             sum += nodeValue;
                         } catch (DOMException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function sum()", e);
                         } catch (NumberFormatException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function sum()", e);
                         } catch (ClassCastException e) {
                             throw new HumanTaskRuntimeException(
-                                    "Invalid arguments:" + args.get(0) + ", for function sum()", e);
+                                    "Invalid arguments: " + args.get(0) + ", for function sum()", e);
                         }
                     }
                     return sum;
                 }
                 return Double.NaN;
             } else {
-                throw new HumanTaskRuntimeException("Invalid arguments:" + args + " for function sum()");
+                throw new HumanTaskRuntimeException("Invalid arguments: " + args + " for function sum()");
             }
 
         }

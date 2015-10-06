@@ -88,4 +88,12 @@ public final class XPath2Constants {
     public static final String FUNCTION_MIN = "min";
 
     public static final String FUNCTION_SUM = "sum";
+
+    public static final String NODE_VALUE_TRUE = "true";
+
+    public static final String NODE_VALUE_FALSE = "false";
+
+    public static final String NODE_VALUE_ONE = "1";
+
+    public static final String NODE_VALUE_ZERO = "0";
 }
