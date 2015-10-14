@@ -574,6 +574,7 @@ public final class TransformerUtils {
             authParams.setAuthorisedToUpdateComment(OperationAuthorizationUtil.authorisedToUpdateComment(task, caller, pqe));
         } else if (TaskType.NOTIFICATION.equals(task.getType())) {
             authParams.setAuthorisedToGetDescription(OperationAuthorizationUtil.authorisedToGetDescription(task, caller, pqe));
+            authParams.setAuthorisedToRemove(OperationAuthorizationUtil.authorisedToRemove(task, caller, pqe));
         }
         return authParams;
     }
