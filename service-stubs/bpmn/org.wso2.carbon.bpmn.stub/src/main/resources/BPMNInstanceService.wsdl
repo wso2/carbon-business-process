@@ -76,6 +76,22 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="getPaginatedUnfinishedInstancesByStatus">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="isActive" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="start" type="xs:int"/>
+                        <xs:element minOccurs="0" name="size" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getPaginatedUnfinishedInstancesByStatusResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="getPaginatedInstances">
                 <xs:complexType>
                     <xs:sequence>
@@ -243,6 +259,12 @@
     <wsdl:message name="getPaginatedInstanceByFilterResponse">
         <wsdl:part name="parameters" element="ns:getPaginatedInstanceByFilterResponse"/>
     </wsdl:message>
+    <wsdl:message name="getPaginatedUnfinishedInstancesByStatusRequest">
+        <wsdl:part name="parameters" element="ns:getPaginatedUnfinishedInstancesByStatus"/>
+    </wsdl:message>
+    <wsdl:message name="getPaginatedUnfinishedInstancesByStatusResponse">
+        <wsdl:part name="parameters" element="ns:getPaginatedUnfinishedInstancesByStatusResponse"/>
+    </wsdl:message>
     <wsdl:message name="deleteProcessInstanceRequest">
         <wsdl:part name="parameters" element="ns:deleteProcessInstance"/>
     </wsdl:message>
@@ -302,6 +324,10 @@
         <wsdl:operation name="getPaginatedInstanceByFilter">
             <wsdl:input message="ns:getPaginatedInstanceByFilterRequest" wsaw:Action="urn:getPaginatedInstanceByFilter"/>
             <wsdl:output message="ns:getPaginatedInstanceByFilterResponse" wsaw:Action="urn:getPaginatedInstanceByFilterResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
+            <wsdl:input message="ns:getPaginatedUnfinishedInstancesByStatusRequest" wsaw:Action="urn:getPaginatedUnfinishedInstancesByStatus"/>
+            <wsdl:output message="ns:getPaginatedUnfinishedInstancesByStatusResponse" wsaw:Action="urn:getPaginatedUnfinishedInstancesByStatusResponse"/>
         </wsdl:operation>
         <wsdl:operation name="deleteProcessInstance">
             <wsdl:input message="ns:deleteProcessInstanceRequest" wsaw:Action="urn:deleteProcessInstance"/>
@@ -422,6 +448,15 @@
         </wsdl:operation>
         <wsdl:operation name="getPaginatedInstanceByFilter">
             <soap:operation soapAction="urn:getPaginatedInstanceByFilter" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
+            <soap:operation soapAction="urn:getPaginatedUnfinishedInstancesByStatus" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -567,6 +602,15 @@
                 <soap12:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
+            <soap12:operation soapAction="urn:getPaginatedUnfinishedInstancesByStatus" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="getPaginatedInstances">
             <soap12:operation soapAction="urn:getPaginatedInstances" style="document"/>
             <wsdl:input>
@@ -674,6 +718,15 @@
         </wsdl:operation>
         <wsdl:operation name="getPaginatedInstanceByFilter">
             <http:operation location="getPaginatedInstanceByFilter"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
+            <http:operation location="getPaginatedUnfinishedInstancesByStatus"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>

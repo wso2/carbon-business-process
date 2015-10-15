@@ -159,6 +159,16 @@ public class WorkflowServiceClient {
         return bpmnInstances;
     }
 
+    public BPMNInstance[] getPaginatedUnfinishedInstancesByStatus(boolean isActive, int start, int size) {
+        BPMNInstance[] bpmnInstances = null;
+        try {
+            bpmnInstances = instanceServiceStub.getPaginatedUnfinishedInstancesByStatus(isActive, start, size);
+        } catch (RemoteException e) {
+            log.error("Error getting process list by status filter, RemoteException", e);
+        }
+        return bpmnInstances;
+    }
+
     public BPMNInstance[] getPaginatedHistoryInstances(int start, int size) throws Exception {
         return instanceServiceStub.getPaginatedHistoryInstances(start, size);
     }
