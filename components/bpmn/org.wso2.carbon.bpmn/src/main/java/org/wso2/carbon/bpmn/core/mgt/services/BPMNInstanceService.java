@@ -434,4 +434,57 @@ public class BPMNInstanceService {
         }
         return imageString;
     }
+
+    /**
+     * Returns unfinished(none completed) process instances filtered by status (Active/Suspended)
+     * @param isActive if true, returns active instances, else return suspended instances
+     * @param start start count for pagination
+     * @param size paginated list max size
+     * @return list of BPMNInstance for given status
+     */
+    public BPMNInstance[] getPaginatedUnfinishedInstancesByStatus(boolean isActive, int start, int size) {
+        List<BPMNInstance> bpmnInstanceList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery()
+                .processInstanceTenantId(tenantId.toString());
+        HistoricProcessInstanceQuery historicQuery = BPMNServerHolder.getInstance().getEngine().getHistoryService()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(tenantId.toString())
+                .includeProcessVariables();
+        query = query.includeProcessVariables();
+
+        if (isActive) {
+            query.active();
+        } else {
+            query.suspended();
+        }
+
+        processInstanceCount = (int) query.count();
+        List<ProcessInstance> instances = query.listPage(start, size);
+        for (ProcessInstance instance : instances) {
+            BPMNInstance bpmnInstance = new BPMNInstance();
+            bpmnInstance.setInstanceId(instance.getId());
+            bpmnInstance.setProcessId(instance.getProcessDefinitionId());
+            List<ProcessDefinition> processes = BPMNServerHolder.getInstance().getEngine().getRepositoryService()
+                    .createProcessDefinitionQuery().processDefinitionTenantId(tenantId.toString())
+                    .processDefinitionId(instance.getProcessDefinitionId()).list();
+            String processName = instance.getProcessDefinitionId();
+            if (!processes.isEmpty()) {
+                processName = processes.get(0).getName();
+            }
+            bpmnInstance.setProcessName(processName);
+            //has to retrieve HistoricProcessInstance, ProcessInstance does not contain start and end times
+            HistoricProcessInstance historicProcessInstance = historicQuery
+                    .processInstanceId(instance.getProcessInstanceId()).singleResult();
+            if (historicProcessInstance != null) {
+                bpmnInstance.setStartTime(historicProcessInstance.getStartTime());
+                bpmnInstance.setEndTime(historicProcessInstance.getEndTime());
+            }
+            bpmnInstance.setVariables(formatVariables(instance.getProcessVariables()));
+            bpmnInstance.setSuspended(!isActive);
+            bpmnInstanceList.add(bpmnInstance);
+        }
+        return bpmnInstanceList.toArray(new BPMNInstance[bpmnInstanceList.size()]);
+    }
 }

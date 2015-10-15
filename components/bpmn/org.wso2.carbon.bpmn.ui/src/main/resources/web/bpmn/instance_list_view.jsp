@@ -55,9 +55,18 @@
 
         String parameters = "region=region1&item=bpmn_menu";
         boolean finished = false;
+        boolean suspended = false;
+        boolean activeFilter = false;
         if (state != null && state.equals("completed")) {
             parameters += "&state=completed";
             finished = true;
+        } else if (state != null && state.equals("suspended")) {
+            parameters += "&state=suspended";
+            suspended = true;
+        } else if (state != null && state.equals("activeFilter")) {
+            //added separate state to filter active, since historyProcessInstanceQuery must be used
+            parameters += "&state=active";
+            activeFilter = true;
         } else {
             parameters += "&state=active";
         }
@@ -88,19 +97,30 @@
         try {
             client = new WorkflowServiceClient(cookie, serverURL, configContext);
 
-
-            if(operation != null && operation.equals("deleteProcessInstance")){
+            if (operation != null && operation.equals("deleteProcessInstance")){
                 client.deleteProcessInstance(instanceId);
-            }else if(operation != null && operation.equals("suspendProcessInstance")){
+            } else if(operation != null && operation.equals("suspendProcessInstance")){
                 client.suspendProcessInstance(instanceId);
-            }else if(operation != null && operation.equals("activateProcessInstance")){
+            } else if(operation != null && operation.equals("activateProcessInstance")){
                 client.activateProcessInstance(instanceId);
-            }else if(operation != null && operation.equals("deleteAllProcessInstances")){
+            } else if(operation != null && operation.equals("deleteAllProcessInstances")){
                 client.deleteAllProcessInstances();
             }
 
-            bpmnInstances = client.getPaginatedInstanceByFilter(finished, iid, startAfter, startBefore, pid,
-                    variableName, variableValue, start, 10);
+            if (finished) {
+                bpmnInstances = client
+                        .getPaginatedInstanceByFilter(finished, iid, startAfter, startBefore, pid, variableName,
+                                variableValue, start, 10);
+            } else if (activeFilter) {
+                bpmnInstances = client
+                        .getPaginatedInstanceByFilter(finished, iid, startAfter, startBefore, pid, variableName,
+                                variableValue, start, 10);
+            } else if (suspended) {
+                bpmnInstances = client.getPaginatedUnfinishedInstancesByStatus(false, start, 10);
+            } else {
+                bpmnInstances = client.getPaginatedUnfinishedInstancesByStatus(true, start, 10);
+            }
+
             bpmnProcesses = client.getProcessList();
             numberOfPages = (int) Math.ceil(client.getInstanceCount()/10.0);
         } catch (Exception e) {
@@ -196,7 +216,7 @@
             <% if (finished) { %>
                 var query = "region=region1&item=bpmn_menu&state=completed";
             <% } else {%>
-                var query = "region=region1&item=bpmn_menu&state=active";
+                var query = "region=region1&item=bpmn_menu&state=activeFilter";
             <% } %>
             var iid = document.getElementById("instanceId").value;
             var pid = document.getElementById("processId").value;
@@ -260,7 +280,8 @@
                     <th width="10%"></th>
                     <th width="8%"></th>
                     <th width="10%"></th>
-                    <th width="65%"></th>
+                    <th width="10%"></th>
+                    <th width="55%"></th>
                     <th width="7%"></th>
                 </tr>
                 </thead>
@@ -270,6 +291,10 @@
                     <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_menu&state=active"
                                      style="background-image: url('images/bpmn-ins-active.gif')">
                         <fmt:message key="bpmn.active"/>
+                    </a></td>
+                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_menu&state=suspended"
+                                     style="background-image: url('images/bpmn-ins-suspended.gif')">
+                        <fmt:message key="bpmn.suspended"/>
                     </a></td>
                     <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_menu&state=completed"
                                      style="background-image: url('images/bpmn-ins-completed.gif')">
