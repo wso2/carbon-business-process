@@ -24,7 +24,7 @@ import java.util.*;
 public class LayoutManager {
     // Variables
     // Properties
-    private int svgWidth = 1400;
+    private int svgWidth = 2800;
 
     public int getSvgWidth() {
         return svgWidth;
@@ -33,8 +33,8 @@ public class LayoutManager {
     public void setSvgWidth(int svgWidth) {
         this.svgWidth = svgWidth;
     }
-
-    private int svgHeight = 1000;
+    
+    private int svgHeight = 3000;
 
     public int getSvgHeight() {
         return svgHeight;
@@ -44,7 +44,7 @@ public class LayoutManager {
         this.svgHeight = svgHeight;
     }
 
-    private int xSpacing = 20;
+    private int xSpacing = 50;
 
     public int getXSpacing() {
         return xSpacing;
@@ -54,7 +54,7 @@ public class LayoutManager {
         this.xSpacing = xSpacing;
     }
 
-    private int ySpacing = 50;
+   private int ySpacing = 70;
 
     public int getYSpacing() {
         return ySpacing;
@@ -164,7 +164,7 @@ public class LayoutManager {
         this.simpleActivityOpacity = simpleActivityOpacity;
     }
 
-    private int startIconDim = 32;
+    private int startIconDim = 50;
 
     public int getStartIconDim() {
         return startIconDim;
@@ -174,14 +174,23 @@ public class LayoutManager {
         this.startIconDim = startIconDim;
     }
 
-    private int endIconDim = 22;
-
+    private int endIconDim = 50;
     public int getEndIconDim() {
         return endIconDim;
     }
 
     public void setEndIconDim(int endIconDim) {
         this.endIconDim = endIconDim;
+    }
+
+    //Get Icon Width 
+    private int iconWidth = 100;
+
+    public int getIconWidth() {
+        return iconWidth;
+    }
+    public void setIconWidth(int iconWidth) {
+        this.iconWidth = endIconDim;
     }
 
     // Methods

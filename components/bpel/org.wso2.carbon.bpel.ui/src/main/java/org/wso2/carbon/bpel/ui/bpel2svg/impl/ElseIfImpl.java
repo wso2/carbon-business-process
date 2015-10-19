@@ -227,7 +227,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         if (isAddOpacity()) {
             group1.setAttributeNS(null, "style", "opacity:" + getOpacity());
         }
-        group1.appendChild(getBoxDefinition(doc));
+       // group1.appendChild(getBoxDefinition(doc));
         group1.appendChild(getImageDefinition(doc));
         //Get sub activities
         group1.appendChild(getSubActivitiesSVGString(doc));

@@ -20,6 +20,9 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.h2.java.lang.System;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -32,6 +35,7 @@ import java.util.*;
  * Activity tag UI impl
  */
 public abstract class ActivityImpl implements ActivityInterface {
+    private static final Log log = LogFactory.getLog(ActivityImpl.class);
     // Local Variables
     protected LayoutManager layoutManager =
             BPEL2SVGFactory.getInstance().getLayoutManager();
@@ -73,7 +77,8 @@ public abstract class ActivityImpl implements ActivityInterface {
     // Start Icon
     protected String startIconPath = null;
     protected int startIconHeight = layoutManager.getStartIconDim();
-    protected int startIconWidth = layoutManager.getStartIconDim();
+    //protected int startIconWidth = layoutManager.getStartIconDim();
+    protected int startIconWidth = layoutManager.getIconWidth();
     protected int startIconXLeft = 0;
     protected int startIconYTop = 0;
     protected int startIconTextXLeft = 0;
@@ -81,7 +86,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     // End Icon
     protected String endIconPath = null;
     protected int endIconHeight = layoutManager.getEndIconDim();
-    protected int endIconWidth = layoutManager.getEndIconDim();
+    protected int endIconWidth = layoutManager.getIconWidth();
     protected int endIconXLeft = 0;
     protected int endIconYTop = 0;
     protected int endIconTextXLeft = 0;
@@ -109,7 +114,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected int boxHeight = 0;
     protected int boxWidth = 0;
     protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;" +
-            "stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;" +
+            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;" +
             "bbbbbbbstroke-opacity:1;fill:url(#orange_red);stroke-opacity:0.2";
 
     // Constructor
@@ -423,9 +428,9 @@ public abstract class ActivityImpl implements ActivityInterface {
         Element group = null;
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
-        if (isAddOpacity()) {
+       /* if (isAddOpacity()) {
             group.setAttributeNS(null, "style", "opacity:" + getOpacity());
-        }
+        }*/
         group.appendChild(getBoxDefinition(doc));
         group.appendChild(getImageDefinition(doc));
         group.appendChild(getStartImageText(doc));
@@ -436,6 +441,7 @@ public abstract class ActivityImpl implements ActivityInterface {
         group.appendChild(getArrows(doc));
 
         return group;
+
     }
 
     protected Element getArrows(SVGDocument doc) {
@@ -502,37 +508,52 @@ public abstract class ActivityImpl implements ActivityInterface {
             activity = itr.next();
             subElement.appendChild(activity.getSVGString(doc));   //attention check this probably should be changed
             name = activity.getId();
+
         }
         return subElement;
     }
 
     protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
                                          int imgWidth, int imgHeight, String id) {
+
         Element group = null;
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
 
-        if (getStartIconPath() != null) {         // TODO looks like redundent, imgPath in method arguments
-            if (isAddIconOpacity() && !isAddSimpleActivityOpacity()) {
-                group.setAttributeNS(null, "style", "opacity:" + getIconOpacity());
-            }
-            Element image = doc.createElementNS("http://www.w3.org/2000/svg", "image");
-            image.setAttributeNS(null, "xlink:href", imgPath);
-            //image.setAttributeNS(null, "transform", BPEL2SVGIcons.TRANSFORMATION_MATRIX);
-            image.setAttributeNS(null, "x", String.valueOf(imgXLeft));
-            image.setAttributeNS(null, "y", String.valueOf(imgYTop));
-            image.setAttributeNS(null, "width", String.valueOf(imgWidth));
-            image.setAttributeNS(null, "height", String.valueOf(imgHeight));
-            image.setAttributeNS(null, "id", id);
-            image.setAttributeNS("xlink", "title", getActivityInfoString());
+        if (getStartIconPath() != null) {     
 
-            if (isAddIconOpacity() && !isAddSimpleActivityOpacity()) {
-                group.appendChild(image);
-                return group;
-            } else {
-                return image;
-            }
+            Element x=null;
+            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x.setAttributeNS(null, "id", id);
+
+            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttributeNS(null, "x", String.valueOf(imgXLeft));
+            rect.setAttributeNS(null, "y", String.valueOf(imgYTop));
+            rect.setAttributeNS(null, "width", String.valueOf(imgWidth));
+            rect.setAttributeNS(null, "height", String.valueOf(imgHeight));
+            rect.setAttributeNS(null, "id", id);
+            rect.setAttributeNS(null, "rx", "10");
+            rect.setAttributeNS(null, "ry", "10");
+            rect.setAttributeNS(null, "style","fill:white;stroke:black;stroke-width:1.5;fill-opacity:0.1");
+
+            int embedImageX= imgXLeft + 25;
+            int embedImageY= (imgYTop + (5 / 2));
+            int embedImageHeight= 45;
+            int embedImageWidth= 45;
+
+            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
+            embedImage.setAttributeNS(null, "xlink:href", imgPath);
+            embedImage.setAttributeNS(null, "x", String.valueOf(embedImageX));
+            embedImage.setAttributeNS(null, "y", String.valueOf(embedImageY));
+            embedImage.setAttributeNS(null, "width", String.valueOf(embedImageWidth));
+            embedImage.setAttributeNS(null, "height", String.valueOf(embedImageHeight));
+
+            x.appendChild(rect);
+            x.appendChild(embedImage);
+            
+            return x;
         }
+
         return group;
     }
 
@@ -563,12 +584,12 @@ public abstract class ActivityImpl implements ActivityInterface {
             text1.setAttributeNS(null, "style", "font-size:12px;font-style:normal;font-variant:normal;font-weight:" +
                     "normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:" +
                     "start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;" +
-                    "stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Narrow;" +
+                    "stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;" +
                     "-inkscape-font-specification:Arial Narrow");
 
             Element tspan = doc.createElementNS("http://www.w3.org/2000/svg", "tspan");
-            tspan.setAttributeNS(null, "x", String.valueOf(txtXLeft));
-            tspan.setAttributeNS(null, "y", String.valueOf(txtYTop));
+            tspan.setAttributeNS(null, "x", String.valueOf(txtXLeft+5));
+            tspan.setAttributeNS(null, "y", String.valueOf(txtYTop+5));
             tspan.setAttributeNS(null, "id", "tspan-" + imgName);
 
             Text text2 = doc.createTextNode(imgDisplayName);
@@ -598,14 +619,15 @@ public abstract class ActivityImpl implements ActivityInterface {
         this.largeArrow = largeArrow;
     }
 
-    private boolean largeArrow = false;
+    //was private made it protected
+    protected boolean largeArrow = false;
 
-    private String getArrowStyle() {
-        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:" +
-                "butt;stroke-linejoin:round;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:" +
+    protected String getArrowStyle() {
+        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
+                "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:" +
                 "none;stroke-opacity:1";
-        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:" +
-                "butt;stroke-linejoin:round;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:" +
+        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
+                "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:" +
                 "none;stroke-opacity:1";
 
         if (largeArrow) {
@@ -616,11 +638,11 @@ public abstract class ActivityImpl implements ActivityInterface {
     }
 
     protected String getLinkArrowStyle() {
-        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:" +
-                "butt;stroke-linejoin:round;marker-end:url(#LinkArrow);stroke-miterlimit:4;stroke-dasharray:" +
+        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
+                "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:" +
                 "none;stroke-opacity:1;opacity: 0.25;"; // + getIconOpacity();
-        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:" +
-                "butt;stroke-linejoin:round;marker-end:url(#LinkArrow);stroke-miterlimit:4;stroke-dasharray:" +
+        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
+                "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:" +
                 "none;stroke-opacity:1;opacity: 0.25;"; // + getIconOpacity();
 
         if (largeArrow) {
@@ -629,7 +651,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             return mediumArrowStr;
         }
     }
-
+//overide in IfImpl
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
         Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
 
@@ -640,7 +662,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             if(layoutManager.isVerticalLayout()){
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
                         ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX +
-                        "," + endY);                            //use constants for these propotions
+                        "," + endY);                          //use constants for these propotions
             }else{
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
                         "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
@@ -664,7 +686,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     }
 
     protected Element getBoxDefinition(SVGDocument doc) {
-        return getBoxDefinition(doc, getDimensions().getXLeft() + BOX_MARGIN, getDimensions().getYTop() + BOX_MARGIN,
+        return getBoxDefinition(doc, getDimensions().getXLeft() + BOX_MARGIN , getDimensions().getYTop() + BOX_MARGIN,
                 getDimensions().getWidth() - (BOX_MARGIN * 2), getDimensions().getHeight() - (BOX_MARGIN * 2), getBoxId());
     }
 
@@ -955,6 +977,7 @@ public abstract class ActivityImpl implements ActivityInterface {
                 }
             }
         }
+      //  System.out.println("processSubactivities:   "+subActivities);
         return endActivity;
     }
 

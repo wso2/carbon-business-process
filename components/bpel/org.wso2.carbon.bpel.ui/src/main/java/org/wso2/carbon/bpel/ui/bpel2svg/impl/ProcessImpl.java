@@ -293,8 +293,10 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         //path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
         //path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=25");
 
-        path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
-        path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
+
+      //  path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
+       // path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
+
         //path.setAttributeNS(null, "onload", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
        // path.setAttributeNS(null, "onmousemove", "this.style.opacity=1;this.filters.alpha.opacity=100");
 
