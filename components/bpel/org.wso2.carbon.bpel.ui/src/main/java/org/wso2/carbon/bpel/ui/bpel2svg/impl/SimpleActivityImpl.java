@@ -108,13 +108,14 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
         if (isAddOpacity()) {
+          /* Removing opacity on mouseover and mouseout
             group.setAttributeNS(null, "style", "opacity:" + getOpacity());
             group.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
-            group.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=40");
+            group.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=40");*/
             group.setAttributeNS("xlink", "title", getActivityInfoString());
         }
 
-//      group.appendChild(getBoxDefinition());        
+        //group.appendChild(getBoxDefinition());
         group.appendChild(getImageDefinition(doc));
         group.appendChild(getStartImageText(doc));
 

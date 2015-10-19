@@ -289,14 +289,17 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         path.setAttributeNS(null, "id", id);
         path.setAttributeNS(null, "style", getLinkArrowStyle());
         path.setAttributeNS("xlink", "title", linkName);
-        //path.setAttributeNS(null, "style", "opacity:" + getIconOpacity());
-        //path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
-        //path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=25");
 
+        /* Removing opacity on mouseover and mouseout
+        path.setAttributeNS(null, "style", "opacity:" + getIconOpacity());
         path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
-        path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
-        //path.setAttributeNS(null, "onload", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
-       // path.setAttributeNS(null, "onmousemove", "this.style.opacity=1;this.filters.alpha.opacity=100");
+        path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=25");
+
+       path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
+       path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
+
+       path.setAttributeNS(null, "onload", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
+       path.setAttributeNS(null, "onmousemove", "this.style.opacity=1;this.filters.alpha.opacity=100");*/
 
         return path;
     }

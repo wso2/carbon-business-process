@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
@@ -32,7 +34,7 @@ import org.apache.axiom.om.OMElement;
  * Sequence tag UI impl
  */
 public class SequenceImpl extends ActivityImpl implements SequenceInterface {
-
+    private static final Log log = LogFactory.getLog(SequenceImpl.class);
     public SequenceImpl(String token) {
         super(token);
         if (name == null) {

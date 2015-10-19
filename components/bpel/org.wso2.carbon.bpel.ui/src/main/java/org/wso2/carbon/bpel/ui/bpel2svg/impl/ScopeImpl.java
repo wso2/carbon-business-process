@@ -54,9 +54,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
-    private int handlerIconWidth = 16;
-    private int handlerIconHeight = 16;
+    private int handlerIconWidth = 70;
+    private int handlerIconHeight = 50;
 
     public int getHandlerIconHeight() {
         return handlerIconHeight;
@@ -75,7 +74,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     }
 
     protected int getHandlerConnectorSpacing() {
-        int spacing = 5;
+        int spacing = 10;
         return spacing;
     }
 
@@ -589,7 +588,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopeterminationhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
+        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopeterminationhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
+        String iconPath = BPEL2SVGIcons.TERMINATIONHANDLER_ICON;
 
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
@@ -605,7 +605,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopefaulthandler" + BPEL2SVGFactory.getInstance().getIconExtension();
+        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopefaulthandler" + BPEL2SVGFactory.getInstance().getIconExtension();
+        String iconPath = BPEL2SVGIcons.FAULTHANDLER_ICON;
 
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
@@ -621,8 +622,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopecompensationhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
-
+        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopecompensationhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
+        String iconPath = BPEL2SVGIcons.COMPENSATIONHANDLER_ICON;
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
 
@@ -637,8 +638,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopeeventhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
-
+        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopeeventhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
+        String iconPath = BPEL2SVGIcons.EVENTHANDLER_ICON;
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
 
@@ -650,5 +651,51 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     @Override
     public String getOpacity() {
         return getCompositeOpacity();
+    }
+
+     protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
+                                         int imgWidth, int imgHeight, String id) {
+
+        Element group = null;
+        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttributeNS(null, "id", getLayerId());
+
+        if (getStartIconPath() != null) {     
+
+            //Rectangle to place the image
+            Element x=null;
+            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x.setAttributeNS(null, "id", id);
+
+            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttributeNS(null, "x", String.valueOf(imgXLeft + 10));
+            rect.setAttributeNS(null, "y", String.valueOf(imgYTop));
+            rect.setAttributeNS(null, "width", String.valueOf(imgWidth));
+            rect.setAttributeNS(null, "height", String.valueOf(imgHeight));
+            rect.setAttributeNS(null, "id", id);
+            rect.setAttributeNS(null, "rx", "10");
+            rect.setAttributeNS(null, "ry", "10");
+            rect.setAttributeNS(null, "style","fill:white;stroke:black;stroke-width:1.5;fill-opacity:0.1");
+
+            //Image attributes
+            int embedImageX= imgXLeft + 25;
+            int embedImageY= imgYTop + ( 5 / 2 );
+            int embedImageHeight= 45;
+            int embedImageWidth= 45;
+
+            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
+            embedImage.setAttributeNS(null, "xlink:href", imgPath);
+            embedImage.setAttributeNS(null, "x", String.valueOf(embedImageX));
+            embedImage.setAttributeNS(null, "y", String.valueOf(embedImageY));
+            embedImage.setAttributeNS(null, "width", String.valueOf(embedImageWidth));
+            embedImage.setAttributeNS(null, "height", String.valueOf(embedImageHeight));
+
+            x.appendChild(rect);
+            x.appendChild(embedImage);
+            
+            return x;
+        }
+
+        return group;
     }
 }
