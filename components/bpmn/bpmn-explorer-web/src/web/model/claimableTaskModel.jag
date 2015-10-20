@@ -38,8 +38,8 @@ for(var j = 0; j < roles.length; j++){
 }
 
 try {
-    var tasks = get( httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user + "&active=true&sort=id&order=asc&start=" + start+ 
-                                                                    "&size=10&tenantId="+ bpsTenantID ,null, headers, "json" ).data;
+    var tasks = get(httpUrl + "/bpmn/runtime/tasks?candidateUser=" + carbon.server.tenantUser(user).username + "&active=true&sort=id&order=asc&start=" +
+                                                                            start + "&size=10&tenantId=" + bpsTenantID, null, headers, "json").data;
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/runtime/tasks?candidateUser=" + user+ 
