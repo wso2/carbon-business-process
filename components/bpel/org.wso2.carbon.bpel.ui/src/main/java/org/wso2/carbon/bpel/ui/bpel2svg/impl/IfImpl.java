@@ -471,44 +471,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         return null;
     }
 
-    @Override
-    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
-
-        if (startX == endX || startY == endY) {
-            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
-        }
-        else {
-            if(layoutManager.isVerticalLayout()){
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " H "  + (endX + 8) + "V" + (endY));
-            } else {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
-                        "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
-            }
-        }
-        path.setAttributeNS(null, "id", id);
-        path.setAttributeNS(null, "style", getArrowStyle());
-
-        return path;
-    }
-    protected boolean largeArrow = false;
-
-    @Override
-    protected String getArrowStyle() {
-        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
-                "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:" +
-                "none;stroke-opacity:1";
-        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
-                "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:" +
-                "none;stroke-opacity:1";
-
-        if (largeArrow) {
-            return largeArrowStr;
-        } else {
-            return mediumArrowStr;
-        }
-    }
-    @Override
+   @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }

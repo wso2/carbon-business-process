@@ -161,8 +161,8 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         int xLeft = 0;
         int yTop = 0;
         if (layoutManager.isVerticalLayout()) {
-            xLeft = getStartIconXLeft();
-            yTop = getStartIconYTop() + (getStartIconHeight() / 2);
+            xLeft = getStartIconXLeft() + (getStartIconWidth() / 2);
+            yTop = getStartIconYTop();
         } else {
             xLeft = getStartIconXLeft() + (getStartIconWidth() / 2);
             yTop = getStartIconYTop();
