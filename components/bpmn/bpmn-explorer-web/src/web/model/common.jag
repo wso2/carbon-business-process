@@ -20,6 +20,7 @@
     process = require('process'),
     auth = session.get('auth'),
     roles = session.get('roles');
+    var carbon = require('carbon');
 
     var data = application.get('appConfig');
     var bpsHost = application.get('bpsHost');
