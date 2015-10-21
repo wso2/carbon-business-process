@@ -161,8 +161,8 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         int xLeft = 0;
         int yTop = 0;
         if (layoutManager.isVerticalLayout()) {
-            xLeft = getStartIconXLeft();
-            yTop = getStartIconYTop() + (getStartIconHeight() / 2);
+            xLeft = getStartIconXLeft() + (getStartIconWidth() / 2);
+            yTop = getStartIconYTop();
         } else {
             xLeft = getStartIconXLeft() + (getStartIconWidth() / 2);
             yTop = getStartIconYTop();
@@ -184,6 +184,8 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         }
         return coords;
     }
+
+
 
     protected SVGCoordinates getStartIconExitArrowCoords() {
         int xLeft = 0;
@@ -227,7 +229,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         if (isAddOpacity()) {
             group1.setAttributeNS(null, "style", "opacity:" + getOpacity());
         }
-       // group1.appendChild(getBoxDefinition(doc));
+        //group1.appendChild(getBoxDefinition(doc));
         group1.appendChild(getImageDefinition(doc));
         //Get sub activities
         group1.appendChild(getSubActivitiesSVGString(doc));
@@ -273,4 +275,32 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         return getCompositeOpacity();
     }
 
+    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
+        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+
+        if (startX == endX || startY == endY) {
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
+        }
+        else {
+            if (layoutManager.isVerticalLayout()) {
+                int middleX , middleY;
+                if ( (startX < endX ) ) {
+                    middleY = startY;
+                    middleX = endX;
+                } else {
+                    middleY = endY;
+                    middleX = startX;
+                }
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + middleX + "," + middleY + " L " + endX +
+                        "," + endY);
+            } else {
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
+                        "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+            }
+        }
+        path.setAttributeNS(null, "id", id);
+        path.setAttributeNS(null, "style", getArrowStyle());
+
+        return path;
+    }
 }

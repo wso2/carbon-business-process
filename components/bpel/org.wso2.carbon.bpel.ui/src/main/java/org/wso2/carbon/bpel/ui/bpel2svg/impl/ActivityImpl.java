@@ -651,7 +651,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             return mediumArrowStr;
         }
     }
-//overide in IfImpl
+
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
         Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
 
