@@ -233,36 +233,59 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         group1.appendChild(getImageDefinition(doc));
         //Get sub activities
         group1.appendChild(getSubActivitiesSVGString(doc));
-        if (getArrows(doc) != null) {
-            group1.appendChild(getArrows(doc));
-        }
+        group1.appendChild(getArrows(doc));
+
         return group1;
     }
 
     protected Element getArrows(SVGDocument doc) {
-        if (subActivities != null) {
+          if (subActivities != null) {
             ActivityInterface prevActivity = null;
-            ActivityInterface activity;
+            ActivityInterface activity = null;
             String id = null;
             SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
-//            SVGCoordinates exitCoords;
-            SVGCoordinates entryCoords;
-            for (ActivityInterface subActivity : subActivities) {
-                activity = subActivity;
-//                if (prevActivity != null) {
-//                    exitCoords = prevActivity.getExitArrowCoords();
-//                    entryCoords = activity.getEntryArrowCoords();
-//                    id = prevActivity.getId() + "-" + activity.getId();
-//                    return getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(),
-// entryCoords.getXLeft(), entryCoords.getYTop(), id);
-//                } else {
-                entryCoords = activity.getExitArrowCoords();
-                return getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(),
-                        entryCoords.getXLeft(), entryCoords.getYTop(), id);
-            }
+            SVGCoordinates myExitCoords = getEndIconEntryArrowCoords();
+            SVGCoordinates exitCoords = null;
+            SVGCoordinates activityEntryCoords = null;
+            SVGCoordinates activityExitCoords = null;
+            Iterator<ActivityInterface> itr = subActivities.iterator();
+            Element subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
 
+         while (itr.hasNext()) {
+                activity = itr.next();
+                activityEntryCoords = activity.getEntryArrowCoords();
+                activityExitCoords = activity.getExitArrowCoords();
+                
+                    if (prevActivity != null) {
+                        exitCoords = prevActivity.getExitArrowCoords();
+                        id = prevActivity.getId() + "-" + activity.getId();
+                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                    } else {
+                        subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                    }                
+
+                prevActivity = activity;
+            }
+            return subGroup;
         }
         return null;
+    }
+
+     protected SVGCoordinates getEndIconEntryArrowCoords() {
+        int xLeft = 0;
+        int yTop = 0;
+        if (layoutManager.isVerticalLayout()) {
+            xLeft = getEndIconXLeft() + (getEndIconWidth() / 2);
+            yTop = getEndIconYTop();
+        } else {
+            xLeft = getEndIconXLeft();
+            yTop = getEndIconYTop() + (getEndIconHeight() / 2);
+
+        }
+
+        SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
+
+        return coords;
     }
 
     @Override
@@ -282,18 +305,11 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
         }
         else {
-            if (layoutManager.isVerticalLayout()) {
-                int middleX , middleY;
-                if ( (startX < endX ) ) {
-                    middleY = startY;
-                    middleX = endX;
-                } else {
-                    middleY = endY;
-                    middleX = startX;
-                }
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + middleX + "," + middleY + " L " + endX +
-                        "," + endY);
-            } else {
+            if(layoutManager.isVerticalLayout()){
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
+                        ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX +
+                        "," + endY);                          //use constants for these propotions
+            }else{
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
                         "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
             }
