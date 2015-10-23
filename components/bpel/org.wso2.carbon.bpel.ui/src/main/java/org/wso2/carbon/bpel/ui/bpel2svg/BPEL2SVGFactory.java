@@ -117,7 +117,7 @@ public class BPEL2SVGFactory {
 
     // Properties
     public String iconSource = "images/bpel2svg";
-    
+
     private static BPEL2SVGFactory instance = null;
 
     public static BPEL2SVGFactory getInstance() {
@@ -155,7 +155,7 @@ public class BPEL2SVGFactory {
         String iconPath = null;
         if (activity != null) {
             if (activity.equalsIgnoreCase(AssignImpl.class.getName())) {
-                  iconPath = BPEL2SVGIcons.ASSIGN_ICON;
+                iconPath = BPEL2SVGIcons.ASSIGN_ICON;
             } else if (activity.equalsIgnoreCase(ElseIfImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.ELSEIF_ICON;
             } else if (activity.equalsIgnoreCase(CompensateImpl.class.getName())) {

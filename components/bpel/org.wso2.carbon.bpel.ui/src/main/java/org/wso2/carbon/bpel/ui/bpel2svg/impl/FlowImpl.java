@@ -54,7 +54,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
 
-       // setVerticalChildLayout(false);
+        // setVerticalChildLayout(false);
     }
 
     @Override
@@ -119,7 +119,6 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
             int childXLeft = startXLeft + (getXSpacing() / 2);
             while (itr.hasNext()) {
                 activity = itr.next();
-//            childYTop += centreOfMyLayout - (activity.getDimensions().getHeight() / 2);
                 activity.layout(childXLeft, childYTop);
                 childXLeft += activity.getDimensions().getWidth();
             }
@@ -149,7 +148,6 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         int childYTop = startYTop + (getXSpacing() / 2);
         while (itr.hasNext()) {
             activity = itr.next();
-//            childXLeft = centreOfMyLayout - activity.getDimensions().getWidth() / 2;
             activity.layout(childXLeft, childYTop);
             childYTop += activity.getDimensions().getHeight();
         }
@@ -260,37 +258,16 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
         subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
-
-        //the below code segment is commented inorder to have the Arrow style of Flow  
-        /*if (subActivities != null) {
-            org.wso2.carbon.bpel.ui.bpel2svg.old.ActivityInterface activity = null;
-            String id = null;
-            SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
-            SVGCoordinates myExitCoords = getEndIconEntryArrowCoords();
-            org.wso2.carbon.bpel.ui.bpel2svg.old.SVGCoordinates activityExitCoords = null;
-            SVGCoordinates activityEntryCoords = null;
-            Iterator<ActivityInterface> itr = subActivities.iterator();
-            while (itr.hasNext()) {
-                activity = itr.next();
-                activityExitCoords = activity.getExitArrowCoords();
-                activityEntryCoords = activity.getEntryArrowCoords();
-                subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
-            }
-        } */
-
-        //pls use a function to find the closest activity to the flow start
-        //as well as the closest activity to the flow end;
         SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
         SVGCoordinates myExitCoords = getEndIconEntryArrowCoords();
 
         subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(),
                 myStartCoords.getXLeft(), (myStartCoords.getYTop() + 30), "Flow_Top", true));
-        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth()/2 + getXSpacing()),
-                (myStartCoords.getYTop() + 30), (myStartCoords.getXLeft() + dimensions.getWidth()/2 - getXSpacing()),
+        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth() / 2 + getXSpacing()),
+                (myStartCoords.getYTop() + 30), (myStartCoords.getXLeft() + dimensions.getWidth() / 2 - getXSpacing()),
                 (myStartCoords.getYTop() + 30), "Flow_TopH", true));
-        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth()/2 + getXSpacing()),
-                (myExitCoords.getYTop() - 20), (myStartCoords.getXLeft() + dimensions.getWidth()/2 - getXSpacing()),
+        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth() / 2 + getXSpacing()),
+                (myExitCoords.getYTop() - 20), (myStartCoords.getXLeft() + dimensions.getWidth() / 2 - getXSpacing()),
                 (myExitCoords.getYTop() - 20), "Flow_DownH", true));
         subGroup.appendChild(getArrowDefinition(doc, myExitCoords.getXLeft(), myExitCoords.getYTop() - 20,
                 myExitCoords.getXLeft(), myExitCoords.getYTop(), "Flow_Top", false));
@@ -303,22 +280,20 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         if ((startX == endX) || (startY == endY)) {
             path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
-        }
-        else {
+        } else {
             if (to) {
-                if(layoutManager.isVerticalLayout()){
+                if (layoutManager.isVerticalLayout()) {
                     path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
                             ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3));                            //use constants for these propotions
-                }else{
-                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
-                            "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY);                              //use constants for these propotions
+                } else {
+                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
+                            "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY);                              //use constants for these propotions
                 }
-            }
-            else {
-                if(layoutManager.isVerticalLayout()){
+            } else {
+                if (layoutManager.isVerticalLayout()) {
                     path.setAttributeNS(null, "d", "M " + startX + "," + ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX + "," + endY);                            //use constants for these propotions
-                }else{
-                    path.setAttributeNS(null, "d", "M " + ((startX + 1* endX) / 2) + "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+                } else {
+                    path.setAttributeNS(null, "d", "M " + ((startX + 1 * endX) / 2) + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
                 }
 
             }
@@ -338,8 +313,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
             } else {
                 return mediumArrowStr;
             }
-        }
-        else {
+        } else {
             String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;stroke-linejoin:round;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
             String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;stroke-linejoin:round;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
 

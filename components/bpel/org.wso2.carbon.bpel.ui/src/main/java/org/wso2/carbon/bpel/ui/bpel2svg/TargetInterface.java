@@ -18,5 +18,5 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
-public interface TargetInterface extends TargetsInterface{
+public interface TargetInterface extends TargetsInterface {
 }

@@ -33,8 +33,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-       /* setStartIconHeight(32);
-        setStartIconWidth(32);*/
     }
 
     public ElseIfImpl(OMElement omElement) {
@@ -43,8 +41,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-        /*setStartIconHeight(32);
-        setStartIconWidth(32);*/
     }
 
     public ElseIfImpl(OMElement omElement, ActivityInterface parent) {
@@ -54,8 +50,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-        /*setStartIconHeight(32);
-        setStartIconWidth(32);*/
     }
 
     @Override
@@ -186,7 +180,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     }
 
 
-
     protected SVGCoordinates getStartIconExitArrowCoords() {
         int xLeft = 0;
         int yTop = 0;
@@ -239,7 +232,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     }
 
     protected Element getArrows(SVGDocument doc) {
-          if (subActivities != null) {
+        if (subActivities != null) {
             ActivityInterface prevActivity = null;
             ActivityInterface activity = null;
             String id = null;
@@ -251,18 +244,18 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
             Iterator<ActivityInterface> itr = subActivities.iterator();
             Element subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
 
-         while (itr.hasNext()) {
+            while (itr.hasNext()) {
                 activity = itr.next();
                 activityEntryCoords = activity.getEntryArrowCoords();
                 activityExitCoords = activity.getExitArrowCoords();
-                
-                    if (prevActivity != null) {
-                        exitCoords = prevActivity.getExitArrowCoords();
-                        id = prevActivity.getId() + "-" + activity.getId();
-                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                    } else {
-                        subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                    }                
+
+                if (prevActivity != null) {
+                    exitCoords = prevActivity.getExitArrowCoords();
+                    id = prevActivity.getId() + "-" + activity.getId();
+                    subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                } else {
+                    subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                }
 
                 prevActivity = activity;
             }
@@ -271,7 +264,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         return null;
     }
 
-     protected SVGCoordinates getEndIconEntryArrowCoords() {
+    protected SVGCoordinates getEndIconEntryArrowCoords() {
         int xLeft = 0;
         int yTop = 0;
         if (layoutManager.isVerticalLayout()) {
@@ -298,20 +291,20 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         return getCompositeOpacity();
     }
 
+    //Get the arrow definitions/paths from the coordinates
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
         Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
 
         if (startX == endX || startY == endY) {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
-        }
-        else {
-            if(layoutManager.isVerticalLayout()){
+            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
+        } else {
+            if (layoutManager.isVerticalLayout()) {
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
                         ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX +
-                        "," + endY);                          //use constants for these propotions
-            }else{
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
-                        "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+                        "," + endY);
+            } else {
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
+                        "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
             }
         }
         path.setAttributeNS(null, "id", id);

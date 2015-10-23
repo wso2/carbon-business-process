@@ -33,6 +33,7 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
             name = "FAULTHANDLER" + System.currentTimeMillis();
         }
         displayName = "Fault Handlers";
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
@@ -47,6 +48,7 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
             name = "FAULTHANDLER" + System.currentTimeMillis();
         }
         displayName = "Fault Handlers";
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
@@ -61,6 +63,7 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
             name = "FAULTHANDLER" + System.currentTimeMillis();
         }
         displayName = "Fault Handlers";
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());

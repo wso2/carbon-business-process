@@ -26,7 +26,7 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 /**
  * Source tag UI impl
  */
-public class SourceImpl extends SourcesImpl implements SourceInterface{
+public class SourceImpl extends SourcesImpl implements SourceInterface {
     public SourceImpl(OMElement omElement) {
         super(omElement);
 
@@ -34,29 +34,16 @@ public class SourceImpl extends SourcesImpl implements SourceInterface{
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
 
-        
     }
-
-  /*  public ActivityImpl getParent() {
-        return parent;
-    }
-
-    public void setParent(ActivityImpl parent) {
-        this.parent = parent;
-    }
-    */
-  //  protected ActivityImpl parent;
-
 
     public SourceImpl(OMElement omElement, ActivityInterface parent) {
-       super(omElement);
-       setParent(parent);
-       // Set Icon and Size
-       startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-       endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-   }
+        super(omElement);
+        setParent(parent);
 
-
+        // Set Icon and Size
+        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+    }
 
     @Override
     public String getEndTag() {

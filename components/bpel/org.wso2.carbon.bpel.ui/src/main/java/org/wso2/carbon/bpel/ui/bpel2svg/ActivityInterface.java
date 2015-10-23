@@ -23,19 +23,18 @@ import org.apache.axiom.om.OMElement;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
+
 /**
  * Activity tag UI impl
  */
 public interface ActivityInterface {
-    //public ActivityInterface processSubActivities(StringTokenizer bpelST);
+
     public ActivityInterface processSubActivities(OMElement om);
 
     public void layout(int startXLeft, int startYTop);
 
-    // public String getSVGString();
     public Element getSVGString(SVGDocument doc);
 
-    //public String getSubActivitiesSVGString();
     public Element getSubActivitiesSVGString(SVGDocument doc);
 
     public SVGCoordinates getEntryArrowCoords();
@@ -44,7 +43,7 @@ public interface ActivityInterface {
 
     public List<ActivityInterface> getSubActivities();
 
-    public SVGDimension getDimensions() ;
+    public SVGDimension getDimensions();
 
     public void switchDimensionsToHorizontal();
 

@@ -48,7 +48,7 @@ public class TerminationHandlerImpl extends SequenceImpl implements TerminationH
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
-     public TerminationHandlerImpl(OMElement omElement, ActivityInterface parent) {
+    public TerminationHandlerImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
         name = "TERMINATIONHANDLER" + System.currentTimeMillis();

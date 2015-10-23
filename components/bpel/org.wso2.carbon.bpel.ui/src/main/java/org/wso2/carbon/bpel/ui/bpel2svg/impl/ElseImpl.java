@@ -22,6 +22,7 @@ import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.ElseInterface;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.Element;
+
 /**
  * Else tag UI impl
  */
@@ -56,15 +57,11 @@ public class ElseImpl extends SequenceImpl implements ElseInterface {
         return BPEL2SVGFactory.ELSE_END_TAG;
     }
 
-     public Element getSVGString(SVGDocument doc) {
+    public Element getSVGString(SVGDocument doc) {
 
         Element group1 = null;
         group1 = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group1.setAttributeNS(null, "id", getLayerId());
-        if (isAddOpacity()) {
-            group1.setAttributeNS(null, "style", "opacity:" + getOpacity());
-        }
-       // group1.appendChild(getBoxDefinition(doc));
         group1.appendChild(getImageDefinition(doc));
         //Get sub activities
         group1.appendChild(getSubActivitiesSVGString(doc));
@@ -73,4 +70,4 @@ public class ElseImpl extends SequenceImpl implements ElseInterface {
         }
         return group1;
     }
-  }
+}

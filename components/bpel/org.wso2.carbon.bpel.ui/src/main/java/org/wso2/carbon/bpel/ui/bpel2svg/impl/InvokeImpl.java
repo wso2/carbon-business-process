@@ -45,6 +45,7 @@ public class InvokeImpl extends SimpleActivityImpl implements InvokeInterface {
     public InvokeImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());

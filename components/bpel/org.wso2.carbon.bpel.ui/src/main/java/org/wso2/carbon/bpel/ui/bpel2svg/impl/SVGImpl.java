@@ -60,7 +60,6 @@ public class SVGImpl implements SVGInterface {
             if (svgDoc != null) {
                 this.svgDoc = svgDoc;
             }
-
             DOMUtilities.writeDocument(svgDoc, writer);
             writer.close();
             svgStr = writer.toString();
@@ -81,7 +80,6 @@ public class SVGImpl implements SVGInterface {
         jpegTranscoder.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, new Float(0.8));
         // Create the transcoder input.
         String inputString = getHeaders() + generateSVGString();  //svgDoc is set from generateSVGString()
-//        TranscoderInput transcoderInput = new TranscoderInput(svgDoc);
         Reader stringReader = new StringReader(inputString);
         TranscoderInput transcoderInput2 = new TranscoderInput(stringReader);
         // Create the transcoder output.
@@ -94,7 +92,7 @@ public class SVGImpl implements SVGInterface {
             return null;
         }
         try {
-             osByteArray.flush();
+            osByteArray.flush();
         } catch (IOException e) {
             log.error("Error while flushing OutputStreamByteArray", e);
             return null;
@@ -114,7 +112,6 @@ public class SVGImpl implements SVGInterface {
         jpegTranscoder.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, new Float(0.8));
         // Create the transcoder input.
         String inputString = getHeaders() + generateSVGString();    //svgDoc is set from generateSVGString()
-//        TranscoderInput transcoderInput = new TranscoderInput(svgDoc);
         Reader stringReader = new StringReader(inputString);
         TranscoderInput transcoderInput2 = new TranscoderInput(stringReader);
         // Create the transcoder output.
@@ -128,7 +125,7 @@ public class SVGImpl implements SVGInterface {
         }
 
         try {
-             osByteArray.flush();
+            osByteArray.flush();
         } catch (IOException e) {
             log.error("Error while flushing OutputStreamByteArray", e);
             return null;

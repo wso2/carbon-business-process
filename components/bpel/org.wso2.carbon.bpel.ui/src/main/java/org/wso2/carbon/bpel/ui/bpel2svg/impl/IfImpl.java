@@ -17,6 +17,8 @@
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 import org.wso2.carbon.bpel.ui.bpel2svg.*;
@@ -27,7 +29,7 @@ import java.util.Iterator;
  * If tag UI impl
  */
 public class IfImpl extends ActivityImpl implements IfInterface {
-
+    private static final Log log = LogFactory.getLog(IfImpl.class);
     private SVGDimension coreDimensions = null;
     private SVGDimension conditionalDimensions = null;
 
@@ -129,8 +131,6 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                 height = conHeight;
             }
             width = coreWidth + conWidth;
-
-//            height += (getYSpacing() * 2) + getStartIconHeight() + getEndIconHeight();
             height += getYSpacing();
             width += getXSpacing();
 
@@ -217,8 +217,6 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         while (itr.hasNext()) {
             activity = itr.next();
             if (activity instanceof ElseIfImpl || activity instanceof ElseImpl) {
-                // Ignore
-                //throw new UnsupportedOperationException("This operation is not currently supported in this version of WSO2 BPS.");
             } else {
                 activity.layout(childXLeft, childYTop);
                 childXLeft += activity.getDimensions().getWidth();
@@ -274,8 +272,6 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         while (itr.hasNext()) {
             activity = itr.next();
             if (activity instanceof ElseIfImpl || activity instanceof ElseImpl) {
-                // Ignore
-                //throw new UnsupportedOperationException("This operation is not currently supported in this version of WSO2 BPS.");
             } else {
                 activity.layout(childXLeft, childYTop);
                 childYTop += activity.getDimensions().getHeight();
@@ -409,9 +405,6 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         // Add Arrow
         group1.appendChild(getArrows(doc));
 
-        //attention - here group1 contain the box definition+ImageDefinition+etc... in the original
-        // but here group does not contain that
-
         return group1;
     }
 
@@ -437,27 +430,21 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                 if (activity instanceof ElseIfImpl || activity instanceof ElseImpl) {
                     if (prevActivity != null && prevActivity instanceof ElseIfImpl) {
                         exitCoords = ((ElseIfInterface) prevActivity).getNextElseExitArrowCoords();
-//                        activityEntryCoords = activity.getEntryArrowCoords();
                         id = prevActivity.getId() + "-" + activity.getId();
-
                         subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
 
                     } else {
-//                        activityEntryCoords = activity.getEntryArrowCoords();
                         subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
-
                     }
                 } else {
                     if (prevActivity != null) {
                         exitCoords = prevActivity.getExitArrowCoords();
-//                        activityEntryCoords = activity.getEntryArrowCoords();
-//                        activityExitCoords = activity.getExitArrowCoords();
                         id = prevActivity.getId() + "-" + activity.getId();
                         subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+
                     } else {
-//                      getEndIconEntryArrowCoords  activityEntryCoords = activity.getEntryArrowCoords();
                         subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
 
@@ -471,7 +458,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         return null;
     }
 
-   @Override
+    @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }
@@ -481,16 +468,16 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         return getCompositeOpacity();
     }
 
-  protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
+    //Get the arrow definitions/paths from the coordinates
+    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
         Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
 
         if (startX == endX || startY == endY) {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
-        }
-        else {
-            if(layoutManager.isVerticalLayout()){
-                int middleX , middleY;
-                if ( (startX < endX ) ) {
+            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
+        } else {
+            if (layoutManager.isVerticalLayout()) {
+                int middleX, middleY;
+                if ((startX < endX)) {
                     middleY = startY;
                     middleX = endX;
                 } else {
@@ -499,16 +486,16 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                 }
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + middleX + "," + middleY + " L " + endX +
                         "," + endY);
-            }else{
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
-                        "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+            } else {
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
+                        "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
             }
         }
         path.setAttributeNS(null, "id", id);
         path.setAttributeNS(null, "style", getArrowStyle());
 
         return path;
-  }
+    }
 }
 
 

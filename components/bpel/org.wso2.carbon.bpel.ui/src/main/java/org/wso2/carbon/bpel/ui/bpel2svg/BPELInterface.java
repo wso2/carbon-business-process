@@ -21,7 +21,6 @@ import org.apache.axiom.om.OMElement;
 public interface BPELInterface {
     public void processBpelString(OMElement om);
 
-   // public OMElement load(String filename);
     public OMElement load(String bpelStr);
 
     public void setBpelElement(OMElement bpelElement);

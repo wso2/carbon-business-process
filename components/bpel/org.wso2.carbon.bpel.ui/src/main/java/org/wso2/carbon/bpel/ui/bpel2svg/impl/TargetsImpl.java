@@ -26,7 +26,7 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 /**
  * Targets tag UI impl
  */
-public class TargetsImpl extends ActivityImpl implements TargetsInterface{
+public class TargetsImpl extends ActivityImpl implements TargetsInterface {
     public TargetsImpl(OMElement omElement) {
         super(omElement);
 
@@ -38,6 +38,7 @@ public class TargetsImpl extends ActivityImpl implements TargetsInterface{
     public TargetsImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
@@ -52,14 +53,4 @@ public class TargetsImpl extends ActivityImpl implements TargetsInterface{
         return getName(); // + "-Sequence";
     }
 
-    /*public ActivityImpl getParent() {
-        return parent;
-    }
-
-    public void setParent(ActivityImpl parent) {
-        this.parent = parent;
-    }
-      */
- //   protected ActivityImpl parent;
-    
 }

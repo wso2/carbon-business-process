@@ -54,6 +54,7 @@ public class OnEventImpl extends OnMessageImpl implements OnEventInterface {
 
         name = "OnEvent";
         displayName = "onEvent";
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());

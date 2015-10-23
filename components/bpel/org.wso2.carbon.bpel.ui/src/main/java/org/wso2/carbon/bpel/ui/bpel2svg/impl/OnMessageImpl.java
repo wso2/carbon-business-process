@@ -71,11 +71,12 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         String operation = null;
         // Get Partner Link Name
         if (omElement.getAttribute(new QName("partnerLink")) != null)
-            partnerLink = omElement.getAttribute(new QName("partnerLink")).getAttributeValue();      //attention-  consider about namespace
+            partnerLink = omElement.getAttribute(new QName("partnerLink")).getAttributeValue();
         if (omElement.getAttribute(new QName("operation")) != null)
-            operation = omElement.getAttribute(new QName("operation")).getAttributeValue();      //attention-  consider about namespace
+            operation = omElement.getAttribute(new QName("operation")).getAttributeValue();
 
         setName(partnerLink + "." + operation);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
@@ -89,11 +90,12 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         String operation = null;
         // Get Partner Link Name
         if (omElement.getAttribute(new QName("partnerLink")) != null)
-            partnerLink = omElement.getAttribute(new QName("partnerLink")).getAttributeValue();      //attention-  consider about namespace
+            partnerLink = omElement.getAttribute(new QName("partnerLink")).getAttributeValue();
         if (omElement.getAttribute(new QName("operation")) != null)
-            operation = omElement.getAttribute(new QName("operation")).getAttributeValue();      //attention-  consider about namespace
+            operation = omElement.getAttribute(new QName("operation")).getAttributeValue();
 
         setName(partnerLink + "." + operation);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
@@ -237,7 +239,6 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
             yTop = getStartIconYTop() + (getStartIconHeight() / 2);
 
         }
-
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;

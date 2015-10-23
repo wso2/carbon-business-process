@@ -18,5 +18,5 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
-public interface SourcesInterface extends ActivityInterface{
+public interface SourcesInterface extends ActivityInterface {
 }

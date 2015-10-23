@@ -37,14 +37,12 @@ import java.util.*;
 public abstract class ActivityImpl implements ActivityInterface {
     private static final Log log = LogFactory.getLog(ActivityImpl.class);
     // Local Variables
-    protected LayoutManager layoutManager =
-            BPEL2SVGFactory.getInstance().getLayoutManager();
+    protected LayoutManager layoutManager = BPEL2SVGFactory.getInstance()
+            .getLayoutManager();
     protected String name = null;
     protected String displayName = null;
-    protected List<ActivityInterface> subActivities =
-            new ArrayList<ActivityInterface>();
-    protected List<BPELAttributeValuePair> attributes =
-            new ArrayList<BPELAttributeValuePair>();
+    protected List<ActivityInterface> subActivities = new ArrayList<ActivityInterface>();
+    protected List<BPELAttributeValuePair> attributes = new ArrayList<BPELAttributeValuePair>();
 
     public List<BPELAttributeValuePair> getAttributes() {
         return attributes;
@@ -77,7 +75,6 @@ public abstract class ActivityImpl implements ActivityInterface {
     // Start Icon
     protected String startIconPath = null;
     protected int startIconHeight = layoutManager.getStartIconDim();
-    //protected int startIconWidth = layoutManager.getStartIconDim();
     protected int startIconWidth = layoutManager.getIconWidth();
     protected int startIconXLeft = 0;
     protected int startIconYTop = 0;
@@ -93,19 +90,18 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected int endIconTextYTop = 0;
     // Layout
     protected boolean verticalChildLayout = true;
-    // SVG Specific 
+    // SVG Specific
     protected SVGDimension dimensions = null;
     protected boolean exitIcon = false;
-
 
     //SVG Batik Specific - I modify
     protected /*static*/ SVGGraphics2D generator = null;
 
-    protected /*static*/ DOMImplementation dom = SVGDOMImplementation.getDOMImplementation();
+    protected /*static*/ DOMImplementation dom = SVGDOMImplementation
+            .getDOMImplementation();
     protected /*static*/ String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     protected /*static*/ SVGDocument doc = (SVGDocument) dom.createDocument(svgNS, "svg", null);
     protected /*static*/ Element root = doc.getDocumentElement();
-
 
     // Box
     public final static int BOX_MARGIN = 10;
@@ -113,8 +109,10 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected int boxYTop = 0;
     protected int boxHeight = 0;
     protected int boxWidth = 0;
-    protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;" +
-            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;" +
+    protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;"
+            +
+            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;"
+            +
             "bbbbbbbstroke-opacity:1;fill:url(#orange_red);stroke-opacity:0.2";
 
     // Constructor
@@ -129,7 +127,8 @@ public abstract class ActivityImpl implements ActivityInterface {
             if (firstQuoteIndex >= 0) {
                 int lastQuoteIndex = token.indexOf("\"", firstQuoteIndex + 1);
                 if (lastQuoteIndex > firstQuoteIndex) {
-                    setName(token.substring(firstQuoteIndex + 1, lastQuoteIndex));
+                    setName(token
+                            .substring(firstQuoteIndex + 1, lastQuoteIndex));
                     setDisplayName(getName());
                 }
             }
@@ -145,7 +144,8 @@ public abstract class ActivityImpl implements ActivityInterface {
             String tmpValue = omAttribute.getAttributeValue();
 
             if (tmpAttribute != null && tmpValue != null) {
-                attributes.add(new BPELAttributeValuePair(tmpAttribute, tmpValue));
+                attributes.add(new BPELAttributeValuePair(tmpAttribute,
+                        tmpValue));
 
                 if (tmpAttribute.equals("name")) {
                     setName(tmpValue);
@@ -428,9 +428,6 @@ public abstract class ActivityImpl implements ActivityInterface {
         Element group = null;
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
-       /* if (isAddOpacity()) {
-            group.setAttributeNS(null, "style", "opacity:" + getOpacity());
-        }*/
         group.appendChild(getBoxDefinition(doc));
         group.appendChild(getImageDefinition(doc));
         group.appendChild(getStartImageText(doc));
@@ -441,9 +438,9 @@ public abstract class ActivityImpl implements ActivityInterface {
         group.appendChild(getArrows(doc));
 
         return group;
-
     }
 
+    //Get the arrow coordinates of the activities
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
         subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -459,10 +456,19 @@ public abstract class ActivityImpl implements ActivityInterface {
                 activity = itr.next();
                 activityExitCoords = activity.getExitArrowCoords();
                 activityEntryCoords = activity.getEntryArrowCoords();
-                subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                subGroup.appendChild(
+                        getArrowDefinition(doc, myStartCoords.getXLeft(),
+                                myStartCoords.getYTop(),
+                                activityEntryCoords.getXLeft(),
+                                activityEntryCoords.getYTop(), id));
+                subGroup.appendChild(
+                        getArrowDefinition(doc, activityExitCoords.getXLeft(),
+                                activityExitCoords.getYTop(),
+                                myExitCoords.getXLeft(), myExitCoords.getYTop(),
+                                id));
             }
         }
+
         return subGroup;
     }
 
@@ -475,7 +481,6 @@ public abstract class ActivityImpl implements ActivityInterface {
         } else {
             xLeft = getStartIconXLeft() + getStartIconWidth();
             yTop = getStartIconYTop() + (getStartIconHeight() / 2);
-
         }
 
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
@@ -492,7 +497,6 @@ public abstract class ActivityImpl implements ActivityInterface {
         } else {
             xLeft = getEndIconXLeft();
             yTop = getEndIconYTop() + (getEndIconHeight() / 2);
-
         }
 
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
@@ -500,29 +504,29 @@ public abstract class ActivityImpl implements ActivityInterface {
         return coords;
     }
 
-  public Element getSubActivitiesSVGString(SVGDocument doc) {
+    public Element getSubActivitiesSVGString(SVGDocument doc) {
         Iterator<ActivityInterface> itr = subActivities.iterator();
         ActivityInterface activity = null;
         Element subElement = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         while (itr.hasNext()) {
             activity = itr.next();
-            subElement.appendChild(activity.getSVGString(doc));   //attention check this probably should be changed
+            subElement.appendChild(activity.getSVGString(doc));
             name = activity.getId();
-
         }
         return subElement;
     }
 
-    protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
-                                         int imgWidth, int imgHeight, String id) {
+    //Get the images of the activities
+    protected Element getImageDefinition(SVGDocument doc, String imgPath,
+                                         int imgXLeft, int imgYTop, int imgWidth, int imgHeight, String id) {
 
         Element group = null;
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
 
-        if (getStartIconPath() != null) {     
+        if (getStartIconPath() != null) {
 
-            Element x=null;
+            Element x = null;
             x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
             x.setAttributeNS(null, "id", id);
 
@@ -534,12 +538,12 @@ public abstract class ActivityImpl implements ActivityInterface {
             rect.setAttributeNS(null, "id", id);
             rect.setAttributeNS(null, "rx", "10");
             rect.setAttributeNS(null, "ry", "10");
-            rect.setAttributeNS(null, "style","fill:white;stroke:black;stroke-width:1.5;fill-opacity:0.1");
+            rect.setAttributeNS(null, "style", "fill:white;stroke:black;stroke-width:1.5;fill-opacity:0.1");
 
-            int embedImageX= imgXLeft + 25;
-            int embedImageY= (imgYTop + (5 / 2));
-            int embedImageHeight= 45;
-            int embedImageWidth= 45;
+            int embedImageX = imgXLeft + 25;
+            int embedImageY = (imgYTop + (5 / 2));
+            int embedImageHeight = 45;
+            int embedImageWidth = 45;
 
             Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
@@ -550,46 +554,54 @@ public abstract class ActivityImpl implements ActivityInterface {
 
             x.appendChild(rect);
             x.appendChild(embedImage);
-            
+
             return x;
         }
-
         return group;
     }
 
     protected Element getImageDefinition(SVGDocument doc) {
-        return getImageDefinition(doc, getStartIconPath(), getStartIconXLeft(), getStartIconYTop(),
-                getStartIconWidth(), getStartIconHeight(), getStartImageId());
+        return getImageDefinition(doc, getStartIconPath(), getStartIconXLeft(),
+                getStartIconYTop(), getStartIconWidth(), getStartIconHeight(),
+                getStartImageId());
     }
 
     protected Element getEndImageDefinition(SVGDocument doc) {
-        return getImageDefinition(doc, getEndIconPath(), getEndIconXLeft(), getEndIconYTop(), getEndIconWidth(),
-                getEndIconHeight(), getEndImageId());
+        return getImageDefinition(doc, getEndIconPath(), getEndIconXLeft(),
+                getEndIconYTop(), getEndIconWidth(), getEndIconHeight(),
+                getEndImageId());
     }
 
-    protected Element getImageText(SVGDocument doc, int imgXLeft, int imgYTop, int imgWidth, int imgHeight,
-                                   String imgName, String imgDisplayName) {
+    protected Element getImageText(SVGDocument doc, int imgXLeft, int imgYTop, int imgWidth,
+                                   int imgHeight, String imgName, String imgDisplayName) {
         int txtXLeft = imgXLeft;
-        int txtYTop = imgYTop; // + imgHeight + BPEL2SVGFactory.TEXT_ADJUST;
+        int txtYTop = imgYTop;
 
         Element a = doc.createElementNS("http://www.w3.org/2000/svg", "a");
         if (imgDisplayName != null) {
             a.setAttributeNS(null, "id", imgName);
 
-            Element text1 = doc.createElementNS("http://www.w3.org/2000/svg", "text");
+            Element text1 = doc
+                    .createElementNS("http://www.w3.org/2000/svg", "text");
             text1.setAttributeNS(null, "x", String.valueOf(txtXLeft));
             text1.setAttributeNS(null, "y", String.valueOf(txtYTop));
             text1.setAttributeNS(null, "id", imgName + ".Text");
             text1.setAttributeNS(null, "xml:space", "preserve");
-            text1.setAttributeNS(null, "style", "font-size:12px;font-style:normal;font-variant:normal;font-weight:" +
-                    "normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:" +
-                    "start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;" +
-                    "stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;" +
-                    "-inkscape-font-specification:Arial Narrow");
+            text1.setAttributeNS(null, "style",
+                    "font-size:12px;font-style:normal;font-variant:normal;font-weight:"
+                            +
+                            "normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:"
+                            +
+                            "start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;"
+                            +
+                            "stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;"
+                            +
+                            "-inkscape-font-specification:Arial Narrow");
 
-            Element tspan = doc.createElementNS("http://www.w3.org/2000/svg", "tspan");
-            tspan.setAttributeNS(null, "x", String.valueOf(txtXLeft+5));
-            tspan.setAttributeNS(null, "y", String.valueOf(txtYTop+5));
+            Element tspan = doc
+                    .createElementNS("http://www.w3.org/2000/svg", "tspan");
+            tspan.setAttributeNS(null, "x", String.valueOf(txtXLeft + 5));
+            tspan.setAttributeNS(null, "y", String.valueOf(txtYTop + 5));
             tspan.setAttributeNS(null, "id", "tspan-" + imgName);
 
             Text text2 = doc.createTextNode(imgDisplayName);
@@ -602,13 +614,15 @@ public abstract class ActivityImpl implements ActivityInterface {
     }
 
     protected Element getStartImageText(SVGDocument doc) {
-        return getImageText(doc, getStartIconTextXLeft(), getStartIconTextYTop(), getStartIconWidth(),
+        return getImageText(doc, getStartIconTextXLeft(),
+                getStartIconTextYTop(), getStartIconWidth(),
                 getStartIconHeight(), getStartImageTextId(), getDisplayName());
     }
 
     protected void getEndImageText(SVGDocument doc) {
-        getImageText(doc, getEndIconTextXLeft(), getEndIconTextYTop(), getStartIconWidth(), getStartIconHeight(),
-                getEndImageTextId(), getDisplayName());
+        getImageText(doc, getEndIconTextXLeft(), getEndIconTextYTop(),
+                getStartIconWidth(), getStartIconHeight(), getEndImageTextId(),
+                getDisplayName());
     }
 
     protected boolean isLargeArrow() {
@@ -619,16 +633,21 @@ public abstract class ActivityImpl implements ActivityInterface {
         this.largeArrow = largeArrow;
     }
 
-    //was private made it protected
     protected boolean largeArrow = false;
 
     protected String getArrowStyle() {
-        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
-                "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:" +
-                "none;stroke-opacity:1";
-        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
-                "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:" +
-                "none;stroke-opacity:1";
+        String largeArrowStr =
+                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                        +
+                        "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:"
+                        +
+                        "none;stroke-opacity:1";
+        String mediumArrowStr =
+                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                        +
+                        "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:"
+                        +
+                        "none;stroke-opacity:1";
 
         if (largeArrow) {
             return largeArrowStr;
@@ -638,12 +657,18 @@ public abstract class ActivityImpl implements ActivityInterface {
     }
 
     protected String getLinkArrowStyle() {
-        String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
-                "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:" +
-                "none;stroke-opacity:1;opacity: 0.25;"; // + getIconOpacity();
-        String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:" +
-                "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:" +
-                "none;stroke-opacity:1;opacity: 0.25;"; // + getIconOpacity();
+        String largeArrowStr =
+                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                        +
+                        "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
+                        +
+                        "none;stroke-opacity:1;opacity: 0.25;";
+        String mediumArrowStr =
+                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                        +
+                        "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
+                        +
+                        "none;stroke-opacity:1;opacity: 0.25;";
 
         if (largeArrow) {
             return largeArrowStr;
@@ -652,20 +677,20 @@ public abstract class ActivityImpl implements ActivityInterface {
         }
     }
 
-    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {         //here we have to find whether
+    //Get the arrow definitions/paths from the coordinates
+    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
         Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
 
         if (startX == endX || startY == endY) {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
-        }
-        else {
-            if(layoutManager.isVerticalLayout()){
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
-                        ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX +
-                        "," + endY);                          //use constants for these propotions
-            }else{
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) +
-                        "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + endX + "," + endY);
+        } else {
+            if (layoutManager.isVerticalLayout()) {
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + ((startY + 2 * endY) / 3) + " L " + endX + ","
+                        + ((startY + 2 * endY) / 3) + " L " + endX + "," + endY);
+            } else {
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
+                        "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + ","
+                        + endY);
             }
         }
         path.setAttributeNS(null, "id", id);
@@ -674,11 +699,14 @@ public abstract class ActivityImpl implements ActivityInterface {
         return path;
     }
 
-    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int midX, int midY, int endX,
-                                         int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + midX + "," + midY + "L " + endX +
-                "," + endY);
+    protected Element getArrowDefinition(SVGDocument doc, int startX,
+                                         int startY, int midX, int midY, int endX, int endY, String id) {
+        Element path = doc
+                .createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttributeNS(null, "d",
+                "M " + startX + "," + startY + " L " + midX + "," + midY + "L "
+                        + endX +
+                        "," + endY);
         path.setAttributeNS(null, "id", id);
         path.setAttributeNS(null, "style", getArrowStyle());
 
@@ -686,8 +714,10 @@ public abstract class ActivityImpl implements ActivityInterface {
     }
 
     protected Element getBoxDefinition(SVGDocument doc) {
-        return getBoxDefinition(doc, getDimensions().getXLeft() + BOX_MARGIN , getDimensions().getYTop() + BOX_MARGIN,
-                getDimensions().getWidth() - (BOX_MARGIN * 2), getDimensions().getHeight() - (BOX_MARGIN * 2), getBoxId());
+        return getBoxDefinition(doc, getDimensions().getXLeft() + BOX_MARGIN,
+                getDimensions().getYTop() + BOX_MARGIN,
+                getDimensions().getWidth() - (BOX_MARGIN * 2),
+                getDimensions().getHeight() - (BOX_MARGIN * 2), getBoxId());
     }
 
     protected Element getBoxDefinition(SVGDocument doc, int boxXLeft, int boxYTop, int boxWidth, int boxHeight, String id) {
@@ -746,40 +776,43 @@ public abstract class ActivityImpl implements ActivityInterface {
     }
 
     public void layoutVertical(int startXLeft, int startYTop) {
-            dimensions = getDimensions();
-            int centreOfMyLayout = startXLeft + (dimensions.getWidth() / 2);
-            int xLeft = centreOfMyLayout - (getStartIconWidth() / 2);
-            int yTop = startYTop + (getYSpacing() / 2);
-            int endXLeft = centreOfMyLayout - (getEndIconWidth() / 2);
-            int endYTop = startYTop + dimensions.getHeight() - getEndIconHeight() - (getYSpacing() / 2);
+        dimensions = getDimensions();
+        int centreOfMyLayout = startXLeft + (dimensions.getWidth() / 2);
+        int xLeft = centreOfMyLayout - (getStartIconWidth() / 2);
+        int yTop = startYTop + (getYSpacing() / 2);
+        int endXLeft = centreOfMyLayout - (getEndIconWidth() / 2);
+        int endYTop =
+                startYTop + dimensions.getHeight() - getEndIconHeight() - (
+                        getYSpacing() / 2);
 
-            ActivityInterface activity = null;
-            Iterator<ActivityInterface> itr = getSubActivities().iterator();
-            int childYTop = yTop + getStartIconHeight() + (getYSpacing() / 2);
-            int childXLeft = startXLeft + (getXSpacing() / 2);
-            while (itr.hasNext()) {
-                activity = itr.next();
-                //childXLeft = centreOfMyLayout - activity.getDimensions().getWidth() / 2;
-                activity.layout(childXLeft, childYTop);
-                childYTop += activity.getDimensions().getHeight();
-            }
-
-            // Set the values
-            setStartIconXLeft(xLeft);
-            setStartIconYTop(yTop);
-            setEndIconXLeft(endXLeft);
-            setEndIconYTop(endYTop);
-            setStartIconTextXLeft(startXLeft + BOX_MARGIN);
-            setStartIconTextYTop(startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
-            getDimensions().setXLeft(startXLeft);
-            getDimensions().setYTop(startYTop);
+        ActivityInterface activity = null;
+        Iterator<ActivityInterface> itr = getSubActivities().iterator();
+        int childYTop = yTop + getStartIconHeight() + (getYSpacing() / 2);
+        int childXLeft = startXLeft + (getXSpacing() / 2);
+        while (itr.hasNext()) {
+            activity = itr.next();
+            activity.layout(childXLeft, childYTop);
+            childYTop += activity.getDimensions().getHeight();
+        }
+        // Set the values
+        setStartIconXLeft(xLeft);
+        setStartIconYTop(yTop);
+        setEndIconXLeft(endXLeft);
+        setEndIconYTop(endYTop);
+        setStartIconTextXLeft(startXLeft + BOX_MARGIN);
+        setStartIconTextYTop(
+                startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
+        getDimensions().setXLeft(startXLeft);
+        getDimensions().setYTop(startYTop);
     }
 
     private void layoutHorizontal(int startXLeft, int startYTop) {
         int centreOfMyLayout = startYTop + (dimensions.getHeight() / 2);
         int xLeft = startXLeft + (getYSpacing() / 2);
         int yTop = centreOfMyLayout - (getStartIconHeight() / 2);
-        int endXLeft = startXLeft + dimensions.getWidth() - getEndIconWidth() - (getYSpacing() / 2);
+        int endXLeft =
+                startXLeft + dimensions.getWidth() - getEndIconWidth() - (
+                        getYSpacing() / 2);
         int endYTop = centreOfMyLayout - (getEndIconHeight() / 2);
 
         ActivityInterface activity = null;
@@ -788,18 +821,17 @@ public abstract class ActivityImpl implements ActivityInterface {
         int childYTop = startYTop + (getXSpacing() / 2);
         while (itr.hasNext()) {
             activity = itr.next();
-            //childYTop += centreOfMyLayout - (activity.getDimensions().getHeight() / 2);
             activity.layout(childXLeft, childYTop);
             childXLeft += activity.getDimensions().getWidth();
         }
-
         // Set the values
         setStartIconXLeft(xLeft);
         setStartIconYTop(yTop);
         setEndIconXLeft(endXLeft);
         setEndIconYTop(endYTop);
         setStartIconTextXLeft(startXLeft + BOX_MARGIN);
-        setStartIconTextYTop(startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
+        setStartIconTextYTop(
+                startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
@@ -822,9 +854,7 @@ public abstract class ActivityImpl implements ActivityInterface {
         } else {
             xLeft = getStartIconXLeft();
             yTop = getStartIconYTop() + (getStartIconHeight() / 2);
-
         }
-
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;
@@ -839,7 +869,6 @@ public abstract class ActivityImpl implements ActivityInterface {
         } else {
             xLeft = getEndIconXLeft() + getEndIconWidth();
             yTop = getEndIconYTop() + (getEndIconHeight() / 2);
-
         }
 
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
@@ -854,11 +883,12 @@ public abstract class ActivityImpl implements ActivityInterface {
 
     // Methods
 
-    public Set<ActivityInterface> getLinkRoots () {
+    public Set<ActivityInterface> getLinkRoots() {
         sources.removeAll(targets);
         return sources;
     }
 
+    //Get the subactivites in the bpel process
     public ActivityInterface processSubActivities(OMElement omElement) {
         ActivityInterface endActivity = null;
         if (omElement != null) {
@@ -866,96 +896,140 @@ public abstract class ActivityImpl implements ActivityInterface {
             Iterator iterator = omElement.getChildElements();
             while (iterator.hasNext()) {
                 OMElement tmpElement = (OMElement) iterator.next();
-
-                if (tmpElement.getLocalName().equals(BPEL2SVGFactory.ASSIGN_START_TAG) && isIncludeAssigns()) {
+                if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.ASSIGN_START_TAG)
+                        && isIncludeAssigns()) {
                     activity = new AssignImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.CATCHALL_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.CATCHALL_START_TAG)) {
                     activity = new CatchAllImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.CATCH_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.CATCH_START_TAG)) {
                     activity = new CatchImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.COMPENSATESCOPE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.COMPENSATESCOPE_START_TAG)) {
                     activity = new CompensateScopeImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.COMPENSATE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.COMPENSATE_START_TAG)) {
                     activity = new CompensateImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.COMPENSATIONHANDLER_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.COMPENSATIONHANDLER_START_TAG)) {
                     activity = new CompensationHandlerImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.ELSEIF_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.ELSEIF_START_TAG)) {
                     activity = new ElseIfImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.ELSE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.ELSE_START_TAG)) {
                     activity = new ElseImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.EVENTHANDLER_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.EVENTHANDLER_START_TAG)) {
                     activity = new EventHandlerImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.EXIT_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.EXIT_START_TAG)) {
                     activity = new ExitImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.FAULTHANDLER_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.FAULTHANDLER_START_TAG)) {
                     activity = new FaultHandlerImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.FLOW_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.FLOW_START_TAG)) {
                     activity = new FlowImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.FOREACH_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.FOREACH_START_TAG)) {
                     activity = new ForEachImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.IF_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.IF_START_TAG)) {
                     activity = new IfImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.INVOKE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.INVOKE_START_TAG)) {
                     activity = new InvokeImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.ONALARM_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.ONALARM_START_TAG)) {
                     activity = new OnAlarmImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.ONEVENT_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.ONEVENT_START_TAG)) {
                     activity = new OnEventImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.ONMESSAGE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.ONMESSAGE_START_TAG)) {
                     activity = new OnMessageImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.PICK_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.PICK_START_TAG)) {
                     activity = new PickImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.PROCESS_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.PROCESS_START_TAG)) {
                     activity = new ProcessImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.RECEIVE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.RECEIVE_START_TAG)) {
                     activity = new ReceiveImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.REPEATUNTIL_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.REPEATUNTIL_START_TAG)) {
                     activity = new RepeatUntilImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.REPLY_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.REPLY_START_TAG)) {
                     activity = new ReplyImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.RETHROW_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.RETHROW_START_TAG)) {
                     activity = new ReThrowImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.SCOPE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.SCOPE_START_TAG)) {
                     activity = new ScopeImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.SEQUENCE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.SEQUENCE_START_TAG)) {
                     activity = new SequenceImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.SOURCE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.SOURCE_START_TAG)) {
                     activity = new SourceImpl(tmpElement, this);//source;
-                    if (activity.getAttributes().get(0).getAttribute().equals("linkName")) {
-                        if (links.containsKey(activity.getAttributes().get(0).getValue())) {    //if a entry for the particular link name already exists
-                            links.get(activity.getAttributes().get(0).getValue()).setSource(this.parent);
-                        }
-                        else {
+                    if (activity.getAttributes().get(0).getAttribute()
+                            .equals("linkName")) {
+                        if (links.containsKey(activity.getAttributes().get(0)
+                                .getValue())) {    //if a entry for the particular link name already exists
+                            links.get(
+                                    activity.getAttributes().get(0).getValue())
+                                    .setSource(this.parent);
+                        } else {
                             Link link = new Link();
                             link.setSource(this.parent);
-                            links.put(activity.getAttributes().get(0).getValue(), link);
+                            links.put(
+                                    activity.getAttributes().get(0).getValue(),
+                                    link);
                         }
                         sources.add(this.parent);
                     }
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.SOURCES_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.SOURCES_START_TAG)) {
                     activity = new SourcesImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.TARGET_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.TARGET_START_TAG)) {
                     activity = new TargetImpl(tmpElement, this);//target;
-                    if (activity.getAttributes().get(0).getAttribute().equals("linkName")) {
-                        if (links.containsKey(activity.getAttributes().get(0).getValue())) {
-                            links.get(activity.getAttributes().get(0).getValue()).setTarget(this.parent);
-                        }
-                        else {
+                    if (activity.getAttributes().get(0).getAttribute()
+                            .equals("linkName")) {
+                        if (links.containsKey(
+                                activity.getAttributes().get(0).getValue())) {
+                            links.get(
+                                    activity.getAttributes().get(0).getValue())
+                                    .setTarget(this.parent);
+                        } else {
                             Link link = new Link();
                             link.setTarget(this.parent);
-                            links.put(activity.getAttributes().get(0).getValue(), link);
+                            links.put(
+                                    activity.getAttributes().get(0).getValue(),
+                                    link);
                         }
                         targets.add(this.parent);
                     }
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.TARGETS_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.TARGETS_START_TAG)) {
                     activity = new TargetsImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.TERMINATIONHANDLER_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.TERMINATIONHANDLER_START_TAG)) {
                     activity = new TerminationHandlerImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.THROW_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.THROW_START_TAG)) {
                     activity = new ThrowImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.WAIT_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.WAIT_START_TAG)) {
                     activity = new WaitImpl(tmpElement, this);
-                } else if (tmpElement.getLocalName().equals(BPEL2SVGFactory.WHILE_START_TAG)) {
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.WHILE_START_TAG)) {
                     activity = new WhileImpl(tmpElement, this);
                 } else if (tmpElement.getLocalName().equals(getEndTag())) {
                     break;
@@ -967,17 +1041,18 @@ public abstract class ActivityImpl implements ActivityInterface {
                 subActivities.add(activity);
 
                 if (tmpElement.getChildElements().hasNext()) {
-                    ActivityInterface replyActivity = activity.processSubActivities(tmpElement);
+                    ActivityInterface replyActivity = activity
+                            .processSubActivities(tmpElement);
                     if (replyActivity != null) {
                         subActivities.add(replyActivity);
                     }
                 }
-                if (tmpElement.getLocalName().equals(BPEL2SVGFactory.PROCESS_START_TAG)) {
+                if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.PROCESS_START_TAG)) {
                     break;
                 }
             }
         }
-      //  System.out.println("processSubactivities:   "+subActivities);
         return endActivity;
     }
 
@@ -987,22 +1062,27 @@ public abstract class ActivityImpl implements ActivityInterface {
 
     public String getActivityInfoString() {
         String infoString = null;
-        for(BPELAttributeValuePair x : attributes){
+        for (BPELAttributeValuePair x : attributes) {
             String attrib = x.getAttribute();
             String val = x.getValue();
-            if(infoString == null) infoString = "<" + attrib + "="  + val + "> ";
-            else infoString += "<" + attrib + "="  + val + "> ";
+            if (infoString == null)
+                infoString = "<" + attrib + "=" + val + "> ";
+            else
+                infoString += "<" + attrib + "=" + val + "> ";
         }
 
-        if(infoString != null) return infoString;
-        else return "No Attributes defined";
+        if (infoString != null)
+            return infoString;
+        else
+            return "No Attributes defined";
     }
 
     public Map<String, Link> getLinks() {
         return links;
     }
 
-    public void setLinkProperties(Map<String, Link> links, Set<ActivityInterface> sources, Set<ActivityInterface> targets) {
+    public void setLinkProperties(Map<String, Link> links,
+                                  Set<ActivityInterface> sources, Set<ActivityInterface> targets) {
         this.links = links;
         this.sources = sources;
         this.targets = targets;

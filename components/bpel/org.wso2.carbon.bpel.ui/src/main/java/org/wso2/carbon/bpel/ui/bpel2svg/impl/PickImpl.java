@@ -49,6 +49,7 @@ public class PickImpl extends FlowImpl implements PickInterface {
     public PickImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());

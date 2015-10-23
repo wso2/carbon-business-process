@@ -30,16 +30,20 @@ public class AssignImpl extends SimpleActivityImpl implements AssignInterface {
         super(token);
 
         // Set Icon and Size
-        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+        startIconPath = BPEL2SVGFactory.getInstance()
+                .getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance()
+                .getEndIconPath(this.getClass().getName());
     }
 
     public AssignImpl(OMElement omElement) {
         super(omElement);
 
         // Set Icon and Size
-        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+        startIconPath = BPEL2SVGFactory.getInstance()
+                .getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance()
+                .getEndIconPath(this.getClass().getName());
     }
 
     public AssignImpl(OMElement omElement, ActivityInterface parent) {

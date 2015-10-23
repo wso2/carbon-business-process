@@ -132,7 +132,6 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         int childXLeft = startXLeft + (getXSpacing() / 2);
         while (itr.hasNext()) {
             activity = itr.next();
-//            childYTop += centreOfMyLayout - (activity.getDimensions().getHeight() / 2);
             activity.layout(childXLeft, childYTop);
             childXLeft += activity.getDimensions().getWidth();
         }
@@ -161,7 +160,6 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         int childYTop = startYTop + (getXSpacing() / 2);
         while (itr.hasNext()) {
             activity = itr.next();
-//            childXLeft = centreOfMyLayout - activity.getDimensions().getWidth() / 2;
             activity.layout(childXLeft, childYTop);
             childYTop += activity.getDimensions().getHeight();
         }
@@ -218,18 +216,13 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         Element group = null;
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
-        // Check if Layer & Opacity required
-        if (isAddOpacity()) {
-            group.setAttributeNS(null, "style", "opacity:" + getOpacity());
-        }
         group.appendChild(getBoxDefinition(doc));
         group.appendChild(getImageDefinition(doc));
         group.appendChild(getStartImageText(doc));
         // Process Sub Activities
         group.appendChild(getSubActivitiesSVGString(doc));
         group.appendChild(getEndImageDefinition(doc));
-        //Add Arrow
-        //group.appendChild(getArrows());  attention - this has no implementaion
+
         return group;
     }
 

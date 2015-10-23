@@ -63,7 +63,7 @@ public class PNGGenarateServlet extends HttpServlet {
         ServletConfig config = getServletConfig();
         String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
         ConfigurationContext configContext =
-                    (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
+                (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
         String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
         String processDef;
         ProcessManagementServiceClient client;
@@ -71,7 +71,7 @@ public class PNGGenarateServlet extends HttpServlet {
         String svgStr;
         try {
             client = new ProcessManagementServiceClient(cookie, backendServerURL, configContext,
-                                                        request.getLocale());
+                    request.getLocale());
             processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition().getExtraElement().toString();
 
             BPELInterface bpel = new BPELImpl();
@@ -85,13 +85,12 @@ public class PNGGenarateServlet extends HttpServlet {
             svg = new SVGImpl();
             svg.setRootActivity(bpel.getRootActivity());
 
-            //base64Str = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1i612KO/vo3mu7hku503xz6kqjEjDaBHEU+X7vykjiqt94hhFjcES3tsRGxE7XGqERcfeOYccdefSp7zw7aTajfyzWt3BJJdzuVjtdQdTmRjuBSYKd33vlAHNVL3wxZfYrjZaXtw/ltiFrPUgJDj7pJnwM9K9mPsdL3PHl7fW3Kf/2Q==";
             response.setContentType("image/png");
             ServletOutputStream sos = response.getOutputStream();
-            //sos.write(Base64.decodeBase64(base64Str.getBytes()));
+
             byte[] pngBytes = svg.toPNGBytes();
             if (pngBytes != null) {
-                sos.write(pngBytes);          
+                sos.write(pngBytes);
                 sos.flush();
                 sos.close();
             }
@@ -101,7 +100,6 @@ public class PNGGenarateServlet extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
