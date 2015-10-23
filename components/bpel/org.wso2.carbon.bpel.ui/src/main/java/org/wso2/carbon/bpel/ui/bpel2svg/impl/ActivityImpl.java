@@ -901,6 +901,9 @@ public abstract class ActivityImpl implements ActivityInterface {
                         && isIncludeAssigns()) {
                     activity = new AssignImpl(tmpElement, this);
                 } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.EMPTY_START_TAG)) {
+                    activity = new EmptyImpl(tmpElement, this);
+                } else if (tmpElement.getLocalName()
                         .equals(BPEL2SVGFactory.CATCHALL_START_TAG)) {
                     activity = new CatchAllImpl(tmpElement, this);
                 } else if (tmpElement.getLocalName()
