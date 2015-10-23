@@ -20,6 +20,8 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.ThrowInterface;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * Throw tag UI impl
@@ -45,6 +47,7 @@ public class ThrowImpl extends SimpleActivityImpl implements ThrowInterface {
     public ThrowImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());

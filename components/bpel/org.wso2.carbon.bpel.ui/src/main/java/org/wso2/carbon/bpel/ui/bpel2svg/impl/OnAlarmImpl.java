@@ -53,6 +53,7 @@ public class OnAlarmImpl extends OnMessageImpl implements OnAlarmInterface {
         setParent(parent);
         name = "OnAlarm";
         displayName = "onAlarm";
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());

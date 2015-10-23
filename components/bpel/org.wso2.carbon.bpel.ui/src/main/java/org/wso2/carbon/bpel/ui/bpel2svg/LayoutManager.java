@@ -33,7 +33,7 @@ public class LayoutManager {
     public void setSvgWidth(int svgWidth) {
         this.svgWidth = svgWidth;
     }
-    
+
     private int svgHeight = 3000;
 
     public int getSvgHeight() {
@@ -54,7 +54,7 @@ public class LayoutManager {
         this.xSpacing = xSpacing;
     }
 
-   private int ySpacing = 70;
+    private int ySpacing = 70;
 
     public int getYSpacing() {
         return ySpacing;
@@ -84,7 +84,7 @@ public class LayoutManager {
         this.showSequenceBoxes = showSequenceBoxes;
     }
 
-    private boolean verticalLayout = false;            //this should be implement in some where
+    private boolean verticalLayout = false;
 
     public boolean isVerticalLayout() {
         return verticalLayout;
@@ -175,6 +175,7 @@ public class LayoutManager {
     }
 
     private int endIconDim = 50;
+
     public int getEndIconDim() {
         return endIconDim;
     }
@@ -189,6 +190,7 @@ public class LayoutManager {
     public int getIconWidth() {
         return iconWidth;
     }
+
     public void setIconWidth(int iconWidth) {
         this.iconWidth = endIconDim;
     }
@@ -196,11 +198,8 @@ public class LayoutManager {
     // Methods
     public void layoutSVG(ActivityInterface rootActivity) {
         rootActivity.getDimensions();
-        //rootActivity.layout(0, 0);
         layoutLinks(rootActivity);
-       // rootActivity.getDimensions();
         rootActivity.layout(0, 0);
-
     }
 
     private Map<ActivityInterface, ArrayList<ActivityInterface>> getLinkAdjacencyList(Map<String, Link> links) {
@@ -209,14 +208,13 @@ public class LayoutManager {
         if (links != null && !links.isEmpty()) {
             Set linksSet = links.entrySet();
             Iterator linksIterator = linksSet.iterator();
-            while(linksIterator.hasNext()){
-                Map.Entry<String, Link> link = (Map.Entry<String, Link>)linksIterator.next();
+            while (linksIterator.hasNext()) {
+                Map.Entry<String, Link> link = (Map.Entry<String, Link>) linksIterator.next();
                 ActivityInterface startActivity = link.getValue().getSource();
                 ActivityInterface endActivity = link.getValue().getTarget();
                 if (linkAdjacencyList.containsKey(startActivity)) {
                     linkAdjacencyList.get(startActivity).add(endActivity);
-                }
-                else {
+                } else {
                     ArrayList<ActivityInterface> tmpArrayList = new ArrayList<ActivityInterface>();
                     tmpArrayList.add(endActivity);
                     linkAdjacencyList.put(startActivity, tmpArrayList);
@@ -238,7 +236,7 @@ public class LayoutManager {
                 if (target != null) {
                     int whereTargetIs = target.getStartIconYTop();
                     int correction = whereTargetShouldBe - whereTargetIs;
-                    if (whereTargetIs < whereTargetShouldBe) {  //the correction is included in YTop
+                    if (whereTargetIs < whereTargetShouldBe) {
                         target.setCorrectionY(correction);
                         int relativeCorrection = whereTargetShouldBe - source.getStartIconYTop();
                         correctionCumulation += relativeCorrection;
@@ -247,8 +245,7 @@ public class LayoutManager {
                     }
                 }
             }
-        }
-        else {
+        } else {
             if (hieghestCorrectionCumulation < correctionCumulation) {
                 hieghestCorrectionCumulation = correctionCumulation;
             }
@@ -259,17 +256,17 @@ public class LayoutManager {
         Map<String, Link> links = rootActivity.getLinks();
         if (links != null && !links.isEmpty()) {
             linkAdjacencyList = getLinkAdjacencyList(links);
-            rootLinks = rootActivity.getLinkRoots();            // this shud b static
+            rootLinks = rootActivity.getLinkRoots();
 
             for (ActivityInterface root : rootLinks) {
                 correctionCumulation = 0;
                 setCorrectionY(root, linkAdjacencyList.get(root));
             }
 
-            ActivityInterface tempParent = rootLinks.iterator().next().getParent();         //chk for empty set
+            ActivityInterface tempParent = rootLinks.iterator().next().getParent();
             while (tempParent != null) {
                 int tempHeight = tempParent.getDimensions().getHeight();
-                tempParent.getDimensions().setHeight(tempHeight + hieghestCorrectionCumulation);           //this should b corrected
+                tempParent.getDimensions().setHeight(tempHeight + hieghestCorrectionCumulation);
                 tempParent = tempParent.getParent();
             }
 

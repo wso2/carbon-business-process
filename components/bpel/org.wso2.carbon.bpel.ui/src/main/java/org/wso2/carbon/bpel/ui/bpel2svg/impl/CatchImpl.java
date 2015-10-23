@@ -27,7 +27,6 @@ import org.apache.axiom.om.OMElement;
 public class CatchImpl extends SequenceImpl implements CatchInterface {
     public CatchImpl(String token) {
         super(token);
-
         name = "CATCH" + System.currentTimeMillis();
         displayName = "Catch";
 
@@ -38,7 +37,6 @@ public class CatchImpl extends SequenceImpl implements CatchInterface {
 
     public CatchImpl(OMElement omElement) {
         super(omElement);
-
         name = "CATCH" + System.currentTimeMillis();
         displayName = "Catch";
 

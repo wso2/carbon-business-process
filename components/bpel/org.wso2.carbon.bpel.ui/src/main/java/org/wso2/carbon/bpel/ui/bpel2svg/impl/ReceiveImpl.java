@@ -46,7 +46,7 @@ public class ReceiveImpl extends SimpleActivityImpl implements ReceiveInterface 
         super(omElement);
         setParent(parent);
     }
-    
+
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.RECEIVE_END_TAG;

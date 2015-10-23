@@ -16,7 +16,7 @@ package org.wso2.carbon.bpel.ui.bpel2svg;
  */
 
 public interface SVGInterface {
-    
+
     public ProcessInterface getRootActivity();
 
     public void setRootActivity(ProcessInterface rootActivity);

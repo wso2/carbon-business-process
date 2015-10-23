@@ -35,6 +35,7 @@ import org.apache.axiom.om.OMElement;
  */
 public class SequenceImpl extends ActivityImpl implements SequenceInterface {
     private static final Log log = LogFactory.getLog(SequenceImpl.class);
+
     public SequenceImpl(String token) {
         super(token);
         if (name == null) {
@@ -62,7 +63,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
         setParent(parent);
         if (name == null) {
             name = "SEQUENCE" + System.currentTimeMillis();
-            displayName = name;                                       
+            displayName = name;
         }
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
@@ -137,7 +138,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
         setStartIconYTop(yTop);
         setStartIconTextXLeft(startXLeft + BOX_MARGIN);
         setStartIconTextYTop(startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
-        getDimensions().setXLeft(startXLeft);                                          //TODO why startXleft not Xleft?
+        getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
 
     }
@@ -220,8 +221,6 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
         group.appendChild(getStartImageText(doc));
         // Process Sub Activities
         group.appendChild(getSubActivitiesSVGString(doc));
-        //Add Arrow
-       // group.appendChild(getArrows(doc));
 
         return group;
     }

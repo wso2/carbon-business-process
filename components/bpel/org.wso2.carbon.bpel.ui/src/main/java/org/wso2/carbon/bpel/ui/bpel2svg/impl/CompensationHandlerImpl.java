@@ -46,7 +46,7 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-    
+
     public CompensationHandlerImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);

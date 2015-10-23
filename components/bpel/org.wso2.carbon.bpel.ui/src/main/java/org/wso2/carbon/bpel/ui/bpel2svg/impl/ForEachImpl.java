@@ -33,8 +33,7 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-        // Set Layout
-        // setVerticalChildLayout(false);
+
     }
 
     public ForEachImpl(OMElement omElement) {
@@ -43,13 +42,13 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-        // Set Layout
-        // setVerticalChildLayout(false);
+
     }
 
     public ForEachImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
@@ -115,7 +114,6 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
         int childXLeft = startXLeft + (getXSpacing() / 2);
         while (itr.hasNext()) {
             activity = itr.next();
-            //childXLeft = centreOfMyLayout - activity.getDimensions().getWidth() / 2;
             activity.layout(childXLeft, childYTop);
             childYTop += activity.getDimensions().getHeight();
         }
@@ -144,7 +142,6 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
         int childYTop = startYTop + (getXSpacing() / 2);
         while (itr.hasNext()) {
             activity = itr.next();
-            //childYTop += centreOfMyLayout - (activity.getDimensions().getHeight() / 2);
             activity.layout(childXLeft, childYTop);
             childXLeft += activity.getDimensions().getWidth();
         }

@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class ProcessImpl extends ActivityImpl implements ProcessInterface {
     private Log log = LogFactory.getLog(ActivityImpl.class);
-    
+
     public ProcessImpl(String token) {
         super(token);
 
@@ -72,9 +72,6 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
     @Override
     public Element getSVGString(SVGDocument document) {
 
-//        LayoutManager layoutManager = org.wso2.carbon.bpel.ui.bpel2svg.old.BPEL2SVGFactory.getInstance().getLayoutManager();
-        // Build Specific Code
-        //attention---------    getSVGFileHeader();
         doc = (SVGDocument) dom.createDocument(svgNS, "svg", null);
         root = doc.getDocumentElement();
         root.setAttributeNS(null, "height", "1000");
@@ -86,42 +83,35 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         root.appendChild(getEndImageDefinition(doc));
         // Add Arrow
         root.appendChild(getArrows(doc));
-        // Add End Tag
-        // getSCGFileFooter(); //this isn't used
 
         return root;
     }
 
-        public SVGDocument getSVGDocument() {
-//            LayoutManager layoutManager = org.wso2.carbon.bpel.ui.bpel2svg.old.BPEL2SVGFactory.getInstance().getLayoutManager();
-            // Build Specific Code
-            //attention---------    getSVGFileHeader();
-            doc = (SVGDocument) dom.createDocument(svgNS, "svg", null);
-            root = doc.getDocumentElement();
+    public SVGDocument getSVGDocument() {
 
-            int iHeight = getDimensions().getHeight();
-            int iWidth = getDimensions().getWidth();
+        doc = (SVGDocument) dom.createDocument(svgNS, "svg", null);
+        root = doc.getDocumentElement();
 
-            root.setAttributeNS(null, "height", Integer.toString(iHeight));
-            root.setAttributeNS(null, "width", Integer.toString(iWidth));
-            root.appendChild(getDefs(doc));
-            root.appendChild(getBoxDefinition(doc));
-            root.appendChild(getImageDefinition(doc));
-            // Process Sub Activities
-            root.appendChild(getSubActivitiesSVGString(doc));
-            root.appendChild(getEndImageDefinition(doc));
-            // Add Arrow
-            root.appendChild(getArrows(doc));
-            if (getLinkArrows(doc) != null) {
-                root.appendChild(getLinkArrows(doc));    //waruna
-            }
-        // Add End Tag
-        // getSCGFileFooter(); //this isn't used
+        int iHeight = getDimensions().getHeight();
+        int iWidth = getDimensions().getWidth();
 
-        return doc;  
+        root.setAttributeNS(null, "height", Integer.toString(iHeight));
+        root.setAttributeNS(null, "width", Integer.toString(iWidth));
+        root.appendChild(getDefs(doc));
+        root.appendChild(getBoxDefinition(doc));
+        root.appendChild(getImageDefinition(doc));
+        // Process Sub Activities
+        root.appendChild(getSubActivitiesSVGString(doc));
+        root.appendChild(getEndImageDefinition(doc));
+        // Add Arrow
+        root.appendChild(getArrows(doc));
+        if (getLinkArrows(doc) != null) {
+            root.appendChild(getLinkArrows(doc));
+        }
+
+        return doc;
     }
 
-    //the following method should be removed.It's auto completed by Batik. But width and height should be changed.
     private String getSVGFileHeader() {
         StringBuffer svgSB = new StringBuffer();
         // Build Specific Code
@@ -131,11 +121,8 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
 
         svgSB.append("<svg\n");
         svgSB.append("\txmlns=\"http://www.w3.org/2000/svg\"\n");
-//        svgSB.append("\txmlns:svg=\"http://www.w3.org/2000/svg\"\n");
         svgSB.append("\txmlns:xlink=\"http://www.w3.org/1999/xlink\"\n");
-//        svgSB.append("\txmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n");
         svgSB.append("\tversion=\"1.1\"  baseProfile=\"tiny\"\n");
-        // TODO : Fix Sizing
         svgSB.append("\twidth=\"" + dimensions.getWidth() * 2 + "\"\n");
         svgSB.append("\theight=\"" + dimensions.getHeight() * 2 + "\"\n");
         svgSB.append("\tid=\"" + getId() + "\">\n");
@@ -185,7 +172,6 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         linkMarker.setAttributeNS(null, "style", "overflow:visible");
 
         Element linkPath = doc.createElementNS("http://www.w3.org/2000/svg", "path");
-    //    linkPath.setAttributeNS(null, "d", "M 0,0 L 2.5,-7.5 L -1,0 L 2.5,7.5 L 0,0 z");
         linkPath.setAttributeNS(null, "d", "M -11.5,0 L -7,-7.5 L -12.5,0 L -7,7.5 L -11.5,0 z");
         linkPath.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
         linkPath.setAttributeNS(null, "id", "linkPath");
@@ -193,19 +179,19 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
 
         Element linearGradient = doc.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
         linearGradient.setAttributeNS(null, "id", "orange_red");
-        linearGradient.setAttributeNS(null, "x1" ,"0%");
+        linearGradient.setAttributeNS(null, "x1", "0%");
         linearGradient.setAttributeNS(null, "y1", "0%");
-        linearGradient.setAttributeNS(null, "x2" ,"0%");
+        linearGradient.setAttributeNS(null, "x2", "0%");
         linearGradient.setAttributeNS(null, "y2", "100%");
 
         Element stop1 = doc.createElementNS("http://www.w3.org/2000/svg", "stop");
         stop1.setAttributeNS(null, "offset", "0%");
         stop1.setAttributeNS(null, "style", "stop-color:rgb(255,255,255);stop-opacity:1");
 
-        Element stop2 = doc.createElementNS("http://www.w3.org/2000/svg", "stop");                   //these should be taken from the svg factory
+        Element stop2 = doc.createElementNS("http://www.w3.org/2000/svg", "stop");
         stop2.setAttributeNS(null, "offset", "100%");
-        stop2.setAttributeNS(null, "style", "stop-color:rgb(0,0,255);stop-opacity:1");              //these should be taken from the svg factory
-        
+        stop2.setAttributeNS(null, "style", "stop-color:rgb(0,0,255);stop-opacity:1");
+
         marker1.appendChild(path1);
         marker2.appendChild(path2);
         linkMarker.appendChild(linkPath);
@@ -238,69 +224,51 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         if (links != null && !links.isEmpty()) {
             Set linksSet = links.entrySet();
             Iterator linksIterator = linksSet.iterator();
-                while(linksIterator.hasNext()){
-                    Map.Entry<String, Link> link = (Map.Entry<String, Link>)linksIterator.next();
-                    ActivityInterface startActivity = link.getValue().getSource();
-                    ActivityInterface endActivity = link.getValue().getTarget();
-                    String linkName = link.getKey();
-                    //Element pathGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
-                    //group.setAttributeNS("xlink", "title", linkName);
-                    if (endActivity != null && startActivity != null) {
-                        group.appendChild(drawLink(doc, startActivity.getExitArrowCoords().getXLeft(),
-                                startActivity.getExitArrowCoords().getYTop(), endActivity.getEntryArrowCoords().getXLeft(),
-                                endActivity.getEntryArrowCoords().getYTop(), startActivity.getStartIconWidth(),
-                                link.getKey(), linkName));
-                        //group.appendChild(pathGroup);
-                    }
+            while (linksIterator.hasNext()) {
+                Map.Entry<String, Link> link = (Map.Entry<String, Link>) linksIterator.next();
+                ActivityInterface startActivity = link.getValue().getSource();
+                ActivityInterface endActivity = link.getValue().getTarget();
+                String linkName = link.getKey();
+                if (endActivity != null && startActivity != null) {
+                    group.appendChild(drawLink(doc, startActivity.getExitArrowCoords().getXLeft(),
+                            startActivity.getExitArrowCoords().getYTop(), endActivity.getEntryArrowCoords().getXLeft(),
+                            endActivity.getEntryArrowCoords().getYTop(), startActivity.getStartIconWidth(),
+                            link.getKey(), linkName));
                 }
+            }
         }
         return group;
     }
 
-    private Element drawLink(SVGDocument doc, int startX, int startY, int endX, int endY, int startIconWidth, String id, String linkName)
-    {
+    private Element drawLink(SVGDocument doc, int startX, int startY, int endX, int endY, int startIconWidth, String id, String linkName) {
         Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
 
         int firstBend = 20;
-        if(layoutManager.isVerticalLayout()){
+        if (layoutManager.isVerticalLayout()) {
             if (startY < endY) {
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
-                        " L " + startX + "," + (startY + firstBend) +  " L " + endX + "," + (startY + firstBend) +
+                        " L " + startX + "," + (startY + firstBend) + " L " + endX + "," + (startY + firstBend) +
                         " L " + endX + "," + endY);                            //use constants for these propotions
-            }
-            else {
+            } else {
                 if (startX > endX) {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
-                        " L " + (startX - (startIconWidth/2 + firstBend)) + "," + (startY + firstBend) +  " L " +
-                        (startX - (startIconWidth/2 + firstBend)) + "," + (endY - firstBend) + " L " + endX + "," + (endY - firstBend)+
-                        " L " + endX + "," + endY);                            //use constants for these propotions
-                }
-                else {
                     path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
-                        " L " + (startX + (startIconWidth/2 + firstBend)) + "," + (startY + firstBend) +  " L " +
-                        (startX + (startIconWidth/2 + firstBend)) + "," + (endY - firstBend) + " L " + endX + "," + (endY - firstBend)+
-                        " L " + endX + "," + endY);
+                            " L " + (startX - (startIconWidth / 2 + firstBend)) + "," + (startY + firstBend) + " L " +
+                            (startX - (startIconWidth / 2 + firstBend)) + "," + (endY - firstBend) + " L " + endX + "," + (endY - firstBend) +
+                            " L " + endX + "," + endY);                            //use constants for these propotions
+                } else {
+                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
+                            " L " + (startX + (startIconWidth / 2 + firstBend)) + "," + (startY + firstBend) + " L " +
+                            (startX + (startIconWidth / 2 + firstBend)) + "," + (endY - firstBend) + " L " + endX + "," + (endY - firstBend) +
+                            " L " + endX + "," + endY);
                 }
             }
 
-        }else{
-            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1* endX) / 2) + "," + startY + " L " + ((startX + 1* endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+        } else {
+            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
         }
         path.setAttributeNS(null, "id", id);
         path.setAttributeNS(null, "style", getLinkArrowStyle());
         path.setAttributeNS("xlink", "title", linkName);
-
-        /* Removing opacity on mouseover and mouseout
-        path.setAttributeNS(null, "style", "opacity:" + getIconOpacity());
-        path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
-        path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=25");
-
-       path.setAttributeNS(null, "onmouseover", "this.style.opacity=1;this.filters.alpha.opacity=100");
-       path.setAttributeNS(null, "onmouseout", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
-
-       path.setAttributeNS(null, "onload", "this.style.opacity=" + getIconOpacity() + ";this.filters.alpha.opacity=100");
-       path.setAttributeNS(null, "onmousemove", "this.style.opacity=1;this.filters.alpha.opacity=100");*/
-
         return path;
     }
 
@@ -330,7 +298,6 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
                 }
             } catch (NoSuchElementException e) {
                 log.error("Invalid Element access", e);
-                //throw new Exception("Error in reading Dimensions", e);
             }
 
             height += ((getYSpacing() * 2) + getStartIconHeight() + getEndIconHeight());
@@ -338,7 +305,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
 
             dimensions.setWidth(width);
             dimensions.setHeight(height);
-            
+
             layoutManager.setSvgHeight(height);
             layoutManager.setSvgWidth(width);
 
@@ -380,7 +347,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         setStartIconYTop(yTop);
         setEndIconXLeft(endXLeft);
         setEndIconYTop(endYTop);
-        getDimensions().setXLeft(startXLeft);                                    //TODO why startXleft not Xleft?
+        getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
 

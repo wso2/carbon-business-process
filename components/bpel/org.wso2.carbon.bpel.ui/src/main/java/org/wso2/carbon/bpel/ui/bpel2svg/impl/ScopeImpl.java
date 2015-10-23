@@ -50,10 +50,12 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     public ScopeImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     private int handlerIconWidth = 70;
     private int handlerIconHeight = 50;
 
@@ -252,8 +254,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         while (itr.hasNext()) {
             activity = itr.next();
             if (activity instanceof FaultHandlerImpl || activity instanceof TerminationHandlerImpl || activity instanceof CompensationHandlerImpl || activity instanceof EventHandlerImpl) {
-                // Ignore
-                //throw new UnsupportedOperationException("This operation is not currently supported in this version of WSO2 BPS.");
             } else {
                 activity.layout(childXLeft, childYTop);
                 childXLeft += activity.getDimensions().getWidth();
@@ -324,8 +324,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         while (itr.hasNext()) {
             activity = itr.next();
             if (activity instanceof FaultHandlerImpl || activity instanceof TerminationHandlerImpl || activity instanceof CompensationHandlerImpl || activity instanceof EventHandlerImpl) {
-                // Ignore
-                //throw new UnsupportedOperationException("This operation is not currently supported in this version of WSO2 BPS.");
             } else {
                 activity.layout(childXLeft, childYTop);
                 childYTop += activity.getDimensions().getHeight();
@@ -513,8 +511,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         group.appendChild(getEndImageDefinition(doc));
         //Add Arrow
         group.appendChild(getArrows(doc));
-        //attention - here group1 contain the box definition+ImageDefinition+etc... in the original
-        // but here group does not contain that
+
         return group;
     }
 
@@ -588,7 +585,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopeterminationhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
         String iconPath = BPEL2SVGIcons.TERMINATIONHANDLER_ICON;
 
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
@@ -605,7 +601,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopefaulthandler" + BPEL2SVGFactory.getInstance().getIconExtension();
         String iconPath = BPEL2SVGIcons.FAULTHANDLER_ICON;
 
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
@@ -622,7 +617,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopecompensationhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
         String iconPath = BPEL2SVGIcons.COMPENSATIONHANDLER_ICON;
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
@@ -638,7 +632,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             xLeft = coords.getXLeft() - (getHandlerIconWidth() / 2);
             yTop = coords.getYTop() - getHandlerIconHeight();
         }
-        //String iconPath = BPEL2SVGFactory.getInstance().getIconSource() + "/scopeeventhandler" + BPEL2SVGFactory.getInstance().getIconExtension();
         String iconPath = BPEL2SVGIcons.EVENTHANDLER_ICON;
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
@@ -653,17 +646,17 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         return getCompositeOpacity();
     }
 
-     protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
+    protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
                                          int imgWidth, int imgHeight, String id) {
 
         Element group = null;
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
 
-        if (getStartIconPath() != null) {     
+        if (getStartIconPath() != null) {
 
             //Rectangle to place the image
-            Element x=null;
+            Element x = null;
             x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
             x.setAttributeNS(null, "id", id);
 
@@ -675,13 +668,13 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             rect.setAttributeNS(null, "id", id);
             rect.setAttributeNS(null, "rx", "10");
             rect.setAttributeNS(null, "ry", "10");
-            rect.setAttributeNS(null, "style","fill:white;stroke:black;stroke-width:1.5;fill-opacity:0.1");
+            rect.setAttributeNS(null, "style", "fill:white;stroke:black;stroke-width:1.5;fill-opacity:0.1");
 
             //Image attributes
-            int embedImageX= imgXLeft + 25;
-            int embedImageY= imgYTop + ( 5 / 2 );
-            int embedImageHeight= 45;
-            int embedImageWidth= 45;
+            int embedImageX = imgXLeft + 25;
+            int embedImageY = imgYTop + (5 / 2);
+            int embedImageHeight = 45;
+            int embedImageWidth = 45;
 
             Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
@@ -692,7 +685,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
             x.appendChild(rect);
             x.appendChild(embedImage);
-            
+
             return x;
         }
 

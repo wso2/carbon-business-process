@@ -28,16 +28,6 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
  */
 public class SourcesImpl extends ActivityImpl implements SourcesInterface {
 
-   /* public ActivityImpl getParent() {
-        return parent;
-    }
-
-    public void setParent(ActivityImpl parent) {
-        this.parent = parent;
-    }
-   */
-   // protected ActivityImpl parent;
-
 
     public SourcesImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);

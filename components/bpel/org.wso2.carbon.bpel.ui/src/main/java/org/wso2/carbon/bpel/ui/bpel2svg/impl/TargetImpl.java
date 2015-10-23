@@ -26,7 +26,7 @@ import org.apache.axiom.om.OMElement;
 /**
  * Target tag UI impl
  */
-public class TargetImpl extends TargetsImpl implements TargetInterface{
+public class TargetImpl extends TargetsImpl implements TargetInterface {
     public TargetImpl(OMElement omElement) {
         super(omElement);
 
@@ -34,26 +34,16 @@ public class TargetImpl extends TargetsImpl implements TargetInterface{
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
 
-        
     }
 
     public TargetImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
+
         // Set Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
-  /*  public ActivityImpl getParent() {
-        return parent;
-    }
-
-    public void setParent(ActivityImpl parent) {
-        this.parent = parent;
-    }
-    */
-  //  protected ActivityImpl parent;
 
     @Override
     public String getEndTag() {

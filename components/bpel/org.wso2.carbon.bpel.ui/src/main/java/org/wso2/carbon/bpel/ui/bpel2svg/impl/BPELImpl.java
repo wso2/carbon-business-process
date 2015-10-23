@@ -46,9 +46,8 @@ public class BPELImpl implements BPELInterface {
     //To handle links
     public Map<String, Link> links = new HashMap<String, Link>();
     public Set<ActivityInterface> sources = new HashSet<ActivityInterface>();
-    public Set<ActivityInterface> targets =
-            new HashSet<ActivityInterface>();
-    
+    public Set<ActivityInterface> targets = new HashSet<ActivityInterface>();
+
     private XMLStreamReader parser = null;
     private StAXOMBuilder builder = null;
     private OMElement bpelElement = null;
@@ -57,37 +56,16 @@ public class BPELImpl implements BPELInterface {
 
         if (om != null) {
             processActivity = new ProcessImpl(bpelElement);
-            processActivity.setLinkProperties(links, sources,targets);
+            processActivity.setLinkProperties(links, sources, targets);
             processActivity.processSubActivities(bpelElement);
-
-            //TODO do we need this kind of check. I think this is a problem that should be solved by a bpel compiler
-//            OMElement startElement = bpelElement.getFirstChildWithName(new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", BPEL2SVGFactory.SEQUENCE_START_TAG)); // namesapce should be changed, exceptions should be handled.
-//            if (startElement != null) {/
-//              ....
-//            }else{
-//                startElement = bpelElement.getFirstChildWithName(new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", BPEL2SVGFactory.FLOW_START_TAG)); // namesapce should be changed, exceptions should be handled.
-//                if(startElement != null){
-//                   .....
-//                }
-//                else {
-//                    startElement = bpelElement.getFirstChildWithName(new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", BPEL2SVGFactory.SCOPE_START_TAG)); // namesapce should be changed, exceptions should be handled.
-//                    if(startElement != null){
-//                         ....
-//                    } else {
-//                         .....
-//                    }
-//                }
-//            }
         }
     }
 
     public OMElement load(String bpelStr) {
         try {
             parser = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(bpelStr));
-
             builder = new StAXOMBuilder(parser);
             bpelElement = builder.getDocumentElement();
-            //check whether the paser needed to be closed
             return bpelElement;
         } catch (XMLStreamException e) {
             log.error("XMLStreamReader creation failed", e);
