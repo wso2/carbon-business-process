@@ -85,8 +85,35 @@
 					<div class="col-lg-4 capitalize"><%=taskListData.deleteReason%></div>
 				</div>
 				<hr>
-			</div>
-		</div>
-	</div>
-</div>
-<%}%>
+				<div class="col-lg-12 margin-bottom padding-left-none">
+					<div class="col-lg-2 padding-left-none"><h3>Attachments:</h3></div>
+					<div class="col-lg-4 capitalize">
+                        <!--Attachment List Table -->
+                       <% if(attachmentList.length > 0 ) { %>
+                            <div class="table-body margin-left-double float-left">
+                            <!-- Table -->
+                                <% for (var i=0; i < attachmentList.length; i++) { %>
+                                    <div class="white-bg" style="cursor:pointer;"
+                                        onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                                        <div>
+                                            <a download="<%=attachmentList[i].name%>"href="<%=application.get('bpsTenantUrlPart') +
+                                                "/bpmn/runtime/tasks/" + id + "/attachments/" + attachmentList[i].id + "/content"%>">
+                                                <%=attachmentList[i].name%></a>
+                                        </div>
+                                    </div>
+                                <% } %>
+                           </div>
+                          <!--End of Attachment List Table-->
+                        <% } else { %>
+                            <div>
+                                <span style="display:block; margin-bottom:20px;"></span>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%}%>

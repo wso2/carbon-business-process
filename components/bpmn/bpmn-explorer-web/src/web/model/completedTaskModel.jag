@@ -72,6 +72,40 @@ try {
         priority:taskList.priority,
         deleteReason:taskList.deleteReason
     };
+
+    //for attachments table
+    var attachments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments", null, headers, "json").data;
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST request: "+ httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments");
+        log.debug("BPS BPMN REST API response: " +stringify(attachments));
+    }
+
+    //Check for error response
+    if (attachments.errorMessage != undefined) {
+        throw "Error " + attachments.statusCode + " : " + attachments.errorMessage;
+    }
+
+    var attachmentList = [];
+    if (attachments) {
+        for (var i = 0; i < attachments.length; i++) {
+            var attachmentId = JSON.parse(attachments[i].id);
+            var attachmentName = attachments[i].name;
+            var attachmentType = attachments[i].type;
+            var contentUrl = attachments[i].contentUrl;
+
+            attachmentList.push({
+                id: attachmentId,
+                name: attachmentName,
+                type: attachmentType,
+                url: contentUrl
+            });
+        }
+    } else {
+        if (log.isDebugEnabled()) {
+            log.debug("No attachments found for task" + id);
+        }
+    }
 } catch (e) {
     if (log.isDebugEnabled()) {
         log.debug("User Error Occured : " + e);
