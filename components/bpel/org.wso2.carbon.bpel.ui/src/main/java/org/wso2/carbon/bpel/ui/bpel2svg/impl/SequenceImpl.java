@@ -70,6 +70,10 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+    public SequenceImpl() {
+
+    }
+
     @Override
     public String getId() {
         return getName(); // + "-Sequence";
@@ -242,7 +246,15 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     exitCoords = prevActivity.getExitArrowCoords();
                     entryCoords = activity.getEntryArrowCoords();
                     id = prevActivity.getId() + "-" + activity.getId();
-                    subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
+
+                    if (activity instanceof ThrowImpl) {
+                        setCheck(true);
+                    }
+                    if (prevActivity instanceof ThrowImpl) {
+                        //No exit arrow . Process stops from there
+                    } else {
+                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
+                    }
                 }
                 prevActivity = activity;
             }
@@ -259,4 +271,6 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
     public String getOpacity() {
         return getCompositeOpacity();
     }
+
+
 }

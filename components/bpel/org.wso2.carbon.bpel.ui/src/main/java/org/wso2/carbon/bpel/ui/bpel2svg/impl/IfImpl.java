@@ -24,6 +24,7 @@ import org.w3c.dom.svg.SVGDocument;
 import org.wso2.carbon.bpel.ui.bpel2svg.*;
 
 import java.util.Iterator;
+import java.util.*;
 
 /**
  * If tag UI impl
@@ -413,6 +414,10 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             ActivityInterface prevActivity = null;
             ActivityInterface prevElseActivity = null;
             ActivityInterface activity = null;
+
+            ActivityInterface seqActivity = null;
+            boolean throwOrNot = true;
+
             String id = null;
             SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
             SVGCoordinates myExitCoords = getEndIconEntryArrowCoords();
@@ -428,16 +433,61 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                 activityExitCoords = activity.getExitArrowCoords();
 
                 if (activity instanceof ElseIfImpl || activity instanceof ElseImpl) {
+
                     if (prevActivity != null && prevActivity instanceof ElseIfImpl) {
                         exitCoords = ((ElseIfInterface) prevActivity).getNextElseExitArrowCoords();
                         id = prevActivity.getId() + "-" + activity.getId();
-                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                        subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
-
-                    } else {
+                        if (activity instanceof ElseImpl) {
+                            boolean check = ((ElseImpl) activity).throwOrNot;
+                            subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft() - getEndIconWidth() / 2, exitCoords.getYTop(), id));
+                            if (check == true) {
+                            } else {
+                                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                            }
+                        } else if (activity instanceof ElseIfImpl) {
+                            boolean check = ((ElseIfImpl) activity).throwOrNot;
+                            subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                            if (check == true) {
+                            } else {
+                                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                            }
+                        } else {
+                            subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                            subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                        }
+                    } else if (prevActivity instanceof ThrowImpl && activity instanceof ElseImpl) {
                         subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                        subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                    } else if (activity instanceof ElseIfImpl) {
+                        boolean check = ((ElseIfImpl) activity).throwOrNot;
+                        subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+
+                        if (check == true) {
+                            //No exit arrow . Process stops from there
+                        } else {
+                            subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                        }
+
+                    } else if (activity instanceof ElseImpl) {
+                        boolean check = ((ElseImpl) activity).throwOrNot;
+                        subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+
+                        if (check == true) {
+                            //No exit arrow . Process stops from there
+                        } else {
+                            subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                        }
+                    } else {
+                        id = prevActivity.getId() + "-" + activity.getId();
+                        if (activity instanceof ThrowImpl) {
+                            subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                        } else {
+                            subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                            subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                        }
                     }
+                } else if (activity instanceof ThrowImpl) {
+                    subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+
                 } else {
                     if (prevActivity != null) {
                         exitCoords = prevActivity.getExitArrowCoords();
@@ -445,9 +495,28 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                         subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
 
                     } else {
-                        subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
-                        subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
-
+                        if (activity instanceof SequenceImpl) {
+                            List<ActivityInterface> sub = activity.getSubActivities();
+                            Iterator<ActivityInterface> as = sub.iterator();
+                            while (as.hasNext()) {
+                                seqActivity = as.next();
+                                if (seqActivity instanceof ThrowImpl) {
+                                    throwOrNot = true;
+                                    break;
+                                } else {
+                                    throwOrNot = false;
+                                }
+                            }
+                            if (throwOrNot == true) {
+                                subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                            } else {
+                                subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                            }
+                        } else {
+                            subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                            subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                        }
                     }
                 }
 

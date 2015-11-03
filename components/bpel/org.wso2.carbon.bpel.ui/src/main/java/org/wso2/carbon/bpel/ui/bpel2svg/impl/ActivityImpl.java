@@ -155,6 +155,16 @@ public abstract class ActivityImpl implements ActivityInterface {
         }
     }
 
+    private boolean check = false;
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
     // Properties
     public String getDisplayName() {
         return displayName;
@@ -466,6 +476,7 @@ public abstract class ActivityImpl implements ActivityInterface {
                                 activityExitCoords.getYTop(),
                                 myExitCoords.getXLeft(), myExitCoords.getYTop(),
                                 id));
+
             }
         }
 
@@ -572,6 +583,12 @@ public abstract class ActivityImpl implements ActivityInterface {
                 getEndImageId());
     }
 
+    protected Element getStartImageDefinition(SVGDocument doc) {
+        return getImageDefinition(doc, getStartIconPath(), getStartIconXLeft(),
+                getStartIconYTop(), getStartIconWidth(), getStartIconHeight(),
+                getStartImageId());
+    }
+
     protected Element getImageText(SVGDocument doc, int imgXLeft, int imgYTop, int imgWidth,
                                    int imgHeight, String imgName, String imgDisplayName) {
         int txtXLeft = imgXLeft;
@@ -658,13 +675,13 @@ public abstract class ActivityImpl implements ActivityInterface {
 
     protected String getLinkArrowStyle() {
         String largeArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
                         +
                         "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
                         +
                         "none;stroke-opacity:1;opacity: 0.25;";
         String mediumArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
                         +
                         "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
                         +

@@ -17,16 +17,22 @@
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 import org.wso2.carbon.bpel.ui.bpel2svg.*;
 
 import java.util.Iterator;
+import java.util.*;
 
 /**
  * ElseIf tag UI impl
  */
 public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
+    private static final Log log = LogFactory.getLog(ElseIfImpl.class);
+    public boolean throwOrNot;
+
     public ElseIfImpl(String token) {
         super(token);
 
@@ -91,6 +97,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         return dimensions;
     }
 
+
     @Override
     public void layout(int startXLeft, int startYTop) {
         if (layoutManager.isVerticalLayout()) {
@@ -124,6 +131,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
         getDimensions().setYTop(startYTop);
 
     }
+
 
     public void layoutHorizontal(int startXLeft, int startYTop) {
         int centreOfMyLayout = startYTop + (dimensions.getHeight() / 2);
@@ -236,6 +244,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
             ActivityInterface prevActivity = null;
             ActivityInterface activity = null;
             String id = null;
+            ActivityInterface seqActivity = null;
             SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
             SVGCoordinates myExitCoords = getEndIconEntryArrowCoords();
             SVGCoordinates exitCoords = null;
@@ -249,6 +258,23 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
                 activityEntryCoords = activity.getEntryArrowCoords();
                 activityExitCoords = activity.getExitArrowCoords();
 
+                if (activity instanceof SequenceImpl) {
+
+                    List<ActivityInterface> sub = activity.getSubActivities();
+                    Iterator<ActivityInterface> as = sub.iterator();
+                    while (as.hasNext()) {
+                        seqActivity = as.next();
+                        if (seqActivity instanceof ThrowImpl) {
+                            throwOrNot = true;
+                            break;
+                        } else {
+                            throwOrNot = false;
+                        }
+                    }
+                }
+                if (activity instanceof ThrowImpl) {
+                    throwOrNot = true;
+                }
                 if (prevActivity != null) {
                     exitCoords = prevActivity.getExitArrowCoords();
                     id = prevActivity.getId() + "-" + activity.getId();

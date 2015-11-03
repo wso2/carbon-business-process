@@ -164,6 +164,8 @@ public class BPEL2SVGFactory {
                 iconPath = BPEL2SVGIcons.EMPTY_ICON;
             } else if (activity.equalsIgnoreCase(ElseIfImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.ELSEIF_ICON;
+            } else if (activity.equalsIgnoreCase(ElseImpl.class.getName())) {
+                iconPath = BPEL2SVGIcons.ELSE_ICON;
             } else if (activity.equalsIgnoreCase(CompensateImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.COMPENSATE_ICON;
             } else if (activity.equalsIgnoreCase(CompensateScopeImpl.class.getName())) {
