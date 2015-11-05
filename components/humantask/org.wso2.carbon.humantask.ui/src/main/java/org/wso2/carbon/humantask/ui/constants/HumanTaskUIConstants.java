@@ -80,5 +80,11 @@ public final class HumanTaskUIConstants {
         }
 
         public static final String HT_CONFIG_NAME = "htconfig.xml";
+
+	    public static final String HT_FILE_EXT = ".ht";
+
+	    public static final String WSDL_FILE_EXT = ".wsdl";
+
+	    public static final String XSD_FILE_EXT = ".xsd";
     }
 }

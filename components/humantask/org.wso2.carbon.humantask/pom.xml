@@ -326,7 +326,7 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.humantask.core.internal,
-                            org.wso2.carbon.humantask.core.*
+                            org.wso2.carbon.humantask.*
                         </Export-Package>
                         <Import-Package>
                             org.wso2.carbon.humantask.client.api.*;
