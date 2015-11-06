@@ -132,7 +132,12 @@
                             <tbody>
                                 <form action="" method="post" id="HTWorkspaceForm">
                                     <input name="wso2_WS_HumanTask_Task_Identifier" value="<%=id%>" type="hidden">
-                                    <% for (var i = 0; i < wso2OutputRenderList.length(); i++) { %>
+                                    <% for (var i = 0; i < wso2OutputRenderList.length(); i++) {
+                                        var readOnly = '';
+                                        if (wso2OutputRenderList[i].@readOnly == 'true') {
+                                            readOnly = 'readonly';
+                                        }
+                                    %>
                                         <tr class="white-bg">
                                             <td width="25%">
                                                 <div class="col-lg-4"> <%=wso2OutputRenderList[i].label.text()%></div>
@@ -151,9 +156,9 @@
                                                     }
                                                 %>
                                                     <input style="radio-btn" type="radio" name="<%=wso2OutputRenderList[i].@id%>"
-                                                                            value="true" <%=trueChecked%> <%=disabled%>><%=dispValueSet[0].trim()%>
+                                                                            value="true" <%=trueChecked%> <%=disabled%> <%=readOnly%>><%=dispValueSet[0].trim()%>
                                                     <input style="radio-btn" type="radio" name="<%=wso2OutputRenderList[i].@id%>"
-                                                                            value="false" <%=falseChecked%> <%=disabled%>><%=dispValueSet[1].trim()%>
+                                                                            value="false" <%=falseChecked%> <%=disabled%> <%=readOnly%>><%=dispValueSet[1].trim()%>
 
                                                 <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'list') {
                                                     //The user input is a list type. So display dropdown with possible values
@@ -164,7 +169,7 @@
                                                     var defaultValue = wso2OutputRenderList[i].default.toString();
                                                     var selected = '';
                                                 %>
-                                                    <select name="<%=wso2OutputRenderList[i].@id%>" <%=disabled%>>
+                                                    <select name="<%=wso2OutputRenderList[i].@id%>" <%=disabled%> <%=readOnly%>>
                                                     <% for (var j = 0; j < dispValueSet.length; j++) {
                                                         if (defaultValue.trim() === dispValueSet[j].trim()) {
                                                             selected = 'selected'
@@ -180,7 +185,7 @@
                                                     //The user input is a string type. So display text area to write text content
                                                 %>
                                                     <!--Do not change the format, if a new line is added, spaces also will be added as the text input-->
-                                                    <textarea name="<%=wso2OutputRenderList[i].@id%>" rows="4" cols="50" <%=disabled%>><%=wso2OutputRenderList[i].default.toString().trim()%></textarea>
+                                                    <textarea name="<%=wso2OutputRenderList[i].@id%>" rows="4" cols="50" <%=disabled%> <%=readOnly%>><%=wso2OutputRenderList[i].default.toString().trim()%></textarea>
 
                                                 <% } else if (wso2OutputRenderList[i].value.@type.toString() === 'int' ||
                                                                     wso2OutputRenderList[i].value.@type.toString() === 'double') {
@@ -188,7 +193,7 @@
                                                 %>
 
                                                     <input type="number" name="<%=wso2OutputRenderList[i].@id%>"
-                                                                        value="<%=wso2OutputRenderList[i].default.toString()%>" <%=disabled%>>
+                                                                        value="<%=wso2OutputRenderList[i].default.toString()%>" <%=disabled%> <%=readOnly%>>
 
                                                 <% } %>
                                                 </div>

@@ -395,6 +395,12 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                         String xpath = tempElement.getElementsByTagNameNS(htRenderingNS, "xpath").item(0).getTextContent();
                         String defaultValue = tempElement.getElementsByTagNameNS(htRenderingNS, "default").item(0).getTextContent();
 
+                        //set the readOnly attribute if Exists, default false
+                        String readOnly = "false";
+                        if (tempElement.hasAttribute("readOnly")) {
+                            readOnly = tempElement.getAttribute("readOnly");
+                        }
+
                         //set element data in the response message
                         outputElements[i] = new OutputElementType();
                         //set ID
@@ -406,6 +412,11 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                         //set value
                         Element valueElement = (Element) tempElement.getElementsByTagNameNS(htRenderingNS, "value").item(0);
                         outputElements[i].setValue(createOutRenderElementValue(valueElement));
+                        if (readOnly.equals("true")) {
+                            outputElements[i].setReadOnly(true);
+                        } else {
+                            outputElements[i].setReadOnly(false);
+                        }
 
                         if (savedOutputElement != null) {
                             //resolve default value
