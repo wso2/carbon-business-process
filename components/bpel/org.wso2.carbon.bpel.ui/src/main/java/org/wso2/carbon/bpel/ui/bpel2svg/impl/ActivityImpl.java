@@ -1069,14 +1069,6 @@ public abstract class ActivityImpl implements ActivityInterface {
                 }
 
                 activity.setLinkProperties(links, sources, targets);
-               /* if(activity instanceof SourceImpl || activity instanceof TargetImpl || activity instanceof SourcesImpl || activity instanceof TargetImpl)
-                {
-                    log.info("Only a Source");
-                }
-                else {
-                    log.info("Not a source or target");
-                    subActivities.add(activity);
-                }*/
                 subActivities.add(activity);
 
                 if (tmpElement.getChildElements().hasNext()) {
