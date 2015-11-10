@@ -218,19 +218,19 @@ public class BPEL2SVGFactory {
             if (activity.equalsIgnoreCase(FlowImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.FLOW_ICON;
             } else if (activity.equalsIgnoreCase(ForEachImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.FOREACH_ICON;
+                iconPath = BPEL2SVGIcons.ENDFOREACH_ICON;
             } else if (activity.equalsIgnoreCase(IfImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.IF_ICON;
+                iconPath = BPEL2SVGIcons.ENDIF_ICON;
             } else if (activity.equalsIgnoreCase(PickImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.PICK_ICON;
             } else if (activity.equalsIgnoreCase(ProcessImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.END_ICON;
             } else if (activity.equalsIgnoreCase(RepeatUntilImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.REPEATUNTIL_ICON;
+                iconPath = BPEL2SVGIcons.ENDREPEATUNTIL_ICON;
             } else if (activity.equalsIgnoreCase(ScopeImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.SCOPE_ICON;
             } else if (activity.equalsIgnoreCase(WhileImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.WHILE_ICON;
+                iconPath = BPEL2SVGIcons.ENDWHILE_ICON;
             }
         }
         return iconPath;

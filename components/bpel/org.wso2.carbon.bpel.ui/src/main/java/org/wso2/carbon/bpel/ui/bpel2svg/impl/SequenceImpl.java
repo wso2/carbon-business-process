@@ -252,6 +252,10 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     }
                     if (prevActivity instanceof ThrowImpl) {
                         //No exit arrow . Process stops from there
+                    } else if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
+                            || prevActivity instanceof TargetsImpl || activity instanceof SourcesImpl || activity instanceof SourceImpl ||
+                            activity instanceof TargetImpl || activity instanceof TargetsImpl) {
+                        //No exit arrow for Source or Target..
                     } else {
                         subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
                     }

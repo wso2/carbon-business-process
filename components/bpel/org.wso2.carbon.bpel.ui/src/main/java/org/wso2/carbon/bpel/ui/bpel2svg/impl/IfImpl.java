@@ -193,6 +193,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
     }
 
     public void layoutVertical(int startXLeft, int startYTop) {
+
         int centreOfMyLayout = startXLeft + (dimensions.getWidth() / 2);
         int xLeft = centreOfMyLayout - (getStartIconWidth() / 2);
         int yTop = startYTop + (getYSpacing() / 2);
@@ -217,10 +218,22 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         // Process None Handlers First
         while (itr.hasNext()) {
             activity = itr.next();
-            if (activity instanceof ElseIfImpl || activity instanceof ElseImpl) {
+            if (this.isCheckIfinFlow() == true) {
+                if (activity instanceof SequenceImpl) {
+                    childYTop = childYTop + getEndIconWidth() / 2;
+                    activity.layout(childXLeft, childYTop);
+                    childXLeft += activity.getDimensions().getWidth();
+                } else {
+                    childYTop = childYTop + getEndIconWidth() / 2 + 20;
+                    activity.layout(childXLeft, childYTop);
+                    childXLeft += activity.getDimensions().getWidth();
+                }
             } else {
-                activity.layout(childXLeft, childYTop);
-                childXLeft += activity.getDimensions().getWidth();
+                if (activity instanceof ElseIfImpl || activity instanceof ElseImpl) {
+                } else {
+                    activity.layout(childXLeft, childYTop);
+                    childXLeft += activity.getDimensions().getWidth();
+                }
             }
         }
         // Process Handlers
@@ -488,12 +501,18 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                 } else if (activity instanceof ThrowImpl) {
                     subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
 
+                } else if (activity instanceof SourceImpl || activity instanceof TargetImpl || activity instanceof SourcesImpl || activity instanceof TargetsImpl) {
+                    //No arrow flows for Sources or Targets..
                 } else {
                     if (prevActivity != null) {
                         exitCoords = prevActivity.getExitArrowCoords();
                         id = prevActivity.getId() + "-" + activity.getId();
-                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
 
+                        if (prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl || prevActivity instanceof SourcesImpl || prevActivity instanceof TargetsImpl) {
+                            //No arrow flows for Sources or Targets..
+                        } else {
+                            subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                        }
                     } else {
                         if (activity instanceof SequenceImpl) {
                             List<ActivityInterface> sub = activity.getSubActivities();

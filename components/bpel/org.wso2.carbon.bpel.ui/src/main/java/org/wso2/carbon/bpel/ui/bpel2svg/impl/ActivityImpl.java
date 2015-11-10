@@ -22,6 +22,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.bpel.compiler.bom.Sources;
 import org.h2.java.lang.System;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
@@ -164,6 +165,16 @@ public abstract class ActivityImpl implements ActivityInterface {
     public void setCheck(boolean check) {
         this.check = check;
     }
+
+    public boolean isCheckIfinFlow() {
+        return checkIfinFlow;
+    }
+
+    public void setCheckIfinFlow(boolean checkIfinFlow) {
+        this.checkIfinFlow = checkIfinFlow;
+    }
+
+    private boolean checkIfinFlow;
 
     // Properties
     public String getDisplayName() {
@@ -554,7 +565,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             int embedImageX = imgXLeft + 25;
             int embedImageY = (imgYTop + (5 / 2));
             int embedImageHeight = 45;
-            int embedImageWidth = 45;
+            int embedImageWidth = 50;
 
             Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
@@ -1058,6 +1069,14 @@ public abstract class ActivityImpl implements ActivityInterface {
                 }
 
                 activity.setLinkProperties(links, sources, targets);
+               /* if(activity instanceof SourceImpl || activity instanceof TargetImpl || activity instanceof SourcesImpl || activity instanceof TargetImpl)
+                {
+                    log.info("Only a Source");
+                }
+                else {
+                    log.info("Not a source or target");
+                    subActivities.add(activity);
+                }*/
                 subActivities.add(activity);
 
                 if (tmpElement.getChildElements().hasNext()) {

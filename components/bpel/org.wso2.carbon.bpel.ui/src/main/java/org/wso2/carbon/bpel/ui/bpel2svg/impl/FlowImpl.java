@@ -119,10 +119,12 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
             int childXLeft = startXLeft + (getXSpacing() / 2);
             while (itr.hasNext()) {
                 activity = itr.next();
+                if (activity instanceof IfImpl) {
+                    ((IfImpl) activity).setCheckIfinFlow(true);
+                }
                 activity.layout(childXLeft, childYTop);
                 childXLeft += activity.getDimensions().getWidth();
             }
-
             // Set the values
             setStartIconXLeft(xLeft);
             setStartIconYTop(yTop);

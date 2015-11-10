@@ -18,16 +18,53 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.SourcesInterface;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
+import org.wso2.carbon.bpel.ui.bpel2svg.*;
 import org.apache.axiom.om.OMElement;
-import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 
 /**
  * Sources tag UI impl
  */
 public class SourcesImpl extends ActivityImpl implements SourcesInterface {
 
+    //Making the height and the width of the start and end icons to zero
+    protected int startIconHeight = 0;
+    protected int endIconHeight = 0;
+    protected int startIconWidth = 0;
+    protected int endIconWidth = 0;
+
+    public void setEndIconHeight(int iconHeightEnd) {
+        this.endIconHeight = iconHeightEnd;
+    }
+
+    public void setStartIconHeight(int iconHeight) {
+        this.startIconHeight = iconHeight;
+    }
+
+    public void setStartIconWidth(int iconWidth) {
+        this.startIconWidth = iconWidth;
+    }
+
+    public void setEndIconWidth(int iconWidthEnd) {
+        this.endIconWidth = iconWidthEnd;
+    }
+
+    public int getEndIconHeight() {
+        return endIconHeight;
+    }
+
+    public int getStartIconHeight() {
+        return startIconHeight;
+    }
+
+    public int getStartIconWidth() {
+        return startIconWidth;
+    }
+
+    public int getEndIconWidth() {
+        return endIconWidth;
+    }
 
     public SourcesImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
@@ -55,4 +92,65 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
     public String getId() {
         return getName(); // + "-Sequence";
     }
+
+
+    //Different Implementations for start and end scope icons
+    @Override
+    protected Element getEndImageDefinition(SVGDocument doc) {
+        return getStartEndImageDef(doc, getEndIconPath(), getEndIconXLeft(),
+                getEndIconYTop(), getEndIconWidth(), getEndIconHeight(),
+                getEndImageId());
+    }
+
+    protected Element getStartImageDefinition(SVGDocument doc) {
+        return getStartEndImageDef(doc, getStartIconPath(), getStartIconXLeft(),
+                getStartIconYTop(), getStartIconWidth(), getStartIconHeight(),
+                getStartImageId());
+    }
+
+    protected Element getStartEndImageDef(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
+                                          int imgWidth, int imgHeight, String id) {
+
+        Element group = null;
+        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        return group;
+    }
+
+    //Get the arrow coordinates of the activities
+    protected Element getArrows(SVGDocument doc) {
+        Element subGroup = null;
+        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        return subGroup;
+    }
+
+
+    //Get the arrow definitions/paths from the coordinates
+    protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
+        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        return path;
+    }
+
+    public SVGDimension getDimensions() {
+        SVGDimension obj = new SVGDimension();
+        obj.setHeight(0);
+        obj.setWidth(0);
+        return obj;
+    }
+
+    public Element getSVGString(SVGDocument doc) {
+        Element group = null;
+        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttributeNS(null, "id", getLayerId());
+        group.appendChild(getBoxDefinition(doc));
+        group.appendChild(getImageDefinition(doc));
+        group.appendChild(getStartImageText(doc));
+        // Process Sub Activities
+        group.appendChild(getSubActivitiesSVGString(doc));
+        group.appendChild(getEndImageDefinition(doc));
+        //Add Arrow
+        group.appendChild(getArrows(doc));
+
+        return group;
+    }
+
 }
