@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import org.wso2.carbon.humantask.HumanInteractionsDocument;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.deployment.config.HTDeploymentConfigDocument;
+import org.wso2.carbon.humantask.core.deployment.config.THTDeploymentConfig;
 import org.wso2.carbon.humantask.core.utils.FileUtils;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.xml.sax.SAXException;
@@ -32,14 +33,12 @@ import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -65,6 +64,8 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
     private InputStream hiDefinition;
 
     private InputStream hiConfiguration;
+
+	private HTDeploymentConfigDocument hiConf;
 
     private File humanTaskDefinitionFile;
 
@@ -169,8 +170,9 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
 
     @Override
     public void buildWSDLs() throws HumanTaskDeploymentException {
-        URI baseUri = humantaskDir.toURI();
-        for (File file : FileUtils.directoryEntriesInPath(humantaskDir, wsdlFilter)) {
+	    HashSet<Definition> tmpWsdlDefinitions = new HashSet<>();
+	    URI baseUri = humantaskDir.toURI();
+	    for (File file : FileUtils.directoryEntriesInPath(humantaskDir, wsdlFilter)) {
 
             try {
                 URI uri = baseUri.relativize(file.toURI());
@@ -186,7 +188,9 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
                 reader.setFeature(HumanTaskConstants.JAVAX_WSDL_VERBOSE_MODE_KEY, false);
                 reader.setFeature("javax.wsdl.importDocuments", true);
                 Definition definition = reader.readWSDL(new HumanTaskWSDLLocator(uri));
-                wsdlDefinitions.add(definition);
+	            if (definition != null) {
+		            tmpWsdlDefinitions.add(definition);
+	            }
 
             } catch (WSDLException e) {
                 log.error("Error processing wsdl " + file.getName());
@@ -195,8 +199,72 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
                 log.error("Invalid uri in reading wsdl " , e);
                 throw new HumanTaskDeploymentException(" Invalid uri in reading wsdl " , e);
             }
-//            wsdlsMap.put(file.getName(), is);
         }
+	    // Optimizing WSDLs imports. Using HashSet to avoid duplicate entices.
+	    HashSet<Definition> optimizedDefinitions = new HashSet<>();
+	    HTDeploymentConfigDocument htDeploymentConfigDocument = getHTDeploymentConfigDocument();
+
+	    // Iterating Tasks.
+	    THTDeploymentConfig.Task[] taskArray = htDeploymentConfigDocument.getHTDeploymentConfig().getTaskArray();
+	    if (taskArray != null) {
+		    for (THTDeploymentConfig.Task task : taskArray) {
+			    QName taskService = task.getPublish().getService().getName();
+			    Definition taskServiceDefinition = getDefinition(taskService, tmpWsdlDefinitions);
+			    if (log.isDebugEnabled()) {
+				    log.debug("Optimizing WSDL import for Task : " + task.getName());
+			    }
+			    if (taskServiceDefinition != null) {
+				    optimizedDefinitions.add(taskServiceDefinition);
+				    if (log.isDebugEnabled()) {
+					    log.debug("Added WSDL for Task : " + task.getName() + ", Service : " + taskService +
+					              ", Imported/Total definition : " +
+					              optimizedDefinitions.size() + "/" + tmpWsdlDefinitions.size());
+				    }
+			    } else {
+				    log.warn("Can't find valid WSDL definition for Task" + task.getName() + ", Service: " +
+				             taskService);
+			    }
+			    QName callbackService = task.getCallback().getService().getName();
+			    Definition callbackServiceDefinition = getDefinition(callbackService, tmpWsdlDefinitions);
+			    if (callbackServiceDefinition != null) {
+				    optimizedDefinitions.add(callbackServiceDefinition);
+				    if (log.isDebugEnabled()) {
+					    log.debug("Added WSDL for Task : " + task.getName() + ", Callback Service : " +
+					              callbackService + ", Imported/Total definition : " +
+					              optimizedDefinitions.size() + "/" + tmpWsdlDefinitions.size());
+				    }
+			    } else {
+				    log.warn("Can't find valid WSDL definition for Task : " + task.getName() +
+				             ", Callback Service" + callbackService);
+			    }
+		    }
+	    }
+	    // Iterating Notifications.
+	    THTDeploymentConfig.Notification[] notificationsArray =
+			    htDeploymentConfigDocument.getHTDeploymentConfig().getNotificationArray();
+	    if (notificationsArray != null) {
+		    for (THTDeploymentConfig.Notification notification : notificationsArray) {
+			    QName notificationService = notification.getPublish().getService().getName();
+			    Definition notificationServiceDefinition = getDefinition(notificationService, tmpWsdlDefinitions);
+			    if (notificationServiceDefinition != null) {
+				    optimizedDefinitions.add(notificationServiceDefinition);
+				    if (log.isDebugEnabled()) {
+					    log.debug("Added WSDL for Task : " + notification.getName() + ", Callback Service : " +
+					              notificationService + ", Imported/Total definition : " +
+					              optimizedDefinitions.size() + "/" + tmpWsdlDefinitions.size());
+				    }
+			    } else {
+				    log.warn("Can't find valid WSDL definition for Notification " + notification.getName() +
+				             ", Service: " + notificationService);
+			    }
+		    }
+	    }
+	    // Converting HashSet to ArrayList.
+	    wsdlDefinitions = new ArrayList<>(optimizedDefinitions);
+	    if (log.isDebugEnabled()) {
+		    log.debug("Optimized Imported/Total definition : " +
+		              wsdlDefinitions.size() + "/" + tmpWsdlDefinitions.size());
+	    }
     }
 
     @Override
@@ -231,14 +299,16 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
     @Override
     public HTDeploymentConfigDocument getHTDeploymentConfigDocument()
             throws HumanTaskDeploymentException {
-        HTDeploymentConfigDocument hiConf;
-        try {
-            hiConf = HTDeploymentConfigDocument.Factory.parse(hiConfiguration);
-        } catch (Exception e) {
-            String errMsg = "Error occurred while parsing the human interaction configuration " +
-                    "file: htconfig.xml";
-            log.error(errMsg, e);
-            throw new HumanTaskDeploymentException(errMsg, e);
+
+	    if (hiConf == null) {
+		    try {
+			    hiConf = HTDeploymentConfigDocument.Factory.parse(hiConfiguration);
+		    } catch (Exception e) {
+			    String errMsg =
+					    "Error occurred while parsing the human interaction configuration " + "file: htconfig.xml";
+			    log.error(errMsg, e);
+			    throw new HumanTaskDeploymentException(errMsg, e);
+		    }
         }
 
         return hiConf;
@@ -526,4 +596,21 @@ public class ArchiveBasedHumanTaskDeploymentUnitBuilder extends HumanTaskDeploym
         }
         out.close();
     }
+
+	/**
+	 * Get matching WSDL definition from given WSDL definition list.
+	 *
+	 * @param serviceName
+	 * @param definitions
+	 * @return
+	 */
+	private Definition getDefinition(QName serviceName, Set<Definition> definitions) {
+		for (Definition definition : definitions) {
+			if (definition.getTargetNamespace().equals(serviceName.getNamespaceURI())) {
+				if (definition.getService(serviceName) != null)
+					return definition;
+			}
+		}
+		return null;
+	}
 }

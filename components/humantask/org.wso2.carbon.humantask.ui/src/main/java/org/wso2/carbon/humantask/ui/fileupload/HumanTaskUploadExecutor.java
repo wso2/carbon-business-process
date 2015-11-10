@@ -21,6 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.CarbonException;
+import org.wso2.carbon.humantask.HumanInteractionsDocument;
+import org.wso2.carbon.humantask.core.deployment.config.HTDeploymentConfigDocument;
+import org.wso2.carbon.humantask.core.utils.FileUtils;
 import org.wso2.carbon.humantask.ui.constants.HumanTaskUIConstants;
 import org.wso2.carbon.ui.CarbonUIMessage;
 import org.wso2.carbon.ui.transports.fileupload.AbstractFileUploadExecutor;
@@ -32,10 +35,9 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -113,8 +115,10 @@ public class HumanTaskUploadExecutor extends AbstractFileUploadExecutor {
         } catch (Exception e) {
             errMsg = "File upload failed :" + e.getMessage();
             log.error(errMsg, e);
-            CarbonUIMessage.sendCarbonUIMessage(errMsg, CarbonUIMessage.ERROR, request,
-                    response, getContextRoot(request) + "/" + webContext +
+	        // Removing <, > and </ characters from Error message, in order to provide accurate error message.
+	        // TODO : FIX this correctly. Identify why latest browsers unable to render HTML encoded string. Eg: &lt; with <
+	        String encodedErrMsg = errMsg.replace("</", " ").replace(">", " ").replace("<", " ");
+	        CarbonUIMessage.sendCarbonUIMessage(encodedErrMsg, CarbonUIMessage.ERROR, request, response, getContextRoot(request) + "/" + webContext +
                     HumanTaskUIConstants.PAGES.UPLOAD_PAGE);
         }
 
@@ -192,18 +196,94 @@ public class HumanTaskUploadExecutor extends AbstractFileUploadExecutor {
     }
 
     public void validateHumanTaskPackage(String directoryPath) throws Exception {
+	    // Check for valid HumanTask Deployment config.
+	    validateHTDeploymentConfigDocument(directoryPath);
 
-        //We have to check whether the htconfig.xml file is in the root level.
-        //otherwise we cannot accept this as a valid human task package.
-        String htConfigFilePathString = directoryPath + File.separator + HumanTaskUIConstants.FILE_NAMES.HT_CONFIG_NAME;
+	    // Check for valid HumanTask Definition.
+	    validateHumanTaskDefinition(directoryPath);
 
-        File htConfigFile = new File(htConfigFilePathString);
-
-        if (!htConfigFile.exists()) {
-            throw new Exception("The uploaded task definition zip file does not contain a htconfig.xml" +
-                    "file. Please check the package and re-upload.");
-        }
     }
+
+	/**
+	 * Validate HT deployment config Document.
+	 *
+	 * @param directoryPath Unzipped HumanTask archive directory.
+	 * @throws Exception
+	 */
+	public void validateHTDeploymentConfigDocument(String directoryPath) throws Exception {
+		if (log.isDebugEnabled()) {
+			log.debug("Validating HumanTask deployment config.");
+		}
+		//We have to check whether the htconfig.xml file is in the root level.
+		//otherwise we cannot accept this as a valid human task package.
+		String htConfigFilePathString = directoryPath + File.separator + HumanTaskUIConstants.FILE_NAMES.HT_CONFIG_NAME;
+
+		File htConfigFile = new File(htConfigFilePathString);
+
+		if (!htConfigFile.exists()) {
+			throw new Exception("The uploaded task definition zip file does not contain a htconfig.xml" +
+			                    "file. Please check the package and re-upload.");
+		}
+
+		HTDeploymentConfigDocument hiConf;
+		FileInputStream fileInputStream = null;
+		try {
+			fileInputStream = new FileInputStream(htConfigFile);
+			hiConf = HTDeploymentConfigDocument.Factory.parse(fileInputStream);
+			if (log.isDebugEnabled()) {
+				log.debug("Successfully Validated HumanTask deployment config.");
+			}
+		} catch (Exception e) {
+			String errMsg = "Error occurred while parsing the human interaction configuration " + "file: htconfig.xml";
+			throw new Exception(errMsg, e);
+		} finally {
+			if (fileInputStream != null) {
+				fileInputStream.close();
+			}
+		}
+	}
+
+	/**
+	 * Validate HumanTask definition.
+	 *
+	 * @param directoryPath Unzipped HumanTask archive directory.
+	 * @throws Exception
+	 */
+	public void validateHumanTaskDefinition(String directoryPath) throws Exception {
+		if (log.isDebugEnabled()) {
+			log.debug("Validating HumanTask definition.");
+		}
+		File humantaskDir = new File(directoryPath);
+		List<File> hiDefinitionFiles = FileUtils.directoryEntriesInPath(humantaskDir, humantaskFilter);
+		if (hiDefinitionFiles.size() != 1) {
+			String errMsg;
+			if (hiDefinitionFiles.size() == 0) {
+				errMsg = "No Humantask definition files was found. Please check the package and re-upload.";
+			} else {
+				errMsg = "Multiple (" + hiDefinitionFiles.size() +
+				         ") Humantask definition files were found. Only single task definition file (.ht) allowed.";
+			}
+			throw new Exception(errMsg);
+		}
+		FileInputStream fileInputStream = null;
+		try {
+			fileInputStream = new FileInputStream(hiDefinitionFiles.get(0));
+			// Check Task definition compliant with schema.
+			HumanInteractionsDocument humanInteractionsDocument =
+					HumanInteractionsDocument.Factory.parse(fileInputStream);
+			if (log.isDebugEnabled()) {
+				log.debug("successfully validate HumanTask definition.");
+			}
+		} catch (Exception e) {
+			String errMsg = "Error while reading Human Interactions definition. Reason : " + e.getMessage();
+			throw new Exception(errMsg, e);
+		} finally {
+			if (fileInputStream != null) {
+				fileInputStream.close();
+			}
+		}
+	}
+
 
     static class SaveExtractReturn {
         private String zipFile;
@@ -214,4 +294,11 @@ public class HumanTaskUploadExecutor extends AbstractFileUploadExecutor {
             this.extractedFile = extractedFile;
         }
     }
+
+	private static final FileFilter humantaskFilter = new FileFilter() {
+		public boolean accept(File path) {
+			return path.getName().endsWith(HumanTaskUIConstants.FILE_NAMES.HT_FILE_EXT) && path.isFile();
+		}
+	};
+
 }
