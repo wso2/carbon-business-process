@@ -31,6 +31,27 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     private SVGDimension coreDimensions = null;
     private SVGDimension conditionalDimensions = null;
 
+    //Defining heights of the start and end icons
+    protected int startIconHeight = 5;
+    protected int endIconHeight = 5;
+
+    public void setEndIconHeight(int iconHeightEnd) {
+        this.endIconHeight = iconHeightEnd;
+    }
+
+    public void setStartIconHeight(int iconHeight) {
+        this.startIconHeight = iconHeight;
+    }
+
+    public int getEndIconHeight() {
+        return endIconHeight;
+    }
+
+    public int getStartIconHeight() {
+        return startIconHeight;
+    }
+
+    //Constructors
     public ScopeImpl(String token) {
         super(token);
 
@@ -499,6 +520,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         }
 
         group.appendChild(getBoxDefinition(doc));
+        group.appendChild(getStartImageDefinition(doc));
         group.appendChild(getImageDefinition(doc));
         if (!isSimpleLayout()) {
             group.appendChild(getEventHandlerIcon(doc));
@@ -508,7 +530,9 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         }
         // Get Sub Activities
         group.appendChild(getSubActivitiesSVGString(doc));
+
         group.appendChild(getEndImageDefinition(doc));
+
         //Add Arrow
         group.appendChild(getArrows(doc));
 
@@ -646,6 +670,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         return getCompositeOpacity();
     }
 
+    //Image Definitions for the different handlers
     protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
                                          int imgWidth, int imgHeight, String id) {
 
@@ -653,7 +678,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
         group.setAttributeNS(null, "id", getLayerId());
 
-        if (getStartIconPath() != null) {
+        if (getStartIconPath() != null && imgPath != getStartIconPath()) {
 
             //Rectangle to place the image
             Element x = null;
@@ -684,6 +709,51 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             embedImage.setAttributeNS(null, "height", String.valueOf(embedImageHeight));
 
             x.appendChild(rect);
+            x.appendChild(embedImage);
+
+            return x;
+        }
+
+        return group;
+    }
+
+    //Different Implementations for start and end scope icons
+    @Override
+    protected Element getEndImageDefinition(SVGDocument doc) {
+        return getStartEndImageDef(doc, getEndIconPath(), getEndIconXLeft(),
+                getEndIconYTop(), getEndIconWidth(), getEndIconHeight(),
+                getEndImageId());
+    }
+
+    protected Element getStartImageDefinition(SVGDocument doc) {
+        return getStartEndImageDef(doc, getStartIconPath(), getStartIconXLeft(),
+                getStartIconYTop(), getStartIconWidth(), getStartIconHeight(),
+                getStartImageId());
+    }
+
+    protected Element getStartEndImageDef(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
+                                          int imgWidth, int imgHeight, String id) {
+
+        Element group = null;
+        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttributeNS(null, "id", getLayerId());
+
+        if (getStartIconPath() != null) {
+
+            Element x = null;
+            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x.setAttributeNS(null, "id", id);
+
+            int embedImageX = imgXLeft + imgWidth;
+            int embedImageY = imgYTop + (5 / 2);
+
+            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "line");
+            embedImage.setAttributeNS(null, "x1", String.valueOf(imgXLeft + 10));
+            embedImage.setAttributeNS(null, "y1", String.valueOf(embedImageY));
+            embedImage.setAttributeNS(null, "x2", String.valueOf(embedImageX));
+            embedImage.setAttributeNS(null, "y2", String.valueOf(embedImageY));
+            embedImage.setAttributeNS(null, "style", "stroke:black;stroke-width:5");
+
             x.appendChild(embedImage);
 
             return x;

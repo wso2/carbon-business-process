@@ -22,6 +22,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.bpel.compiler.bom.Sources;
 import org.h2.java.lang.System;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
@@ -154,6 +155,26 @@ public abstract class ActivityImpl implements ActivityInterface {
             }
         }
     }
+
+    private boolean check = false;
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
+    public boolean isCheckIfinFlow() {
+        return checkIfinFlow;
+    }
+
+    public void setCheckIfinFlow(boolean checkIfinFlow) {
+        this.checkIfinFlow = checkIfinFlow;
+    }
+
+    private boolean checkIfinFlow;
 
     // Properties
     public String getDisplayName() {
@@ -466,6 +487,7 @@ public abstract class ActivityImpl implements ActivityInterface {
                                 activityExitCoords.getYTop(),
                                 myExitCoords.getXLeft(), myExitCoords.getYTop(),
                                 id));
+
             }
         }
 
@@ -543,7 +565,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             int embedImageX = imgXLeft + 25;
             int embedImageY = (imgYTop + (5 / 2));
             int embedImageHeight = 45;
-            int embedImageWidth = 45;
+            int embedImageWidth = 50;
 
             Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
@@ -570,6 +592,12 @@ public abstract class ActivityImpl implements ActivityInterface {
         return getImageDefinition(doc, getEndIconPath(), getEndIconXLeft(),
                 getEndIconYTop(), getEndIconWidth(), getEndIconHeight(),
                 getEndImageId());
+    }
+
+    protected Element getStartImageDefinition(SVGDocument doc) {
+        return getImageDefinition(doc, getStartIconPath(), getStartIconXLeft(),
+                getStartIconYTop(), getStartIconWidth(), getStartIconHeight(),
+                getStartImageId());
     }
 
     protected Element getImageText(SVGDocument doc, int imgXLeft, int imgYTop, int imgWidth,
@@ -658,13 +686,13 @@ public abstract class ActivityImpl implements ActivityInterface {
 
     protected String getLinkArrowStyle() {
         String largeArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
                         +
                         "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
                         +
                         "none;stroke-opacity:1;opacity: 0.25;";
         String mediumArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
+                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
                         +
                         "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
                         +
@@ -900,6 +928,9 @@ public abstract class ActivityImpl implements ActivityInterface {
                         .equals(BPEL2SVGFactory.ASSIGN_START_TAG)
                         && isIncludeAssigns()) {
                     activity = new AssignImpl(tmpElement, this);
+                } else if (tmpElement.getLocalName()
+                        .equals(BPEL2SVGFactory.EMPTY_START_TAG)) {
+                    activity = new EmptyImpl(tmpElement, this);
                 } else if (tmpElement.getLocalName()
                         .equals(BPEL2SVGFactory.CATCHALL_START_TAG)) {
                     activity = new CatchAllImpl(tmpElement, this);

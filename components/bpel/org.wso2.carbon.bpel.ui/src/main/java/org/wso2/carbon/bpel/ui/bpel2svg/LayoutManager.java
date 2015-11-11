@@ -232,7 +232,7 @@ public class LayoutManager {
     private void setCorrectionY(ActivityInterface source, ArrayList<ActivityInterface> children) {
         if (children != null && !children.isEmpty()) {
             for (ActivityInterface target : children) {
-                int whereTargetShouldBe = (source.getStartIconYTop() + source.getStartIconHeight() + 40);
+                int whereTargetShouldBe = source.getStartIconHeight() + 40;
                 if (target != null) {
                     int whereTargetIs = target.getStartIconYTop();
                     int correction = whereTargetShouldBe - whereTargetIs;

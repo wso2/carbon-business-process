@@ -76,6 +76,8 @@ public class BPEL2SVGFactory {
     public final static String THROW_START_TAG = "throw";
     public final static String WAIT_START_TAG = "wait";
     public final static String WHILE_START_TAG = "while";
+
+    public final static String EMPTY_START_TAG = "empty";
     // END_TAGS
     public final static String ASSIGN_END_TAG = "/assign";
     public final static String CATCH_END_TAG = "/catch";
@@ -111,6 +113,8 @@ public class BPEL2SVGFactory {
     public final static String THROW_END_TAG = "/throw";
     public final static String WAIT_END_TAG = "/wait";
     public final static String WHILE_END_TAG = "/while";
+
+    public final static String EMPTY_END_TAG = "/empty";
 
     public final static String SINGLE_LINE_END_TAG = "/>";
     public final static int TEXT_ADJUST = 10;
@@ -156,8 +160,12 @@ public class BPEL2SVGFactory {
         if (activity != null) {
             if (activity.equalsIgnoreCase(AssignImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.ASSIGN_ICON;
+            } else if (activity.equalsIgnoreCase(EmptyImpl.class.getName())) {
+                iconPath = BPEL2SVGIcons.EMPTY_ICON;
             } else if (activity.equalsIgnoreCase(ElseIfImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.ELSEIF_ICON;
+            } else if (activity.equalsIgnoreCase(ElseImpl.class.getName())) {
+                iconPath = BPEL2SVGIcons.ELSE_ICON;
             } else if (activity.equalsIgnoreCase(CompensateImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.COMPENSATE_ICON;
             } else if (activity.equalsIgnoreCase(CompensateScopeImpl.class.getName())) {
@@ -210,19 +218,19 @@ public class BPEL2SVGFactory {
             if (activity.equalsIgnoreCase(FlowImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.FLOW_ICON;
             } else if (activity.equalsIgnoreCase(ForEachImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.FOREACH_ICON;
+                iconPath = BPEL2SVGIcons.ENDFOREACH_ICON;
             } else if (activity.equalsIgnoreCase(IfImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.IF_ICON;
+                iconPath = BPEL2SVGIcons.ENDIF_ICON;
             } else if (activity.equalsIgnoreCase(PickImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.PICK_ICON;
             } else if (activity.equalsIgnoreCase(ProcessImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.END_ICON;
             } else if (activity.equalsIgnoreCase(RepeatUntilImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.REPEATUNTIL_ICON;
+                iconPath = BPEL2SVGIcons.ENDREPEATUNTIL_ICON;
             } else if (activity.equalsIgnoreCase(ScopeImpl.class.getName())) {
                 iconPath = BPEL2SVGIcons.SCOPE_ICON;
             } else if (activity.equalsIgnoreCase(WhileImpl.class.getName())) {
-                iconPath = BPEL2SVGIcons.WHILE_ICON;
+                iconPath = BPEL2SVGIcons.ENDWHILE_ICON;
             }
         }
         return iconPath;
