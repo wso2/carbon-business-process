@@ -49,7 +49,7 @@ var loggedUser = session.get("userName");
             <div class="login-wrapper">
 					<i class="fw fw-user"></i>
                 <span class="padding-top margin-left margin-right"><%=loggedUser%></span>|
-                <span class="padding-top"><a href="logout">Logout</a></span>
+                <span class="padding-top"><a href="logout"><%=i18n.localize("logout", "Logout")%></a></span>
             </div>
         <% } %>
     </header>

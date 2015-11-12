@@ -24,7 +24,7 @@
        <div id="taskActionBtns" class="btn-group" align="center">
        <!--load only the authorised actions-->
         <% if (authorisedActions.NS1_NS::authorisedToRemove.text() == 'true') { %>
-            <button  onclick="removeNotification(<%=id%>)" type="button" class="btn btn-default">Remove</button>
+            <button  onclick="removeNotification(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("remove", "Remove")%></button>
         <% } %>
       </div>
     </div>
@@ -34,7 +34,7 @@
         <br/>
         <a data-toggle="collapse" href="#collapseOverview" aria-expanded="true" class="collapsing-h2">
             <div class="table-title" style="width:99%"><i class="cu-btn-exp-col btn-collapsed"></i>
-            Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
+            <%=i18n.localize("task.abstract", "Task Abstract")%> : <%=taskAbstract.NS1_NS::presentationName.text()%>
             </div>
         </a>
         <div class="collapse in" id="collapseOverview" aria-expanded="true" style="">
@@ -42,11 +42,11 @@
                 <table class="table white-bg">
                     <tbody>
                         <tr class="white-bg">
-                            <th>Subject</th>
+                            <th><%=i18n.localize("subject", "Subject")%></th>
                             <td colspan='2'><%=taskAbstract.NS1_NS::presentationSubject.text()%></td>
                         </tr>
                         <tr class="white-bg">
-                            <th>Description</th>
+                            <th><%=i18n.localize("description", "Description")%></th>
                             <td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
                         </tr>
                         <% for (var i = 0; i < wso2InputRenderList.length(); i++) { %>
@@ -61,7 +61,7 @@
         </div>
         <div class="row" name="infoErrSection">
             <div id="additionalInfoErr" class="alert alert-danger alert-dismissible" role="alert" hidden>
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
                 <p id="InfoErrMsg"></p>
             </div>
         </div>
@@ -71,12 +71,12 @@
         <div class="row" name="HTForm">
             <div class="col-sm-4 sidebar-outer">
                 <div class="fixed-bar panel panel-primary ">
-                    <div class="table-title" style="width: 100%">Summary</div>
+                    <div class="table-title" style="width: 100%"><%=i18n.localize("summary", "Summary")%></div>
                     <table class="table white-bg">
                         <tbody>
                             <tr class="white-bg">
                                <tr>
-                                <td><small><b>Type : </b></small></td>
+                                <td><small><b><%=i18n.localize("type", "Type")%> : </b></small></td>
                                 <td><small><%=taskAbstract.NS1_NS::taskType.text()%></small></td>
                                </tr>
                                <tr>
@@ -84,23 +84,23 @@
                                 <td style="border-top:0px"><small><%=recepient%></small></td>
                                </tr>
                                <tr>
-                                <td style="border-top:0px"><small><b>Status : </b></small></td>
+                                <td style="border-top:0px"><small><b><%=i18n.localize("status", "Status")%> : </b></small></td>
                                 <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::status.text()%></small></td>
                                </tr>
                                <tr>
-                                <td style="border-top:0px"><small><b>Priority : </b></small></td>
+                                <td style="border-top:0px"><small><b><%=i18n.localize("priority", "Priority")%> : </b></small></td>
                                 <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::priority.text()%></small></td>
                                </tr>
                                <tr>
-                                 <td style="border-top:0px"><small><b>Created Time: </b></small></td>
+                                 <td style="border-top:0px"><small><b><%=i18n.localize("created.time", "Created Time")%>: </b></small></td>
                                  <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::createdTime.text()%></small></td>
                                </tr>
                                <tr>
-                                 <td style="border-top:0px"><small><b>Activation Time:</b></small></td>
+                                 <td style="border-top:0px"><small><b><%=i18n.localize("activation.time", "Activation Time")%>:</b></small></td>
                                  <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::activationTime.text()%></small></td>
                                </tr>
                                <tr>
-                                 <td style="border-top:0px"><small><b>Last Modified: </b></small></td>
+                                 <td style="border-top:0px"><small><b><%=i18n.localize("last.modified", "Last Modified")%>: </b></small></td>
                                  <td style="border-top:0px"><small><%=taskAbstract.NS1_NS::updatedTime.text()%> </small></td>
                                </tr>
                             </tr>
