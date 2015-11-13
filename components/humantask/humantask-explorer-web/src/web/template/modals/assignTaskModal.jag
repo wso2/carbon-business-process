@@ -27,14 +27,14 @@
                       &times;
                 </button>
                 <h4 class="modal-title" id="assignTaskModalLabel">
-                   Assign Task
+                   <%=i18n.localize("assign.task", "Assign Task")%>
                 </h4>
             </div>
 
             <div class="modal-body">
-                <label>Select User</label>
+                <label><%=i18n.localize("select.user", "Select User")%></label>
                 <div class="alert alert-danger" role="alert" id="userUnavailableAlert" style="display: none;">
-                    No Assignable Users Found in the System .. !
+                    <%=i18n.localize("no.users", "No Assignable Users Found in the System")%> .. !
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
@@ -47,8 +47,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-default" onclick="assignTask(<%=id%>)" id="taskAssignBtn">Assign</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("cancel", "Cancel")%></button>
+                <button type="button" class="btn btn-default" onclick="assignTask(<%=id%>)" id="taskAssignBtn"><%=i18n.localize("assign", "Assign")%></button>
             </div>
         </div><!-- /.modal-content -->
     </div>
