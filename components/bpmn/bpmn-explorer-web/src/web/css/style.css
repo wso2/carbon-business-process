@@ -979,3 +979,13 @@ hr {
     border: 0;
 }
 .capitalize{text-transform: capitalize}
+.chartPagination {
+    border-radius: 0px;
+    width: 25px;
+    float: right;
+    margin-right: 5px;
+    background-color: #FFF;
+    text-align: center;
+    cursor:pointer;
+    float:right;
+}
