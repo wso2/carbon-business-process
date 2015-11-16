@@ -115,6 +115,13 @@ function completeTask(data, id) {
             data: JSON.stringify(body),
             success: function (data) {
                 window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+            },
+            error: function (error) {
+                document.getElementById("commonErrorSection").hidden = false;
+                document.getElementById("errorMsg").innerHTML = "Task completion failed!";
+                $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                emptyVar = false;
+                return;
             }
         });
     }
