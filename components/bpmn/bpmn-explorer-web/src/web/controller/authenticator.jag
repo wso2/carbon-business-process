@@ -39,8 +39,10 @@ if (request.isSecure()) {//check whether the request is secure or not
 			authSuccess = false;
 		} else{
 			try {
-				authSuccess = authentication.authenticate(username,password,httpUrl);
-	            authSuccess = HTTPAuthenticate(username, password, bpsHost);
+			    if(domainCorrect(username, bpsHost)) {
+			        authSuccess = authentication.authenticate(username,password,httpUrl);
+			        authSuccess = HTTPAuthenticate(username, password, bpsHost);
+			    }
 	        } catch (e) {
 	            log.error('Error occured while connecting to the back-end BPS AuthenticationAdmin service : ');
 	            log.error(e);
@@ -131,5 +133,29 @@ if (request.isSecure()) {//check whether the request is secure or not
             return false;
         }
 
+    }
+
+    /**
+     * function to check the given user domain is in the current tenant domain. Required for securing tenant isolation
+     * @param username username of user
+     * @param remoteAddr target url
+     * @return true if success otherwise false
+     */
+    function domainCorrect(username, remoteAddress) {
+        try{
+            var user = carbon.server.tenantUser(username);
+
+            if (JSON.stringify(user.tenantId)  != bpsTenantID) {
+                if (log.isDebugEnabled()) {
+                    log.debug('Login in to BPS Failed, invalid tenant domain.');
+                }
+                return false;
+            }
+            return true;
+        } catch(e) {
+            log.error(e);
+            session.put("loginFailed" ,true);
+            response.sendRedirect(requestUrl);
+        }
     }
 %>
