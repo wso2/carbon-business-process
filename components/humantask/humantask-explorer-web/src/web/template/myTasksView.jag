@@ -26,7 +26,7 @@
 <div class="row">   
     <div class="panel-inbox">
         <!-- Default panel contents -->
-        <div class=" margin-left-double table-title">My Tasks</div>
+        <div class=" margin-left-double table-title"><%=i18n.localize("my.tasks.title", "My Tasks")%></div>
         <div class="table-body margin-left-double">
             <div class="col-sm-2 col-md-2 col-lg-2 sidebar table-status-column ">
               <ul class="nav nav-sidebar nav-pills nav-stacked margin-bottom-double margin-top-double">
@@ -38,17 +38,17 @@ function updateActiveStatusNavTab(status, button){
     return "class=\"active\"";
 }
 %>
-                <li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="mytasks?status_query=RESERVED">Reserved </a> </li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "RESERVED")%>><a href="mytasks?status_query=RESERVED"><%=i18n.localize("reserved", "Reserved")%></a> </li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="mytasks?status_query=IN_PROGRESS">In Progress</a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "IN_PROGRESS")%>><a href="mytasks?status_query=IN_PROGRESS"><%=i18n.localize("in.progress", "In Progress")%></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="mytasks?status_query=SUSPENDED">Suspended</a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "SUSPENDED")%>><a href="mytasks?status_query=SUSPENDED"><%=i18n.localize("suspended", "Suspended")%></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="mytasks?status_query=COMPLETED">Completed </a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "COMPLETED")%>><a href="mytasks?status_query=COMPLETED"><%=i18n.localize("completed", "Completed")%></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="mytasks?status_query=FAILED">Failed </a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "FAILED")%>><a href="mytasks?status_query=FAILED"><%=i18n.localize("failed", "Failed")%></a></li>
                 <br/>
-                <li <%=updateActiveStatusNavTab(statusQuery, "OBSOLETE")%>><a href="mytasks?status_query=OBSOLETE">Obsolete </a></li>
+                <li <%=updateActiveStatusNavTab(statusQuery, "OBSOLETE")%>><a href="mytasks?status_query=OBSOLETE"><%=i18n.localize("obsolete", "Obsolete")%></a></li>
               </ul>
             </div>
 
@@ -57,11 +57,11 @@ function updateActiveStatusNavTab(status, button){
                 <table class="table">
                     <thead>
                         <tr class="table-title-row">
-                            <th>ID</th>
-                            <th>Type</th>
-                            <th>Task Name</th>
-                            <th>Subject</th>
-                            <th>Priority</th>
+                            <th><%=i18n.localize("id", "ID")%></th>
+                            <th><%=i18n.localize("type", "Type")%></th>
+                            <th><%=i18n.localize("name", "Task Name")%></th>
+                            <th><%=i18n.localize("subject", "Subject")%></th>
+                            <th><%=i18n.localize("priority", "Priority")%></th>
                         </tr>
                     </thead>
                     <tbody>

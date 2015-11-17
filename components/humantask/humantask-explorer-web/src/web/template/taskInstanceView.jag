@@ -35,34 +35,34 @@
            <div id="taskActionBtns" class="btn-group" align="center">
            <!--load only the authorised actions-->
             <% if (authorisedActions.NS1_NS::authorisedToClaim.text() == 'true') { %>
-                <button  onclick="claimTask(<%=id%>)" type="button" class="btn btn-default">Claim</button>
+                <button  onclick="claimTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("claim", "Claim")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToStart.text() == 'true') { %>
-                <button onclick="startTask(<%=id%>)" type="button" class="btn btn-default">Start</button>
+                <button onclick="startTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("start", "Start")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToStop.text() == 'true') { %>
-                <button onclick="stopTask(<%=id%>)" type="button" class="btn btn-default">Stop</button>
+                <button onclick="stopTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("stop", "Stop")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToRelease.text() == 'true') { %>
-                <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default">Release</button>
+                <button onclick="releaseTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("release", "Release")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToSuspend.text() == 'true') { %>
-                <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default">Suspend</button>
+                <button onclick="suspendTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("suspend", "Suspend")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToDelegate.text() == 'true') { %>
-                <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal">Assign</button>
+                <button type="button" class="btn btn-default" onclick="assignTaskModalUpdate(<%=id%>)" data-target="#assignTaskModal"><%=i18n.localize("assign", "Assign")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToFail.text() == 'true') { %>
-                <button onclick="failTask(<%=id%>)" type="button" class="btn btn-default">Fail</button>
+                <button onclick="failTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("fail", "Fail")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToSkip.text() == 'true') { %>
-                <button onclick="skipTask(<%=id%>)" type="button" class="btn btn-default">Skip</button>
+                <button onclick="skipTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("skip", "Skip")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToResume.text() == 'true') { %>
-                <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default">Resume</button>
+                <button onclick="resumeTask(<%=id%>)" type="button" class="btn btn-default"><%=i18n.localize("resume", "Resume")%></button>
             <% } %>
             <% if (authorisedActions.NS1_NS::authorisedToSetPriority.text() == 'true') { %>
-                <button type="button" class="btn btn-default" onclick="showSetPriorityModal()" data-target="#setPriorityModal">Set Priority</button>
+                <button type="button" class="btn btn-default" onclick="showSetPriorityModal()" data-target="#setPriorityModal"><%=i18n.localize("set.priority", "Set Priority")%></button>
             <% } %>
           </div>
         </div>
@@ -76,7 +76,7 @@
                     <i class="cu-btn-exp-col btn-collapsed"></i>
                 </div>
                 <div style="margin-top: -4px; float: left; font-weight: 100;">
-                    Task Abstract : <%=taskAbstract.NS1_NS::presentationName.text()%>
+                    <%=i18n.localize("task.abstract", "Task Abstract")%> : <%=taskAbstract.NS1_NS::presentationName.text()%>
                 </div>
                 </div>
             </a>
@@ -85,11 +85,11 @@
                     <table class="table white-bg">
                         <tbody>
                             <tr class="white-bg">
-                                <th>Subject</th>
+                                <th><%=i18n.localize("subject", "Subject")%></th>
                                 <td colspan='2'><%=taskAbstract.NS1_NS::presentationSubject.text()%></td>
                             </tr>
                             <tr class="white-bg">
-                                <th>Description</th>
+                                <th><%=i18n.localize("description", "Description")%></th>
                                 <td colspan='2'><%=taskAbstract.NS1_NS::presentationDescription.text()%></td>
                             </tr>
                             <% if (taskStatus == 'IN_PROGRESS' && authorisedActions.NS1_NS::authorisedToComplete.text() == 'true') {
@@ -108,7 +108,7 @@
             </div>
             <div class="row" name="infoErrSection">
                 <div id="additionalInfoErr" class="alert alert-danger alert-dismissible" role="alert" hidden>
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
                     <p id="InfoErrMsg"></p>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                     <div style=" margin-top: -4px; float: left;">
                         <i class="cu-btn-exp-col btn-collapsed"></i>
                     </div>
-                    <div style="margin-top: -4px; float: left; font-weight: 100;"> Workspace </div>
+                    <div style="margin-top: -4px; float: left; font-weight: 100;"> <%=i18n.localize("workspace", "Workspace")%> </div>
                 </div>
                 </a>
                 <div class="collapse in" id="collapseOverview2" aria-expanded="true" style="">
@@ -206,9 +206,9 @@
                                             <td>
                                                     <div class="col-lg-12">
                                                     <div class="col-lg-3 float-right padding-bottom">
-                                                        <input type="button" value="Save" class="btn btn-pri"
+                                                        <input type="button" value="<%=i18n.localize("save", "Save")%>" class="btn btn-pri"
                                                                                     onclick="submitForm('HTWorkspaceForm', '/action/save/')">
-                                                        <input type="button" value="Complete" class="btn btn-sec" data-toggle="modal"
+                                                        <input type="button" value="<%=i18n.localize("complete", "Complete")%>" class="btn btn-sec" data-toggle="modal"
                                                                                                     data-target="#verifyTaskCompleteModal">
                                                     </div>
                                                 </div>
@@ -225,15 +225,15 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="active" id="commentTab">
                         <a href="#additionalInfoSection" onclick="updateComments(<%=id%>)">
-                            Comments
+                            <%=i18n.localize("comments", "Comments")%>
                             <span class="glyphicon glyphicon-comment"></span>
                         </a>
                     </li>
                     <li id="historyTab">
-                        <a href="#additionalInfoSection" onclick="updateHistory(<%=id%>)">History</a>
+                        <a href="#additionalInfoSection" onclick="updateHistory(<%=id%>)"><%=i18n.localize("history", "History")%></a>
                     </li>
                     <li id="attachmentTab">
-                        <a href="#additionalInfoSection" onclick="updateAttachments(<%=id%>)">Attachments</a>
+                        <a href="#additionalInfoSection" onclick="updateAttachments(<%=id%>)"><%=i18n.localize("attachments", "Attachments")%></a>
                     </li>
                 </ul>
                 <ul class="list-group" id="commentList">
@@ -245,7 +245,7 @@
             var commentLiID = "comment_" + commentID;
             %>
             <li class="list-group-item" id="<%=commentLiID%>">
-                            <div><%=commentList[i].NS1_NS::addedBy.text()%> added a comment -
+                            <div><%=commentList[i].NS1_NS::addedBy.text()%> <%=i18n.localize("comment.added", "Added comment")%> -
                                 <time id="time">
                                     <script>
                                         var d = new Date("<%=commentList[i].NS1_NS::addedTime.text()%>");
@@ -266,11 +266,11 @@
     <div id="addComment" style="float:left; ">
             <a href="#additionalInfoSection" data-toggle="modal" data-target="#addCommentModal">
                 <span class="glyphicon glyphicon-plus"></span>
-                <span> Comment</span>
+                <span> <%=i18n.localize("comment", "Comment")%></span>
             </a>
     </div>
     <ul class="list-group" id="historyList" hidden>
-    <li class="list-group-item">not updated !</li>
+    <li class="list-group-item"><%=i18n.localize("not.updated", "not updated")%> !</li>
     </ul>
     <ul class="list-group" id="AttchmentsList" hidden>
     </ul>
@@ -281,18 +281,18 @@
     <div class="row" name="HTForm">
     <div class="col-sm-4 sidebar-outer">
     <div class="fixed-bar panel panel-primary ">
-        <div class="table-title" style="width: 100%; margin-top:-2px">Summary</div>
+        <div class="table-title" style="width: 100%; margin-top:-2px"><%=i18n.localize("summary", "Summary")%></div>
         <table class="table white-bg">
             <tbody>
                 <tr class="white-bg">
                     <td colspan='1'>
-                        <p><small><b>Type : </b></small></p>
-                        <p><small><b>Owner : </b></small></p>
-                        <p><small><b>Status : </b></small></p>
-                        <p><small><b>Priority : </b></small></p>
-                        <p><small><b>Created Time: </b></small></p>
-                        <p><small><b>Activation Time: </b></small></p>
-                        <p><small><b>Last Modified: </b></small></p>
+                        <p><small><b><%=i18n.localize("type", "Type")%> : </b></small></p>
+                        <p><small><b><%=i18n.localize("owner", "Owner")%> : </b></small></p>
+                        <p><small><b><%=i18n.localize("status", "Status")%> : </b></small></p>
+                        <p><small><b><%=i18n.localize("priority", "Priority")%> : </b></small></p>
+                        <p><small><b><%=i18n.localize("created.time", "Created Time")%>: </b></small></p>
+                        <p><small><b><%=i18n.localize("activation.time", "Activation Time")%>: </b></small></p>
+                        <p><small><b><%=i18n.localize("last.modified", "Last Modified")%>: </b></small></p>
                     </td>
                      <td colspan='1'>
                         <p><small><%=taskAbstract.NS1_NS::taskType.text()%></small></p>
@@ -300,7 +300,7 @@
                                         <% if (taskAbstract.NS1_NS::actualOwner.length() > 0) {
         print(taskAbstract.NS1_NS::actualOwner.text());
     } else {
-        print('Unassigned');
+        print(i18n.localize("unassigned", "Unassigned"));
     }%>
                                         </small></p>
                                         <p><small><%=taskAbstract.NS1_NS::status.text()%></small></p>
