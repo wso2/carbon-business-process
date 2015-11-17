@@ -989,3 +989,9 @@ hr {
     cursor:pointer;
     float:right;
 }
+.page-label {
+    font-size: 15px;
+    text-align: center;
+    float:right;
+    margin-top: 4px;
+}
