@@ -19,6 +19,10 @@ package org.wso2.carbon.bpel.ui.bpel2svg;
 import org.w3c.dom.svg.SVGDocument;
 
 public interface ProcessInterface extends ActivityInterface {
+    /**
+     * Creates the SVG document which defines the components of the process
+     * @return SVG document which defines the components including shapes, gradients etc. of the process
+     */
     public SVGDocument getSVGDocument();
 
 }

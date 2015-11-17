@@ -22,40 +22,68 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.CatchAllInterface;
 
 /**
- * CatchAll tag UI impl
+ * CatchAll tag UI implementation
  */
 public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
 
+    /**
+     * Initializes a new instance of the CatchAllImpl class using the specified string i.e. the token
+     * @param token
+     */
     public CatchAllImpl(String token) {
         super(token);
+
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "CATCHALL" + System.currentTimeMillis();
         displayName = "Catch All";
-        // Set Icon and Size
+
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+    /**
+     * Initializes a new instance of the CatchAllImpl class using the specified omElement
+     * @param omElement which matches the CatchAll tag
+     */
     public CatchAllImpl(OMElement omElement) {
         super(omElement);
 
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "CATCHALL" + System.currentTimeMillis();
         displayName = "Catch All";
 
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+    /**
+     * Initializes a new instance of the CatchAllImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an CatchAll Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the CatchAll tag
+     * @param parent
+     */
     public CatchAllImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+
+        //Set the parent of the activity
         setParent(parent);
 
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "CATCHALL" + System.currentTimeMillis();
         displayName = "Catch All";
 
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+    /**
+     *
+     * @return- String with the end tag of CatchAll Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.CATCHALL_END_TAG;

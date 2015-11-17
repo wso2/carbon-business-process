@@ -22,35 +22,52 @@ import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
 
 /**
- * ReThrow tag UI impl
+ * ReThrow tag UI implementation
  */
 public class ReThrowImpl extends SimpleActivityImpl implements ReThrowInterface {
-
+	/**
+     * Initializes a new instance of the ReThrowImpl class using the specified string i.e. the token
+     * @param token
+     */
     public ReThrowImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     * Initializes a new instance of the ReThrowImpl class using the specified omElement
+     * @param omElement which matches the ReThrow tag
+     */
     public ReThrowImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	/**
+     * Initializes a new instance of the ReThrowImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an ReThrow Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the ReThrow tag
+     * @param parent
+     */
     public ReThrowImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+
+        //Set the parent of the activity
         setParent(parent);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+ 	/**
+     *
+     * @return String with the end tag of ReThrow Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.RETHROW_END_TAG;

@@ -17,7 +17,10 @@
  */
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
-
+/*
+* Manage the icons/images of the activities
+* The icons are in Base64 format and are given as String constants.
+* */
 public class BPEL2SVGIcons {
     public final static String TRANSFORMATION_MATRIX = "matrix(1.0124 0 0 1.0124 0 0)";
 
