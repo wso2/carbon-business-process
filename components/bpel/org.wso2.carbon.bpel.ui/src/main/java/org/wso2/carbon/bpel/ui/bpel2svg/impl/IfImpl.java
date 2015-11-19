@@ -33,8 +33,10 @@ public class IfImpl extends ActivityImpl implements IfInterface {
     private static final Log log = LogFactory.getLog(IfImpl.class);
     private SVGDimension coreDimensions = null;
     private SVGDimension conditionalDimensions = null;
+
     /**
      * Initializes a new instance of the IfImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public IfImpl(String token) {
@@ -46,8 +48,10 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         // Set Layout
         setVerticalChildLayout(false);
     }
+
     /**
      * Initializes a new instance of the IfImpl class using the specified omElement
+     *
      * @param omElement which matches the If tag
      */
     public IfImpl(OMElement omElement) {
@@ -59,10 +63,12 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         // Set Layout
         setVerticalChildLayout(false);
     }
+
     /**
      * Initializes a new instance of the IfImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an If Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the If tag
      * @param parent
      */
@@ -81,6 +87,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
     /**
      * At start: adjustment=0
+     *
      * @return int with the spacing/position of the ElseIf activity when it is inside a If condition
      * After Calculation (Vertical): adjustment= icon height+ YSpacing
      */
@@ -94,16 +101,16 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
         return adjustment;
     }
+
     /**
-     *
      * @return String with name of the activity
      */
     @Override
     public String getId() {
         return getName(); // + "-If";
     }
+
     /**
-     *
      * @return String with the end tag of If Activity
      */
     @Override
@@ -113,8 +120,9 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
     /**
      * At the start: width=0, height=0
+     *
      * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -188,7 +196,6 @@ public class IfImpl extends ActivityImpl implements IfInterface {
     }
 
     /**
-     *
      * @return core dimensions of the activity
      */
     public SVGDimension getCoreDimensions() {
@@ -196,7 +203,6 @@ public class IfImpl extends ActivityImpl implements IfInterface {
     }
 
     /**
-     *
      * @return conditional dimensions of the activity
      */
     public SVGDimension getConditionalDimensions() {
@@ -224,9 +230,8 @@ public class IfImpl extends ActivityImpl implements IfInterface {
     }
 
     /**
-     *
      * @return false- if the subActivities are instances of ElseIf or Else
-     *         true - otherwise
+     * true - otherwise
      */
     private boolean isSimpleLayout() {
         boolean simple = true;
@@ -245,8 +250,10 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
         return simple;
     }
+
     /**
      * Sets the layout of the activity
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -258,23 +265,24 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             layoutHorizontal(startXLeft, startYTop);
         }
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
      * centreOfMyLayout- center of the the SVG
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
         int centreOfMyLayout = startXLeft + (dimensions.getWidth() / 2);
         //Positioning the startIcon
         int xLeft = centreOfMyLayout - (getStartIconWidth() / 2);
-        int yTop = startYTop + (getYSpacing() / 2);
+        int yTop = startYTop - (getYSpacing() / 4);
         //Positioning the endIcon
         int endXLeft = centreOfMyLayout - (getEndIconWidth() / 2);
-        int endYTop = startYTop + dimensions.getHeight() - getEndIconHeight() - (getYSpacing() / 2);
+        int endYTop = startYTop + dimensions.getHeight() + 15 - getEndIconHeight();
         int centerNHLayout = startXLeft + (coreDimensions.getWidth() / 2);
         /* Checks whether its a simple layout i.e. whether the subActivities are instances of ElseIf or Else
            if so --> true , else --> false
@@ -291,7 +299,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         //Iterates through the subActivities
         Iterator<ActivityInterface> itr = getSubActivities().iterator();
         //Adjusting the childXLeft and childYTop positions
-        int childYTop = yTop + getStartIconHeight() + (getYSpacing() / 2);
+        int childYTop = yTop + getStartIconHeight() + getYSpacing();
         int childXLeft = startXLeft + (getXSpacing() / 2);
 
         // Process None Handlers First
@@ -356,12 +364,14 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     private void layoutHorizontal(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -431,9 +441,11 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
-	/**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -449,14 +461,16 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             yTop = getStartIconYTop();
 
         }
-		//Returns the calculated coordinate points of the entry arrow
+        //Returns the calculated coordinate points of the entry arrow
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;
     }
-	 /**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -471,14 +485,16 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             yTop = getEndIconYTop() + (getEndIconHeight() / 2);
 
         }
-		 //Returns the calculated coordinate points of the exit arrow
+        //Returns the calculated coordinate points of the exit arrow
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;
     }
- 	/**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves the start If Icon
+     *
      * @return coordinates of the exit arrow for the start icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
      */
@@ -498,9 +514,11 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
         return coords;
     }
-	/**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters the end icon
+     *
      * @return coordinates of the entry arrow for the end icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -515,14 +533,16 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             yTop = getEndIconYTop() + (getEndIconHeight() / 2);
 
         }
-		 //Returns the calculated coordinate points of the entry arrow of the endIcon
+        //Returns the calculated coordinate points of the entry arrow of the endIcon
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters the Else activity
+     *
      * @return coordinates of the entry arrow for Else start icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + width of icon, yTop= Ytop of the Icon + (height of icon)/2
      */
@@ -542,8 +562,8 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
         return coords;
     }
+
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the components of the If composite activity
      */
@@ -571,8 +591,10 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
         return group1;
     }
+
     /**
      * Get the arrow coordinates of the activities
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return An element which contains the arrow coordinates of the If activity and its subActivities
      */
@@ -744,16 +766,18 @@ public class IfImpl extends ActivityImpl implements IfInterface {
         }
         return null;
     }
-	/**
+
+    /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }
-	/**
-     *
+
+    /**
      * @return String with the opacity value
      */
     @Override
@@ -763,12 +787,13 @@ public class IfImpl extends ActivityImpl implements IfInterface {
 
     /**
      * Get the arrow flows/paths from the coordinates given by getArrows()
-     * @param doc     SVG document which defines the components including shapes, gradients etc. of the activity
-     * @param startX  x-coordinate of the start point
-     * @param startY  y-coordinate of the start point
-     * @param endX    x-coordinate of the end point
-     * @param endY    y-coordinate of the end point
-     * @param id      previous activity id + current activity id
+     *
+     * @param doc    SVG document which defines the components including shapes, gradients etc. of the activity
+     * @param startX x-coordinate of the start point
+     * @param startY y-coordinate of the start point
+     * @param endX   x-coordinate of the end point
+     * @param endY   y-coordinate of the end point
+     * @param id     previous activity id + current activity id
      * @return An element which contains the arrow flows/paths of the If activity and its subActivities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {

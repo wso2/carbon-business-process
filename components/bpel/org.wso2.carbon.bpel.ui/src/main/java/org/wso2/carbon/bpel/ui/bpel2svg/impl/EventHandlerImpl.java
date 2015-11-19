@@ -36,7 +36,7 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
         //Assigns the name of the activity to be displayed when drawing the process
         if (name == null) {
-            name = "EVENTHANDLER" + System.currentTimeMillis();
+            name = "EVENTHANDLER";
         }
         displayName = "Event Handlers";
 
@@ -54,7 +54,7 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         super(omElement);
         //Assigns the name of the activity to be displayed when drawing the process
         if (name == null) {
-            name = "EVENTHANDLER" + System.currentTimeMillis();
+            name = "EVENTHANDLER";
         }
         displayName = "Event Handlers";
 
@@ -78,7 +78,7 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         setParent(parent);
         //Assigns the name of the activity to be displayed when drawing the process
         if (name == null) {
-            name = "EVENTHANDLER" + System.currentTimeMillis();
+            name = "EVENTHANDLER";
         }
         displayName = "Event Handlers";
 

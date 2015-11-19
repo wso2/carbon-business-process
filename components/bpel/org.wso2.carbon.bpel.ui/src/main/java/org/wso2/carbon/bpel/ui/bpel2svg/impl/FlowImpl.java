@@ -28,8 +28,9 @@ import java.util.Iterator;
  */
 public class FlowImpl extends ActivityImpl implements FlowInterface {
 
-	 /**
+    /**
      * Initializes a new instance of the FlowImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public FlowImpl(String token) {
@@ -41,8 +42,10 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         // Set Layout
         setVerticalChildLayout(false);
     }
-	 /**
+
+    /**
      * Initializes a new instance of the FlowImpl class using the specified omElement
+     *
      * @param omElement which matches the Flow tag
      */
     public FlowImpl(OMElement omElement) {
@@ -54,10 +57,12 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         // Set Layout
         setVerticalChildLayout(false);
     }
-	/**
+
+    /**
      * Initializes a new instance of the FlowImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Flow Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Flow tag
      * @param parent
      */
@@ -75,7 +80,6 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     }
 
     /**
-     *
      * @return String with name of the activity
      */
     @Override
@@ -84,17 +88,18 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     }
 
     /**
-     *
      * @return- String with the end tag of Flow Activity
      */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.FLOW_END_TAG;
     }
-	 /**
+
+    /**
      * At the start: width=0, height=0
+     *
      * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -133,8 +138,10 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         return dimensions;
     }
+
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -146,29 +153,30 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
             layoutHorizontal(startXLeft, startYTop);
         }
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
      * centreOfMyLayout- center of the the SVG
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         if (dimensions != null) {
             //Aligns the activities to the center of the layout
             int centreOfMyLayout = startXLeft + (dimensions.getWidth() / 2);
-			//Positioning the startIcon
+            //Positioning the startIcon
             int xLeft = centreOfMyLayout - (getStartIconWidth() / 2);
             int yTop = startYTop + (getYSpacing() / 2);
-			//Positioning the endIcon
+            //Positioning the endIcon
             int endXLeft = centreOfMyLayout - (getEndIconWidth() / 2);
             int endYTop = startYTop + dimensions.getHeight() - getEndIconHeight() - (getYSpacing() / 2);
 
             ActivityInterface activity = null;
             Iterator<ActivityInterface> itr = getSubActivities().iterator();
-			//Adjusting the childXLeft and childYTop positions
-			int childYTop = yTop + getStartIconHeight() + (getYSpacing() / 2);
+            //Adjusting the childXLeft and childYTop positions
+            int childYTop = yTop + getStartIconHeight() + (getYSpacing() / 2);
             int childXLeft = startXLeft + (getXSpacing() / 2);
             //Iterates through all the subActivities
             while (itr.hasNext()) {
@@ -180,30 +188,46 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
                 if (activity instanceof IfImpl) {
                     ((IfImpl) activity).setCheckIfinFlow(true);
                 }
-                //Sets the xLeft and yTop position of the iterated activity
-                activity.layout(childXLeft, childYTop);
-                childXLeft += activity.getDimensions().getWidth();
+                 /* If the activity inside Flow activity is an instance of ForEach, Repeat Until, While or If activity,
+                    then increase the yTop position of start icon of those activities , as the start icon is placed
+                    on the scope/box which contains the subActivities.This requires more spacing, so the yTop of the
+                    activity following it i.e. the activity after it is also increased.
+                 */
+                if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof WhileImpl || activity instanceof IfImpl) {
+                    int x = childYTop + (getYSpacing() / 2);
+                    //Sets the xLeft and yTop position of the iterated activity
+                    activity.layout(childXLeft, x);
+                    //Calculate the yTop position of the next activity
+                    childXLeft += activity.getDimensions().getWidth();
+                } else {
+                    //Sets the xLeft and yTop position of the iterated activity
+                    activity.layout(childXLeft, childYTop);
+                    //Calculate the yTop position of the next activity
+                    childXLeft += activity.getDimensions().getWidth();
+                }
             }
             //Sets the xLeft and yTop positions of the start icon
             setStartIconXLeft(xLeft);
             setStartIconYTop(yTop);
-			//Sets the xLeft and yTop positions of the end icon
+            //Sets the xLeft and yTop positions of the end icon
             setEndIconXLeft(endXLeft);
             setEndIconYTop(endYTop);
-			//Sets the xLeft and yTop positions of the start icon text
+            //Sets the xLeft and yTop positions of the start icon text
             setStartIconTextXLeft(startXLeft + BOX_MARGIN);
             setStartIconTextYTop(startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
-			//Sets the xLeft and yTop positions of the SVG  of the composite activity after setting the dimensions
+            //Sets the xLeft and yTop positions of the SVG  of the composite activity after setting the dimensions
             getDimensions().setXLeft(startXLeft);
             getDimensions().setYTop(startYTop);
         }
     }
-	 /**
+
+    /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     private void layoutHorizontal(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -217,7 +241,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         ActivityInterface activity = null;
         Iterator<ActivityInterface> itr = getSubActivities().iterator();
-		//Adjusting the childXLeft and childYTop positions
+        //Adjusting the childXLeft and childYTop positions
         int childXLeft = xLeft + getStartIconWidth() + (getYSpacing() / 2);
         int childYTop = startYTop + (getXSpacing() / 2);
         //Iterates through all the subActivities
@@ -245,6 +269,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -265,9 +290,11 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -292,6 +319,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves the start Flow Icon
+     *
      * @return coordinates of the exit arrow for the start icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
      */
@@ -311,9 +339,11 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters the end icon
+     *
      * @return coordinates of the entry arrow for the end icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -333,8 +363,8 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         return coords;
     }
-	 /**
-     *
+
+    /**
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the components of the Flow composite activity
      */
@@ -363,8 +393,10 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         return group;
 
     }
+
     /**
      * Get the arrow coordinates of the activities
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return An element which contains the arrow coordinates of the Flow activity and its subActivities
      */
@@ -391,15 +423,17 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
         return subGroup;
     }
+
     /**
      * Get the arrow flows/paths from the coordinates given by getArrows()
+     *
      * @param doc
-     * @param startX  x-coordinate of the start point
-     * @param startY  y-coordinate of the start point
-     * @param endX    x-coordinate of the end point
-     * @param endY    y-coordinate of the end point
-     * @param id      previous activity id + current activity id
-     * @param to      true/false for the arrow style
+     * @param startX x-coordinate of the start point
+     * @param startY y-coordinate of the start point
+     * @param endX   x-coordinate of the end point
+     * @param endY   y-coordinate of the end point
+     * @param id     previous activity id + current activity id
+     * @param to     true/false for the arrow style
      * @return An element which contains the arrow flows/paths of the Flow activity and its subActivities
      */
     public Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id, boolean to) {         //here we have to find whether
@@ -441,7 +475,6 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     }
 
     /**
-     *
      * @param to boolean variable true/false for the arrow style
      * @return String with the arrow styling attributes
      */
@@ -467,16 +500,18 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         }
 
     }
+
     /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }
+
     /**
-     *
      * @return String with the opacity value
      */
     @Override

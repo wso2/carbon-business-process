@@ -28,6 +28,7 @@ public class LayoutManager {
 
     /**
      * Gets the width of the SVG graph
+     *
      * @return width of the SVG graph
      */
     public int getSvgWidth() {
@@ -36,6 +37,7 @@ public class LayoutManager {
 
     /**
      * Sets the width of the SVG graph
+     *
      * @param svgWidth width of the SVG graph
      */
     public void setSvgWidth(int svgWidth) {
@@ -43,15 +45,19 @@ public class LayoutManager {
     }
 
     private int svgHeight = 3000;
+
     /**
      * Gets the height of the SVG graph
+     *
      * @return height of the SVG graph
      */
     public int getSvgHeight() {
         return svgHeight;
     }
+
     /**
      * Sets the height of the SVG graph
+     *
      * @param svgHeight height of the SVG graph
      */
     public void setSvgHeight(int svgHeight) {
@@ -59,8 +65,10 @@ public class LayoutManager {
     }
 
     private int xSpacing = 50;
+
     /**
      * Gets the xSpacing which is added to the width of the activities when setting the dimensions
+     *
      * @return xSpacing "50"
      */
     public int getXSpacing() {
@@ -69,6 +77,7 @@ public class LayoutManager {
 
     /**
      * Sets the xSpacing which is added to the width of the activities when setting the dimensions
+     *
      * @param xSpacing "50"
      */
     public void setXSpacing(int xSpacing) {
@@ -76,15 +85,19 @@ public class LayoutManager {
     }
 
     private int ySpacing = 70;
+
     /**
      * Gets the ySpacing which is added to the height of the activities when setting the dimensions
+     *
      * @return ySpacing "70"
      */
     public int getYSpacing() {
         return ySpacing;
     }
+
     /**
      * Sets the ySpacing which is added to the height of the activities when setting the dimensions
+     *
      * @param ySpacing "70"
      */
     public void setYSpacing(int ySpacing) {
@@ -92,8 +105,10 @@ public class LayoutManager {
     }
 
     private boolean includeAssigns = true;
+
     /**
      * Gets the boolean value to include the assign activities
+     *
      * @return boolean value to include the assign activities->true/false
      */
     public boolean isIncludeAssigns() {
@@ -102,6 +117,7 @@ public class LayoutManager {
 
     /**
      * Sets the boolean value to include the assign activities
+     *
      * @param includeAssigns boolean value to include the assign activities
      */
     public void setIncludeAssigns(boolean includeAssigns) {
@@ -109,15 +125,19 @@ public class LayoutManager {
     }
 
     private boolean showSequenceBoxes = true;
+
     /**
      * Gets the boolean value to show the Sequence box
+     *
      * @return boolean value to show the the Sequence box->true/false
      */
     public boolean isShowSequenceBoxes() {
         return showSequenceBoxes;
     }
+
     /**
      * Sets the boolean value to show the Sequence box
+     *
      * @param showSequenceBoxes boolean value to show the the Sequence box->true/false
      */
     public void setShowSequenceBoxes(boolean showSequenceBoxes) {
@@ -128,6 +148,7 @@ public class LayoutManager {
 
     /**
      * Gets the boolean value to select the vertical layout
+     *
      * @return boolean value to select the vertical layout -> true/false
      */
     public boolean isVerticalLayout() {
@@ -136,6 +157,7 @@ public class LayoutManager {
 
     /**
      * Sets the boolean value to select the vertical layout
+     *
      * @param verticalLayout boolean value to select the vertical layout
      */
     public void setVerticalLayout(boolean verticalLayout) {
@@ -143,8 +165,10 @@ public class LayoutManager {
     }
 
     private boolean addCompositeActivityOpacity = false;
+
     /**
      * Gets true/false to add  opacity to composite activity icons e.g:like IF, ELSE IF activities
+     *
      * @return true/false
      */
     public boolean isAddCompositeActivityOpacity() {
@@ -153,6 +177,7 @@ public class LayoutManager {
 
     /**
      * Sets true/false to add  opacity to composite activity icons
+     *
      * @param addCompositeActivityOpacity boolean value to add  opacity to composite activity icons
      */
     public void setAddCompositeActivityOpacity(boolean addCompositeActivityOpacity) {
@@ -160,8 +185,10 @@ public class LayoutManager {
     }
 
     private boolean addIconOpacity = false;
+
     /**
      * Gets true/false to add  opacity to activity icons
+     *
      * @return true/false
      */
     public boolean isAddIconOpacity() {
@@ -170,6 +197,7 @@ public class LayoutManager {
 
     /**
      * Sets true/false to add  opacity to activity icons
+     *
      * @param addIconOpacity boolean value to add opacity to activity icons
      */
     public void setAddIconOpacity(boolean addIconOpacity) {
@@ -177,8 +205,10 @@ public class LayoutManager {
     }
 
     private boolean addSimpleActivityOpacity = true;
+
     /**
      * Gets true/false to add opacity to simple activity icons e.g:like ASSIGN, THROW activities
+     *
      * @return true/false
      */
     public boolean isAddSimpleActivityOpacity() {
@@ -187,6 +217,7 @@ public class LayoutManager {
 
     /**
      * Sets true/false to add opacity to simple activity icons
+     *
      * @param addSimpleActivityOpacity boolean value to add opacity to simple activity icons
      */
     public void setAddSimpleActivityOpacity(boolean addSimpleActivityOpacity) {
@@ -194,8 +225,10 @@ public class LayoutManager {
     }
 
     private String iconOpacity = "0.25";
+
     /**
      * Gets the icon opacity amount for composite activities
+     *
      * @return String with the opacity "0.10"
      */
     public String getCompositeActivityOpacity() {
@@ -204,6 +237,7 @@ public class LayoutManager {
 
     /**
      * Sets the icon opacity amount for composite activities
+     *
      * @param compositeActivityOpacity icon opacity amount for composite activities
      */
     public void setCompositeActivityOpacity(String compositeActivityOpacity) {
@@ -211,8 +245,10 @@ public class LayoutManager {
     }
 
     private String opacity = "0.50";
+
     /**
      * Gets the icon opacity amount for activities
+     *
      * @return String with the opacity "0.25"
      */
     public String getIconOpacity() {
@@ -221,6 +257,7 @@ public class LayoutManager {
 
     /**
      * Sets the icon opacity amount for activities
+     *
      * @param iconOpacity icon opacity amount for activities
      */
     public void setIconOpacity(String iconOpacity) {
@@ -228,8 +265,10 @@ public class LayoutManager {
     }
 
     private String simpleActivityOpacity = "0.251";
+
     /**
      * Gets the icon opacity amount
+     *
      * @return String with the opacity "0.5"
      */
     public String getOpacity() {
@@ -238,6 +277,7 @@ public class LayoutManager {
 
     /**
      * Sets the icon opacity amount
+     *
      * @param opacity icon opacity
      */
     public void setOpacity(String opacity) {
@@ -245,8 +285,10 @@ public class LayoutManager {
     }
 
     private String compositeActivityOpacity = "0.10";
+
     /**
      * Gets the icon opacity amount for simple activities
+     *
      * @return String with the opacity "0.251"
      */
     public String getSimpleActivityOpacity() {
@@ -255,6 +297,7 @@ public class LayoutManager {
 
     /**
      * Sets the icon opacity amount for simple activities
+     *
      * @param simpleActivityOpacity icon opacity amount for simple activities
      */
     public void setSimpleActivityOpacity(String simpleActivityOpacity) {
@@ -265,6 +308,7 @@ public class LayoutManager {
 
     /**
      * Gets the dimensions of the start icon of the activity
+     *
      * @return dimensions of the start icon of the activity
      */
     public int getStartIconDim() {
@@ -273,6 +317,7 @@ public class LayoutManager {
 
     /**
      * Sets the dimensions of the start icon of the activity
+     *
      * @param startIconDim dimensions of the start icon of the activity
      */
     public void setStartIconDim(int startIconDim) {
@@ -280,15 +325,19 @@ public class LayoutManager {
     }
 
     private int endIconDim = 50;
+
     /**
      * Gets the dimensions of the end icon of the activity
+     *
      * @return dimensions of the end icon of the activity
      */
     public int getEndIconDim() {
         return endIconDim;
     }
+
     /**
      * Sets the dimensions of the end icon of the activity
+     *
      * @param endIconDim dimensions of the end icon of the activity
      */
     public void setEndIconDim(int endIconDim) {
@@ -300,6 +349,7 @@ public class LayoutManager {
 
     /**
      * Gets the width of the rectangle/image holder which holds the activity icon
+     *
      * @return icon width i.e. width of the rectangle/image holder which holds the activity icon
      */
     public int getIconWidth() {
@@ -308,6 +358,7 @@ public class LayoutManager {
 
     /**
      * Sets the width of the rectangle/image holder which holds the activity icon
+     *
      * @param iconWidth width of the rectangle/image holder which holds the activity icon
      */
     public void setIconWidth(int iconWidth) {
@@ -319,6 +370,7 @@ public class LayoutManager {
     /**
      * Layout the SVG
      * Get the dimensions i.e. width and height of the root activity, set the links of the process if there are any
+     *
      * @param rootActivity
      */
     public void layoutSVG(ActivityInterface rootActivity) {
@@ -371,6 +423,7 @@ public class LayoutManager {
 
     /**
      * Set the yTop position of the Target activities
+     *
      * @param source
      * @param children
      */
@@ -388,7 +441,7 @@ public class LayoutManager {
                     int correction = whereTargetShouldBe - whereTargetIs;
                     if (whereTargetIs < whereTargetShouldBe) {
                         //Set the correct yTop position of the target activity
-                        target.setCorrectionY(correction);
+                        target.setCorrectionY(target.getStartIconYTop());
                         int relativeCorrection = whereTargetShouldBe - source.getStartIconYTop();
                         correctionCumulation += relativeCorrection;
 
@@ -406,6 +459,7 @@ public class LayoutManager {
 
     /**
      * Sets the layout of the links in the process
+     *
      * @param rootActivity root Activity of the process
      */
     private void layoutLinks(ActivityInterface rootActivity) {

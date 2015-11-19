@@ -33,7 +33,7 @@ public class TerminationHandlerImpl extends SequenceImpl implements TerminationH
         super(token);
 
 		//Assigns the name of the activity to be displayed when drawing the process
-        name = "TERMINATIONHANDLER" + System.currentTimeMillis();
+        name = "TERMINATIONHANDLER";
         displayName = "Termination Handler";
 
        // Set Start and End Icons and their Sizes
@@ -49,7 +49,7 @@ public class TerminationHandlerImpl extends SequenceImpl implements TerminationH
         super(omElement);
 
 		//Assigns the name of the activity to be displayed when drawing the process
-        name = "TERMINATIONHANDLER" + System.currentTimeMillis();
+        name = "TERMINATIONHANDLER";
         displayName = "Termination Handler";
 
         // Set Start and End Icons and their Sizes
@@ -70,7 +70,7 @@ public class TerminationHandlerImpl extends SequenceImpl implements TerminationH
         setParent(parent);
 
 		//Assigns the name of the activity to be displayed when drawing the process
-        name = "TERMINATIONHANDLER" + System.currentTimeMillis();
+        name = "TERMINATIONHANDLER";
         displayName = "Termination Handler";
 
         // Set Start and End Icons and their Sizes

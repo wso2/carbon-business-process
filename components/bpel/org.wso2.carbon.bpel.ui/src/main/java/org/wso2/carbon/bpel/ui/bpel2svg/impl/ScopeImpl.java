@@ -27,18 +27,19 @@ import java.util.Iterator;
  * Scope tag UI implementation
  */
 public class ScopeImpl extends ActivityImpl implements ScopeInterface {
-	//Variables for Core and Conditional dimensions
+    //Variables for Core and Conditional dimensions
     private SVGDimension coreDimensions = null;
     private SVGDimension conditionalDimensions = null;
 
     //Defining heights of the start and end icons
     protected int startIconHeight = 5;
     protected int endIconHeight = 5;
-	
-	//Getters and Setters for the start and end icon heights
+
+    //Getters and Setters for the start and end icon heights
 
     /**
      * Sets the height of the end icon of the activity
+     *
      * @param iconHeightEnd height of the end icon of the activity
      */
     public void setEndIconHeight(int iconHeightEnd) {
@@ -47,6 +48,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * Sets the height of the start icon of the activity
+     *
      * @param iconHeight height of the start icon of the activity
      */
     public void setStartIconHeight(int iconHeight) {
@@ -55,6 +57,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * Gets the height of the end icon of the activity
+     *
      * @return height of the end icon of the activity
      */
     public int getEndIconHeight() {
@@ -63,6 +66,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * Gets the height of the start icon of the activity
+     *
      * @return height of the start icon of the activity
      */
     public int getStartIconHeight() {
@@ -70,10 +74,12 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     }
 
     //Constructors
- /**
-  * Initializes a new instance of the ScopeImpl class using the specified string i.e. the token
-  * @param token
-  */ 
+
+    /**
+     * Initializes a new instance of the ScopeImpl class using the specified string i.e. the token
+     *
+     * @param token
+     */
     public ScopeImpl(String token) {
         super(token);
 
@@ -81,21 +87,25 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	/**
+
+    /**
      * Initializes a new instance of the ScopeImpl class using the specified omElement
+     *
      * @param omElement which matches the Scope tag
      */
     public ScopeImpl(OMElement omElement) {
         super(omElement);
 
-       // Set Start and End Icon and Size
+        // Set Start and End Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	 /**
+
+    /**
      * Initializes a new instance of the ScopeImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Scope Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Scope tag
      * @param parent
      */
@@ -109,21 +119,25 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	//Defining heights and the width for the handler icons
+
+    //Defining heights and the width for the handler icons
     private int handlerIconWidth = 70;
     private int handlerIconHeight = 50;
 
-	//Getters and Setters for the handler icon width and height
+    //Getters and Setters for the handler icon width and height
 
     /**
      * Gets the height of the handler icon
+     *
      * @return height of the handler icon
      */
     public int getHandlerIconHeight() {
         return handlerIconHeight;
     }
+
     /**
      * Gets the width of the handler icon
+     *
      * @return width of the handler icon
      */
     public int getHandlerIconWidth() {
@@ -132,6 +146,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * Sets the height of the handler icon
+     *
      * @param handlerIconHeight height of the handler icon
      */
     public void setHandlerIconHeight(int handlerIconHeight) {
@@ -140,6 +155,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * Sets the width of the handler icon
+     *
      * @param handlerIconWidth width of the handler icon
      */
     public void setHandlerIconWidth(int handlerIconWidth) {
@@ -147,7 +163,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     }
 
     /**
-     *
      * @return spacing of the handler connector
      */
     protected int getHandlerConnectorSpacing() {
@@ -157,7 +172,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * At start: adjustment=0
-     * @return  spacing/adjustment of the handler icons
+     *
+     * @return spacing/adjustment of the handler icons
      */
     protected int getHandlerAdjustment() {
         int adjustment = 0;
@@ -168,16 +184,16 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         }
         return adjustment;
     }
-	 /**
-     *
+
+    /**
      * @return String with name of the activity
      */
     @Override
     public String getId() {
         return getName();
     }
-	 /**
-     *
+
+    /**
      * @return- String with the end tag of Scope Activity
      */
     @Override
@@ -185,10 +201,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         return BPEL2SVGFactory.SCOPE_END_TAG;
     }
 
-	 /**
+    /**
      * At the start: width=0, height=0
+     *
      * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -212,7 +229,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
                 activity = itr.next();
                 //Gets the dimensions of each subActivity separately
                 subActivityDim = activity.getDimensions();
-				/*Checks whether the subActivity is any of the handlers i.e. FaultHandler, TerminationHandler,CompensateHandler
+                /*Checks whether the subActivity is any of the handlers i.e. FaultHandler, TerminationHandler,CompensateHandler
                   or EventHandler
                 */
                 if (activity instanceof FaultHandlerImpl || activity instanceof TerminationHandlerImpl || activity instanceof CompensationHandlerImpl || activity instanceof EventHandlerImpl) {
@@ -222,6 +239,19 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
                     }
                     //width of the subActivities added to the conditional width
                     conWidth += subActivityDim.getWidth();
+                }
+                /*
+                 If the activity is an instance of ForEach, Repeat Until, While or If activity, ySpacing = 70 is also
+                  added to the core height of the composite activity as the start icons of those activities are placed on
+                  the scope of the composite activity, so it requires more spacing.
+                 */
+                else if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof WhileImpl
+                        || activity instanceof IfImpl) {
+                    if (subActivityDim.getWidth() > coreWidth) {
+                        //width of the subActivities added to the core width
+                        coreWidth = subActivityDim.getWidth();
+                    }
+                    coreHeight += subActivityDim.getHeight() + getYSpacing();
                 } else {
                     //If the subActivites are not instances of any handlers
                     if (subActivityDim.getWidth() > coreWidth) {
@@ -263,20 +293,21 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return dimensions;
     }
+
     /**
-     *
      * @return core dimensions of the activity
      */
     public SVGDimension getCoreDimensions() {
         return coreDimensions;
     }
+
     /**
-     *
      * @return conditional dimensions of the activity
      */
     public SVGDimension getConditionalDimensions() {
         return conditionalDimensions;
     }
+
     /**
      * Switch the dimensions of the activity to horizontal
      */
@@ -296,11 +327,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         conditionalDimensions.setHeight(width);
         conditionalDimensions.setWidth(height);
     }
+
     /**
-     *
      * @return false-->  if the subActivities are instances of handlers i.e. FaultHandler, TerminationHandler,CompensateHandler
-                         or EventHandler
-     *         true -->  otherwise
+     * or EventHandler
+     * true -->  otherwise
      */
     private boolean isSimpleLayout() {
         boolean simple = true;
@@ -319,8 +350,10 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return simple;
     }
+
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -332,16 +365,17 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             layoutHorizontal(startXLeft, startYTop);
         }
     }
-	/**
+
+    /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
      * centreOfMyLayout- center of the the SVG
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
-		//Aligns the activities to the center of the layout
+        //Aligns the activities to the center of the layout
         int centreOfMyLayout = startXLeft + (getDimensions().getWidth() / 2);
         int xLeft = 0;
         int yTop = 0;
@@ -398,9 +432,22 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             activity = itr.next();
             //Checks whether the activity is of any handler type
             if (activity instanceof FaultHandlerImpl || activity instanceof TerminationHandlerImpl || activity instanceof CompensationHandlerImpl || activity instanceof EventHandlerImpl) {
+            }
+            /* If the activity inside Scope activity is an instance of ForEach, Repeat Until, While or If activity,
+               then increase the yTop position of start icon of those activities , as the start icon is placed
+               on the scope/box which contains the subActivities.This requires more spacing, so the yTop of the
+               activity following it i.e. the activity after it is also increased.
+             */
+            else if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof WhileImpl || activity instanceof IfImpl) {
+                int x = childYTop + (getYSpacing() / 2);
+                //Sets the xLeft and yTop position of the iterated activity
+                activity.layout(childXLeft, x);
+                //Calculate the yTop position of the next activity
+                childXLeft += activity.getDimensions().getWidth();
             } else {
                 //Sets the xLeft and yTop position of the iterated activity
                 activity.layout(childXLeft, childYTop);
+                //Calculate the yTop position of the next activity
                 childXLeft += activity.getDimensions().getWidth();
             }
         }
@@ -430,12 +477,14 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         setStartIconTextXLeft(startXLeft + BOX_MARGIN);
         setStartIconTextYTop(startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     private void layoutHorizontal(int startXLeft, int startYTop) {
         int centreOfMyLayout = startYTop + (dimensions.getHeight() / 2);
@@ -526,9 +575,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         setStartIconTextXLeft(startXLeft + BOX_MARGIN);
         setStartIconTextYTop(startYTop + BOX_MARGIN + BPEL2SVGFactory.TEXT_ADJUST);
     }
-	/**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -544,14 +595,16 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             yTop = getStartIconYTop() + (getStartIconHeight() / 2);
 
         }
-		//Returns the calculated coordinate points of the entry arrow
+        //Returns the calculated coordinate points of the entry arrow
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;
     }
-	 /**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -566,14 +619,16 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             yTop = getEndIconYTop() + (getEndIconHeight() / 2);
 
         }
-		 //Returns the calculated coordinate points of the exit arrow
+        //Returns the calculated coordinate points of the exit arrow
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
 
         return coords;
     }
- 	/**
+
+    /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves the start Scope Icon
+     *
      * @return coordinates of the exit arrow for the start icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
      */
@@ -593,9 +648,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters the end icon
+     *
      * @return coordinates of the entry arrow for the end icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -619,6 +676,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the start arrow of the EventHandler
+     *
      * @return coordinates of the start arrow of the EventHandler
      */
     protected SVGCoordinates getStartEventCoords() {
@@ -637,9 +695,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the start arrow of the TerminationHandler
+     *
      * @return coordinates of the start arrow of the TerminationHandler
      */
     protected SVGCoordinates getStartTerminationCoords() {
@@ -658,9 +718,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the start arrow of the CompensationHandler
+     *
      * @return coordinates of the start arrow of the CompensationHandler
      */
     protected SVGCoordinates getStartCompensationCoords() {
@@ -679,9 +741,11 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the start arrow of the FaultHandler
+     *
      * @return coordinates of the start arrow of the FaultHandler
      */
     protected SVGCoordinates getStartFaultCoords() {
@@ -700,8 +764,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return coords;
     }
+
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the components of the Scope composite activity
      */
@@ -739,8 +803,10 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
         return group;
     }
+
     /**
      * Get the arrow coordinates of the activities
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return An element which contains the arrow coordinates of the Scope activity and its subActivities
      */
@@ -795,7 +861,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     }
 
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the box definition of the Scope activity
      */
@@ -808,8 +873,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             return getBoxDefinition(doc, getCoreDimensions().getXLeft() + BOX_MARGIN, getCoreDimensions().getYTop() + BOX_MARGIN, getCoreDimensions().getWidth() - (BOX_MARGIN * 2), getCoreDimensions().getHeight() - (BOX_MARGIN * 2), getBoxId());
         }
     }
+
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the start image/icon text of the Scope activity
      */
@@ -821,8 +886,10 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             return getImageText(doc, getCoreDimensions().getXLeft(), getCoreDimensions().getYTop(), getStartIconWidth(), getStartIconHeight(), getStartImageTextId(), getDisplayName());
         }
     }
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the TerminationHandler icon and arrow flows
      */
@@ -844,8 +911,10 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         //Get the image definition of the handler icon by passing the iconPath, x and y positions & icon height and width
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the FaultHandler icon and arrow flows
      */
@@ -866,8 +935,10 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         //Get the image definition of the handler icon by passing the iconPath, x and y positions & icon height and width
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the CompensationHandler icon and arrow flows
      */
@@ -888,8 +959,10 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         //Get the image definition of the handler icon by passing the iconPath, x and y positions & icon height and width
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the EventHandler icon and arrow flows
      */
@@ -910,16 +983,18 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         //Get the image definition of the handler icon by passing the iconPath, x and y positions & icon height and width
         return getImageDefinition(doc, iconPath, xLeft, yTop, getHandlerIconWidth(), getHandlerIconHeight(), getId());
     }
+
     /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }
+
     /**
-     *
      * @return String with the opacity value
      */
     @Override
@@ -928,14 +1003,15 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     }
 
     /**
-     *Image Definitions for the different handlers
-     * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @param imgPath path of the activity icon
-     * @param imgXLeft xLeft position of the image
-     * @param imgYTop  yTop position of the image
-     * @param imgWidth width of the image
+     * Image Definitions for the different handlers
+     *
+     * @param doc       SVG document which defines the components including shapes, gradients etc. of the activity
+     * @param imgPath   path of the activity icon
+     * @param imgXLeft  xLeft position of the image
+     * @param imgYTop   yTop position of the image
+     * @param imgWidth  width of the image
      * @param imgHeight height of the image
-     * @param id id of the activity
+     * @param id        id of the activity
      * @return
      */
     protected Element getImageDefinition(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,
@@ -988,7 +1064,6 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     //Different Implementations for start and end scope icons
 
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the end icon of the Scope activity
      */
@@ -998,8 +1073,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
                 getEndIconYTop(), getEndIconWidth(), getEndIconHeight(),
                 getEndImageId());
     }
+
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the start icon of the Scope activity
      */
@@ -1011,13 +1086,14 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
 
     /**
      * Image definitions for the start and end scope icons
-     * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @param imgPath path of the activity icon
-     * @param imgXLeft xLeft position of the image
-     * @param imgYTop  yTop position of the image
-     * @param imgWidth width of the image
+     *
+     * @param doc       SVG document which defines the components including shapes, gradients etc. of the activity
+     * @param imgPath   path of the activity icon
+     * @param imgXLeft  xLeft position of the image
+     * @param imgYTop   yTop position of the image
+     * @param imgWidth  width of the image
      * @param imgHeight height of the image
-     * @param id id of the activity
+     * @param id        id of the activity
      * @return
      */
     protected Element getStartEndImageDef(SVGDocument doc, String imgPath, int imgXLeft, int imgYTop,

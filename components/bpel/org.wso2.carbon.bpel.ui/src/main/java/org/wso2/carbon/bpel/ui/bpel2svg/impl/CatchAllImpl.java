@@ -34,7 +34,7 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
         super(token);
 
         //Assigns the name of the activity to be displayed when drawing the process
-        name = "CATCHALL" + System.currentTimeMillis();
+        name = "CATCHALL";
         displayName = "Catch All";
 
         // Set Start and End Icons and their Sizes
@@ -50,7 +50,7 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
         super(omElement);
 
         //Assigns the name of the activity to be displayed when drawing the process
-        name = "CATCHALL" + System.currentTimeMillis();
+        name = "CATCHALL";
         displayName = "Catch All";
 
         // Set Start and End Icons and their Sizes
@@ -72,7 +72,7 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
         setParent(parent);
 
         //Assigns the name of the activity to be displayed when drawing the process
-        name = "CATCHALL" + System.currentTimeMillis();
+        name = "CATCHALL";
         displayName = "Catch All";
 
         // Set Start and End Icons and their Sizes

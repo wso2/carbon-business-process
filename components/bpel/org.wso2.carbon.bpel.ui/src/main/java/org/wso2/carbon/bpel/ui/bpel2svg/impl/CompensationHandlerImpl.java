@@ -34,7 +34,7 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
         super(token);
 
         //Assigns the name of the activity to be displayed when drawing the process
-        name = "COMPENSATIONHANDLER" + System.currentTimeMillis();
+        name = "COMPENSATIONHANDLER";
         displayName = "Compensation Handler";
 
         // Set Start and End Icons and their Sizes
@@ -50,7 +50,7 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
         super(omElement);
 
         //Assigns the name of the activity to be displayed when drawing the process
-        name = "COMPENSATIONHANDLER" + System.currentTimeMillis();
+        name = "COMPENSATIONHANDLER";
         displayName = "Compensation Handler";
 
         // Set Start and End Icons and their Sizes
@@ -72,7 +72,7 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
         setParent(parent);
 
         //Assigns the name of the activity to be displayed when drawing the process
-        name = "COMPENSATIONHANDLER" + System.currentTimeMillis();
+        name = "COMPENSATIONHANDLER";
         displayName = "Compensation Handler";
 
         // Set Start and End Icons and their Sizes

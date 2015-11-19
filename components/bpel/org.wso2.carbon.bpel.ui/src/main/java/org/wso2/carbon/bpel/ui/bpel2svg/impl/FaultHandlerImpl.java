@@ -33,7 +33,7 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
         super(token);
         //Assigns the name of the activity to be displayed when drawing the process
         if (name == null) {
-            name = "FAULTHANDLER" + System.currentTimeMillis();
+            name = "FAULTHANDLER";
         }
         displayName = "Fault Handlers";
 
@@ -51,7 +51,7 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
         super(omElement);
         //Assigns the name of the activity to be displayed when drawing the process
         if (name == null) {
-            name = "FAULTHANDLER" + System.currentTimeMillis();
+            name = "FAULTHANDLER";
         }
         displayName = "Fault Handlers";
 
@@ -74,7 +74,7 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
         setParent(parent);
         //Assigns the name of the activity to be displayed when drawing the process
         if (name == null) {
-            name = "FAULTHANDLER" + System.currentTimeMillis();
+            name = "FAULTHANDLER";
         }
         displayName = "Fault Handlers";
 
