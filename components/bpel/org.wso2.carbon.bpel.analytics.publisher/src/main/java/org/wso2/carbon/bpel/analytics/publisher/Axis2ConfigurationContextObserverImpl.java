@@ -23,8 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStore;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.databridge.agent.thrift.AsyncDataPublisher;
-import org.wso2.carbon.databridge.agent.thrift.lb.LoadBalancingDataPublisher;
+import org.wso2.carbon.databridge.agent.DataPublisher;
+import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
 import org.wso2.carbon.utils.AbstractAxis2ConfigurationContextObserver;
 
 import java.util.Collection;
@@ -57,19 +57,18 @@ public class Axis2ConfigurationContextObserverImpl extends
         if(tenantsProcessStore != null) {
             Map dataPublisherMap = tenantsProcessStore.getDataPublisherMap();
             if(dataPublisherMap != null) {
-                Collection<EventPublisherConfig> eventPublisherConfig = dataPublisherMap.values();
-                Iterator<EventPublisherConfig> iterator = eventPublisherConfig.iterator();
+                Collection<DataPublisher> dataPublisherCollection = dataPublisherMap.values();
+                Iterator<DataPublisher> iterator = dataPublisherCollection.iterator();
                 while(iterator.hasNext()){
-                    EventPublisherConfig publisherConfig = iterator.next();
-                    if (publisherConfig.getDataPublisher() != null) {
-                        AsyncDataPublisher publisher = publisherConfig.getDataPublisher();
-                        publisher.stop();
-                    } else if (publisherConfig.getLoadBalancingDataPublisher() != null) {
-                        LoadBalancingDataPublisher loadBalancingDataPublisher = publisherConfig.getLoadBalancingDataPublisher();
-                        loadBalancingDataPublisher.stop();
-                    }
+	                DataPublisher dataPublisher = iterator.next();
+	                try {
+		                dataPublisher.shutdown();
+	                } catch (DataEndpointException e) {
+		                String errMsg = "Error while shutting down tenant Data Publisher";
+		                log.error(errMsg, e);
+	                }
                 }
-                eventPublisherConfig.clear();
+	            dataPublisherCollection.clear();
             }
         }
     }
