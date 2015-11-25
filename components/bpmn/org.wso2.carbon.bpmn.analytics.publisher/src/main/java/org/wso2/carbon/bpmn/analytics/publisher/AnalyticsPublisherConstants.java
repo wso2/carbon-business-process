@@ -21,6 +21,7 @@ public class AnalyticsPublisherConstants {
     public static final String LOCAL_THRIFT_URL = "tcp://localhost:7611";
     public static final int DELAY = 15000;
     public static final int REPEATEDLY_DELAY = 6000;
+    public static final int NEXT_CHECK_DELAY = 120000;
 
     public static final String LAST_PROCESS_INSTANCE_PUBLISH_TIME = "lastBPMNProcessInstanceTime";
     public static final String LAST_TASK_INSTANCE_END_TIME = "lastBPMNTaskInstanceTime";
@@ -48,10 +49,18 @@ public class AnalyticsPublisherConstants {
     public static final String PROCESS_RESOURCE_PATH = "resource_process_instance_time_location";
     public static final String TASK_RESOURCE_PATH = "resource_task_instance_time_location";
 
-    public static final String DATA_RECEIVER_RESOURCE_PATH = "bpmn/data_analytics_publisher/thrift_configuration";
-    public static final String THRIFT_URL_PROPERTY = "data_receiver_thrift_url";
-    public static final String USER_NAME_PROPERTY = "username";
-    public static final String PASSWORD_PROPERTY = "password";
+	// Data publisher related constants.
+    public static final String PATH_BPMN = "bpmn";
+    public static final String PATH_DATA_ANALYTICS_PUBLISHER =  PATH_BPMN + "/" +  "data_analytics_publisher";
+    public static final String PATH_PUBLISHER_CONFIGURATION = PATH_DATA_ANALYTICS_PUBLISHER + "/"  + "publisher_configuration";
+    public static final String PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
+    public static final String PUBLISHER_TYPE_PROPERTY = "type";
+    public static final String PUBLISHER_RECEIVER_URL_SET_PROPERTY = "receiverURLSet";
+    public static final String PUBLISHER_AUTH_URL_SET_PROPERTY = "authURLSet";
+    public static final String PUBLISHER_USER_NAME_PROPERTY = "username";
+    public static final String PUBLISHER_PASSWORD_PROPERTY = "password";
+	//public static final String DAS_STREAM_DEFINITION = "bpmn/data_analytics_publisher/stream_definition";
+
 
     public static final String SPRING_NAMESPACE = "http://www.springframework.org/schema/beans";
     public static final String BEAN = "bean";
