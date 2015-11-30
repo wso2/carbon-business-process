@@ -35,7 +35,8 @@ if (request.isSecure()) {//check whether the request is secure or not
     	contentType = request.getContentType(),	
     	headers = {
     		"Content-Type": contentType,
-    		"Authorization":"Basic " + auth
+    		"Authorization":"Basic " + auth,
+            "Accept" : "application/json"
     	},
     	run = request.getMethod();
     	if (run == "POST") {
