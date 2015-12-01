@@ -848,6 +848,19 @@ i.cu-btn-exp-col {
     background: url('../images/ico-expanded.png') no-repeat;
 }
 
+.btn-start:focus {
+    background: url('../images/loader.gif') no-repeat top;
+    margin: 0;
+    padding: 0;
+    border-width: 2px;
+    border-color: white;
+    width:60PX;
+    height:30PX;
+    opacity: 1;
+    font-size: 0%;
+    background-position: center;
+}
+
 .fixed-bar-outer {
     position: relative;
 }

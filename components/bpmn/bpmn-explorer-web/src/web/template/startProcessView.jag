@@ -36,7 +36,8 @@
 	  			</div>
 	  		</form>
 	  		<div class="col-lg-12 margin-bottom-double">
-	  			<button onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
+	  			<button id="startProcessButton" onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
+	  			<div id="loadingStartProcessButton" hidden><img src="images/loader.gif"/></div>
 			</div>
 	  		</div>
 

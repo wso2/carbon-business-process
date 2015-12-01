@@ -62,7 +62,7 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-count].version%></td>
-							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn-start btn btn-xs btn-info">Start</button></a></td>
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
@@ -80,7 +80,7 @@
 				    				</a>
 				    			</td>
 								<td><%=list[i-j].version%></td>
-								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn-start btn btn-xs btn-info">Start</button></a></td>
 							</tr>
 			    		<%
 		    			}
@@ -102,7 +102,7 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-count].version%></td>
-							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn-start btn btn-xs btn-info">Start</button></a></td>
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
@@ -120,7 +120,7 @@
 				    				</a>
 				    			</td>
 								<td><%=list[i-j].version%></td>
-								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn-start btn btn-xs btn-info">Start</button></a></td>
 							</tr>
 			    	<%
 		    			}
