@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
@@ -52,7 +53,11 @@ public class BPMNServiceComponent {
             BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             restHolder.setRestInvoker(new RESTInvoker());
-            bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(), new BPMNEngineShutdown(), null);
+            BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
+            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
+            bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
+            bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
+
 
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
 //            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());

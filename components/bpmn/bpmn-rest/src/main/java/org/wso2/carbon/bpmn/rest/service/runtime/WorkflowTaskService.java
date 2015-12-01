@@ -819,8 +819,6 @@ public class WorkflowTaskService extends BaseTaskService {
         for (int i =0; i < attachmentSize; i++){
            org.apache.cxf.jaxrs.ext.multipart.Attachment attachment =  attachments.get(i);
 
-            attachment.getHeaderAsList()
-
             String contentDisposition = attachment.getHeader("Content-Disposition");
             String contentType = attachment.getHeader("Content-Type");
             System.out.println("Going to iterate:" + i);
