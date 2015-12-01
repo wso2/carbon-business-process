@@ -35,15 +35,15 @@
             }
 
            if(max >= 100 && count > 1){
-              var hTitle=<%=i18n.localize("htitle", "Task instance count (log scale)")%>;
+              var hTitle="<%=i18n.localize("htitle", "Task instance count (log scale)")%>";
               var logScaleEnabled = true;
             }
             else{
-              var hTitle=<%=i18n.localize("htitle", "Task instance count")%>;
+              var hTitle="<%=i18n.localize("htitle", "Task instance count")%>";
               var logScaleEnabled = false;
             }
              var options = {
-               vAxis: {title: <%=i18n.localize("status.task", "Status of the Task")%>,  titleTextStyle: { color: 'grey' }},
+               vAxis: {title: "<%=i18n.localize("status.task", "Status of the Task")%>",  titleTextStyle: { color: 'grey' }},
                hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                colors:['#be2d28'],
                height: ((data.getNumberOfRows()+2) * 70),
