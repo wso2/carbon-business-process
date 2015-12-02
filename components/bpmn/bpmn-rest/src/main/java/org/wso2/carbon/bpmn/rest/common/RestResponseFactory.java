@@ -61,7 +61,7 @@ public class RestResponseFactory {
     public static final String BYTE_ARRAY_VARIABLE_TYPE = "binary";
     public static final String SERIALIZABLE_VARIABLE_TYPE = "serializable";
 
-    protected List<RestVariableConverter> variableConverters = new ArrayList<RestVariableConverter>();
+    protected List<RestVariableConverter> variableConverters = new ArrayList<>();
 
     public RestResponseFactory(){
         initializeVariableConverters();
@@ -217,7 +217,7 @@ public class RestResponseFactory {
         result.setGroup(groupId);
         result.setType(type);
 
-        String family = null;
+        String family;
         if (userId != null) {
             family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS;
         } else {
@@ -234,7 +234,7 @@ public class RestResponseFactory {
     }
 
     public Object getVariableValue(RestVariable restVariable) {
-        Object value = null;
+        Object value;
 
         if(restVariable.getType() != null) {
             // Try locating a converter if the type has been specified
@@ -424,7 +424,6 @@ public class RestResponseFactory {
             //Process not complete. Note the same in the result.
             result.setCompleted(false);
         }
-        //End Added by Ryan Johnston
 
         if (processInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = processInstance.getProcessVariables();
@@ -438,7 +437,7 @@ public class RestResponseFactory {
     }
 
     public Object getVariableValue(QueryVariable restVariable) {
-        Object value = null;
+        Object value;
 
         if(restVariable.getType() != null) {
             // Try locating a converter if the type has been specified
@@ -465,10 +464,6 @@ public class RestResponseFactory {
         }
         return value;
     }
-
-    /*public TaskResponse createTaskResponse(Task task, String baseUri) {
-        return createTaskResponse(task, baseUri);
-    }*/
 
     public TaskResponse createTaskResponse(Task task, String baseUri) {
         RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
@@ -519,7 +514,7 @@ public class RestResponseFactory {
 
     public List<RestVariable> createRestVariables(Map<String, Object> variables, String id, int variableType,
                                                   RestVariable.RestVariableScope scope, String baseUri) {
-        List<RestVariable> result = new ArrayList<RestVariable>();
+        List<RestVariable> result = new ArrayList<>();
 
         for (Map.Entry<String, Object> pair : variables.entrySet()) {
             result.add(createRestVariable(pair.getKey(), pair.getValue(), scope, id, variableType, false, baseUri));
@@ -527,10 +522,6 @@ public class RestResponseFactory {
 
         return result;
     }
-
-   /* public AttachmentResponse createAttachmentResponse(Attachment attachment, String baseUri) {
-        return createAttachmentResponse(attachment,baseUri );
-    }*/
 
     public AttachmentResponse createAttachmentResponse(Attachment attachment,  String baseUri) {
         RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
@@ -582,8 +573,7 @@ public class RestResponseFactory {
         return result;
     }
 
-    public List<CommentResponse> createRestCommentList(List<Comment> comments,
-                                                                                            String baseUri) {
+    public List<CommentResponse> createRestCommentList(List<Comment> comments, String baseUri) {
         List<CommentResponse> responseList = new ArrayList<>();
         for (Comment instance : comments) {
             responseList.add(createRestComment(instance, baseUri));
@@ -592,7 +582,7 @@ public class RestResponseFactory {
     }
 
     public List<EventResponse> createEventResponseList(List<Event> events, String baseUri) {
-        List<EventResponse> responseList = new ArrayList<EventResponse>();
+        List<EventResponse> responseList = new ArrayList<>();
         for (Event instance : events) {
             responseList.add(createEventResponse(instance, baseUri));
         }
@@ -619,7 +609,7 @@ public class RestResponseFactory {
 
     public List<HistoricProcessInstanceResponse> createHistoricProcessInstanceResponseList
             (List<HistoricProcessInstance> processInstances, String baseUri) {
-        List<HistoricProcessInstanceResponse> responseList = new ArrayList<HistoricProcessInstanceResponse>();
+        List<HistoricProcessInstanceResponse> responseList = new ArrayList<>();
         for (HistoricProcessInstance instance : processInstances) {
             responseList.add(createHistoricProcessInstanceResponse(instance, baseUri));
         }
@@ -749,7 +739,7 @@ public class RestResponseFactory {
 
     public List<HistoricActivityInstanceResponse> createHistoricActivityInstanceResponseList
             (List<HistoricActivityInstance> activityInstances, String baseUri) {
-        List<HistoricActivityInstanceResponse> responseList = new ArrayList<HistoricActivityInstanceResponse>();
+        List<HistoricActivityInstanceResponse> responseList = new ArrayList<>();
         for (HistoricActivityInstance instance : activityInstances) {
             responseList.add(createHistoricActivityInstanceResponse(instance, baseUri));
         }
@@ -781,7 +771,7 @@ public class RestResponseFactory {
     public List<HistoricVariableInstanceResponse> createHistoricVariableInstanceResponseList
             (List<HistoricVariableInstance> variableInstances, String baseUri) {
 
-        List<HistoricVariableInstanceResponse> responseList = new ArrayList<HistoricVariableInstanceResponse>();
+        List<HistoricVariableInstanceResponse> responseList = new ArrayList<>();
         for (HistoricVariableInstance instance : variableInstances) {
             responseList.add(createHistoricVariableInstanceResponse(instance, baseUri));
         }
@@ -805,7 +795,7 @@ public class RestResponseFactory {
 
     public List<HistoricDetailResponse> createHistoricDetailResponse(List<HistoricDetail> detailList, String baseUri) {
 
-        List<HistoricDetailResponse> responseList = new ArrayList<HistoricDetailResponse>();
+        List<HistoricDetailResponse> responseList = new ArrayList<>();
         for (HistoricDetail instance : detailList) {
             responseList.add(createHistoricDetailResponse(instance, baseUri));
         }

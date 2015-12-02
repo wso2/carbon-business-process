@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.repository;
@@ -58,7 +58,7 @@ public class ProcessDefinitionService {
     UriInfo uriInfo;
 
     private static final Map<String, QueryProperty> properties = new HashMap<>();
-    private static final List<String> allPropertiesList  = new ArrayList<>();
+    private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
         properties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
@@ -94,18 +94,14 @@ public class ProcessDefinitionService {
     @GET
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessDefinitions(){
+    public Response getProcessDefinitions() {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
-
         Map<String, String> allRequestParams = new HashMap<>();
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+        for (String property : allPropertiesList) {
+            String value = uriInfo.getQueryParameters().getFirst(property);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
@@ -186,23 +182,17 @@ public class ProcessDefinitionService {
     }
 
 
-
-
     @GET
     @Path("/{processDefinitionId}/resourcedata")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefinitionResource(@PathParam("processDefinitionId") String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
-
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         String resourceID = processDefinition.getResourceName();
         String contentType = Utils.resolveContentType(processDefinition.getResourceName());
         return Response.ok().type(contentType).entity(getDeploymentResourceData(processDefinition.getDeploymentId(),
-                resourceID , repositoryService)).build();
+                resourceID, repositoryService)).build();
     }
 
     @GET
@@ -211,28 +201,22 @@ public class ProcessDefinitionService {
     public Response getIdentityLinks(@PathParam("processDefinitionId") String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
-
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
         return Response.ok().entity(new RestResponseFactory().createRestIdentityLinks(repositoryService
                 .getIdentityLinksForProcessDefinition(processDefinition.getId()), uriInfo.getBaseUri().toString())).build();
     }
+
     @GET
     @Path("/{processDefinitionId}/identitylinks/{family}/{identityId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLink(@PathParam("processDefinitionId") String processDefinitionId, @PathParam("family") String family,
-                                            @PathParam("identityId") String identityId) {
+                                    @PathParam("identityId") String identityId) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
 
         // Check if identitylink to get exists
         IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId(), repositoryService);
@@ -244,10 +228,6 @@ public class ProcessDefinitionService {
     private ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
-
         ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
         if (processDefinition == null) {
@@ -277,8 +257,6 @@ public class ProcessDefinitionService {
         if (resourceList.contains(resourceId)) {
             final InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, resourceId);
 
-           /* String contentType = contentTypeResolver.resolveContentType(resourceId);
-            response.setContentType(contentType);*/
             try {
                 return IOUtils.toByteArray(resourceStream);
             } catch (Exception e) {
@@ -307,7 +285,7 @@ public class ProcessDefinitionService {
         // the API
         List<IdentityLink> allLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
         for (IdentityLink link : allLinks) {
-            boolean rightIdentity = false;
+            boolean rightIdentity;
             if (isUser) {
                 rightIdentity = identityId.equals(link.getUserId());
             } else {

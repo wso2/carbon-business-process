@@ -50,6 +50,7 @@ public class AuthenticationHandler implements RequestHandler {
     protected Log log = LogFactory.getLog(AuthenticationHandler.class);
 
     private final static String AUTH_TYPE_BASIC = "Basic";
+    private final static String AUTH_TYPE_NONE = "None";
     private final static String AUTH_TYPE_OAuth = "Bearer";
 
 
@@ -69,16 +70,14 @@ public class AuthenticationHandler implements RequestHandler {
     public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
 
-        if (policy != null && AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
-            System.out.println("Basic Type");
-            return handleBasicAuth(policy);
-        } else if (policy != null && AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())){
-            System.out.println("AUTH_TYPE");
-            return handleOAuth(message);
-        } else {
-            System.out.println("LOL");
-            return authenticationFail();
+        if(policy != null){
+            if(AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())){
+                return handleBasicAuth(policy);
+            } else if(AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())){
+                return handleOAuth(message);
+            }
         }
+        return authenticationFail(AUTH_TYPE_NONE);
     }
 
     protected Response handleBasicAuth(AuthorizationPolicy policy) {

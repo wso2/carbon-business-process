@@ -96,8 +96,5 @@ public class ProcessDefinitionFormPropertyService {
         }
 
         return Response.ok().entity(formPropertyResponseCollection).build();
-       /* System.out.println("Size of json:"+responseJSON.size());
-        responseJSON.put("data", propertiesJSON);
-        return responseJSON;*/
     }
 }

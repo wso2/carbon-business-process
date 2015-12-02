@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.repository;
@@ -20,15 +20,14 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ModelQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.ModelQuery;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelsPaginateList;
-
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -47,7 +46,7 @@ public class ModelService {
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
     private static final Log log = LogFactory.getLog(ModelService.class);
-    private static final List<String> allPropertiesList  = new ArrayList<>();
+    private static final List<String> allPropertiesList = new ArrayList<>();
 
     @Context
     UriInfo uriInfo;
@@ -91,16 +90,14 @@ public class ModelService {
     public Response getModels() {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
+
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+        for (String property : allPropertiesList) {
+            String value = uriInfo.getQueryParameters().getFirst(property);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
@@ -113,7 +110,7 @@ public class ModelService {
         }
 
         String category = uriInfo.getQueryParameters().getFirst("category");
-        if( category != null){
+        if (category != null) {
             modelQuery.modelCategory(category);
         }
 
@@ -128,26 +125,26 @@ public class ModelService {
         }
 
         String name = uriInfo.getQueryParameters().getFirst("name");
-        if( name != null){
+        if (name != null) {
             modelQuery.modelName(name);
         }
 
         String nameLike = uriInfo.getQueryParameters().getFirst("nameLike");
-        if( nameLike != null){
+        if (nameLike != null) {
             modelQuery.modelNameLike(nameLike);
         }
 
-        String key =  uriInfo.getQueryParameters().getFirst("key");
+        String key = uriInfo.getQueryParameters().getFirst("key");
         if (key != null) {
             modelQuery.modelKey(key);
         }
 
-        String version =  uriInfo.getQueryParameters().getFirst("version");
+        String version = uriInfo.getQueryParameters().getFirst("version");
         if (version != null) {
             modelQuery.modelVersion(Integer.valueOf(version));
         }
 
-        String latestVersion =  uriInfo.getQueryParameters().getFirst("latestVersion");
+        String latestVersion = uriInfo.getQueryParameters().getFirst("latestVersion");
         if (latestVersion != null) {
             boolean isLatestVersion = Boolean.valueOf(latestVersion);
             if (isLatestVersion) {
@@ -155,12 +152,12 @@ public class ModelService {
             }
         }
 
-        String deploymentId =  uriInfo.getQueryParameters().getFirst("deploymentId");
+        String deploymentId = uriInfo.getQueryParameters().getFirst("deploymentId");
         if (deploymentId != null) {
             modelQuery.deploymentId(deploymentId);
         }
 
-        String deployed =  uriInfo.getQueryParameters().getFirst("deployed");
+        String deployed = uriInfo.getQueryParameters().getFirst("deployed");
         if (deployed != null) {
             boolean isDeployed = Boolean.valueOf(deployed);
             if (isDeployed) {
@@ -171,17 +168,17 @@ public class ModelService {
         }
 
         String tenantId = uriInfo.getQueryParameters().getFirst("tenantId");
-        if(tenantId != null){
+        if (tenantId != null) {
             modelQuery.modelTenantId(tenantId);
         }
 
         String tenantIdLike = uriInfo.getQueryParameters().getFirst("tenantIdLike");
-        if( tenantIdLike != null){
+        if (tenantIdLike != null) {
             modelQuery.modelTenantIdLike(tenantIdLike);
         }
 
         String sWithoutTenantId = uriInfo.getQueryParameters().getFirst("withoutTenantId");
-        if( sWithoutTenantId != null){
+        if (sWithoutTenantId != null) {
             boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
             if (withoutTenantId) {
                 modelQuery.modelWithoutTenantId();
@@ -193,7 +190,7 @@ public class ModelService {
 
         List<ModelResponse> modelResponseList = (List<ModelResponse>) response.getData();
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("modelResponseList: " + modelResponseList.size());
         }
 

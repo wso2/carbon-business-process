@@ -137,9 +137,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         ProcessInstanceResponse processInstanceResponse;
         // Actually start the instance based on key or id
@@ -168,10 +165,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             }
 
             HistoryService historyService = BPMNOSGIService.getHistoryService();
-            if(historyService == null){
-                throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-            }
-            //Added by Ryan Johnston
+
             if (processInstanceCreateRequest.getReturnVariables()) {
                 Map<String, Object> runtimeVariableMap = null;
                 List<HistoricVariableInstance> historicVariableList = null;
@@ -189,10 +183,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 processInstanceResponse = restResponseFactory.createProcessInstanceResponse(instance,uriInfo.getBaseUri
                         ().toString() );
             }
-            //End Added by Ryan Johnston
 
-            //Removed by Ryan Johnston (obsolete given the above).
-            //return factory.createProcessInstanceResponse(this, instance);
         } catch(ActivitiObjectNotFoundException aonfe) {
             throw new ActivitiIllegalArgumentException(aonfe.getMessage(), aonfe);
         }
@@ -207,23 +198,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
-
         ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
         if (pde != null && pde.hasGraphicalNotation()) {
             BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
             ProcessEngineConfiguration processEngineConfiguration = BPMNOSGIService.getProcessEngineConfiguration();
-            if(processEngineConfiguration == null){
-                throw new BPMNOSGIServiceException("ProcessEngineConfiguration couldn't be identified");
-            }
-
             RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-            if(runtimeService == null){
-                throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-            }
+
             ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
             InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()),
                     Collections.<String>emptyList(), processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(),
@@ -259,9 +240,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     public Response deleteProcessInstance(@PathParam("processInstanceId")String processInstanceId) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
         String deleteReason = uriInfo.getQueryParameters().getFirst("deleteReason");
         if(deleteReason == null){
             deleteReason="";
@@ -297,9 +275,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public List<RestIdentityLink> getIdentityLinks(@PathParam("processInstanceId") String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         return new RestResponseFactory().createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance
                 (processInstance.getId()), uriInfo.getBaseUri().toString());
@@ -326,10 +301,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         runtimeService.addUserIdentityLink(processInstance.getId(), identityLink.getUser(), identityLink.getType());
 
         RestIdentityLink restIdentityLink = new RestResponseFactory().createRestIdentityLink(identityLink.getType(),
@@ -366,9 +337,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         getIdentityLink(identityId, type, processInstance.getId());
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
         runtimeService.deleteUserIdentityLink(processInstance.getId(), identityId, type);
         return  Response.ok().status(Response.Status.NO_CONTENT).build();
     }
@@ -522,9 +490,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.removeVariableLocal(execution.getId(), variableName);
@@ -683,9 +648,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
             if (!variablesToSet.isEmpty()) {
                 RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-                if(runtimeService == null){
-                    throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-                }
 
                 if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
                     runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
@@ -796,10 +758,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.setVariableLocal(execution.getId(), name, value);
         } else {
@@ -818,9 +776,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
         boolean variableFound = false;
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
 
@@ -848,10 +803,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
 
-
-
-
-
     public RestVariable getVariableFromRequest(Execution execution, String variableName, String scope,
                                                boolean includeBinary) {
 
@@ -863,9 +814,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
@@ -930,9 +878,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
     protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawLocalvariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL, uriInfo.getBaseUri().toString());
@@ -944,10 +889,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
     protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());

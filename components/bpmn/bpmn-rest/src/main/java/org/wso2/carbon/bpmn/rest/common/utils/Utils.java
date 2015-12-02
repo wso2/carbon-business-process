@@ -58,7 +58,7 @@ public class Utils {
     }
 
     public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream();) {
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[0xFFFF];
 
             for (int len; (len = is.read(buffer)) != -1; )
@@ -133,14 +133,13 @@ public class Utils {
         // Get first file in the map, ignore possible other files
         while (nextPart) {
             //
-            //  \if (debugEnabled) {
+            if (debugEnabled) {
 
-            String header = multipartStream.readHeaders();
-            System.out.println("==============Headers:==========================");
-            System.out.println(header);
-            // }
+                String header = multipartStream.readHeaders();
+                printHeaders(header);
+            }
 
-            printHeaders(header.getBytes());
+
             multipartStream.readBodyData(byteArrayOutputStream);
             byteArray = byteArrayOutputStream.toByteArray();
 
@@ -153,8 +152,8 @@ public class Utils {
 
     public static Map<String, String> processContentDispositionHeader(String headerValue) {
 
+        boolean debugEnabled = log.isDebugEnabled();
         if (!headerValue.endsWith(";")) {
-            System.out.println("FFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
             headerValue += ";";
         }
 
@@ -171,41 +170,38 @@ public class Utils {
 
         for (byte byte1 : headerValueByteArray) {
 
-            //System.out.println((int)byte1);
             ++length;
 
             if (!keyFound) {
 
                 if (byte1 == '=') {
 
-                    System.out.println("LLLLLLLLLLLLLLLLl");
                     keyFound = true;
                     key = new String(headerValueByteArray, beginIndex, length - 1).trim();
                     beginIndex += length;
                     length = 0;
-
-                    System.out.println("KEY:" + key);
+                    if (debugEnabled) {
+                        log.debug("KEY:" + key);
+                    }
                 }
-
             } else {
                 if (byte1 == '\n' || byte1 == '\r' || byte1 == ';') {
 
-                    System.out.println("came here");
                     value = new String(headerValueByteArray, beginIndex, length - 1);
                     value = value.replaceAll("\"", "").trim();
-                    System.out.println("header value:" + value);
                     keyFound = false;
                     beginIndex += length;
                     length = 0;
+                    if (debugEnabled) {
+                        log.debug("header value:" + value);
+                    }
 
-                    // headerMap.put(headerString, headerValue);
                     contentDispositionHeaderMap.put(key, value);
                     key = null;
                     value = null;
                 }
             }
         }
-
         return contentDispositionHeaderMap;
     }
 
@@ -223,7 +219,17 @@ public class Utils {
         return null;
     }
 
-    public static void printHeaders(byte[] headerArrayByte) {
+    public static void printHeaders(String header) {
+
+        boolean debugEnabled = log.isDebugEnabled();
+
+        byte[] headerArrayByte = header.getBytes();
+
+        if(debugEnabled){
+            log.debug("==============Headers:==========================");
+            log.debug(header);
+        }
+
         int beginIndex = 0;
         int length = 0;
 
@@ -238,18 +244,21 @@ public class Utils {
             if (!headerFound) {
 
                 if (headerByte == ':') {
-                    System.out.println("FFFFFFFFF");
                     headerFound = true;
                     headerString = new String(headerArrayByte, beginIndex, length - 1);
                     beginIndex += length;
                     length = 0;
-                    System.out.println("Header:" + headerString);
+                    if(log.isDebugEnabled()){
+                        log.debug("Header:" + headerString);
+                    }
                 }
             } else {
 
                 if (headerByte == '\n' || headerByte == '\r') {
                     headerValue = new String(headerArrayByte, beginIndex, length - 1);
-                    System.out.println("header value:" + headerValue);
+                    if(log.isDebugEnabled()){
+                        log.debug("header value:" + headerValue);
+                    }
                     headerFound = false;
                     beginIndex += length;
                     length = 0;
@@ -305,8 +314,6 @@ public class Utils {
         String newValue2 = fullString.substring(index + key.length() + 1);
         int firstOccurance = newValue2.indexOf("\"");
         int secondOccurnace = newValue2.indexOf("\"", firstOccurance + 1);
-
-        //System.out.println(.replaceAll("\"",""));
         return newValue2.substring(firstOccurance + 1, secondOccurnace);
     }
 

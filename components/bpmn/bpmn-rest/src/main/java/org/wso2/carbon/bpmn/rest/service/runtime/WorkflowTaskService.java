@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.runtime;
@@ -22,6 +22,8 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.*;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
@@ -52,13 +54,15 @@ import java.util.*;
 
 @Path("/tasks")
 public class WorkflowTaskService extends BaseTaskService {
+
+    private static final Log log = LogFactory.getLog(WorkflowTaskService.class);
     @Context
     UriInfo uriInfo;
 
 
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasks() {
 
         // Create a Task query request
@@ -66,10 +70,10 @@ public class WorkflowTaskService extends BaseTaskService {
 
         Map<String, String> requestParams = new HashMap<>();
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+        for (String property : allPropertiesList) {
+            String value = uriInfo.getQueryParameters().getFirst(property);
 
-            if(value != null){
+            if (value != null) {
                 requestParams.put(property, value);
             }
         }
@@ -239,7 +243,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTask(@PathParam("taskId") String taskId) {
         TaskResponse taskResponse = new RestResponseFactory().createTaskResponse(getTaskFromRequest(taskId), uriInfo
                 .getBaseUri()
@@ -250,10 +254,10 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @PUT
     @Path("/{taskId}")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response updateTask(@PathParam("taskId") String taskId,
-                                   TaskRequest taskRequest) {
+                               TaskRequest taskRequest) {
 
         if (taskRequest == null) {
             throw new ActivitiException("A request body was expected when updating the task.");
@@ -265,9 +269,6 @@ public class WorkflowTaskService extends BaseTaskService {
         populateTaskFromRequest(task, taskRequest);
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         // Save the task and fetch agian, it's possible that an assignment-listener has updated
         // fields after it was saved so we can't use the in-memory task
@@ -279,7 +280,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @POST
     @Path("/{taskId}")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response executeTaskAction(@PathParam("taskId") String taskId, TaskActionRequest actionRequest) {
         if (actionRequest == null) {
             throw new ActivitiException("A request body was expected when executing a task action.");
@@ -288,9 +289,6 @@ public class WorkflowTaskService extends BaseTaskService {
         Task task = getTaskFromRequest(taskId);
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         if (TaskActionRequest.ACTION_COMPLETE.equals(actionRequest.getAction())) {
             completeTask(task, actionRequest, taskService);
@@ -317,7 +315,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
         Boolean cascadeHistory = false;
 
-        if(uriInfo.getQueryParameters().getFirst("cascadeHistory") != null){
+        if (uriInfo.getQueryParameters().getFirst("cascadeHistory") != null) {
             cascadeHistory = Boolean.valueOf(uriInfo.getQueryParameters().getFirst("cascadeHistory"));
         }
         String deleteReason = uriInfo.getQueryParameters().getFirst("deleteReason");
@@ -330,9 +328,6 @@ public class WorkflowTaskService extends BaseTaskService {
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         if (cascadeHistory != null) {
             // Ignore delete-reason since the task-history (where the reason is recorded) will be deleted anyway
@@ -346,9 +341,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/variables")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getVariables(@PathParam("taskId")  String taskId) {
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getVariables(@PathParam("taskId") String taskId) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
 
@@ -364,10 +359,10 @@ public class WorkflowTaskService extends BaseTaskService {
             addLocalVariables(task, variableMap, uriInfo.getBaseUri().toString());
             addGlobalVariables(task, variableMap, uriInfo.getBaseUri().toString());
 
-        } else if(variableScope == RestVariable.RestVariableScope.GLOBAL) {
+        } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
             addGlobalVariables(task, variableMap, uriInfo.getBaseUri().toString());
 
-        } else if(variableScope == RestVariable.RestVariableScope.LOCAL) {
+        } else if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             addLocalVariables(task, variableMap, uriInfo.getBaseUri().toString());
         }
 
@@ -381,8 +376,8 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/variables/{variableName}")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RestVariable getVariable(@PathParam("taskId") String taskId,
                                     @PathParam("variableName") String variableName) {
 
@@ -392,7 +387,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/variables/{variableName}/data")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getVariableData(@PathParam("taskId") String taskId, @PathParam("variableName") String
             variableName) {
 
@@ -406,7 +401,7 @@ public class WorkflowTaskService extends BaseTaskService {
                 result = (byte[]) variable.getValue();
                 responseBuilder.type(MediaType.APPLICATION_OCTET_STREAM);
 
-            } else if(RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
                 outputStream.writeObject(variable.getValue());
@@ -418,7 +413,7 @@ public class WorkflowTaskService extends BaseTaskService {
                 throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
             }
             return responseBuilder.entity(result).build();
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             // Re-throw IOException
             throw new ActivitiException("Unexpected error getting variable data", ioe);
         }
@@ -426,8 +421,8 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @POST
     @Path("/{taskId}/variables")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createTaskVariable(@PathParam("taskId") String taskId,  @Context HttpServletRequest
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createTaskVariable(@PathParam("taskId") String taskId, @Context HttpServletRequest
             httpServletRequest) throws IOException {
 
         Task task = getTaskFromRequest(taskId);
@@ -458,7 +453,7 @@ public class WorkflowTaskService extends BaseTaskService {
                                 "instance.", e);
                     }
 
-                } else if(contentType.equals(MediaType.APPLICATION_XML)){
+                } else if (contentType.equals(MediaType.APPLICATION_XML)) {
 
                     JAXBContext jaxbContext = null;
                     try {
@@ -466,17 +461,17 @@ public class WorkflowTaskService extends BaseTaskService {
                         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                         RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
                                 unmarshal(httpServletRequest.getInputStream());
-                        if(restVariableCollection == null){
+                        if (restVariableCollection == null) {
                             throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
                                     "RestVariable Collection instance.");
                         }
                         List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
 
-                        if(restVariableList.size() == 0){
+                        if (restVariableList.size() == 0) {
                             throw new ActivitiIllegalArgumentException("xml request body could not identify any rest " +
                                     "variables to be updated");
                         }
-                        for (RestVariable restVariable:restVariableList){
+                        for (RestVariable restVariable : restVariableList) {
                             inputVariables.add(restVariable);
                         }
 
@@ -491,7 +486,7 @@ public class WorkflowTaskService extends BaseTaskService {
                 throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
             }
 
-            if ( inputVariables.size() == 0) {
+            if (inputVariables.size() == 0) {
                 throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
             }
 
@@ -530,14 +525,8 @@ public class WorkflowTaskService extends BaseTaskService {
             }
 
             RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-            if(runtimeService == null){
-                throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-            }
 
             TaskService taskService = BPMNOSGIService.getTaskService();
-            if(taskService == null){
-                throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-            }
 
             if (!variablesToSet.isEmpty()) {
                 if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
@@ -548,7 +537,7 @@ public class WorkflowTaskService extends BaseTaskService {
                         runtimeService.setVariables(task.getExecutionId(), variablesToSet);
                     } else {
                         // Standalone task, no global restVariables possible
-                        throw new ActivitiIllegalArgumentException("Cannot set global restVariables on task '" + task.getId() +"', task is not part of process.");
+                        throw new ActivitiIllegalArgumentException("Cannot set global restVariables on task '" + task.getId() + "', task is not part of process.");
                     }
                 }
             }
@@ -559,9 +548,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @PUT
     @Path("/{taskId}/variables/{variableName}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response updateVariable(@PathParam("taskId") String taskId,
-                                       @PathParam("variableName") String variableName, @Context HttpServletRequest httpServletRequest) {
+                                   @PathParam("variableName") String variableName, @Context HttpServletRequest httpServletRequest) {
         Task task = getTaskFromRequest(taskId);
 
         RestVariable result = null;
@@ -583,13 +572,13 @@ public class WorkflowTaskService extends BaseTaskService {
             RestVariable restVariable = null;
             String contentType = httpServletRequest.getContentType();
 
-            if(MediaType.APPLICATION_JSON.equals(contentType)) {
+            if (MediaType.APPLICATION_JSON.equals(contentType)) {
                 try {
                     restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
                 } catch (Exception e) {
                     throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
                 }
-            } else if(MediaType.APPLICATION_XML.equals(contentType)){
+            } else if (MediaType.APPLICATION_XML.equals(contentType)) {
                 JAXBContext jaxbContext = null;
                 try {
                     jaxbContext = JAXBContext.newInstance(RestVariable.class);
@@ -616,9 +605,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @DELETE
     @Path("/{taskId}/variables/{variableName}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteVariable(@PathParam("taskId") String taskId,
-                               @PathParam("variableName") String variableName){
+                                   @PathParam("variableName") String variableName) {
         String scopeString = uriInfo.getQueryParameters().getFirst("scope");
         Task task = getTaskFromRequest(taskId);
 
@@ -634,14 +623,8 @@ public class WorkflowTaskService extends BaseTaskService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             taskService.removeVariableLocal(task.getId(), variableName);
@@ -655,12 +638,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @DELETE
     @Path("/{taskId}/variables")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteAllLocalTaskVariables(@PathParam("taskId") String taskId) {
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         Task task = getTaskFromRequest(taskId);
         Collection<String> currentVariables = taskService.getVariablesLocal(task.getId()).keySet();
@@ -671,13 +651,10 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/identitylinks")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLinks(@PathParam("taskId") String taskId) {
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         List<RestIdentityLink> restIdentityLinks = new RestResponseFactory().createRestIdentityLinks(taskService.getIdentityLinksForTask(task.getId()),
                 uriInfo.getBaseUri().toString());
@@ -688,16 +665,13 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/identitylinks/{family}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLinksForFamily(@PathParam("taskId") String taskId,
-                                                            @PathParam("family") String family) {
+                                              @PathParam("family") String family) {
 
         Task task = getTaskFromRequest(taskId);
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family)
                 && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
@@ -727,11 +701,11 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/identitylinks/{family}/{identityId}/{type}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLink(@PathParam("taskId") String taskId,
-                                            @PathParam("family") String family, @PathParam("identityId") String identityId,
-                                            @PathParam("type") String type,
-                                            @Context HttpServletRequest httpServletRequest) {
+                                    @PathParam("family") String family, @PathParam("identityId") String identityId,
+                                    @PathParam("type") String type,
+                                    @Context HttpServletRequest httpServletRequest) {
 
         Task task = getTaskFromRequest(taskId);
         validateIdentityLinkArguments(family, identityId, type);
@@ -745,8 +719,8 @@ public class WorkflowTaskService extends BaseTaskService {
     @DELETE
     @Path("/{taskId}/identitylinks/{family}/{identityId}/{type}")
     public Response deleteIdentityLink(@PathParam("taskId") String taskId,
-                                   @PathParam("family") String family, @PathParam("identityId") String identityId,
-                                   @PathParam("type") String type) {
+                                       @PathParam("family") String family, @PathParam("identityId") String identityId,
+                                       @PathParam("type") String type) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -757,9 +731,6 @@ public class WorkflowTaskService extends BaseTaskService {
 
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         if (RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family)) {
             taskService.deleteUserIdentityLink(task.getId(), identityId, type);
@@ -772,9 +743,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @POST
     @Path("/{taskId}/identitylinks")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createIdentityLink(@PathParam("taskId") String taskId,
-                                               RestIdentityLink identityLink) {
+                                       RestIdentityLink identityLink) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -790,9 +761,6 @@ public class WorkflowTaskService extends BaseTaskService {
             throw new ActivitiIllegalArgumentException("The identity link type is required.");
         }
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         if (identityLink.getGroup() != null) {
             taskService.addGroupIdentityLink(task.getId(), identityLink.getGroup(), identityLink.getType());
@@ -809,141 +777,121 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @POST
     @Path("/{taskId}/attachments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response createAttachmentForBinary(@PathParam("taskId") String taskId, MultipartBody multipartBody,
                                               @Context HttpServletRequest httpServletRequest) {
 
+        boolean debugEnabled = log.isDebugEnabled();
         List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments = multipartBody.getAllAttachments();
 
         int attachmentSize = attachments.size();
 
-        if(attachmentSize <= 0){
+        if (attachmentSize <= 0) {
             throw new ActivitiIllegalArgumentException("No Attachments found with the request body");
         }
         AttachmentDataHolder attachmentDataHolder = new AttachmentDataHolder();
 
-        for (int i =0; i < attachmentSize; i++){
-           org.apache.cxf.jaxrs.ext.multipart.Attachment attachment =  attachments.get(i);
+        for (int i = 0; i < attachmentSize; i++) {
+            org.apache.cxf.jaxrs.ext.multipart.Attachment attachment = attachments.get(i);
 
             String contentDispositionHeaderValue = attachment.getHeader("Content-Disposition");
             String contentType = attachment.getHeader("Content-Type");
 
-            System.out.println("Going to iterate:" + i);
-            System.out.println("contentDisposition:" + contentDispositionHeaderValue);
-
-            if(contentType != null){
-
-                System.out.println("contentType:" + contentType);
+            if (log.isDebugEnabled()) {
+                log.debug("Going to iterate:" + i);
+                log.debug("contentDisposition:" + contentDispositionHeaderValue);
             }
 
-            if(contentDispositionHeaderValue != null){
+            if (contentDispositionHeaderValue != null) {
                 contentDispositionHeaderValue = contentDispositionHeaderValue.trim();
 
                 Map<String, String> contentDispositionHeaderValueMap = Utils.processContentDispositionHeader
                         (contentDispositionHeaderValue);
                 String dispositionName = contentDispositionHeaderValueMap.get("name");
-                //String nameValue = Utils.getValues(contentDispositionHeaderValue, "name");
                 DataHandler dataHandler = attachment.getDataHandler();
 
                 OutputStream outputStream = null;
 
-                if("name".equals(dispositionName)){
+                if ("name".equals(dispositionName)) {
                     try {
                         outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
                     } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("Attachment Name Reading error occured");
+                        throw new ActivitiIllegalArgumentException("Attachment Name Reading error occured", e);
                     }
 
-                    if(outputStream != null){
-                        //throw new ActivitiIllegalArgumentException("Attachment Name has not been provided");
-                        String fileName =outputStream.toString();
+                    if (outputStream != null) {
+                        String fileName = outputStream.toString();
                         attachmentDataHolder.setName(fileName);
-                        System.out.println(fileName + "FFFFFFFFFFFFFFFFFFFFFFF");
                     }
 
 
-                } else if("type".equals(dispositionName)){
+                } else if ("type".equals(dispositionName)) {
                     try {
                         outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
                     } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("Attachment Type Reading error occured");
+                        throw new ActivitiIllegalArgumentException("Attachment Type Reading error occured", e);
                     }
 
-                    if(outputStream != null){
-                        //throw new ActivitiIllegalArgumentException("Attachment Type has not been provided");
+                    if (outputStream != null) {
                         String typeName = outputStream.toString();
                         attachmentDataHolder.setType(typeName);
                     }
 
 
-                } else if("description".equals(dispositionName)){
+                } else if ("description".equals(dispositionName)) {
                     try {
                         outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
                     } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("Attachment Description Reading error occured");
+                        throw new ActivitiIllegalArgumentException("Attachment Description Reading error occured", e);
                     }
 
-                    if(outputStream != null){
-                        //throw new ActivitiIllegalArgumentException("Attachment Description has not been provided");
+                    if (outputStream != null) {
                         String description = outputStream.toString();
                         attachmentDataHolder.setDescription(description);
                     }
-
                 }
 
-                if(contentType != null){
-                    if("file".equals(dispositionName)){
-                        //String filename = Utils.getValues(contentDisposition, "filename");
+                if (contentType != null) {
+                    if ("file".equals(dispositionName)) {
 
                         InputStream inputStream = null;
                         try {
                             inputStream = dataHandler.getInputStream();
-                            /*if( inputStream == null){
-                                throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
-                                        "decoding the request" +
-                                        ".");
-                            }*/
                         } catch (IOException e) {
-                            throw new ActivitiIllegalArgumentException("Error Occured During processing empty body.");
+                            throw new ActivitiIllegalArgumentException("Error Occured During processing empty body.",
+                                    e);
                         }
 
-                        if(inputStream != null){
+                        if (inputStream != null) {
                             attachmentDataHolder.setContentType(contentType);
-                            byte[] attachmentArray2 = new byte[0];
+                            byte[] attachmentArray = new byte[0];
                             try {
-                                attachmentArray2 = IOUtils.toByteArray(inputStream);
+                                attachmentArray = IOUtils.toByteArray(inputStream);
                             } catch (IOException e) {
-                                throw new ActivitiIllegalArgumentException("Processing Attachment Body Failed.");
+                                throw new ActivitiIllegalArgumentException("Processing Attachment Body Failed.", e);
                             }
-                            attachmentDataHolder.setAttachmentArray(attachmentArray2);
+                            attachmentDataHolder.setAttachmentArray(attachmentArray);
                         }
                     }
                 }
             }
         }
 
-        try {
-            attachmentDataHolder.printDebug();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
 
+        attachmentDataHolder.printDebug();
 
         if (attachmentDataHolder.getName() == null) {
             throw new ActivitiIllegalArgumentException("Attachment name is required.");
         }
 
-        if(attachmentDataHolder.getAttachmentArray() == null){
+        if (attachmentDataHolder.getAttachmentArray() == null) {
             throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
                     "decoding the request" +
                     ".");
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
         Task task = getTaskFromRequest(taskId);
         Response.ResponseBuilder responseBuilder = Response.ok();
 
@@ -952,17 +900,17 @@ public class WorkflowTaskService extends BaseTaskService {
 
             InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
             Attachment createdAttachment = taskService.createAttachment(attachmentDataHolder.getContentType(), task.getId(), task
-                            .getProcessInstanceId(),attachmentDataHolder.getName(),attachmentDataHolder
-                            .getDescription(),inputStream);
+                    .getProcessInstanceId(), attachmentDataHolder.getName(), attachmentDataHolder
+                    .getDescription(), inputStream);
 
             responseBuilder.status(Response.Status.CREATED);
             result = new RestResponseFactory().createAttachmentResponse(createdAttachment, uriInfo.getBaseUri()
                     .toString
-                    ());
-
+                            ());
         } catch (Exception e) {
             throw new ActivitiException("Error creating attachment response", e);
         }
+
         return responseBuilder.status(Response.Status.CREATED).entity(result).build();
     }
    /* @POST
@@ -1023,8 +971,8 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @POST
     @Path("/{taskId}/attachments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createAttachmentForNonBinary(@PathParam("taskId") String taskId, @Context HttpServletRequest
             httpServletRequest, AttachmentRequest attachmentRequest) {
 
@@ -1042,15 +990,12 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/attachments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAttachments(@PathParam("taskId") String taskId) {
         List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
         String baseUri = uriInfo.getBaseUri().toString();
@@ -1067,16 +1012,16 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/attachments/{attachmentId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAttachment(@PathParam("taskId") String taskId,
-                                            @PathParam("attachmentId") String attachmentId) {
+                                  @PathParam("attachmentId") String attachmentId) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Attachment attachment = taskService.getAttachment(attachmentId);
         if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
         }
 
         return Response.ok().entity(new RestResponseFactory().createAttachmentResponse(attachment, uriInfo.getBaseUri
@@ -1086,13 +1031,13 @@ public class WorkflowTaskService extends BaseTaskService {
     @DELETE
     @Path("/{taskId}/attachments/{attachmentId}")
     public Response deleteAttachment(@PathParam("taskId") String taskId,
-                                 @PathParam("attachmentId") String attachmentId) {
+                                     @PathParam("attachmentId") String attachmentId) {
 
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         Attachment attachment = taskService.getAttachment(attachmentId);
         if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
         }
 
         taskService.deleteAttachment(attachmentId);
@@ -1103,7 +1048,7 @@ public class WorkflowTaskService extends BaseTaskService {
     @GET
     @Path("/{taskId}/attachments/{attachmentId}/content")
     public Response getAttachmentContent(@PathParam("taskId") String taskId,
-                                                       @PathParam("attachmentId") String attachmentId) {
+                                         @PathParam("attachmentId") String attachmentId) {
 
         System.out.println("Get Content Data Invoked");
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1111,7 +1056,7 @@ public class WorkflowTaskService extends BaseTaskService {
         Attachment attachment = taskService.getAttachment(attachmentId);
 
         if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Attachment.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Attachment.class);
         }
 
         InputStream attachmentStream = taskService.getAttachmentContent(attachmentId);
@@ -1123,23 +1068,20 @@ public class WorkflowTaskService extends BaseTaskService {
         Response.ResponseBuilder responseBuilder = Response.ok();
 
         String type = attachment.getType();
-        System.out.println("type:" + type);
         MediaType mediaType = MediaType.valueOf(type);
-        if(mediaType != null){
-            System.out.println(mediaType.getType());
-
+        if (mediaType != null) {
             responseBuilder.type(mediaType);
         } else {
             responseBuilder.type("application/octet-stream");
         }
 
-        byte[] attachmentArray = null;
+        byte[] attachmentArray;
         try {
             attachmentArray = IOUtils.toByteArray(attachmentStream);
         } catch (IOException e) {
             throw new ActivitiException("Error creating attachment data", e);
         }
-        String dispositionValue = "inline; filename=\""+  attachment.getName() +"\"";
+        String dispositionValue = "inline; filename=\"" + attachment.getName() + "\"";
         responseBuilder.header("Content-Disposition", dispositionValue);
         return responseBuilder.entity(attachmentArray).build();
     }
@@ -1147,11 +1089,11 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/comments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getComments(@PathParam("taskId") String taskId) {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
-        List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList( taskService
+        List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList(taskService
                 .getTaskComments(task.getId()), uriInfo.getBaseUri().toString());
         CommentResponseCollection commentResponseCollection = new CommentResponseCollection();
         commentResponseCollection.setCommentResponseList(commentResponseList);
@@ -1161,9 +1103,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @POST
     @Path("/{taskId}/comments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createComment(@PathParam("taskId")  String taskId, CommentRequest comment) {
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createComment(@PathParam("taskId") String taskId, CommentRequest comment) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -1179,22 +1121,22 @@ public class WorkflowTaskService extends BaseTaskService {
         }
         Comment createdComment = taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
 
-        CommentResponse commentResponse =  new RestResponseFactory().createRestComment(createdComment, uriInfo
+        CommentResponse commentResponse = new RestResponseFactory().createRestComment(createdComment, uriInfo
                 .getBaseUri().toString());
         return Response.ok().status(Response.Status.CREATED).entity(commentResponse).build();
     }
 
     @GET
     @Path("/{taskId}/comments/{commentId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getComment(@PathParam("taskId") String taskId,
-                                      @PathParam("commentId") String commentId) {
+                               @PathParam("commentId") String commentId) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         Comment comment = taskService.getComment(commentId);
         if (comment == null || !task.getId().equals(comment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
         }
 
         return Response.ok().entity(new RestResponseFactory().createRestComment(comment, uriInfo.getBaseUri()
@@ -1203,9 +1145,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @DELETE
     @Path("/{taskId}/comments/{commentId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteComment(@PathParam("taskId") String taskId,
-                              @PathParam("commentId") String commentId) {
+                                  @PathParam("commentId") String commentId) {
 
         // Check if task exists
         Task task = getTaskFromRequest(taskId);
@@ -1213,7 +1155,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
         Comment comment = taskService.getComment(commentId);
         if (comment == null || comment.getTaskId() == null || !comment.getTaskId().equals(task.getId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
         }
 
         taskService.deleteComment(commentId);
@@ -1222,12 +1164,12 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/events")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getEvents(@PathParam("taskId") String taskId) {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         List<EventResponse> eventResponseList = new RestResponseFactory().createEventResponseList(taskService
-                .getTaskEvents(task.getId()),uriInfo.getBaseUri().toString());
+                .getTaskEvents(task.getId()), uriInfo.getBaseUri().toString());
 
         EventResponseCollection eventResponseCollection = new EventResponseCollection();
         eventResponseCollection.setEventResponseList(eventResponseList);
@@ -1237,16 +1179,16 @@ public class WorkflowTaskService extends BaseTaskService {
 
     @GET
     @Path("/{taskId}/events/{eventId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getEvent(@PathParam("taskId") String taskId,
-                                  @PathParam("eventId") String eventId) {
+                             @PathParam("eventId") String eventId) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Event event = taskService.getEvent(eventId);
         if (event == null || !task.getId().equals(event.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + eventId + "'.", Event.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an event with id '" + eventId + "'.", Event.class);
         }
 
         EventResponse eventResponse = new RestResponseFactory().createEventResponse(event, uriInfo.getBaseUri()
@@ -1257,14 +1199,14 @@ public class WorkflowTaskService extends BaseTaskService {
     @DELETE
     @Path("/{taskd}/events/{eventId}")
     public Response deleteEvent(@PathParam("taskId") String taskId,
-                            @PathParam("eventId") String eventId) {
+                                @PathParam("eventId") String eventId) {
 
         // Check if task exists
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         Event event = taskService.getEvent(eventId);
         if (event == null || event.getTaskId() == null || !event.getTaskId().equals(task.getId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + event + "'.", Event.class);
+            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an event with id '" + event + "'.", Event.class);
         }
 
         taskService.deleteComment(eventId);
@@ -1274,10 +1216,6 @@ public class WorkflowTaskService extends BaseTaskService {
     protected HistoricTaskInstance getHistoricTaskFromRequest(String taskId) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
-        if(historyService == null){
-            throw new BPMNOSGIServiceException("HistoryService couldn't be identified");
-        }
-
 
         HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         if (task == null) {
@@ -1294,9 +1232,7 @@ public class WorkflowTaskService extends BaseTaskService {
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
+
         Attachment createdAttachment = taskService.createAttachment(attachmentRequest.getType(), task.getId(),
                 task.getProcessInstanceId(), attachmentRequest.getName(), attachmentRequest.getDescription(), attachmentRequest.getExternalUrl());
 
@@ -1306,13 +1242,13 @@ public class WorkflowTaskService extends BaseTaskService {
     protected AttachmentResponse createBinaryAttachment(HttpServletRequest httpServletRequest, Task task, Response.ResponseBuilder responseBuilder) throws
             IOException {
 
-        String name  = uriInfo.getQueryParameters().getFirst("name");
-        String description  = uriInfo.getQueryParameters().getFirst("description");
-        String type  = uriInfo.getQueryParameters().getFirst("type");
+        String name = uriInfo.getQueryParameters().getFirst("name");
+        String description = uriInfo.getQueryParameters().getFirst("description");
+        String type = uriInfo.getQueryParameters().getFirst("type");
 
 
         byte[] byteArray = Utils.processMultiPartFile(httpServletRequest, "Attachment content");
-        if(byteArray == null){
+        if (byteArray == null) {
             throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
                     "decoding the request" +
                     ".");
@@ -1324,10 +1260,6 @@ public class WorkflowTaskService extends BaseTaskService {
 
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
-
 
         try {
             InputStream inputStream = new ByteArrayInputStream(byteArray);
@@ -1346,10 +1278,6 @@ public class WorkflowTaskService extends BaseTaskService {
         boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
-
         // Perhaps it would be better to offer getting a single identitylink from the API
         List<IdentityLink> allLinks = taskService.getIdentityLinksForTask(taskId);
         for (IdentityLink link : allLinks) {
@@ -1366,6 +1294,7 @@ public class WorkflowTaskService extends BaseTaskService {
         }
         throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
     }
+
     protected void validateIdentityLinkArguments(String family, String identityId, String type) {
         if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family)
                 && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
@@ -1401,12 +1330,12 @@ public class WorkflowTaskService extends BaseTaskService {
 
     protected void completeTask(Task task, TaskActionRequest actionRequest, TaskService taskService) {
 
-        if(actionRequest.getVariables() != null) {
+        if (actionRequest.getVariables() != null) {
             Map<String, Object> variablesToSet = new HashMap<String, Object>();
 
             RestResponseFactory restResponseFactory = new RestResponseFactory();
-            for(RestVariable var : actionRequest.getVariables()) {
-                if(var.getName() == null) {
+            for (RestVariable var : actionRequest.getVariables()) {
+                if (var.getName() == null) {
                     throw new ActivitiIllegalArgumentException("Variable name is required");
                 }
 

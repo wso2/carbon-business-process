@@ -134,10 +134,6 @@ public class BaseTaskService {
 
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
-
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // Populate filter-parameters
@@ -476,9 +472,6 @@ public class BaseTaskService {
 
     protected Task getTaskFromRequest(String taskId) {
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
             throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
@@ -501,9 +494,6 @@ public class BaseTaskService {
 
     protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap, String baseUri) {
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
 
         Map<String, Object> rawVariables = taskService.getVariablesLocal(task.getId());
         List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawVariables,
@@ -517,9 +507,6 @@ public class BaseTaskService {
     protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap, String baseUri) {
         if (task.getExecutionId() != null) {
             RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-            if(runtimeService == null){
-                throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-            }
 
             Map<String, Object> rawVariables = runtimeService.getVariables(task.getExecutionId());
             List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables, task
@@ -543,14 +530,7 @@ public class BaseTaskService {
         Object value = null;
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
-
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         if (variableScope == null) {
             // First, check local restVariables (which have precedence when no scope is supplied)
@@ -674,14 +654,7 @@ public class BaseTaskService {
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
-
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
 
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             taskService.setVariableLocal(task.getId(), name, value);
@@ -701,15 +674,7 @@ public class BaseTaskService {
         boolean variableFound = false;
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        if(taskService == null){
-            throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
-        }
-
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
             if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
                 variableFound = true;

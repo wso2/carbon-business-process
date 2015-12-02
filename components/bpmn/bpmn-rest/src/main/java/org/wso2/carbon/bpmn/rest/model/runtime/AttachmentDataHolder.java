@@ -16,11 +16,15 @@
 
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.io.CachedOutputStream;
 
 import java.io.IOException;
 
 public class AttachmentDataHolder {
+
+    private static final Log log = LogFactory.getLog(AttachmentDataHolder.class);
 
     private String name;
     private String description;
@@ -68,16 +72,24 @@ public class AttachmentDataHolder {
         this.attachmentArray = attachmentArray;
     }
 
-    public void printDebug() throws IOException {
-        System.out.println("name:" + name);
-        System.out.println("description:" + description);
-        System.out.println("type:" + type);
-        System.out.println("contentType:" + type);
-        CachedOutputStream bos = new CachedOutputStream();
-        /*IOUtils.copy(inputStream, bos);
-        inputStream.close();*/
-        bos.close();
-        String fileName = bos.getOut().toString();
-        System.out.println("Stream String:"+new String(attachmentArray));
+    public void printDebug(){
+        boolean debugLogEnabled = log.isDebugEnabled();
+
+        if(log.isDebugEnabled()){
+            log.debug("name:" + name);
+            log.debug("description:" + description);
+            log.debug("type:" + type);
+            log.debug("contentType:" + type);
+
+            CachedOutputStream bos = new CachedOutputStream();
+            try {
+                String fileName = bos.getOut().toString();
+                log.debug("fileName:"+fileName);
+                bos.close();
+            } catch (IOException e) {
+                log.error("Exception occured during reading the file name", e);
+            }
+            log.debug("Stream String:" + new String(attachmentArray));
+        }
     }
 }

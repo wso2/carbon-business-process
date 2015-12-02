@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.repository;
@@ -24,7 +24,6 @@ import org.activiti.engine.impl.DeploymentQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +31,7 @@ import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponseCollection;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
@@ -58,7 +58,7 @@ public class DeploymentService {
 
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
-    private static final List<String> allPropertiesList  = new ArrayList<>();
+    private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
         allPropertiesList.add("name");
@@ -91,55 +91,52 @@ public class DeploymentService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeployments() {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+        for (String property : allPropertiesList) {
+            String value = uriInfo.getQueryParameters().getFirst(property);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
 
         String name = uriInfo.getQueryParameters().getFirst("name");
-        if( name != null){
+        if (name != null) {
             deploymentQuery.deploymentName(name);
         }
 
         String nameLike = uriInfo.getQueryParameters().getFirst("nameLike");
-        if( nameLike != null){
+        if (nameLike != null) {
             deploymentQuery.deploymentNameLike(nameLike);
         }
 
         String category = uriInfo.getQueryParameters().getFirst("category");
-        if( category != null){
+        if (category != null) {
             deploymentQuery.deploymentCategory(category);
         }
 
         String categoryNotEquals = uriInfo.getQueryParameters().getFirst("categoryNotEquals");
-        if( categoryNotEquals != null){
+        if (categoryNotEquals != null) {
             deploymentQuery.deploymentCategoryNotEquals(categoryNotEquals);
         }
 
         String tenantId = uriInfo.getQueryParameters().getFirst("tenantId");
-        if( tenantId != null){
+        if (tenantId != null) {
             deploymentQuery.deploymentTenantId(tenantId);
         }
 
         String tenantIdLike = uriInfo.getQueryParameters().getFirst("tenantIdLike");
-        if( tenantIdLike != null){
+        if (tenantIdLike != null) {
             deploymentQuery.deploymentTenantIdLike(tenantIdLike);
         }
 
 
         String sWithoutTenantId = uriInfo.getQueryParameters().getFirst("withoutTenantId");
-        if( sWithoutTenantId != null){
+        if (sWithoutTenantId != null) {
             Boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
             if (withoutTenantId) {
                 deploymentQuery.deploymentWithoutTenantId();
@@ -157,12 +154,9 @@ public class DeploymentService {
     @GET
     @Path("/{deploymentId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getDeployment(@PathParam("deploymentId") String deploymentId){
+    public Response getDeployment(@PathParam("deploymentId") String deploymentId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
 
         if (deployment == null) {
@@ -170,7 +164,7 @@ public class DeploymentService {
                     Deployment.class);
         }
 
-        DeploymentResponse deploymentResponse = new RestResponseFactory().createDeploymentResponse(deployment,uriInfo.getBaseUri().toString());
+        DeploymentResponse deploymentResponse = new RestResponseFactory().createDeploymentResponse(deployment, uriInfo.getBaseUri().toString());
         return Response.ok().entity(deploymentResponse).build();
     }
 
@@ -179,14 +173,10 @@ public class DeploymentService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeploymentResourceForDifferentUrl(@PathParam("deploymentId") String deploymentId, @PathParam("resourcePath") String resourcePath) {
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("deploymentId:" + deploymentId + " resourcePath:" + resourcePath);
         }
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
-
         // Check if deployment exists
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
         if (deployment == null) {
@@ -215,10 +205,7 @@ public class DeploymentService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeploymentResources(@PathParam("deploymentId") String deploymentId) {
 
-         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         // Check if deployment exists
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
         if (deployment == null) {
@@ -235,12 +222,10 @@ public class DeploymentService {
     @GET
     @Path("/{deploymentId}/resourcedata/{resourceId}")
     public Response getDeploymentResource(@PathParam("deploymentId") String deploymentId,
-                                                      @PathParam("resourceId") String resourceId) {
+                                          @PathParam("resourceId") String resourceId) {
         String contentType = Utils.resolveContentType(resourceId);
         return Response.ok().type(contentType).entity(getDeploymentResourceData(deploymentId, resourceId)).build();
     }
-
-
 
 
     private byte[] getDeploymentResourceData(String deploymentId, String resourceId) {
@@ -253,10 +238,6 @@ public class DeploymentService {
         }
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-
-        if(repositoryService == null){
-            throw new BPMNOSGIServiceException("RepositoryService couldn't be identified");
-        }
         // Check if deployment exists
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
         if (deployment == null) {

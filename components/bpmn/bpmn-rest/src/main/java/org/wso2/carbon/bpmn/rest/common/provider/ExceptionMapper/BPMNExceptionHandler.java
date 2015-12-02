@@ -37,49 +37,42 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(Exception e) {
 
-        RestErrorResponse restErrorResponse = new RestErrorResponse();
+         new RestErrorResponse();
 
         if(e instanceof ActivitiIllegalArgumentException){
             log.error("Exception during service invocation ", e);
-            restErrorResponse.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode());
-            restErrorResponse.setErrorMessage(e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } else if(e instanceof ActivitiTaskAlreadyClaimedException){
-            restErrorResponse.setStatusCode(Response.Status.CONFLICT.getStatusCode());
-            restErrorResponse.setErrorMessage(e.getMessage());
             log.error("Exception during Task claiming ", e);
-            return Response.status(Response.Status.CONFLICT).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.CONFLICT, e.getMessage());
         } else if(e instanceof ActivitiObjectNotFoundException){
-            restErrorResponse.setStatusCode(Response.Status.NOT_FOUND.getStatusCode());
-            restErrorResponse.setErrorMessage(e.getMessage());
             log.error("Exception due to Activiti Object Not Found ", e);
-            return Response.status(Response.Status.NOT_FOUND).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.NOT_FOUND, e.getMessage());
         } else if(e instanceof BPMNOSGIServiceException){
-            restErrorResponse.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-            restErrorResponse.setErrorMessage("Service Failed");
             log.error("Exception due to issues on osgi service ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Exception due to issues on osgi " +
+                    "service");
         } else if(e instanceof NotFoundException){
-            restErrorResponse.setStatusCode(Response.Status.NOT_FOUND.getStatusCode());
-            restErrorResponse.setErrorMessage("No Resource Found");
             log.error("unsupported operation not found ", e);
-            return Response.status(Response.Status.NOT_FOUND).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.NOT_FOUND,"unsupported operation");
         } else if(e instanceof ClientErrorException){
-            restErrorResponse.setStatusCode(Response.Status.NOT_FOUND.getStatusCode());
-            restErrorResponse.setErrorMessage("Failed to hit the request target due to unsupported operation");
             log.error("unsupported operation not found ", e);
-            return Response.status(Response.Status.NOT_FOUND).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.NOT_FOUND, "Failed to hit the request target due to " +
+                    "unsupported operation");
         } else if(e instanceof WebApplicationException){
-            restErrorResponse.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-            restErrorResponse.setErrorMessage("Web application exception thrown");
             log.error("Web application exception thrown ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(restErrorResponse).build();
-        }
-        else {
-            restErrorResponse.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-            restErrorResponse.setErrorMessage(e.getMessage());
+            return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Web application exception thrown");
+        } else {
             log.error("Unknown Exception occurred ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(restErrorResponse).build();
+            return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    private Response createRestErrorResponse(Response.Status statusCode, String message){
+        RestErrorResponse restErrorResponse = new RestErrorResponse();
+        restErrorResponse.setStatusCode(statusCode.getStatusCode());
+        restErrorResponse.setErrorMessage(message);
+
+        return Response.status(statusCode).entity(restErrorResponse).build();
     }
 }

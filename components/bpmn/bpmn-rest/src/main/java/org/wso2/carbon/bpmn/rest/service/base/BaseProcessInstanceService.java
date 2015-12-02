@@ -91,10 +91,6 @@ public class BaseProcessInstanceService {
 
     protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().
                 processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
@@ -122,10 +118,6 @@ public class BaseProcessInstanceService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response = new RestResponseFactory().createProcessInstanceResponse(processInstance,
@@ -144,10 +136,6 @@ public class BaseProcessInstanceService {
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
-
         runtimeService.suspendProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance, uriInfo
@@ -162,9 +150,6 @@ public class BaseProcessInstanceService {
                                             Map<String, String> requestParams, UriInfo uriInfo) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
         // Populate query based on request
@@ -379,9 +364,6 @@ public class BaseProcessInstanceService {
 
     protected IdentityLink getIdentityLink(String identityId, String type, String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        if(runtimeService == null){
-            throw new BPMNOSGIServiceException("RuntimeService couldn't be identified");
-        }
         // Perhaps it would be better to offer getting a single identity link from the API
         List<IdentityLink> allLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
         for (IdentityLink link : allLinks) {
