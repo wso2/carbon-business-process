@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Model object of a bpmn process instance
+ */
 @XmlRootElement(name = "Process")
 public class BPMNProcessInstance {
     private String processDefinitionId;
@@ -36,6 +39,7 @@ public class BPMNProcessInstance {
     private long deployedProcessCount;
     private double averageTimeForCompletion;
     private BPMNVariable[] variables;
+    private List<BPMNTaskInstance> taskList;
 
     public List<BPMNTaskInstance> getTaskList() {
         return taskList;
@@ -44,8 +48,6 @@ public class BPMNProcessInstance {
     public void setTaskList(List<BPMNTaskInstance> taskList) {
         this.taskList = taskList;
     }
-
-    private List<BPMNTaskInstance> taskList;
 
     public String getProcessDefinitionId() {
         return processDefinitionId;

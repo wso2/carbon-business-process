@@ -1,7 +1,7 @@
 package org.wso2.carbon.bpmn.stats.rest.Model;
 
 /**
- * Created by natasha on 12/2/15.
+ * Model object to keep a count of started and completed process and task instances for each month
  */
 public class InstanceStatPerMonth {
 

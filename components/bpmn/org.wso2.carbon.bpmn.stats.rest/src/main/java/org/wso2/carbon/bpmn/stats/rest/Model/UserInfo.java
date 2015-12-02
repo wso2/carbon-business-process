@@ -3,7 +3,7 @@ package org.wso2.carbon.bpmn.stats.rest.Model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Created by natasha on 12/1/15.
+ * Model object of a user
  */
 @XmlRootElement(name = "User")
 public class UserInfo {

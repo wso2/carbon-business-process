@@ -3,7 +3,8 @@ package org.wso2.carbon.bpmn.stats.rest.Model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Created by natasha on 11/30/15.
+ * Model object which keeps the count of process and task instances with their status i.e.
+ * Completed , Active, Suspended, Failed
  */
 @XmlRootElement(name = "ProcessTaskCount")
 public class ProcessTaskCount {
@@ -28,7 +29,7 @@ public class ProcessTaskCount {
     }
 
     @Override
-    public String toString(){
-        return statusOfProcessOrTask+" "+count;
+    public String toString() {
+        return statusOfProcessOrTask + " " + count;
     }
 }

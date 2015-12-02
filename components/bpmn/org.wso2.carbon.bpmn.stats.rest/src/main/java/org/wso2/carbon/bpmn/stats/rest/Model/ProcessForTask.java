@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by natasha on 12/1/15.
+ * Model object to keep a list of tasks in a process
  */
 public class ProcessForTask {
 
