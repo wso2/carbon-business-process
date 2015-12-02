@@ -90,8 +90,9 @@
 					</div>
 				<% } else if (taskData.processState == 'ACTIVE') { %>
 					<div class="col-lg-12 right margin-bottom">
-					<button onclick="completeTask($('#formForTask').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">
-					Complete task</button></div>
+					<button id="completeButton" onclick="completeTask($('#formForTask').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">
+					Complete task</button>
+					<div id="loadingCompleteButton" hidden><img src="images/loader.gif"></img></div></div>
 				<% } %>
 				</div>
 	      		</div>

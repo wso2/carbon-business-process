@@ -22,7 +22,7 @@ var MAX_SIZE = 10; //Max count of data per page
 var headers = {"Authorization": "Basic " + auth};
 
 try {
-    var task = get(httpUrl + "/bpmn/task/" + id, null, headers, "json").data;
+    var task = get(httpUrl + "/bpmn/runtime/tasks/" + id, null, headers, "json").data;
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/task/" + id);
@@ -126,7 +126,7 @@ try {
         subtask: task.subtaskList
     };
     var formGenTool = require("/assets/dynamicFormGen.js");
-    var formData = get(httpUrl + "/bpmn/form/" + id + "/properties", null, headers, "json").data;
+    var formData = get(httpUrl + "/bpmn/form/form-data/?taskId=" + id, null, headers, "json").data;
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/form/" + id + "/properties");
@@ -137,7 +137,7 @@ try {
     if (formData.errorMessage != undefined) {
         throw "Error " + formData.statusCode + " : " + formData.errorMessage;
     }
-    var formContent = formGenTool.generateForm(formData.data, false);
+    var formContent = formGenTool.generateForm(formData.formProperties, false);
 
 } catch (e) {
     if (log.isDebugEnabled()) {

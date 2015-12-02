@@ -308,17 +308,18 @@ if (update != null && update === "true") {
         var endDate = null;
         var startDateStr = '';
         var endtDateStr = '';
-        var regex = new RegExp(':', 'g');
 
         if (option === "taskvariation") {   //Task Demand Variation Over Time i.e. tasks started and completed
             var tasksOverMonths = [];
             for (var i = 0; i < 12; i++) {
                 startDate = new Date(currentDate.getFullYear(), i, 1);
                 endDate = new Date(currentDate.getFullYear(), i + 1, 0, 23, 59, 59, 59);
-                //add parameters with special characters
+
+                //format the date to match restapi format and add parameters with special characters
                 //replace ':' with %3A
-                startDateStr = startDate.toISOString().replace(regex, '%3A');
-                endtDateStr = endDate.toISOString().replace(regex, '%3A');
+                startDateStr = createFormatedDate(startDate);
+                endtDateStr = createFormatedDate(endDate);
+                
                 //Task Instances Completed
                 var completedTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=1&taskCompletedAfter="+
                                                                                   startDateStr + "&taskCompletedBefore="+ endtDateStr+
@@ -335,10 +336,11 @@ if (update != null && update === "true") {
             for (var i = 0; i < 12; i++) {
                 startDate = new Date(currentDate.getFullYear(), i, 1);
                 endDate = new Date(currentDate.getFullYear(), i + 1, 0, 23, 59, 59, 59);
-                //add parameters with special characters
+
+                //format the date to match restapi format and add parameters with special characters
                 //replace ':' with %3A
-                startDateStr = startDate.toISOString().replace(regex, '%3A');
-                endtDateStr = endDate.toISOString().replace(regex, '%3A');
+                startDateStr = createFormatedDate(startDate);
+                endtDateStr = createFormatedDate(endDate);
 
                 //Process Instances Started
                 var completedProcessList = get( httpUrl + "/bpmn/history/historic-process-instances?finished=true&size=1&finishedAfter="+
@@ -360,10 +362,11 @@ if (update != null && update === "true") {
             for (var i = 0; i < 12; i++) {
                 startDate = new Date(currentDate.getFullYear(), i, 1);
                 endDate = new Date(currentDate.getFullYear(), i + 1, 0, 23, 59, 59, 59);
-                //add parameters with special characters
+
+                //format the date to match restapi format and add parameters with special characters
                 //replace ':' with %3A
-                startDateStr = startDate.toISOString().replace(regex, '%3A');
-                endtDateStr = endDate.toISOString().replace(regex, '%3A');
+                startDateStr = createFormatedDate(startDate);
+                endtDateStr = createFormatedDate(endDate);
 
                 //Task instances completed by the user
                 var completedUserTaskList = get( httpUrl + "/bpmn/history/historic-task-instances?finished=true&size=1&taskCompletedAfter="+
@@ -500,6 +503,13 @@ if (update != null && update === "true") {
       processBarChartAvgTime[j+1][0] = tempName;
     }
   }
+
+    //function to create date
+    function createFormatedDate (date) {
+
+        return date.getUTCFullYear() + '-' + date.getUTCMonth() + '-' + date.getUTCDate() + 'T' + date.getUTCHours() + '%3A' +
+                                                                                date.getUTCMinutes() + '%3A' +date.getUTCSeconds() + 'Z'; 
+    }
 
 
 //Set current active veiw as report view. 
