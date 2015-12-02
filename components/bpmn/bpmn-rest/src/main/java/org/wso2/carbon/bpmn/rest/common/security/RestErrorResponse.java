@@ -14,14 +14,28 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.rest.common.exception;
+package org.wso2.carbon.bpmn.rest.common.security;
 
-public class RestApiBasicAuthenticationException extends BPMNRestException {
-    public RestApiBasicAuthenticationException(String message, Throwable cause) {
-        super(message, cause);
+public class RestErrorResponse {
+
+    private String errorMessage;
+    private int statusCode;
+
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public RestApiBasicAuthenticationException(String message) {
-        super(message);
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
 }

@@ -35,7 +35,7 @@ public class ModelResponse extends ModelRequest {
     @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
     protected Date lastUpdateTime;
     protected String deploymentUrl;
-    protected String tenantId;
+    //protected String tenantId;
     protected String sourceUrl;
     protected String sourceExtraUrl;
 

@@ -22,13 +22,11 @@ import org.apache.commons.fileupload.MultipartStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.io.CachedOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriInfo;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,14 +112,14 @@ public class Utils {
         String boundaryString = requestContentType.substring(index + "boundary=".length());
         boundaryString = boundaryString.replaceAll("\"", "").trim();
 
-         if (debugEnabled) {
+        if (debugEnabled) {
             log.debug("----------Content-Type:-----------\n" + httpServletRequest.getContentType());
             log.debug("\n\n\n\n");
             log.debug("\n\n\n\n----------Aggregated Request Body:-----------\n" + new String(aggregatedRequestBodyByteArray));
             log.debug("boundaryString:" + boundaryString);
         }
 
-        byte[] boundary = boundaryString.getBytes();
+        byte[] boundary = boundaryString.getBytes(encoding);
         ByteArrayInputStream content = new ByteArrayInputStream(aggregatedRequestBodyByteArray);
         MultipartStream multipartStream = new MultipartStream(content, boundary, aggregatedRequestBodyByteArray.length,
                 null);
@@ -135,12 +133,14 @@ public class Utils {
         // Get first file in the map, ignore possible other files
         while (nextPart) {
             //
-            if (debugEnabled) {
+            //  \if (debugEnabled) {
 
-                String header = multipartStream.readHeaders();
-                System.out.println("==============Headers:==========================");
-                System.out.println(header);
-            }
+            String header = multipartStream.readHeaders();
+            System.out.println("==============Headers:==========================");
+            System.out.println(header);
+            // }
+
+            printHeaders(header.getBytes());
             multipartStream.readBodyData(byteArrayOutputStream);
             byteArray = byteArrayOutputStream.toByteArray();
 
@@ -148,6 +148,119 @@ public class Utils {
         }
 
         return byteArray;
+    }
+
+
+    public static Map<String, String> processContentDispositionHeader(String headerValue) {
+
+        if (!headerValue.endsWith(";")) {
+            System.out.println("FFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+            headerValue += ";";
+        }
+
+        byte[] headerValueByteArray = headerValue.trim().substring("form_data".length() + 1).getBytes();
+
+        int beginIndex = 0;
+        int length = 0;
+        String key = null;
+        String value;
+        boolean keyFound = false;
+        boolean valueFound = false;
+
+        Map<String, String> contentDispositionHeaderMap = new HashMap<String, String>();
+
+        for (byte byte1 : headerValueByteArray) {
+
+            //System.out.println((int)byte1);
+            ++length;
+
+            if (!keyFound) {
+
+                if (byte1 == '=') {
+
+                    System.out.println("LLLLLLLLLLLLLLLLl");
+                    keyFound = true;
+                    key = new String(headerValueByteArray, beginIndex, length - 1).trim();
+                    beginIndex += length;
+                    length = 0;
+
+                    System.out.println("KEY:" + key);
+                }
+
+            } else {
+                if (byte1 == '\n' || byte1 == '\r' || byte1 == ';') {
+
+                    System.out.println("came here");
+                    value = new String(headerValueByteArray, beginIndex, length - 1);
+                    value = value.replaceAll("\"", "").trim();
+                    System.out.println("header value:" + value);
+                    keyFound = false;
+                    beginIndex += length;
+                    length = 0;
+
+                    // headerMap.put(headerString, headerValue);
+                    contentDispositionHeaderMap.put(key, value);
+                    key = null;
+                    value = null;
+                }
+            }
+        }
+
+        return contentDispositionHeaderMap;
+    }
+
+
+    public static OutputStream getAttachmentStream(InputStream inputStream) throws IOException {
+
+        if (inputStream != null) {
+            CachedOutputStream cachedOutputStream = new CachedOutputStream();
+            IOUtils.copy(inputStream, cachedOutputStream);
+            cachedOutputStream.close();
+
+            return cachedOutputStream.getOut();
+        }
+
+        return null;
+    }
+
+    public static void printHeaders(byte[] headerArrayByte) {
+        int beginIndex = 0;
+        int length = 0;
+
+        String headerString = null;
+        String headerValue = null;
+        boolean headerFound = false;
+        Map<String, String> headerMap = new HashMap<String, String>();
+        for (byte headerByte : headerArrayByte) {
+
+            ++length;
+
+            if (!headerFound) {
+
+                if (headerByte == ':') {
+                    System.out.println("FFFFFFFFF");
+                    headerFound = true;
+                    headerString = new String(headerArrayByte, beginIndex, length - 1);
+                    beginIndex += length;
+                    length = 0;
+                    System.out.println("Header:" + headerString);
+                }
+            } else {
+
+                if (headerByte == '\n' || headerByte == '\r') {
+                    headerValue = new String(headerArrayByte, beginIndex, length - 1);
+                    System.out.println("header value:" + headerValue);
+                    headerFound = false;
+                    beginIndex += length;
+                    length = 0;
+
+                    headerMap.put(headerString, headerValue);
+                    headerString = null;
+                    headerValue = null;
+                }
+            }
+
+        }
     }
 
     public static Map<String, String> populateRequestParams(List<String> propertiesList, UriInfo uriInfo) {
@@ -198,7 +311,7 @@ public class Utils {
     }
 
 
-    public void processHeaders(String header, List<String> keyList){
+    public void processHeaders(String header, List<String> keyList) {
 
        /* Content-Disposition: form-data; name="file"; filename="buffer_pool"
         Content-Type: application/octet-stream*/

@@ -21,10 +21,8 @@ import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.*;
-import org.activiti.engine.task.Attachment;
 import org.apache.commons.io.IOUtils;
-import org.apache.cxf.io.CachedOutputStream;
-import org.apache.cxf.jaxrs.ext.multipart.*;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
@@ -42,7 +40,10 @@ import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -806,66 +807,117 @@ public class WorkflowTaskService extends BaseTaskService {
         return Response.ok().status(Response.Status.CREATED).entity(restIdentityLink).build();
     }
 
-    /*@POST
+    @POST
     @Path("/{taskId}/attachments")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes(MediaType.MULTIPART_FORM_DATA)*/
-    public AttachmentResponse createAttachmentForBinary(Task task, MultipartBody multipartBody, HttpServletRequest
-            httpServletRequest) throws IOException{
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response createAttachmentForBinary(@PathParam("taskId") String taskId, MultipartBody multipartBody,
+                                              @Context HttpServletRequest httpServletRequest) {
+
         List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments = multipartBody.getAllAttachments();
 
         int attachmentSize = attachments.size();
+
+        if(attachmentSize <= 0){
+            throw new ActivitiIllegalArgumentException("No Attachments found with the request body");
+        }
         AttachmentDataHolder attachmentDataHolder = new AttachmentDataHolder();
+
         for (int i =0; i < attachmentSize; i++){
            org.apache.cxf.jaxrs.ext.multipart.Attachment attachment =  attachments.get(i);
 
-            String contentDisposition = attachment.getHeader("Content-Disposition");
+            String contentDispositionHeaderValue = attachment.getHeader("Content-Disposition");
             String contentType = attachment.getHeader("Content-Type");
+
             System.out.println("Going to iterate:" + i);
-            System.out.println("contentDisposition:" + contentDisposition);
+            System.out.println("contentDisposition:" + contentDispositionHeaderValue);
+
             if(contentType != null){
 
                 System.out.println("contentType:" + contentType);
             }
-            if(contentDisposition != null){
-                String nameValue = Utils.getValues(contentDisposition, "name");
-                if("name".equals(nameValue)){
-                    DataHandler dataHandler = attachment.getDataHandler();
-                    CachedOutputStream bos = new CachedOutputStream();
-                    IOUtils.copy(dataHandler.getInputStream(), bos);
-                    dataHandler.getInputStream().close();
-                    bos.close();
-                    String fileName = bos.getOut().toString();
-                    attachmentDataHolder.setName(fileName);
-                    System.out.println(fileName+"FFFFFFFFFFFFFFFFFFFFFFF");
-                } else if("type".equals(nameValue)){
-                    //String typeValue = Utils.getValues(contentDisposition, "filename");
-                    DataHandler dataHandler = attachment.getDataHandler();
-                    CachedOutputStream bos = new CachedOutputStream();
-                    IOUtils.copy(dataHandler.getInputStream(), bos);
-                    dataHandler.getInputStream().close();
-                    bos.close();
-                    String typeName = bos.getOut().toString();
-                    attachmentDataHolder.setType(typeName);
-                } else if("description".equals(nameValue)){
-                    //String typeValue = Utils.getValues(contentDisposition, "filename");
-                    DataHandler dataHandler = attachment.getDataHandler();
-                    CachedOutputStream bos = new CachedOutputStream();
-                    IOUtils.copy(dataHandler.getInputStream(), bos);
-                    dataHandler.getInputStream().close();
-                    bos.close();
-                    String description = bos.getOut().toString();
-                    attachmentDataHolder.setDescription(description);
+
+            if(contentDispositionHeaderValue != null){
+                contentDispositionHeaderValue = contentDispositionHeaderValue.trim();
+
+                Map<String, String> contentDispositionHeaderValueMap = Utils.processContentDispositionHeader
+                        (contentDispositionHeaderValue);
+                String dispositionName = contentDispositionHeaderValueMap.get("name");
+                //String nameValue = Utils.getValues(contentDispositionHeaderValue, "name");
+                DataHandler dataHandler = attachment.getDataHandler();
+
+                OutputStream outputStream = null;
+
+                if("name".equals(dispositionName)){
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Attachment Name Reading error occured");
+                    }
+
+                    if(outputStream != null){
+                        //throw new ActivitiIllegalArgumentException("Attachment Name has not been provided");
+                        String fileName =outputStream.toString();
+                        attachmentDataHolder.setName(fileName);
+                        System.out.println(fileName + "FFFFFFFFFFFFFFFFFFFFFFF");
+                    }
+
+
+                } else if("type".equals(dispositionName)){
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Attachment Type Reading error occured");
+                    }
+
+                    if(outputStream != null){
+                        //throw new ActivitiIllegalArgumentException("Attachment Type has not been provided");
+                        String typeName = outputStream.toString();
+                        attachmentDataHolder.setType(typeName);
+                    }
+
+
+                } else if("description".equals(dispositionName)){
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Attachment Description Reading error occured");
+                    }
+
+                    if(outputStream != null){
+                        //throw new ActivitiIllegalArgumentException("Attachment Description has not been provided");
+                        String description = outputStream.toString();
+                        attachmentDataHolder.setDescription(description);
+                    }
+
                 }
 
                 if(contentType != null){
-                    if("file".equals(nameValue)){
+                    if("file".equals(dispositionName)){
                         //String filename = Utils.getValues(contentDisposition, "filename");
-                        attachmentDataHolder.setContentType(contentType);
-                        DataHandler dataHandler = attachment.getDataHandler();
-                        byte[] attachmentArray2 = IOUtils.toByteArray(dataHandler.getInputStream());
-                        attachmentDataHolder.setAttachmentArray(attachmentArray2);
-                        System.out.println("YYYYYYYYYYYYYYYYYYYYYYYY:" + new String(attachmentDataHolder.getAttachmentArray()));
+
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = dataHandler.getInputStream();
+                            /*if( inputStream == null){
+                                throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
+                                        "decoding the request" +
+                                        ".");
+                            }*/
+                        } catch (IOException e) {
+                            throw new ActivitiIllegalArgumentException("Error Occured During processing empty body.");
+                        }
+
+                        if(inputStream != null){
+                            attachmentDataHolder.setContentType(contentType);
+                            byte[] attachmentArray2 = new byte[0];
+                            try {
+                                attachmentArray2 = IOUtils.toByteArray(inputStream);
+                            } catch (IOException e) {
+                                throw new ActivitiIllegalArgumentException("Processing Attachment Body Failed.");
+                            }
+                            attachmentDataHolder.setAttachmentArray(attachmentArray2);
+                        }
                     }
                 }
             }
@@ -878,30 +930,32 @@ public class WorkflowTaskService extends BaseTaskService {
         }
 
 
+        if (attachmentDataHolder.getName() == null) {
+            throw new ActivitiIllegalArgumentException("Attachment name is required.");
+        }
 
-        //Task task = getTaskFromRequest(taskId);
-        Response.ResponseBuilder responseBuilder = Response.ok();
-
-
-       // byte[] attachmentArray = null;
         if(attachmentDataHolder.getAttachmentArray() == null){
             throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
                     "decoding the request" +
                     ".");
         }
-        AttachmentResponse result = null;
+
         TaskService taskService = BPMNOSGIService.getTaskService();
         if(taskService == null){
             throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
         }
+        Task task = getTaskFromRequest(taskId);
+        Response.ResponseBuilder responseBuilder = Response.ok();
+
+        AttachmentResponse result = null;
         try {
 
             InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
-            Attachment createdAttachment = taskService.createAttachment(attachmentDataHolder.getType(), task.getId(), task
+            Attachment createdAttachment = taskService.createAttachment(attachmentDataHolder.getContentType(), task.getId(), task
                             .getProcessInstanceId(),attachmentDataHolder.getName(),attachmentDataHolder
                             .getDescription(),inputStream);
 
-            //responseBuilder.status(Response.Status.CREATED);
+            responseBuilder.status(Response.Status.CREATED);
             result = new RestResponseFactory().createAttachmentResponse(createdAttachment, uriInfo.getBaseUri()
                     .toString
                     ());
@@ -909,14 +963,14 @@ public class WorkflowTaskService extends BaseTaskService {
         } catch (Exception e) {
             throw new ActivitiException("Error creating attachment response", e);
         }
-        return result;
+        return responseBuilder.status(Response.Status.CREATED).entity(result).build();
     }
-    @POST
+   /* @POST
     @Path("/{taskId}/attachments")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-   // @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response createAttachment(@PathParam("taskId") String taskId, @Context HttpServletRequest
-            httpServletRequest/*,  MultipartBody multipartBody*/) {
+            httpServletRequest) {
 
         AttachmentResponse result = null;
         Task task = getTaskFromRequest(taskId);
@@ -964,6 +1018,24 @@ public class WorkflowTaskService extends BaseTaskService {
             result = createSimpleAttachment(attachmentRequest, task);
         }
 
+        return responseBuilder.status(Response.Status.CREATED).entity(result).build();
+    }*/
+
+    @POST
+    @Path("/{taskId}/attachments")
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public Response createAttachmentForNonBinary(@PathParam("taskId") String taskId, @Context HttpServletRequest
+            httpServletRequest, AttachmentRequest attachmentRequest) {
+
+        AttachmentResponse result = null;
+        Task task = getTaskFromRequest(taskId);
+        Response.ResponseBuilder responseBuilder = Response.ok();
+        if (attachmentRequest == null) {
+            throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
+        }
+
+        result = createSimpleAttachment(attachmentRequest, task);
         return responseBuilder.status(Response.Status.CREATED).entity(result).build();
     }
 
@@ -1033,6 +1105,7 @@ public class WorkflowTaskService extends BaseTaskService {
     public Response getAttachmentContent(@PathParam("taskId") String taskId,
                                                        @PathParam("attachmentId") String attachmentId) {
 
+        System.out.println("Get Content Data Invoked");
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         Attachment attachment = taskService.getAttachment(attachmentId);
@@ -1050,8 +1123,12 @@ public class WorkflowTaskService extends BaseTaskService {
         Response.ResponseBuilder responseBuilder = Response.ok();
 
         String type = attachment.getType();
-        if(type != null){
-            responseBuilder.type(attachment.getType());
+        System.out.println("type:" + type);
+        MediaType mediaType = MediaType.valueOf(type);
+        if(mediaType != null){
+            System.out.println(mediaType.getType());
+
+            responseBuilder.type(mediaType);
         } else {
             responseBuilder.type("application/octet-stream");
         }
@@ -1062,6 +1139,8 @@ public class WorkflowTaskService extends BaseTaskService {
         } catch (IOException e) {
             throw new ActivitiException("Error creating attachment data", e);
         }
+        String dispositionValue = "inline; filename=\""+  attachment.getName() +"\"";
+        responseBuilder.header("Content-Disposition", dispositionValue);
         return responseBuilder.entity(attachmentArray).build();
     }
 

@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.bpmn.rest.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +27,7 @@ import org.apache.cxf.jaxrs.ext.RequestHandler;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.message.Message;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
+import org.wso2.carbon.bpmn.rest.common.security.RestErrorResponse;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.registry.core.config.RegistryContext;
@@ -35,7 +37,9 @@ import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.TenantManager;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -64,10 +68,16 @@ public class AuthenticationHandler implements RequestHandler {
      */
     public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
+
         if (policy != null && AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
+            System.out.println("Basic Type");
             return handleBasicAuth(policy);
-        } else {
+        } else if (policy != null && AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())){
+            System.out.println("AUTH_TYPE");
             return handleOAuth(message);
+        } else {
+            System.out.println("LOL");
+            return authenticationFail();
         }
     }
 
@@ -168,7 +178,22 @@ public class AuthenticationHandler implements RequestHandler {
 
     private Response authenticationFail(String authType) {
         //authentication failed, request the authetication, add the realm name if needed to the value of WWW-Authenticate
-        return Response.status(401).header(WWW_AUTHENTICATE, authType).build();
+
+            RestErrorResponse restErrorResponse = new RestErrorResponse();
+            restErrorResponse.setErrorMessage("Authentication required");
+            restErrorResponse.setStatusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+            ObjectMapper mapper = new ObjectMapper();
+
+        String jsonString = null;
+        try {
+            jsonString = mapper.writeValueAsString(restErrorResponse);
+        } catch (IOException e) {
+            log.error("");
+        }
+        System.out.println(jsonString);
+            return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
+                    authType).entity
+                    (jsonString).build();
     }
 
 

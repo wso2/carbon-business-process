@@ -23,9 +23,11 @@ import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+import org.wso2.carbon.bpmn.rest.common.security.RestErrorResponse;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -35,29 +37,49 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(Exception e) {
 
+        RestErrorResponse restErrorResponse = new RestErrorResponse();
 
         if(e instanceof ActivitiIllegalArgumentException){
             log.error("Exception during service invocation ", e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            restErrorResponse.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode());
+            restErrorResponse.setErrorMessage(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(restErrorResponse).build();
         } else if(e instanceof ActivitiTaskAlreadyClaimedException){
+            restErrorResponse.setStatusCode(Response.Status.CONFLICT.getStatusCode());
+            restErrorResponse.setErrorMessage(e.getMessage());
             log.error("Exception during Task claiming ", e);
-            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+            return Response.status(Response.Status.CONFLICT).entity(restErrorResponse).build();
         } else if(e instanceof ActivitiObjectNotFoundException){
+            restErrorResponse.setStatusCode(Response.Status.NOT_FOUND.getStatusCode());
+            restErrorResponse.setErrorMessage(e.getMessage());
             log.error("Exception due to Activiti Object Not Found ", e);
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(restErrorResponse).build();
         } else if(e instanceof BPMNOSGIServiceException){
+            restErrorResponse.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            restErrorResponse.setErrorMessage("Service Failed");
             log.error("Exception due to issues on osgi service ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Service Faile").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(restErrorResponse).build();
         } else if(e instanceof NotFoundException){
+            restErrorResponse.setStatusCode(Response.Status.NOT_FOUND.getStatusCode());
+            restErrorResponse.setErrorMessage("No Resource Found");
             log.error("unsupported operation not found ", e);
-            return Response.status(Response.Status.NOT_FOUND).entity("No Resource Found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(restErrorResponse).build();
         } else if(e instanceof ClientErrorException){
+            restErrorResponse.setStatusCode(Response.Status.NOT_FOUND.getStatusCode());
+            restErrorResponse.setErrorMessage("Failed to hit the request target due to unsupported operation");
             log.error("unsupported operation not found ", e);
-            return Response.status(Response.Status.NOT_FOUND).entity("Failed to hit the request target due to " +
-                    "unsupported operation").build();
-        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity(restErrorResponse).build();
+        } else if(e instanceof WebApplicationException){
+            restErrorResponse.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            restErrorResponse.setErrorMessage("Web application exception thrown");
+            log.error("Web application exception thrown ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(restErrorResponse).build();
+        }
+        else {
+            restErrorResponse.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            restErrorResponse.setErrorMessage(e.getMessage());
             log.error("Unknown Exception occurred ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(restErrorResponse).build();
         }
     }
 }

@@ -601,7 +601,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
             List<RestVariable> inputVariables = new ArrayList<>();
             List<RestVariable> resultVariables = new ArrayList<>();
-            result = resultVariables;
+          //  result = resultVariables;
 
             String contentType = httpServletRequest.getContentType();
 
