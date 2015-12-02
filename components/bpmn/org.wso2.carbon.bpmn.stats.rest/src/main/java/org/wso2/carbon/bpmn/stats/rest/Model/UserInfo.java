@@ -1,0 +1,41 @@
+package org.wso2.carbon.bpmn.stats.rest.Model;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Created by natasha on 12/1/15.
+ */
+@XmlRootElement(name = "User")
+public class UserInfo {
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    private String userName;
+
+    public long getTaskCount() {
+        return taskCount;
+    }
+
+    public void setTaskCount(long taskCount) {
+        this.taskCount = taskCount;
+    }
+
+    private long taskCount;
+
+    public double getAvgTimeDuration() {
+        return avgTimeDuration;
+    }
+
+    public void setAvgTimeDuration(double avgTimeDuration) {
+        this.avgTimeDuration = avgTimeDuration;
+    }
+
+    private double avgTimeDuration;
+
+
+}
