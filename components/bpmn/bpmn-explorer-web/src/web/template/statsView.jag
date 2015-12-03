@@ -25,27 +25,27 @@
           google.load("visualization", "1", {packages:["corechart"]});
           google.setOnLoadCallback(drawChart);
 
-          var dataArrForProcess = [['Process Name', 'Instance Count']];
+          var dataArr = [['Process Name', 'Instance Count']];
           var chart,chartData,options;
           //pagination stuff
           var pager = { currentPage: 0, countPages: 0, pageSize: 25 };
-           <% for(var j = 0; j < processChart.length; j++){ %>
+           <% for(var j = 0; j < processBarChart.length; j++){ %>
 
-                dataArrForProcess.push(['<%=processChart[j][0]%>',<%=processChart[j][1]%>]);
+                dataArr.push(['<%=processBarChart[j][0]%>',<%=processBarChart[j][1]%>]);
 
               <% } %>
 
           function drawChart(){
-            chartData = google.visualization.arrayToDataTable(dataArrForProcess);
+            chartData = google.visualization.arrayToDataTable(dataArr);
             var max=0;
             var count=0;
 
-            for(var i=0; i<dataArrForProcess.length;i++){
-              if (dataArrForProcess[i][1] > max) {
-                max = dataArrForProcess[i][1];
+            for(var i=0; i<dataArr.length;i++){
+              if (dataArr[i][1] > max) {
+                max = dataArr[i][1];
               }
 
-             if(dataArrForProcess[i][1]>0){
+             if(dataArr[i][1]>0){
                 count++;
               }
             }
@@ -112,15 +112,14 @@
 
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
-      var dataArr = [['Process State', 'Instance count']];
-       
-           <% for(var j = 0; j < processStatusChart.length; j++){ %>
-                dataArr.push(['<%=processStatusChart[j][0]%>',<%=processStatusChart[j][1]%>]);
-              <%  } %>
-
       function drawChart() {
-         var data = google.visualization.arrayToDataTable(dataArr);
-   
+        var data = google.visualization.arrayToDataTable([
+            ['Process State', 'Instance count'],
+            ['completed ('.concat(<%=completedProcesses%>+')'), <%=completedProcesses%>],
+            ['failed ('.concat(<%=failedProcesses%>+')'), <%=failedProcesses%>],
+            ['suspended ('.concat(<%=suspendProcesses%>+')'), <%=suspendProcesses%>],
+            ['active ('.concat(<%=activeProcesses%>+')'), <%=activeProcesses%>]
+           ]);
 
         var options = {
           pieHole: 0.6,
@@ -146,15 +145,14 @@
 
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
-       var dataArrTasks = [['Task State', 'Instance count']];
-       
-           <% for(var j = 0; j < taskStatusChart.length; j++){ %>
-                dataArrTasks.push(['<%=taskStatusChart[j][0]%>',<%=taskStatusChart[j][1]%>]);
-              <%  } %>
-
       function drawChart() {
-       var data = google.visualization.arrayToDataTable(dataArrTasks);
-      
+       var data = google.visualization.arrayToDataTable([
+           ['Process State', 'Instance count'],
+           ['completed ('.concat(<%=completedTasks%>+')'), <%=completedTasks%>],
+           ['failed ('.concat(<%=failedTasks%>+')'), <%=failedTasks%>],
+           ['suspended ('.concat(<%=suspendTasks%>+')'), <%=suspendTasks%>],
+           ['active ('.concat(<%=activeTasks%>+')'), <%=activeTasks%>]
+         ]);
 
 
         var options = {
