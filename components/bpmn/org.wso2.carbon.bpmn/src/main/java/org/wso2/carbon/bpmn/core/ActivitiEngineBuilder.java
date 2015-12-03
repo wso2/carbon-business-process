@@ -41,6 +41,8 @@ public class ActivitiEngineBuilder {
 
 	private String dataSourceJndiName = null;
 
+    private static ProcessEngine processEngine = null;
+
 	/**
 	 * Instantiates the engine. Builds the state of the engine
 	 *
@@ -60,7 +62,7 @@ public class ActivitiEngineBuilder {
                             new FileInputStream(
                                     activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
-            engine = processEngineConfigurationImpl.buildProcessEngine();
+            processEngine = processEngineConfigurationImpl.buildProcessEngine();
             processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
                     new BPSUserManagerFactory());
             processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
@@ -73,10 +75,14 @@ public class ActivitiEngineBuilder {
             String msg = "Failed to create an Activiti engine. Activiti configuration file not found";
             throw new BPSFault(msg, e);
         }
-        return engine;
+        return processEngine;
     }
 
     public String getDataSourceJndiName() {
 		return dataSourceJndiName;
 	}
+
+    public static ProcessEngine getProcessEngine(){
+        return ActivitiEngineBuilder.processEngine;
+    }
 }
