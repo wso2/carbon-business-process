@@ -146,9 +146,8 @@
 	                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 		    			<td><%=attachmentList[i].name%></td>
 						<td><%=attachmentList[i].type%></td>
-						<td> <a download="<%=attachmentList[i].name%>" 
-								href="<%=application.get('bpsTenantUrlPart') + "/bpmn/runtime/tasks/"+ taskData.id +"/attachments/"+ 
-                                                                                        attachmentList[i].id + "/content"%>">Download</a></td>
+						<td> <a href="<%=application.get('bpsTenantUrlPart') + "/bpmn/runtime/tasks/"+ taskData.id +"/attachments/"+ 
+                                                                                        attachmentList[i].id + "/content"%>" target="_blank">Download</a></td>
 			    	</tr>
 		    	<% } %>
 		    </tbody>
