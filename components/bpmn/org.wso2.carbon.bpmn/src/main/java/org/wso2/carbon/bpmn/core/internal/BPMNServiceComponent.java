@@ -54,7 +54,15 @@ public class BPMNServiceComponent {
             BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             restHolder.setRestInvoker(new RESTInvoker());
+<<<<<<< HEAD
             //bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(), new BPMNEngineShutdown(), null);
+=======
+            BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
+            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
+            bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
+            bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
+
+>>>>>>> upstream/master
 
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());

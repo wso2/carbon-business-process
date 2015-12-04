@@ -42,8 +42,14 @@ public class ActivitiEngineBuilder {
 	private String dataSourceJndiName = null;
     private static ProcessEngine processEngine = null;
 
+<<<<<<< HEAD
 
     /**
+=======
+    private static ProcessEngine processEngine = null;
+
+	/**
+>>>>>>> upstream/master
 	 * Instantiates the engine. Builds the state of the engine
 	 *
 	 * @return  ProcessEngineImpl object
@@ -84,6 +90,9 @@ public class ActivitiEngineBuilder {
     public static ProcessEngine getProcessEngine(){
         return ActivitiEngineBuilder.processEngine;
     }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> upstream/master
 }

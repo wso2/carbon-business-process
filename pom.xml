@@ -245,11 +245,11 @@
                 <artifactId>org.wso2.carbon.application.mgt.bpel</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
-            <dependency>
+          <!--  <dependency>
                 <groupId>org.wso2.orbit.org.restlet.jee</groupId>
                 <artifactId>restlet</artifactId>
                 <version>${orbit.version.restlet}</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>com.h2database.wso2</groupId>
                 <artifactId>h2-database-engine</artifactId>
@@ -650,11 +650,11 @@
                 <artifactId>org.wso2.carbon.bpmn</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
-            <dependency>
+           <!-- <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
                 <version>${carbon.business-process.version}</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpmn.ui</artifactId>
@@ -1529,6 +1529,10 @@
         </orbit.version.org.apache.xmlbeans.wso2.xmlbeans>
         <version.log4j>1.2.17</version.log4j>
         <geronimo.transaction.version>2.0.1.wso2v1</geronimo.transaction.version>
+<<<<<<< HEAD
+=======
+      <!--  <org.eclipse.osgi.version>3.5.0.v20090520</org.eclipse.osgi.version>-->
+>>>>>>> upstream/master
         <org.eclipse.osgi.version>3.9.1.v20130814-1242</org.eclipse.osgi.version>
         <!--simple-json.version>1.1</simple-json.version-->
         <batik.version>1.7.0.wso2v1</batik.version>
@@ -1540,7 +1544,7 @@
         <!--geronimo-ejb_2.1_spec.version>1.1.0.wso2v1</geronimo-ejb_2.1_spec.version-->
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
-        <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>
+       <!-- <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>-->
         <orbit.ode.version>1.3.5-wso2v16-SNAPSHOT</orbit.ode.version>
         <mybatis.version>3.2.5</mybatis.version>
         <jsonpath.wso2.version>1.2.0.wso2v1</jsonpath.wso2.version>
@@ -1571,7 +1575,7 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.16.3.wso2v2</org.activiti.wso2.version>
+        <org.activiti.wso2.version>5.19.0.wso2v1</org.activiti.wso2.version>
         <restlet.version>2.2.1.wso2v1</restlet.version>
 
 	<project.scm.id>wso2-scm-server</project.scm.id>
