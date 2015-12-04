@@ -12,6 +12,8 @@ import org.wso2.carbon.authenticator.stub.AuthenticationAdminStub;
 import org.wso2.carbon.bpmn.stats.rest.Model.InstanceStatPerMonth;
 import org.wso2.carbon.bpmn.stats.rest.util.BPMNOsgiServices;
 import org.wso2.carbon.bpmn.stats.rest.Model.UserInfo;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.mgt.stub.UserAdminStub;
 import org.wso2.carbon.utils.NetworkUtils;
 
@@ -38,64 +40,16 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public String[] getUserList() {
         String[] users = null;
-        UserAdminStub userAdminStub;
-        Properties properties = null;
         try {
-            String clientTrustStorePath = "/home/natasha/Documents/GitRepos/product-bps/modules/distribution/target/wso2bps-3.5.1-SNAPSHOT/repository/resources/security/wso2carbon.jks";
-            String trustStorePassword = "wso2carbon";
-            String trustStoreType = "JKS";
-            setKeyStore(clientTrustStorePath, trustStorePassword, trustStoreType);
-            String serviceUrl = "https://localhost:9443/services/UserAdmin";
-            userAdminStub = new UserAdminStub(serviceUrl);
-            ServiceClient client = userAdminStub._getServiceClient();
-            Options option = client.getOptions();
-            option.setManageSession(true);
-            option.setProperty(HTTPConstants.COOKIE_STRING, login());
-            userAdminStub._getServiceClient().getOptions().setTimeOutInMilliSeconds(600000);
-            users = userAdminStub.listUsers("*", -1);
-        } catch (Exception e) {
-            e.printStackTrace();
+           users = BPMNOsgiServices.getUserRealm().getUserStoreManager().listUsers("*", -1);
+        }
+        catch (Exception e){
+           e.printStackTrace();
         }
         return users;
     }
 
-    /**
-     * Setup key store according to the config.properties
-     * @param clientTrustStorePath
-     * @param trustStorePassword
-     * @param trustStoreType
-     */
-    private void setKeyStore(String clientTrustStorePath, String trustStorePassword, String trustStoreType) {
-        System.setProperty("javax.net.ssl.trustStore", clientTrustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
-        System.setProperty("javax.net.ssl.trustStoreType", trustStoreType);
-    }
-
-    /**
-     * Creates the login session BPS login
-     * @return cookie String
-     * @throws Exception
-     */
-    private String login() throws Exception {
-
-        AuthenticationAdminStub authenticationAdminStub;
-        String authenticationAdminServiceURL = "https://localhost:9443/services/AuthenticationAdmin";
-        authenticationAdminStub = new AuthenticationAdminStub(authenticationAdminServiceURL);
-        ServiceClient client = authenticationAdminStub._getServiceClient();
-        Options options = client.getOptions();
-        options.setManageSession(true);
-        String userName = "admin";
-        String password = "admin";
-        String hostName = NetworkUtils.getLocalHostname();
-        authenticationAdminStub.login(userName, password, hostName);
-        ServiceContext serviceContext = authenticationAdminStub.
-                _getServiceClient().getLastOperationContext().getServiceContext();
-        return (String) serviceContext.getProperty(HTTPConstants.COOKIE_STRING);
-    }
-
-    public UserService() {
-
-    }
+    public UserService() {}
     /**
      * Get the No.of tasks completed by each user
      * @return list with the no.of tasks completed by each user

@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.user.api.UserRealm;
 
 /**
  * Define the BPMN Osgi Services
@@ -31,7 +32,6 @@ public class BPMNOsgiServices {
         BPMNEngineService bpmnEngineService = (BPMNEngineService) PrivilegedCarbonContext.
                 getThreadLocalCarbonContext().getOSGiService(BPMNEngineService.class, null);
 
-        //System.out.println("Name:" + bpmnEngineService.getProcessEngine());
         if (bpmnEngineService == null) {
             log.info("BPMNEngineService service couldn't be identified");
         }
@@ -123,5 +123,10 @@ public class BPMNOsgiServices {
         }
 
         return managementService;
+    }
+
+    public static UserRealm getUserRealm(){
+        //PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm().getUserStoreManager().listUsers();
+        return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
     }
 }

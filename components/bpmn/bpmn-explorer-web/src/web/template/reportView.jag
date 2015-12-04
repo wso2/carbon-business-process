@@ -100,8 +100,8 @@
                 <form>
                 <select id="selectUser" name="selectUser" class="form-control" onchange="selectUserForPerformance()">
                  <option value="" disabled selected>Select a User</option>
-                <% for(var j = 0; j < userArray.length; j++){ %>
-                <option value="<%=userArray[j]%>"><%=userArray[j]%></option>
+                <% for(var j = 0; j < userList.length; j++){ %>
+                <option value="<%=userList[j]%>"><%=userList[j]%></option>
             <% } %>
                   </select>
                  </form>
@@ -118,8 +118,8 @@
               <form>
                 <select id="selectProcess" name="selectProcess" class="form-control" onchange="selectProcessForChart()">
                 <option value="" disabled selected>Select a Process</option>
-                <% for(var key in processDefinitionList) { %>
-                <option value="<%=processDefinitionList[key][0]%>"><%=processDefinitionList[key][0]%></option>
+                <% for(var j = 0; j < taskListOfCompletedProcess.length; j++) { %>
+                <option value="<%=taskListOfCompletedProcess[j]%>"><%=taskListOfCompletedProcess[j]%></option>
                   <% } %>
                   </select>
                  </form>

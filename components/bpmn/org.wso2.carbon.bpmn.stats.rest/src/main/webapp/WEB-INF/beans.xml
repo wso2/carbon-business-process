@@ -41,7 +41,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
             <bean class="org.wso2.carbon.bpmn.stats.rest.Service.UserService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <!--bean class="org.wso2.carbon.bpmn.stats.rest.Security.AuthenticationHandler" /-->
+            <bean class="org.wso2.carbon.bpmn.stats.rest.Security.AuthenticationHandler"/>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
         </jaxrs:providers>
     </jaxrs:server>

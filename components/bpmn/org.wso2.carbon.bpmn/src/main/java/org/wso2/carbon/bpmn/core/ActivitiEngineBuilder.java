@@ -42,7 +42,7 @@ public class ActivitiEngineBuilder {
 	private String dataSourceJndiName = null;
     private static ProcessEngine processEngine = null;
 
-<<<<<<< HEAD
+
 
     /**
 =======
@@ -57,6 +57,7 @@ public class ActivitiEngineBuilder {
 	 */
 
     public ProcessEngine buildEngine() throws BPSFault {
+
         try {
             String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
             String activitiConfigPath = carbonConfigDirPath + File.separator +
@@ -84,15 +85,10 @@ public class ActivitiEngineBuilder {
     }
 
     public String getDataSourceJndiName() {
-		return dataSourceJndiName;
-	}
+        return dataSourceJndiName;
+    }
 
     public static ProcessEngine getProcessEngine(){
         return ActivitiEngineBuilder.processEngine;
     }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> upstream/master
 }

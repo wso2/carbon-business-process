@@ -15,13 +15,16 @@
 -->
 <%
 var id = request.getParameter("id");
-var headers = {"Authorization":"Basic " + auth};
+var headers = {"Authorization":"Basic " + auth,
+"Content-Type" : "application/json"
+};
 var user = session.get("user");
 try {
-    var task = get( httpUrl + "/bpmn/task/" + id ,null, headers, "json" ).data;
+    
+    var task = get( httpUrl + "/bpmn/runtime/tasks/" + id ,null, headers, "json" ).data;
 
     if (log.isDebugEnabled()) {
-        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/task/" + id);
+        log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/runtime/tasks/" + id);
         log.debug("BPS BPMN REST API response: " +stringify(task));
     }
 
@@ -46,7 +49,8 @@ try {
     };
 
     var formGenTool = require("/assets/dynamicFormGen.js");
-    var formData = get( httpUrl + "/bpmn/form/" + id + "/properties" ,null, headers, "json" ).data;
+
+    var formData = get( httpUrl + "/bpmn/form/form-data?taskId=" + id,null, headers, "json" ).data;
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/form/" + id + "/properties");
@@ -58,7 +62,7 @@ try {
         throw "Error " + formData.statusCode + " : " + formData.errorMessage;
     }
 
-    var formContent = formGenTool.generateForm(formData.data, true);
+    var formContent = formGenTool.generateForm(formData.formProperties, true);
 	
 } catch (e) {
     if (log.isDebugEnabled()) {

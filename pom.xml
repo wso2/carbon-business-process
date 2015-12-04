@@ -1304,8 +1304,8 @@
                 </property>
             </activation>
             <modules>
-                <module>components/service-mgt</module>
-                <module>components/webapp-mgt</module>
+               <!-- <module>components/service-mgt</module>
+                <module>components/webapp-mgt</module>-->
             </modules>
         </profile>
         <profile>
@@ -1317,8 +1317,8 @@
                 </property>
             </activation>
             <modules>
-                <module>components/service-mgt</module>
-                <module>components/webapp-mgt</module>
+              <!--  <module>//components/service-mgt</module>
+                <module>//components/webapp-mgt</module>-->
             </modules>
         </profile>
     </profiles>
@@ -1529,10 +1529,7 @@
         </orbit.version.org.apache.xmlbeans.wso2.xmlbeans>
         <version.log4j>1.2.17</version.log4j>
         <geronimo.transaction.version>2.0.1.wso2v1</geronimo.transaction.version>
-<<<<<<< HEAD
-=======
-      <!--  <org.eclipse.osgi.version>3.5.0.v20090520</org.eclipse.osgi.version>-->
->>>>>>> upstream/master
+
         <org.eclipse.osgi.version>3.9.1.v20130814-1242</org.eclipse.osgi.version>
         <!--simple-json.version>1.1</simple-json.version-->
         <batik.version>1.7.0.wso2v1</batik.version>

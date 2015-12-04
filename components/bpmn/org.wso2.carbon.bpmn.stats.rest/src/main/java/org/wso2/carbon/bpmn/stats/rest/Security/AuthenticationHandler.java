@@ -4,6 +4,7 @@ package org.wso2.carbon.bpmn.stats.rest.Security;
  * Created by natasha on 12/2/15.
  */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,17 +12,20 @@ import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.jaxrs.ext.RequestHandler;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.message.Message;
-import org.wso2.carbon.bpmn.stats.rest.Exception.*;
+import org.wso2.carbon.bpmn.stats.rest.Exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.bpmn.stats.rest.util.BPMNOsgiServices;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.registry.core.config.RegistryContext;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.TenantManager;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
+
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -32,6 +36,7 @@ public class AuthenticationHandler implements RequestHandler {
     protected Log log = LogFactory.getLog(AuthenticationHandler.class);
 
     private final static String AUTH_TYPE_BASIC = "Basic";
+    private final static String AUTH_TYPE_NONE = "None";
     private final static String AUTH_TYPE_OAuth = "Bearer";
 
 
@@ -50,23 +55,23 @@ public class AuthenticationHandler implements RequestHandler {
      */
     public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
-        //System.out.println("Authorization Type:" + policy.getAuthorizationType());
-        if (policy != null && AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
-            return handleBasicAuth(policy);
-        } else {
-            return handleOAuth(message);
+
+        if(policy != null){
+            if(AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())){
+                return handleBasicAuth(policy);
+            } else if(AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())){
+                return handleOAuth(message);
+            }
         }
+        return authenticationFail(AUTH_TYPE_NONE);
     }
 
     protected Response handleBasicAuth(AuthorizationPolicy policy) {
         String username = policy.getUserName();
         String password = policy.getPassword();
 
-        System.out.println("username:" + username);
-        System.out.println("password:" + password);
         try {
             if (authenticate(username, password)) {
-                System.out.println("successfull authenticated");
                 return null;
             }
         } catch (RestApiBasicAuthenticationException e) {
@@ -101,15 +106,17 @@ public class AuthenticationHandler implements RequestHandler {
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userName);
         String userNameWithTenantDomain = tenantAwareUserName + "@" + tenantDomain;
 
-        System.out.println("FFFFFF:" + RegistryContext.getBaseInstance().getBasePath());
-        System.out.println("LLLLLLLLLLL:" + RegistryContext.getBaseInstance().getRealmService());
-        RealmService realmService = RegistryContext.getBaseInstance().getRealmService();
-        TenantManager mgr = realmService.getTenantManager();
+        UserRealm realm = BPMNOsgiServices.getUserRealm();
+        //RegistryContext.getBaseInstance().getRealmService();
+        //TenantManager mgr = realmService.getTenantManager();
 
         int tenantId = 0;
         try {
-            tenantId = mgr.getTenantId(tenantDomain);
-        } catch (UserStoreException e) {
+           // tenantId = realm.getUserStoreManager().getTenantId();//mgr.getTenantId(tenantDomain);
+            //todo: get tenant ID by domain when tenant functionality is implemented.
+            tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+
+        } catch (Exception e) {
             throw new RestApiBasicAuthenticationException(
                     "Identity exception thrown while getting tenant ID for user : " + userNameWithTenantDomain, e);
         }
@@ -119,26 +126,19 @@ public class AuthenticationHandler implements RequestHandler {
             if (log.isDebugEnabled()) {
                 log.debug("Basic authentication request with an invalid tenant : " + userNameWithTenantDomain);
             }
-            System.out.println("Basic authentication request with an invalid tenant : " + userNameWithTenantDomain);
             return false;
         }
-
-        System.out.println("came here");
 
         UserStoreManager userStoreManager = null;
         boolean authStatus = false;
 
         try {
-            userStoreManager = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
+            userStoreManager = realm.getUserStoreManager();
             authStatus = userStoreManager.authenticate(tenantAwareUserName, password);
         } catch (UserStoreException e) {
             throw new RestApiBasicAuthenticationException(
                     "User store exception thrown while authenticating user : " + userNameWithTenantDomain, e);
         }
-
-        System.out.println("Basic authentication request completed. " +
-                "Username : " + userNameWithTenantDomain +
-                ", Authentication State : " + authStatus);
 
         IdentityService identityService = BPMNOsgiServices.getIdentityService();
         authStatus = identityService.checkPassword(userName, password);
@@ -167,7 +167,22 @@ public class AuthenticationHandler implements RequestHandler {
 
     private Response authenticationFail(String authType) {
         //authentication failed, request the authetication, add the realm name if needed to the value of WWW-Authenticate
-        return Response.status(401).header(WWW_AUTHENTICATE, authType).build();
+
+        RestErrorResponse restErrorResponse = new RestErrorResponse();
+        restErrorResponse.setErrorMessage("Authentication required");
+        restErrorResponse.setStatusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+        ObjectMapper mapper = new ObjectMapper();
+
+        String jsonString = null;
+        try {
+            jsonString = mapper.writeValueAsString(restErrorResponse);
+        } catch (IOException e) {
+            log.error("");
+        }
+        System.out.println(jsonString);
+        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
+                authType).entity
+                (jsonString).build();
     }
 
 

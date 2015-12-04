@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.stats.rest.Model.*;
 import org.wso2.carbon.bpmn.stats.rest.util.BPMNOsgiServices;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,6 +27,9 @@ import java.util.*;
 @Path("/bpmnServices/")
 public class ProcessAndTaskService {
     private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
+    int tenantId =PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+    String str = String.valueOf(tenantId);
+
     /**
      * Get the deployed processes count
      * @return a list of deployed processes with their instance count
@@ -35,7 +39,7 @@ public class ProcessAndTaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<BPMNProcessInstance> getDeployedProcesses() {
         List<ProcessDefinition> deployments = BPMNOsgiServices.getRepositoryService().
-                createProcessDefinitionQuery().list();
+                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
         List<BPMNProcessInstance> bpmnProcessInstancesList = new ArrayList<>();
         BPMNProcessInstance bpmnProcessInstance = new BPMNProcessInstance();
         for (ProcessDefinition instance : deployments) {
@@ -92,13 +96,16 @@ public class ProcessAndTaskService {
         ProcessTaskCount completedProcessInstances, activeProcessInstances, suspendedProcessInstances,
                 failedProcessInstances;
         long countOfCompletedProcessInstances = BPMNOsgiServices.getHistoryService().
-                createHistoricProcessInstanceQuery().finished().count();
+                createHistoricProcessInstanceQuery().processInstanceTenantId(str).finished().count();
+
         long countOfActiveProcessInstances = BPMNOsgiServices.getRumtimeService()
-                .createProcessInstanceQuery().active().count();
+                .createProcessInstanceQuery().processInstanceTenantId(str).active().count();
+
         long countOfSuspendedProcessInstances = BPMNOsgiServices.getRumtimeService()
-                .createProcessInstanceQuery().suspended().count();
+                .createProcessInstanceQuery().processInstanceTenantId(str).suspended().count();
+
         long countOfFailedProcessInstances = BPMNOsgiServices.getManagementService()
-                .createJobQuery().withException().count();
+                .createJobQuery().jobTenantId(str).withException().count();
 
         completedProcessInstances = new ProcessTaskCount();
         completedProcessInstances.setStatusOfProcessOrTask("Completed");
@@ -120,7 +127,6 @@ public class ProcessAndTaskService {
         failedProcessInstances.setCount(countOfFailedProcessInstances);
         processCountList.add(failedProcessInstances);
 
-
         return processCountList;
     }
 
@@ -140,12 +146,15 @@ public class ProcessAndTaskService {
                 failedTaskInstances;
 
         TaskQuery taskQuery = BPMNOsgiServices.getTaskService().createTaskQuery();
-        long countOfCompletedTaskInstances = BPMNOsgiServices.getHistoryService().createHistoricTaskInstanceQuery().finished().count();
-        long countOfActiveTaskInstances = taskQuery.active().count();
-        long countOfSuspendedTaskInstances = taskQuery.suspended().count();
+        long countOfCompletedTaskInstances = BPMNOsgiServices.getHistoryService().
+                createHistoricTaskInstanceQuery().taskTenantId(str).finished().count();
+
+        long countOfActiveTaskInstances = taskQuery.taskTenantId(str).active().count();
+
+        long countOfSuspendedTaskInstances = taskQuery.taskTenantId(str).suspended().count();
         //Check on this
         long countOfFailedTaskInstances = BPMNOsgiServices.getManagementService()
-                .createJobQuery().withException().count();
+                .createJobQuery().jobTenantId(str).withException().count();
 
         completedTaskInstances = new ProcessTaskCount();
         completedTaskInstances.setStatusOfProcessOrTask("Completed");
@@ -167,7 +176,6 @@ public class ProcessAndTaskService {
         failedTaskInstances.setCount(countOfFailedTaskInstances);
         taskCountList.add(failedTaskInstances);
 
-
         return taskCountList;
     }
 
@@ -179,7 +187,8 @@ public class ProcessAndTaskService {
     @Path("/avgDurationToCompleteProcess/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<BPMNProcessInstance> getAvgTimeDurationForCompletedProcesses() {
-        List<ProcessDefinition> deployements = BPMNOsgiServices.getRepositoryService().createProcessDefinitionQuery().list();
+        List<ProcessDefinition> deployements = BPMNOsgiServices.getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
 
 
         List<BPMNProcessInstance> list = new ArrayList<>();
@@ -194,8 +203,10 @@ public class ProcessAndTaskService {
             String processDefinitionID = instance.getId();
 
 
-            HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOsgiServices.getHistoryService().createHistoricProcessInstanceQuery()
-                    .processDefinitionId(processDefinitionID).finished();
+            HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOsgiServices.
+                    getHistoryService().createHistoricProcessInstanceQuery().
+                    processInstanceTenantId(str).
+                    processDefinitionId(processDefinitionID).finished();
 
             long noOfHistoricInstances = historicProcessInstanceQuery.count();
 
@@ -234,7 +245,7 @@ public class ProcessAndTaskService {
 
         //Get the number of completed/finished process instance for each process definition
         HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOsgiServices.getHistoryService()
-                .createHistoricProcessInstanceQuery()
+                .createHistoricProcessInstanceQuery().processInstanceTenantId(str)
                 .processDefinitionId(pId).finished();
         //Get the count of the complete process instances
         long noOfHistoricInstances = historicProcessInstanceQuery.count();
@@ -251,7 +262,7 @@ public class ProcessAndTaskService {
             //Get the list of completed tasks/activities in the completed process instance by passing the
             //process definition id of the process
             List<HistoricTaskInstance> taskList = BPMNOsgiServices.getHistoryService().
-                    createHistoricTaskInstanceQuery().processDefinitionId(pId)
+                    createHistoricTaskInstanceQuery().taskTenantId(str).processDefinitionId(pId)
                     .processFinished().list();
             //Iterate through each completed task/activity and get the task name and duration
             for (HistoricTaskInstance taskInstance : taskList) {
@@ -303,7 +314,8 @@ public class ProcessAndTaskService {
             taskStatPerMonths[i].setStartedInstances(0);
         }
         // Get completed tasks
-        List<HistoricTaskInstance> taskList = BPMNOsgiServices.getHistoryService().createHistoricTaskInstanceQuery().finished().list();
+        List<HistoricTaskInstance> taskList = BPMNOsgiServices.getHistoryService().createHistoricTaskInstanceQuery().
+                taskTenantId(str).finished().list();
 
         for (HistoricTaskInstance instance : taskList) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
@@ -313,7 +325,7 @@ public class ProcessAndTaskService {
 
         }
         // Get active/started tasks
-        List<Task> taskActive = BPMNOsgiServices.getTaskService().createTaskQuery().active().list();
+        List<Task> taskActive = BPMNOsgiServices.getTaskService().createTaskQuery().taskTenantId(str).active().list();
         for (Task instance : taskActive) {
 
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
@@ -321,7 +333,8 @@ public class ProcessAndTaskService {
         }
 
         // Get suspended tasks
-        List<Task> taskSuspended = BPMNOsgiServices.getTaskService().createTaskQuery().suspended().list();
+        List<Task> taskSuspended = BPMNOsgiServices.getTaskService().createTaskQuery().taskTenantId(str).suspended()
+                .list();
         for (Task instance : taskSuspended) {
 
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
@@ -352,7 +365,7 @@ public class ProcessAndTaskService {
 
         //Get completed process instances
         List<HistoricProcessInstance> completedProcesses = BPMNOsgiServices.getHistoryService().
-                createHistoricProcessInstanceQuery().finished().list();
+                createHistoricProcessInstanceQuery().processInstanceTenantId(str).finished().list();
         for (HistoricProcessInstance instance : completedProcesses) {
             int startTime = Integer.parseInt(ft.format(instance.getStartTime()));
             int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
@@ -362,7 +375,7 @@ public class ProcessAndTaskService {
         }
         // Get active process instances
         List<HistoricProcessInstance> activeProcesses = BPMNOsgiServices.getHistoryService().
-                createHistoricProcessInstanceQuery().unfinished().list();
+                createHistoricProcessInstanceQuery().processInstanceTenantId(str).unfinished().list();
         for (HistoricProcessInstance instance : activeProcesses) {
             int startTime = Integer.parseInt(ft.format(instance.getStartTime()));
             processStatPerMonths[startTime - 1].setStartedInstances(processStatPerMonths[startTime - 1].getStartedInstances() + 1);
@@ -382,7 +395,7 @@ public class ProcessAndTaskService {
     public List<String> getAllProcesses() {
         //Get a list of the deployed processes
         List<ProcessDefinition> deployements = BPMNOsgiServices.getRepositoryService().
-                createProcessDefinitionQuery().list();
+                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
         List<String> listOfProcesses = new ArrayList<>();
         for (ProcessDefinition processDefinition : deployements) {
             listOfProcesses.add(processDefinition.getId());
