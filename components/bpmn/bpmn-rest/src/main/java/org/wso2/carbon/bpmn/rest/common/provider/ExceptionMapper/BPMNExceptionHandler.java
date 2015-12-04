@@ -28,6 +28,7 @@ import org.wso2.carbon.bpmn.rest.common.security.RestErrorResponse;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -57,8 +58,7 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             return createRestErrorResponse(Response.Status.NOT_FOUND,"unsupported operation");
         } else if(e instanceof ClientErrorException){
             log.error("unsupported operation not found ", e);
-            return createRestErrorResponse(Response.Status.NOT_FOUND, "Failed to hit the request target due to " +
-                    "unsupported operation");
+            return createRestErrorResponse(Response.Status.NOT_FOUND, e.getMessage());
         } else if(e instanceof WebApplicationException){
             log.error("Web application exception thrown ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Web application exception thrown");
@@ -73,6 +73,6 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
         restErrorResponse.setStatusCode(statusCode.getStatusCode());
         restErrorResponse.setErrorMessage(message);
 
-        return Response.status(statusCode).entity(restErrorResponse).build();
+        return Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(restErrorResponse).build();
     }
 }
