@@ -187,7 +187,12 @@ else{%>
                     <h4 class="modal-title" id="myModalLabel">Transfer Task</h4>
                 </div>
                 <div class="modal-body">
-                    Username <input type="textbox" id="transferName"/><br>
+                    Username 
+                    <select id="transferName">
+                    	<% for(var i=0; i<userList.length; i++){ %>
+                    		<option id="<%=userList[i]%>"><%=userList[i]%></option>
+                    	<% } %>
+                    </select><br>
                 </div>
                 <div class="modal-footer">
                 	<div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
@@ -209,7 +214,12 @@ else{%>
                     <h4 class="modal-title" id="myModalLabel">Reassign Task</h4>
                 </div>
                 <div class="modal-body">
-                    Username <input type="textbox" id="reassignName"/><br>
+                    Username 
+                    <select id="reassignName">
+                    	<% for(var i=0; i<userList.length; i++){ %>
+                    		<option id="<%=userList[i]%>"><%=userList[i]%></option>
+                    	<% } %>
+                    </select><br>
                 </div>
                 <div class="modal-footer">
                 	<div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
