@@ -913,7 +913,7 @@ public class RestResponseFactory {
         response.setId(group.getId());
         response.setName(group.getName());
         response.setType(group.getType());
-        response.setUrl(urlBuilder.buildUrl(org.activiti.rest.service.api.RestUrls.URL_GROUP, group.getId()));
+        response.setUrl(urlBuilder.buildUrl(org.wso2.carbon.bpmn.rest.common.RestUrls.URL_GROUP, group.getId()));
 
         return response;
     }
