@@ -62,7 +62,7 @@ public class DataResponse {
             @XmlElement(name = "ExecutionResponse",
                     type = ExecutionResponse.class)
     })
-    List<Object> data;
+    Object data;
     long total;
     int start;
     String sort;
@@ -82,7 +82,7 @@ public class DataResponse {
         return data;
     }
 
-    public DataResponse setData(List<Object> data) {
+    public DataResponse setData(Object data) {
         this.data = data;
         return this;
     }

@@ -119,4 +119,8 @@ public class BPMNOSGIService {
         return identityService;
     }
 
+    public static  ManagementService getManagementService() {
+        return getBPMNEngineService().getProcessEngine().getManagementService();
+    }
+
 }
