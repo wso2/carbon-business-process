@@ -85,6 +85,7 @@ public class ProcessDefinitionService {
         allPropertiesList.add("startableByUser");
         allPropertiesList.add("latest");
         allPropertiesList.add("suspended");
+        allPropertiesList.add("tenantId");
         allPropertiesList.add("start");
         allPropertiesList.add("size");
         allPropertiesList.add("order");

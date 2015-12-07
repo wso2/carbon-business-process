@@ -1,23 +1,24 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.xsom.impl.util.Uri;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -29,6 +30,8 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.apache.poi.util.IOUtils;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
@@ -38,11 +41,9 @@ import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
-import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
-import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionPaginateList;
-import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
-import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
+import org.wso2.carbon.bpmn.rest.model.runtime.*;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -51,10 +52,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.*;
 
 
@@ -67,7 +65,7 @@ public class BaseExecutionService {
 
 
     protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
+    protected static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
         allowedSortProperties.put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
@@ -93,7 +91,6 @@ public class BaseExecutionService {
         allPropertiesList.add("tenantIdLike");
         allPropertiesList.add("withoutTenantId");
     }
-
 
 
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
@@ -140,31 +137,31 @@ public class BaseExecutionService {
             requestParams.put("signalEventSubscriptionName", queryRequest.getSignalEventSubscriptionName());
         }
 
-        if(queryRequest.getVariables() != null) {
+        if (queryRequest.getVariables() != null) {
             addVariables(query, queryRequest.getVariables(), false);
         }
 
-        if(queryRequest.getProcessInstanceVariables() != null) {
+        if (queryRequest.getProcessInstanceVariables() != null) {
             addVariables(query, queryRequest.getProcessInstanceVariables(), true);
         }
 
-        if(queryRequest.getTenantId() != null) {
+        if (queryRequest.getTenantId() != null) {
             query.executionTenantId(queryRequest.getTenantId());
             requestParams.put("tenantId", queryRequest.getTenantId());
         }
 
-        if(queryRequest.getTenantIdLike() != null) {
+        if (queryRequest.getTenantIdLike() != null) {
             query.executionTenantIdLike(queryRequest.getTenantIdLike());
             requestParams.put("tenantIdLike", queryRequest.getTenantIdLike());
         }
 
-        if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+        if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
             query.executionWithoutTenantId();
             requestParams.put("withoutTenantId", queryRequest.getWithoutTenantId().toString());
         }
 
         DataResponse dataResponse = new ExecutionPaginateList(new RestResponseFactory(), uriInfo)
-                .paginateList(requestParams ,queryRequest, query, "processInstanceId", allowedSortProperties);
+                .paginateList(requestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
         return dataResponse;
     }
 
@@ -190,13 +187,13 @@ public class BaseExecutionService {
 
                 case EQUALS:
                     if (nameLess) {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueEquals(actualValue);
                         } else {
                             processInstanceQuery.variableValueEquals(actualValue);
                         }
                     } else {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueEquals(variable.getName(), actualValue);
                         } else {
                             processInstanceQuery.variableValueEquals(variable.getName(), actualValue);
@@ -206,7 +203,7 @@ public class BaseExecutionService {
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
                         } else {
                             processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
@@ -218,7 +215,7 @@ public class BaseExecutionService {
                     break;
 
                 case NOT_EQUALS:
-                    if(process) {
+                    if (process) {
                         processInstanceQuery.processVariableValueNotEquals(variable.getName(), actualValue);
                     } else {
                         processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
@@ -227,7 +224,7 @@ public class BaseExecutionService {
 
                 case NOT_EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
                         } else {
                             processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
@@ -337,114 +334,282 @@ public class BaseExecutionService {
         runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
     }
 
+    protected RestVariable createBinaryExecutionVariable(Execution execution, int responseVariableType, UriInfo
+            uriInfo, boolean isNew, MultipartBody multipartBody) {
+
+        boolean debugEnabled = log.isDebugEnabled();
+        Response.ResponseBuilder responseBuilder = Response.ok();
+
+        List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments = multipartBody.getAllAttachments();
+
+        int attachmentSize = attachments.size();
+
+        if (attachmentSize <= 0) {
+            throw new ActivitiIllegalArgumentException("No Attachments found with the request body");
+        }
+        AttachmentDataHolder attachmentDataHolder = new AttachmentDataHolder();
+
+        for (int i = 0; i < attachmentSize; i++) {
+            org.apache.cxf.jaxrs.ext.multipart.Attachment attachment = attachments.get(i);
+
+            String contentDispositionHeaderValue = attachment.getHeader("Content-Disposition");
+            String contentType = attachment.getHeader("Content-Type");
+
+            if (debugEnabled) {
+                log.debug("Going to iterate:" + i);
+                log.debug("contentDisposition:" + contentDispositionHeaderValue);
+            }
+
+            if (contentDispositionHeaderValue != null) {
+                contentDispositionHeaderValue = contentDispositionHeaderValue.trim();
+
+                Map<String, String> contentDispositionHeaderValueMap = Utils.processContentDispositionHeader
+                        (contentDispositionHeaderValue);
+                String dispositionName = contentDispositionHeaderValueMap.get("name");
+                DataHandler dataHandler = attachment.getDataHandler();
+
+                OutputStream outputStream = null;
+
+                if ("name".equals(dispositionName)) {
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Attachment Name Reading error occured", e);
+                    }
+
+                    if (outputStream != null) {
+                        String fileName = outputStream.toString();
+                        attachmentDataHolder.setName(fileName);
+                    }
+
+
+                } else if ("type".equals(dispositionName)) {
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Attachment Type Reading error occured", e);
+                    }
+
+                    if (outputStream != null) {
+                        String typeName = outputStream.toString();
+                        attachmentDataHolder.setType(typeName);
+                    }
+
+
+                } else if ("scope".equals(dispositionName)) {
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Attachment Description Reading error occured", e);
+                    }
+
+                    if (outputStream != null) {
+                        String description = outputStream.toString();
+                        attachmentDataHolder.setScope(description);
+                    }
+                }
+
+                if (contentType != null) {
+                    if ("file".equals(dispositionName)) {
+
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = dataHandler.getInputStream();
+                        } catch (IOException e) {
+                            throw new ActivitiIllegalArgumentException("Error Occured During processing empty body.",
+                                    e);
+                        }
+
+                        if (inputStream != null) {
+                            attachmentDataHolder.setContentType(contentType);
+                            byte[] attachmentArray = new byte[0];
+                            try {
+                                attachmentArray = IOUtils.toByteArray(inputStream);
+                            } catch (IOException e) {
+                                throw new ActivitiIllegalArgumentException("Processing Attachment Body Failed.", e);
+                            }
+                            attachmentDataHolder.setAttachmentArray(attachmentArray);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        attachmentDataHolder.printDebug();
+
+        if (attachmentDataHolder.getName() == null) {
+            throw new ActivitiIllegalArgumentException("Attachment name is required.");
+        }
+
+        if (attachmentDataHolder.getAttachmentArray() == null) {
+            throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
+                    "decoding the request" +
+                    ".");
+        }
+        String variableScope = attachmentDataHolder.getScope();
+        String variableName = attachmentDataHolder.getName();
+        String variableType = attachmentDataHolder.getType();
+
+        if (log.isDebugEnabled()) {
+            log.debug("variableScope:" + variableScope + " variableName:" + variableName + " variableType:" + variableType);
+        }
+
+        try {
+
+            // Validate input and set defaults
+            if (variableName == null) {
+                throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
+            }
+
+            if (variableType != null) {
+                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory
+                        .SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
+                    throw new ActivitiIllegalArgumentException("Only 'binary' and 'serializable' are supported as variable type.");
+                }
+            } else {
+                variableType = RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE;
+            }
+
+            RestVariable.RestVariableScope scope = RestVariable.RestVariableScope.LOCAL;
+            if (variableScope != null) {
+                scope = RestVariable.getScopeFromString(variableScope);
+            }
+
+            if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
+                // Use raw bytes as variable value
+                setVariable(execution, variableName, attachmentDataHolder.getAttachmentArray(), scope, isNew);
+
+            } else {
+                // Try deserializing the object
+                InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
+                ObjectInputStream stream = new ObjectInputStream(inputStream);
+                Object value = stream.readObject();
+                setVariable(execution, variableName, value, scope, isNew);
+                stream.close();
+            }
+
+            if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {
+                return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType,
+                        null, null, execution.getId(), uriInfo.getBaseUri().toString());
+            } else {
+                return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType, null,
+                        execution.getId(), null, uriInfo.getBaseUri().toString());
+            }
+
+        } catch (IOException ioe) {
+            throw new ActivitiIllegalArgumentException("Could not process multipart content", ioe);
+        } catch (ClassNotFoundException ioe) {
+            throw new BPMNContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe
+                    .getMessage());
+        }
+
+    }
+
     protected Response createExecutionVariable(Execution execution, boolean override, int variableType,
-                                             HttpServletRequest httpServletRequest, UriInfo uriInfo) {
+                                               HttpServletRequest httpServletRequest, UriInfo uriInfo) {
 
 
         Object result = null;
         Response.ResponseBuilder responseBuilder = Response.ok();
-        if (httpServletRequest.getContentType().startsWith(MediaType.MULTIPART_FORM_DATA)) {
-            result = setBinaryVariable(httpServletRequest, execution, variableType, true, uriInfo);
-            responseBuilder.entity(result);
-        } else {
 
-            List<RestVariable> inputVariables = new ArrayList<>();
-            List<RestVariable> resultVariables = new ArrayList<>();
-            String contentType = httpServletRequest.getContentType();
 
-            if (MediaType.APPLICATION_JSON.equals(contentType)) {
-                try {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    @SuppressWarnings("unchecked")
-                    List<Object> variableObjects = (List<Object>) objectMapper.readValue(httpServletRequest.getInputStream(), List.class);
-                    for (Object restObject : variableObjects) {
-                        RestVariable restVariable = objectMapper.convertValue(restObject, RestVariable.class);
-                        inputVariables.add(restVariable);
-                    }
-                } catch (Exception e) {
-                    throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
+        List<RestVariable> inputVariables = new ArrayList<>();
+        List<RestVariable> resultVariables = new ArrayList<>();
+        String contentType = httpServletRequest.getContentType();
+
+        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                @SuppressWarnings("unchecked")
+                List<Object> variableObjects = (List<Object>) objectMapper.readValue(httpServletRequest.getInputStream(), List.class);
+                for (Object restObject : variableObjects) {
+                    RestVariable restVariable = objectMapper.convertValue(restObject, RestVariable.class);
+                    inputVariables.add(restVariable);
                 }
-            }else if(MediaType.APPLICATION_XML.equals(contentType)){
-                JAXBContext jaxbContext = null;
-                try {
-                    jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
-                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
-                            unmarshal(httpServletRequest.getInputStream());
-                    if(restVariableCollection == null){
-                        throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
-                                "RestVariable Collection instance.");
-                    }
-                    List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
-
-                    if(restVariableList.size() == 0){
-                        throw new ActivitiIllegalArgumentException("xml request body could not identify any rest " +
-                                "variables to be updated");
-                    }
-                    for (RestVariable restVariable:restVariableList){
-                        inputVariables.add(restVariable);
-                    }
-
-                } catch (JAXBException | IOException e) {
+            } catch (Exception e) {
+                throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
+            }
+        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+            JAXBContext jaxbContext = null;
+            try {
+                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
+                        unmarshal(httpServletRequest.getInputStream());
+                if (restVariableCollection == null) {
                     throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
-                            "RestVariable instance.", e);
+                            "RestVariable Collection instance.");
                 }
+                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
+
+                if (restVariableList.size() == 0) {
+                    throw new ActivitiIllegalArgumentException("xml request body could not identify any rest " +
+                            "variables to be updated");
+                }
+                for (RestVariable restVariable : restVariableList) {
+                    inputVariables.add(restVariable);
+                }
+
+            } catch (JAXBException | IOException e) {
+                throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
+                        "RestVariable instance.", e);
             }
-
-            if (inputVariables.size() == 0) {
-                throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
-            }
-
-            RestVariable.RestVariableScope sharedScope = null;
-            RestVariable.RestVariableScope varScope = null;
-            Map<String, Object> variablesToSet = new HashMap<String, Object>();
-
-            for (RestVariable var : inputVariables) {
-                // Validate if scopes match
-                varScope = var.getVariableScope();
-                if (var.getName() == null) {
-                    throw new ActivitiIllegalArgumentException("Variable name is required");
-                }
-
-                if (varScope == null) {
-                    varScope = RestVariable.RestVariableScope.LOCAL;
-                }
-                if (sharedScope == null) {
-                    sharedScope = varScope;
-                }
-                if (varScope != sharedScope) {
-                    throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
-                }
-
-                if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
-                    throw new BPMNConflictException("Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.");
-                }
-
-                Object actualVariableValue = new RestResponseFactory().getVariableValue(var);
-                variablesToSet.put(var.getName(), actualVariableValue);
-                resultVariables.add(new RestResponseFactory().createRestVariable(var.getName(), actualVariableValue, varScope,
-                        execution.getId(), variableType, false, uriInfo.getBaseUri().toString()));
-            }
-
-            if (!variablesToSet.isEmpty()) {
-                RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-                if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
-                    runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
-                } else {
-                    if (execution.getParentId() != null) {
-                        // Explicitly set on parent, setting non-local restVariables on execution itself will override local-restVariables if exists
-                        runtimeService.setVariables(execution.getParentId(), variablesToSet);
-                    } else {
-                        // Standalone task, no global restVariables possible
-                        throw new ActivitiIllegalArgumentException("Cannot set global restVariables on execution '" + execution.getId() +"', task is not part of process.");
-                    }
-                }
-            }
-
-            RestVariableCollection restVariableCollection = new RestVariableCollection();
-            restVariableCollection.setRestVariables(resultVariables);
-            responseBuilder.entity(restVariableCollection);
         }
+
+        if (inputVariables.size() == 0) {
+            throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
+        }
+
+        RestVariable.RestVariableScope sharedScope = null;
+        RestVariable.RestVariableScope varScope = null;
+        Map<String, Object> variablesToSet = new HashMap<String, Object>();
+
+        for (RestVariable var : inputVariables) {
+            // Validate if scopes match
+            varScope = var.getVariableScope();
+            if (var.getName() == null) {
+                throw new ActivitiIllegalArgumentException("Variable name is required");
+            }
+
+            if (varScope == null) {
+                varScope = RestVariable.RestVariableScope.LOCAL;
+            }
+            if (sharedScope == null) {
+                sharedScope = varScope;
+            }
+            if (varScope != sharedScope) {
+                throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
+            }
+
+            if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
+                throw new BPMNConflictException("Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.");
+            }
+
+            Object actualVariableValue = new RestResponseFactory().getVariableValue(var);
+            variablesToSet.put(var.getName(), actualVariableValue);
+            resultVariables.add(new RestResponseFactory().createRestVariable(var.getName(), actualVariableValue, varScope,
+                    execution.getId(), variableType, false, uriInfo.getBaseUri().toString()));
+        }
+
+        if (!variablesToSet.isEmpty()) {
+            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
+                runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
+            } else {
+                if (execution.getParentId() != null) {
+                    // Explicitly set on parent, setting non-local restVariables on execution itself will override local-restVariables if exists
+                    runtimeService.setVariables(execution.getParentId(), variablesToSet);
+                } else {
+                    // Standalone task, no global restVariables possible
+                    throw new ActivitiIllegalArgumentException("Cannot set global restVariables on execution '" + execution.getId() + "', task is not part of process.");
+                }
+            }
+        }
+
+        RestVariableCollection restVariableCollection = new RestVariableCollection();
+        restVariableCollection.setRestVariables(resultVariables);
+        responseBuilder.entity(restVariableCollection);
         return responseBuilder.status(Response.Status.CREATED).build();
     }
 
@@ -460,15 +625,15 @@ public class BaseExecutionService {
                     ".");
         }
 
-        if(byteArray == null){
+        if (byteArray == null) {
             throw new ActivitiIllegalArgumentException("No file content was found in request body.");
 
         }
         String variableScope = uriInfo.getQueryParameters().getFirst("scope");
         String variableName = uriInfo.getQueryParameters().getFirst("name");
-        String variableType =  uriInfo.getQueryParameters().getFirst("type");
+        String variableType = uriInfo.getQueryParameters().getFirst("type");
 
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("variableScope:" + variableScope + " variableName:" + variableName + " variableType:" + variableType);
         }
 
@@ -530,7 +695,7 @@ public class BaseExecutionService {
         }
 
         if (!isNew && !hasVariable) {
-            throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '"+ name + "'.", null);
+            throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '" + name + "'.", null);
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
@@ -615,13 +780,22 @@ public class BaseExecutionService {
                 RestResponseFactory.VARIABLE_EXECUTION, includeBinary, uriInfo.getBaseUri().toString());
     }
 
-    /*protected Execution getExecutionFromRequest(String executionId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
-        if (execution == null) {
-            throw new ActivitiObjectNotFoundException("Could not find an execution with id '" + executionId + "'.",
-                    Execution.class);
+    protected RestVariable setSimpleVariable(RestVariable restVariable, Execution execution, boolean isNew, UriInfo
+            uriInfo) {
+        if (restVariable.getName() == null) {
+            throw new ActivitiIllegalArgumentException("Variable name is required");
         }
-        return execution;
-    }*/
+
+        // Figure out scope, revert to local is omitted
+        RestVariable.RestVariableScope scope = restVariable.getVariableScope();
+        if (scope == null) {
+            scope = RestVariable.RestVariableScope.LOCAL;
+        }
+
+        Object actualVariableValue = new RestResponseFactory().getVariableValue(restVariable);
+        setVariable(execution, restVariable.getName(), actualVariableValue, scope, isNew);
+
+        return constructRestVariable(restVariable.getName(), restVariable.getValue(), scope,
+                execution.getId(), false, uriInfo);
+    }
 }

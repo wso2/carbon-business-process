@@ -30,7 +30,6 @@ import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
@@ -422,123 +421,140 @@ public class WorkflowTaskService extends BaseTaskService {
     @POST
     @Path("/{taskId}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response createBinaryTaskVariable(@PathParam("taskId") String taskId, MultipartBody multipartBody) {
+
+        Task task = getTaskFromRequest(taskId);
+        Object result = null;
+        try {
+            result = setBinaryVariable(multipartBody, task, true, uriInfo);
+        } catch (IOException e) {
+            throw new ActivitiIllegalArgumentException("Error Reading variable attachment", e);
+        }
+
+        if (result != null) {
+            return Response.ok().status(Response.Status.CREATED).build();
+        } else {
+            throw new ActivitiIllegalArgumentException("Binary Task variable creation failed");
+        }
+
+    }
+
+    @POST
+    @Path("/{taskId}/variables")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createTaskVariable(@PathParam("taskId") String taskId, @Context HttpServletRequest
-            httpServletRequest) throws IOException {
+            httpServletRequest) {
 
         Task task = getTaskFromRequest(taskId);
 
         Object result = null;
+        List<RestVariable> inputVariables = new ArrayList<>();
+        List<RestVariable> resultVariables = new ArrayList<>();
+        result = resultVariables;
 
-        if (httpServletRequest.getContentType().startsWith(MediaType.MULTIPART_FORM_DATA)) {
-            result = setBinaryVariable(httpServletRequest, task, true, uriInfo);
-        } else {
-
-            List<RestVariable> inputVariables = new ArrayList<RestVariable>();
-            List<RestVariable> resultVariables = new ArrayList<RestVariable>();
-            result = resultVariables;
-
-            try {
-                String contentType = httpServletRequest.getContentType();
-                if (contentType.equals(MediaType.APPLICATION_JSON)) {
-                    try {
-                        @SuppressWarnings("unchecked")
-                        List<Object> variableObjects = (List<Object>) new ObjectMapper().readValue(httpServletRequest.getInputStream(),
-                                List.class);
-                        for (Object restObject : variableObjects) {
-                            RestVariable restVariable = new ObjectMapper().convertValue(restObject, RestVariable.class);
-                            inputVariables.add(restVariable);
-                        }
-                    } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("request body could not be transformed to a RestVariable " +
-                                "instance.", e);
+        try {
+            String contentType = httpServletRequest.getContentType();
+            if (contentType.equals(MediaType.APPLICATION_JSON)) {
+                try {
+                    @SuppressWarnings("unchecked")
+                    List<Object> variableObjects = (List<Object>) new ObjectMapper().readValue(httpServletRequest.getInputStream(),
+                            List.class);
+                    for (Object restObject : variableObjects) {
+                        RestVariable restVariable = new ObjectMapper().convertValue(restObject, RestVariable.class);
+                        inputVariables.add(restVariable);
                     }
+                } catch (IOException e) {
+                    throw new ActivitiIllegalArgumentException("request body could not be transformed to a RestVariable " +
+                            "instance.", e);
+                }
 
-                } else if (contentType.equals(MediaType.APPLICATION_XML)) {
+            } else if (contentType.equals(MediaType.APPLICATION_XML)) {
 
-                    JAXBContext jaxbContext = null;
-                    try {
-                        jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
-                        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                        RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
-                                unmarshal(httpServletRequest.getInputStream());
-                        if (restVariableCollection == null) {
-                            throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
-                                    "RestVariable Collection instance.");
-                        }
-                        List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
-
-                        if (restVariableList.size() == 0) {
-                            throw new ActivitiIllegalArgumentException("xml request body could not identify any rest " +
-                                    "variables to be updated");
-                        }
-                        for (RestVariable restVariable : restVariableList) {
-                            inputVariables.add(restVariable);
-                        }
-
-                    } catch (JAXBException | IOException e) {
+                JAXBContext jaxbContext = null;
+                try {
+                    jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
+                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                    RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
+                            unmarshal(httpServletRequest.getInputStream());
+                    if (restVariableCollection == null) {
                         throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
-                                "RestVariable instance.", e);
+                                "RestVariable Collection instance.");
                     }
+                    List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
+
+                    if (restVariableList.size() == 0) {
+                        throw new ActivitiIllegalArgumentException("xml request body could not identify any rest " +
+                                "variables to be updated");
+                    }
+                    for (RestVariable restVariable : restVariableList) {
+                        inputVariables.add(restVariable);
+                    }
+
+                } catch (JAXBException | IOException e) {
+                    throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
+                            "RestVariable instance.", e);
                 }
-
-
-            } catch (Exception e) {
-                throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
             }
 
-            if (inputVariables.size() == 0) {
-                throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
+
+        } catch (Exception e) {
+            throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
+        }
+
+        if (inputVariables.size() == 0) {
+            throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
+        }
+
+        RestVariable.RestVariableScope sharedScope = null;
+        RestVariable.RestVariableScope varScope = null;
+        Map<String, Object> variablesToSet = new HashMap<>();
+
+        RestResponseFactory restResponseFactory = new RestResponseFactory();
+
+        for (RestVariable var : inputVariables) {
+            // Validate if scopes match
+            varScope = var.getVariableScope();
+            if (var.getName() == null) {
+                throw new ActivitiIllegalArgumentException("Variable name is required");
             }
 
-            RestVariable.RestVariableScope sharedScope = null;
-            RestVariable.RestVariableScope varScope = null;
-            Map<String, Object> variablesToSet = new HashMap<>();
-
-            RestResponseFactory restResponseFactory = new RestResponseFactory();
-
-            for (RestVariable var : inputVariables) {
-                // Validate if scopes match
-                varScope = var.getVariableScope();
-                if (var.getName() == null) {
-                    throw new ActivitiIllegalArgumentException("Variable name is required");
-                }
-
-                if (varScope == null) {
-                    varScope = RestVariable.RestVariableScope.LOCAL;
-                }
-                if (sharedScope == null) {
-                    sharedScope = varScope;
-                }
-                if (varScope != sharedScope) {
-                    throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
-                }
-
-                if (hasVariableOnScope(task, var.getName(), varScope)) {
-                    throw new BPMNConflictException("Variable '" + var.getName() + "' is already present on task '" + task.getId() +
-                            "'.");
-                }
-
-                Object actualVariableValue = restResponseFactory.getVariableValue(var);
-                variablesToSet.put(var.getName(), actualVariableValue);
-                resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope,
-                        task.getId(), RestResponseFactory.VARIABLE_TASK, false, uriInfo.getBaseUri().toString()));
+            if (varScope == null) {
+                varScope = RestVariable.RestVariableScope.LOCAL;
+            }
+            if (sharedScope == null) {
+                sharedScope = varScope;
+            }
+            if (varScope != sharedScope) {
+                throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
             }
 
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            if (hasVariableOnScope(task, var.getName(), varScope)) {
+                throw new BPMNConflictException("Variable '" + var.getName() + "' is already present on task '" + task.getId() +
+                        "'.");
+            }
 
-            TaskService taskService = BPMNOSGIService.getTaskService();
+            Object actualVariableValue = restResponseFactory.getVariableValue(var);
+            variablesToSet.put(var.getName(), actualVariableValue);
+            resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope,
+                    task.getId(), RestResponseFactory.VARIABLE_TASK, false, uriInfo.getBaseUri().toString()));
+        }
 
-            if (!variablesToSet.isEmpty()) {
-                if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
-                    taskService.setVariablesLocal(task.getId(), variablesToSet);
+        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+
+        TaskService taskService = BPMNOSGIService.getTaskService();
+
+        if (!variablesToSet.isEmpty()) {
+            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
+                taskService.setVariablesLocal(task.getId(), variablesToSet);
+            } else {
+                if (task.getExecutionId() != null) {
+                    // Explicitly set on execution, setting non-local restVariables on task will override local-restVariables if exists
+                    runtimeService.setVariables(task.getExecutionId(), variablesToSet);
                 } else {
-                    if (task.getExecutionId() != null) {
-                        // Explicitly set on execution, setting non-local restVariables on task will override local-restVariables if exists
-                        runtimeService.setVariables(task.getExecutionId(), variablesToSet);
-                    } else {
-                        // Standalone task, no global restVariables possible
-                        throw new ActivitiIllegalArgumentException("Cannot set global restVariables on task '" + task.getId() + "', task is not part of process.");
-                    }
+                    // Standalone task, no global restVariables possible
+                    throw new ActivitiIllegalArgumentException("Cannot set global restVariables on task '" + task.getId() + "', task is not part of process.");
                 }
             }
         }
@@ -549,57 +565,63 @@ public class WorkflowTaskService extends BaseTaskService {
     @PUT
     @Path("/{taskId}/variables/{variableName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateVariable(@PathParam("taskId") String taskId,
-                                   @PathParam("variableName") String variableName, @Context HttpServletRequest httpServletRequest) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response updateBinaryTaskVariable(@PathParam("taskId") String taskId, @PathParam("variableName") String variableName,
+                                             MultipartBody multipartBody) {
         Task task = getTaskFromRequest(taskId);
-
         RestVariable result = null;
-        if (httpServletRequest.getContentType().startsWith(MediaType.MULTIPART_FORM_DATA)) {
-            try {
-                result = setBinaryVariable(httpServletRequest, task, false, uriInfo);
-            } catch (IOException e) {
-                throw new ActivitiIllegalArgumentException("Error Reading attachment", e);
-            }
-
-            if (result != null) {
-                if (!result.getName().equals(variableName)) {
-                    throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-                }
-            }
-
-        } else {
-
-            RestVariable restVariable = null;
-            String contentType = httpServletRequest.getContentType();
-
-            if (MediaType.APPLICATION_JSON.equals(contentType)) {
-                try {
-                    restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
-                } catch (Exception e) {
-                    throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
-                }
-            } else if (MediaType.APPLICATION_XML.equals(contentType)) {
-                JAXBContext jaxbContext = null;
-                try {
-                    jaxbContext = JAXBContext.newInstance(RestVariable.class);
-                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    restVariable = (RestVariable) jaxbUnmarshaller.
-                            unmarshal(httpServletRequest.getInputStream());
-
-                } catch (JAXBException | IOException e) {
-                    throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
-                            "Rest Variable instance.", e);
-                }
-            }
-            if (restVariable == null) {
-                throw new ActivitiException("Invalid body was supplied");
-            }
-            if (!restVariable.getName().equals(variableName)) {
+        try {
+            result = setBinaryVariable(multipartBody, task, false, uriInfo);
+        } catch (IOException e) {
+            throw new ActivitiIllegalArgumentException("Error Reading variable attachment", e);
+        }
+        if (result != null) {
+            if (!result.getName().equals(variableName)) {
                 throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
             }
-
-            result = setSimpleVariable(restVariable, task, false);
         }
+
+        return Response.ok().entity(result).build();
+    }
+
+    @PUT
+    @Path("/{taskId}/variables/{variableName}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response updateTaskVariable(@PathParam("taskId") String taskId,
+                                       @PathParam("variableName") String variableName, @Context HttpServletRequest httpServletRequest) {
+        Task task = getTaskFromRequest(taskId);
+
+        RestVariable restVariable = null;
+        String contentType = httpServletRequest.getContentType();
+
+        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+            try {
+                restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
+            } catch (Exception e) {
+                throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+            }
+        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+            JAXBContext jaxbContext = null;
+            try {
+                jaxbContext = JAXBContext.newInstance(RestVariable.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                restVariable = (RestVariable) jaxbUnmarshaller.
+                        unmarshal(httpServletRequest.getInputStream());
+
+            } catch (JAXBException | IOException e) {
+                throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
+                        "Rest Variable instance.", e);
+            }
+        }
+        if (restVariable == null) {
+            throw new ActivitiException("Invalid body was supplied");
+        }
+        if (!restVariable.getName().equals(variableName)) {
+            throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+        }
+
+        RestVariable result = setSimpleVariable(restVariable, task, false);
         return Response.ok().entity(result).build();
     }
 
@@ -798,7 +820,7 @@ public class WorkflowTaskService extends BaseTaskService {
             String contentDispositionHeaderValue = attachment.getHeader("Content-Disposition");
             String contentType = attachment.getHeader("Content-Type");
 
-            if (log.isDebugEnabled()) {
+            if (debugEnabled) {
                 log.debug("Going to iterate:" + i);
                 log.debug("contentDisposition:" + contentDispositionHeaderValue);
             }
@@ -913,61 +935,6 @@ public class WorkflowTaskService extends BaseTaskService {
 
         return responseBuilder.status(Response.Status.CREATED).entity(result).build();
     }
-   /* @POST
-    @Path("/{taskId}/attachments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createAttachment(@PathParam("taskId") String taskId, @Context HttpServletRequest
-            httpServletRequest) {
-
-        AttachmentResponse result = null;
-        Task task = getTaskFromRequest(taskId);
-        Response.ResponseBuilder responseBuilder = Response.ok();
-      //  if(multipartBody != null && multipartBody.getAllAttachments().size() > 0){
-        if (httpServletRequest.getContentType().startsWith(MediaType.MULTIPART_FORM_DATA)) {
-            try {
-                result = createBinaryAttachment( httpServletRequest, task, responseBuilder);
-                //result = createAttachmentForBinary(task, multipartBody, httpServletRequest);
-            } catch (IOException e) {
-                throw new ActivitiIllegalArgumentException("Error Reading attachment", e);
-
-            }
-        } else {
-            String contentType = httpServletRequest.getContentType();
-
-            AttachmentRequest attachmentRequest = null;
-
-            if(MediaType.APPLICATION_JSON.equals(contentType)) {
-                try {
-                    attachmentRequest = new ObjectMapper().readValue(httpServletRequest.getInputStream(), AttachmentRequest.class);
-
-                } catch (Exception e) {
-                    throw new ActivitiIllegalArgumentException("Failed to serialize to a AttachmentRequest instance", e);
-                }
-            } else if(contentType.equals(MediaType.APPLICATION_XML)){
-
-                JAXBContext jaxbContext = null;
-                try {
-                    jaxbContext = JAXBContext.newInstance(AttachmentRequest.class);
-                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    attachmentRequest = (AttachmentRequest) jaxbUnmarshaller.
-                            unmarshal(httpServletRequest.getInputStream());
-
-                } catch (JAXBException | IOException e) {
-                    throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
-                            "AttachmentRequest instance.", e);
-                }
-            }
-
-            if (attachmentRequest == null) {
-                throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
-            }
-
-            result = createSimpleAttachment(attachmentRequest, task);
-        }
-
-        return responseBuilder.status(Response.Status.CREATED).entity(result).build();
-    }*/
 
     @POST
     @Path("/{taskId}/attachments")
@@ -1050,7 +1017,6 @@ public class WorkflowTaskService extends BaseTaskService {
     public Response getAttachmentContent(@PathParam("taskId") String taskId,
                                          @PathParam("attachmentId") String attachmentId) {
 
-        System.out.println("Get Content Data Invoked");
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         Attachment attachment = taskService.getAttachment(attachmentId);
