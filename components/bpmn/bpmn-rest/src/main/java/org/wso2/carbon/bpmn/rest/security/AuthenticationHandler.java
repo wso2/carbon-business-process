@@ -70,14 +70,14 @@ public class AuthenticationHandler implements RequestHandler {
     public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
 
-        if(policy != null){
-            if(AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())){
+        if (policy != null) {
+            if (AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
                 return handleBasicAuth(policy);
-            } else if(AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())){
+            } else if (AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())) {
                 return handleOAuth(message);
             }
         }
-        return authenticationFail(AUTH_TYPE_NONE);
+        return authenticationFail(AUTH_TYPE_BASIC);
     }
 
     protected Response handleBasicAuth(AuthorizationPolicy policy) {
@@ -154,8 +154,8 @@ public class AuthenticationHandler implements RequestHandler {
         authStatus = identityService.checkPassword(userName, password);
         if (log.isDebugEnabled()) {
             log.debug("Basic authentication request completed. " +
-                      "Username : " + userNameWithTenantDomain +
-                      ", Authentication State : " + authStatus);
+                    "Username : " + userNameWithTenantDomain +
+                    ", Authentication State : " + authStatus);
         }
 
         if (authStatus) {
@@ -178,21 +178,19 @@ public class AuthenticationHandler implements RequestHandler {
     private Response authenticationFail(String authType) {
         //authentication failed, request the authetication, add the realm name if needed to the value of WWW-Authenticate
 
-            RestErrorResponse restErrorResponse = new RestErrorResponse();
-            restErrorResponse.setErrorMessage("Authentication required");
-            restErrorResponse.setStatusCode(Response.Status.UNAUTHORIZED.getStatusCode());
-            ObjectMapper mapper = new ObjectMapper();
+        RestErrorResponse restErrorResponse = new RestErrorResponse();
+        restErrorResponse.setErrorMessage("Authentication required");
+        restErrorResponse.setStatusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+        ObjectMapper mapper = new ObjectMapper();
 
         String jsonString = null;
         try {
             jsonString = mapper.writeValueAsString(restErrorResponse);
-        } catch (IOException e) {
-            log.error("");
+        } catch (IOException e) { //log the error and continue. No need to specifically handle it
+            log.error("Error Json String conversion failed", e);
         }
-        System.out.println(jsonString);
-            return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
-                    authType).entity
-                    (jsonString).build();
+        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
+                authType).entity(jsonString).build();
     }
 
 

@@ -26,10 +26,11 @@ public class AttachmentDataHolder {
 
     private static final Log log = LogFactory.getLog(AttachmentDataHolder.class);
 
-    private String name;
-    private String description;
-    private String type;
-    private String contentType;
+    private String name = null;
+    private String description = null;
+    private String type = null;
+    private String contentType = null;
+    private String scope= null;
     private byte[] attachmentArray = null;
 
     public String getName() {
@@ -72,6 +73,14 @@ public class AttachmentDataHolder {
         this.attachmentArray = attachmentArray;
     }
 
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
     public void printDebug(){
         boolean debugLogEnabled = log.isDebugEnabled();
 
@@ -80,6 +89,7 @@ public class AttachmentDataHolder {
             log.debug("description:" + description);
             log.debug("type:" + type);
             log.debug("contentType:" + type);
+            log.debug("scope:" + scope);
 
             CachedOutputStream bos = new CachedOutputStream();
             try {
