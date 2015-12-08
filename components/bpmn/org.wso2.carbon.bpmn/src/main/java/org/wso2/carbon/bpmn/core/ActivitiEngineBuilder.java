@@ -51,7 +51,6 @@ public class ActivitiEngineBuilder {
 	 */
 
     public ProcessEngine buildEngine() throws BPSFault {
-        ProcessEngine engine = null;
         try {
             String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
             String activitiConfigPath = carbonConfigDirPath + File.separator +

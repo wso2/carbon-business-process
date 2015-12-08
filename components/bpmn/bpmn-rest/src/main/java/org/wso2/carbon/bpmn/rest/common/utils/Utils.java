@@ -17,6 +17,10 @@
 
 package org.wso2.carbon.bpmn.rest.common.utils;
 
+import javax.ws.rs.core.UriInfo;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.fileupload.MultipartStream;
 import org.apache.commons.io.IOUtils;

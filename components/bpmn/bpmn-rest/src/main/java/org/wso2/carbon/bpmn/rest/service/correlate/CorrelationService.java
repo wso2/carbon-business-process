@@ -110,7 +110,7 @@ public class CorrelationService extends BaseExecutionService {
             query.signalEventSubscriptionName(value);
         }
 
-/*        List<QueryVariable> queryVariableList =  correlationActionRequest.getCorrelationVariables();
+        List<QueryVariable> queryVariableList =  correlationActionRequest.getCorrelationVariables();
 
         if(queryVariableList != null){
 
@@ -122,9 +122,9 @@ public class CorrelationService extends BaseExecutionService {
                 updatedQueryVariableList.add(queryVariable);
             }
             addVariables(query, updatedQueryVariableList, true);
-        }*/
+        }
 
-        List<QueryVariable> queryVariableList  = correlationActionRequest.getProcessInstanceVariables();
+        queryVariableList  = correlationActionRequest.getProcessInstanceVariables();
 
         if(queryVariableList != null){
             addVariables(query, queryVariableList, true);

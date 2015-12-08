@@ -25,14 +25,15 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
-import org.wso2.securevault.SecretResolver;
-import org.wso2.securevault.SecretResolverFactory;
 
 import java.net.URI;
 
@@ -194,6 +195,14 @@ public class RESTTask implements JavaDelegate {
                 String outVarName = outputVariable.getValue(execution).toString();
                 execution.setVariable(outVarName, output);
             } else {
+                try {
+                    new JSONObject(output);
+                } catch (JSONException e) {
+                    if (log.isDebugEnabled()){
+                        log.debug("The payload is XML, hence converting to json before mapping");
+                    }
+                    output = XML.toJSONObject(output).toString();
+                }
                 String outMappings = outputMappings.getValue(execution).toString();
                 outMappings = outMappings.trim();
                 String[] mappings = outMappings.split(",");
@@ -201,7 +210,7 @@ public class RESTTask implements JavaDelegate {
                     String[] mappingParts = mapping.split(":");
                     String varName = mappingParts[0];
                     String jsonExpression = mappingParts[1];
-                    String value = JsonPath.read(output, jsonExpression);
+                    Object value = JsonPath.read(output, jsonExpression);
                     execution.setVariable(varName, value);
                 }
             }

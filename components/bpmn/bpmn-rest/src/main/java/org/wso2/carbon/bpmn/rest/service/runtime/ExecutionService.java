@@ -1,10 +1,13 @@
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
@@ -246,24 +249,50 @@ public class ExecutionService  extends BaseExecutionService {
     @PUT
     @Path("/{executionId}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response createOrUpdateExecutionVariable(@PathParam("executionId") String executionId, @Context
                                                   HttpServletRequest httpServletRequest) {
-
         Execution execution = getExecutionFromRequest(executionId);
         return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest,
                 uriInfo );
+    }
+
+    @PUT
+    @Path("/{executionId}/variables")
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response createOrUpdateBinaryExecutionVariable(@PathParam("executionId") String executionId,
+                                                          MultipartBody multipartBody) {
+        Execution execution = getExecutionFromRequest(executionId);
+        RestVariable restVariable = createBinaryExecutionVariable(execution,RestResponseFactory.VARIABLE_EXECUTION,
+                uriInfo, true, multipartBody);
+        return Response.ok().status(Response.Status.CREATED).entity(restVariable).build();
     }
 
 
     @POST
     @Path("/{executionId}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response createExecutionVariable(@PathParam("executionId") String executionId, @Context HttpServletRequest
             httpServletRequest) {
 
         Execution execution = getExecutionFromRequest(executionId);
         return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest,
                 uriInfo);
+    }
+
+    @POST
+    @Path("/{executionId}/variables")
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response createBinaryExecutionVariable(@PathParam("executionId") String executionId, MultipartBody
+            multipartBody) {
+
+        Execution execution = getExecutionFromRequest(executionId);
+        RestVariable restVariable = createBinaryExecutionVariable(execution,RestResponseFactory.VARIABLE_EXECUTION,
+                uriInfo, true, multipartBody);
+        return Response.ok().status(Response.Status.CREATED).entity(restVariable).build();
     }
 
     @DELETE
@@ -285,6 +314,78 @@ public class ExecutionService  extends BaseExecutionService {
     }
 
 
+    @PUT
+    @Path("/{executionId}/variables/{variableName}")
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response updateBinaryVariable(@PathParam("executionId") String executionId,
+                                       @PathParam("variableName") String variableName,
+                                             MultipartBody multipartBody) {
+        Execution execution = getExecutionFromRequest(executionId);
+        RestVariable result = createBinaryExecutionVariable(execution,RestResponseFactory.VARIABLE_EXECUTION,
+                uriInfo, false, multipartBody);
+
+        return Response.ok().status(Response.Status.CREATED).entity(result).build();
+    }
+
+    @PUT
+    @Path("/{executionId}/variables/{variableName}")
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public Response updateVariable(@PathParam("executionId") String executionId,
+                                         @PathParam("variableName") String variableName,
+                                         @Context HttpServletRequest httpServletRequest) {
+        Execution execution = getExecutionFromRequest(executionId);
+        RestVariable result = null;
+
+        RestVariable restVariable = null;
+
+        try {
+            restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
+        } catch (Exception e) {
+            throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+        }
+
+        if (restVariable == null) {
+            throw new ActivitiException("Invalid body was supplied");
+        }
+        if (!restVariable.getName().equals(variableName)) {
+            throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+        }
+
+        result = setSimpleVariable(restVariable, execution, false, uriInfo);
+
+        return Response.ok().status(Response.Status.CREATED).entity(result).build();
+    }
+
+    @DELETE
+    @Path("/{executionId}/variables/{variableName}")
+    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public Response deleteVariable(@PathParam("executionId") String executionId,
+                               @PathParam("variableName") String variableName) {
+        String scope = uriInfo.getQueryParameters().getFirst("scope");
+        Execution execution = getExecutionFromRequest(executionId);
+        // Determine scope
+        RestVariable.RestVariableScope variableScope = RestVariable.RestVariableScope.LOCAL;
+        if (scope != null) {
+            variableScope = RestVariable.getScopeFromString(scope);
+        }
+
+        if (!hasVariableOnScope(execution, variableName, variableScope)) {
+            throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable '" +
+                    variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
+        }
+
+        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        if (variableScope == RestVariable.RestVariableScope.LOCAL) {
+            runtimeService.removeVariableLocal(execution.getId(), variableName);
+        } else {
+            // Safe to use parentId, as the hasVariableOnScope would have stopped a global-var update on a root-execution
+            runtimeService.removeVariable(execution.getParentId(), variableName);
+        }
+
+        return Response.ok().status(Response.Status.NO_CONTENT).build();
+    }
 
     @GET
     @Path("/{executionId}/variables/{variableName}/data")

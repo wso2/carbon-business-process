@@ -25,6 +25,13 @@ var headers = {"Authorization": "Basic " + auth,
 };
 
 try {
+    var carbon = require('carbon');
+    var url = 'https://' + bpsHost + ":"+ bpsPort + '/admin/services/';
+    var server = new carbon.server.Server(url);
+    var userManager = new carbon.user.UserManager(server, bpsTenantID);
+     
+    var userList = userManager.listUsers(false);
+
     var task = get(httpUrl + "/bpmn/runtime/tasks/" + id, null, headers, "json").data;
 
     if (log.isDebugEnabled()) {

@@ -23,8 +23,10 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
@@ -33,15 +35,14 @@ import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentDataHolder;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriInfo;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -570,9 +571,175 @@ public class BaseTaskService {
         }
     }
 
+    protected RestVariable setBinaryVariable(MultipartBody multipartBody, Task
+            task, boolean isNew, UriInfo uriInfo) throws IOException {
+
+        boolean debugEnabled = log.isDebugEnabled();
+
+        if(debugEnabled) {
+            log.debug("Processing Binary restVariables");
+        }
+
+        Object result = null;
+
+        List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments = multipartBody.getAllAttachments();
+
+        int attachmentSize = attachments.size();
+
+        if (attachmentSize <= 0) {
+            throw new ActivitiIllegalArgumentException("No Attachments found with the request body");
+        }
+        AttachmentDataHolder attachmentDataHolder = new AttachmentDataHolder();
+
+        for (int i = 0; i < attachmentSize; i++) {
+            org.apache.cxf.jaxrs.ext.multipart.Attachment attachment = attachments.get(i);
+
+            String contentDispositionHeaderValue = attachment.getHeader("Content-Disposition");
+            String contentType = attachment.getHeader("Content-Type");
+
+            if (debugEnabled) {
+                log.debug("Going to iterate:" + i);
+                log.debug("contentDisposition:" + contentDispositionHeaderValue);
+            }
+
+            if (contentDispositionHeaderValue != null) {
+                contentDispositionHeaderValue = contentDispositionHeaderValue.trim();
+
+                Map<String, String> contentDispositionHeaderValueMap = Utils.processContentDispositionHeader
+                        (contentDispositionHeaderValue);
+                String dispositionName = contentDispositionHeaderValueMap.get("name");
+                DataHandler dataHandler = attachment.getDataHandler();
+
+                OutputStream outputStream = null;
+
+                if ("name".equals(dispositionName)) {
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Binary Variable Name Reading error occured", e);
+                    }
+
+                    if (outputStream != null) {
+                        String fileName = outputStream.toString();
+                        attachmentDataHolder.setName(fileName);
+                    }
 
 
-    protected RestVariable setBinaryVariable(HttpServletRequest httpServletRequest, Task task,
+                } else if ("type".equals(dispositionName)) {
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("\"Binary Variable Type Reading error occured", e);
+                    }
+
+                    if (outputStream != null) {
+                        String typeName = outputStream.toString();
+                        attachmentDataHolder.setType(typeName);
+                    }
+
+
+                } else if ("scope".equals(dispositionName)) {
+                    try {
+                        outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
+                    } catch (IOException e) {
+                        throw new ActivitiIllegalArgumentException("Binary Variable scopeDescription Reading error " +
+                                "occured", e);
+                    }
+
+                    if (outputStream != null) {
+                        String scope = outputStream.toString();
+                        attachmentDataHolder.setScope(scope);
+                    }
+                }
+
+                if (contentType != null) {
+                    if ("file".equals(dispositionName)) {
+
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = dataHandler.getInputStream();
+                        } catch (IOException e) {
+                            throw new ActivitiIllegalArgumentException("Error Occured During processing empty body.",
+                                    e);
+                        }
+
+                        if (inputStream != null) {
+                            attachmentDataHolder.setContentType(contentType);
+                            byte[] attachmentArray = new byte[0];
+                            try {
+                                attachmentArray = IOUtils.toByteArray(inputStream);
+                            } catch (IOException e) {
+                                throw new ActivitiIllegalArgumentException("Processing BinaryV variable Body Failed.",
+                                        e);
+                            }
+                            attachmentDataHolder.setAttachmentArray(attachmentArray);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        attachmentDataHolder.printDebug();
+
+        String variableScope =attachmentDataHolder.getScope();
+        String variableName = attachmentDataHolder.getName();
+        String variableType =  attachmentDataHolder.getType();
+        byte[] attachmentArray = attachmentDataHolder.getAttachmentArray();
+
+        try {
+            if (variableName == null) {
+                throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
+            }
+
+            if (attachmentArray == null) {
+                throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
+                        "decoding the request" +
+                        ".");
+            }
+
+            if (variableType != null) {
+                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
+                    throw new ActivitiIllegalArgumentException("Only 'binary' and 'serializable' are supported as variable type.");
+                }
+            } else {
+                attachmentDataHolder.setType(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE);
+            }
+
+            RestVariable.RestVariableScope scope = RestVariable.RestVariableScope.LOCAL;
+            if (variableScope != null) {
+                scope = RestVariable.getScopeFromString(variableScope);
+            }
+
+            if (variableScope != null) {
+                scope = RestVariable.getScopeFromString(variableScope);
+            }
+
+            if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
+                // Use raw bytes as variable value
+                setVariable(task, variableName, attachmentArray, scope, isNew);
+
+            } else {
+                // Try deserializing the object
+                InputStream inputStream = new ByteArrayInputStream(attachmentArray);
+                ObjectInputStream stream = new ObjectInputStream(inputStream);
+                Object value = stream.readObject();
+                setVariable(task, variableName, value, scope, isNew);
+                stream.close();
+            }
+
+            return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType, task.getId(),
+                    null, null, uriInfo.getBaseUri().toString());
+
+        } catch (IOException ioe) {
+            throw new ActivitiIllegalArgumentException("Error getting binary variable", ioe);
+        } catch (ClassNotFoundException ioe) {
+            throw new BPMNContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe
+                    .getMessage());
+        }
+    }
+
+   /* protected RestVariable setBinaryVariable(HttpServletRequest httpServletRequest, Task task,
                                              boolean isNew, UriInfo uriInfo) throws IOException {
 
 
@@ -640,7 +807,7 @@ public class BaseTaskService {
         }
 
     }
-
+*/
 
     protected void setVariable(Task task, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new restVariables. Existing restVariables should be updated using PUT

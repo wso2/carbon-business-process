@@ -83,7 +83,7 @@ public class FormDataService {
     }
 
     @POST
-    @Path("/form-data")
+    @Path("/")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response submitForm(SubmitFormRequest submitRequest) {
 
