@@ -141,6 +141,8 @@
                             version=${carbon.business-process.exp.pkg.version},
                             org.wso2.carbon.bpmn.extensions.rest.*;
                             version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.extensions.jms.*;
+                            version=${carbon.business-process.exp.pkg.version},
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,

@@ -26,6 +26,9 @@ import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
+import org.wso2.carbon.bpmn.extensions.jms.BPMNJMSExtensionHolder;
+import org.wso2.carbon.bpmn.extensions.jms.JMSInvoker;
+import org.wso2.carbon.bpmn.extensions.jms.JMSStartTask;
 import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -52,6 +55,10 @@ public class BPMNServiceComponent {
             BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             restHolder.setRestInvoker(new RESTInvoker());
+
+            BPMNJMSExtensionHolder jmsHolder = BPMNJMSExtensionHolder.getInstance();
+            jmsHolder.setJmsInvoker(new JMSInvoker());
+
             bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(), new BPMNEngineShutdown(), null);
 
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
