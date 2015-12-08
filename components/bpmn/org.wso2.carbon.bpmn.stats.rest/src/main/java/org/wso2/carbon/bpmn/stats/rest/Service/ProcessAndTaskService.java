@@ -403,5 +403,19 @@ public class ProcessAndTaskService {
         return listOfProcesses;
     }
 
+    /**
+     * Return the no. of processes deployed
+     * @return list with the processDefinitions of all deployed processes
+     */
+    @GET
+    @Path("/countOfProcesses/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public long getProcessCount() {
+        //Get a list of the deployed processes
+       long processCount= BPMNOsgiServices.getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionTenantId(str).count();
+
+        return processCount;
+    }
 }
 

@@ -17,7 +17,14 @@
 var update = request.getParameter("update");
 var headers = {"Authorization":"Basic " + auth};
 var start = 0;
-var isProcessesDeployed = true;
+var isProcessesDeployed = false;
+
+var countOfProcesses = get( httpUrl +"/stats-rest/statsRest/bpmnServices/countOfProcesses" ,null, headers, "json" ).data;
+if(countOfProcesses == 0){
+    isProcessesDeployed = false;
+} else {
+    isProcessesDeployed =true;
+}
 
 //list of process definitions belong to the current tenant
 // processDefinition name, total process count, completed process count

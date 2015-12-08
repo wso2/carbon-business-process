@@ -16,7 +16,15 @@
 <%
 
 var headers = {"Authorization":"Basic " + auth};
-var   isProcessesDeployed = true;
+var isProcessesDeployed = false;
+
+var countOfProcesses = get( httpUrl +"/stats-rest/statsRest/bpmnServices/countOfProcesses" ,null, headers, "json" ).data;
+if(countOfProcesses == 0){
+    isProcessesDeployed = false;
+} else {
+    isProcessesDeployed =true;
+
+}
 
 
 var deployedProcessCount = get( httpUrl +"/stats-rest/statsRest/bpmnServices/deployedProcessCount" ,null, headers, "json" ).data;
