@@ -22,13 +22,10 @@ var isProcessesDeployed = false;
 var countOfProcesses = get( httpUrl +"/bpmn/stats/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
 if(countOfProcesses == 0){
     isProcessesDeployed = false;
-    log.info("No processes deployed");
 }
 else{
     isProcessesDeployed =true;
-    log.info("processes deployed : "+countOfProcesses);
 }
-
 //list of process definitions belong to the current tenant
 // processDefinition name, total process count, completed process count
 var processDefinitionList = [];
@@ -42,7 +39,6 @@ var userList = get( httpUrl +"/bpmn/stats/userServices/allUsers" ,null, headers,
 if (update != null && update === "true") {
     if (option === "processinstancecount" || option === "avgprocessduration" || option === "taskduration") {
 
-        //My changes
         var deployedProcessCount = get( httpUrl +"/bpmn/stats/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
         var log = new Log();
         var processChart = [];
@@ -77,8 +73,6 @@ if (update != null && update === "true") {
                 log.debug("Process Instance Count Chart data : " + stringify(processChart));
             }
         } else if (option === "avgprocessduration") {   //check whether request for process average duration
-
-            //My changes
 
             var averageDurationOfProcess = get( httpUrl +"/bpmn/stats/processTaskServices/avgDurationToCompleteProcess" ,null, headers, "json" ).data.data;
             var processAvgTimeChart = [];
@@ -139,8 +133,6 @@ if (update != null && update === "true") {
 
         if (option === "uservstaskscompleted") {    //User vs tasks completed uptodate         
 
-            //My changes
-
             var userVsTasksCompleted = get( httpUrl +"/bpmn/stats/userServices/userVsTaskCount" ,null, headers, "json" ).data.data;
             var  userVsTaskCount = [];
             for(var i= 0; i < userVsTasksCompleted.length; i++){
@@ -151,7 +143,6 @@ if (update != null && update === "true") {
 
         } else if (option === "uservsavgtime") {    //User vs average time taken to complete tasks
 
-            // My Changes
             var userVsTasksDuration = get( httpUrl +"/bpmn/stats/userServices/userVsAvgTimeDuration" ,null, headers, "json" ).data.data;
             var  userAvgTaskTime = [];
             for(var i= 0; i < userVsTasksDuration.length; i++){
@@ -170,7 +161,6 @@ if (update != null && update === "true") {
 
         if (option === "taskvariation") {   //Task Demand Variation Over Time i.e. tasks started and completed
 
-            // My Changes
             var taskVariationList = get( httpUrl +"/bpmn/stats/processTaskServices/taskVariation" ,null, headers, "json" ).data.data;
             var  tasksOverMonths = [];
             for(var i= 0; i < taskVariationList.length; i++){
@@ -184,7 +174,6 @@ if (update != null && update === "true") {
         } else if (option === "processvariation") { //Process Demand Variation Over Time i.e. processes started and completed
 
 
-            // My Changes
             var processVariationList = get( httpUrl +"/bpmn/stats/processTaskServices/processVariation" ,null, headers, "json" ).data.data;
             var  processesOverMonths = [];
             for(var i= 0; i < processVariationList.length; i++){
