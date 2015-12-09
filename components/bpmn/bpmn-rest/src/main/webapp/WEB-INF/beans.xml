@@ -136,7 +136,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
         </jaxrs:providers>
     </jaxrs:server>
 
-    <jaxrs:server id="statsService" address="/statsRest">
+    <jaxrs:server id="statsService" address="/stats">
         <jaxrs:serviceBeans>
             <bean class="org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService"/>
             <bean class="org.wso2.carbon.bpmn.rest.service.stats.UserService"/>

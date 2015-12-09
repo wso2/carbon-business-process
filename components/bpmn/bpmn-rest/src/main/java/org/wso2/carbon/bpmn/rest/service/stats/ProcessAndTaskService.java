@@ -62,7 +62,7 @@ public class ProcessAndTaskService {
         List bpmnProcessInstancesList = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
         for (ProcessDefinition instance : deployments) {
-            BPMNProcessInstance bpmnProcessInstance = new BPMNProcessInstance();
+            DeployedProcesses bpmnProcessInstance = new DeployedProcesses();
             bpmnProcessInstance.setProcessDefinitionId(instance.getId());
             String pId = instance.getId();
             long count1 = getCountOfHistoricProcessInstances(pId);
@@ -220,10 +220,9 @@ public class ProcessAndTaskService {
 
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList<>();
-        BPMNProcessInstance bpmnProcessInstance = new BPMNProcessInstance();
 
         for (ProcessDefinition instance : deployements) {
-            bpmnProcessInstance = new BPMNProcessInstance();
+            CompletedProcesses bpmnProcessInstance = new CompletedProcesses();
             bpmnProcessInstance.setProcessDefinitionId(instance.getId());
 
             double totalTime = 0;
