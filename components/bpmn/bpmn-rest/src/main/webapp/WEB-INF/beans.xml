@@ -117,6 +117,17 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
         </jaxrs:providers>
     </jaxrs:server>
 
+    <jaxrs:server id="statsService" address="/statsRest">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.stats.UserService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
 
 </beans>
 

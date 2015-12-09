@@ -21,6 +21,7 @@ import org.activiti.engine.*;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.user.api.UserRealm;
 
 public class BPMNOSGIService {
 
@@ -117,6 +118,24 @@ public class BPMNOSGIService {
         }
 
         return identityService;
+    }
+
+    public static ManagementService getManagementService() {
+
+        ManagementService managementService = null;
+        if (getBPMNEngineService().getProcessEngine() != null) {
+            managementService = getBPMNEngineService().getProcessEngine().getManagementService();
+
+            if (managementService == null) {
+                throw new BPMNOSGIServiceException("ManagementService couldn't be identified");
+            }
+        }
+
+        return managementService;
+    }
+    public static UserRealm getUserRealm(){
+        //PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm().getUserStoreManager().listUsers();
+        return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
     }
 
 }

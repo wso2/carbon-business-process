@@ -16,27 +16,26 @@
 <%
 
 var headers = {"Authorization":"Basic " + auth};
-var isProcessesDeployed = false;
+var   isProcessesDeployed = false;
 
-var countOfProcesses = get( httpUrl +"/stats-rest/statsRest/bpmnServices/countOfProcesses" ,null, headers, "json" ).data;
+var countOfProcesses = get( httpUrl +"/bpmn/statsRest/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
 if(countOfProcesses == 0){
     isProcessesDeployed = false;
-} else {
-    isProcessesDeployed =true;
-
 }
+else{
+    isProcessesDeployed =true;
+}
+var deployedProcessCount = get( httpUrl +"/bpmn/statsRest/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
 
-
-var deployedProcessCount = get( httpUrl +"/stats-rest/statsRest/bpmnServices/deployedProcessCount" ,null, headers, "json" ).data;
-var log = new Log();
 var processChart = [];
+
 for(var i= 0; i < deployedProcessCount.length; i++){
     var processDefinitionId = deployedProcessCount[i].processDefinitionId;
     var processCount = deployedProcessCount[i].deployedProcessCount;
     processChart.push([processDefinitionId, processCount]);
 }
 
-var processStatusCount = get( httpUrl +"/stats-rest/statsRest/bpmnServices/processStatusCount" ,null, headers, "json" ).data;
+var processStatusCount = get( httpUrl +"/bpmn/statsRest/processTaskServices/processStatusCount" ,null, headers, "json" ).data.data;
 var processStatusChart = [];
 for(var i= 0; i < processStatusCount.length; i++){
     var status = processStatusCount[i].statusOfProcessOrTask;
@@ -44,7 +43,7 @@ for(var i= 0; i < processStatusCount.length; i++){
     processStatusChart.push([status, processCount]);
 }
 
-var taskStatusCount = get( httpUrl +"/stats-rest/statsRest/bpmnServices/taskStatusCount" ,null, headers, "json" ).data;
+var taskStatusCount = get( httpUrl +"/bpmn/statsRest/processTaskServices/taskStatusCount" ,null, headers, "json" ).data.data;
 var taskStatusChart = [];
 for(var i= 0; i < taskStatusCount.length; i++){
     var status = taskStatusCount[i].statusOfProcessOrTask;
