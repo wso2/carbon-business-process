@@ -43,14 +43,7 @@ public class ActivitiEngineBuilder {
     private static ProcessEngine processEngine = null;
 
 
-
-    /**
-=======
-    private static ProcessEngine processEngine = null;
-
-	/**
->>>>>>> upstream/master
-	 * Instantiates the engine. Builds the state of the engine
+	 /* Instantiates the engine. Builds the state of the engine
 	 *
 	 * @return  ProcessEngineImpl object
 	 * @throws BPSFault  Throws in the event of failure of ProcessEngine

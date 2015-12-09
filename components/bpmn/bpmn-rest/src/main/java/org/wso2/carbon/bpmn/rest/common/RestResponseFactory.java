@@ -24,11 +24,14 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.*;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.*;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +43,9 @@ import org.wso2.carbon.bpmn.rest.model.form.FormDataResponse;
 import org.wso2.carbon.bpmn.rest.model.form.RestEnumFormProperty;
 import org.wso2.carbon.bpmn.rest.model.form.RestFormProperty;
 import org.wso2.carbon.bpmn.rest.model.history.*;
+import org.wso2.carbon.bpmn.rest.model.identity.GroupResponse;
+import org.wso2.carbon.bpmn.rest.model.identity.UserInfoResponse;
+import org.wso2.carbon.bpmn.rest.model.identity.UserResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.*;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.model.runtime.variable.*;
@@ -883,6 +889,86 @@ public class RestResponseFactory {
         return result;
     }
 
+    private void initializeVariableConverters() {
+        variableConverters.add(new StringRestVariableConverter());
+        variableConverters.add(new IntegerRestVariableConverter());
+        variableConverters.add(new LongRestVariableConverter());
+        variableConverters.add(new ShortRestVariableConverter());
+        variableConverters.add(new DoubleRestVariableConverter());
+        variableConverters.add(new BooleanRestVariableConverter());
+        variableConverters.add(new DateRestVariableConverter());
+    }
+
+    public List<GroupResponse> createGroupResponseList(List<Group> groups, String baseUrl) {
+        List<GroupResponse> responseList = new ArrayList<>();
+        for (Group instance : groups) {
+            responseList.add(createGroupResponse(instance, baseUrl));
+        }
+        return responseList;
+    }
+
+    public GroupResponse createGroupResponse(Group group, String baseUrl) {
+        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+        GroupResponse response = new GroupResponse();
+        response.setId(group.getId());
+        response.setName(group.getName());
+        response.setType(group.getType());
+        response.setUrl(urlBuilder.buildUrl(org.wso2.carbon.bpmn.rest.common.RestUrls.URL_GROUP, group.getId()));
+
+        return response;
+    }
+
+    public List<UserResponse> createUserResponseList(List<User> users, boolean includePassword, String baseUrl) {
+        List<UserResponse> responseList = new ArrayList<>();
+        for (User instance : users) {
+            responseList.add(createUserResponse(instance, includePassword, baseUrl));
+        }
+        return responseList;
+    }
+
+    public UserResponse createUserResponse(User user, boolean includePassword, String baseUrl) {
+        return createUserResponse(user, includePassword, createUrlBuilder(baseUrl));
+    }
+
+    public UserResponse createUserResponse(User user, boolean includePassword, RestUrlBuilder urlBuilder) {
+        UserResponse response = new UserResponse();
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setId(user.getId());
+        response.setEmail(user.getEmail());
+        response.setUrl(urlBuilder.buildUrl(RestUrls.URL_USER, user.getId()));
+
+        if (includePassword) {
+            response.setPassword(user.getPassword());
+        }
+
+        if (user.isPictureSet()) {
+            response.setPictureUrl(urlBuilder.buildUrl(RestUrls.URL_USER_PICTURE, user.getId()));
+        }
+        return response;
+    }
+
+    public List<UserInfoResponse> createUserInfoKeysResponse(List<String> keys, String userId, String baseUrl) {
+        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+        List<UserInfoResponse> responseList = new ArrayList<>();
+        for (String instance : keys) {
+            responseList.add(createUserInfoResponse(instance, null, userId, urlBuilder));
+        }
+        return responseList;
+    }
+
+    public UserInfoResponse createUserInfoResponse(String key, String value, String userId, String baseUrl) {
+        return createUserInfoResponse(key, value, userId, createUrlBuilder(baseUrl));
+    }
+
+    public UserInfoResponse createUserInfoResponse(String key, String value, String userId, RestUrlBuilder urlBuilder) {
+        UserInfoResponse response = new UserInfoResponse();
+        response.setKey(key);
+        response.setValue(value);
+        response.setUrl(urlBuilder.buildUrl(RestUrls.URL_USER_INFO, userId, key));
+        return response;
+    }
+
     public List createExecutionResponseList(List<Execution> executions, String baseUrl) {
         List<ExecutionResponse> responseList = new ArrayList<>();
         for (Execution instance : executions) {
@@ -890,7 +976,6 @@ public class RestResponseFactory {
         }
         return responseList;
     }
-
 
     public ExecutionResponse createExecutionResponse(Execution execution,String baseUrl ) {
         RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
@@ -913,17 +998,65 @@ public class RestResponseFactory {
         return result;
     }
 
-
-    private void initializeVariableConverters() {
-        variableConverters.add(new StringRestVariableConverter());
-        variableConverters.add(new IntegerRestVariableConverter());
-        variableConverters.add(new LongRestVariableConverter());
-        variableConverters.add(new ShortRestVariableConverter());
-        variableConverters.add(new DoubleRestVariableConverter());
-        variableConverters.add(new BooleanRestVariableConverter());
-        variableConverters.add(new DateRestVariableConverter());
+    public List<JobResponse> createJobResponseList(List<Job> jobs, String baseUrl) {
+        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+        List<JobResponse> responseList = new ArrayList<JobResponse>();
+        for (Job instance : jobs) {
+            responseList.add(createJobResponse(instance, urlBuilder));
+        }
+        return responseList;
     }
 
+    public JobResponse createJobResponse(Job job, String baseUrl) {
+        return createJobResponse(job, createUrlBuilder(baseUrl));
+    }
 
+    public JobResponse createJobResponse(Job job, RestUrlBuilder urlBuilder) {
+        JobResponse response = new JobResponse();
+        response.setId(job.getId());
+        response.setDueDate(job.getDuedate());
+        response.setExceptionMessage(job.getExceptionMessage());
+        response.setExecutionId(job.getExecutionId());
+        response.setProcessDefinitionId(job.getProcessDefinitionId());
+        response.setProcessInstanceId(job.getProcessInstanceId());
+        response.setRetries(job.getRetries());
+        response.setTenantId(job.getTenantId());
 
+        response.setUrl(urlBuilder.buildUrl(RestUrls.URL_JOB, job.getId()));
+
+        if (job.getProcessDefinitionId() != null) {
+            response.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, job.getProcessDefinitionId()));
+        }
+
+        if (job.getProcessInstanceId() != null) {
+            response.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, job.getProcessInstanceId()));
+        }
+
+        if (job.getExecutionId() != null) {
+            response.setExecutionUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, job.getExecutionId()));
+        }
+
+        return response;
+    }
+
+    public List<TableResponse> createTableResponseList(Map<String, Long> tableCounts, String baseUrl) {
+        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+        List<org.wso2.carbon.bpmn.rest.model.runtime.TableResponse> tables = new ArrayList<org.wso2.carbon.bpmn.rest.model.runtime.TableResponse>();
+        for (Map.Entry<String, Long> entry : tableCounts.entrySet()) {
+            tables.add(createTableResponse(entry.getKey(), entry.getValue(), urlBuilder));
+        }
+        return tables;
+    }
+
+    public TableResponse createTableResponse(String name, Long count, RestUrlBuilder urlBuilder) {
+        org.wso2.carbon.bpmn.rest.model.runtime.TableResponse result = new org.wso2.carbon.bpmn.rest.model.runtime.TableResponse();
+        result.setName(name);
+        result.setCount(count);
+        result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TABLE, name));
+        return result;
+    }
+
+    public TableResponse createTableResponse(String name, Long count, String baseUrl) {
+        return createTableResponse(name, count, createUrlBuilder(baseUrl));
+    }
 }

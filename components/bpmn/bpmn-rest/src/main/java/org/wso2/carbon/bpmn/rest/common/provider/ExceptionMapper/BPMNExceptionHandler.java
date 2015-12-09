@@ -17,17 +17,20 @@
 
 package org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.security.RestErrorResponse;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -42,12 +45,15 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
         if(e instanceof ActivitiIllegalArgumentException){
             log.error("Exception during service invocation ", e);
             return createRestErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
-        } else if(e instanceof ActivitiTaskAlreadyClaimedException){
+        }  else if(e instanceof ActivitiTaskAlreadyClaimedException){
             log.error("Exception during Task claiming ", e);
             return createRestErrorResponse(Response.Status.CONFLICT, e.getMessage());
         } else if(e instanceof ActivitiObjectNotFoundException){
             log.error("Exception due to Activiti Object Not Found ", e);
             return createRestErrorResponse(Response.Status.NOT_FOUND, e.getMessage());
+        } else if(e instanceof ActivitiException){
+            log.error("Activiti Exception Occured ", e);
+            return createRestErrorResponse(Response.Status.NOT_ACCEPTABLE, e.getMessage());
         } else if(e instanceof BPMNOSGIServiceException){
             log.error("Exception due to issues on osgi service ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Exception due to issues on osgi " +
@@ -55,10 +61,12 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
         } else if(e instanceof NotFoundException){
             log.error("unsupported operation not found ", e);
             return createRestErrorResponse(Response.Status.NOT_FOUND,"unsupported operation");
+        } else if(e instanceof RestApiBasicAuthenticationException){
+            log.error("Authentication failed ", e);
+            return createRestErrorResponse(Response.Status.UNAUTHORIZED, e.getMessage());
         } else if(e instanceof ClientErrorException){
-            log.error("unsupported operation not found ", e);
-            return createRestErrorResponse(Response.Status.NOT_FOUND, "Failed to hit the request target due to " +
-                    "unsupported operation");
+            log.error("unsupported operation", e);
+            return createRestErrorResponse(Response.Status.NOT_FOUND, "unsupported operation");
         } else if(e instanceof WebApplicationException){
             log.error("Web application exception thrown ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Web application exception thrown");
@@ -73,6 +81,6 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
         restErrorResponse.setStatusCode(statusCode.getStatusCode());
         restErrorResponse.setErrorMessage(message);
 
-        return Response.status(statusCode).entity(restErrorResponse).build();
+        return Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(restErrorResponse).build();
     }
 }

@@ -120,22 +120,14 @@ public class BPMNOSGIService {
         return identityService;
     }
 
-    public static ManagementService getManagementService() {
 
-        ManagementService managementService = null;
-        if (getBPMNEngineService().getProcessEngine() != null) {
-            managementService = getBPMNEngineService().getProcessEngine().getManagementService();
-
-            if (managementService == null) {
-                throw new BPMNOSGIServiceException("ManagementService couldn't be identified");
-            }
-        }
-
-        return managementService;
-    }
-    public static UserRealm getUserRealm(){
+    public static UserRealm getUserRealm() {
         //PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm().getUserStoreManager().listUsers();
         return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
     }
+
+    public static  ManagementService getManagementService() {
+        return getBPMNEngineService().getProcessEngine().getManagementService();
+   }
 
 }

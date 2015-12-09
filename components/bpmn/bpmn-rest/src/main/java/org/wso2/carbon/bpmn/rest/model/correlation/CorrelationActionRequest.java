@@ -35,10 +35,11 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
     @XmlElementWrapper(name = "QueryProcessInstanceVariables")
     @XmlElement(name = "QueryVariable", type = QueryVariable.class)
     private List<QueryVariable> processInstanceVariables;
-  /*
+
     @XmlElementWrapper(name = "CorrelationRestVariables")
     @XmlElement(name = "QueryVariable", type = QueryVariable.class)
-    private List<QueryVariable> correlationVariables;*/
+    private List<QueryVariable> correlationVariables;
+
     private String activityId;
     private String tenantId;
 
@@ -70,13 +71,13 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
         this.variables = variables;
     }
 
-   /* public List<QueryVariable> getCorrelationVariables() {
+    public List<QueryVariable> getCorrelationVariables() {
         return correlationVariables;
     }
 
     public void setCorrelationVariables(List<QueryVariable> correlationVariables) {
         this.correlationVariables = correlationVariables;
-    }*/
+    }
 
     public String getActivityId() {
         return activityId;
