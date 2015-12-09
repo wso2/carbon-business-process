@@ -427,7 +427,7 @@ function selectUserForPerformance(){
 
             function drawChart(data) {
 
-                var dataArr = [['Month', 'Completed Tasks', 'Started Tasks']];
+                var dataArr = [['Month', 'Started Tasks', 'Completed Tasks']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1], data[i][2]]);
 
