@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -33,7 +32,6 @@ import org.apache.http.util.EntityUtils;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.utils.CarbonUtils;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
@@ -91,7 +89,7 @@ public class RESTInvoker {
         }
     }
 
-    public String invokeGET(URI uri, String username, String password) throws Exception {
+    public String invokeGET(URI uri, String headerList[], String username, String password) throws Exception {
 
         HttpGet httpGet = null;
         CloseableHttpResponse response = null;
@@ -102,6 +100,16 @@ public class RESTInvoker {
                 String combinedCredentials = username + ":" + password;
                 byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
                 httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
+            }
+            if(headerList != null){
+                for(String header: headerList){
+                    String pair[] = header.split(":");
+                    if (pair.length == 1) {
+                        httpGet.addHeader(pair[0], "");
+                    }else {
+                        httpGet.addHeader(pair[0], pair[1]);
+                    }
+                }
             }
             response = client.execute(httpGet);
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -128,7 +136,7 @@ public class RESTInvoker {
         return output;
     }
 
-    public String invokePOST(URI uri, String username, String password, String payload) throws Exception {
+    public String invokePOST(URI uri, String headerList[], String username, String password, String payload) throws Exception {
 
         HttpPost httpPost = null;
         CloseableHttpResponse response = null;
@@ -140,6 +148,16 @@ public class RESTInvoker {
                 String combinedCredentials = username + ":" + password;
                 String encodedCredentials = new String(Base64.encodeBase64(combinedCredentials.getBytes()));
                 httpPost.addHeader("Authorization", "Basic " + encodedCredentials);
+            }
+            if(headerList != null){
+                for(String header: headerList){
+                    String pair[] = header.split(":");
+                    if (pair.length == 1) {
+                        httpPost.addHeader(pair[0], "");
+                    }else {
+                        httpPost.addHeader(pair[0], pair[1]);
+                    }
+                }
             }
             response = client.execute(httpPost);
 
