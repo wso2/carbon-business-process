@@ -21,6 +21,7 @@ package org.wso2.carbon.bpmn.rest.model.stats;
 public class UserTaskDuration {
 
     private String userName;
+    private double avgTimeDuration;
 
     public String getUserName() {
         return userName;
@@ -37,8 +38,6 @@ public class UserTaskDuration {
     public void setAvgTimeDuration(double avgTimeDuration) {
         this.avgTimeDuration = avgTimeDuration;
     }
-
-    private double avgTimeDuration;
 
 }
 
