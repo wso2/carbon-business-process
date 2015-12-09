@@ -71,6 +71,9 @@ import java.net.URI;
              <activiti:field name="outputVariable">
                 <activiti:string><![CDATA[v1]]></activiti:string>
              </activiti:field>
+             <activiti:field name="headers">
+                <activiti:string><![CDATA[key1:value1,key2:value2]]></activiti:string>
+             </activiti:field>
          </extensionElements>
      </serviceTask>
  *
@@ -123,6 +126,7 @@ public class RESTTask implements JavaDelegate {
     private JuelExpression input;
     private FixedValue outputVariable;
     private FixedValue outputMappings;
+    private FixedValue headers;
 
     public RESTTask() {
         restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
@@ -138,6 +142,7 @@ public class RESTTask implements JavaDelegate {
         String url = null;
         String bUsername = null;
         String bPassword = null;
+        String headerList[] = null;
         try {
             if (serviceURL != null) {
                 url = serviceURL.getValue(execution).toString();
@@ -184,11 +189,16 @@ public class RESTTask implements JavaDelegate {
                 throw new BPMNRESTException(urlNotFoundErrorMsg);
             }
 
+            if (headers != null) {
+                String headerContent = headers.getValue(execution).toString();
+                headerList = headerContent.split(",");
+            }
+
             if (POST_METHOD.equals(method.getValue(execution).toString())) {
                 String inputContent = input.getValue(execution).toString();
-                output = restInvoker.invokePOST(new URI(url), bUsername, bPassword, inputContent);
+                output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else {
-                output = restInvoker.invokeGET(new URI(url), bUsername, bPassword);
+                output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
             }
 
             if (outputVariable != null) {
@@ -240,6 +250,10 @@ public class RESTTask implements JavaDelegate {
 
     public void setOutputVariable(FixedValue outputVariable) {
         this.outputVariable = outputVariable;
+    }
+
+    public void setHeaders(FixedValue headers) {
+        this.headers = headers;
     }
 
     public void setMethod(FixedValue method) {
