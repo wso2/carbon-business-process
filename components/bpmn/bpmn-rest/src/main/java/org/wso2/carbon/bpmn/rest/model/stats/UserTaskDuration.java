@@ -15,20 +15,12 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
- * Model object of a user
+ * Model that keeps details about the user with the average time duration taken to complete tasks
  */
-@XmlRootElement(name = "User")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class UserInfo {
+public class UserTaskDuration {
 
     private String userName;
-    private long taskCount;
-    private double avgTimeDuration;
 
     public String getUserName() {
         return userName;
@@ -36,14 +28,6 @@ public class UserInfo {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public long getTaskCount() {
-        return taskCount;
-    }
-
-    public void setTaskCount(long taskCount) {
-        this.taskCount = taskCount;
     }
 
     public double getAvgTimeDuration() {
@@ -54,4 +38,7 @@ public class UserInfo {
         this.avgTimeDuration = avgTimeDuration;
     }
 
+    private double avgTimeDuration;
+
 }
+

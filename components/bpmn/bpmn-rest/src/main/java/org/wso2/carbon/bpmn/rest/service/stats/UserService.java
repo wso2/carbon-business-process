@@ -20,9 +20,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
-import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
-import org.wso2.carbon.bpmn.rest.model.stats.UserInfo;
+import org.wso2.carbon.bpmn.rest.model.stats.*;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 
 import javax.ws.rs.GET;
@@ -80,15 +78,15 @@ public class UserService {
         String[] users = (String[]) getUserList().getData().toArray();
 
         for (String u : users) {
-            UserInfo userInfo = new UserInfo();
+            UserTaskCount userInfo = new UserTaskCount();
             userInfo.setUserName(u);
 
-            long xxx = BPMNOSGIService.getHistoryService()
+            long count = BPMNOSGIService.getHistoryService()
                     .createHistoricTaskInstanceQuery().taskAssignee(u).finished().count();
-            if (xxx == 0) {
+            if (count == 0) {
                 userInfo.setTaskCount(0);
             } else {
-                userInfo.setTaskCount(xxx);
+                userInfo.setTaskCount(count);
             }
             listOfUsers.add(userInfo);
         }
@@ -111,7 +109,7 @@ public class UserService {
         String[] users = (String[]) getUserList().getData().toArray();
         for (String u : users) {
 
-            UserInfo userInfo = new UserInfo();
+            UserTaskDuration userInfo = new UserTaskDuration();
             userInfo.setUserName(u);
 
             long count = BPMNOSGIService.getHistoryService()

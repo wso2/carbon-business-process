@@ -16,26 +16,26 @@
 package org.wso2.carbon.bpmn.rest.model.stats;
 
 /**
- * Model that keeps details about completed processes and its time durations
+ * Model that keeps details about user with the no. of tasks completed
  */
-public class CompletedProcesses {
-    private String processDefinitionId;
+public class UserTaskCount {
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    private String userName;
+    private long taskCount;
+
+    public String getUserName() {
+        return userName;
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public double getAverageTimeForCompletion() {
-        return averageTimeForCompletion;
+    public long getTaskCount() {
+        return taskCount;
     }
 
-    public void setAverageTimeForCompletion(double averageTimeForCompletion) {
-        this.averageTimeForCompletion = averageTimeForCompletion;
+    public void setTaskCount(long taskCount) {
+        this.taskCount = taskCount;
     }
-
-    private double averageTimeForCompletion;
 }
