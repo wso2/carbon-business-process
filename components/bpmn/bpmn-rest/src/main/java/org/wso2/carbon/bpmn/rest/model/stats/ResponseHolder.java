@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 /**
- * Created by natasha on 12/8/15.
+ * Holds the response of each REST call
  */
 @XmlRootElement(name = "Response")
 @XmlAccessorType(XmlAccessType.FIELD)

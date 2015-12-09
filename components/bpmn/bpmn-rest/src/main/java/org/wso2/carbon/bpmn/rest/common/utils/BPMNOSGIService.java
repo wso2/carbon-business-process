@@ -122,7 +122,6 @@ public class BPMNOSGIService {
 
 
     public static UserRealm getUserRealm() {
-        //PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm().getUserStoreManager().listUsers();
         return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
     }
 

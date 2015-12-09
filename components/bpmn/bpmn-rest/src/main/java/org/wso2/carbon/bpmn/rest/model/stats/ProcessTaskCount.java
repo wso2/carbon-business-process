@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "ProcessTaskCount")
 public class ProcessTaskCount {
+    private String statusOfProcessOrTask;
+    private long count;
 
     public String getStatusOfProcessOrTask() {
         return statusOfProcessOrTask;
@@ -16,9 +18,6 @@ public class ProcessTaskCount {
     public void setStatusOfProcessOrTask(String statusOfProcessOrTask) {
         this.statusOfProcessOrTask = statusOfProcessOrTask;
     }
-
-    private String statusOfProcessOrTask;
-    private long count;
 
     public long getCount() {
         return count;

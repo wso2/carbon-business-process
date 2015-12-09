@@ -11,15 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BPMNTaskInstance {
 
-    public String getTaskDefinitionKey() {
-        return taskDefinitionKey;
-    }
-
-    public void setTaskDefinitionKey(String taskDefinitionKey) {
-        this.taskDefinitionKey = taskDefinitionKey;
-    }
-
     private String taskDefinitionKey;
+    private double averageTimeForCompletion;
 
     public double getAverageTimeForCompletion() {
         return averageTimeForCompletion;
@@ -29,6 +22,12 @@ public class BPMNTaskInstance {
         this.averageTimeForCompletion = averageTimeForCompletion;
     }
 
-    private double averageTimeForCompletion;
+    public String getTaskDefinitionKey() {
+        return taskDefinitionKey;
+    }
+
+    public void setTaskDefinitionKey(String taskDefinitionKey) {
+        this.taskDefinitionKey = taskDefinitionKey;
+    }
 
 }

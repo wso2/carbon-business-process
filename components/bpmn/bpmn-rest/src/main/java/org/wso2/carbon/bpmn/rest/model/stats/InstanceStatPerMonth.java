@@ -11,6 +11,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class InstanceStatPerMonth {
 
+    private String month;
+    private int startedInstances;
+    private int completedInstances;
+
     public String getMonth() {
         return month;
     }
@@ -19,9 +23,6 @@ public class InstanceStatPerMonth {
         this.month = month;
     }
 
-    private String month;
-
-
     public int getStartedInstances() {
         return startedInstances;
     }
@@ -29,10 +30,6 @@ public class InstanceStatPerMonth {
     public void setStartedInstances(int startedInstances) {
         this.startedInstances = startedInstances;
     }
-
-    private int startedInstances;
-
-    private int completedInstances;
 
     public int getCompletedInstances() {
         return completedInstances;

@@ -1,5 +1,6 @@
 package org.wso2.carbon.bpmn.rest.service.stats;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
@@ -8,6 +9,7 @@ import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
 import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
 import org.wso2.carbon.bpmn.rest.model.stats.UserInfo;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,7 +25,6 @@ public class UserService {
     private static final Log log = LogFactory.getLog(UserService.class);
 
     /**
-     *
      * @return list of users retrieved from the UserStore
      */
     @GET
@@ -31,24 +32,23 @@ public class UserService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getUserList() {
         Object[] users = null;
-       // Object[] users2 = null;
 
         ResponseHolder response = new ResponseHolder();
         try {
-           users = (Object[])BPMNOSGIService.getUserRealm().getUserStoreManager().listUsers("*", -1);
-         //  response.setResponseArray(users);
-           response.setData(Arrays.asList(users));
-        }
-        catch (Exception e){
-            //Remove
-           e.printStackTrace();
+            users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager().listUsers("*", -1);
+            response.setData(Arrays.asList(users));
+        } catch (Exception e) {
+            throw new ActivitiException("Unable to get the user list", e);
         }
         return response;
     }
 
-    public UserService() {}
+    public UserService() {
+    }
+
     /**
      * Get the No.of tasks completed by each user
+     *
      * @return list with the no.of tasks completed by each user
      */
     @GET
@@ -57,10 +57,8 @@ public class UserService {
     public ResponseHolder getNoOfTasksCompletedByUser() {
 
         List listOfUsers = new ArrayList<>();
-        ResponseHolder responseList = new ResponseHolder();
-
-      //  UserInfo userInfo = new UserInfo();
-        String [] users = (String[]) getUserList().getData().toArray();
+        ResponseHolder response = new ResponseHolder();
+        String[] users = (String[]) getUserList().getData().toArray();
 
         for (String u : users) {
             UserInfo userInfo = new UserInfo();
@@ -75,12 +73,13 @@ public class UserService {
             }
             listOfUsers.add(userInfo);
         }
-        responseList.setData(listOfUsers);
-        return responseList;
+        response.setData(listOfUsers);
+        return response;
     }
 
     /**
      * Get the average time duration taken by each user to complete tasks
+     *
      * @return list with the average time duration taken by each user to complete tasks
      */
     @GET
@@ -89,9 +88,8 @@ public class UserService {
     public ResponseHolder getAvgDurationForTasksCompletedByUser() {
 
         List listOfUsers = new ArrayList<>();
-        ResponseHolder responseList = new ResponseHolder();
-      //  UserInfo userInfo = new UserInfo();
-        String [] users = (String[]) getUserList().getData().toArray();
+        ResponseHolder response = new ResponseHolder();
+        String[] users = (String[]) getUserList().getData().toArray();
         for (String u : users) {
 
             UserInfo userInfo = new UserInfo();
@@ -116,13 +114,13 @@ public class UserService {
             }
             listOfUsers.add(userInfo);
         }
-       // responseList.setUserInfoList(listOfUsers);
-        responseList.setData(listOfUsers);
-        return responseList;
+        response.setData(listOfUsers);
+        return response;
     }
 
     /**
      * Task variation of user over time i.e. tasks started and completed by the user -- User Performance
+     *
      * @param assignee taskAssignee/User selected to view the user performance of task completion over time
      * @return array with the tasks started and completed of the selected user
      */
@@ -166,8 +164,7 @@ public class UserService {
             taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
         }
 
-        //response.setData(Arrays.asList(taskStatPerMonths));
-        for(int i=0; i<taskStatPerMonths.length; i++){
+        for (int i = 0; i < taskStatPerMonths.length; i++) {
             list.add(taskStatPerMonths[i]);
         }
         response.setData(list);

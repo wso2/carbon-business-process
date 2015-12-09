@@ -76,31 +76,31 @@
         </repository>
     </repositories>
     <build>
-      <!--  <finalName>bpmn</finalName>-->
+        <!--  <finalName>bpmn</finalName>-->
         <!--<pluginManagement>-->
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                        <webResources>
-                            <resource>
-                                <!-- this is relative to the pom.xml directory -->
-                                <directory>src/main/webapp</directory>
-                            </resource>
-                        </webResources>
-                        <warName>bpmn</warName>
-                    </configuration>
-                </plugin>
-            </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>src/main/webapp</directory>
+                        </resource>
+                    </webResources>
+                    <warName>bpmn</warName>
+                </configuration>
+            </plugin>
+        </plugins>
 
         <!--</pluginManagement>-->
 
@@ -232,40 +232,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
-
-        <!-- My changes-->
-
-        <dependency>
-            <groupId>org.wso2.carbon.identity</groupId>
-            <artifactId>org.wso2.carbon.user.mgt.stub</artifactId>
-            <scope>provided</scope>
-            <version>4.5.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity</groupId>
-            <artifactId>org.wso2.carbon.um.ws.api</artifactId>
-            <scope>provided</scope>
-            <version>5.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2.wso2</groupId>
-            <artifactId>axis2</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.authenticator.stub</artifactId>
-
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-catalina</artifactId>
-            <version>7.0.47</version>
-            <scope>provided</scope>
-        </dependency>
-
-
 
     </dependencies>
 

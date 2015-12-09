@@ -10,6 +10,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "User")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UserInfo {
+
+    private String userName;
+    private long taskCount;
+    private double avgTimeDuration;
+
     public String getUserName() {
         return userName;
     }
@@ -17,8 +22,6 @@ public class UserInfo {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    private String userName;
 
     public long getTaskCount() {
         return taskCount;
@@ -28,8 +31,6 @@ public class UserInfo {
         this.taskCount = taskCount;
     }
 
-    private long taskCount;
-
     public double getAvgTimeDuration() {
         return avgTimeDuration;
     }
@@ -37,8 +38,5 @@ public class UserInfo {
     public void setAvgTimeDuration(double avgTimeDuration) {
         this.avgTimeDuration = avgTimeDuration;
     }
-
-    private double avgTimeDuration;
-
 
 }
