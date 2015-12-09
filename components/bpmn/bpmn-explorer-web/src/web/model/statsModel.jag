@@ -18,14 +18,14 @@
 var headers = {"Authorization":"Basic " + auth};
 var   isProcessesDeployed = false;
 
-var countOfProcesses = get( httpUrl +"/bpmn/statsRest/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
+var countOfProcesses = get( httpUrl +"/bpmn/stats/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
 if(countOfProcesses == 0){
     isProcessesDeployed = false;
 }
 else{
     isProcessesDeployed =true;
 }
-var deployedProcessCount = get( httpUrl +"/bpmn/statsRest/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
+var deployedProcessCount = get( httpUrl +"/bpmn/stats/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
 
 var processChart = [];
 
@@ -35,7 +35,7 @@ for(var i= 0; i < deployedProcessCount.length; i++){
     processChart.push([processDefinitionId, processCount]);
 }
 
-var processStatusCount = get( httpUrl +"/bpmn/statsRest/processTaskServices/processStatusCount" ,null, headers, "json" ).data.data;
+var processStatusCount = get( httpUrl +"/bpmn/stats/processTaskServices/processStatusCount" ,null, headers, "json" ).data.data;
 var processStatusChart = [];
 for(var i= 0; i < processStatusCount.length; i++){
     var status = processStatusCount[i].statusOfProcessOrTask;
@@ -43,7 +43,7 @@ for(var i= 0; i < processStatusCount.length; i++){
     processStatusChart.push([status, processCount]);
 }
 
-var taskStatusCount = get( httpUrl +"/bpmn/statsRest/processTaskServices/taskStatusCount" ,null, headers, "json" ).data.data;
+var taskStatusCount = get( httpUrl +"/bpmn/stats/processTaskServices/taskStatusCount" ,null, headers, "json" ).data.data;
 var taskStatusChart = [];
 for(var i= 0; i < taskStatusCount.length; i++){
     var status = taskStatusCount[i].statusOfProcessOrTask;
