@@ -143,6 +143,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
         </jaxrs:providers>
     </jaxrs:server>

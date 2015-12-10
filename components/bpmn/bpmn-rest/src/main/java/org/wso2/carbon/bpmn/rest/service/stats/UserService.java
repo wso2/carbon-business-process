@@ -55,8 +55,8 @@ public class UserService {
         try {
             users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager().listUsers("*", -1);
             response.setData(Arrays.asList(users));
-        } catch (Exception e) {
-            throw new UserStoreException("Unable to get the user list", e);
+        } catch (UserStoreException e) {
+            throw new UserStoreException(e.getMessage(), e);
         }
         return response;
     }
@@ -93,8 +93,8 @@ public class UserService {
             listOfUsers.add(userInfo);
         }
         response.setData(listOfUsers);
-        } catch (Exception e) {
-            throw new UserStoreException("Unable to get the user list", e);
+        } catch (UserStoreException e) {
+            throw new UserStoreException(e.getMessage(), e);
         }
         return response;
     }
@@ -138,8 +138,8 @@ public class UserService {
             listOfUsers.add(userInfo);
         }
         response.setData(listOfUsers);
-        } catch (Exception e) {
-            throw new UserStoreException("Unable to get the user list", e);
+        } catch (UserStoreException e) {
+            throw new UserStoreException(e.getMessage(), e);
         }
         return response;
     }
