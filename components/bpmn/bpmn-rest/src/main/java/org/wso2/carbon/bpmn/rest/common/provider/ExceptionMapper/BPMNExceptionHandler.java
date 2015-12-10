@@ -25,9 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-import org.wso2.carbon.bpmn.rest.common.security.RestErrorResponse;
 import org.wso2.carbon.user.api.UserStoreException;
-
+import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
@@ -40,8 +39,6 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
     private final Log log = LogFactory.getLog(BPMNExceptionHandler.class);
     @Override
     public Response toResponse(Exception e) {
-
-         new RestErrorResponse();
 
         if(e instanceof ActivitiIllegalArgumentException){
             log.error("Exception during service invocation ", e);
@@ -67,7 +64,7 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             return createRestErrorResponse(Response.Status.UNAUTHORIZED, e.getMessage());
         } else if(e instanceof ClientErrorException){
             log.error("unsupported operation", e);
-            return createRestErrorResponse(Response.Status.NOT_FOUND, "unsupported operation");
+            return createRestErrorResponse(Response.Status.METHOD_NOT_ALLOWED, "unsupported operation");
         } else if(e instanceof WebApplicationException){
             log.error("Web application exception thrown ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Web application exception thrown");

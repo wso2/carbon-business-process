@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.rest.common.security;
+package org.wso2.carbon.bpmn.rest.common;
 
 public class RestErrorResponse {
 
