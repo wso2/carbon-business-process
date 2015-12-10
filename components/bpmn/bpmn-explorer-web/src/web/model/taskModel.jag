@@ -19,10 +19,20 @@ var log = new Log();
 var start = 0;
 var MAX_SIZE = 10; //Max count of data per page
 
-var headers = {"Authorization": "Basic " + auth};
+var headers = {"Authorization": "Basic " + auth,
+    "Content-Type": "application/json",
+    "Accept" : "application/json"
+};
 
 try {
-    var task = get(httpUrl + "/bpmn/task/" + id, null, headers, "json").data;
+    var carbon = require('carbon');
+    var url = 'https://' + bpsHost + ":"+ bpsPort + '/admin/services/';
+    var server = new carbon.server.Server(url);
+    var userManager = new carbon.user.UserManager(server, bpsTenantID);
+     
+    var userList = userManager.listUsers(false);
+
+    var task = get(httpUrl + "/bpmn/runtime/tasks/" + id, null, headers, "json").data;
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST API request: " + httpUrl + "/bpmn/task/" + id);
@@ -57,11 +67,11 @@ try {
 
     var attachmentList = [];
     if (attachments) {
-        for (var i = start; (i < attachments.length) && (i < start + 10); i++) {
-            var attachmentId = JSON.parse(attachments[i].id);
-            var attachmentName = attachments[i].name;
-            var attachmentType = attachments[i].type;
-            var contentUrl = attachments[i].contentUrl;
+        for (var i = start; (i < attachments.attachmentResponseList.length) && (i < start + 10); i++) {
+            var attachmentId = JSON.parse(attachments.attachmentResponseList[i].id);
+            var attachmentName = attachments.attachmentResponseList[i].name;
+            var attachmentType = attachments.attachmentResponseList[i].type;
+            var contentUrl = attachments.attachmentResponseList[i].contentUrl;
 
             //
             attachmentList.push({
@@ -73,7 +83,7 @@ try {
 
         }
 
-        var attachmentCount = attachments.length;
+        var attachmentCount = attachments.attachmentResponseList.length;
         var paginatePageCount = Math.ceil(attachmentCount / 10);
 
     } else {
@@ -126,7 +136,7 @@ try {
         subtask: task.subtaskList
     };
     var formGenTool = require("/assets/dynamicFormGen.js");
-    var formData = get(httpUrl + "/bpmn/form/" + id + "/properties", null, headers, "json").data;
+    var formData = get(httpUrl + "/bpmn/form/form-data/?taskId=" + id, null, headers, "json").data;
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/form/" + id + "/properties");
@@ -137,7 +147,7 @@ try {
     if (formData.errorMessage != undefined) {
         throw "Error " + formData.statusCode + " : " + formData.errorMessage;
     }
-    var formContent = formGenTool.generateForm(formData.data, false);
+    var formContent = formGenTool.generateForm(formData.formProperties, false);
 
 } catch (e) {
     if (log.isDebugEnabled()) {

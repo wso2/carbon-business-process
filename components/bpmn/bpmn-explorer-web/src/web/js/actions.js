@@ -85,6 +85,8 @@ function displayAttachmentData(id){
    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
 }
 function completeTask(data, id) {
+    document.getElementById("completeButton").style.display='none';
+    document.getElementById("loadingCompleteButton").hidden = false;
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var variables = [];
     var emptyVar=true;
@@ -95,6 +97,8 @@ function completeTask(data, id) {
             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the fields";
             $(document.body).scrollTop($('#commonErrorSection').offset().top);
             emptyVar = false;
+            document.getElementById("loadingCompleteButton").hidden = true;
+            document.getElementById("completeButton").style.display='';
             break;
         }
         variables.push({
@@ -114,9 +118,13 @@ function completeTask(data, id) {
             url: httpUrl + url,
             data: JSON.stringify(body),
             success: function (data) {
+                document.getElementById("loadingCompleteButton").hidden = true;
+                document.getElementById("completeButton").style.display='';
                 window.location = httpUrl + "/" + CONTEXT + "/myTasks";
             },
             error: function (error) {
+                document.getElementById("loadingCompleteButton").hidden = true;
+                document.getElementById("completeButton").style.display='';
                 document.getElementById("commonErrorSection").hidden = false;
                 document.getElementById("errorMsg").innerHTML = "Task completion failed!";
                 $(document.body).scrollTop($('#commonErrorSection').offset().top);
@@ -222,6 +230,8 @@ function startProcess(processDefId) {
 }
 
 function startProcessWithData(data, id) {
+    document.getElementById("startProcessButton").style.display='none';
+    document.getElementById("loadingStartProcessButton").hidden = false;
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
     var variables = [];
     for (var i = 0; i < data.length; i++) {
@@ -240,9 +250,14 @@ function startProcessWithData(data, id) {
         url: httpUrl + url,
         data: JSON.stringify(body),
         success: function (data) {
+            document.getElementById("startProcessButton").style.display='';
+            document.getElementById("loadingStartProcessButton").hidden = true;
             window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
         },
         error: function (xhr, status, error) {
+            document.getElementById("startProcessButton").style.display='';
+            document.getElementById("loadingStartProcessButton").hidden = true;
+            var errorJson = eval("(" + xhr.responseText + ")");
             var errorJson = eval("(" + xhr.responseText + ")");
             window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
         }

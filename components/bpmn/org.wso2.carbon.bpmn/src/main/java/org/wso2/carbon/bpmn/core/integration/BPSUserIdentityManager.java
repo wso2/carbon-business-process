@@ -21,6 +21,8 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
@@ -28,9 +30,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.stratos.common.beans.TenantInfoBean;
 import org.wso2.carbon.tenant.mgt.services.TenantMgtAdminService;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.UserStoreManager;
+import org.wso2.carbon.user.core.claim.Claim;
+import org.wso2.carbon.user.mgt.UserAdmin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +48,23 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
     private TenantMgtAdminService tenantMgtAdminService;
+    private UserAdmin userAdmin;
+    private RegistryService registryService;
+
+    //list of Claim URIs
+    private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
+    private static final String FIRST_NAME_CLAIM_URI = "http://axschema.org/namePerson/first";
+    private static final String LAST_NAME_CLAIM_URI = "http://wso2.org/claims/lastname";
+    private static final String FULL_NAME_CLAIM_URI = "http://wso2.org/claims/fullname";
+    private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/emailaddress";
+    private static final String ROLE_CLAIM_URI = "http://wso2.org/claims/role";
+
+
 
     public BPSUserIdentityManager() {
         this.tenantMgtAdminService = new TenantMgtAdminService();
+        this.userAdmin = new UserAdmin();
+        this.registryService = BPMNServerHolder.getInstance().getRegistryService();
     }
 
     @Override
@@ -57,8 +81,31 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public UserEntity findUserById(String userId) {
-        String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        try {
+            UserStoreManager userStoreManager = registryService.getUserRealm(getTenantIdFromUserId(userId)).getUserStoreManager();
+
+            if (userStoreManager.isExistingUser(userId)) {
+                UserEntity userEntity = new UserEntity(userId);
+
+                String firstName = userStoreManager.getUserClaimValue(userId, FIRST_NAME_CLAIM_URI, null);
+                userEntity.setFirstName(firstName);
+
+                String lastName = userStoreManager.getUserClaimValue(userId, LAST_NAME_CLAIM_URI, null);
+                userEntity.setLastName(lastName);
+
+                String email = userStoreManager.getUserClaimValue(userId, EMAIL_CLAIM_URI, null);
+                userEntity.setEmail(email);
+
+                return userEntity;
+            } else {
+                log.error("No user exist with userId:" + userId);
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("Error retrieving user info by id for: " + userId, e);
+            return null;
+        }
     }
 
     @Override
@@ -69,26 +116,195 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public List<User> findUserByQueryCriteria(UserQueryImpl userQuery, Page page) {
-        String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+
+        //get current tenant id
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
+            List<Claim> claimList = transformQueryToClaim(userQuery);
+            if (claimList.size() > 0) {
+                //todo: need to add support to search by query
+                String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
+                throw new UnsupportedOperationException(msg);
+            } else {
+                //return all users
+                String[] userList = registryService.getUserRealm(tenantId).getUserStoreManager().listUsers("*", -1);
+                return pageUserList(page, userList, tenantId);
+            }
+
+        } catch (org.wso2.carbon.user.core.UserStoreException e) {
+            log.error("error getting user list", e);
+            return new ArrayList<>();
+        } catch (RegistryException e) {
+            log.error("error getting user list", e);
+            return new ArrayList<>();
+        }
     }
+
+    private List<User> generateFinalUserList(List<String[]> resultUserList) {
+        List<String> mergedList = new ArrayList<>();
+        //first result list is considered as merged list first
+        for (String user : resultUserList.get(0)) {
+            mergedList.add(user);
+        }
+        for (int i = 1; i < resultUserList.size(); i++) {
+            List<String> newList = new ArrayList<>();
+            for (String user : resultUserList.get(i)) {
+                if (mergedList.contains(user)) {
+                    newList.add(user);
+                }
+            }
+            //make new list the merged list
+            mergedList = newList;
+        }
+
+        List<User> result = new ArrayList<>();
+        //prepare User list
+        for (String userName : mergedList) {
+            result.add(new UserEntity(userName));
+        }
+        return result;
+    }
+
+    private List<User> pageUserList(Page page, String[] users, int tenantId)
+            throws RegistryException, org.wso2.carbon.user.core.UserStoreException {
+        List<User> userList = new ArrayList<>();
+        int resultLength = users.length;
+        int max;
+        if (page != null) {
+            if (page.getFirstResult() > resultLength) {
+                //no more result left, sending empty list
+                return new ArrayList<>();
+            }
+
+            if (page.getMaxResults() > resultLength) {
+                max = resultLength;
+            } else {
+                max = page.getMaxResults();
+            }
+            for (int i = page.getFirstResult(); i < max; i++) {
+                userList.add(new UserEntity(users[i]));
+            }
+        } else {
+            for (int i = 0; i < resultLength; i++) {
+                userList.add(new UserEntity(users[i]));
+            }
+        }
+
+        return userList;
+    }
+
+    private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
+        List<Claim> claimList = new ArrayList<Claim>();
+
+        if (userQuery.getEmail() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(EMAIL_CLAIM_URI);
+            claim.setValue(userQuery.getEmail());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getEmailLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(EMAIL_CLAIM_URI);
+            claim.setValue("*" + userQuery.getEmailLike() + "*");
+            claimList.add(claim);
+        }
+
+        if (userQuery.getFirstName() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(FIRST_NAME_CLAIM_URI);
+            claim.setValue(userQuery.getFirstName());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getFirstNameLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(FIRST_NAME_CLAIM_URI);
+            claim.setValue("*" + userQuery.getFirstNameLike() + "*");
+            claimList.add(claim);
+        }
+
+        if (userQuery.getFullNameLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(FULL_NAME_CLAIM_URI);
+            claim.setValue("*" + userQuery.getFullNameLike() + "*");
+            claimList.add(claim);
+        }
+
+        if (userQuery.getGroupId() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(ROLE_CLAIM_URI);
+            claim.setValue(userQuery.getGroupId());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getId() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(ID_CLAIM_URI);
+            claim.setValue(userQuery.getId());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getLastName() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(LAST_NAME_CLAIM_URI);
+            claim.setValue(userQuery.getLastName());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getLastNameLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimUri(LAST_NAME_CLAIM_URI);
+            claim.setValue("*" + userQuery.getLastNameLike() + "*");
+            claimList.add(claim);
+        }
+
+        return claimList;
+    }
+
 
     @Override
     public long findUserCountByQueryCriteria(UserQueryImpl userQuery) {
-        String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        return findUserByQueryCriteria(userQuery, null).size();
     }
 
     @Override
     public List<Group> findGroupsByUser(String userId) {
-        String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+
+        List<Group> groups = new ArrayList<Group>();
+        try {
+            String[] userNameTokens = userId.split("@");
+            int tenantId = BPMNConstants.SUPER_TENANT_ID;
+            if (userNameTokens.length > 1) {
+                TenantInfoBean tenantInfoBean = tenantMgtAdminService
+                        .getTenant(userNameTokens[userNameTokens.length - 1]);
+                if (tenantInfoBean != null) {
+                    tenantId = tenantInfoBean.getTenantId();
+                } else {
+                    log.error("Could not retrieve tenant ID for tenant domain : " + userNameTokens[userNameTokens.length
+                            - 1]);
+                    return new ArrayList<Group>();
+                }
+            }
+
+            String[] roles = registryService.getUserRealm(tenantId).getUserStoreManager().getRoleListOfUser(userId);
+            for (String role : roles) {
+                Group group = new GroupEntity(role);
+                groups.add(group);
+            }
+        } catch (UserStoreException e) {
+            String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
+            log.error(msg, e);
+        }catch (Exception e) {
+            log.error("error retrieving user tenant info", e);
+        }
+
+        return groups;
     }
 
     @Override
     public UserQuery createNewUserQuery() {
-        String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        return new UserQueryImpl(((ProcessEngineConfigurationImpl)BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration()).getCommandExecutor());
     }
 
     @Override
@@ -128,6 +344,21 @@ public class BPSUserIdentityManager extends UserEntityManager {
         return false;
     }
 
+    private int getTenantIdFromUserId(String userId) throws Exception {
+        String[] userNameTokens = userId.split("@");
+        int tenantId = BPMNConstants.SUPER_TENANT_ID;
+        if (userNameTokens.length > 1) {
+            TenantInfoBean tenantInfoBean = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]);
+            if (tenantInfoBean != null) {
+                tenantId = tenantInfoBean.getTenantId();
+            } else {
+                throw new Exception("Error retrieving tenant id from userId :" + userId);
+            }
+        }
+
+        return tenantId;
+    }
+
     @Override
     public List<User> findPotentialStarterUsers(String processDefId) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
@@ -136,7 +367,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult,
-                                             int maxResults) {
+            int maxResults) {
         String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
         throw new UnsupportedOperationException(msg);
     }

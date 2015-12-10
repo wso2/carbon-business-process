@@ -25,14 +25,15 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
-import org.wso2.securevault.SecretResolver;
-import org.wso2.securevault.SecretResolverFactory;
 
 import java.net.URI;
 
@@ -69,6 +70,9 @@ import java.net.URI;
              </activiti:field>
              <activiti:field name="outputVariable">
                 <activiti:string><![CDATA[v1]]></activiti:string>
+             </activiti:field>
+             <activiti:field name="headers">
+                <activiti:string><![CDATA[key1:value1,key2:value2]]></activiti:string>
              </activiti:field>
          </extensionElements>
      </serviceTask>
@@ -122,6 +126,7 @@ public class RESTTask implements JavaDelegate {
     private JuelExpression input;
     private FixedValue outputVariable;
     private FixedValue outputMappings;
+    private FixedValue headers;
 
     public RESTTask() {
         restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
@@ -137,6 +142,7 @@ public class RESTTask implements JavaDelegate {
         String url = null;
         String bUsername = null;
         String bPassword = null;
+        String headerList[] = null;
         try {
             if (serviceURL != null) {
                 url = serviceURL.getValue(execution).toString();
@@ -183,17 +189,30 @@ public class RESTTask implements JavaDelegate {
                 throw new BPMNRESTException(urlNotFoundErrorMsg);
             }
 
+            if (headers != null) {
+                String headerContent = headers.getValue(execution).toString();
+                headerList = headerContent.split(",");
+            }
+
             if (POST_METHOD.equals(method.getValue(execution).toString())) {
                 String inputContent = input.getValue(execution).toString();
-                output = restInvoker.invokePOST(new URI(url), bUsername, bPassword, inputContent);
+                output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else {
-                output = restInvoker.invokeGET(new URI(url), bUsername, bPassword);
+                output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
             }
 
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
                 execution.setVariable(outVarName, output);
             } else {
+                try {
+                    new JSONObject(output);
+                } catch (JSONException e) {
+                    if (log.isDebugEnabled()){
+                        log.debug("The payload is XML, hence converting to json before mapping");
+                    }
+                    output = XML.toJSONObject(output).toString();
+                }
                 String outMappings = outputMappings.getValue(execution).toString();
                 outMappings = outMappings.trim();
                 String[] mappings = outMappings.split(",");
@@ -201,7 +220,7 @@ public class RESTTask implements JavaDelegate {
                     String[] mappingParts = mapping.split(":");
                     String varName = mappingParts[0];
                     String jsonExpression = mappingParts[1];
-                    String value = JsonPath.read(output, jsonExpression);
+                    Object value = JsonPath.read(output, jsonExpression);
                     execution.setVariable(varName, value);
                 }
             }
@@ -231,6 +250,10 @@ public class RESTTask implements JavaDelegate {
 
     public void setOutputVariable(FixedValue outputVariable) {
         this.outputVariable = outputVariable;
+    }
+
+    public void setHeaders(FixedValue headers) {
+        this.headers = headers;
     }
 
     public void setMethod(FixedValue method) {
