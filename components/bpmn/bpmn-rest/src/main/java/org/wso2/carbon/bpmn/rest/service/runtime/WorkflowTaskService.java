@@ -1205,7 +1205,7 @@ public class WorkflowTaskService extends BaseTaskService {
         return new RestResponseFactory().createAttachmentResponse(createdAttachment, uriInfo.getBaseUri().toString());
     }
 
-    protected AttachmentResponse createBinaryAttachment(HttpServletRequest httpServletRequest, Task task, Response.ResponseBuilder responseBuilder) throws
+/*    protected AttachmentResponse createBinaryAttachment(HttpServletRequest httpServletRequest, Task task, Response.ResponseBuilder responseBuilder) throws
             IOException {
 
         String name = uriInfo.getQueryParameters().getFirst("name");
@@ -1238,7 +1238,7 @@ public class WorkflowTaskService extends BaseTaskService {
         } catch (Exception e) {
             throw new ActivitiException("Error creating attachment response", e);
         }
-    }
+    }*/
 
     protected IdentityLink getIdentityLink(String family, String identityId, String type, String taskId) {
         boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
