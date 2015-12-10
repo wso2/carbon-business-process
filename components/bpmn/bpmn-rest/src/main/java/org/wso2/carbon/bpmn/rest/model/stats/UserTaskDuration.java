@@ -15,9 +15,15 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Model that keeps details about the user with the average time duration taken to complete tasks
  */
+@XmlRootElement(name = "UserTaskDuration")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserTaskDuration {
 
     private String userName;

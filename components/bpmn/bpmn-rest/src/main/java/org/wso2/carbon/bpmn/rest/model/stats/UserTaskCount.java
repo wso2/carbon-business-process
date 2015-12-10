@@ -15,9 +15,15 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Model that keeps details about user with the no. of tasks completed
  */
+@XmlRootElement(name = "UserTaskCount")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserTaskCount {
 
     private String userName;

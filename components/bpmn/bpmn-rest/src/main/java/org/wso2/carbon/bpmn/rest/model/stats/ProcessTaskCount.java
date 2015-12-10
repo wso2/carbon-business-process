@@ -15,6 +15,8 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Completed , Active, Suspended, Failed
  */
 @XmlRootElement(name = "ProcessTaskCount")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ProcessTaskCount {
     private String statusOfProcessOrTask;
     private long count;

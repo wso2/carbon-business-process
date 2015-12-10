@@ -15,9 +15,15 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Model class that keeps details about deployed processes and its counts
  */
+@XmlRootElement(name = "DeployedProcess")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DeployedProcesses {
     private String processDefinitionId;
     private long deployedProcessCount;

@@ -15,9 +15,15 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Model that keeps details about completed processes and its time durations
  */
+@XmlRootElement(name = "CompletedProcess")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CompletedProcesses {
     private String processDefinitionId;
 

@@ -15,9 +15,19 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
+import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
+import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.HistoricTaskInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
+
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 /**
@@ -26,6 +36,23 @@ import java.util.List;
 @XmlRootElement(name = "Response")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ResponseHolder {
+    @XmlElementWrapper(name = "DataResponse")
+    @XmlElements(value = {
+            @XmlElement(name = "Task",
+                    type = BPMNTaskInstance.class),
+            @XmlElement(name = "CompletedProcess",
+                    type = CompletedProcesses.class),
+            @XmlElement(name = "DeployedProcess",
+                    type = DeployedProcesses.class),
+            @XmlElement(name = "InstanceVariation",
+                    type = InstanceStatPerMonth.class),
+            @XmlElement(name = "ProcessTaskCount",
+                    type = ProcessTaskCount.class),
+            @XmlElement(name = "UserTaskCount",
+                    type = UserTaskCount.class),
+            @XmlElement(name = "UserTaskDuration",
+                    type = UserTaskDuration.class)
+    })
     List<Object> data;
 
     public List<Object> getData() {
