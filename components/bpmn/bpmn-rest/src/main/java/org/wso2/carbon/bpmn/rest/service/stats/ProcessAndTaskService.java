@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.bpmn.rest.service.stats;
 
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -278,6 +279,13 @@ public class ProcessAndTaskService {
     @Path("/avgTaskDurationForCompletedProcess/{pId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("pId") String pId) {
+        long countOfProcesses = BPMNOSGIService.getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionTenantId(str).processDefinitionId(pId).count();
+        if(countOfProcesses == 0){
+            throw new ActivitiObjectNotFoundException("Could not find process with process definition id '" +
+                    pId + "'.");
+        }
+
         ResponseHolder response = new ResponseHolder();
         List taskListForProcess = new ArrayList<>();
         HashMap<String, Long> map = new HashMap<String, Long>();
@@ -441,7 +449,7 @@ public class ProcessAndTaskService {
      */
     @GET
     @Path("/allProcesses/")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAllProcesses() {
         //Get a list of the deployed processes
         List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().

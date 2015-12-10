@@ -16,6 +16,7 @@
 package org.wso2.carbon.bpmn.rest.service.stats;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
@@ -153,7 +154,13 @@ public class UserService {
     @GET
     @Path("/userTaskVariation/{assignee}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) {
+    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) throws UserStoreException {
+
+        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))){
+            throw new ActivitiObjectNotFoundException("Could not find user with id '" +
+                    assignee + "'.");
+        }
+
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
         String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
