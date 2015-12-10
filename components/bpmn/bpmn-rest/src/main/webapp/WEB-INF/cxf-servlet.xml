@@ -106,5 +106,18 @@
         </jaxrs:providers>
     </jaxrs:server>
 
+    <jaxrs:server id="statsService" address="/stats">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.stats.UserService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+
 
 </beans>
