@@ -131,27 +131,33 @@ public class ProcessAndTaskService {
         long countOfFailedProcessInstances = BPMNOSGIService.getManagementService()
                 .createJobQuery().jobTenantId(str).withException().count();
 
-        completedProcessInstances = new ProcessTaskCount();
-        completedProcessInstances.setStatusOfProcessOrTask("Completed");
-        completedProcessInstances.setCount(countOfCompletedProcessInstances);
-        processCountList.add(completedProcessInstances);
+        if(countOfCompletedProcessInstances == 0 && countOfActiveProcessInstances == 0 &&
+                countOfSuspendedProcessInstances == 0 && countOfFailedProcessInstances == 0){
+            response.setData(processCountList);
+        }
+        else {
+            completedProcessInstances = new ProcessTaskCount();
+            completedProcessInstances.setStatusOfProcessOrTask("Completed");
+            completedProcessInstances.setCount(countOfCompletedProcessInstances);
+            processCountList.add(completedProcessInstances);
 
-        activeProcessInstances = new ProcessTaskCount();
-        activeProcessInstances.setStatusOfProcessOrTask("Active");
-        activeProcessInstances.setCount(countOfActiveProcessInstances);
-        processCountList.add(activeProcessInstances);
+            activeProcessInstances = new ProcessTaskCount();
+            activeProcessInstances.setStatusOfProcessOrTask("Active");
+            activeProcessInstances.setCount(countOfActiveProcessInstances);
+            processCountList.add(activeProcessInstances);
 
-        suspendedProcessInstances = new ProcessTaskCount();
-        suspendedProcessInstances.setStatusOfProcessOrTask("Suspended");
-        suspendedProcessInstances.setCount(countOfSuspendedProcessInstances);
-        processCountList.add(suspendedProcessInstances);
+            suspendedProcessInstances = new ProcessTaskCount();
+            suspendedProcessInstances.setStatusOfProcessOrTask("Suspended");
+            suspendedProcessInstances.setCount(countOfSuspendedProcessInstances);
+            processCountList.add(suspendedProcessInstances);
 
-        failedProcessInstances = new ProcessTaskCount();
-        failedProcessInstances.setStatusOfProcessOrTask("Failed");
-        failedProcessInstances.setCount(countOfFailedProcessInstances);
-        processCountList.add(failedProcessInstances);
+            failedProcessInstances = new ProcessTaskCount();
+            failedProcessInstances.setStatusOfProcessOrTask("Failed");
+            failedProcessInstances.setCount(countOfFailedProcessInstances);
+            processCountList.add(failedProcessInstances);
 
-        response.setData(processCountList);
+            response.setData(processCountList);
+        }
         return response;
     }
 
@@ -182,27 +188,33 @@ public class ProcessAndTaskService {
         long countOfFailedTaskInstances = BPMNOSGIService.getManagementService()
                 .createJobQuery().jobTenantId(str).withException().count();
 
-        completedTaskInstances = new ProcessTaskCount();
-        completedTaskInstances.setStatusOfProcessOrTask("Completed");
-        completedTaskInstances.setCount(countOfCompletedTaskInstances);
-        taskCountList.add(completedTaskInstances);
+        if(countOfCompletedTaskInstances == 0 && countOfActiveTaskInstances == 0 &&
+                countOfSuspendedTaskInstances == 0 && countOfFailedTaskInstances == 0){
+            response.setData(taskCountList);
+        }
+        else {
+            completedTaskInstances = new ProcessTaskCount();
+            completedTaskInstances.setStatusOfProcessOrTask("Completed");
+            completedTaskInstances.setCount(countOfCompletedTaskInstances);
+            taskCountList.add(completedTaskInstances);
 
-        activeTaskInstances = new ProcessTaskCount();
-        activeTaskInstances.setStatusOfProcessOrTask("Active");
-        activeTaskInstances.setCount(countOfActiveTaskInstances);
-        taskCountList.add(activeTaskInstances);
+            activeTaskInstances = new ProcessTaskCount();
+            activeTaskInstances.setStatusOfProcessOrTask("Active");
+            activeTaskInstances.setCount(countOfActiveTaskInstances);
+            taskCountList.add(activeTaskInstances);
 
-        suspendedTaskInstances = new ProcessTaskCount();
-        suspendedTaskInstances.setStatusOfProcessOrTask("Suspended");
-        suspendedTaskInstances.setCount(countOfSuspendedTaskInstances);
-        taskCountList.add(suspendedTaskInstances);
+            suspendedTaskInstances = new ProcessTaskCount();
+            suspendedTaskInstances.setStatusOfProcessOrTask("Suspended");
+            suspendedTaskInstances.setCount(countOfSuspendedTaskInstances);
+            taskCountList.add(suspendedTaskInstances);
 
-        failedTaskInstances = new ProcessTaskCount();
-        failedTaskInstances.setStatusOfProcessOrTask("Failed");
-        failedTaskInstances.setCount(countOfFailedTaskInstances);
-        taskCountList.add(failedTaskInstances);
+            failedTaskInstances = new ProcessTaskCount();
+            failedTaskInstances.setStatusOfProcessOrTask("Failed");
+            failedTaskInstances.setCount(countOfFailedTaskInstances);
+            taskCountList.add(failedTaskInstances);
 
-        response.setData(taskCountList);
+            response.setData(taskCountList);
+        }
         return response;
     }
 

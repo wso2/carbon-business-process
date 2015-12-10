@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.model.stats.*;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -47,7 +48,7 @@ public class UserService {
     @GET
     @Path("/allUsers/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder getUserList() {
+    public ResponseHolder getUserList() throws UserStoreException {
         Object[] users = null;
 
         ResponseHolder response = new ResponseHolder();
@@ -55,7 +56,7 @@ public class UserService {
             users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager().listUsers("*", -1);
             response.setData(Arrays.asList(users));
         } catch (Exception e) {
-            throw new ActivitiException("Unable to get the user list", e);
+            throw new UserStoreException("Unable to get the user list", e);
         }
         return response;
     }
@@ -71,11 +72,12 @@ public class UserService {
     @GET
     @Path("/userVsTaskCount/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder getNoOfTasksCompletedByUser() {
+    public ResponseHolder getNoOfTasksCompletedByUser() throws UserStoreException {
 
         List listOfUsers = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
-        String[] users = (String[]) getUserList().getData().toArray();
+        try {
+            String[] users = (String[]) getUserList().getData().toArray();
 
         for (String u : users) {
             UserTaskCount userInfo = new UserTaskCount();
@@ -91,6 +93,9 @@ public class UserService {
             listOfUsers.add(userInfo);
         }
         response.setData(listOfUsers);
+        } catch (Exception e) {
+            throw new UserStoreException("Unable to get the user list", e);
+        }
         return response;
     }
 
@@ -102,10 +107,11 @@ public class UserService {
     @GET
     @Path("/userVsAvgTimeDuration/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder getAvgDurationForTasksCompletedByUser() {
+    public ResponseHolder getAvgDurationForTasksCompletedByUser() throws UserStoreException {
 
         List listOfUsers = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
+        try{
         String[] users = (String[]) getUserList().getData().toArray();
         for (String u : users) {
 
@@ -132,6 +138,9 @@ public class UserService {
             listOfUsers.add(userInfo);
         }
         response.setData(listOfUsers);
+        } catch (Exception e) {
+            throw new UserStoreException("Unable to get the user list", e);
+        }
         return response;
     }
 
