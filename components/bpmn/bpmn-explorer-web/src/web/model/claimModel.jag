@@ -15,11 +15,16 @@
 -->
 <%
 var id = request.getParameter("id");
-var headers = {"Authorization":"Basic " + auth};
+var headers = {"Authorization":"Basic " + auth,
+"Content-Type" : "application/json"
+};
 var user = session.get("user");
-try { 
-    var task = get( httpUrl + "/bpmn/runtime/tasks/" + id ,null, headers, "json" ).data;
+
+try {
     
+    var task = get( httpUrl + "/bpmn/runtime/tasks/" + id ,null, headers, "json" ).data;
+
+
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST request:"+ httpUrl + "/bpmn/runtime/tasks/" + id);
         log.debug("BPS BPMN REST API response: " +stringify(task));
@@ -46,6 +51,7 @@ try {
     };
 
     var formGenTool = require("/assets/dynamicFormGen.js");
+
     var formData = get( httpUrl + "/bpmn/form/form-data/?taskId=" + id, null, headers, "json" ).data.formProperties;
 
     if (log.isDebugEnabled()) {
@@ -59,7 +65,7 @@ try {
     }
 
     var formContent = formGenTool.generateForm(formData, true);
-	
+
 } catch (e) {
     if (log.isDebugEnabled()) {
         log.debug("User Error Occured : " + e);

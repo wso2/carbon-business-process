@@ -76,31 +76,31 @@
         </repository>
     </repositories>
     <build>
-      <!--  <finalName>bpmn</finalName>-->
+        <!--  <finalName>bpmn</finalName>-->
         <!--<pluginManagement>-->
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                        <webResources>
-                            <resource>
-                                <!-- this is relative to the pom.xml directory -->
-                                <directory>src/main/webapp</directory>
-                            </resource>
-                        </webResources>
-                        <warName>bpmn</warName>
-                    </configuration>
-                </plugin>
-            </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>src/main/webapp</directory>
+                        </resource>
+                    </webResources>
+                    <warName>bpmn</warName>
+                </configuration>
+            </plugin>
+        </plugins>
 
         <!--</pluginManagement>-->
 
@@ -236,7 +236,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
-
 
     </dependencies>
 

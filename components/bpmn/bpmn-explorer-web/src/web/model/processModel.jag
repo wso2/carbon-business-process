@@ -15,7 +15,7 @@
 -->
 <%
 var wsRequest = require ('/assets/wsRequest.js');
-wsRequest.initHTServerInfo(httpUrl, session.get('BPSSessionCookie'));
+wsRequest.initHTServerInfo(httpServiceUrl, session.get('BPSSessionCookie'));
 
 var pagination = request.getParameter("pagination");
 if (pagination == null || pagination == ""){
