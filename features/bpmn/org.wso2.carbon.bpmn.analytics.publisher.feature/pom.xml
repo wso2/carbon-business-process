@@ -39,6 +39,18 @@
             <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
             <version>4.4.5-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+     <!--   <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        </dependency>-->
     </dependencies>
 
     <build>
@@ -66,9 +78,10 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.analytics.publisher
-                                </bundleDef>
+                                <bundleDef>org.slf4j:slf4j-api</bundleDef>
+                                <bundleDef>org.slf4j:slf4j-log4j12</bundleDef>
+                            <!--    <bundleDef>org.slf4j:slf4j-jdk14</bundleDef>-->
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn.analytics.publisher</bundleDef>
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.bpmn</importFeatureDef>
