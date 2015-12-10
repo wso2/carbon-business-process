@@ -754,6 +754,12 @@
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
                 <version>${carbon.business-process.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
@@ -1042,6 +1048,28 @@
                 <groupId>org.wso2.carbon.multitenancy</groupId>
                 <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
                 <version>${carbon.multitenancy.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>slf4j.wso2</groupId>
+                        <artifactId>slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>log4j-over-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-jdk14</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -1082,6 +1110,24 @@
                 <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.output.adapter.sms</artifactId>
                 <version>${carbon.analytics.common.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -1447,6 +1493,7 @@
 
         <!-- slf4j Version -->
         <!--slf4j.wso2.version>1.5.10.wso2v1</slf4j.wso2.version-->
+        <slf4j.version>1.7.12</slf4j.version>
 
         <!-- Abdera -->
         <version.abdera>1.0-wso2v2</version.abdera>
@@ -1571,7 +1618,7 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.19.0.wso2v1</org.activiti.wso2.version>
+        <org.activiti.wso2.version>5.19.0.wso2v2</org.activiti.wso2.version>
         <restlet.version>2.2.1.wso2v1</restlet.version>
 
 	<project.scm.id>wso2-scm-server</project.scm.id>

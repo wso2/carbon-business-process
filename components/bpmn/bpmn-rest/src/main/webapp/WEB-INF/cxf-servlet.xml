@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2011 WSO2, Inc. (http://wso2.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+         http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+
+    <jaxrs:server id="deploymentService" address="/repository">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.repository.DeploymentService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.repository.ModelService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.repository.ProcessDefinitionService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <jaxrs:server id="runtimeService" address="/runtime">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.runtime.ProcessInstanceService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.runtime.WorkflowTaskService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.runtime.ExecutionService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.correlate.CorrelationService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <jaxrs:server id="queryRuntimeService" address="/query">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.HistoricProcessInstanceQueryService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.HistoricTaskInstanceQueryService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.ProcessInstanceQueryService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.HistoricActivitiInstanceQueryService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.HistoricDetailQueryService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.QueryTaskService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.HistoricVariableInstanceQueryService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.query.QueryExecutionService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <jaxrs:server id="historyService" address="/history">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.history.HistoricProcessInstanceService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.history.HistoricDetailService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.history.HistoricActivitiInstanceService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.history.HistoricTaskInstanceService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.history.HistoricVariableInstanceService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <jaxrs:server id="formService" address="/form">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.form.FormDataService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <jaxrs:server id="processDefinitionService" address="/process-definition">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.form.ProcessDefinitionFormPropertyService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+
+</beans>

@@ -31,6 +31,10 @@
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -148,15 +152,15 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
+                                <bundleDef>org.slf4j:slf4j-log4j12</bundleDef>
                                 <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn
                                 </bundleDef>
-                               <!-- <bundleDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.rest
-                                </bundleDef>-->
+                                <!-- <bundleDef>
+                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.rest
+                                 </bundleDef>-->
                             </bundles>
                             <importBundles>
-				<importBundleDef>org.wso2.orbit.org.activiti:activiti-all:5.19.0.wso2v1</importBundleDef>
-
+                                <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:5.19.0.wso2v2</importBundleDef>
                                 <importBundleDef>org.apache.commons:commons-lang3:3.3.2</importBundleDef>
                                 <importBundleDef>com.fasterxml.jackson.core:jackson-core:2.2.3</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:2.2.3.wso2v1</importBundleDef>
