@@ -15,17 +15,6 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
-import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceResponse;
-import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailResponse;
-import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstanceResponse;
-import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceResponse;
-import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
-import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
-import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.HistoricTaskInstanceResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
