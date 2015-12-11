@@ -138,9 +138,9 @@
                         <label for="instanceSuspensionStatus" class="control-label">Process Instance Status</label>
 
                         <select id="instanceSuspensionStatus" name="active" class="form-control">
-                            <option value="" selected>ACTIVE / SUSPENDED</option>
-                            <option value="true">ACTIVE</option>
-                            <option value="false">SUSPENDED</option>
+                            <option value="">ACTIVE / SUSPENDED</option>
+                            <option value="true" <%if(request.getParameter("active")==="true"){print("selected");}%>>ACTIVE</option>
+                            <option value="false" <%if(request.getParameter("active")==="false"){print("selected");}%>>SUSPENDED</option>
                         </select>
                     </div>
                 </div>
