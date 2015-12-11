@@ -22,41 +22,56 @@ import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
 
 /**
- * Pick tag UI impl
+ * Pick tag UI implementation
  */
 public class PickImpl extends FlowImpl implements PickInterface {
-
+ /**
+     * Initializes a new instance of the PickImpl class using the specified string i.e. the token
+     * @param token
+     */
     public PickImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
         // Set Layout
         setVerticalChildLayout(false);
     }
-
+	 /**
+     * Initializes a new instance of the PickImpl class using the specified omElement
+     * @param omElement which matches the Pick tag
+     */
     public PickImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+         // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
         // Set Layout
         setVerticalChildLayout(false);
     }
-
+	/**
+     * Initializes a new instance of the PickImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an Pick Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the Pick tag
+     * @param parent
+     */
     public PickImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
 
         setVerticalChildLayout(false);
     }
-
+	/**
+     *
+     * @return String with the end tag of Pick Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.PICK_END_TAG;

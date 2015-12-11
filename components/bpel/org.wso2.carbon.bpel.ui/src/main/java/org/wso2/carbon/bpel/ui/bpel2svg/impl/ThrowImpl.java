@@ -24,35 +24,53 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
- * Throw tag UI impl
+ * Throw tag UI implementation
  */
 public class ThrowImpl extends SimpleActivityImpl implements ThrowInterface {
 
+	/**
+     * Initializes a new instance of the ThrowImpl class using the specified string i.e. the token
+     * @param token
+     */
     public ThrowImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+         // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     * Initializes a new instance of the ThrowImpl class using the specified omElement
+     * @param omElement which matches the Throw tag
+     */
     public ThrowImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     * Initializes a new instance of the ThrowImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an Throw Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the Throw tag
+     * @param parent
+     */
     public ThrowImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+
+        //Set the parent of the activity
         setParent(parent);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     *
+     * @return String with the end tag of Throw Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.THROW_END_TAG;

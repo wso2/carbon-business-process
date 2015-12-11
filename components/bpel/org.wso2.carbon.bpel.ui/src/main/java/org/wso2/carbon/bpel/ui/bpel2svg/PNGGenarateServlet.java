@@ -72,24 +72,36 @@ public class PNGGenarateServlet extends HttpServlet {
         try {
             client = new ProcessManagementServiceClient(cookie, backendServerURL, configContext,
                     request.getLocale());
+            //Gets the bpel process definition needed to create the SVG from the processId
             processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition().getExtraElement().toString();
 
             BPELInterface bpel = new BPELImpl();
+            //Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM) represents an XML document
             OMElement bpelStr = bpel.load(processDef);
+            /**
+             * Process the OmElement containing the bpel process definition
+             * Process the subactivites of the bpel process by iterating through the omElement
+             * */
             bpel.processBpelString(bpelStr);
 
+            //Create a new instance of the LayoutManager for the bpel process
             LayoutManager layoutManager = BPEL2SVGFactory.getInstance().getLayoutManager();
+            //Set the layout of the SVG to vertical
             layoutManager.setVerticalLayout(true);
+            //Get the root activity i.e. the Process Activity
             layoutManager.layoutSVG(bpel.getRootActivity());
 
             svg = new SVGImpl();
+            //Set the root activity of the SVG i.e. the Process Activity
             svg.setRootActivity(bpel.getRootActivity());
-
+            //Set the content type of the HTTP response as "image/png"
             response.setContentType("image/png");
+            //Create an instance of ServletOutputStream to write the output
             ServletOutputStream sos = response.getOutputStream();
-
+            //Convert the image as a byte array of a PNG
             byte[] pngBytes = svg.toPNGBytes();
             if (pngBytes != null) {
+                // stream to write binary data into the response
                 sos.write(pngBytes);
                 sos.flush();
                 sos.close();

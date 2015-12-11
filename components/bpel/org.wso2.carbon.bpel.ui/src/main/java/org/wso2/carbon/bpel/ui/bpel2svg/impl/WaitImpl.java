@@ -22,35 +22,55 @@ import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.WaitInterface;
 
 /**
- * Wait tag UI impl
+ * Wait tag UI implementation
  */
 public class WaitImpl extends SimpleActivityImpl implements WaitInterface {
-
+ 	/**
+     * Initializes a new instance of the WaitImpl class using the specified string i.e. the token
+     * @param token
+     */
     public WaitImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+	 /**
+     * Initializes a new instance of the WaitImpl class using the specified omElement
+     * @param omElement which matches the Wait tag
+     */
     public WaitImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+	 /**
+     * Initializes a new instance of the WaitImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an Wait Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the Wait tag
+     * @param parent
+     */
     public WaitImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+
+        //Set the parent of the activity
         setParent(parent);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+    /**
+     *
+     * @return String with the end tag of Wait Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.WAIT_END_TAG;
