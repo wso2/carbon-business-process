@@ -41,13 +41,13 @@ if (request.isSecure()) {//check whether the request is secure or not
 				response.content = userTasksOverMonths;
 			}
 			else if( option === "taskduration"){
-				response.content = avgTaskDurationPerProcess;
+				response.content = avgTaskForProcess;
 			}
 			else if( option === "avgprocessduration"){
-				response.content = processBarChartAvgTime;
+				response.content = processAvgTimeChart;
 			}
 			else if(option === "processinstancecount"){
-            	response.content = processBarChart;
+            	response.content = processChart;
             }
             else if(option === "uservstaskscompleted"){
             	response.content = userVsTaskCount;

@@ -427,7 +427,7 @@ function selectUserForPerformance(){
 
             function drawChart(data) {
 
-                var dataArr = [['Month', 'Completed Tasks', 'Started Tasks']];
+                var dataArr = [['Month', 'Started Tasks', 'Completed Tasks']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1], data[i][2]]);
 
@@ -754,7 +754,7 @@ function taskVariationOverTime(){
 
 
             function drawChart(data) {
-                var dataArr = [['Months', 'Completed Tasks','Tasks Started']];
+                var dataArr = [['Months', 'Tasks Started','Tasks Completed']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1],data[i][2]]);
                 }
@@ -827,7 +827,7 @@ function processVariationOverTime(){
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
-                var dataArr = [['Months', 'Completed Processes','Started Processes']];
+                var dataArr = [['Months', 'Started Processes','Completed Processes']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1],data[i][2]]);
                 }

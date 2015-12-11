@@ -40,17 +40,17 @@ public class ActivitiEngineBuilder {
 	private static final Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
 
 	private String dataSourceJndiName = null;
-
     private static ProcessEngine processEngine = null;
 
-	/**
-	 * Instantiates the engine. Builds the state of the engine
+
+	 /* Instantiates the engine. Builds the state of the engine
 	 *
 	 * @return  ProcessEngineImpl object
 	 * @throws BPSFault  Throws in the event of failure of ProcessEngine
 	 */
 
     public ProcessEngine buildEngine() throws BPSFault {
+
         try {
             String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
             String activitiConfigPath = carbonConfigDirPath + File.separator +
@@ -78,8 +78,8 @@ public class ActivitiEngineBuilder {
     }
 
     public String getDataSourceJndiName() {
-		return dataSourceJndiName;
-	}
+        return dataSourceJndiName;
+    }
 
     public static ProcessEngine getProcessEngine(){
         return ActivitiEngineBuilder.processEngine;
