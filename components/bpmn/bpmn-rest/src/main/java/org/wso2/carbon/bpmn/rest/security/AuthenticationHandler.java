@@ -27,7 +27,7 @@ import org.apache.cxf.jaxrs.ext.RequestHandler;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.message.Message;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-import org.wso2.carbon.bpmn.rest.common.security.RestErrorResponse;
+import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.registry.core.config.RegistryContext;
@@ -150,8 +150,8 @@ public class AuthenticationHandler implements RequestHandler {
                     "User store exception thrown while authenticating user : " + userNameWithTenantDomain, e);
         }
 
-        IdentityService identityService = BPMNOSGIService.getIdentityService();
-        authStatus = identityService.checkPassword(userName, password);
+       /* IdentityService identityService = BPMNOSGIService.getIdentityService();
+        authStatus = identityService.checkPassword(userName, password);*/
         if (log.isDebugEnabled()) {
             log.debug("Basic authentication request completed. " +
                     "Username : " + userNameWithTenantDomain +

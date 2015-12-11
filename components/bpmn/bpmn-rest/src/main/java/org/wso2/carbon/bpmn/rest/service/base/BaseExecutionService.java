@@ -613,7 +613,7 @@ public class BaseExecutionService {
         return responseBuilder.status(Response.Status.CREATED).build();
     }
 
-    protected RestVariable setBinaryVariable(@Context HttpServletRequest httpServletRequest,
+/*    protected RestVariable setBinaryVariable(@Context HttpServletRequest httpServletRequest,
                                              Execution execution, int responseVariableType, boolean isNew, UriInfo uriInfo) {
 
         byte[] byteArray = null;
@@ -685,7 +685,7 @@ public class BaseExecutionService {
                     .getMessage());
         }
 
-    }
+    }*/
 
     protected void setVariable(Execution execution, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new restVariables. Existing restVariables should be updated using PUT
