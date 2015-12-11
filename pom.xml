@@ -1356,8 +1356,8 @@
                 </property>
             </activation>
             <modules>
-                <module>components/service-mgt</module>
-                <module>components/webapp-mgt</module>
+               <!-- <module>components/service-mgt</module>
+                <module>components/webapp-mgt</module>-->
             </modules>
         </profile>
         <profile>
@@ -1369,8 +1369,8 @@
                 </property>
             </activation>
             <modules>
-                <module>components/service-mgt</module>
-                <module>components/webapp-mgt</module>
+              <!--  <module>//components/service-mgt</module>
+                <module>//components/webapp-mgt</module>-->
             </modules>
         </profile>
     </profiles>
@@ -1439,7 +1439,6 @@
         <imp.pkg.version.axis2>[1.6.1.wso2v12, 1.7.0)</imp.pkg.version.axis2>
         <axis2-transports.version>1.1.0-wso2v14</axis2-transports.version>
         <axis2.osgi.version.range>[1.6.1.wso2v12, 1.7.0)</axis2.osgi.version.range>
-
 
         <neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>
         <neethi.osgi.version.range>[2.0.4.wso2v4, 3.0.0)</neethi.osgi.version.range>
@@ -1584,7 +1583,7 @@
         </orbit.version.org.apache.xmlbeans.wso2.xmlbeans>
         <version.log4j>1.2.17</version.log4j>
         <geronimo.transaction.version>2.0.1.wso2v1</geronimo.transaction.version>
-      <!--  <org.eclipse.osgi.version>3.5.0.v20090520</org.eclipse.osgi.version>-->
+
         <org.eclipse.osgi.version>3.9.1.v20130814-1242</org.eclipse.osgi.version>
         <!--simple-json.version>1.1</simple-json.version-->
         <batik.version>1.7.0.wso2v1</batik.version>
