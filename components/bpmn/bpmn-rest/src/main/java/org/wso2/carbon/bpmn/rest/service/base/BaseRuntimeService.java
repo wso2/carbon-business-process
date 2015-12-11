@@ -27,12 +27,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
-import org.apache.commons.io.IOUtils;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
@@ -46,8 +41,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.*;
 
 public class BaseRuntimeService {
@@ -296,7 +289,7 @@ public class BaseRuntimeService {
         Response.noContent().build();
     }
 
-    protected Object createExecutionVariable(Execution execution, boolean override, int variableType) {
+/*    protected Object createExecutionVariable(Execution execution, boolean override, int variableType) {
 
         Object result = null;
         if (request instanceof MultipartHttpServletRequest) {
@@ -368,8 +361,9 @@ public class BaseRuntimeService {
         }
         Response.created(uriInfo.getRequestUri());
         return result;
-    }
+    }*/
 
+/*
     protected RestVariable setBinaryVariable(MultipartHttpServletRequest request,
             Execution execution, int responseVariableType, boolean isNew) {
 
@@ -454,6 +448,7 @@ public class BaseRuntimeService {
         }
 
     }
+*/
 
     protected void setVariable(Execution execution, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new variables. Existing variables should be updated using PUT
