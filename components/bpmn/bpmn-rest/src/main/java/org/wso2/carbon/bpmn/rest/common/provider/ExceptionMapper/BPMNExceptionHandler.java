@@ -37,6 +37,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
 
     private final Log log = LogFactory.getLog(BPMNExceptionHandler.class);
+
     @Override
     public Response toResponse(Exception e) {
 
@@ -64,10 +65,10 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             return createRestErrorResponse(Response.Status.UNAUTHORIZED, e.getMessage());
         } else if(e instanceof ClientErrorException){
             log.error("unsupported operation", e);
-            return createRestErrorResponse(Response.Status.METHOD_NOT_ALLOWED, "unsupported operation");
+            return createRestErrorResponse(Response.Status.UNSUPPORTED_MEDIA_TYPE, "unsupported operation");
         } else if(e instanceof WebApplicationException){
             log.error("Web application exception thrown ", e);
-            return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Web application exception thrown");
+            return createRestErrorResponse(Response.Status.SERVICE_UNAVAILABLE, "Web application exception thrown");
         }  else if(e instanceof UserStoreException){
             log.error("User store exception thrown ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "User store exception thrown");
