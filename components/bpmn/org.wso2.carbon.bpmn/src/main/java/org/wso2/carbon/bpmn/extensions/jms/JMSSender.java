@@ -19,7 +19,6 @@ package org.wso2.carbon.bpmn.extensions.jms;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.el.JuelExpression;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
@@ -33,15 +32,17 @@ import javax.naming.Context;
 import javax.xml.namespace.QName;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
 /**
  * Created by dilini on 11/30/15.
  */
-public class JMSTask implements JavaDelegate{
+public class JMSSender implements JavaDelegate{
 
-    private static final Log log = LogFactory.getLog(JMSTask.class);
+    private static final Log log = LogFactory.getLog(JMSSender.class);
 
     private static final String JMS_INVOKE_ERROR = "JMSInvokeError";
 
@@ -50,10 +51,9 @@ public class JMSTask implements JavaDelegate{
     private JuelExpression inputMessage;
     private JuelExpression destinationType;
     private JuelExpression destination;
-    private JuelExpression initialContextFactory;
-    private JuelExpression providerURL;
+    private JuelExpression jmsProvider;
 
-    public JMSTask(){   jmsInvoker = BPMNJMSExtensionHolder.getInstance().getJMSInvoker();  }
+    public JMSSender(){   jmsInvoker = BPMNJMSExtensionHolder.getInstance().getJMSInvoker();  }
 
 
     @Override
@@ -66,39 +66,21 @@ public class JMSTask implements JavaDelegate{
         String dest = null;
         String initContextFactory = null;
         String provURL = null;
+        String jmsProviderID = null;
 
-        String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-        String activitiConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-        File configFile = new File(activitiConfigPath);
-        String configContent = FileUtils.readFileToString(configFile);
-        OMElement configElement = AXIOMUtil.stringToOM(configContent);
+        if(jmsProvider == null) {
+            String jmsProviderNotFoundError = "JMS Provider is not provided for " +
+                    getTaskDetails(delegateExecution) + ". jmsProvider must be provided.";
+            throw new BPMNJMSException(jmsProviderNotFoundError);
 
-        Iterator beans = configElement.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "bean"));
-        while (beans.hasNext()) {
-            OMElement bean = (OMElement) beans.next();
-            String beanId = bean.getAttributeValue(new QName(null, "id"));
-            if(beanId.equals(BPMNConstants.JMS_PROVIDER_CONFIGURATION)){
-                Iterator beanProps = bean.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "property"));
-                while (beanProps.hasNext()) {
-                    OMElement beanProp = (OMElement) beanProps.next();
-                     if (BPMNConstants.JMS_INITIAL_CONTEXT_FACTORY.equals(beanProp.getAttributeValue(new QName(null, "name")))) {
-                        initContextFactory = beanProp.getAttributeValue(new QName(null, "value"));
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(BPMNConstants.JMS_PROVIDER_URL)) {
-                        provURL = beanProp.getAttributeValue(new QName(null, "value"));;
-                    }
-                }
-            }
+        }else{
+            jmsProviderID = jmsProvider.getValue(delegateExecution).toString();
+            Hashtable<String, String> propertyList = ActiviitiFileReader.readJMSProviderInformation(jmsProviderID);
+            initContextFactory = propertyList.get(BPMNConstants.JMS_INITIAL_CONTEXT_FACTORY);
+            provURL = propertyList.get(BPMNConstants.JMS_PROVIDER_URL);
         }
 
         try {
-
-            if(initialContextFactory != null){
-                initContextFactory = initialContextFactory.getValue(delegateExecution).toString();
-            }
-
-            if(providerURL != null){
-                provURL = providerURL.getValue(delegateExecution).toString();
-            }
 
             if(destinationType != null){
                 destType = destinationType.getValue(delegateExecution).toString();
@@ -158,11 +140,5 @@ public class JMSTask implements JavaDelegate{
         this.destination = destination;
     }
 
-    public void setInitialContextFactory(JuelExpression initialContextFactory) {
-        this.initialContextFactory = initialContextFactory;
-    }
-
-    public void setProviderURL(JuelExpression providerURL) {
-        this.providerURL = providerURL;
-    }
+    public void setJmsProvider(JuelExpression jmsProvider){ this.jmsProvider = jmsProvider; }
 }

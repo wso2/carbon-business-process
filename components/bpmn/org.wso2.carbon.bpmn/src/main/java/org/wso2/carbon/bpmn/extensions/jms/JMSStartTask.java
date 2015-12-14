@@ -33,7 +33,7 @@ public class JMSStartTask implements MessageListener {
     private Destination destination = null;
     private Thread idleThread = null;
 
-    public void receiveMessage(String connectionFactory, String provURL, String queueName) {
+    public JMSStartTask(String connectionFactory, String provURL, String queueName){
         Properties properties = new Properties();
         properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, connectionFactory);
         properties.setProperty(Context.PROVIDER_URL, provURL);

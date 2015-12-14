@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.bpmn.core.deployment;
 
+import com.jayway.jsonpath.JsonPath;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -34,8 +35,10 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.Utils;
-import org.wso2.carbon.bpmn.extensions.jms.BPMNJMSException;
-import org.wso2.carbon.bpmn.extensions.jms.JMSStartTask;
+import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeployment;
+import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
+import org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService;
+import org.wso2.carbon.bpmn.extensions.jms.*;
 import org.wso2.carbon.registry.api.Collection;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
@@ -203,7 +206,7 @@ public class TenantRepository {
 
             deploymentBuilder.addZipInputStream(archiveStream);
             deploymentBuilder.deploy();
-            this.setConfiguration(deploymentContext);
+            setConfiguration(deploymentContext);
 
         } catch (Exception e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
@@ -439,6 +442,77 @@ public class TenantRepository {
         List<String> activitiDeploymentNames = new ArrayList<String>();
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
+
+        BPMNDeploymentService deploymentService = new BPMNDeploymentService();
+        BPMNDeployment deployments[] = deploymentService.getDeployments();
+
+        BufferedReader reader = null;
+        StringBuilder stringBuilder = null;
+        String jmsProviderID = null;
+        String destinationName = null;
+        String destinationType = null;
+        String line;
+
+        for (int i = 0; i < deployments.length; i++) {
+            List<String> names = repositoryService.getDeploymentResourceNames(deployments[i].getDeploymentId());
+            for (int j = 0; j < names.size(); j++) {
+                if(names.get(j).endsWith(".xml")){
+                    InputStream fileStream = repositoryService.getResourceAsStream(deployments[i].getDeploymentId(), names.get(j));
+                    stringBuilder = new StringBuilder();
+                    try {
+                        reader = new BufferedReader(new InputStreamReader(fileStream));
+                        while((line = reader.readLine()) != null){
+                            stringBuilder.append(line);
+                        }
+
+                        String configFile = stringBuilder.toString();
+
+                        OMElement configElement = AXIOMUtil.stringToOM(configFile);
+
+                        Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
+
+                        while (processes.hasNext()) {
+                            OMElement process = (OMElement) processes.next();
+                            Iterator serviceTasks = process.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "serviceTask"));
+
+                            while(serviceTasks.hasNext()){
+                                OMElement serviceTask = (OMElement)serviceTasks.next();
+                                String taskClass = serviceTask.getAttributeValue(new QName("http://activiti.org/bpmn", "class"));
+                                if(JMSConstants.JMS_SENDER.equals(taskClass)){
+                                    Iterator extensionElements = serviceTask.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
+                                    while(extensionElements.hasNext()){
+                                        OMElement extensionElement = (OMElement)extensionElements.next();
+                                        Iterator fields = extensionElement.getChildrenWithName(new QName("http://activiti.org/bpmn", "field"));
+
+                                        while(fields.hasNext()){
+                                            OMElement field = (OMElement)fields.next();
+                                            String name = field.getAttributeValue(new QName(null, "name"));
+                                            switch (name){
+                                                case JMSConstants.JMS_PROVIDER:
+                                                    Iterator expressions = field.getChildrenWithName(new QName("http://activiti.org/bpmn", "expression"));
+                                                    while(expressions.hasNext()){
+                                                        OMElement expression = (OMElement)expressions.next();
+                                                        jmsProviderID = expression.getText();
+                                                    }
+                                                    break;
+
+                                                case JMSConstants.
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }catch (IOException e){
+                        log.error(e.getMessage());
+                    } catch (XMLStreamException e) {
+                        log.error(e.getMessage());
+                    }
+                }
+            }
+        }
+
         List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).list();
         for (Deployment deployment : tenantDeployments) {
             String deploymentName = deployment.getName();
@@ -501,7 +575,14 @@ public class TenantRepository {
         }
     }
 
-
+    /**
+     *
+     * @param deploymentContext
+     * @throws IOException
+     * @throws XMLStreamException
+     * @throws BPMNJMSException
+     * @throws BPSFault
+     */
     private void setConfiguration(BPMNDeploymentContext deploymentContext) throws IOException, XMLStreamException, BPMNJMSException, BPSFault {
 
         String outputMappingsString = null;
@@ -525,15 +606,13 @@ public class TenantRepository {
                 configFile = configFile.concat(new String(Arrays.copyOf(bytesIn, read)));
             }
 
-//            log.info(configFile);
-
             OMElement configElement = AXIOMUtil.stringToOM(configFile);
 
-            Iterator beans = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
+            Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
 
-            while (beans.hasNext()) {
+            while (processes.hasNext()) {
 
-                OMElement process = (OMElement) beans.next();
+                OMElement process = (OMElement) processes.next();
                 String processId = process.getAttributeValue(new QName(null, "id"));
                 if (processId.equals("startProcess")) {
                     Iterator startEvent = process.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "startEvent"));
@@ -589,8 +668,16 @@ public class TenantRepository {
                                         throw new BPMNJMSException(queueNameNotFoundErrorMsg);
                                     }
 
-                                    JMSStartTask startTask = new JMSStartTask();
-                                    startTask.receiveMessage(initConFac, provURL, queueName);
+                                    HashMap<String, String> outputVariables = new HashMap<>();
+
+                                    String variables[] = outputMappingsString.split(";");
+                                    for (int i = 0; i < variables.length; i++) {
+                                        String fields[] = variables[i].split("#");
+                                        if("required".equals(fields[2])){
+                                            outputVariables.put(fields[0], fields[1]);
+                                        }
+                                    }
+                                    JMSStartTask startTask = new JMSStartTask(initConFac, provURL, queueName);
 
                                     String processID = list.get(count++).getId();
                                     messageListeners.put(processID, startTask);
