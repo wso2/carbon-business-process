@@ -141,6 +141,6 @@
 
     <bean id="authenticationBean" class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
     <bean id="exceptionHandlerBean"
-          class="rg.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+          class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
     <bean id="jacksonBean" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
 </beans>
