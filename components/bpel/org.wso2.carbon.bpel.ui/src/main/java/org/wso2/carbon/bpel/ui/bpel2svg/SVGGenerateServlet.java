@@ -28,7 +28,7 @@ import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
 import org.wso2.carbon.utils.ServerConstants;
-import org.wso2.carbon.bpel.core.*;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,21 +41,6 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import javax.xml.xpath.*;
-import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPathExpression;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import java.io.PrintWriter;
-
-
-
 /**
  * SVG Generator
  */
