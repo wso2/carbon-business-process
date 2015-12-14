@@ -31,9 +31,9 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.repository.ProcessDefinitionService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -45,9 +45,9 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.correlate.CorrelationService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -63,9 +63,9 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.query.QueryExecutionService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -78,9 +78,9 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.history.HistoricVariableInstanceService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -89,9 +89,9 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.form.FormDataService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -100,34 +100,30 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.form.ProcessDefinitionFormPropertyService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
-
-
-
 
     <jaxrs:server id="identityService" address="/identity">
         <jaxrs:serviceBeans>
             <bean class="org.wso2.carbon.bpmn.rest.service.identity.IdentityService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
     <jaxrs:server id="managementService" address="/management">
         <jaxrs:serviceBeans>
             <bean class="org.wso2.carbon.bpmn.rest.service.management.ManagementService"/>
-
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -137,10 +133,14 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.stats.UserService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
-            <bean class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
-            <bean class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
-            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
+    <bean id="authenticationBean" class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
+    <bean id="exceptionHandlerBean"
+          class="rg.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+    <bean id="jacksonBean" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
 </beans>
