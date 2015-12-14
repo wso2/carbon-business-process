@@ -73,7 +73,6 @@ public class CorrelationService extends BaseExecutionService {
             throw new ActivitiIllegalArgumentException("Only one of processDefinitionId or processDefinitionKey should be set.");
         }
 
-        paramsSet = 0;
         paramsSet =  ((correlationActionRequest.getMessageName() != null) ? 1 : 0)
                 + ((correlationActionRequest.getSignalName() != null) ? 1 : 0);
 
@@ -141,9 +140,9 @@ public class CorrelationService extends BaseExecutionService {
         }
 
         value = correlationActionRequest.getTenantId();
-        if(value != null) {
-            query.executionTenantId(value);
-        }
+            if(value != null) {
+                query.executionTenantId(value);
+            }
 
 /*        PaginateRequest paginateRequest = new PaginateRequest();
         paginateRequest.setStart(0);
