@@ -206,8 +206,40 @@ public class TenantRepository {
 
             deploymentBuilder.addZipInputStream(archiveStream);
             deploymentBuilder.deploy();
-            setConfiguration(deploymentContext);
 
+            /**
+             * **************************** Code for JMSStartTask ***************************************
+             */
+
+//            ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+//
+//            List<ProcessDefinition> list = getDeployedProcessDefinitions();
+//
+//            ZipEntry entry = zipInputStream.getNextEntry();
+//            String configFile = new String();
+//            int read = 0;
+//            int count = 0;
+//            String processID = null;
+//
+//            while(entry != null) {
+//                byte[] bytesIn = new byte[4096];
+//
+//                while ((read = zipInputStream.read(bytesIn)) != -1) {
+//                    configFile = configFile.concat(new String(Arrays.copyOf(bytesIn, read)));
+//                }
+//
+////                processID = list.get(count++).getDeploymentId();
+//
+//                Hashtable<String, String> paramList = readBPMNArchive(configFile);
+//                if(!paramList.isEmpty()){
+//                    JMSListener listener = new JMSListener(paramList.get(JMSConstants.JMS_PROVIDER), paramList);
+////                    messageListeners.put(processID, listener);
+//                }
+//            }
+
+            /**
+             * **************************** End of code for JMSStartTask ***************************************
+             */
         } catch (Exception e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
             log.error(errorMessage, e);
@@ -443,68 +475,53 @@ public class TenantRepository {
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
 
+
+        /**
+         * ************************* Code for the JMSStartTask *********************************
+         */
+
+        HashMap<String, Hashtable<String, String>> providerList = new HashMap<>();
+
+        List<String> jmsProviderIDs = ActiviitiFileReader.readJMSProviderIDList();
+        for(String jmsProviderID : jmsProviderIDs){
+            providerList.put(jmsProviderID, ActiviitiFileReader.readJMSProviderInformation(jmsProviderID));
+        }
+
+        JMSConnectionFactoryManager factoryManager = JMSConnectionFactoryManager.getInstance();
+        factoryManager.initializeConnectionFactories(providerList);
+
         BPMNDeploymentService deploymentService = new BPMNDeploymentService();
         BPMNDeployment deployments[] = deploymentService.getDeployments();
 
         BufferedReader reader = null;
         StringBuilder stringBuilder = null;
-        String jmsProviderID = null;
-        String destinationName = null;
-        String destinationType = null;
         String line;
+        Hashtable<String, String> paramList = null;
 
         for (int i = 0; i < deployments.length; i++) {
             List<String> names = repositoryService.getDeploymentResourceNames(deployments[i].getDeploymentId());
             for (int j = 0; j < names.size(); j++) {
-                if(names.get(j).endsWith(".xml")){
+                if (names.get(j).endsWith(".xml")) {
                     InputStream fileStream = repositoryService.getResourceAsStream(deployments[i].getDeploymentId(), names.get(j));
                     stringBuilder = new StringBuilder();
                     try {
                         reader = new BufferedReader(new InputStreamReader(fileStream));
-                        while((line = reader.readLine()) != null){
+                        while ((line = reader.readLine()) != null) {
                             stringBuilder.append(line);
                         }
 
                         String configFile = stringBuilder.toString();
+                        log.info(configFile);
+                        paramList = readBPMNArchive(configFile);
 
-                        OMElement configElement = AXIOMUtil.stringToOM(configFile);
-
-                        Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
-
-                        while (processes.hasNext()) {
-                            OMElement process = (OMElement) processes.next();
-                            Iterator serviceTasks = process.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "serviceTask"));
-
-                            while(serviceTasks.hasNext()){
-                                OMElement serviceTask = (OMElement)serviceTasks.next();
-                                String taskClass = serviceTask.getAttributeValue(new QName("http://activiti.org/bpmn", "class"));
-                                if(JMSConstants.JMS_SENDER.equals(taskClass)){
-                                    Iterator extensionElements = serviceTask.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
-                                    while(extensionElements.hasNext()){
-                                        OMElement extensionElement = (OMElement)extensionElements.next();
-                                        Iterator fields = extensionElement.getChildrenWithName(new QName("http://activiti.org/bpmn", "field"));
-
-                                        while(fields.hasNext()){
-                                            OMElement field = (OMElement)fields.next();
-                                            String name = field.getAttributeValue(new QName(null, "name"));
-                                            switch (name){
-                                                case JMSConstants.JMS_PROVIDER:
-                                                    Iterator expressions = field.getChildrenWithName(new QName("http://activiti.org/bpmn", "expression"));
-                                                    while(expressions.hasNext()){
-                                                        OMElement expression = (OMElement)expressions.next();
-                                                        jmsProviderID = expression.getText();
-                                                    }
-                                                    break;
-
-                                                case JMSConstants.
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                        if(!paramList.isEmpty()){
+                            JMSListener listener = new JMSListener(paramList.get(JMSConstants.JMS_PROVIDER), paramList);
+                            messageListeners.put(deployments[i].getDeploymentId(), listener);
                         }
 
-                    }catch (IOException e){
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                    } catch (BPMNJMSException e) {
                         log.error(e.getMessage());
                     } catch (XMLStreamException e) {
                         log.error(e.getMessage());
@@ -512,6 +529,10 @@ public class TenantRepository {
                 }
             }
         }
+
+        /**
+         * ************************* End of code for the JMSStartTask *********************************
+         */
 
         List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).list();
         for (Deployment deployment : tenantDeployments) {
@@ -577,121 +598,132 @@ public class TenantRepository {
 
     /**
      *
-     * @param deploymentContext
-     * @throws IOException
-     * @throws XMLStreamException
+     * @param file
+     * @return
      * @throws BPMNJMSException
-     * @throws BPSFault
+     * @throws XMLStreamException
      */
-    private void setConfiguration(BPMNDeploymentContext deploymentContext) throws IOException, XMLStreamException, BPMNJMSException, BPSFault {
 
+    private Hashtable<String, String> readBPMNArchive(String file) throws BPMNJMSException, XMLStreamException {
+        Hashtable<String, String> paramList = new Hashtable<>();
+        String jmsProviderID = null;
+        String destinationName = null;
+        String destinationType = null;
+        String username = null;
+        String password = null;
+        String cacheLevel = null;
         String outputMappingsString = null;
-        String queueName = null;
         String onError = null;
-        String initConFac = null;
-        String provURL = null;
-        int read = 0;
-        int count = 0;
 
-        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+        OMElement configElement = AXIOMUtil.stringToOM(file);
 
-        ZipEntry entry = zipInputStream.getNextEntry();
-        String configFile = new String();
-        List<ProcessDefinition> list = getDeployedProcessDefinitions();
+        Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
 
-        while(entry != null){
-            byte[] bytesIn = new byte[4096];
+        while (processes.hasNext()) {
 
-            while ((read = zipInputStream.read(bytesIn)) != -1) {
-                configFile = configFile.concat(new String(Arrays.copyOf(bytesIn, read)));
-            }
+            OMElement process = (OMElement) processes.next();
+            String processId = process.getAttributeValue(new QName(null, "id"));
+            if (processId.equals("startProcess")) {
+                Iterator startEvent = process.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "startEvent"));
 
-            OMElement configElement = AXIOMUtil.stringToOM(configFile);
+                while (startEvent.hasNext()) {
+                    OMElement startElement = (OMElement) startEvent.next();
 
-            Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
+                    Iterator extensionElements = startElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
+                    while (extensionElements.hasNext()) {
+                        OMElement exeElements = (OMElement) extensionElements.next();
+                        Iterator listeners = exeElements.getChildrenWithName(new QName("http://activiti.org/bpmn", "executionListener"));
 
-            while (processes.hasNext()) {
+                        if(listeners.hasNext()){
+                            OMElement execListener = (OMElement)listeners.next();
+                            String className = execListener.getAttributeValue(new QName(null, "class"));
+                            if(JMSConstants.JMS_START_TASK.equals(className)){
+                                Iterator children = exeElements.getChildrenWithNamespaceURI("https://www.wso2.com");
 
-                OMElement process = (OMElement) processes.next();
-                String processId = process.getAttributeValue(new QName(null, "id"));
-                if (processId.equals("startProcess")) {
-                    Iterator startEvent = process.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "startEvent"));
+                                while (children.hasNext()) {
+                                    OMElement child = (OMElement) children.next();
 
-                    while (startEvent.hasNext()) {
-                        OMElement startElement = (OMElement) startEvent.next();
+                                    switch (child.getLocalName()){
+                                        case JMSConstants.JMS_PROVIDER:
+                                            jmsProviderID = child.getText();
+                                            break;
 
-                        Iterator extensionElements = startElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
-                        while (extensionElements.hasNext()) {
-                            OMElement exeElements = (OMElement) extensionElements.next();
-                            Iterator listeners = exeElements.getChildrenWithName(new QName("http://activiti.org/bpmn", "executionListener"));
+                                        case JMSConstants.JMS_DESTINATION_TYPE:
+                                            destinationType = child.getText();
+                                            break;
 
-                            if(listeners.hasNext()){
-                                OMElement execListener = (OMElement)listeners.next();
-                                String className = execListener.getAttributeValue(new QName(null, "class"));
-                                if(BPMNConstants.JMS_START_TASK.equals(className)){
-                                    Iterator children = exeElements.getChildrenWithNamespaceURI("https://www.wso2.com");
+                                        case JMSConstants.JMS_DESTINATION_NAME:
+                                            destinationName = child.getText();
+                                            break;
 
-                                    while (children.hasNext()) {
-                                        OMElement child = (OMElement) children.next();
+                                        case JMSConstants.JMS_CONNECTION_USERNAME:
+                                            username = child.getText();
+                                            break;
 
-                                        switch (child.getLocalName()) {
-                                            case "outputMappings":
-                                                outputMappingsString = child.getText();
-                                                break;
-                                            case "onError":
-                                                onError = child.getText();
-                                                break;
-                                            case "queue":
-                                                queueName = child.getText();
-                                                break;
-                                            case "initialConnectionFactory":
-                                                initConFac = child.getText();
-                                                break;
-                                            case "providerURL":
-                                                provURL = child.getText();
-                                                break;
-                                        }
+                                        case JMSConstants.JMS_CONNECTION_PASSWORD:
+                                            password = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_CACHE_LEVEL:
+                                            cacheLevel = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_OUTPUT_MAPPINGS:
+                                            outputMappingsString = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_ON_ERROR:
+                                            onError = child.getText();
+                                            break;
+
                                     }
+                                }
 
-                                    if(initConFac == null){
-                                        String initConFacNotFoundErrorMsg = "Initial Connection Factory is not provided. initialConnectionFactory must be provided.";
-                                        throw new BPMNJMSException(initConFacNotFoundErrorMsg);
-                                    }
+                                if(jmsProviderID == null){
+                                    String providerNotFoundErrorMsg = "JMS Provider ID is not provided. jmsProviderID must be provided.";
+                                    throw new BPMNJMSException(providerNotFoundErrorMsg);
+                                }else{
+                                   paramList.put(JMSConstants.JMS_PROVIDER, jmsProviderID);
+                                }
+                                if(destinationType == null){
+                                    String destTypeNotFoundErrorMsg = "JMS Destination Type is not provided. destinationType must be provided.";
+                                    throw new BPMNJMSException(destTypeNotFoundErrorMsg);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_DESTINATION_TYPE, destinationType);
+                                }
+                                if(destinationName == null){
+                                    String destNameNotFoundErrorMsg = "JMS Destination Name is not provided. destination must be provided.";
+                                    throw new BPMNJMSException(destNameNotFoundErrorMsg);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_DESTINATION, destinationName);
+                                }
 
-                                    if(provURL == null){
-                                        String provURLNotFoundErrorMsg = "Provider URL is not provided. providerURL must be provided.";
-                                        throw new BPMNJMSException(provURLNotFoundErrorMsg);
-                                    }
+                                if(username != null){
+                                    paramList.put(JMSConstants.PARAM_USERNAME, username);
+                                }
 
-                                    if(queueName == null){
-                                        String queueNameNotFoundErrorMsg = "Queue Name is not provided. queue must be provided.";
-                                        throw new BPMNJMSException(queueNameNotFoundErrorMsg);
-                                    }
+                                if(password != null){
+                                    paramList.put(JMSConstants.PARAM_PASSWORD, password);
+                                }
 
-                                    HashMap<String, String> outputVariables = new HashMap<>();
+                                if(cacheLevel != null){
+                                    paramList.put(JMSConstants.PARAM_CACHE_LEVEL, cacheLevel);
+                                }
 
-                                    String variables[] = outputMappingsString.split(";");
-                                    for (int i = 0; i < variables.length; i++) {
-                                        String fields[] = variables[i].split("#");
-                                        if("required".equals(fields[2])){
-                                            outputVariables.put(fields[0], fields[1]);
-                                        }
-                                    }
-                                    JMSStartTask startTask = new JMSStartTask(initConFac, provURL, queueName);
+                                if(outputMappingsString != null){
+                                    paramList.put(JMSConstants.PARAM_OUTPUT_MAPPINGS, outputMappingsString);
+                                }
 
-                                    String processID = list.get(count++).getId();
-                                    messageListeners.put(processID, startTask);
+                                if(onError != null){
+                                    paramList.put(JMSConstants.PARAM_ON_ERROR, onError);
                                 }
                             }
                         }
                     }
                 }
             }
-
-            configFile = new String();
-            zipInputStream.closeEntry();
-            entry = zipInputStream.getNextEntry();
         }
+        return paramList;
     }
 }
 

@@ -24,49 +24,49 @@ public class JMSListener implements MessageListener{
     private MessageConsumer consumer = null;
     private Destination destination = null;
     private Thread idleThread = null;
+    private Hashtable<String, String> parameters = null;
 
     public JMSListener(String jmsProviderID, Hashtable<String, String> parameters) {
+        this.parameters = parameters;
+        if(jmsProviderID != null) {
+            String destinationType = parameters.get(JMSConstants.PARAM_DESTINATION_TYPE);
+            String destinationName = parameters.get(JMSConstants.PARAM_DESTINATION);
 
-        /*Remember to initialize JMSConnectionFactoryManager at the beginning of deploy and fixedDeploy methods
-        * in TenantRepository and then call the initConnectionFactories method.
-        */
-        connectionFactory = JMSConnectionFactoryManager.getInstance().getConnectionFactory(jmsProviderID);
-        connection = connectionFactory.getConnection();
-        session = connectionFactory.getSession(connection);
+            connectionFactory = JMSConnectionFactoryManager.getInstance().getConnectionFactory(jmsProviderID);
+            connection = connectionFactory.getConnection();
+            session = connectionFactory.getSession(connection);
+            destination = connectionFactory.getDestination(destinationName, destinationType);
 
-        String destinationType = parameters.get(JMSConstants.PARAM_DESTINATION_TYPE);
-        String destinationName = parameters.get(JMSConstants.PARAM_DESTINATION);
-        destination = connectionFactory.getDestination(destinationName, destinationType);
-
-        try {
-            if ("queue".equalsIgnoreCase(destinationType)) {
-                consumer = ((QueueSession) session).createReceiver((Queue) destination);
-            } else if ("topic".equalsIgnoreCase(destinationType)) {
-                consumer = ((TopicSession) session).createSubscriber((Topic) destination);
-            } else {
-                log.error("Invalid destination type: " + destinationType);
-            }
-
-            if(consumer != null){
-                consumer.setMessageListener(this);
-            }
-
-            connection.start();
-
-            Runnable idleRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    while (true){
-
-                    }
+            try {
+                if (JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(destinationType)) {
+                    consumer = ((QueueSession) session).createReceiver((Queue) destination);
+                } else if (JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(destinationType)) {
+                    consumer = ((TopicSession) session).createSubscriber((Topic) destination);
+                } else {
+                    log.error("Invalid destination type: " + destinationType);
                 }
-            };
 
-            idleThread = new Thread(idleRunnable);
-            idleThread.start();
-            log.info("JMS MessageListener for destination: " + destinationName + " started to listen" );
-        } catch (JMSException e) {
-            log.error("Error creating a JMS Consumer from this JMS Session", e);
+                if (consumer != null) {
+                    consumer.setMessageListener(this);
+                }
+
+                connection.start();
+
+                Runnable idleRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true) {
+
+                        }
+                    }
+                };
+
+                idleThread = new Thread(idleRunnable);
+                idleThread.start();
+                log.info("JMS MessageListener for destination: " + destinationName + " started to listen");
+            } catch (JMSException e) {
+                log.error("Error creating a JMS Consumer from this JMS Session", e);
+            }
         }
     }
 
@@ -76,11 +76,24 @@ public class JMSListener implements MessageListener{
             if (message instanceof TextMessage) {
                 TextMessage text = (TextMessage) message;
 
-                log.info("Message received is : " + text.getText());
                 ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
                 RuntimeService runtimeService = processEngine.getRuntimeService();
 
                 Map<String, Object> variableMap = new HashMap<>();
+                String outputMappings = parameters.get(JMSConstants.PARAM_OUTPUT_MAPPINGS);
+
+                if(outputMappings != null){
+                    String variables[] = outputMappings.split(";");
+                    for (int i = 0; i < variables.length; i++) {
+                        String fields[] = variables[i].split("#");
+                        if("required".equals(fields[2])){
+
+                            //Have to read the value from the message and assign it here instead of fields[1]
+                            variableMap.put(fields[0], fields[1]);
+                        }
+                    }
+                }
+
                 runtimeService.startProcessInstanceByMessageAndTenantId(text.getText(), variableMap, "-1234");
 
             }

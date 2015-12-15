@@ -162,33 +162,34 @@ public class JMSUtils {
      * @throws NamingException
      * @throws BPMNJMSException
      */
-    public static <T> T lookup(Context context, Class<T> className, String name) throws NamingException{
-        Object object = context.lookup(name);
+    public <T> T lookup(Context context, Class<T> className, String name) throws NamingException{
+        Object object;
+        object = context.lookup(name);
 
-        try{
+        try {
             return className.cast(object);
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             String exceptionMsg = "JNDI failed to de-reference Reference with name " + name;
             log.error(exceptionMsg);
             return null;
         }
     }
 
-    public static Destination lookupDestination(Context context, String destinationName, String destinationType)
+    public Destination lookupDestination(Context context, String destinationName, String destinationType)
             throws NamingException {
         if(destinationName == null){
             return null;
         }
 
         try {
-            return JMSUtils.lookup(context,Destination.class, destinationName);
+            return lookup(context,Destination.class, destinationName);
         } catch (NameNotFoundException e) {
             try{
                 Properties initialProperties = new Properties();
                 if(context.getEnvironment() != null){
-                    if(context.getEnvironment().get(JMSConstants.NAMING_FACTOR_INITIAL) != null){
-                        initialProperties.put(JMSConstants.NAMING_FACTOR_INITIAL,
-                                context.getEnvironment().get(JMSConstants.NAMING_FACTOR_INITIAL));
+                    if(context.getEnvironment().get(JMSConstants.NAMING_FACTORY_INITIAL) != null){
+                        initialProperties.put(JMSConstants.NAMING_FACTORY_INITIAL,
+                                context.getEnvironment().get(JMSConstants.NAMING_FACTORY_INITIAL));
                     }if(context.getEnvironment().get(JMSConstants.JMS_PROVIDER_URL) != null){
                         initialProperties.put(JMSConstants.JMS_PROVIDER_URL,
                                 context.getEnvironment().get(JMSConstants.JMS_PROVIDER_URL));
@@ -205,7 +206,7 @@ public class JMSUtils {
                 }
 
                 InitialContext initialContext = new InitialContext(initialProperties);
-                return JMSUtils.lookup(initialContext, Destination.class, destinationName);
+                return lookup(initialContext, Destination.class, destinationName);
 
             }catch (NamingException ex){
                 log.warn("Cannot locate destination: " + destinationName);

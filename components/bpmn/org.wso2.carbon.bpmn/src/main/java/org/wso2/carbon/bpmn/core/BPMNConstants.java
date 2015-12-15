@@ -59,7 +59,7 @@ public class BPMNConstants {
     public static final String JMS_PROVIDER_URL = "providerURL";
     public static final String JMS_CONNECTION_FACTORY_JNDI_NAME = "ConnectionFactoryJNDIName";
 
-    public static final String JMS_START_TASK = "org.wso2.carbon.bpmn.extensions.jms.JMSStartEvent";
+    public static final String JMS_START_TASK = "org.wso2.carbon.bpmn.extensions.jms.JMSListener";
     public static final String JMS_SENDER = "org.wso2.carbon.bpmn.extensions.jms.JMSSender";
     public static final String JMS_PROVIDER = "jmsProvider";
 }

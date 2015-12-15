@@ -7,10 +7,7 @@ import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -47,6 +44,8 @@ public class JMSConnectionFactory {
 
     private int maxSharedConnectionCount = 10;
 
+    JMSUtils utils = new JMSUtils();
+
     /**
      *
      */
@@ -56,21 +55,25 @@ public class JMSConnectionFactory {
         digestCacheLevel();
 
         try {
+            Properties properties = new Properties();
+            properties.put(Context.INITIAL_CONTEXT_FACTORY, parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME));
+            properties.put(Context.PROVIDER_URL, parameters.get(JMSConstants.JMS_PROVIDER_URL));
             context = new InitialContext(parameters);
-            connectionFactory = JMSUtils.lookup(context, ConnectionFactory.class,
+
+            connectionFactory = utils.lookup(context, ConnectionFactory.class,
                     parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME));
 
             if(parameters.get(JMSConstants.PARAM_DESTINATION) != null){
-                sharedDestination = JMSUtils.lookup(context, Destination.class,
+                sharedDestination = utils.lookup(context, Destination.class,
                         parameters.get(JMSConstants.PARAM_DESTINATION));
             }
 
-            log.info("JMS ConnectionFactory initialized");
+            log.info("JMS ConnectionFactory initialized for: " + parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME));
         }catch (NamingException e){
             String errorMsg = "Cannot acquire JNDI context, JMS Connection factory : " +
                     parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME) + " or default destination : " +
                     parameters.get(JMSConstants.PARAM_DESTINATION) +
-                    "using : " + parameters;
+                    " using : " + parameters;
             log.error(errorMsg);
         }
     }
@@ -179,7 +182,7 @@ public class JMSConnectionFactory {
      */
     public Destination getDestination(String destinationName, String destinationType){
         try {
-            return JMSUtils.lookupDestination(context, destinationName, destinationType);
+            return utils.lookupDestination(context, destinationName, destinationType);
         } catch (NamingException e) {
             log.error("Error looking up the JMS destination with name " + destinationName
                     + " of type " + destinationType, e);
@@ -192,9 +195,9 @@ public class JMSConnectionFactory {
         if(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE) == null){
             return false;
         }else{
-            if("queue".equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
+            if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
                 return true;
-            }else if("topic".equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
+            }else if(JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
                 return false;
             }else{
                 String invalidDestTypeErrorMsg = "Invalid " + JMSConstants.PARAM_DESTINATION_TYPE + ": " +
