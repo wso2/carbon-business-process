@@ -105,7 +105,6 @@ public class BPMNDataReceiverConfig {
                         base64DecodeAndDecrypt(encryptedPassword);
                 password = new String(decryptedPassword);
             } catch (CryptoException e) {
-                password = AnalyticsPublisherConstants.PASSWORD;
                 String errMsg = "CryptoUtils Error while reading the password from the carbon registry.";
                 log.error(errMsg, e);
             }
