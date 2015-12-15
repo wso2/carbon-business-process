@@ -1,3 +1,19 @@
+/*
+ * Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.extensions.jms;
 
 import org.apache.axiom.om.OMElement;
@@ -71,12 +87,25 @@ public class ActiviitiFileReader {
 
     public static List<String> readJMSProviderIDList(){
         List <String> providerIDList = new ArrayList<>();
-        providerIDList.add("activemqJmsProviderConfiguration");
-//        providerIDList.add("openJmsProviderConfiguration");
-//        providerIDList.add("websphereJmsProviderConfiguration");
-//        providerIDList.add("jbossJmsProviderConfiguration");
-//        providerIDList.add("qpidJmsProviderConfiguration");
 
+        try {
+            String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+            String activitiConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+            File configFile = new File(activitiConfigPath);
+            String configContent = FileUtils.readFileToString(configFile);
+            OMElement configElement = AXIOMUtil.stringToOM(configContent);
+
+            Iterator beans = configElement.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "bean"));
+            while (beans.hasNext()) {
+                OMElement bean = (OMElement) beans.next();
+                String beanId = bean.getAttributeValue(new QName(null, "id"));
+                providerIDList.add(beanId);
+            }
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
         return providerIDList;
     }
 }

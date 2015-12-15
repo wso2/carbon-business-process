@@ -1,12 +1,37 @@
+/*
+ * Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.wso2.carbon.bpmn.extensions.jms;
 
+import com.jayway.jsonpath.JsonPath;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xml.sax.InputSource;
 
 import javax.jms.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -82,23 +107,44 @@ public class JMSListener implements MessageListener{
                 Map<String, Object> variableMap = new HashMap<>();
                 String outputMappings = parameters.get(JMSConstants.PARAM_OUTPUT_MAPPINGS);
 
+                String expression = text.getText();
+                XPath xPath = XPathFactory.newInstance().newXPath();
                 if(outputMappings != null){
                     String variables[] = outputMappings.split(";");
                     for (int i = 0; i < variables.length; i++) {
                         String fields[] = variables[i].split("#");
+                        //the message body should include a value for messageName which will be used to invoke the process.
                         if("required".equals(fields[2])){
-
-                            //Have to read the value from the message and assign it here instead of fields[1]
-                            variableMap.put(fields[0], fields[1]);
+                            if(isValidJsonString(expression)){
+                                variableMap.put(fields[0], JsonPath.read(expression, fields[1]).toString());
+                            }else if(expression.startsWith("<")){
+                                variableMap.put(fields[0], xPath.evaluate(fields[1], new InputSource(new StringReader(expression))));
+                            }else{
+                                //for a plain text message
+                            }
                         }
                     }
                 }
-
-                runtimeService.startProcessInstanceByMessageAndTenantId(text.getText(), variableMap, "-1234");
+                runtimeService.startProcessInstanceByMessageAndTenantId(variableMap.get("messageName").toString(), variableMap, "-1234");
 
             }
         }catch (JMSException e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
+        } catch (XPathExpressionException e) {
+            log.error(e.getMessage(), e);
         }
+    }
+
+    private boolean isValidJsonString(String expression){
+        try {
+            new JSONObject(expression);
+        } catch (JSONException e) {
+            try {
+                new JSONArray(expression);
+            } catch (JSONException e1) {
+                return false;
+            }
+        }
+        return true;
     }
 }

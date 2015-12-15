@@ -211,31 +211,33 @@ public class TenantRepository {
              * **************************** Code for JMSStartTask ***************************************
              */
 
-//            ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
-//
-//            List<ProcessDefinition> list = getDeployedProcessDefinitions();
-//
-//            ZipEntry entry = zipInputStream.getNextEntry();
-//            String configFile = new String();
-//            int read = 0;
-//            int count = 0;
-//            String processID = null;
-//
-//            while(entry != null) {
-//                byte[] bytesIn = new byte[4096];
-//
-//                while ((read = zipInputStream.read(bytesIn)) != -1) {
-//                    configFile = configFile.concat(new String(Arrays.copyOf(bytesIn, read)));
-//                }
-//
-////                processID = list.get(count++).getDeploymentId();
-//
-//                Hashtable<String, String> paramList = readBPMNArchive(configFile);
-//                if(!paramList.isEmpty()){
-//                    JMSListener listener = new JMSListener(paramList.get(JMSConstants.JMS_PROVIDER), paramList);
-////                    messageListeners.put(processID, listener);
-//                }
-//            }
+            ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+
+            List<ProcessDefinition> list = getDeployedProcessDefinitions();
+
+            ZipEntry entry = zipInputStream.getNextEntry();
+            String configFile = new String();
+            int read = 0;
+            int count = 0;
+            String processID = null;
+
+            while(entry != null) {
+                byte[] bytesIn = new byte[4096];
+                while ((read = zipInputStream.read(bytesIn)) != -1) {
+                    configFile = configFile.concat(new String(Arrays.copyOf(bytesIn, read)));
+                }
+
+                processID = list.get(count++).getDeploymentId();
+
+                Hashtable<String, String> paramList = readBPMNArchive(configFile);
+                if(!paramList.isEmpty()){
+                    JMSListener listener = new JMSListener(paramList.get(JMSConstants.JMS_PROVIDER), paramList);
+                    messageListeners.put(processID, listener);
+                }
+                configFile = new String();
+                zipInputStream.closeEntry();
+                entry = zipInputStream.getNextEntry();
+            }
 
             /**
              * **************************** End of code for JMSStartTask ***************************************
@@ -475,7 +477,6 @@ public class TenantRepository {
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
 
-
         /**
          * ************************* Code for the JMSStartTask *********************************
          */
@@ -511,7 +512,7 @@ public class TenantRepository {
                         }
 
                         String configFile = stringBuilder.toString();
-                        log.info(configFile);
+
                         paramList = readBPMNArchive(configFile);
 
                         if(!paramList.isEmpty()){
