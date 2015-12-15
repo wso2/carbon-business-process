@@ -39,7 +39,7 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  */
 public class BPMNServiceComponent {
 
-	private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
+    private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN core component...");
@@ -71,10 +71,10 @@ public class BPMNServiceComponent {
         }
     }
 
-	protected void deactivate(ComponentContext ctxt) {
-		log.info("Stopping the BPMN core component...");
+    protected void deactivate(ComponentContext ctxt) {
+        log.info("Stopping the BPMN core component...");
 //		ProcessEngines.destroy();
-	}
+    }
 
     protected void setRegistryService(RegistryService registrySvc) {
         if (log.isDebugEnabled()) {

@@ -175,13 +175,10 @@ public class AnalyticsPublishServiceUtils {
             bpmnTaskInstance.setTaskDefinitionKey(taskInstance.getTaskDefinitionKey());
             bpmnTaskInstance.setTaskInstanceId(taskInstance.getId());
             bpmnTaskInstance.setAssignee(taskInstance.getAssignee());
-            //claim time is not stored in the DB
-            //bpmnTaskInstance.setClaimTime(taskInstance.getClaimTime());
             bpmnTaskInstance.setStartTime(taskInstance.getStartTime());
             bpmnTaskInstance.setEndTime(taskInstance.getEndTime());
             bpmnTaskInstance.setTaskName(taskInstance.getName());
             bpmnTaskInstance.setDurationInMills(taskInstance.getDurationInMillis());
-            //bpmnTaskInstance.setWorkTimeInMills(taskInstance.getWorkTimeInMillis());
             bpmnTaskInstance.setCreateTime(taskInstance.getCreateTime());
             bpmnTaskInstance.setOwner(taskInstance.getOwner());
             bpmnTaskInstance.setProcessInstanceId(taskInstance.getProcessInstanceId());

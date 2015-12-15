@@ -29,6 +29,7 @@ import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
 import org.wso2.carbon.utils.ServerConstants;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -40,16 +41,24 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
 /**
  * SVG Generator
  */
 public class SVGGenerateServlet extends HttpServlet {
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Handles the HTTP process request which creates the SVG graph for a bpel process
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         Log log = LogFactory.getLog(SVGGenerateServlet.class);
         HttpSession session = request.getSession(true);
+        //Get the bpel process id
         String pid = (String) request.getParameter("pid");
         ServletConfig config = getServletConfig();
         String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
@@ -65,23 +74,36 @@ public class SVGGenerateServlet extends HttpServlet {
         try {
             client = new ProcessManagementServiceClient(cookie, backendServerURL, configContext,
                     request.getLocale());
+            //Gets the bpel process definition needed to create the SVG from the processId
             processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition().getExtraElement().toString();
 
             BPELInterface bpel = new BPELImpl();
+            //Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM) represents an XML document
             OMElement bpelStr = bpel.load(processDef);
+
+            /**
+             * Process the OmElement containing the bpel process definition
+             * Process the subactivites of the bpel process by iterating through the omElement
+             * */
             bpel.processBpelString(bpelStr);
 
+            //Create a new instance of the LayoutManager for the bpel process
             LayoutManager layoutManager = BPEL2SVGFactory.getInstance().getLayoutManager();
+            //Set the layout of the SVG to vertical
             layoutManager.setVerticalLayout(true);
+            //Get the root activity i.e. the Process Activity
             layoutManager.layoutSVG(bpel.getRootActivity());
 
             svg = new SVGImpl();
+            //Set the root activity of the SVG i.e. the Process Activity
             svg.setRootActivity(bpel.getRootActivity());
-
+            //Set the content type of the HTTP response as "image/svg+xml"
             response.setContentType("image/svg+xml");
-
+            //Get the SVG graph created for the process as a SVG string
             svgStr = svg.generateSVGString();
+            //Checks whether the SVG string generated contains a value
             if (svgStr != null) {
+                // stream to write binary data into the response
                 sos.write(svgStr.getBytes());
                 sos.flush();
                 sos.close();

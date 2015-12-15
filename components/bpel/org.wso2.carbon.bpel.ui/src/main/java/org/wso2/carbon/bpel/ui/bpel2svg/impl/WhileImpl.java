@@ -22,35 +22,53 @@ import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.WhileInterface;
 
 /**
- * While tag UI impl
+ * While tag UI implementation
  */
 public class WhileImpl extends ForEachImpl implements WhileInterface {
-
+	/**
+     * Initializes a new instance of the WhileImpl class using the specified string i.e. the token
+     * @param token
+     */
     public WhileImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+       // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	/**
+     * Initializes a new instance of the WhileImpl class using the specified omElement
+     * @param omElement which matches the While tag
+     */
     public WhileImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	/**
+     * Initializes a new instance of the WhileImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an While Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the While tag
+     * @param parent
+     */
     public WhileImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+
+        //Set the parent of the activity
         setParent(parent);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
+    /**
+     *
+     * @return String with the end tag of While Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.WHILE_END_TAG;

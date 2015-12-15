@@ -15,7 +15,9 @@
  */
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
-
+/**
+ * Manage the dimensions of the SVG graph
+ */
 public class SVGDimension {
 
     protected LayoutManager layoutManager = BPEL2SVGFactory.getInstance().getLayoutManager();
@@ -24,42 +26,74 @@ public class SVGDimension {
     private int width = 0;
     private int height = 0;
 
+    //Constructors
     public SVGDimension() {
     }
 
+    /**
+     *
+     * @param width width of the SVG
+     * @param height height of the SVG
+     */
     public SVGDimension(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
+    /**
+     * Gets the height of the SVG
+     * @return height of the SVG
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Sets the height of the SVG
+     * @param height height of the SVG
+     */
     public void setHeight(int height) {
         this.height = height;
     }
-
+    /**
+     * Gets the width of the SVG
+     * @return width of the SVG
+     */
     public int getWidth() {
         return width;
     }
-
+    /**
+     * Sets the width of the SVG
+     * @param width height of the SVG
+     */
     public void setWidth(int width) {
         this.width = width;
     }
-
+    /**
+     * Gets the xLeft position of the SVG
+     * @return xLeft position of the SVG
+     */
     public int getXLeft() {
         return xLeft;
     }
-
+    /**
+     * Sets the xLeft position of the SVG
+     * @param xLeft height of the SVG
+     */
     public void setXLeft(int xLeft) {
         this.xLeft = xLeft;
     }
-
+    /**
+     * Gets the yTop position of the SVG
+     * @return yTop position of the SVG
+     */
     public int getYTop() {
         return yTop;
     }
-
+    /**
+     * Sets the yTop position of the SVG
+     * @param yTop position of the SVG
+     */
     public void setYTop(int yTop) {
         this.yTop = yTop;
     }

@@ -22,31 +22,47 @@ import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
 
 /**
- * Receive tag UI impl
+ * Receive tag UI implementation
  */
 public class ReceiveImpl extends SimpleActivityImpl implements ReceiveInterface {
-
+ 	/**
+     * Initializes a new instance of the ReceiveImpl class using the specified string i.e. the token
+     * @param token
+     */
     public ReceiveImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	/**
+     * Initializes a new instance of the ReceiveImpl class using the specified omElement
+     * @param omElement which matches the Receive tag
+     */
     public ReceiveImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     * Initializes a new instance of the ReceiveImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an Receive Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the Receive tag
+     * @param parent
+     */
     public ReceiveImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+		//Set the parent of the activity
         setParent(parent);
     }
-
+	/**
+     *
+     * @return String with the end tag of Receive Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.RECEIVE_END_TAG;

@@ -24,26 +24,50 @@ public class SVGCoordinates {
     int xLeft = 0;
     int yTop = 0;
 
+    //Constructors
+
+    /**
+     * Sets the x and y coordinate points of an activity
+     * @param xLeft xLeft position of the activity
+     * @param yTop yTop position of the activity
+     */
     public SVGCoordinates(int xLeft, int yTop) {
         this.xLeft = xLeft;
         this.yTop = yTop;
     }
 
+    /**
+     * Default constructor
+     */
     public SVGCoordinates() {
     }
 
+    /**
+     * Gets the xLeft position of the activity
+     * @return xLeft position of the activity
+     */
     public int getXLeft() {
         return xLeft;
     }
 
+    /**
+     * Sets the xLeft position of the activity
+     * @param xLeft xLeft position of the activity
+     */
     public void setXLeft(int xLeft) {
         this.xLeft = xLeft;
     }
-
+    /**
+     * Gets the yTop position of the activity
+     * @return yTop position of the activity
+     */
     public int getYTop() {
         return yTop;
     }
-
+    /**
+     * Sets the yTop position of the activity
+     * @param yTop yTop position of the activity
+     */
     public void setYTop(int yTop) {
         this.yTop = yTop;
     }

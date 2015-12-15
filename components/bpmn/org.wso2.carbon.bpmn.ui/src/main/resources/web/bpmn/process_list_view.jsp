@@ -134,7 +134,7 @@
             <%
                 //Search fields are removed if no processes
                 if(client.getDeployments() != null && client.getDeployments().length > 0){
-                %>
+            %>
             <form>
                 <fmt:message key="bpmn.search.by"/>&nbsp;
                 <select name="method" id="method">

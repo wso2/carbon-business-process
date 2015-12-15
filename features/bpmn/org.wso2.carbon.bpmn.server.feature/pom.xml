@@ -23,10 +23,6 @@
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn</artifactId>
         </dependency>
-       <!-- <dependency>
-            <groupId>org.wso2.carbon.business-process</groupId>
-            <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
@@ -34,6 +30,10 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 
@@ -153,8 +153,8 @@
                             </adviceFile>
                             <bundles>
                                 <bundleDef>org.slf4j:slf4j-log4j12</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn
-                                </bundleDef>
+                                <bundleDef>org.apache.commons:commons-lang3</bundleDef>
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn</bundleDef>
                                 <!-- <bundleDef>
                                      org.wso2.carbon.business-process:org.wso2.carbon.bpmn.rest
                                  </bundleDef>-->

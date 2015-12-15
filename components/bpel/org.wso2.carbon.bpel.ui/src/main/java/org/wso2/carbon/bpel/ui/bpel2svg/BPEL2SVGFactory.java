@@ -76,7 +76,6 @@ public class BPEL2SVGFactory {
     public final static String THROW_START_TAG = "throw";
     public final static String WAIT_START_TAG = "wait";
     public final static String WHILE_START_TAG = "while";
-
     public final static String EMPTY_START_TAG = "empty";
     // END_TAGS
     public final static String ASSIGN_END_TAG = "/assign";
@@ -113,17 +112,20 @@ public class BPEL2SVGFactory {
     public final static String THROW_END_TAG = "/throw";
     public final static String WAIT_END_TAG = "/wait";
     public final static String WHILE_END_TAG = "/while";
-
     public final static String EMPTY_END_TAG = "/empty";
 
     public final static String SINGLE_LINE_END_TAG = "/>";
     public final static int TEXT_ADJUST = 10;
 
     // Properties
+    //Variable with the source of the images/icons
     public String iconSource = "images/bpel2svg";
-
     private static BPEL2SVGFactory instance = null;
 
+    /**
+     *
+     * @return instance of a BPEL2SVGFactory
+     */
     public static BPEL2SVGFactory getInstance() {
         if (instance == null) {
             instance = new BPEL2SVGFactory();
@@ -133,6 +135,10 @@ public class BPEL2SVGFactory {
 
     public LayoutManager layoutManager = null;
 
+    /**
+     *
+     * @return instance of LayoutManager
+     */
     public LayoutManager getLayoutManager() {
         if (layoutManager == null) {
             layoutManager = new LayoutManager();
@@ -140,21 +146,40 @@ public class BPEL2SVGFactory {
         return layoutManager;
     }
 
+    /**
+     * Sets the layoutManager
+     * @param layoutManager
+     */
     public void setLayoutManager(LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
 
+    // Icon Extension for the activity icons
     private String iconExtension = ".png";
 
+    //Getter and Setter of the icon extension of the activity icons
+
+    /**
+     * Gets the extension of the activity icon
+     * @return String with the extension of the activity icon
+     */
     public String getIconExtension() {
         return iconExtension;
     }
 
+    /**
+     * Sets the extension of the activity icon
+     * @param iconExtension extension of the activity icon
+     */
     public void setIconExtension(String iconExtension) {
         this.iconExtension = iconExtension;
     }
 
-    // Methods
+    /**
+     * Gets the start icon path of each activity
+     * @param activity String with the activity type/name
+     * @return String with the start icon path relevant to each activity according to the activity type/name
+     */
     public String getIconPath(String activity) {
         String iconPath = null;
         if (activity != null) {
@@ -212,6 +237,11 @@ public class BPEL2SVGFactory {
         return iconPath;
     }
 
+    /**
+     * Gets the end icon path of each activity
+     * @param activity String with the activity type/name
+     * @return String with the end icon path relevant to each activity according to the activity type/name
+     */
     public String getEndIconPath(String activity) {
         String iconPath = null;
         if (activity != null) {
@@ -235,11 +265,20 @@ public class BPEL2SVGFactory {
         }
         return iconPath;
     }
+    //Getter and Setter of the image source of the activity icons
 
+    /**
+     * Gets the source of the activity icon
+     * @return String with the source of the activity icon
+     */
     public String getIconSource() {
         return iconSource;
     }
 
+    /**
+     * Sets the source of the activity icon
+     * @param iconSource source of the activity icon
+     */
     public void setIconSource(String iconSource) {
         this.iconSource = iconSource;
     }
