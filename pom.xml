@@ -1292,27 +1292,6 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
-        <!-- TODO REMOVE THIS-->
-        <repository>
-            <id>wso2.staging</id>
-            <name>WSO2 Staging Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/orgwso2carbon-168/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>wso2.staging2</id>
-            <name>WSO2 Staging Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/orgwso2carbonidentity-165/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -1402,7 +1381,7 @@
         <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
 
         <!-- Carbon kernel version -->
-        <carbon.kernel.version>4.4.3</carbon.kernel.version>
+        <carbon.kernel.version>4.4.2</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
@@ -1410,7 +1389,7 @@
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.version>5.0.3</carbon.identity.version><!-- 5.0.2-->
+        <carbon.identity.version>5.0.2</carbon.identity.version><!-- 5.0.2-->
         <carbon.identity.imp.pkg.version>[5.0.0, 6.0.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
@@ -1604,7 +1583,7 @@
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
        <!-- <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>-->
-        <orbit.ode.version>1.3.5-wso2v16-SNAPSHOT</orbit.ode.version>
+        <orbit.ode.version>1.3.5-wso2v15</orbit.ode.version>
         <mybatis.version>3.2.5</mybatis.version>
         <jsonpath.wso2.version>1.2.0.wso2v1</jsonpath.wso2.version>
 
