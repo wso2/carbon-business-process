@@ -562,7 +562,13 @@ public class BPMNInstanceService {
         BPMNVariable[] vars = new BPMNVariable[processVariables.size()];
         int currentVar = 0;
         for (Map.Entry entry : processVariables.entrySet()) {
-            vars[currentVar] = new BPMNVariable(entry.getKey().toString(), processVariables.get(entry.getKey().toString()).toString());
+            Object value = processVariables.get(entry.getKey().toString());
+            if (value == null) {
+                value = "null";
+            } else {
+                value = String.valueOf(value);
+            }
+            vars[currentVar] = new BPMNVariable(entry.getKey().toString(), value.toString());
             currentVar++;
         }
         return vars;
