@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,72 +18,144 @@ package org.wso2.carbon.bpmn.analytics.publisher.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.base.api.ServerConfigurationService;
+import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
 /**
- *
+ * Content holder for BPMN Analytics component.
  */
 public class BPMNAnalyticsHolder {
-    private static final Log log = LogFactory.getLog(BPMNAnalyticsHolder.class);
 
-    private static BPMNAnalyticsHolder bpmnAnalyticsHolder = null;
+	private static final Log log = LogFactory.getLog(BPMNAnalyticsHolder.class);
 
-    private RegistryService registryService;
-    private RealmService realmService;
-    private ServerConfigurationService serverConfigurationService;
-    private ExecutorService executorService = null;
+	private static BPMNAnalyticsHolder bpmnAnalyticsHolder = null;
 
-    private BPMNAnalyticsHolder() {
-    }
+	private RegistryService registryService;
+	private RealmService realmService;
+	private ServerConfigurationService serverConfigurationService;
+	private ExecutorService executorService = null;
 
-    public static BPMNAnalyticsHolder getInstance() {
-        if (bpmnAnalyticsHolder == null) {
-            bpmnAnalyticsHolder = new BPMNAnalyticsHolder();
-        }
-        return bpmnAnalyticsHolder;
-    }
+	private HashMap<Integer, AnalyticsPublisher> tenantAnalyticsPublisherMap;
 
-    public RegistryService getRegistryService() {
-        return registryService;
-    }
+	private BPMNAnalyticsHolder() {
+		tenantAnalyticsPublisherMap = new HashMap<>();
+	}
 
-    public RealmService getRealmService() {
-        return realmService;
-    }
+	/**
+	 * Get the BPMNAnalyticsHolder instance.
+	 *
+	 * @return BPMNAnalyticsHolder instance
+	 */
+	public static BPMNAnalyticsHolder getInstance() {
+		if (bpmnAnalyticsHolder == null) {
+			bpmnAnalyticsHolder = new BPMNAnalyticsHolder();
+		}
+		return bpmnAnalyticsHolder;
+	}
 
-    public ServerConfigurationService getServerConfigurationService() {
-        return serverConfigurationService;
-    }
+	public static BPMNServerHolder getThreadSafeBPMNServerInstance() {
+		return BPMNServerInstanceHolder.INSTANCE;
+	}
 
-    public void setRegistryService(RegistryService registryService) {
-        this.registryService = registryService;
-    }
+	/**
+	 * Get RegistryService instance.
+	 *
+	 * @return RegistryService instance
+	 */
+	public RegistryService getRegistryService() {
+		return registryService;
+	}
 
-    public void setRealmService(RealmService realmService) {
-        this.realmService = realmService;
-    }
+	public void setRegistryService(RegistryService registryService) {
+		this.registryService = registryService;
+	}
 
-    public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
-        this.serverConfigurationService = serverConfiguration;
-    }
+	/**
+	 * Get RealmService instance.
+	 *
+	 * @return RealmService instance
+	 */
+	public RealmService getRealmService() {
+		return realmService;
+	}
 
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
+	public void setRealmService(RealmService realmService) {
+		this.realmService = realmService;
+	}
 
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
+	/**
+	 * Get ServerConfigurationService instance.
+	 *
+	 * @return ServerConfigurationService instance
+	 */
+	public ServerConfigurationService getServerConfigurationService() {
+		return serverConfigurationService;
+	}
 
-    private static class BPMNServerInstanceHolder {
-        private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
-    }
+	/**
+	 * Set ServerConfigurationService instance.
+	 *
+	 * @param serverConfiguration instance for BPMN analytics component
+	 */
+	public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
+		this.serverConfigurationService = serverConfiguration;
+	}
 
-    public static BPMNServerHolder getThreadSafeBPMNServerInstance() {
-        return BPMNServerInstanceHolder.INSTANCE;
-    }
+	/**
+	 * Get ExecutorService instance of BPMN analytics component.
+	 *
+	 * @return ExecutorService instance
+	 */
+	public ExecutorService getExecutorService() {
+		return executorService;
+	}
+
+	/**
+	 * Set ExecutorService instance for BPMN analytics component
+	 *
+	 * @param executorService instance
+	 */
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
+
+	/**
+	 * Add Analytics Publisher instance for given tenant ID.
+	 *
+	 * @param tenantID
+	 * @param analyticsPublisher instance
+	 */
+	public void addAnalyticsPublisher(int tenantID, AnalyticsPublisher analyticsPublisher) {
+		this.tenantAnalyticsPublisherMap.put(tenantID, analyticsPublisher);
+	}
+
+	/**
+	 * Remove Analytics Publisher instance for tenant id.
+	 *
+	 * @param tenantID
+	 */
+	public void removeAnalyticsPublisher(int tenantID) {
+		AnalyticsPublisher analyticsPublisher = tenantAnalyticsPublisherMap.get(tenantID);
+		analyticsPublisher.stopDataPublisher();
+		this.tenantAnalyticsPublisherMap.remove(tenantID);
+	}
+
+	/**
+	 * Get Analytics Publisher instance for given tenant id.
+	 *
+	 * @param tenantID
+	 * @return AnalyticsPublisher instance
+	 */
+	public AnalyticsPublisher getAnalyticsPublisher(int tenantID) {
+		return this.tenantAnalyticsPublisherMap.get(tenantID);
+	}
+
+	private static class BPMNServerInstanceHolder {
+		private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
+	}
 }

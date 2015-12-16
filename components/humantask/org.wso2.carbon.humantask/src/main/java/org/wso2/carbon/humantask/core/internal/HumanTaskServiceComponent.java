@@ -21,8 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
-import org.wso2.carbon.core.ServerStartupHandler;
 import org.wso2.carbon.core.ServerStartupObserver;
+import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterService;
 import org.wso2.carbon.humantask.core.*;
 import org.wso2.carbon.humantask.core.integration.jmx.DeployedTasks;
 import org.wso2.carbon.humantask.core.integration.jmx.HTTaskStatusMonitor;
@@ -55,6 +55,10 @@ import javax.management.NotCompliantMBeanException;
  * interface="org.wso2.carbon.attachment.mgt.server.AttachmentServerService"
  * cardinality="1..1" policy="dynamic"  bind="setAttachmentMgtService"
  * unbind="unsetAttachmentMgtService"
+ * @scr.reference name="event.output.adapter.service"
+ * interface="org.wso2.carbon.event.output.adapter.core.OutputEventAdapterService"
+ * cardinality="1..1" policy="dynamic"  bind="setOutputEventAdapterService"
+ * unbind="unsetOutputEventAdapterService"
  */
 
 public class HumanTaskServiceComponent {
@@ -180,6 +184,10 @@ public class HumanTaskServiceComponent {
         return HumanTaskServerHolder.getInstance().getRegistryService();
     }
 
+    public static OutputEventAdapterService getOutputEventAdapterService(){
+        return HumanTaskServerHolder.getInstance().getOutputEventAdapterService();
+    }
+
     public static HumanTaskServer getHumanTaskServer() {
         return HumanTaskServerHolder.getInstance().getHtServer();
     }
@@ -205,6 +213,24 @@ public class HumanTaskServiceComponent {
      */
     protected void unsetAttachmentMgtService(AttachmentServerService attMgtService) {
         HumanTaskServerHolder.getInstance().setAttachmentService(null);
+    }
+
+    /**
+     * Initialize the Output EventAdapter Service dependency
+     *
+     * @param outputEventAdapterService Output EventAdapter Service reference
+     */
+    protected void setOutputEventAdapterService(OutputEventAdapterService outputEventAdapterService){
+        HumanTaskServerHolder.getInstance().setOutputEventAdapterService(outputEventAdapterService);
+    }
+
+    /**
+     *  De-reference the Output EventAdapter Service dependency.
+     *
+     * @param outputEventAdapterService
+     */
+    protected void unsetOutputEventAdapterService(OutputEventAdapterService outputEventAdapterService){
+        HumanTaskServerHolder.getInstance().setOutputEventAdapterService(null);
     }
 
     private void registerTaskServer() {

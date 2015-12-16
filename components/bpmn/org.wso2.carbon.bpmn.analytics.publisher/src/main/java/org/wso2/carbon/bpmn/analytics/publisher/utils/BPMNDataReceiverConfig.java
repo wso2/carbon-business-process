@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.wso2.carbon.core.util.CryptoUtil;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
-import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.namespace.QName;
@@ -36,116 +35,288 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Properties;
 
 /**
- * BPMNDataReceiverConfig is used by AnalyticsPublisher to retrieve user name and password
+ * BPMNDataReceiverConfig is used by AnalyticsPublisher to retrieve data publisher config from registry.
  */
 public class BPMNDataReceiverConfig {
-    private static final Log log = LogFactory.getLog(BPMNDataReceiverConfig.class);
+	private static final Log log = LogFactory.getLog(BPMNDataReceiverConfig.class);
 
-    /**
-     * Get thrift url of data receiver
-     *
-     * @return thrift url of data receiver
-     * @throws RegistryException
-     */
-    public static String getThriftURL() throws RegistryException {
-        String url = null;
-        Registry registry =
-                BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry();
+	private int tenantID;
+	// Config Registry instance.
+	private Registry registry;
 
-        if (registry.resourceExists(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH)) {
-            Resource resource =
-                    registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
-            url = resource.getProperty(AnalyticsPublisherConstants.THRIFT_URL_PROPERTY);
-        }
-        return url;
-    }
+	/**
+	 * Initinilze  BPMNDataReceiverConfig.
+	 *
+	 * @param tenantID current logged in tenant ID.
+	 */
+	public BPMNDataReceiverConfig(int tenantID) {
+		this.tenantID = tenantID;
+	}
 
-    /**
-     * Get user name
-     *
-     * @return user name
-     * @throws RegistryException
-     * @throws UserStoreException
-     */
-    public static String getUserName() throws RegistryException, UserStoreException {
-        String userName = null;
-        Registry registry =
-                BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry();
+	/**
+	 * Check BPMN Data Publisher Configuration is activated or not in activiti.xml
+	 *
+	 * @return true if the BPMN Data Publisher is activated
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
+	public static boolean isDASPublisherActivated() throws IOException, XMLStreamException {
+		String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+		String activitiConfigPath =
+				carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+		File configFile = new File(activitiConfigPath);
+		String configContent = FileUtils.readFileToString(configFile);
+		OMElement configElement = AXIOMUtil.stringToOM(configContent);
+		Iterator beans =
+				configElement.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE, BPMNConstants.BEAN));
+		while (beans.hasNext()) {
+			OMElement bean = (OMElement) beans.next();
+			String beanId = bean.getAttributeValue(new QName(null, BPMNConstants.BEAN_ID));
+			if (AnalyticsPublisherConstants.BEAN_ID_VALUE.equals(beanId)) {
+				Iterator beanProps =
+						bean.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE, BPMNConstants.PROPERTY));
+				while (beanProps.hasNext()) {
+					OMElement beanProp = (OMElement) beanProps.next();
+					if (AnalyticsPublisherConstants.ACTIVATE.
+							                                        equals(beanProp.getAttributeValue(
+									                                        new QName(null, BPMNConstants.NAME)))) {
+						String value = beanProp.getAttributeValue(new QName(null, BPMNConstants.VALUE));
+						if (AnalyticsPublisherConstants.TRUE.equals(value)) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 
-        if (registry.resourceExists(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH)) {
-            Resource resource =
-                    registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
-            userName = resource.getProperty(AnalyticsPublisherConstants.USER_NAME_PROPERTY);
-        }
-        return userName;
-    }
+	/**
+	 * Initialize BPMNDataReceiverConfig instance.
+	 *
+	 * @return true if success.
+	 */
+	public boolean init() {
+		try {
+			// Get tenant specific configuration registry.
+			this.registry = BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry(tenantID);
+			// Populating registry resource with default values if not exist.
+			if (registry.resourceExists(AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION)) {
+				if (log.isDebugEnabled()) {
+					log.debug("Registry resource exists for tenant : " + tenantID + ", Path : " +
+					          AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION);
+				}
+				Resource resource = registry.get(AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION);
+				populateDefaultConfigurationProperties(resource);
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("Registry resource doesn't exist for tenant : " + tenantID + ", Path : " +
+					          AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION);
+				}
+				Resource resource = registry.newResource();
+				populateDefaultConfigurationProperties(resource);
+				registry.put(AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION, resource);
+			}
+		} catch (RegistryException e) {
+			log.warn("Error while accessing registry for tenant id : " + tenantID, e);
+			registry = null;
+			return false;
+		}
+		return true;
+	}
 
-    /**
-     * Get password
-     *
-     * @return password
-     * @throws RegistryException
-     * @throws UserStoreException
-     */
-    public static String getPassword() throws RegistryException, UserStoreException {
-        String password = null;
-        Registry registry =
-                BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry();
+	/**
+	 * Populate default data publisher Configuration Properties if not exists for given registry resource.
+	 *
+	 * @param resource given registry resources
+	 */
+	private void populateDefaultConfigurationProperties(Resource resource) {
+		if (log.isDebugEnabled()) {
+			log.debug("Populating Data publisher configuration. Tenant ID : " + tenantID + ", Registry :" +
+			          resource.getPath());
+		}
 
-        if (registry.resourceExists(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH)) {
-            Resource resource =
-                    registry.get(AnalyticsPublisherConstants.DATA_RECEIVER_RESOURCE_PATH);
-            try {
-                String encryptedPassword = resource.
-                        getProperty(AnalyticsPublisherConstants.PASSWORD_PROPERTY);
-                byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil(BPMNAnalyticsHolder.getInstance().
-                        getServerConfigurationService(), BPMNAnalyticsHolder.getInstance().getRegistryService()).
-                        base64DecodeAndDecrypt(encryptedPassword);
-                password = new String(decryptedPassword);
-            } catch (CryptoException e) {
-                String errMsg = "CryptoUtils Error while reading the password from the carbon registry.";
-                log.error(errMsg, e);
-            }
-        }
-        return password;
-    }
+		Properties properties = resource.getProperties();
+		if (!properties.contains(AnalyticsPublisherConstants.PUBLISHER_ENABLED_PROPERTY))
+			resource.addProperty(AnalyticsPublisherConstants.PUBLISHER_ENABLED_PROPERTY, String.valueOf(false));
 
-    /**
-     * Check BPMN Data Publisher Configuration is activated or not
-     *
-     * @return true if the BPMN Data Publisher is activated
-     * @throws IOException
-     * @throws XMLStreamException
-     */
-    public static boolean isDASPublisherActivated() throws IOException, XMLStreamException {
-        String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-        String activitiConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-        File configFile = new File(activitiConfigPath);
-        String configContent = FileUtils.readFileToString(configFile);
-        OMElement configElement = AXIOMUtil.stringToOM(configContent);
-        Iterator beans = configElement.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE,
-                BPMNConstants.BEAN));
-        while (beans.hasNext()) {
-            OMElement bean = (OMElement) beans.next();
-            String beanId = bean.getAttributeValue(new QName(null, BPMNConstants.BEAN_ID));
-            if (AnalyticsPublisherConstants.BEAN_ID_VALUE.equals(beanId)) {
-                Iterator beanProps = bean.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE,
-                        BPMNConstants.PROPERTY));
-                while (beanProps.hasNext()) {
-                    OMElement beanProp = (OMElement) beanProps.next();
-                    if (AnalyticsPublisherConstants.ACTIVATE.
-                            equals(beanProp.getAttributeValue(new QName(null, BPMNConstants.NAME)))) {
-                        String value = beanProp.getAttributeValue(new QName(null, BPMNConstants.VALUE));
-                        if (AnalyticsPublisherConstants.TRUE.equals(value)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
+		if (!properties.contains(AnalyticsPublisherConstants.PUBLISHER_TYPE_PROPERTY))
+			resource.addProperty(AnalyticsPublisherConstants.PUBLISHER_TYPE_PROPERTY, "");
 
+		if (!properties.contains(AnalyticsPublisherConstants.PUBLISHER_RECEIVER_URL_SET_PROPERTY))
+			resource.addProperty(AnalyticsPublisherConstants.PUBLISHER_RECEIVER_URL_SET_PROPERTY,
+			                     "tcp://localhost:7611");
+
+		if (!properties.contains(AnalyticsPublisherConstants.PUBLISHER_AUTH_URL_SET_PROPERTY))
+			resource.addProperty(AnalyticsPublisherConstants.PUBLISHER_AUTH_URL_SET_PROPERTY, "");
+
+		if (!properties.contains(AnalyticsPublisherConstants.PUBLISHER_USER_NAME_PROPERTY))
+			resource.addProperty(AnalyticsPublisherConstants.PUBLISHER_USER_NAME_PROPERTY, "admin");
+
+		if (!properties.contains(AnalyticsPublisherConstants.PUBLISHER_PASSWORD_PROPERTY))
+			resource.addProperty(AnalyticsPublisherConstants.PUBLISHER_PASSWORD_PROPERTY, "configure me");
+
+		String documentation =
+				"Configure following registry properties in this registry resource to enable BPMN analytics publisher\n\n" +
+				AnalyticsPublisherConstants.PUBLISHER_ENABLED_PROPERTY +
+				"\t: set this value to true/false to enable/disable data publisher.\n" +
+				AnalyticsPublisherConstants.PUBLISHER_TYPE_PROPERTY +
+				"\t: The Agent name from which the DataPublisher that needs to be created." +
+				" By default Thrift, and Binary is supported. Leave empty for default.\n " +
+				AnalyticsPublisherConstants.PUBLISHER_RECEIVER_URL_SET_PROPERTY +
+				"\t : The receiving endpoint URL Set. This can be either load balancing URL set or Failover URL set." +
+				" Eg : tcp://localhost:7611|tcp://localhost:7612|tcp://localhost:7613\n" +
+				AnalyticsPublisherConstants.PUBLISHER_AUTH_URL_SET_PROPERTY +
+				"\t: The authenticating URL Set for the endpoints given in receiverURLSet parameter. This should be in the same format" +
+				" as receiverURL set parameter. Leave it empty fro default value." +
+				AnalyticsPublisherConstants.PUBLISHER_USER_NAME_PROPERTY +
+				"\t: Authorized username at receiver. (For Tenant include tenant domain)" +
+				AnalyticsPublisherConstants.PUBLISHER_PASSWORD_PROPERTY +
+				"\t: The encrypted Password of the username provided.";
+
+		try {
+			resource.setContent(documentation);
+		} catch (RegistryException e) {
+			log.error("Error while adding content to registry resource : " + resource.getPath(), e);
+		}
+	}
+
+	/**
+	 * Get registry resource which contains data publisher configurations.
+	 *
+	 * @return registry resource which contains data publisher configurations
+	 */
+	public Resource getRegistryResourceConfig() {
+		try {
+			if (registry == null) {
+				log.info("BPMNDataReceiverConfig is not initialized properly. Initializing it now for tenant :" +
+				         this.tenantID);
+				init();
+			}
+			if (registry.resourceExists(AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION)) {
+				return registry.get(AnalyticsPublisherConstants.PATH_PUBLISHER_CONFIGURATION);
+			} else {
+				log.warn("Registry resource is not initialized properly tenant :" + this.tenantID);
+			}
+		} catch (RegistryException e) {
+			log.error("Error while accessing ");
+		}
+		return null;
+	}
+
+	/**
+	 * Is Data Publisher Enabled
+	 *
+	 * @return true if AnalyticsPublisherConstants.PUBLISHER_ENABLED_PROPERTY property is set to true
+	 */
+	public boolean isDataPublisherEnabled() {
+		Resource resource = getRegistryResourceConfig();
+		if (resource != null) {
+			String property = resource.getProperty(AnalyticsPublisherConstants.PUBLISHER_ENABLED_PROPERTY);
+			if (property != null && property.trim().length() != 0) {
+				if (property.trim().toLowerCase().equals("true")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * The Agent name from which the DataPublisher that needs to be created.
+	 *
+	 * @return configured agent name.
+	 */
+	public String getType() {
+		Resource resource = getRegistryResourceConfig();
+		if (resource != null) {
+			String property = resource.getProperty(AnalyticsPublisherConstants.PUBLISHER_TYPE_PROPERTY);
+			if (property != null && property.trim().length() != 0) {
+				if (property.trim().toLowerCase().equals("default")) {
+					return null;
+				}
+				return property;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The receiving endpoint URL Set.
+	 *
+	 * @return configured The receiving endpoint URL Set.
+	 */
+	public String getReceiverURLsSet() {
+		Resource resource = getRegistryResourceConfig();
+		if (resource != null) {
+			String property = resource.getProperty(AnalyticsPublisherConstants.PUBLISHER_RECEIVER_URL_SET_PROPERTY);
+			if (property != null && property.trim().length() != 0) {
+				return property;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The authenticating URL Set for the endpoints
+	 * @return
+	 */
+	public String getAuthURLsSet() {
+		Resource resource = getRegistryResourceConfig();
+		if (resource != null) {
+			String property = resource.getProperty(AnalyticsPublisherConstants.PUBLISHER_AUTH_URL_SET_PROPERTY);
+			if (property != null && property.trim().length() != 0) {
+				return property;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get Authorized username at receiver.
+	 *
+	 * @return configured username
+	 */
+	public String getUserName() {
+		Resource resource = getRegistryResourceConfig();
+		if (resource != null) {
+			return resource.getProperty(AnalyticsPublisherConstants.PUBLISHER_USER_NAME_PROPERTY);
+		}
+		return null;
+	}
+
+	/**
+	 * Get password of Authorized username at receiver
+	 *
+	 * @return decrypted password
+	 */
+	public String getPassword() {
+		String password = null;
+		Resource resource = getRegistryResourceConfig();
+		if (resource != null) {
+
+			String encryptedPassword = resource.getProperty(AnalyticsPublisherConstants.PUBLISHER_PASSWORD_PROPERTY);
+			try {
+				byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil(BPMNAnalyticsHolder.getInstance().
+						getServerConfigurationService(), BPMNAnalyticsHolder.getInstance().getRegistryService()).
+						                                     base64DecodeAndDecrypt(encryptedPassword);
+				password = new String(decryptedPassword);
+			} catch (CryptoException e) {
+				String errMsg = "CryptoUtils Error while reading the password from the carbon registry.";
+				log.error(errMsg, e);
+			}
+		}
+		return password;
+	}
+
+	/**
+	 * Get Tenant ID.
+	 * @return
+	 */
+	public int getTenantID() {
+		return tenantID;
+	}
 }

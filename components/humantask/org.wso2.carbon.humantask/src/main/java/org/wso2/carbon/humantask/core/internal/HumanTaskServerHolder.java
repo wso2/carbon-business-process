@@ -17,6 +17,7 @@
 package org.wso2.carbon.humantask.core.internal;
 
 import org.wso2.carbon.attachment.mgt.server.AttachmentServerService;
+import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterService;
 import org.wso2.carbon.humantask.core.HumanTaskServer;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -32,6 +33,7 @@ public final class HumanTaskServerHolder {
     private HumanTaskServer htServer = null;
     private RegistryService registryService;
     private AttachmentServerService attachmentService;
+    private OutputEventAdapterService outputEventAdapterService;
 
     /**
      * The HumanTask UI Resource Provider
@@ -83,6 +85,24 @@ public final class HumanTaskServerHolder {
 
     public void setHumanTaskUIResourceProvider(HumanTaskUIResourceProvider humanTaskUIResourceProvider) {
         this.humanTaskUIResourceProvider = humanTaskUIResourceProvider;
+    }
+
+    /**
+     * Set Output EventAdapter Service reference
+     *
+     * @param outputEventAdapterService Output EventAdapter Service reference
+     */
+    public void setOutputEventAdapterService(OutputEventAdapterService outputEventAdapterService){
+        this.outputEventAdapterService = outputEventAdapterService;
+    }
+
+    /**
+     * Get Output EventAdapter Service reference
+     *
+     * @return  Output EventAdapter Service reference
+     */
+    public OutputEventAdapterService getOutputEventAdapterService(){
+        return this.outputEventAdapterService;
     }
 
     /**
