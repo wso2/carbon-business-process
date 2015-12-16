@@ -173,7 +173,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     }
 
     /**
-     * Returns the part of the task’s input message.
+     * Returns the part of the tasks input message.
      * In : part name, task name (optional)
      * Out : input message part
      */
@@ -442,7 +442,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
     }
 
     /**
-     * Returns the priority of the task. It MUST evaluate to “5” in case the priority is not explicitly set.
+     * Returns the priority of the task. It MUST evaluate to in case the priority is not explicitly set.
      * If the task name is not present the current task MUST be considered.
      * In : task name (optional)
      * Out : priority (htt:tPriority)
@@ -560,7 +560,7 @@ public class JaxpFunctionResolver implements XPathFunctionResolver {
 
     /**
      * Constructs an organizationalEntity containing every user that occurs in set1 but not in set2.
-     * Note: TODO: This function is required to allow enforcing the separation of duties (“4-eyes principle”).
+     * Note: TODO: This function is required to allow enforcing the separation of duties.
      * In : set1 (htt:organizationalEntity|htt:user), set2 (htt:organizationalEntity|htt:user)
      * Out : result (htt:organizationalEntity)
      */

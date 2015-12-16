@@ -60,9 +60,9 @@ public class Attachment implements AttachmentDAO {
 
     /**
      * indicates if the attachment is specified inline or by
-     * reference. In the inline case it contains the string constant “inline”. In this case the
+     * reference. In the inline case it contains the string constant. In this case the
      * value of the attachment data type contains the base64 encoded attachment. In case
-     * the attachment is referenced it contains the string “URL”, indicating that the value of
+     * the attachment is referenced it contains the string, indicating that the value of
      * the attachment data type contains the a URL from where the attachment can be
      * retrieved. Other values of the accessType element are allowed for extensibility
      * reasons, for example to enable inclusion of attachment content from content

@@ -1318,7 +1318,7 @@ public class TaskOperationsImpl extends AbstractAdmin
     /**
      * Set the fault data of the task.
      * @param taskIdURI : task identifier
-     * @param tFault fault – contains the fault name and fault data
+     * @param tFault fault contains the fault name and fault data
      * @throws IllegalStateFault
      * @throws IllegalOperationFault
      * @throws IllegalArgumentFault
