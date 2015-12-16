@@ -16,10 +16,16 @@
 package org.wso2.carbon.bpmn.rest.service.stats;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.logging.Log;
@@ -477,6 +483,57 @@ public class ProcessAndTaskService {
         long processCount = BPMNOSGIService.getRepositoryService().
                 createProcessDefinitionQuery().processDefinitionTenantId(str).count();
         return processCount;
+    }
+
+
+    @GET
+    @Path("/resourceDiagram/{pId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public ResponseHolder getResourceDiagram(@PathParam("pId") String pId) {
+        //Get a list of the deployed processes
+        List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionTenantId(str).processDefinitionId(pId).list();
+
+        List list = new ArrayList<>();
+        ResponseHolder response = new ResponseHolder();
+        for (ProcessDefinition processDefinition : deployements) {
+            list.add(processDefinition.getDiagramResourceName());
+        }
+
+        response.setData(list);
+        return response;
+    }
+
+
+    @GET
+    @Path("/allTasks/{pId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public ResponseHolder getTasks(@PathParam("pId") String pId) {
+        ResponseHolder response = new ResponseHolder();
+        List list = new ArrayList();
+
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(pId);
+        if(processDefinition!=null){
+
+            for(ActivityImpl activity: processDefinition.getActivities()){
+                TaskInfo taskInfo = new TaskInfo();
+                    String taskDefKey = activity.getId();
+                    String type = (String) activity.getProperty("type");
+                    if(type == "startEvent" || type == "endEvent"){
+                        break;
+                    } else {
+                        String taskName = (String) activity.getProperty("name");
+                        taskInfo.setTaskDefinitionKey(taskDefKey);
+                        taskInfo.setType(type);
+                        taskInfo.setName(taskName);
+                        list.add(taskInfo);
+                    }
+            }
+        }
+
+        response.setData(list);
+        return response;
     }
 }
 
