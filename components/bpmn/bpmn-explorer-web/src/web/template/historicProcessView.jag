@@ -67,7 +67,7 @@
 			          	 for (var q=0; q<list[i].running.length; q++) { %>
 				            <tr>
 				            <th>
-				            <a onclick="javascript:allTests('<%=list[i].deployment%> ','<%=list[i].running[q]%>')" style="color: white;"><%=list[i].running[q]%>
+				            <a onclick="javascript:runningProcessInstances('<%=list[i].deployment%> ','<%=list[i].running[q]%>')" style="color: white;"><%=list[i].running[q]%>
 				            </th>	
 				            </tr>
 				           <%}%>
