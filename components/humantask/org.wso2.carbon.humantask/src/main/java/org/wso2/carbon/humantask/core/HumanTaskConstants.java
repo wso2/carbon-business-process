@@ -135,11 +135,17 @@ public final class HumanTaskConstants {
     public static final String RENDERING_TYPE_SMS="sms";
     public static final String EMAIL_TO_TAG="to";
     public static final String EMAIL_SUBJECT_TAG="subject";
+    public static final String EMAIL_CONTENT_TYPE_TAG="contentType";
     public static final String EMAIL_OR_SMS_BODY_TAG="body";
     public static final String SMS_RECEIVER_TAG="receiver";
+    public static final String SMS_MESSAGE_FORMAT="text";
+    public static final String EMAIL_MESSAGE_FORMAT="email";
     public static final String ARRAY_SMS_NO ="sms.no";
     public static final String ARRAY_EMAIL_SUBJECT ="email.subject";
     public static final String ARRAY_EMAIL_ADDRESS ="email.address";
+    public static final String ARRAY_EMAIL_TYPE ="email.type";
+
+    public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
     public static final String PREFIX ="htd";
     public static final String RENDERING_NAMESPACE ="http://wso2.org/ht/schema/renderings/";
 

@@ -20,9 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.wso2.carbon.event.output.adapter.core.OutputEventAdapterConfiguration;
 import org.wso2.carbon.event.output.adapter.core.exception.OutputEventAdapterException;
-import org.wso2.carbon.event.output.adapter.email.EmailEventAdapter;
-import org.wso2.carbon.event.output.adapter.sms.SMSEventAdapter;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.TaskCreationContext;
 import org.wso2.carbon.humantask.core.dao.TaskDAO;
@@ -35,6 +34,7 @@ import org.xml.sax.SAXException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,9 +45,9 @@ public class NotificationScheduler {
     private static final Log log = LogFactory.getLog(NotificationScheduler.class);
     private boolean isEmailNotificationEnabled = false;
     private boolean isSMSNotificationEnabled = false;
-    private EmailEventAdapter emailAdapter;
-    private SMSEventAdapter smsAdapter;
-    private Map<String, String> globalProperties = new HashMap();
+
+    private ArrayList<String> emailAdapterNames;
+    private ArrayList<String> smsAdapterNames;
 
     /**
      * Create and initialize emailAdaptor instance and SMS Adaptor instance that will be used to publish
@@ -61,22 +61,11 @@ public class NotificationScheduler {
                 .getServerConfig().getEnableSMSNotification();
 
         if(isEmailNotificationEnabled) {
-            emailAdapter = new EmailEventAdapter(null, globalProperties);
+            emailAdapterNames = new ArrayList<>();
         }
 
         if(isSMSNotificationEnabled) {
-            smsAdapter = new SMSEventAdapter(null, globalProperties);
-        }
-
-        try {
-            if(isEmailNotificationEnabled) {
-                emailAdapter.init();
-            }
-            if(isSMSNotificationEnabled) {
-                smsAdapter.init();
-            }
-        } catch (OutputEventAdapterException e) {
-            log.error("Error initializing email/sms event adaptors ", e);
+            smsAdapterNames = new ArrayList<>();
         }
     }
 
@@ -96,12 +85,8 @@ public class NotificationScheduler {
             if(isSMSNotificationEnabled) {
                 publishSMSNotifications(task, taskConfiguration);
             }
-        } catch (IOException e) {
-            log.error("Error publishing notifications via sms/email " , e);
-        } catch (SAXException e) {
-            log.error("Error publishing notifications via sms/email " , e);
-        } catch (ParserConfigurationException e) {
-            log.error("Error publishing notifications via sms/email " , e);
+        } catch (IOException | SAXException | ParserConfigurationException e) {
+            log.error("Error publishing notifications via sms/email. But Notification creation will continue. ", e);
         }
     }
 
@@ -161,7 +146,21 @@ public class NotificationScheduler {
                               task.getId());
                 }
                 dynamicPropertiesForSms.put(HumanTaskConstants.ARRAY_SMS_NO, smsReceiver);
-                smsAdapter.publish(smsBody, dynamicPropertiesForSms);
+                String adaptorName = getAdaptorName(task.getName(), HumanTaskConstants.RENDERING_TYPE_SMS);
+                if (!smsAdapterNames.contains(adaptorName)) {
+                    OutputEventAdapterConfiguration outputEventAdapterConfiguration =
+                            createOutputEventAdapterConfiguration(adaptorName, HumanTaskConstants.RENDERING_TYPE_SMS,
+                                    HumanTaskConstants.SMS_MESSAGE_FORMAT);
+                    try {
+                        HumanTaskServiceComponent.getOutputEventAdapterService().create(outputEventAdapterConfiguration);
+                        smsAdapterNames.add(adaptorName);
+                    } catch (OutputEventAdapterException e) {
+                        log.error("Unable to create Output Event Adapter : " + adaptorName, e);
+                    }
+                }
+                HumanTaskServiceComponent.getOutputEventAdapterService().publish(adaptorName, dynamicPropertiesForSms, smsBody);
+
+                //smsAdapter.publish(smsBody, dynamicPropertiesForSms);
             }
         } else {
             log.warn("SMS Rendering type not found for task definition with task id " + task.getId());
@@ -199,6 +198,7 @@ public class NotificationScheduler {
                 String emailBody = null;
                 String mailSubject = null;
                 String mailTo = null;
+                String contentType = null;
                 NodeList mailToList = root.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
                                                                   HumanTaskConstants.EMAIL_TO_TAG);
                 if(log.isDebugEnabled()) {
@@ -223,6 +223,19 @@ public class NotificationScheduler {
                                   task.getId());
                 }
 
+                NodeList mailContentType = root.getElementsByTagNameNS(HumanTaskConstants.RENDERING_NAMESPACE,
+                        HumanTaskConstants.EMAIL_CONTENT_TYPE_TAG);
+                if (log.isDebugEnabled()) {
+                    log.debug("Paring Email notification rendering element contentType " + task.getId());
+                }
+                if (mailContentType != null && mailContentType.getLength() > 0) {
+                    contentType = mailContentType.item(0).getTextContent();
+                } else {
+                    contentType = HumanTaskConstants.CONTENT_TYPE_TEXT_PLAIN;
+                    log.warn("Email contentType not specified for email notification with notification id " +
+                            task.getId() + ". Using text/plain.");
+                }
+
                 if(log.isDebugEnabled()) {
                     log.debug("Parsing Email notification rendering element body tag for notification id " +
                               task.getId());
@@ -238,10 +251,54 @@ public class NotificationScheduler {
                 }
                 dynamicPropertiesForEmail.put(HumanTaskConstants.ARRAY_EMAIL_ADDRESS, mailTo);
                 dynamicPropertiesForEmail.put(HumanTaskConstants.ARRAY_EMAIL_SUBJECT, mailSubject);
-                emailAdapter.publish(emailBody, dynamicPropertiesForEmail);
+                dynamicPropertiesForEmail.put(HumanTaskConstants.ARRAY_EMAIL_TYPE, contentType);
+
+                String adaptorName = getAdaptorName(task.getName(), HumanTaskConstants.RENDERING_TYPE_EMAIL);
+                if (!emailAdapterNames.contains(adaptorName)) {
+                    OutputEventAdapterConfiguration outputEventAdapterConfiguration =
+                            createOutputEventAdapterConfiguration(adaptorName, HumanTaskConstants.RENDERING_TYPE_EMAIL,
+                                    HumanTaskConstants.EMAIL_MESSAGE_FORMAT);
+                    try {
+                        HumanTaskServiceComponent.getOutputEventAdapterService().create(outputEventAdapterConfiguration);
+                        emailAdapterNames.add(adaptorName);
+                    } catch (OutputEventAdapterException e) {
+                        log.error("Unable to create Output Event Adapter : " + adaptorName, e);
+                    }
+                }
+                HumanTaskServiceComponent.getOutputEventAdapterService().publish(adaptorName, dynamicPropertiesForEmail, emailBody);
+                //emailAdapter.publish(emailBody, dynamicPropertiesForEmail);
             }
         } else {
             log.warn("Email Rendering type not found for task definition with task id " + task.getId());
         }
     }
+
+    /**
+     * Create Output Event Adapter Configuration for given configuration.
+     *
+     * @param name      Output Event Adapter name
+     * @param type      Output Event Adapter type
+     * @param msgFormat Output Event Adapter message format
+     * @return OutputEventAdapterConfiguration instance for given configuration
+     */
+    private static OutputEventAdapterConfiguration createOutputEventAdapterConfiguration(String name, String type, String msgFormat) {
+        OutputEventAdapterConfiguration outputEventAdapterConfiguration = new OutputEventAdapterConfiguration();
+        outputEventAdapterConfiguration.setName(name);
+        outputEventAdapterConfiguration.setType(type);
+        outputEventAdapterConfiguration.setMessageFormat(msgFormat);
+
+        return outputEventAdapterConfiguration;
+    }
+
+    /**
+     * Generate unique adaptor identifier for given task name and adaptor type.
+     *
+     * @param name Name of the adaptor
+     * @param type Type of the adaptor
+     * @return unique adaptor identifier string
+     */
+    private static String getAdaptorName(String name, String type) {
+        return type + "_" + name.toUpperCase();
+    }
+
 }

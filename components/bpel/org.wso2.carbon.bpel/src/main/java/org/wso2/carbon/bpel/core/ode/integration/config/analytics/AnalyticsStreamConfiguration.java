@@ -64,7 +64,7 @@ public class AnalyticsStreamConfiguration {
     }
 
     /**
-     * Adda a list of meta analytics keys.
+     * Add a list of meta analytics keys.
      * @param AnalyticsKeys
      */
     public void addAllMetaAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
