@@ -520,15 +520,15 @@ public class ProcessAndTaskService {
                 TaskInfo taskInfo = new TaskInfo();
                     String taskDefKey = activity.getId();
                     String type = (String) activity.getProperty("type");
-                    if(type == "startEvent" || type == "endEvent"){
+                    /*if(type == "startEvent" || type == "endEvent"){
                         break;
-                    } else {
+                    } else {*/
                         String taskName = (String) activity.getProperty("name");
                         taskInfo.setTaskDefinitionKey(taskDefKey);
                         taskInfo.setType(type);
                         taskInfo.setName(taskName);
                         list.add(taskInfo);
-                    }
+                   // }
             }
         }
 
@@ -536,4 +536,9 @@ public class ProcessAndTaskService {
         return response;
     }
 }
+
+
+
+
+
 

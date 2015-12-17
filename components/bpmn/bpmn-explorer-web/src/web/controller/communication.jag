@@ -1,4 +1,4 @@
-/*<!--
+<%/*<!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->*/
-<%
+
 var log = new Log();
 include("/model/common.jag");
 
@@ -57,10 +57,22 @@ if (request.isSecure()) {//check whether the request is secure or not
                 log.debug("BPMN Rest PUT results: " + stringify(result));
             }
     	}
+        if (run == "GET") {
+            req = request.getParameter("req");
+            log.info("*****:"+req);
+            url = req;
+            //data = request.getContent();
+            result = get( httpUrl + url, null, headers, "json");
+            log.info("BPMN Rest PUT results: " + stringify(result));
+            if (log.isDebugEnabled()){
+                log.debug("BPMN Rest PUT results: " + stringify(result));
+            }
+        }
 
         response.status = result.xhr.status;
 
         if ( result.data != null ) {
+            response.contentType = request.getContentType();
             response.content = result.data;
         }
     }

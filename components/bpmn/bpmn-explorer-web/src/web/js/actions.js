@@ -47,9 +47,9 @@ $( document ).ready(function() {
                     }
 
                     $('#submit-attachment-div').popover({ content: errorMessage,
-                                                            placement: "bottom",
-                                                            trigger:"manual",
-                                                            title:"Error"});
+                        placement: "bottom",
+                        trigger:"manual",
+                        title:"Error"});
 
                     $('#submit-attachment-div').popover('show');
 
@@ -82,8 +82,96 @@ $( document ).ready(function() {
 });
 
 function displayAttachmentData(id){
-   window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
 }
+
+function getUserTasksOfCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-task-instances?processInstanceId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#userTasks").html("");
+            var completedTaskInstances = data;
+            var DIV = "<table id ='table1'><thead><td>State</td><td>Def ID</td><td>Name</td><td>Start time</td><td>End time</td><td>Activity Instance Id</td><td>Assignee</td><td>Owner</td><td>Priority</td><td>Duration</td></thead><tbody>"
+            for(var k = 0; k < completedTaskInstances.data.length; k++) {
+
+                var state = "Completed";
+                var taskDefKey = completedTaskInstances.data[k].taskDefinitionKey;
+                var taskName = completedTaskInstances.data[k].name;
+                var startTime = completedTaskInstances.data[k].startTime;
+                var endTime = completedTaskInstances.data[k].endTime;
+                var activityInstanceId  = completedTaskInstances.data[k].id;
+                var assignee = completedTaskInstances.data[k].assignee;
+                var owner = completedTaskInstances.data[k].owner;
+                var priority = completedTaskInstances.data[k].priority;
+                var duration = completedTaskInstances.data[k].durationInMillis;
+
+                DIV = DIV + "<tr><td>"+state+"</td><td>"+taskDefKey+"</td><td>"+taskName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+activityInstanceId+"</td><td>"+assignee+"</td><td>"+owner+"</td><td>"+priority+"</td><td>"+duration+"</td></tr>";
+
+            }
+            DIV = DIV+"</tbody></table>"
+            $("#userTasks").html(DIV);
+
+        },
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+function getVariablesOfCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-variable-instances?processInstanceId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#variables").html("");
+            var variableInfo = data;
+            if(variableInfo.data.length == 0){
+                var DIV = "<h3> No variables for this process instance </h3>";
+                $("#variables").html(DIV);
+            }
+            else{
+                var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                for(var k = 0; k < variableInfo.data.length; k++) {
+                    var name = variableInfo.data[k].variable.name;
+                    var type =variableInfo.data[k].variable.type;
+                    var value = variableInfo.data[k].variable.value;
+                    var scope = variableInfo.data[k].variable.scope;
+                    DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
+
+
+                }
+                DIV = DIV+"</tbody></table>"
+                $("#variables").html(DIV);
+            }
+
+        },
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+
+
+function completedProcessInstances(id){
+    getAuditLogForCompletedProcessInstances(id);
+    getUserTasksOfCompletedProcessInstances(id);
+    getVariablesOfCompletedProcessInstances(id);
+}
+
+
+
 function completeTask(data, id) {
     document.getElementById("completeButton").style.display='none';
     document.getElementById("loadingCompleteButton").hidden = false;
@@ -136,7 +224,7 @@ function completeTask(data, id) {
 }
 
 function reassign(username, id) {
-    
+
     username = username.trim();
     if (username.length > 0) {
         var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
@@ -158,8 +246,8 @@ function reassign(username, id) {
         $('#reassignErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#reassign').on('hide.bs.modal', function (e) {
-                $('#reassignErrorMessageArea').hide();
-            });
+            $('#reassignErrorMessageArea').hide();
+        });
     }
 }
 
@@ -202,8 +290,8 @@ function transfer(username, id) {
         $('#transferErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#transfer').on('hide.bs.modal', function (e) {
-                $('#transferErrorMessageArea').hide();
-            });
+            $('#transferErrorMessageArea').hide();
+        });
     }
 }
 
@@ -223,8 +311,8 @@ function startProcess(processDefId) {
             window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + processDefId;
         },
         error: function (xhr, status, error) {
-           var errorJson = eval("(" + xhr.responseText + ")");
-           window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+            var errorJson = eval("(" + xhr.responseText + ")");
+            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
         }
     });
 }
@@ -283,8 +371,8 @@ function processSearch(){
         document.getElementById("taskName").value = "%" + tempTaskName + "%";
     }
     /*if (document.getElementById("taskDescription").value.length == 0) {
-        document.getElementById("taskDescription").disabled = true;
-    }*/
+     document.getElementById("taskDescription").disabled = true;
+     }*/
     if (document.getElementById("taskCandidateUser").value.length == 0) {
         document.getElementById("taskCandidateUser").disabled = true;
     }
@@ -294,7 +382,7 @@ function processSearch(){
             document.getElementById("taskUnassigned").disabled = true;
         } else {
             document.getElementById("taskAssignee").disabled = true;
-        }      
+        }
     }
     if (document.getElementById("taskOwner").value.length == 0) {
         document.getElementById("taskOwner").disabled = true;
@@ -331,7 +419,7 @@ function processSearch(){
     if (SDate.value.length > 0) {
         var startDateTemp = new Date(SDate.value);
         var startDateISOTemp = document.getElementById("startDateISO");
-        startDateISOTemp.value = startDateTemp.toISOString();                       
+        startDateISOTemp.value = startDateTemp.toISOString();
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("startDateISO").disabled = true;
@@ -347,7 +435,7 @@ function processSearch(){
         console.log(endDateTemp);
         console.log(endDateTemp.toISOString());
         var endDateISOTemp = document.getElementById("endDateISO");
-        endDateISOTemp.value = endDateTemp.toISOString();                       
+        endDateISOTemp.value = endDateTemp.toISOString();
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("endDateISO").disabled = true;
@@ -906,4 +994,273 @@ function generateReport(){
     var h3= document.getElementById("h3")
     h3.hidden= true;
 
+}
+
+function getAuditLogForCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+    //var url = "/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#auditLog").html("");
+            var completedTaskInstances = data;
+            var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Activity Instance Id</td></thead><tbody>"
+            for(var k = 0; k < completedTaskInstances.data.length; k++) {
+
+                var state = "Completed";
+                var activityName  = completedTaskInstances.data[k].activityName;
+                var activityType  = completedTaskInstances.data[k].activityType;
+                var activityStartTime  = completedTaskInstances.data[k].startTime;
+                var activityEndTime  = completedTaskInstances.data[k].endTime;
+                var activityInstanceId  = completedTaskInstances.data[k].id;
+
+
+                DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+activityType+"</td><td>"+activityStartTime+"</td><td>"+activityEndTime+"</td><td>"+activityInstanceId+"</td></tr>";
+
+            }
+            DIV = DIV+"</tbody></table>"
+            $("#auditLog").html(DIV);
+
+        },
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+
+
+function test(pid,id){
+
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+
+    //var url = "/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+    // console.log(url);
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function test2(data){
+
+                var taskList = data;
+                var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+
+
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    url: httpUrl + url1,
+                    success: function (data){
+
+                        $("#auditLog").html("");
+                        var taskList2 = data;
+
+                        var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Activity Instance Id</td></thead><tbody>"
+
+                        for(var k = 0; k < taskList.data.length; k++) {
+
+                            var activityName  = taskList.data[k].name;
+                            var taskDefKey  = taskList.data[k].taskDefinitionKey;
+                            var activityType  = taskList.data[k].type;
+
+                            for(var j = 0; j < taskList2.data.length; j++) {
+
+                                var activityId  = taskList2.data[j].activityId;
+                                var endTime = taskList2.data[j].endTime;
+
+                                if(taskDefKey == activityId && endTime !== null ){
+                                    var state = "Completed";
+                                    var startTime = taskList2.data[j].startTime;
+                                    var endTime = taskList2.data[j].endTime;
+                                    var activityInstanceId = taskList2.data[j].id;
+                                    break;
+                                } else if(taskDefKey == activityId && endTime == null ){
+                                    var state = "Active";
+                                    var startTime = taskList2.data[j].startTime;
+                                    var endTime = taskList2.data[j].endTime;
+                                    var activityInstanceId = taskList2.data[j].id;
+                                    break;
+                                } else {
+                                    var state = "Not Started";
+                                    var startTime = null;
+                                    var endTime = null;
+                                    var activityInstanceId = null;
+
+                                }
+
+                                // console.log(state+ "::"+activityName+": :"+activityType+ ": :"+startTime+ ": :"+endTime+ ": :"+activityInstanceId);
+                            }
+
+                            // console.log(state+ "::"+activityName+": :"+activityType+ ": :"+startTime+ ": :"+endTime+ ": :"+activityInstanceId);
+                            DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+activityInstanceId+"</td></tr>";
+
+                        }
+                        DIV = DIV+"</tbody></table>"
+                        $("#auditLog").html(DIV);
+
+                    },
+                    error: function (error) {
+                        console.log("error");
+                        console.log(error);
+                    }
+                });
+
+
+
+            } ,
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+
+function test3(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances/"+id+"/variables";
+    //var url = "/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#variables").html("");
+            var variableInfo = data;
+            if(variableInfo.restVariables.length == 0){
+                var DIV = "<h3> No variables for this process instance </h3>";
+                $("#variables").html(DIV);
+            }
+            else{
+                var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                for(var k = 0; k < variableInfo.restVariables.length; k++) {
+                    var name = variableInfo.restVariables[k].name;
+                    var type =variableInfo.restVariables[k].type;
+                    var value = variableInfo.restVariables[k].value;
+                    var scope = variableInfo.restVariables[k].variableScope;
+                    DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
+
+
+                }
+                DIV = DIV+"</tbody></table>"
+                $("#variables").html(DIV);
+            }
+        },
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+function allTests(pid,id){
+
+    test(pid,id);
+    test3(id);
+    test6(pid,id);
+}
+
+function test6(pid,id){
+
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+
+    //var url = "/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+    // console.log(url);
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function test7(data){
+
+                var taskList = data;
+                var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+
+
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    url: httpUrl + url1,
+                    success: function (data){
+
+                        $("#userTasks").html("");
+                        var taskList2 = data;
+
+                        var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Activity Instance Id</td></thead><tbody>"
+
+                        for(var k = 0; k < taskList.data.length; k++) {
+
+                            var activityName  = taskList.data[k].name;
+                            var taskDefKey  = taskList.data[k].taskDefinitionKey;
+                            var activityType  = taskList.data[k].type;
+                            if(activityType == "userTask"){
+
+
+                                for(var j = 0; j < taskList2.data.length; j++) {
+
+                                    var activityId  = taskList2.data[j].activityId;
+                                    var endTime = taskList2.data[j].endTime;
+
+                                    if(taskDefKey == activityId && endTime !== null ){
+                                        var state = "Completed";
+                                        var startTime = taskList2.data[j].startTime;
+                                        var endTime = taskList2.data[j].endTime;
+                                        var activityInstanceId = taskList2.data[j].id;
+                                        break;
+                                    } else if(taskDefKey == activityId && endTime == null ){
+                                        var state = "Active";
+                                        var startTime = taskList2.data[j].startTime;
+                                        var endTime = taskList2.data[j].endTime;
+                                        var activityInstanceId = taskList2.data[j].id;
+                                        break;
+                                    } else {
+                                        var state = "Not Started";
+                                        var startTime = null;
+                                        var endTime = null;
+                                        var activityInstanceId = null;
+
+                                    }
+
+                                    // console.log(state+ "::"+activityName+": :"+activityType+ ": :"+startTime+ ": :"+endTime+ ": :"+activityInstanceId);
+                                }
+                                DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+activityInstanceId+"</td></tr>";
+                            } else {
+
+                            }
+
+                            // console.log(state+ "::"+activityName+": :"+activityType+ ": :"+startTime+ ": :"+endTime+ ": :"+activityInstanceId);
+
+
+                        }
+                        DIV = DIV+"</tbody></table>"
+                        $("#userTasks").html(DIV);
+
+                    },
+                    error: function (error) {
+                        console.log("error");
+                        console.log(error);
+                    }
+                });
+
+
+
+            } ,
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
 }
