@@ -32,15 +32,21 @@
 		 <script type="text/javascript">
 			function changeImg(image){
 			  var imghol = document.getElementById("imageHolder");
-			  imghol.src = image;
+			  imghol.src = image;	
+
+			  var auditLog = document.getElementById("auditLog");			 	  
+			  auditLog.innerHTML="<h3> Select a process instance to view the audit log </h3>";			  
+			  
+			  var variables = document.getElementById("variables");			  		  
+			  variables.innerHTML="<h3> Select a process instance to view the variables </h3>";			  
+			  
+			  var userTasks = document.getElementById("userTasks");			 		  
+			  userTasks.innerHTML="<h3> Select a process instance to view the user tasks </h3>";			  
+			  
 			}			
 		</script>
-		  
-		  
-		    
-		    
 		    	
-		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column ">   
+		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">   
 
 		    	<% for (var i=0; i<list.length; i++) { %>
 		    	<div>
@@ -61,10 +67,10 @@
 		    		</tr>
 
 		    	   <%var c = list[i].running.length;
-			           if(c == 0){ %>
+	if(c == 0){ %>
 			            <th><i> No running processes</i></th>
-			          <% } else { 
-			          	 for (var q=0; q<list[i].running.length; q++) { %>
+			          <% } else {
+		for (var q=0; q<list[i].running.length; q++) { %>
 				            <tr>
 				            <th>
 				            <a onclick="javascript:runningProcessInstances('<%=list[i].deployment%> ','<%=list[i].running[q]%>')" style="color: white;"><%=list[i].running[q]%>
@@ -78,10 +84,10 @@
 		    		</tr>
 
 		    		 <%var c = list[i].completed.length;
-			           if(c == 0){ %>
+	if(c == 0){ %>
 			            <th><i> No completed processes</i></th>
-			          <% } else { 
-			          	 for (var q=0; q<list[i].completed.length; q++) { %>
+			          <% } else {
+		for (var q=0; q<list[i].completed.length; q++) { %>
 				            <tr>
 				            <th>
 				            <a onclick="javascript:completedProcessInstances('<%=list[i].completed[q]%>')" style="color: white;"><%=list[i].completed[q]%>
@@ -96,6 +102,14 @@
 		    	</ul>
 		    	</div>
 		    	<%}%>	
+		    	<%
+var numberOfPages = paginatePageCount;
+var currentPage = parseInt(pagination);
+var redirectPage = "historicProcess";
+var queryParams = "";
+
+%>
+<% include("/template/partials/pagination.jag"); %>
 		    	</div>
 		    	<div class="col-sm-9 col-md-9 col-lg-9 " style="height:100%;" >
 		    		<div style="border:4px solid black; height:50%; width:100%;">
@@ -105,7 +119,7 @@
 				    	<div class="tabs">
 		    
 						   <div class="tab">
-						       <input type="radio" id="tab-1" name="tab-group-1" checked>
+						       <input type="radio" id="tab-1" name="tab-group-1" checked onclick="tabClick('#auditLog')"/>
 						       <label for="tab-1">Audit Log</label>
 						       
 						       <div id="auditLog" class="content">
@@ -115,19 +129,19 @@
 						   </div>
 						    
 						   <div class="tab">
-						       <input type="radio" id="tab-2" name="tab-group-1">
+						       <input type="radio" id="tab-2" name="tab-group-1"  onclick="tabClick()"/>
 						       <label for="tab-2">Variables</label>
 						       
-						       <div id="variables" class="content">
+						       <div id="variables" class="content" style="display: none;">
 						           <h3> Select a process instance to view the variables </h3>
 						       </div> 
 						   </div>
 						    
 						    <div class="tab">
-						       <input type="radio" id="tab-3" name="tab-group-1">
+						       <input type="radio" id="tab-3" name="tab-group-1" onclick="tabClick()"/>
 						       <label for="tab-3">User Tasks</label>
 						     
-						       <div id="userTasks" class="content">
+						       <div id="userTasks" class="content" style="display: none;">
 						           <h3> Select a process instance to view the user tasks </h3>
 						       </div> 
 						   </div>
@@ -139,7 +153,19 @@
 
 		    	</div> 
 		    	   			    
-		   
+		 <!--   <script type="text/javascript">
+		   	function tabClick(){
+		   		var tabs = $('input[name=tab-group-1]');
+		   		for (var i = 0; i < tabs.length; i++) {
+		   			if (tabs[i].checked) {	
+		   				 $(tabs[i]).next().next().attr("style", "");
+		   			} else {		   				
+		   				 $(tabs[i]).next().next().attr("style", "display: none");
+		   			}
+		   		}
+		   		
+		   	}
+		   </script> -->
 		
 		</div>	
 	</div>

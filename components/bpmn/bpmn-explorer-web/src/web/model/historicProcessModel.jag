@@ -19,104 +19,81 @@ wsRequest.initHTServerInfo(httpServiceUrl, session.get('BPSSessionCookie'));
 
 var pagination = request.getParameter("pagination");
 if (pagination == null || pagination == ""){
-	pagination = 1;
+    pagination = 1;
 }
 var start = 0;
 if(pagination > 0){
-	start = (pagination - 1)*10 ;
+    start = (pagination - 1)*10 ;
 }
 var headers = {"Authorization":"Basic " + auth};
 
 
-    //Get all deployed processes
-    var deployments = get( httpUrl +"/bpmn/stats/processTaskServices/allProcesses" ,null, headers, "json" ).data.data;
-    var list = [];
+var processDefinitions = get( httpUrl +"/bpmn/repository/process-definitions?tenantId="+ bpsTenantID+"&start=" + start + "&size=10", null, headers, "json" ).data;
+
+
+var paginatePageCount = Math.ceil(processDefinitions.total / 10);
+
+var list = [];
+var runtimeInstanceList = [];
+var completedInstanceList  = [];
+
+for(var j = 0; j < processDefinitions.data.length; j++) {
+    var pId = processDefinitions.data[j].id;
     var runtimeInstanceList = [];
     var completedInstanceList  = [];
-   
-    for(var j = 0; j < deployments.length; j++) {    
-     var runtimeInstanceList = [];
-     var completedInstanceList  = [];    
-       
-       var runtimeInstances = get( httpUrl +"/bpmn/runtime/process-instances?processDefinitionId=" +deployments[j] ,null, headers, "json" ).data;
-       
-       for(var i = 0; i < runtimeInstances.data.length; i++) { 
-            var runtimeInstanceId = runtimeInstances.data[i].id;           
-            runtimeInstanceList.push(runtimeInstanceId);          
+
+    var runtimeInstances = get( httpUrl +"/bpmn/runtime/process-instances?processDefinitionId=" +pId ,null, headers, "json" ).data;
+
+    for(var i = 0; i < runtimeInstances.data.length; i++) {
+        var runtimeInstanceId = runtimeInstances.data[i].id;
+        runtimeInstanceList.push(runtimeInstanceId);
+    }
+
+    var completedInstances = get( httpUrl +"/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" +pId ,null, headers, "json" ).data;
+
+    for(var k = 0; k < completedInstances.data.length; k++) {
+        var completedInstanceId = completedInstances.data[k].id;
+        completedInstanceList.push(completedInstanceId);
+    }
+
+    //Get the bpmn diagram
+    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+pId, null, headers, "json" ).data.data;
+
+
+    var imageUrl = "";
+    if (resource == null) {
+        imageUrl = "not supported";
+    } else {
+        var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
+
+        if(BPSResponseXML == null || BPSResponseXML == ""){
+            if (log.isDebugEnabled()) {
+                log.debug('Session timed out for request' + wsRequest);
+            }
+            session.put('authSuccess', false);
+            response.sendRedirect('login');
+            throw "HTTPS Session with BPS has timed out";
+        } else {
+
+            var imageData = BPSResponseXML.toString().split(":return")[1];
+            imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);
+
         }
-
-        var completedInstances = get( httpUrl +"/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" +deployments[j] ,null, headers, "json" ).data;
-      
-      for(var k = 0; k < completedInstances.data.length; k++) { 
-            var completedInstanceId = completedInstances.data[k].id; 
-            completedInstanceList.push(completedInstanceId);          
-        }        
-
-      //Get the bpmn diagram
-      var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+deployments[j], null, headers, "json" ).data.data;
-               
-
-                var imageUrl = "";
-                if (resource == null) {
-                    imageUrl = "not supported";
-                } else {
-                    var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(deployments[j]));                   
-                    
-                    if(BPSResponseXML == null || BPSResponseXML == ""){
-                       if (log.isDebugEnabled()) {
-                           log.debug('Session timed out for request' + wsRequest);
-                       }
-                       session.put('authSuccess', false);
-                       response.sendRedirect('login');
-                       throw "HTTPS Session with BPS has timed out";
-                    } else {
-                       
-                        var imageData = BPSResponseXML.toString().split(":return")[1];                      
-                        imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);            
-
-                    }
-                  }
-
-
-      /* var tasksQuery = get( httpUrl +"/bpmn/stats/processTaskServices/allTasks/" +deployments[j] ,null, headers, "json" ).data.data;
-       log.info("PID ------- "+deployments[j]);
-       //var tt = [];
-          if(tasksQuery == null){
-          } else {
-              for(var i= 0; i < tasksQuery.length; i++){
-                var taskDefinitionKey = tasksQuery[i].taskDefinitionKey;
-                var type =  tasksQuery[i].type;
-                var taskName = tasksQuery[i].name;               
-
-              }
-          }*/          
-           
-
-       
-      var instanceList = {
-         deployment: deployments[j],
-         running: runtimeInstanceList,
-         completed: completedInstanceList,
-         imageUrl: imageUrl
-        };    
-         
-        list.push(instanceList);
-
     }
 
 
+    var instanceList = {
+        deployment: pId,
+        running: runtimeInstanceList,
+        completed: completedInstanceList,
+        imageUrl: imageUrl
+    };
 
-       
-   
-   /* var processDefList = get( httpUrl + "/bpmn/repository/process-definitions?tenantId=" +bpsTenantID, null, headers, "json" );
-   
-    var processes = processDefList.data;
-    for(var i =0; i< processes.data.length; i++){
-      log.info(processes.data[i].id);
-      log.info(processes.data[i].diagramResource);
-    }*/
-    
-     
+    list.push(instanceList);
+
+}
+
+
 //Set current active veiw as process view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
 historicProcessNavActive = 'class="active"';
