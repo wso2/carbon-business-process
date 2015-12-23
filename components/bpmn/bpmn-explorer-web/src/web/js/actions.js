@@ -1218,6 +1218,10 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                                         var state = "Active";
                                         var endTime = "N/A";
                                         var duration = "N/A";
+                                        if(assignee == null){
+                                            assignee = "Unassigned";
+                                        }
+
                                         break;
                                     } else {
 
