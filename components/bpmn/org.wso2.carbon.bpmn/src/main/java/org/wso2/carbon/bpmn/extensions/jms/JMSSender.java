@@ -75,9 +75,9 @@ public class JMSSender implements JavaDelegate{
 
         }else{
             jmsProviderID = jmsProvider.getValue(delegateExecution).toString();
-            Hashtable<String, String> propertyList = ActiviitiFileReader.readJMSProviderInformation(jmsProviderID);
-            initContextFactory = propertyList.get(BPMNConstants.JMS_INITIAL_CONTEXT_FACTORY);
-            provURL = propertyList.get(BPMNConstants.JMS_PROVIDER_URL);
+//            HashMap<String, Hashtable<String, String>> propertyList = ActiviitiFileReader.readJMSProviderInformation();
+//            initContextFactory = propertyList.get(BPMNConstants.JMS_INITIAL_CONTEXT_FACTORY);
+//            provURL = propertyList.get(BPMNConstants.JMS_PROVIDER_URL);
         }
 
         try {

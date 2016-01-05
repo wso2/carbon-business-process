@@ -79,7 +79,6 @@ public class JMSUtils {
     public static Connection createConnection(ConnectionFactory connectionFactory, String username,
                                               String password, Boolean isQueue) throws JMSException {
         Connection connection = null;
-
         if(isQueue == null){
             if(username == null && password == null){
                 connection = connectionFactory.createConnection();
@@ -91,9 +90,9 @@ public class JMSUtils {
             TopicConnectionFactory topicConnectionFactory = null;
 
             if(isQueue){
-                queueConnectionFactory = (QueueConnectionFactory)connectionFactory;
+                queueConnectionFactory = QueueConnectionFactory.class.cast(connectionFactory);
             }else{
-                topicConnectionFactory = (TopicConnectionFactory)connectionFactory;
+                topicConnectionFactory = TopicConnectionFactory.class.cast(connectionFactory);
             }
 
             if(queueConnectionFactory != null){
@@ -102,6 +101,7 @@ public class JMSUtils {
                 }else{
                     connection = queueConnectionFactory.createQueueConnection(username, password);
                 }
+
             }else if(topicConnectionFactory != null){
                 if(username == null && password == null){
                     connection = topicConnectionFactory.createTopicConnection();
@@ -184,8 +184,7 @@ public class JMSUtils {
         try {
             return className.cast(object);
         } catch (ClassCastException e) {
-            String exceptionMsg = "JNDI failed to de-reference Reference with name " + name;
-            log.error(exceptionMsg);
+            log.error(e.getMessage());
             return null;
         }
     }

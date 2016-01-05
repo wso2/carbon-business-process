@@ -62,35 +62,34 @@ public class JMSConnectionFactory {
 
     JMSUtils utils = new JMSUtils();
 
-    /**
-     *
-     */
     public JMSConnectionFactory(Hashtable<String, String> parameters){
         this.parameters = parameters;
 
         digestCacheLevel();
 
         try {
-            Properties properties = new Properties();
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME));
-            properties.put(Context.PROVIDER_URL, parameters.get(JMSConstants.JMS_PROVIDER_URL));
             context = new InitialContext(parameters);
 
-            connectionFactory = utils.lookup(context, ConnectionFactory.class,
-                    parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME));
+            if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
+                connectionFactory = utils.lookup(context, QueueConnectionFactory.class,
+                        parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME));
+            }else{
+                connectionFactory = utils.lookup(context, TopicConnectionFactory.class,
+                        parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME));
+            }
 
             if(parameters.get(JMSConstants.PARAM_DESTINATION) != null){
                 sharedDestination = utils.lookup(context, Destination.class,
                         parameters.get(JMSConstants.PARAM_DESTINATION));
             }
 
-            log.info("JMS ConnectionFactory initialized for: " + parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME));
+            log.info("JMS ConnectionFactory initialized for: " + parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME));
         }catch (NamingException e){
             String errorMsg = "Cannot acquire JNDI context, JMS Connection factory : " +
-                    parameters.get(JMSConstants.JMS_CONNECTION_FACTORY_JNDI_NAME) + " or default destination : " +
+                    parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME) + " or default destination : " +
                     parameters.get(JMSConstants.PARAM_DESTINATION) +
                     " using : " + parameters;
-            log.error(errorMsg);
+            log.error(errorMsg, e);
         }
     }
 
@@ -167,6 +166,11 @@ public class JMSConnectionFactory {
 
         if(connection == null){
             connection = createConnection();
+            try {
+                connection.start();
+            } catch (JMSException e) {
+                log.error(e.getMessage());
+            }
             sharedConnectionMap.put(lastReturnedConnectionIndex++, connection);
         }
         if(lastReturnedConnectionIndex > maxSharedConnectionCount){
@@ -231,9 +235,7 @@ public class JMSConnectionFactory {
     private Connection createConnection(){
         Connection connection = null;
         try{
-            /*isQueue is set to true here.*/
             connection = JMSUtils.createConnection(connectionFactory, parameters.get(JMSConstants.PARAM_USERNAME), parameters.get(JMSConstants.PARAM_PASSWORD), isQueue());
-
             if(log.isDebugEnabled()) {
                 log.debug("New JMS Connection was created from the JMS ConnectionFactory");
             }
@@ -251,7 +253,8 @@ public class JMSConnectionFactory {
     private Session createSession(Connection connection){
         Session session = null;
         try{
-            session = JMSUtils.createSession(connection, false, Session.AUTO_ACKNOWLEDGE, true);
+            //session is always not transacted
+            session = JMSUtils.createSession(connection, false, Session.AUTO_ACKNOWLEDGE, isQueue());
             if(log.isDebugEnabled()){
                 log.debug("New JMS Session was created from the JMS Connection");
             }
@@ -259,25 +262,6 @@ public class JMSConnectionFactory {
             log.error("Error creating a session from the JMS Connection using properties: " + parameters, e);
         }
         return session;
-    }
-
-    /**
-     *
-     * @param session
-     * @param destination
-     * @return
-     */
-    private MessageProducer createProducer(Session session, Destination destination){
-        MessageProducer producer = null;
-        try{
-            producer = JMSUtils.createProducer(session, true, destination);
-            if(log.isDebugEnabled()){
-                log.debug("New JMS MessageProducer was created");
-            }
-        }catch (JMSException e){
-            log.error("Error creating a message producer");
-    }
-        return producer;
     }
 
     /**
@@ -307,39 +291,5 @@ public class JMSConnectionFactory {
                 return createSession(connection);
             }
         }
-    }
-
-    /**
-     *
-     * @param connection
-     * @param session
-     * @param destination
-     * @return
-     */
-    public MessageProducer getMessageProducer(Connection connection, Session session, Destination destination){
-        if(cacheLevel > JMSConstants.CACHE_SESSION){
-            return getSharedProducer();
-        }else{
-            if(session == null){
-                return createProducer(getSession(connection), destination);
-            }else{
-                return createProducer(session, destination);
-            }
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    private synchronized MessageProducer getSharedProducer(){
-        if(sharedProducer == null){
-            sharedProducer = createProducer(getSharedSession(), sharedDestination);
-            if(log.isDebugEnabled()){
-                log.debug("Created a shared JMS MessageProducer");
-            }
-        }
-
-        return sharedProducer;
     }
 }

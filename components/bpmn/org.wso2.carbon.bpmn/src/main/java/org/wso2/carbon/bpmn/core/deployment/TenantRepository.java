@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.bpmn.core.deployment;
 
-import com.jayway.jsonpath.JsonPath;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -36,7 +35,6 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeployment;
-import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
 import org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService;
 import org.wso2.carbon.bpmn.extensions.jms.*;
 import org.wso2.carbon.registry.api.Collection;
@@ -63,7 +61,7 @@ public class TenantRepository {
     private Integer tenantId;
     private File repoFolder;
 
-    private HashMap<String, MessageListener> messageListeners = new HashMap<>();
+    private HashMap<String, JMSListener> messageListeners = new HashMap<>();
 //	private ActivitiDAO activitiDAO;
 
     public TenantRepository(Integer tenantId) {
@@ -341,6 +339,14 @@ public class TenantRepository {
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
             for (Deployment deployment : deployments) {
+
+                JMSListener listener = messageListeners.get(deployment.getId());
+                if(listener != null){
+                    messageListeners.remove(deployment.getId());
+                    //stop the listener from listening to the destination...
+
+                    log.info("Listener for process with process ID " + deployment.getId() + " stopped listening...");
+                }
                 repositoryService.deleteDeployment(deployment.getId(), true);
             }
 
@@ -349,7 +355,6 @@ public class TenantRepository {
             log.error(msg, e);
             throw new BPSFault(msg, e);
         }
-
     }
 
     public List<Deployment> getDeployments() /*throws BPSFault*/ {
@@ -481,15 +486,21 @@ public class TenantRepository {
          * ************************* Code for the JMSStartTask *********************************
          */
 
-        HashMap<String, Hashtable<String, String>> providerList = new HashMap<>();
-
-        List<String> jmsProviderIDs = ActiviitiFileReader.readJMSProviderIDList();
-        for(String jmsProviderID : jmsProviderIDs){
-            providerList.put(jmsProviderID, ActiviitiFileReader.readJMSProviderInformation(jmsProviderID));
-        }
+        //Create a DataHolder instance to read the default jms config information from activiti.xml file.
+        JMSDataHolder dataHolder = JMSDataHolder.getInstance();
 
         JMSConnectionFactoryManager factoryManager = JMSConnectionFactoryManager.getInstance();
-        factoryManager.initializeConnectionFactories(providerList);
+
+        //get the default parameters the data holder object has.
+        HashMap<String, Hashtable<String, String>>  jmsProperties = dataHolder.getJmsProperties();
+        Set<String> keys = jmsProperties.keySet();
+        Iterator<String> propKeys = keys.iterator();
+        String propKey;
+        while(propKeys.hasNext()){
+            propKey = propKeys.next();
+            Hashtable<String, String> tempMap = jmsProperties.get(propKey);
+            factoryManager.initializeConnectionFactories(propKey, tempMap);
+        }
 
         BPMNDeploymentService deploymentService = new BPMNDeploymentService();
         BPMNDeployment deployments[] = deploymentService.getDeployments();
@@ -503,7 +514,8 @@ public class TenantRepository {
             List<String> names = repositoryService.getDeploymentResourceNames(deployments[i].getDeploymentId());
             for (int j = 0; j < names.size(); j++) {
                 if (names.get(j).endsWith(".xml")) {
-                    InputStream fileStream = repositoryService.getResourceAsStream(deployments[i].getDeploymentId(), names.get(j));
+                    InputStream fileStream = repositoryService.getResourceAsStream(deployments[i].getDeploymentId(),
+                            names.get(j));
                     stringBuilder = new StringBuilder();
                     try {
                         reader = new BufferedReader(new InputStreamReader(fileStream));
@@ -535,7 +547,8 @@ public class TenantRepository {
          * ************************* End of code for the JMSStartTask *********************************
          */
 
-        List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).list();
+        List<Deployment> tenantDeployments = repositoryService.createDeploymentQuery().
+                deploymentTenantId(tenantId.toString()).list();
         for (Deployment deployment : tenantDeployments) {
             String deploymentName = deployment.getName();
             activitiDeploymentNames.add(deploymentName);
@@ -551,7 +564,8 @@ public class TenantRepository {
                 Collection registryDeployments = (Collection) tenantRegistry.get(deploymentRegistryPath);
                 String[] deploymentPaths = registryDeployments.getChildren();
                 for (String deploymentPath : deploymentPaths) {
-                    String deploymentName = deploymentPath.substring(deploymentPath.lastIndexOf("/") + 1, deploymentPath.length());
+                    String deploymentName = deploymentPath.substring(deploymentPath.lastIndexOf("/") + 1,
+                            deploymentPath.length());
                     registryDeploymentNames.add(deploymentName);
                 }
             }
@@ -571,20 +585,25 @@ public class TenantRepository {
             try {
                 if (!(fileArchiveNames.contains(deploymentName))) {
                     if (log.isDebugEnabled()) {
-                        log.debug(deploymentName + " has been removed from the deployment folder. Undeploying the package...");
+                        log.debug(deploymentName + " has been removed from the deployment folder. " +
+                                "Undeploying the package...");
                     }
                     undeploy(deploymentName, true);
                 } else {
-                    if (activitiDeploymentNames.contains(deploymentName) && !registryDeploymentNames.contains(deploymentName)) {
+                    if (activitiDeploymentNames.contains(deploymentName) && !registryDeploymentNames.
+                            contains(deploymentName)) {
                         if (log.isDebugEnabled()) {
-                            log.debug(deploymentName + " is missing in the registry. Undeploying the package to avoid inconsistencies...");
+                            log.debug(deploymentName + " is missing in the registry. Undeploying the " +
+                                    "package to avoid inconsistencies...");
                         }
                         undeploy(deploymentName, true);
                     }
 
-                    if (!activitiDeploymentNames.contains(deploymentName) && registryDeploymentNames.contains(deploymentName)) {
+                    if (!activitiDeploymentNames.contains(deploymentName) && registryDeploymentNames.
+                            contains(deploymentName)) {
                         if (log.isDebugEnabled()) {
-                            log.debug(deploymentName + " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
+                            log.debug(deploymentName + " is missing in the BPS database. Undeploying the " +
+                                    "package to avoid inconsistencies...");
                         }
                         undeploy(deploymentName, true);
                     }
@@ -615,25 +634,36 @@ public class TenantRepository {
         String cacheLevel = null;
         String outputMappingsString = null;
         String onError = null;
+        String contentType = null;
+        String sessionTransacted = null;
+        String sessionAck = null;
+        String cacheUserTrans = null;
+        String initReconDuration = null;
+        String reconProgFact = null;
+        String maxReconDuration = null;
 
         OMElement configElement = AXIOMUtil.stringToOM(file);
 
-        Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "process"));
+        Iterator processes = configElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL",
+                "process"));
 
         while (processes.hasNext()) {
 
             OMElement process = (OMElement) processes.next();
             String processId = process.getAttributeValue(new QName(null, "id"));
             if (processId.equals("startProcess")) {
-                Iterator startEvent = process.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "startEvent"));
+                Iterator startEvent = process.getChildrenWithName
+                        (new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "startEvent"));
 
                 while (startEvent.hasNext()) {
                     OMElement startElement = (OMElement) startEvent.next();
 
-                    Iterator extensionElements = startElement.getChildrenWithName(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
+                    Iterator extensionElements = startElement.getChildrenWithName
+                            (new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
                     while (extensionElements.hasNext()) {
                         OMElement exeElements = (OMElement) extensionElements.next();
-                        Iterator listeners = exeElements.getChildrenWithName(new QName("http://activiti.org/bpmn", "executionListener"));
+                        Iterator listeners = exeElements.getChildrenWithName
+                                (new QName("http://activiti.org/bpmn", "executionListener"));
 
                         if(listeners.hasNext()){
                             OMElement execListener = (OMElement)listeners.next();
@@ -665,10 +695,6 @@ public class TenantRepository {
                                             password = child.getText();
                                             break;
 
-                                        case JMSConstants.JMS_CACHE_LEVEL:
-                                            cacheLevel = child.getText();
-                                            break;
-
                                         case JMSConstants.JMS_OUTPUT_MAPPINGS:
                                             outputMappingsString = child.getText();
                                             break;
@@ -677,23 +703,61 @@ public class TenantRepository {
                                             onError = child.getText();
                                             break;
 
+                                        case JMSConstants.JMS_CONTENT_TYPE:
+                                            contentType = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_SESSION_TRANSACTED:
+                                            sessionTransacted = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_SESSION_ACK:
+                                            sessionAck = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_USER_TRANSACTION:
+                                            cacheUserTrans = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_INIT_RECONN_DURATION:
+                                            initReconDuration = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_RECON_PROGRESS_FACTORY:
+                                            reconProgFact = child.getText();
+                                            break;
+
+                                        case JMSConstants.JMS_MAX_RECON_DURATION:
+                                            maxReconDuration = child.getText();
+                                            break;
                                     }
                                 }
 
+                                HashMap<String, Hashtable<String, String>> map = JMSDataHolder.getInstance().getJmsProperties();
+                                Hashtable<String, String> params;
+
                                 if(jmsProviderID == null){
-                                    String providerNotFoundErrorMsg = "JMS Provider ID is not provided. jmsProviderID must be provided.";
+                                    String providerNotFoundErrorMsg = "JMS Provider ID is not provided. " +
+                                            "jmsProviderID must be provided.";
                                     throw new BPMNJMSException(providerNotFoundErrorMsg);
                                 }else{
                                    paramList.put(JMSConstants.JMS_PROVIDER, jmsProviderID);
                                 }
                                 if(destinationType == null){
-                                    String destTypeNotFoundErrorMsg = "JMS Destination Type is not provided. destinationType must be provided.";
+                                    String destTypeNotFoundErrorMsg = "JMS Destination Type is not provided. " +
+                                            "destinationType must be provided.";
                                     throw new BPMNJMSException(destTypeNotFoundErrorMsg);
                                 }else{
                                     paramList.put(JMSConstants.PARAM_DESTINATION_TYPE, destinationType);
+                                    if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(destinationType)){
+                                        params = map.get(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
+                                    }else{
+                                        params = map.get(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
+                                    }
                                 }
                                 if(destinationName == null){
-                                    String destNameNotFoundErrorMsg = "JMS Destination Name is not provided. destination must be provided.";
+                                    String destNameNotFoundErrorMsg = "JMS Destination Name is not provided. " +
+                                            "destination must be provided.";
                                     throw new BPMNJMSException(destNameNotFoundErrorMsg);
                                 }else{
                                     paramList.put(JMSConstants.PARAM_DESTINATION, destinationName);
@@ -717,6 +781,39 @@ public class TenantRepository {
 
                                 if(onError != null){
                                     paramList.put(JMSConstants.PARAM_ON_ERROR, onError);
+                                }
+                                if(contentType != null){
+                                    paramList.put(JMSConstants.PARAM_CONTENT_TYPE, contentType);
+                                }if(sessionAck != null){
+                                    paramList.put(JMSConstants.PARAM_SESSION_ACK, sessionAck);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_SESSION_ACK, params.get
+                                            (JMSConstants.PARAM_SESSION_ACK));
+                                }if(sessionTransacted != null){
+                                    paramList.put(JMSConstants.PARAM_SESSION_TRANSACTED, sessionTransacted);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_SESSION_TRANSACTED,
+                                            params.get(JMSConstants.PARAM_SESSION_TRANSACTED));
+                                }if(cacheUserTrans != null){
+                                    paramList.put(JMSConstants.PARAM_CACHE_USER_TRX, cacheUserTrans);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_CACHE_USER_TRX,
+                                            params.get(JMSConstants.PARAM_CACHE_USER_TRX));
+                                }if(initReconDuration != null){
+                                    paramList.put(JMSConstants.PARAM_INIT_RECON_DURATION, initReconDuration);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_INIT_RECON_DURATION,
+                                            params.get(JMSConstants.PARAM_INIT_RECON_DURATION));
+                                }if(reconProgFact != null){
+                                    paramList.put(JMSConstants.PARAM_RECON_PROGRESS_FACT, reconProgFact);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_RECON_PROGRESS_FACT,
+                                            params.get(JMSConstants.PARAM_RECON_PROGRESS_FACT));
+                                }if(maxReconDuration != null){
+                                    paramList.put(JMSConstants.PARAM_MAX_RECON_DURATION, maxReconDuration);
+                                }else{
+                                    paramList.put(JMSConstants.PARAM_MAX_RECON_DURATION,
+                                            params.get(JMSConstants.PARAM_MAX_RECON_DURATION));
                                 }
                             }
                         }

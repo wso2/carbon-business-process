@@ -16,12 +16,16 @@
 
 package org.wso2.carbon.bpmn.extensions.jms;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.*;
 
 /**
  * Created by dilini on 12/11/15.
  */
 public class JMSConnectionFactoryManager {
+    private static final Log log = LogFactory.getLog(JMSConnectionFactoryManager.class);
     private static JMSConnectionFactoryManager connectionFactoryManager = null;
 
     private final Map<String, JMSConnectionFactory> connectionFactories = new HashMap<>();
@@ -36,18 +40,12 @@ public class JMSConnectionFactoryManager {
         return connectionFactoryManager;
     }
 
-    public void initializeConnectionFactories(HashMap<String, Hashtable<String, String>> parameterList){
-        Set<String> keys = parameterList.keySet();
-        Iterator<String> keyIterator = keys.iterator();
-        String key;
-        while (keyIterator.hasNext()){
-            key = keyIterator.next();
-            connectionFactories.put(key, new JMSConnectionFactory(parameterList.get(key)));
-        }
+    public void initializeConnectionFactories(String factoryType, Hashtable<String, String> parameterList){
+        connectionFactories.put(factoryType, new JMSConnectionFactory(parameterList));
     }
 
-    public JMSConnectionFactory getConnectionFactory(String jmsProviderID){
-        return connectionFactories.get(jmsProviderID);
+    public synchronized JMSConnectionFactory getConnectionFactory(String factoryType){
+        return connectionFactories.get(factoryType);
     }
 
     public void stop(){
