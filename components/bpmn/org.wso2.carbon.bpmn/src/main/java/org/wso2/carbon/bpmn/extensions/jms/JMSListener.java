@@ -54,7 +54,6 @@ public class JMSListener implements MessageListener{
     private Destination destination = null;
     private Thread idleThread = null;
     private Hashtable<String, String> parameters = null;
-    private int lastReturnedConnectionIndex = 0;
 
     public JMSListener(String jmsProviderID, Hashtable<String, String> parameters) {
         this.parameters = parameters;

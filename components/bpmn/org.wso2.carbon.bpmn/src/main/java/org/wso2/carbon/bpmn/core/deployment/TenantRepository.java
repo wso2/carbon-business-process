@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jivesoftware.smackx.DefaultMessageEventRequestListener;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
@@ -714,6 +715,9 @@ public class TenantRepository {
                                         case JMSConstants.JMS_SESSION_ACK:
                                             sessionAck = child.getText();
                                             break;
+
+                                        case JMSConstants.JMS_CACHE_LEVEL:
+                                            cacheLevel = child.getText();
 
                                         case JMSConstants.JMS_USER_TRANSACTION:
                                             cacheUserTrans = child.getText();

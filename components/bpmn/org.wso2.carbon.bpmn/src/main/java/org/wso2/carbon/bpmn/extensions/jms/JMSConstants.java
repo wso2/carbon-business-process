@@ -72,10 +72,6 @@ public class JMSConstants {
     public static final String JMS_CONTENT_TYPE = "contentType";
     public static final String JMS_QUEUE_CONNECTION_FACTORY = "queueConnectionFactory";
     public static final String JMS_TOPIC_CONNECTION_FACTORY = "topicConnectionFactory";
-    public static final String JMS_CONNECTION_FACTORY_JNDI_NAME = "connectionFactoryJNDIName";
-    public static final String JMS_CONNECTION_FACTORY_TYPE = "connectionFactoryType";
-    public static final String JMS_INITIAL_CONTEXT_FACTORY = "initContextFactory";
-    public static final String JMS_PROV_URL = "providerURL";
     public static final String JMS_SESSION_TRANSACTED = "sessionTransacted";
     public static final String JMS_SESSION_ACK = "sessionAcknowledgement";
     public static final String JMS_CACHE_LEVEL = "cacheLevel";
