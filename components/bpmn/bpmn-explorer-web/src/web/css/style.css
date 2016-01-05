@@ -505,11 +505,11 @@ a.collapsing-h2 {
 
 .table-status-column {
     background: #ADA8A8;
-    color: #fff;   
+    color: #000000;   
 }
 
-.table-status-column a tr{
-    color: #fff;
+.table-status-column tr{
+    color: #000000;
     font-size: 18px;
 }
 
@@ -1082,3 +1082,13 @@ hr {
 .footer{
     z-index: 1;
 }
+
+.table-status-column a{
+    color: #000000;
+    font-size: 18px;
+}
+
+.table-status-column a:hover{
+     color : red;
+}
+

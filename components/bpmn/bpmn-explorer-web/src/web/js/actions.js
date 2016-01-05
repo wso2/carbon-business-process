@@ -160,11 +160,17 @@ function getVariablesOfCompletedProcessInstances(id){
 }
 
 
-
 function completedProcessInstances(id){
+
     getAuditLogForCompletedProcessInstances(id);
     getUserTasksOfCompletedProcessInstances(id);
     getVariablesOfCompletedProcessInstances(id);
+    getCalledProcessInstancesOfCompleted(id);
+
+    $('#runningCombo option[value="0"]').prop('selected', true);
+    $('.selectpicker').selectpicker('refresh');
+
+
 }
 
 
@@ -1165,6 +1171,11 @@ function runningProcessInstances(pid,id){
     getAuditLogForRunningProcessInstances(pid,id);
     getVariablesOfRunningProcessInstances(id);
     getUserTasksOfRunningProcessInstances(pid,id);
+    getCalledProcessInstancesOfRunning(id);
+
+    $('select[name=completedCombo]').val('0');
+    $('.selectpicker').selectpicker('refresh');
+
 }
 
 function getUserTasksOfRunningProcessInstances(pid,id){
@@ -1267,3 +1278,95 @@ function tabClick(){
     }
 
 }
+
+function getCalledProcessInstancesOfCompleted(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + id;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function test7(data){
+                var calledPId= data.superProcessInstanceId;
+                $("#calledInstances").html("");
+                if(calledPId == null){
+                    var result = "<h3> No Called Process Instances </h3>";
+                    $("#calledInstances").html(result);
+                } else {
+
+                    var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + calledPId ;
+
+
+                    $.ajax({
+                        type: 'GET',
+                        contentType: "application/json",
+                        url: httpUrl + url1,
+
+                        success: function (data){
+
+                            var calledPInfo = data;
+
+                            $("#calledInstances").html("");
+                            var DIV = "<table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
+
+                            var id  = calledPInfo.id;
+                            var processDefinitionId= calledPInfo.processDefinitionId;
+                            var startTime  = calledPInfo.startTime;
+                            var endTime  = calledPInfo.endTime;
+                            var durationInMillis  = calledPInfo.durationInMillis;
+
+                            DIV = DIV + "<tr><td>"+id+"</td><td>"+processDefinitionId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
+                            DIV = DIV+"</tbody></table>"
+
+                            $("#calledInstances").html(DIV);
+
+                        },
+                        error: function (error) {
+                            console.log("error");
+                            console.log(error);
+                        }
+                    });
+                }
+
+            } ,
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+function getCalledProcessInstancesOfRunning(id){
+
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        success: function (data){
+            $("#calledInstances").html("");
+            var result = "<h3> Complete the process instance to view any called process-instances </h3>";
+            $("#calledInstances").html(result);
+
+        },
+        error: function (error) {
+            console.log("error");
+            console.log(error);
+        }
+    });
+}
+
+/*function clickSingleA(a)
+ {
+ items = document.querySelectorAll('.single.active');
+
+ if(items.length)
+ {
+ items[0].className = 'single';
+ }
+
+ a.className = 'single active';
+ }*/
+

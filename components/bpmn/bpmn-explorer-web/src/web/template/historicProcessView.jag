@@ -20,6 +20,8 @@
     </div>
 </div>
 <div class="row">
+	<% if(isProcessesDeployed == true) { %>
+	<script src="js/bootstrap-select.min.js"></script>
  	<div class="panel-inbox">
 	<!--<ol class="breadcrumb">
 	  <li><a href="stats">Home</a></li>
@@ -42,11 +44,27 @@
 			  
 			  var userTasks = document.getElementById("userTasks");			 		  
 			  userTasks.innerHTML="<h3> Select a process instance to view the user tasks </h3>";			  
-			  
-			}			
+
+			  var calledInstances = document.getElementById("calledInstances");			 		  
+			  calledInstances.innerHTML="<h3> Select a completed process instance to view any called process instances</h3>";	
+			
+
+			var selects = document.getElementsByTagName('select');
+			var sel;
+			
+			for(var z=0; z<selects.length; z++){
+			     sel = selects[z];
+			     console.log(sel);
+			     sel.selectedIndex=0;
+			     $("select").selectpicker('refresh');
+			     
+			}
+		}	
+
+			
 		</script>
 		    	
-		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">   
+		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">   		    	
 
 		    	<% for (var i=0; i<list.length; i++) { %>
 		    	<div>
@@ -61,40 +79,46 @@
 		    		
 		    		<div class="collapse" id="collapseOverview<%=list[i].deployment.split(":")[0]%>" aria-expanded="true" style="">
 		    		<table class="table-status-column">
-		    		
 		    		<tr>
-		    		<th> <i> <u> Running Instances </u> </i>  </th>
-		    		</tr>
-
-		    	   <%var c = list[i].running.length;
-	if(c == 0){ %>
+		    		<th> <u> Running Instances </u> </th>
+		    		</tr>	   
+		           <%var c = list[i].running.length;
+					if(c == 0){ %>
+						
 			            <th><i> No running processes</i></th>
-			          <% } else {
-		for (var q=0; q<list[i].running.length; q++) { %>
-				            <tr>
-				            <th>
-				            <a onclick="javascript:runningProcessInstances('<%=list[i].deployment%> ','<%=list[i].running[q]%>')" style="color: white;"><%=list[i].running[q]%>
-				            </th>	
-				            </tr>
+			          <% } else { %>
+			          <br>
+			            <th>
+			          	<select id="runningCombo" class="selectpicker show-tick" data-live-search="true" data-size="5"
+			          	 onchange="javascript:runningProcessInstances('<%=list[i].deployment%> ',this.value)">
+			          	 <option class="placeholder" selected disabled value="0">Select a process instance</option>
+			          	 
+						<% for (var q=0; q<list[i].running.length; q++) { %>
+						
+							<option ><%=list[i].running[q]%></option>					 
 				           <%}%>
-		          <% } %>		    		
-
+				           </select>
+				       </th>
+		          <% } %>				
 		    		<tr>
-		    		<th> <i> <u>Completed Instances  </u> </i> </th>
+		    		<th> <u>Completed Instances  </u> </th>
 		    		</tr>
 
 		    		 <%var c = list[i].completed.length;
-	if(c == 0){ %>
+					if(c == 0){ %>
 			            <th><i> No completed processes</i></th>
-			          <% } else {
-		for (var q=0; q<list[i].completed.length; q++) { %>
-				            <tr>
-				            <th>
-				            <a onclick="javascript:completedProcessInstances('<%=list[i].completed[q]%>')" style="color: white;"><%=list[i].completed[q]%>
-				            </a>
-				            </th>	
-				            </tr>
+			          <% } else { %>
+			          <br>
+			            <th>
+			          	<select id="completedCombo" name="completedCombo" class="selectpicker show-tick" data-live-search="true" data-size="5"
+			          	 onchange="javascript:completedProcessInstances(this.value)">
+			          	 <option class="placeholder" selected disabled value="0">Select a process instance</option>
+						<% for (var q=0; q<list[i].completed.length; q++) { %>
+				            
+				            <option><%=list[i].completed[q]%></option>			           
 				           <%}%>
+				           </select>
+				       </th>
 			          <% } %>
 			          </table>    		
 			          </div>	    		    	
@@ -103,13 +127,13 @@
 		    	</div>
 		    	<%}%>	
 		    	<%
-var numberOfPages = paginatePageCount;
-var currentPage = parseInt(pagination);
-var redirectPage = "historicProcess";
-var queryParams = "";
+					var numberOfPages = paginatePageCount;
+					var currentPage = parseInt(pagination);
+					var redirectPage = "historicProcess";
+					var queryParams = "";
 
-%>
-<% include("/template/partials/pagination.jag"); %>
+					%>
+					<% include("/template/partials/pagination.jag"); %>
 		    	</div>
 		    	<div class="col-sm-9 col-md-9 col-lg-9 " style="height:100%;" >
 		    		<div style="border:4px solid black; height:50%; width:100%;">
@@ -145,6 +169,15 @@ var queryParams = "";
 						           <h3> Select a process instance to view the user tasks </h3>
 						       </div> 
 						   </div>
+
+						     <div class="tab">
+						       <input type="radio" id="tab-4" name="tab-group-1" onclick="tabClick()"/>
+						       <label for="tab-4">Called Instances</label>
+						     
+						       <div id="calledInstances" class="content" style="display: none;">
+						           <h3> Select a process instance to view the called process instances </h3>
+						       </div> 
+						   </div>
 						    
 						</div>
 		    	
@@ -169,5 +202,10 @@ var queryParams = "";
 		
 		</div>	
 	</div>
+	<% }else{ %>
+      <br/>
+      &nbsp;&nbsp; Please deploy processes from admin view to view the details of each instance.
+      <br/><br/>
+    <% }%>
 </div>	
 

@@ -26,10 +26,11 @@
 		<script src="js/jquery.form.min.js"></script>
 		<script src="js/moment.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-select.min.js"></script>
 		<script src="js/actions.js"></script>
 		<script src="js/daterangepicker.js"></script>
 		<script>
-			$("td:contains('null')").html($("td:contains('null')").html().replace("null", "Not available "));
+			$("td:contains('null')").html($("td:contains('null')").html().replace("null", "Not available "));			
 		</script>
 		<!--[if lte IE 8]> <script src="js/html5shiv.min.js"></script> <script src="js/respond.min.js"></script> <![endif]-->
 </body>

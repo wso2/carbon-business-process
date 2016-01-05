@@ -27,7 +27,15 @@ if(pagination > 0){
 }
 var headers = {"Authorization":"Basic " + auth};
 
+var isProcessesDeployed = false;
 
+var countOfProcesses = get( httpUrl +"/bpmn/stats/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
+if(countOfProcesses == 0){
+    isProcessesDeployed = false;
+}
+else{
+    isProcessesDeployed =true;
+}
 var processDefinitions = get( httpUrl +"/bpmn/repository/process-definitions?tenantId="+ bpsTenantID+"&start=" + start + "&size=10", null, headers, "json" ).data;
 
 
