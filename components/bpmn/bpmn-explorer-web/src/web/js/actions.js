@@ -85,96 +85,6 @@ function displayAttachmentData(id){
     window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
 }
 
-function getUserTasksOfCompletedProcessInstances(id){
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-task-instances?processInstanceId=" + id;
-    $.ajax({
-        type: 'GET',
-        contentType: "application/json",
-        url: httpUrl + url,
-        success: function (data) {
-
-            $("#userTasks").html("");
-            var completedTaskInstances = data;
-            var DIV = "<table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
-            for(var k = 0; k < completedTaskInstances.data.length; k++) {
-
-                var state = "Completed";
-                var taskDefKey = completedTaskInstances.data[k].taskDefinitionKey;
-                var taskName = completedTaskInstances.data[k].name;
-                var startTime = completedTaskInstances.data[k].startTime;
-                var endTime = completedTaskInstances.data[k].endTime;
-                var assignee = completedTaskInstances.data[k].assignee;
-                var duration = completedTaskInstances.data[k].durationInMillis;
-
-                DIV = DIV + "<tr><td>"+state+"</td><td>"+taskDefKey+"</td><td>"+taskName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
-
-            }
-            DIV = DIV+"</tbody></table>"
-            $("#userTasks").html(DIV);
-
-        },
-        error: function (error) {
-            console.log("error");
-            console.log(error);
-        }
-    });
-}
-
-function getVariablesOfCompletedProcessInstances(id){
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-variable-instances?processInstanceId=" + id;
-    $.ajax({
-        type: 'GET',
-        contentType: "application/json",
-        url: httpUrl + url,
-        success: function (data) {
-
-            $("#variables").html("");
-            var variableInfo = data;
-            if(variableInfo.data.length == 0){
-                var DIV = "<h3> No variables for this process instance </h3>";
-                $("#variables").html(DIV);
-            }
-            else{
-                var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
-                for(var k = 0; k < variableInfo.data.length; k++) {
-                    var name = variableInfo.data[k].variable.name;
-                    var type =variableInfo.data[k].variable.type;
-                    var value = variableInfo.data[k].variable.value;
-                    var scope = variableInfo.data[k].variable.scope;
-                    DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
-
-
-                }
-                DIV = DIV+"</tbody></table>"
-                $("#variables").html(DIV);
-            }
-
-        },
-        error: function (error) {
-            console.log("error");
-            console.log(error);
-        }
-    });
-}
-
-
-function completedProcessInstances(id){
-
-    getAuditLogForCompletedProcessInstances(id);
-    getUserTasksOfCompletedProcessInstances(id);
-    getVariablesOfCompletedProcessInstances(id);
-    getCalledProcessInstancesOfCompleted(id);
-
-    $('#runningCombo option[value="0"]').prop('selected', true);
-    $('.selectpicker').selectpicker('refresh');
-
-
-}
-
-
-
 function completeTask(data, id) {
     document.getElementById("completeButton").style.display='none';
     document.getElementById("loadingCompleteButton").hidden = false;
@@ -999,6 +909,75 @@ function generateReport(){
 
 }
 
+//Gets the details of the user-tasks in a completed process instance
+function getUserTasksOfCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-task-instances?processInstanceId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#userTasks").html("");
+            var completedTaskInstances = data;
+            var DIV = "<table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
+            for(var k = 0; k < completedTaskInstances.data.length; k++) {
+
+                var state = "Completed";
+                var taskDefKey = completedTaskInstances.data[k].taskDefinitionKey;
+                var taskName = completedTaskInstances.data[k].name;
+                var startTime = completedTaskInstances.data[k].startTime;
+                var endTime = completedTaskInstances.data[k].endTime;
+                var assignee = completedTaskInstances.data[k].assignee;
+                var duration = completedTaskInstances.data[k].durationInMillis;
+
+                DIV = DIV + "<tr><td>"+state+"</td><td>"+taskDefKey+"</td><td>"+taskName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
+
+            }
+            DIV = DIV+"</tbody></table>"
+            $("#userTasks").html(DIV);
+
+        }
+    });
+}
+
+//Gets the details of the variables in a completed process instance
+function getVariablesOfCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-variable-instances?processInstanceId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#variables").html("");
+            var variableInfo = data;
+            if(variableInfo.data.length == 0){
+                var DIV = "<h3> No variables for this process instance </h3>";
+                $("#variables").html(DIV);
+            }
+            else{
+                var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                for(var k = 0; k < variableInfo.data.length; k++) {
+                    var name = variableInfo.data[k].variable.name;
+                    var type =variableInfo.data[k].variable.type;
+                    var value = variableInfo.data[k].variable.value;
+                    var scope = variableInfo.data[k].variable.scope;
+                    DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
+
+
+                }
+                DIV = DIV+"</tbody></table>"
+                $("#variables").html(DIV);
+            }
+
+        }
+    });
+}
+
+//Gets the details of all the activities in a completed process instance
 function getAuditLogForCompletedProcessInstances(id){
 
     var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
@@ -1032,16 +1011,78 @@ function getAuditLogForCompletedProcessInstances(id){
             DIV = DIV+"</tbody></table>"
             $("#auditLog").html(DIV);
 
-        },
-        error: function (error) {
-            console.log("error");
-            console.log(error);
         }
     });
 }
 
+//Gets the details of any called process instances for a completed process instance
+function getCalledProcessInstancesOfCompleted(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + id;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function innerFunction(data){
+                var calledPId= data.superProcessInstanceId;
+                $("#calledInstances").html("");
+                if(calledPId == null){
+                    var result = "<h3> No Called Process Instances </h3>";
+                    $("#calledInstances").html(result);
+                } else {
+
+                    var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + calledPId ;
 
 
+                    $.ajax({
+                        type: 'GET',
+                        contentType: "application/json",
+                        url: httpUrl + url1,
+
+                        success: function (data){
+
+                            var calledPInfo = data;
+
+                            $("#calledInstances").html("");
+                            var DIV = "<table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
+
+                            var id  = calledPInfo.id;
+                            var processDefinitionId= calledPInfo.processDefinitionId;
+                            var startTime  = calledPInfo.startTime;
+                            var endTime  = calledPInfo.endTime;
+                            var durationInMillis  = calledPInfo.durationInMillis;
+
+                            DIV = DIV + "<tr><td>"+id+"</td><td>"+processDefinitionId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
+                            DIV = DIV+"</tbody></table>"
+
+                            $("#calledInstances").html(DIV);
+
+                        }
+                    });
+                }
+
+            }
+    });
+}
+
+//Generates the details for a completed process instance
+function completedProcessInstances(id){
+
+    getAuditLogForCompletedProcessInstances(id);
+    getUserTasksOfCompletedProcessInstances(id);
+    getVariablesOfCompletedProcessInstances(id);
+    getCalledProcessInstancesOfCompleted(id);
+
+    $('#runningCombo option[value="0"]').prop('selected', true);
+    $('.selectpicker').selectpicker('refresh');
+
+
+}
+
+//Gets the details of all the activities in a running/active process instance
 function getAuditLogForRunningProcessInstances(pid,id){
 
 
@@ -1053,7 +1094,7 @@ function getAuditLogForRunningProcessInstances(pid,id){
         url: httpUrl + url,
         success:
 
-            function test2(data){
+            function innerFunction(data){
 
                 var taskList = data;
                 var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
@@ -1110,24 +1151,13 @@ function getAuditLogForRunningProcessInstances(pid,id){
                         DIV = DIV+"</tbody></table>"
                         $("#auditLog").html(DIV);
 
-                    },
-                    error: function (error) {
-                        console.log("error");
-                        console.log(error);
                     }
                 });
-
-
-
-            } ,
-        error: function (error) {
-            console.log("error");
-            console.log(error);
-        }
+            }
     });
 }
 
-
+//Gets the details of the variables in a running/active process instance
 function getVariablesOfRunningProcessInstances(id){
 
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances/"+id+"/variables";
@@ -1158,26 +1188,11 @@ function getVariablesOfRunningProcessInstances(id){
                 DIV = DIV+"</tbody></table>"
                 $("#variables").html(DIV);
             }
-        },
-        error: function (error) {
-            console.log("error");
-            console.log(error);
         }
     });
 }
 
-function runningProcessInstances(pid,id){
-
-    getAuditLogForRunningProcessInstances(pid,id);
-    getVariablesOfRunningProcessInstances(id);
-    getUserTasksOfRunningProcessInstances(pid,id);
-    getCalledProcessInstancesOfRunning(id);
-
-    $('select[name=completedCombo]').val('0');
-    $('.selectpicker').selectpicker('refresh');
-
-}
-
+//Gets the details of the user-tasks in a running/active process instance
 function getUserTasksOfRunningProcessInstances(pid,id){
 
     var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
@@ -1188,7 +1203,7 @@ function getUserTasksOfRunningProcessInstances(pid,id){
         url: httpUrl + url,
         success:
 
-            function test7(data){
+            function innerFunction(data){
 
                 var taskList = data;
                 var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
@@ -1252,93 +1267,13 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                         DIV = DIV+"</tbody></table>"
                         $("#userTasks").html(DIV);
 
-                    },
-                    error: function (error) {
-                        console.log("error");
-                        console.log(error);
                     }
                 });
-            } ,
-        error: function (error) {
-            console.log("error");
-            console.log(error);
-        }
+            }
     });
 }
 
-
-function tabClick(){
-    var tabs = $('input[name=tab-group-1]');
-    for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].checked) {
-            $(tabs[i]).siblings("div").attr("style", "");
-        } else {
-            $(tabs[i]).siblings("div").attr("style", "display: none");
-        }
-    }
-
-}
-
-function getCalledProcessInstancesOfCompleted(id){
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + id;
-
-    $.ajax({
-        type: 'GET',
-        contentType: "application/json",
-        url: httpUrl + url,
-        success:
-
-            function test7(data){
-                var calledPId= data.superProcessInstanceId;
-                $("#calledInstances").html("");
-                if(calledPId == null){
-                    var result = "<h3> No Called Process Instances </h3>";
-                    $("#calledInstances").html(result);
-                } else {
-
-                    var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + calledPId ;
-
-
-                    $.ajax({
-                        type: 'GET',
-                        contentType: "application/json",
-                        url: httpUrl + url1,
-
-                        success: function (data){
-
-                            var calledPInfo = data;
-
-                            $("#calledInstances").html("");
-                            var DIV = "<table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
-
-                            var id  = calledPInfo.id;
-                            var processDefinitionId= calledPInfo.processDefinitionId;
-                            var startTime  = calledPInfo.startTime;
-                            var endTime  = calledPInfo.endTime;
-                            var durationInMillis  = calledPInfo.durationInMillis;
-
-                            DIV = DIV + "<tr><td>"+id+"</td><td>"+processDefinitionId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
-                            DIV = DIV+"</tbody></table>"
-
-                            $("#calledInstances").html(DIV);
-
-                        },
-                        error: function (error) {
-                            console.log("error");
-                            console.log(error);
-                        }
-                    });
-                }
-
-            } ,
-        error: function (error) {
-            console.log("error");
-            console.log(error);
-        }
-    });
-}
-
+//Gets the details of any called process instance in a running/active process instance
 function getCalledProcessInstancesOfRunning(id){
 
 
@@ -1350,23 +1285,33 @@ function getCalledProcessInstancesOfRunning(id){
             var result = "<h3> Complete the process instance to view any called process-instances </h3>";
             $("#calledInstances").html(result);
 
-        },
-        error: function (error) {
-            console.log("error");
-            console.log(error);
         }
     });
 }
 
-/*function clickSingleA(a)
- {
- items = document.querySelectorAll('.single.active');
+//Generates the details for a running/active process instance
+function runningProcessInstances(pid,id){
 
- if(items.length)
- {
- items[0].className = 'single';
- }
+    getAuditLogForRunningProcessInstances(pid,id);
+    getVariablesOfRunningProcessInstances(id);
+    getUserTasksOfRunningProcessInstances(pid,id);
+    getCalledProcessInstancesOfRunning(id);
 
- a.className = 'single active';
- }*/
+    $('select[name=completedCombo]').val('0');
+    $('.selectpicker').selectpicker('refresh');
+
+}
+
+//Styling for the tab click in process monitoring
+function tabClick(){
+    var tabs = $('input[name=tab-group-1]');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].checked) {
+            $(tabs[i]).siblings("div").attr("style", "");
+        } else {
+            $(tabs[i]).siblings("div").attr("style", "display: none");
+        }
+    }
+
+}
 
