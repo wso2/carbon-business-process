@@ -27,8 +27,7 @@
 	  <li><a href="stats">Home</a></li>
 	  <li class="active">Processes</li>
 	</ol-->
-        <div class=" margin-left-double table-title">Historic Process View
-       	</div>
+        <div class=" margin-left-double table-title"> Process Monitoring </div>
       	<div class=" margin-left-double">
 
 		 <script type="text/javascript">
