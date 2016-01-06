@@ -129,7 +129,7 @@
 		    	<%
 					var numberOfPages = paginatePageCount;
 					var currentPage = parseInt(pagination);
-					var redirectPage = "historicProcess";
+					var redirectPage = "processMonitoring";
 					var queryParams = "";
 
 					%>

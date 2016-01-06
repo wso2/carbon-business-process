@@ -27,10 +27,10 @@ if (request.isSecure()) {//check whether the request is secure or not
 			response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
 		}
 	} else {
-		include("/model/historicProcessModel.jag");
+		include("/model/processMonitoringModel.jag");
 		include("/template/partials/header.jag");
 		include("/template/partials/navigation.jag");
-		include("/template/historicProcessView.jag");
+		include("/template/processMonitoringView.jag");
 		include("/template/partials/footer.jag");
 	}
 

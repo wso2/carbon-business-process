@@ -104,5 +104,5 @@ for(var j = 0; j < processDefinitions.data.length; j++) {
 
 //Set current active veiw as process view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
-historicProcessNavActive = 'class="active"';
+processMonitoringNavActive = 'class="active"';
 %>
