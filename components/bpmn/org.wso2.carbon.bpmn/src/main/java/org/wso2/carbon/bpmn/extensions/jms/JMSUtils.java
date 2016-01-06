@@ -135,24 +135,29 @@ public class JMSUtils {
     }
 
     /**
+     * This is a JMS spec independent method to create a MessageProducer. Please be cautious when
+     * making any changes
      *
-     * @param session
-     * @param isQueue
-     * @param destination
-     * @return
-     * @throws JMSException
+     * @param session JMS session
+     * @param destination the Destination
+     * @param isQueue is the Destination a queue?
+     * @return a MessageProducer to send messages to the given Destination
+     * @throws JMSException on errors, to be handled and logged by the caller
      */
-    public static MessageProducer createProducer(Session session, Boolean isQueue, Destination destination) throws JMSException {
-        if(isQueue == null){
+    public static MessageProducer createProducer(
+            Session session, Destination destination, Boolean isQueue) throws JMSException {
+
+        if (isQueue == null) {
             return session.createProducer(destination);
-        }else{
-            if(isQueue){
-                return ((QueueSession)session).createSender((Queue) destination);
-            }else{
-                return ((TopicSession)session).createPublisher((Topic)destination);
+        } else {
+            if (isQueue) {
+                return ((QueueSession) session).createSender((Queue) destination);
+            } else {
+                return ((TopicSession) session).createPublisher((Topic) destination);
             }
         }
     }
+
 
 
     /**

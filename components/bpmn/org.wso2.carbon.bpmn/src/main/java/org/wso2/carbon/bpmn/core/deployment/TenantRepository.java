@@ -45,6 +45,8 @@ import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.api.Resource;
 
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
 import javax.jms.MessageListener;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -241,6 +243,8 @@ public class TenantRepository {
             /**
              * **************************** End of code for JMSStartTask ***************************************
              */
+
+
         } catch (Exception e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
             log.error(errorMessage, e);
@@ -340,11 +344,32 @@ public class TenantRepository {
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
             for (Deployment deployment : deployments) {
-
                 JMSListener listener = messageListeners.get(deployment.getId());
+                HashMap<Integer, Integer> connectionCount;
+                JMSConnectionFactory connectionFactory;
                 if(listener != null){
+                    if(listener.isTypeQueue()){
+                        connectionFactory = JMSConnectionFactoryManager.getInstance().
+                                getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
+                        connectionCount = connectionFactory.getConnectionCount();
+                    }else{
+                        connectionFactory = JMSConnectionFactoryManager.getInstance().
+                                getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
+                        connectionCount = connectionFactory.getConnectionCount();
+                    }
+
                     messageListeners.remove(deployment.getId());
                     //stop the listener from listening to the destination...
+                    int connectionIndex = listener.getConnectionIndex();
+                    int numberOfConsumers = connectionCount.get(connectionIndex);
+
+                    if(numberOfConsumers == 0){
+                        Connection connection = connectionFactory.getConnection(connectionIndex);
+                        connection.close();
+                    }else{
+                        connectionFactory.decrementCounter(connectionIndex);
+                        listener.getConsumer().close();
+                    }
 
                     log.info("Listener for process with process ID " + deployment.getId() + " stopped listening...");
                 }
@@ -355,6 +380,8 @@ public class TenantRepository {
             String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " + tenantId;
             log.error(msg, e);
             throw new BPSFault(msg, e);
+        } catch (JMSException e) {
+            e.printStackTrace();
         }
     }
 
@@ -663,17 +690,14 @@ public class TenantRepository {
                             (new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
                     while (extensionElements.hasNext()) {
                         OMElement exeElements = (OMElement) extensionElements.next();
-                        Iterator listeners = exeElements.getChildrenWithName
-                                (new QName("http://activiti.org/bpmn", "executionListener"));
-
-                        if(listeners.hasNext()){
-                            OMElement execListener = (OMElement)listeners.next();
-                            String className = execListener.getAttributeValue(new QName(null, "class"));
-                            if(JMSConstants.JMS_START_TASK.equals(className)){
-                                Iterator children = exeElements.getChildrenWithNamespaceURI("https://www.wso2.com");
-
-                                while (children.hasNext()) {
-                                    OMElement child = (OMElement) children.next();
+                        Iterator fields = exeElements.getChildrenWithNamespaceURI("https://www.wso2.com");
+                        boolean isJmsEnabled;
+                        if(fields.hasNext()){
+                            OMElement field = (OMElement)fields.next();
+                            isJmsEnabled = field.getText().equalsIgnoreCase("true");
+                            if(isJmsEnabled){
+                                while (fields.hasNext()) {
+                                    OMElement child = (OMElement) fields.next();
 
                                     switch (child.getLocalName()){
                                         case JMSConstants.JMS_PROVIDER:
@@ -745,7 +769,7 @@ public class TenantRepository {
                                             "jmsProviderID must be provided.";
                                     throw new BPMNJMSException(providerNotFoundErrorMsg);
                                 }else{
-                                   paramList.put(JMSConstants.JMS_PROVIDER, jmsProviderID);
+                                    paramList.put(JMSConstants.JMS_PROVIDER, jmsProviderID);
                                 }
                                 if(destinationType == null){
                                     String destTypeNotFoundErrorMsg = "JMS Destination Type is not provided. " +

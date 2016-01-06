@@ -292,4 +292,70 @@ public class JMSConnectionFactory {
             }
         }
     }
+
+
+    /**
+     * Get a new MessageProducer or shared MessageProducer from this JMS CF
+     * @param connection the Connection to be used
+     * @param session the Session to be used
+     * @param destination the Destination to bind MessageProducer to
+     * @return new or shared MessageProducer from this JMS CF
+     */
+    public MessageProducer getMessageProducer(Connection connection, Session session, Destination destination) {
+        if (cacheLevel > JMSConstants.CACHE_SESSION) {
+            return getSharedProducer();
+        } else {
+            return createProducer((session == null ? getSession(connection) : session), destination);
+        }
+    }
+
+
+    /**
+     * Get a shared MessageProducer from this JMS CF
+     * @return shared MessageProducer from this JMS CF
+     */
+    private synchronized MessageProducer getSharedProducer() {
+        if (sharedProducer == null) {
+            sharedProducer = createProducer(getSharedSession(), sharedDestination);
+            if (log.isDebugEnabled()) {
+                log.debug("Created shared JMS MessageConsumer for JMS CF : ");
+            }
+        }
+        return sharedProducer;
+    }
+
+    /**
+     * Create a new MessageProducer
+     * @param session Session to be used
+     * @param destination Destination to be used
+     * @return a new MessageProducer
+     */
+    private MessageProducer createProducer(Session session, Destination destination) {
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Creating a new JMS MessageProducer from JMS CF");
+            }
+
+
+            return JMSUtils.createProducer(session, destination, isQueue());
+
+        } catch (JMSException e) {
+            log.error("Error creating JMS producer from JMS CF : ", e);
+        }
+        return null;
+    }
+
+
+    /**
+     * Cache level applicable for this JMS CF
+     * @return applicable cache level
+     */
+    public int getCacheLevel() {
+        return cacheLevel;
+    }
+
+
+
+
+
 }
