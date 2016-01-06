@@ -485,7 +485,11 @@ public class ProcessAndTaskService {
         return processCount;
     }
 
-
+    /**
+     * Return the bpmn resource/process diagram
+     * @param pId process instance id
+     * @return bpmn resource/process diagram
+     */
     @GET
     @Path("/resourceDiagram/{pId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -504,7 +508,11 @@ public class ProcessAndTaskService {
         return response;
     }
 
-
+    /**
+     * Return all the tasks/activities in a process
+     * @param pId process instance id
+     * @return all the tasks/activities in a process
+     */
     @GET
     @Path("/allTasks/{pId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -520,15 +528,12 @@ public class ProcessAndTaskService {
                 TaskInfo taskInfo = new TaskInfo();
                     String taskDefKey = activity.getId();
                     String type = (String) activity.getProperty("type");
-                    /*if(type == "startEvent" || type == "endEvent"){
-                        break;
-                    } else {*/
-                        String taskName = (String) activity.getProperty("name");
-                        taskInfo.setTaskDefinitionKey(taskDefKey);
-                        taskInfo.setType(type);
-                        taskInfo.setName(taskName);
-                        list.add(taskInfo);
-                   // }
+                    String taskName = (String) activity.getProperty("name");
+                    taskInfo.setTaskDefinitionKey(taskDefKey);
+                    taskInfo.setType(type);
+                    taskInfo.setName(taskName);
+                    list.add(taskInfo);
+
             }
         }
 
