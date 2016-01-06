@@ -52,8 +52,9 @@ public class JMSListener implements MessageListener{
     private Session session = null;
     private MessageConsumer consumer = null;
     private Destination destination = null;
-    private Thread idleThread = null;
     private Hashtable<String, String> parameters = null;
+    private int connectionIndex = 0;
+    private boolean isQueue = true;
 
     public JMSListener(String jmsProviderID, Hashtable<String, String> parameters) {
         this.parameters = parameters;
@@ -64,8 +65,10 @@ public class JMSListener implements MessageListener{
 
                 if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(destinationType)){
                     connectionFactory = JMSConnectionFactoryManager.getInstance().getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
+                    isQueue = true;
                 } else if (JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(destinationType)) {
                     connectionFactory = JMSConnectionFactoryManager.getInstance().getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
+                    isQueue = false;
                 }else {
                     log.error("Invalid destination type: " + destinationType);
                 }
@@ -73,6 +76,8 @@ public class JMSListener implements MessageListener{
 
                 connection = connectionFactory.getConnection();
                 connection.start();
+
+                connectionIndex = connectionFactory.getLastReturnedConnectionIndex() - 1;
 
                 session = connectionFactory.getSession(connection);
 
@@ -89,17 +94,6 @@ public class JMSListener implements MessageListener{
                     consumer.setMessageListener(this);
                 }
 
-                Runnable idleRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
-
-                        }
-                    }
-                };
-
-                idleThread = new Thread(idleRunnable);
-                idleThread.start();
                 log.info("JMS MessageListener for destination: " + destinationName + " started to listen");
 
             }catch (JMSException e) {
@@ -107,6 +101,18 @@ public class JMSListener implements MessageListener{
             }
         }
 
+    }
+
+    public int getConnectionIndex(){
+        return connectionIndex;
+    }
+
+    public MessageConsumer getConsumer(){
+        return consumer;
+    }
+
+    public boolean isTypeQueue(){
+        return isQueue;
     }
 
     @Override
