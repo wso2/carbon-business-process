@@ -33,57 +33,57 @@
 		 <script type="text/javascript">
 			function changeImg(image){
 			  var imghol = document.getElementById("imageHolder");
-			  imghol.src = image;	
+			  imghol.src = image;
 
-			  var auditLog = document.getElementById("auditLog");			 	  
-			  auditLog.innerHTML="<h3> Select a process instance to view the audit log </h3>";			  
-			  
-			  var variables = document.getElementById("variables");			  		  
-			  variables.innerHTML="<h3> Select a process instance to view the variables </h3>";			  
-			  
-			  var userTasks = document.getElementById("userTasks");			 		  
-			  userTasks.innerHTML="<h3> Select a process instance to view the user tasks </h3>";			  
+			  var auditLog = document.getElementById("auditLog");
+			  auditLog.innerHTML="<h3> Select a process instance to view the audit log </h3>";
 
-			  var calledInstances = document.getElementById("calledInstances");			 		  
-			  calledInstances.innerHTML="<h3> Select a completed process instance to view any called process instances</h3>";	
-			
+			  var variables = document.getElementById("variables");
+			  variables.innerHTML="<h3> Select a process instance to view the variables </h3>";
+
+			  var userTasks = document.getElementById("userTasks");
+			  userTasks.innerHTML="<h3> Select a process instance to view the user tasks </h3>";
+
+			  var calledInstances = document.getElementById("calledInstances");
+			  calledInstances.innerHTML="<h3> Select a completed process instance to view any called process instances</h3>";
+
 
 			var selects = document.getElementsByTagName('select');
 			var sel;
-			
+
 			for(var z=0; z<selects.length; z++){
 			     sel = selects[z];
 			     console.log(sel);
 			     sel.selectedIndex=0;
 			     $("select").selectpicker('refresh');
-			     
-			}
-		}	
 
-			
+			}
+		}
+
+
 		</script>
-		    	
-		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">   		    	
+
+		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">
 
 		    	<% for (var i=0; i<list.length; i++) { %>
 		    	<div>
 		    	 <ul class="nav nav-sidebar nav-pills nav-stacked margin-bottom-double margin-top-double">
 		    	 <li>
-		    		<a data-toggle="collapse" href="#collapseOverview<%=list[i].deployment.split(":")[0]%>" aria-expanded="true" class="collapsing-h2"  onclick="changeImg('<%=list[i].imageUrl%>');">
+		    		<a data-toggle="collapse" href="#collapseOverview<%=list[i].deployment.split(":")[0]+i%>" aria-expanded="true" class="collapsing-h2"  onclick="changeImg('<%=list[i].imageUrl%>');">
             			<div class="process-title" style="width:99%">
-            				<i class="cu-btn-exp-col btn-collapsed"></i>    		
-		    					<%=list[i].deployment%>  
-		    			</div>		    		
+            				<i class="cu-btn-exp-col btn-collapsed"></i>
+		    					<%=list[i].deployment%>
+		    			</div>
         			</a>
-		    		
-		    		<div class="collapse" id="collapseOverview<%=list[i].deployment.split(":")[0]%>" aria-expanded="true" style="">
+
+		    		<div class="collapse" id="collapseOverview<%=list[i].deployment.split(":")[0]+i%>" aria-expanded="true" style="">
 		    		<table class="table-status-column">
 		    		<tr>
 		    		<th> <u> Running Instances </u> </th>
-		    		</tr>	   
+		    		</tr>
 		           <%var c = list[i].running.length;
 					if(c == 0){ %>
-						
+
 			            <th><i> No running processes</i></th>
 			          <% } else { %>
 			          <br>
@@ -91,14 +91,14 @@
 			          	<select id="runningCombo" class="selectpicker show-tick" data-live-search="true" data-size="5"
 			          	 onchange="javascript:runningProcessInstances('<%=list[i].deployment%> ',this.value)">
 			          	 <option class="placeholder" selected disabled value="0">Select a process instance</option>
-			          	 
+
 						<% for (var q=0; q<list[i].running.length; q++) { %>
-						
-							<option ><%=list[i].running[q]%></option>					 
+
+							<option ><%=list[i].running[q]%></option>
 				           <%}%>
 				           </select>
 				       </th>
-		          <% } %>				
+		          <% } %>
 		    		<tr>
 		    		<th> <u>Completed Instances  </u> </th>
 		    		</tr>
@@ -113,18 +113,18 @@
 			          	 onchange="javascript:completedProcessInstances(this.value)">
 			          	 <option class="placeholder" selected disabled value="0">Select a process instance</option>
 						<% for (var q=0; q<list[i].completed.length; q++) { %>
-				            
-				            <option><%=list[i].completed[q]%></option>			           
+
+				            <option><%=list[i].completed[q]%></option>
 				           <%}%>
 				           </select>
 				       </th>
 			          <% } %>
-			          </table>    		
-			          </div>	    		    	
+			          </table>
+			          </div>
 		    	</li>
 		    	</ul>
 		    	</div>
-		    	<%}%>	
+		    	<%}%>
 		    	<%
 					var numberOfPages = paginatePageCount;
 					var currentPage = parseInt(pagination);
@@ -140,71 +140,71 @@
 		    		</div>
 		    		<div class="col-sm-9 col-md-9 col-lg-9" style="border:4px solid black; height:50%; width:100%; " >
 				    	<div class="tabs">
-		    
+
 						   <div class="tab">
 						       <input type="radio" id="tab-1" name="tab-group-1" checked onclick="tabClick('#auditLog')"/>
 						       <label for="tab-1">Audit Log</label>
-						       
+
 						       <div id="auditLog" class="content">
 						          <h3> Select a process instance to view the audit log </h3>
-						          
-						       </div> 
+
+						       </div>
 						   </div>
-						    
+
 						   <div class="tab">
 						       <input type="radio" id="tab-2" name="tab-group-1"  onclick="tabClick()"/>
 						       <label for="tab-2">Variables</label>
-						       
+
 						       <div id="variables" class="content" style="display: none;">
 						           <h3> Select a process instance to view the variables </h3>
-						       </div> 
+						       </div>
 						   </div>
-						    
+
 						    <div class="tab">
 						       <input type="radio" id="tab-3" name="tab-group-1" onclick="tabClick()"/>
 						       <label for="tab-3">User Tasks</label>
-						     
+
 						       <div id="userTasks" class="content" style="display: none;">
 						           <h3> Select a process instance to view the user tasks </h3>
-						       </div> 
+						       </div>
 						   </div>
 
 						     <div class="tab">
 						       <input type="radio" id="tab-4" name="tab-group-1" onclick="tabClick()"/>
 						       <label for="tab-4">Called Instances</label>
-						     
+
 						       <div id="calledInstances" class="content" style="display: none;">
 						           <h3> Select a process instance to view the called process instances </h3>
-						       </div> 
+						       </div>
 						   </div>
-						    
+
 						</div>
-		    	
-		    		</div> 
+
+		    		</div>
 		    		<div style="height: 500px"></div>
 
-		    	</div> 
-		    	   			    
+		    	</div>
+
 		 <!--   <script type="text/javascript">
 		   	function tabClick(){
 		   		var tabs = $('input[name=tab-group-1]');
 		   		for (var i = 0; i < tabs.length; i++) {
-		   			if (tabs[i].checked) {	
+		   			if (tabs[i].checked) {
 		   				 $(tabs[i]).next().next().attr("style", "");
-		   			} else {		   				
+		   			} else {
 		   				 $(tabs[i]).next().next().attr("style", "display: none");
 		   			}
 		   		}
-		   		
+
 		   	}
 		   </script> -->
-		
-		</div>	
+
+		</div>
 	</div>
 	<% }else{ %>
       <br/>
       &nbsp;&nbsp; Please deploy processes from admin view to view the details of each instance.
       <br/><br/>
     <% }%>
-</div>	
+</div>
 
