@@ -58,14 +58,12 @@ if (request.isSecure()) {//check whether the request is secure or not
             }
     	}
         if (run == "GET") {
-            req = request.getParameter("req");
-            log.info("*****:"+req);
+            req = request.getParameter("req");            
             url = req;
             //data = request.getContent();
-            result = get( httpUrl + url, null, headers, "json");
-            log.info("BPMN Rest PUT results: " + stringify(result));
+            result = get( httpUrl + url, null, headers, "json");            
             if (log.isDebugEnabled()){
-                log.debug("BPMN Rest PUT results: " + stringify(result));
+                log.debug("BPMN Rest GET results: " + stringify(result));
             }
         }
 
