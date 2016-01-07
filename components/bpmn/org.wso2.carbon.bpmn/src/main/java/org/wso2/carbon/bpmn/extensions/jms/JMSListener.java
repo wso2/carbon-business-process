@@ -77,7 +77,11 @@ public class JMSListener implements MessageListener{
                 connection = connectionFactory.getConnection();
                 connection.start();
 
-                connectionIndex = connectionFactory.getLastReturnedConnectionIndex() - 1;
+                int tempConnectionIndex = connectionFactory.getLastReturnedConnectionIndex();
+                if(tempConnectionIndex == 0)
+                    connectionIndex = connectionFactory.getLastReturnedConnectionIndex();
+                else
+                    connectionIndex = connectionFactory.getLastReturnedConnectionIndex() - 1;
 
                 session = connectionFactory.getSession(connection);
 

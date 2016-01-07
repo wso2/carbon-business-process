@@ -318,7 +318,52 @@ public class TenantRepository {
 //	}
 
     public void undeploy(String deploymentName, boolean force) throws BPSFault {
+        try {
+            ProcessEngine engine1 = BPMNServerHolder.getInstance().getEngine();
+            RepositoryService repositoryService1 = engine1.getRepositoryService();
+            List<Deployment> deployments1 =
+                    repositoryService1.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
+            for (Deployment deployment : deployments1) {
+                String deploymentId = deployment.getId();
+                //stop the listener
+                JMSListener listener = messageListeners.get(deploymentId);
+                HashMap<Integer, Integer> connectionCount;
+                JMSConnectionFactory connectionFactory;
+                if (listener != null) {
+                    if (listener.isTypeQueue()) {
+                        connectionFactory = JMSConnectionFactoryManager.getInstance().
+                                getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
+                        connectionCount = connectionFactory.getConnectionCount();
+                    } else {
+                        connectionFactory = JMSConnectionFactoryManager.getInstance().
+                                getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
+                        connectionCount = connectionFactory.getConnectionCount();
+                    }
 
+                    messageListeners.remove(deploymentId);
+                    //stop the listener from listening to the destination...
+//                    int connectionIndex = listener.getConnectionIndex();
+//                    int numberOfConsumers;
+//                    if(!connectionCount.isEmpty())
+//                        numberOfConsumers = connectionCount.get(connectionIndex);
+//                    else{
+//                        numberOfConsumers = 1;
+//                    }
+//
+//                    if (numberOfConsumers == 1) {
+//                        Connection connection = connectionFactory.getConnection(connectionIndex);
+//                        connection.close();
+//                    } else {
+//                        connectionFactory.decrementCounter(connectionIndex);
+                        listener.getConsumer().close();
+//                    }
+
+                    log.info("Listener for process with process ID " + deploymentId + " stopped listening...");
+                }
+            }
+        } catch (JMSException e) {
+            log.error(e.getMessage(), e);
+        }
         try {
             // Remove the deployment from the tenant's registry
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
@@ -341,35 +386,6 @@ public class TenantRepository {
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
             for (Deployment deployment : deployments) {
-                JMSListener listener = messageListeners.get(deployment.getId());
-                HashMap<Integer, Integer> connectionCount;
-                JMSConnectionFactory connectionFactory;
-                if(listener != null){
-                    if(listener.isTypeQueue()){
-                        connectionFactory = JMSConnectionFactoryManager.getInstance().
-                                getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
-                        connectionCount = connectionFactory.getConnectionCount();
-                    }else{
-                        connectionFactory = JMSConnectionFactoryManager.getInstance().
-                                getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
-                        connectionCount = connectionFactory.getConnectionCount();
-                    }
-
-                    messageListeners.remove(deployment.getId());
-                    //stop the listener from listening to the destination...
-                    int connectionIndex = listener.getConnectionIndex();
-                    int numberOfConsumers = connectionCount.get(connectionIndex);
-
-                    if(numberOfConsumers == 0){
-                        Connection connection = connectionFactory.getConnection(connectionIndex);
-                        connection.close();
-                    }else{
-                        connectionFactory.decrementCounter(connectionIndex);
-                        listener.getConsumer().close();
-                    }
-
-                    log.info("Listener for process with process ID " + deployment.getId() + " stopped listening...");
-                }
                 repositoryService.deleteDeployment(deployment.getId(), true);
             }
 
@@ -377,9 +393,8 @@ public class TenantRepository {
             String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " + tenantId;
             log.error(msg, e);
             throw new BPSFault(msg, e);
-        } catch (JMSException e) {
-            log.error(e);
         }
+
     }
 
     public List<Deployment> getDeployments() /*throws BPSFault*/ {
