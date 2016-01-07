@@ -30,7 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jivesoftware.smackx.DefaultMessageEventRequestListener;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
@@ -45,6 +44,8 @@ import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.api.Resource;
 
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
 import javax.jms.MessageListener;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -317,7 +318,52 @@ public class TenantRepository {
 //	}
 
     public void undeploy(String deploymentName, boolean force) throws BPSFault {
+        try {
+            ProcessEngine engine1 = BPMNServerHolder.getInstance().getEngine();
+            RepositoryService repositoryService1 = engine1.getRepositoryService();
+            List<Deployment> deployments1 =
+                    repositoryService1.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
+            for (Deployment deployment : deployments1) {
+                String deploymentId = deployment.getId();
+                //stop the listener
+                JMSListener listener = messageListeners.get(deploymentId);
+                HashMap<Integer, Integer> connectionCount;
+                JMSConnectionFactory connectionFactory;
+                if (listener != null) {
+                    if (listener.isTypeQueue()) {
+                        connectionFactory = JMSConnectionFactoryManager.getInstance().
+                                getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
+                        connectionCount = connectionFactory.getConnectionCount();
+                    } else {
+                        connectionFactory = JMSConnectionFactoryManager.getInstance().
+                                getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
+                        connectionCount = connectionFactory.getConnectionCount();
+                    }
 
+                    messageListeners.remove(deploymentId);
+                    //stop the listener from listening to the destination...
+//                    int connectionIndex = listener.getConnectionIndex();
+//                    int numberOfConsumers;
+//                    if(!connectionCount.isEmpty())
+//                        numberOfConsumers = connectionCount.get(connectionIndex);
+//                    else{
+//                        numberOfConsumers = 1;
+//                    }
+//
+//                    if (numberOfConsumers == 1) {
+//                        Connection connection = connectionFactory.getConnection(connectionIndex);
+//                        connection.close();
+//                    } else {
+//                        connectionFactory.decrementCounter(connectionIndex);
+                        listener.getConsumer().close();
+//                    }
+
+                    log.info("Listener for process with process ID " + deploymentId + " stopped listening...");
+                }
+            }
+        } catch (JMSException e) {
+            log.error(e.getMessage(), e);
+        }
         try {
             // Remove the deployment from the tenant's registry
             RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
@@ -340,14 +386,6 @@ public class TenantRepository {
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
             for (Deployment deployment : deployments) {
-
-                JMSListener listener = messageListeners.get(deployment.getId());
-                if(listener != null){
-                    messageListeners.remove(deployment.getId());
-                    //stop the listener from listening to the destination...
-
-                    log.info("Listener for process with process ID " + deployment.getId() + " stopped listening...");
-                }
                 repositoryService.deleteDeployment(deployment.getId(), true);
             }
 
@@ -356,6 +394,7 @@ public class TenantRepository {
             log.error(msg, e);
             throw new BPSFault(msg, e);
         }
+
     }
 
     public List<Deployment> getDeployments() /*throws BPSFault*/ {
@@ -663,17 +702,14 @@ public class TenantRepository {
                             (new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "extensionElements"));
                     while (extensionElements.hasNext()) {
                         OMElement exeElements = (OMElement) extensionElements.next();
-                        Iterator listeners = exeElements.getChildrenWithName
-                                (new QName("http://activiti.org/bpmn", "executionListener"));
-
-                        if(listeners.hasNext()){
-                            OMElement execListener = (OMElement)listeners.next();
-                            String className = execListener.getAttributeValue(new QName(null, "class"));
-                            if(JMSConstants.JMS_START_TASK.equals(className)){
-                                Iterator children = exeElements.getChildrenWithNamespaceURI("https://www.wso2.com");
-
-                                while (children.hasNext()) {
-                                    OMElement child = (OMElement) children.next();
+                        Iterator fields = exeElements.getChildrenWithNamespaceURI("https://www.wso2.com");
+                        boolean isJmsEnabled;
+                        if(fields.hasNext()){
+                            OMElement field = (OMElement)fields.next();
+                            isJmsEnabled = field.getText().equalsIgnoreCase("true");
+                            if(isJmsEnabled){
+                                while (fields.hasNext()) {
+                                    OMElement child = (OMElement) fields.next();
 
                                     switch (child.getLocalName()){
                                         case JMSConstants.JMS_PROVIDER:
@@ -745,7 +781,7 @@ public class TenantRepository {
                                             "jmsProviderID must be provided.";
                                     throw new BPMNJMSException(providerNotFoundErrorMsg);
                                 }else{
-                                   paramList.put(JMSConstants.JMS_PROVIDER, jmsProviderID);
+                                    paramList.put(JMSConstants.JMS_PROVIDER, jmsProviderID);
                                 }
                                 if(destinationType == null){
                                     String destTypeNotFoundErrorMsg = "JMS Destination Type is not provided. " +

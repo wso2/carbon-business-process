@@ -60,10 +60,13 @@ public class JMSConnectionFactory {
 
     private int maxSharedConnectionCount = 10;
 
+    private HashMap<Integer, Integer> connectionCount;
+
     JMSUtils utils = new JMSUtils();
 
     public JMSConnectionFactory(Hashtable<String, String> parameters){
         this.parameters = parameters;
+        this.connectionCount = new HashMap<>();
 
         digestCacheLevel();
 
@@ -157,6 +160,12 @@ public class JMSConnectionFactory {
         return sharedDestination;
     }
 
+    private void incrementConnectionCounter(int connectionIndex){
+        if(connectionCount.get(connectionIndex) != null)
+            connectionCount.put(connectionIndex, connectionCount.get(connectionIndex) + 1);
+        else
+            connectionCount.put(connectionIndex, 1);
+    }
     /**
      *
      * @return
@@ -171,13 +180,33 @@ public class JMSConnectionFactory {
             } catch (JMSException e) {
                 log.error(e.getMessage());
             }
-            sharedConnectionMap.put(lastReturnedConnectionIndex++, connection);
+            incrementConnectionCounter(lastReturnedConnectionIndex);
+            sharedConnectionMap.put(lastReturnedConnectionIndex, connection);
+        }else{
+            incrementConnectionCounter(lastReturnedConnectionIndex);
         }
-        if(lastReturnedConnectionIndex > maxSharedConnectionCount){
+        lastReturnedConnectionIndex++;
+        if(lastReturnedConnectionIndex >= maxSharedConnectionCount){
             lastReturnedConnectionIndex = 0;
         }
 
         return connection;
+    }
+
+    public HashMap<Integer, Integer> getConnectionCount(){
+        return connectionCount;
+    }
+
+    public int getLastReturnedConnectionIndex(){
+        return lastReturnedConnectionIndex;
+    }
+
+    public Connection getConnection(int lastReturnedConnectionIndex){
+        return sharedConnectionMap.get(lastReturnedConnectionIndex);
+    }
+
+    public void decrementCounter(int connectionIndex){
+        connectionCount.put(connectionIndex, connectionCount.get(connectionIndex) - 1);
     }
 
     /**
