@@ -171,20 +171,29 @@ public class JMSConnectionFactory {
      * @return
      */
     private synchronized Connection getSharedConnection(){
+
         Connection connection = sharedConnectionMap.get(lastReturnedConnectionIndex);
 
+
+        //int connectionIndex = lastReturnedConnectionIndex;
         if(connection == null){
             connection = createConnection();
             try {
                 connection.start();
             } catch (JMSException e) {
-                log.error(e.getMessage());
+                log.error(e.getMessage(), e);
             }
-            incrementConnectionCounter(lastReturnedConnectionIndex);
+
+            if(connection!= null){
+            }
             sharedConnectionMap.put(lastReturnedConnectionIndex, connection);
-        }else{
-            incrementConnectionCounter(lastReturnedConnectionIndex);
+//            incrementConnectionCounter(lastReturnedConnectionIndex);
+
+
         }
+//        else{
+//            incrementConnectionCounter(lastReturnedConnectionIndex);
+//        }
         lastReturnedConnectionIndex++;
         if(lastReturnedConnectionIndex >= maxSharedConnectionCount){
             lastReturnedConnectionIndex = 0;
@@ -213,9 +222,10 @@ public class JMSConnectionFactory {
      *
      * @return
      */
-    private synchronized Session getSharedSession(){
+    private synchronized Session getSharedSession(int connectionIndex){
+
         if(sharedSession == null){
-            sharedSession = createSession(getSharedConnection());
+            sharedSession = createSession(sharedConnectionMap.get(connectionIndex));
             if(log.isDebugEnabled()){
                 log.debug("Creating a shared session from JMS Connection");
             }
@@ -312,7 +322,7 @@ public class JMSConnectionFactory {
      */
     public Session getSession(Connection connection){
         if(cacheLevel > JMSConstants.CACHE_CONNECTION){
-            return getSharedSession();
+            return getSharedSession(lastReturnedConnectionIndex - 1);
         }else{
             if(connection == null){
                 return createSession(getConnection());
@@ -332,7 +342,7 @@ public class JMSConnectionFactory {
      */
     public MessageProducer getMessageProducer(Connection connection, Session session, Destination destination) {
         if (cacheLevel > JMSConstants.CACHE_SESSION) {
-            return getSharedProducer();
+            return getSharedProducer(destination);
         } else {
             return createProducer((session == null ? getSession(connection) : session), destination);
         }
@@ -343,9 +353,16 @@ public class JMSConnectionFactory {
      * Get a shared MessageProducer from this JMS CF
      * @return shared MessageProducer from this JMS CF
      */
-    private synchronized MessageProducer getSharedProducer() {
+    private synchronized MessageProducer getSharedProducer(Destination destination) {
         if (sharedProducer == null) {
-            sharedProducer = createProducer(getSharedSession(), sharedDestination);
+
+            if(sharedDestination != null) {
+                sharedProducer = createProducer(getSharedSession(lastReturnedConnectionIndex - 1), sharedDestination);
+
+            }else{
+                sharedProducer = createProducer(getSharedSession(lastReturnedConnectionIndex - 1), destination);
+                sharedDestination = destination;
+            }
             if (log.isDebugEnabled()) {
                 log.debug("Created shared JMS MessageConsumer for JMS CF : ");
             }

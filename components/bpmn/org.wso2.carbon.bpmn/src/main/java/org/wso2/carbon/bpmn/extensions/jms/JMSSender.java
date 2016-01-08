@@ -89,6 +89,7 @@ public class JMSSender implements JavaDelegate {
         try {
 
         Connection connection = connectionFactory.getConnection();
+
         Session session = connectionFactory.getSession(connection);
         Destination destination;
 
@@ -102,6 +103,8 @@ public class JMSSender implements JavaDelegate {
             }
 
             if(destination != null) {
+
+                log.info("initializing jms message producer..");
                 MessageProducer producer = connectionFactory.getMessageProducer(connection, session, destination);
 
                 JMSMessageSender jmsMessageSender = new JMSMessageSender(connection, session, producer, destination,
