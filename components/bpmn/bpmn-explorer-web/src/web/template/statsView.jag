@@ -66,7 +66,7 @@
            }
            var chartAreaHeight=((dataSize + 2) * 100);
            options = {
-              vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' },textStyle: { fontSize:11}},
+              vAxis: {title: '<%=i18n.localize("process.name","Process Name")%>',  titleTextStyle: { color: 'grey' },textStyle: { fontSize:11}},
               hAxis: {title: hTitle, titleTextStyle: {color: 'grey'}, logScale:logScaleEnabled, minValue: 0},
               colors:['#be2d28'],
               height: ((dataSize + 2) * 100) + 200,
@@ -104,7 +104,7 @@
 
       <div class="col-lg-8 float-left">
             <!-- Default panel contents -->
-            <div class="table-title"  style="width:100%">  Process Instance Count <span class="chartPagination" onclick="paginate('next');">></span>
+            <div class="table-title"  style="width:100%"> <%=i18n.localize("process.instance.count","Process Instance Count")%> <span class="chartPagination" onclick="paginate('next');">></span>
             <span class="page-label" id="pageCount"></span>
             <span class="chartPagination" onclick="paginate('prev');"><</span>&nbsp;</div>
             <div id="barChart"></div>
@@ -139,7 +139,7 @@
       <div class="col-lg-4 float-left">
           <div class="row" name="TaskInstancesChart">
           <!-- Default panel contents -->
-              <div class="table-title"  style="width:100%"> Process Instance Status </div>
+              <div class="table-title"  style="width:100%"> <%=i18n.localize("process.instance.status","Process Instance Status")%> </div>
               <div id="processInstanceChart" style="height:33%"></div>
           </div>
           <br>
@@ -172,12 +172,12 @@
     </script>
 
           <div class="row" name="TaskInstancesChart">
-              <div class="table-title" style="width:100%">Task Instance Status </div>
+              <div class="table-title" style="width:100%"><%=i18n.localize("task.instance.status","Task Instance Status")%> </div>
               <div id="taskInstancesChart" style="height:33% " ></div>
           </div>
     <% }else{ %>
       <br/>
-      &nbsp;&nbsp;Welcome to BPMN Explorer statistical view. Please deploy processes from admin view and create tasks to generate statistics.
+      &nbsp;&nbsp;<%=i18n.localize("welcome.msg","Welcome to BPMN Explorer statistical view. Please deploy processes from admin view and create tasks to generate statistics.")%>
       <br/><br/>
     <% }%>
   </div>

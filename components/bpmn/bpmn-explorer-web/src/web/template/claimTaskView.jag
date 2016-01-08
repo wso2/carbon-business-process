@@ -15,7 +15,7 @@
 -->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
@@ -31,12 +31,12 @@
 	      <div class="table-title"><%=taskData.name%></div>
 	      	<div class="col-lg-12 white-bg">
 			  	<div class="col-lg-12 margin-bottom margin-top padding-left-none">
-					<div class="col-lg-2 padding-top padding-left-none"><h3>Description:</h3></div>
+					<div class="col-lg-2 padding-top padding-left-none"><h3><%=i18n.localize("description", "Description")%></h3></div>
 					<div class="col-lg-4 padding-top "><%=taskData.desc%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2  padding-left-none"><h3>Process Definition ID:</h3></div>
+					<div class="col-lg-2  padding-left-none"><h3><%=i18n.localize("process.definition.id", "Process Definition ID")%></h3></div>
 					<div class="col-lg-4 "><%=taskData.pid%></div>
 				</div>
 				<hr>
@@ -44,15 +44,15 @@
 					<div class="col-lg-2 margin-bottom-double padding-bottom-double padding-left-none">
 					<h3>People:</h3></div>
 					<div class="col-lg-10 margin-bottom">
-						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Owner: </b> <%=taskData.owner%></div>
+						<div class="col-lg-2 margin-left-none padding-left-none"> <b><%=i18n.localize("owner", "Owner")%> </b> <%=taskData.owner%></div>
  					</div>
  					<div class="col-lg-10 margin-bottom">
-						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Assignee: </b> <%=taskData.assignee%></div>
+						<div class="col-lg-2 margin-left-none padding-left-none"> <b><%=i18n.localize("assignee", "Assignee")%> </b> <%=taskData.assignee%></div>
  					</div>
 	      		</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Subtasks:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("sub.tasks", "Subtasks")%></h3></div>
 					<div class="col-lg-4 ">
 		    			<% if (taskData.subtask == null) { %>
 		    				No sub tasks
@@ -66,14 +66,14 @@
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Fill in the form:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("fill.in.the.form", "Fill in the form")%></h3></div>
 					<div class="col-lg-4"><%=formContent%></div>
 				</div>
 				<hr>
 			</div>
 		</div>
 			<div class="col-lg-12 right margin-bottom-double white-bg">
-					<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double">Claim Task</button>
+					<button onclick = "claim(&quot;<%=user%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double"><%=i18n.localize("claim.task, "Claim Task")%></button>
 			</div>
 		</div>
 	</div>
