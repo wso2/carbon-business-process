@@ -327,38 +327,9 @@ public class TenantRepository {
                 String deploymentId = deployment.getId();
                 //stop the listener
                 JMSListener listener = messageListeners.get(deploymentId);
-                HashMap<Integer, Integer> connectionCount;
-                JMSConnectionFactory connectionFactory;
                 if (listener != null) {
-                    if (listener.isTypeQueue()) {
-                        connectionFactory = JMSConnectionFactoryManager.getInstance().
-                                getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
-                        connectionCount = connectionFactory.getConnectionCount();
-                    } else {
-                        connectionFactory = JMSConnectionFactoryManager.getInstance().
-                                getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
-                        connectionCount = connectionFactory.getConnectionCount();
-                    }
-
                     messageListeners.remove(deploymentId);
-                    //stop the listener from listening to the destination...
-//                    int connectionIndex = listener.getConnectionIndex();
-//                    int numberOfConsumers;
-//                    if(!connectionCount.isEmpty())
-//                        numberOfConsumers = connectionCount.get(connectionIndex);
-//                    else{
-//                        numberOfConsumers = 1;
-//                    }
-//
-//                    if (numberOfConsumers == 1) {
-//                        Connection connection = connectionFactory.getConnection(connectionIndex);
-//                        connection.close();
-//                    } else {
-//                        connectionFactory.decrementCounter(connectionIndex);
-                        listener.getConsumer().close();
-//                    }
-
-                    log.info("Listener for process with process ID " + deploymentId + " stopped listening...");
+                    listener.getConsumer().close();
                 }
             }
         } catch (JMSException e) {

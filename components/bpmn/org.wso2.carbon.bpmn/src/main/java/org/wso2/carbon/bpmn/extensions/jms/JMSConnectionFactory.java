@@ -193,21 +193,21 @@ public class JMSConnectionFactory {
         return connection;
     }
 
-    public HashMap<Integer, Integer> getConnectionCount(){
-        return connectionCount;
-    }
+//    public HashMap<Integer, Integer> getConnectionCount(){
+//        return connectionCount;
+//    }
 
     public int getLastReturnedConnectionIndex(){
         return lastReturnedConnectionIndex;
     }
 
-    public Connection getConnection(int lastReturnedConnectionIndex){
-        return sharedConnectionMap.get(lastReturnedConnectionIndex);
-    }
+//    public Connection getConnection(int lastReturnedConnectionIndex){
+//        return sharedConnectionMap.get(lastReturnedConnectionIndex);
+//    }
 
-    public void decrementCounter(int connectionIndex){
-        connectionCount.put(connectionIndex, connectionCount.get(connectionIndex) - 1);
-    }
+//    public void decrementCounter(int connectionIndex){
+//        connectionCount.put(connectionIndex, connectionCount.get(connectionIndex) - 1);
+//    }
 
     /**
      *
