@@ -1,3 +1,4 @@
+
 <!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -50,14 +51,14 @@ for(var j = 0; j < processDefinitions.data.length; j++) {
     var runtimeInstanceList = [];
     var completedInstanceList  = [];
 
-    var runtimeInstances = get( httpUrl +"/bpmn/runtime/process-instances?processDefinitionId=" +pId ,null, headers, "json" ).data;
+    var runtimeInstances = get( httpUrl +"/bpmn/runtime/process-instances?processDefinitionId=" +pId+ "&size=0" ,null, headers, "json" ).data;
 
     for(var i = 0; i < runtimeInstances.data.length; i++) {
         var runtimeInstanceId = runtimeInstances.data[i].id;
         runtimeInstanceList.push(runtimeInstanceId);
     }
 
-    var completedInstances = get( httpUrl +"/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" +pId ,null, headers, "json" ).data;
+    var completedInstances = get( httpUrl +"/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" +pId+ "&size=0",null, headers, "json" ).data;
 
     for(var k = 0; k < completedInstances.data.length; k++) {
         var completedInstanceId = completedInstances.data[k].id;
