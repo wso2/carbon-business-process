@@ -211,6 +211,7 @@ public class TenantRepository {
              * **************************** Code for JMSStartTask ***************************************
              */
 
+            //check all the deployed process whether they have a listener added.
             ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
 
             List<ProcessDefinition> list = getDeployedProcessDefinitions();
@@ -229,8 +230,11 @@ public class TenantRepository {
 
                 processID = list.get(count++).getDeploymentId();
 
+                //read the parameters from the BPMN process file.
                 Hashtable<String, String> paramList = readBPMNArchive(configFile);
+                //if there are no parameters then that means there is no listener set in the process.
                 if(!paramList.isEmpty()){
+                    //creates a new listener and add it to a map.
                     JMSListener listener = new JMSListener(paramList.get(JMSConstants.JMS_PROVIDER), paramList);
                     messageListeners.put(processID, listener);
                 }
@@ -318,16 +322,20 @@ public class TenantRepository {
 //	}
 
     public void undeploy(String deploymentName, boolean force) throws BPSFault {
+
+        //before undeploying the process, first stop the Listener if the process has one.
         try {
             ProcessEngine engine1 = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService1 = engine1.getRepositoryService();
             List<Deployment> deployments1 =
                     repositoryService1.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
+
+            //for all the versions of this process, close the consumers thereby stopping the listener
             for (Deployment deployment : deployments1) {
                 String deploymentId = deployment.getId();
-                //stop the listener
                 JMSListener listener = messageListeners.get(deploymentId);
                 if (listener != null) {
+                    //removes the listener from the list and close the consumer.
                     messageListeners.remove(deploymentId);
                     listener.getConsumer().close();
                     log.info("JMS Listener for process with ID: " + deployment.getId() + " stopped listening...");
@@ -511,6 +519,8 @@ public class TenantRepository {
         while(propKeys.hasNext()){
             propKey = propKeys.next();
             Hashtable<String, String> tempMap = jmsProperties.get(propKey);
+
+            //initialize the connection factory objects.
             factoryManager.initializeConnectionFactories(propKey, tempMap);
         }
 
@@ -522,6 +532,7 @@ public class TenantRepository {
         String line;
         Hashtable<String, String> paramList = null;
 
+        //read all the deployed processes and check whether they have listeners set.
         for (int i = 0; i < deployments.length; i++) {
             List<String> names = repositoryService.getDeploymentResourceNames(deployments[i].getDeploymentId());
             for (int j = 0; j < names.size(); j++) {
@@ -537,9 +548,12 @@ public class TenantRepository {
 
                         String configFile = stringBuilder.toString();
 
+                        //read the parameters given by the user in the BPMN process file.
                         paramList = readBPMNArchive(configFile);
 
+                        //if there are no parameters then that means there is no listener set in the process.
                         if(!paramList.isEmpty()){
+                            //creates and add the listener to the listener map
                             JMSListener listener = new JMSListener(paramList.get(JMSConstants.JMS_PROVIDER), paramList);
                             messageListeners.put(deployments[i].getDeploymentId(), listener);
                         }
@@ -634,6 +648,9 @@ public class TenantRepository {
      * @return
      * @throws BPMNJMSException
      * @throws XMLStreamException
+     *
+     * This method takes a file as the input and read that file to get the parameters (if any) provided by the user
+     * If user has not given any parameter, default values will be taken from the configuration file.
      */
 
     private Hashtable<String, String> readBPMNArchive(String file) throws BPMNJMSException, XMLStreamException {
