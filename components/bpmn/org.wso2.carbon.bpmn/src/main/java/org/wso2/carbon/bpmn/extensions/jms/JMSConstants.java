@@ -83,4 +83,33 @@ public class JMSConstants {
     public static final String CONTENT_TYPE_XML = "xml";
     public static final String CONTENT_TYPE_JSON = "json";
     public static final String CONTENT_TYPE_TEXT = "text";
+
+    public static final String TOPIC_CONNECTION_FACTORY = "TopicConnectionFactory";
+
+    public static final String QUEUE_CONNECTION_FACTORY = "QueueConnectionFactory";
+
+    public static final String JMS_MESSAGE_TYPE = "JMS_MESSAGE_TYPE";
+
+    public static final String JMS_BYTE_MESSAGE = "JMS_BYTE_MESSAGE";
+
+    public static final String JMS_TEXT_MESSAGE = "JMS_TEXT_MESSAGE";
+
+    public static final String JMS_MAP_MESSAGE = "JMS_MAP_MESSAGE";
+
+    /**
+     * A MessageContext property or client Option indicating the JMS priority
+     */
+    public static final String JMS_PRIORITY = "JMS_PRIORITY";
+    /**
+     * A MessageContext property or client Option indicating the JMS time to live for message sent
+     */
+    public static final String JMS_TIME_TO_LIVE = "JMS_TIME_TO_LIVE";
+
+    /**
+     * A MessageContext property or client Option indicating the JMS delivery mode as an Integer or String
+     * Value 1 - javax.jms.DeliveryMode.NON_PERSISTENT
+     * Value 2 - javax.jms.DeliveryMode.PERSISTENT
+     */
+    public static final String JMS_DELIVERY_MODE = "JMS_DELIVERY_MODE";
+
 }
