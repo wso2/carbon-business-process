@@ -21,6 +21,10 @@ var encoder = require("/assets/encoder.js"),
         auth = session.get('auth'),
         roles = session.get('roles');
 var carbon = require('carbon');
+var i18n = require("i18n");
+var localeResourcesBasePath ="../config/locales/";
+i18n.init(request,localeResourcesBasePath);
+
 
 var data = application.get('appConfig');
 var bpsHost = application.get('bpsHost');

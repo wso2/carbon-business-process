@@ -16,7 +16,7 @@
 <!--Area to display common errors-->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
@@ -32,43 +32,43 @@
 	      <div class="table-title"><%=taskData.name%> |   <%=taskData.id%></div>
 	      <div class="col-lg-12 white-bg">
 				<div class="col-lg-12 margin-bottom margin-top padding-left-none">
-					<div class="col-lg-2 padding-top padding-left-none"><h3>Description:</h3></div>
+					<div class="col-lg-2 padding-top padding-left-none"><h3><%=i18n.localize("description","Description:")%></h3></div>
 					<div class="col-lg-4 padding-top "><%=taskData.desc%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Process Definition ID:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("process.definition.id","Process Definition ID:")%></h3></div>
 					<div class="col-lg-4 "><%=taskData.pid%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Process Instance ID:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("process.instance.id","Process Instance ID:")%></h3></div>
 					<div class="col-lg-4 "><%=taskData.processInstanceId%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Process Status:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("process.status","Process Status:")%></h3></div>
 					<div class="col-lg-4 "><%=taskData.processState%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
 				<div class="col-lg-2 margin-bottom-double padding-bottom-double padding-left-none">
-				<h3>People:</h3></div>
+				<h3><%=i18n.localize("people","People:")%></h3></div>
 					<div class="col-lg-10 margin-bottom">
-						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Owner: </b><%=taskData.owner%></div>
-						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#transfer">Transfer</button></div>
+						<div class="col-lg-2 margin-left-none padding-left-none"> <b><%=i18n.localize("owner","Owner:")%> </b><%=taskData.owner%></div>
+						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#transfer"><%=i18n.localize("transfer","Transfer")%></button></div>
  					</div>
  					<div class="col-lg-10 margin-bottom">
-						<div class="col-lg-2 margin-left-none padding-left-none"> <b>Assignee: </b><%=taskData.assignee%></div>
-						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#reassign">Reassign</button></div>
+						<div class="col-lg-2 margin-left-none padding-left-none"> <b><%=i18n.localize("assignee","Assignee:")%> </b><%=taskData.assignee%></div>
+						<div class="col-lg-2 margin-left-none"> <button class="btn btn-action" data-toggle="modal" data-target="#reassign"><%=i18n.localize("reassign","Reassign")%></button></div>
  					</div>
 	      		</div>
 	      		<hr>
 	      		<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Subtasks:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("sub.tasks","Subtasks:")%></h3></div>
 					<div class="col-lg-4 ">
 		    			<% if (taskData.subtask == null) { %>
-		    				No sub tasks
+		    				<%=i18n.localize("no.sub.tasks","No sub tasks")%>
 		    			<% } else { %>
 		    				<% for (var i=0; i<taskData.subtask.length; i++) { %>
 		    					<%=taskData.subtask[i].id + " "%>
@@ -79,19 +79,19 @@
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Fill in the form:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("fill.in.the.form","Fill in the form:")%></h3></div>
 					<div class="col-lg-4"><form  id="formForTask"><%=formContent%></form></div>
 				</div>
 				<hr>
 				<% var taskAssignee = session.get("user");
 				   if ((taskData.assignee == null) || (taskData.assignee != taskAssignee )) { %>
 					<div class="col-lg-12 right margin-bottom-double white-bg">
-					<button onclick = "claim(&quot;<%=taskAssignee%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double">Claim Task</button>
+					<button onclick = "claim(&quot;<%=taskAssignee%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double"><%=i18n.localize("claim.task","Claim Task")%></button>
 					</div>
 				<% } else if (taskData.processState == 'ACTIVE') { %>
 					<div class="col-lg-12 right margin-bottom">
 					<button id="completeButton" onclick="completeTask($('#formForTask').serializeArray(), <%=id%>);" class="btn btn-info margin-right-double">
-					Complete task</button>
+					<%=i18n.localize("complete.task","Complete task")%></button>
 					<div id="loadingCompleteButton" hidden><img src="images/loader.gif"></img></div></div>
 				<% } %>
 				</div>
@@ -101,23 +101,23 @@
  <!-- Adding attachments tab -->
  <div class="row secondry-table" name="additionalInfoSection">
   	<div class="table-title margin-left-double margin-right-double">
-	 	<a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
+	 	<a onclick="displayAttachmentData(<%=id%>);"><%=i18n.localize("attachments","Attachments")%></a>
 	</div>
 
 	<div id="addAttachment" class="addAttachment padding-double">
    		<form id="attachForm" style="margin-left: 10px;" method="POST" action="<%=application.get('bpsTenantUrlPart')%>/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
-	   		<div class="col-lg-3">File Name:
+	   		<div class="col-lg-3"><%=i18n.localize("file.name","File Name:")%>
 	   			<span class="padding-left">
 	   				<input type="text" id="name" name="name" <%=taskInputsDisabled%>/>
 	   			</span>
 	   		</div>
 	   		<div class="col-lg-8">
-	   			<span class="float-left padding-right">Select File:</span>
+	   			<span class="float-left padding-right"><%=i18n.localize("select.file","Select File:")%></span>
 	   			<div class="float-left">
 	   				<input type="file" id="files" name="file" onchange="javascript:document.getElementById('name').value = this.value.split(/[\/\\]/).pop();" <%=taskInputsDisabled%>/>
 	   			</div>
 	   		</div>
-	   		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info <%=taskInputsDisabled%>">Upload</button></div>
+	   		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info <%=taskInputsDisabled%>"><%=i18n.localize("upload","Upload")%></button></div>
   		</form>
    </div>
   <!--  <ul class="nav nav-tabs" role="tablist">
@@ -135,9 +135,9 @@
 		  <table class="table">
 		    <thead>
 		    	<tr class="table-title-row">
-		    		<th>Name</th>
-		    		<th>Type</th>
-		    		<th>Link</th>
+		    		<th><%=i18n.localize("name","Name")%></th>
+		    		<th><%=i18n.localize("type","Type")%></th>
+		    		<th><%=i18n.localize("link","Link")%></th>
 		    	</tr>
 		    </thead>
 		    <tbody>
@@ -147,7 +147,7 @@
 		    			<td><%=attachmentList[i].name%></td>
 						<td><%=attachmentList[i].type%></td>
 						<td> <a href="<%=application.get('bpsTenantUrlPart') + "/bpmn/runtime/tasks/"+ taskData.id +"/attachments/"+ 
-                                                                                        attachmentList[i].id + "/content"%>" target="_blank">Download</a></td>
+                                                                                        attachmentList[i].id + "/content"%>" target="_blank"><%=i18n.localize("download","Download")%></a></td>
 			    	</tr>
 		    	<% } %>
 		    </tbody>
@@ -168,11 +168,11 @@
 
 <% }
 else{%>
- <div><span style="display:block; margin:20px;">No attachments found</span></div>
+ <div><span style="display:block; margin:20px;"><%=i18n.localize("no.attachments.found","No attachments found")%></span></div>
 <%}
 %>
  <div id="error_content" style="visibility:hidden; margin-left: 70px; position: absolute; left: 30%;
-    top: 80%;">Failed to  upload attachment</div>
+    top: 80%;"><%=i18n.localize("failed.to.upload.attachment","Failed to  upload attachment")%></div>
     <!-- add Attachment content -->
 
    <!-- end of add Attachment content -->
@@ -184,10 +184,10 @@ else{%>
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Transfer Task</h4>
+                    <h4 class="modal-title" id="myModalLabel"><%=i18n.localize("transfer.task","Transfer Task")%></h4>
                 </div>
                 <div class="modal-body">
-                    Username 
+                    <%=i18n.localize("user.name","Username")%>
                     <select id="transferName">
                     	<% for(var i=0; i<userList.length; i++){ %>
                     		<option id="<%=userList[i]%>"><%=userList[i]%></option>
@@ -196,11 +196,11 @@ else{%>
                 </div>
                 <div class="modal-footer">
                 	<div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
-		                <button type="button" class="close" onclick="$('#transferErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		                <button type="button" class="close" onclick="$('#transferErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
 		                <p id="transferErrMsg"></p>
 		            </div>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-default" onclick="transfer($('#transferName').val(), <%=id%>);">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
+                    <button type="button" class="btn btn-default" onclick="transfer($('#transferName').val(), <%=id%>);"><%=i18n.localize("save","Save")%></button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -211,10 +211,10 @@ else{%>
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Reassign Task</h4>
+                    <h4 class="modal-title" id="myModalLabel"><%=i18n.localize("reassign.task","Reassign Task")%></h4>
                 </div>
                 <div class="modal-body">
-                    Username 
+                    <%=i18n.localize("user.name","Username")%>
                     <select id="reassignName">
                     	<% for(var i=0; i<userList.length; i++){ %>
                     		<option id="<%=userList[i]%>"><%=userList[i]%></option>
@@ -223,11 +223,11 @@ else{%>
                 </div>
                 <div class="modal-footer">
                 	<div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
-		                <button type="button" class="close" onclick="$('#reassignErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		                <button type="button" class="close" onclick="$('#reassignErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
 		                <p id="reassignErrMsg"></p>
 		            </div>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-default" onclick="reassign($('#reassignName').val(), <%=id%>);">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
+                    <button type="button" class="btn btn-default" onclick="reassign($('#reassignName').val(), <%=id%>);"><%=i18n.localize("save","Save")%></button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
