@@ -23,16 +23,26 @@ import java.util.*;
 
 /**
  * Created by dilini on 12/11/15.
+ * Manages a map of connection factory objects which are created at the server start up using the parameter values
+ * in the config file.
  */
+
 public class JMSConnectionFactoryManager {
     private static final Log log = LogFactory.getLog(JMSConnectionFactoryManager.class);
     private static JMSConnectionFactoryManager connectionFactoryManager = null;
 
     private final Map<String, JMSConnectionFactory> connectionFactories = new HashMap<>();
 
+    /**
+     *
+     */
     public JMSConnectionFactoryManager(){
     }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized JMSConnectionFactoryManager getInstance(){
         if(connectionFactoryManager == null){
             connectionFactoryManager = new JMSConnectionFactoryManager();
@@ -40,14 +50,27 @@ public class JMSConnectionFactoryManager {
         return connectionFactoryManager;
     }
 
+    /**
+     *
+     * @param factoryType
+     * @param parameterList
+     */
     public void initializeConnectionFactories(String factoryType, Hashtable<String, String> parameterList){
         connectionFactories.put(factoryType, new JMSConnectionFactory(parameterList));
     }
 
+    /**
+     * given
+     * @param factoryType
+     * @return the corresponding connectionFactory object.
+     */
     public synchronized JMSConnectionFactory getConnectionFactory(String factoryType){
         return connectionFactories.get(factoryType);
     }
 
+    /**
+     *
+     */
     public void stop(){
         for(JMSConnectionFactory jcf : connectionFactories.values()){
             jcf.stop();

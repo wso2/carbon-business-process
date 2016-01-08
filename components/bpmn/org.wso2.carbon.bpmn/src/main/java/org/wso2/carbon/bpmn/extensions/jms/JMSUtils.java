@@ -60,14 +60,6 @@ public class JMSUtils {
         }
     }
 
-    public static Destination createTemporaryDestinaiton(Session session) throws JMSException {
-        if(session instanceof QueueSession){
-            return session.createTemporaryQueue();
-        }else{
-            return session.createTemporaryTopic();
-        }
-    }
-
     /**
      *
      * @param connectionFactory
@@ -158,20 +150,6 @@ public class JMSUtils {
         }
     }
 
-
-
-    /**
-     * @param destType
-     * @return
-     */
-    public static String getDestinationType(int destType){
-        if(destType == JMSConstants.QUEUE){
-            return "queue";
-        }else{
-            return "topic";
-        }
-    }
-
     /**
      *
      * @param context
@@ -194,6 +172,14 @@ public class JMSUtils {
         }
     }
 
+    /**
+     *
+     * @param context
+     * @param destinationName
+     * @param destinationType
+     * @return
+     * @throws NamingException
+     */
     public Destination lookupDestination(Context context, String destinationName, String destinationType)
             throws NamingException {
         if(destinationName == null){

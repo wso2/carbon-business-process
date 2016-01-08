@@ -19,13 +19,14 @@ package org.wso2.carbon.bpmn.extensions.jms;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.nio.channels.spi.AsynchronousChannelProvider;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Created by dilini on 12/16/15.
+ *
+ * At the server start up, the configuration file is read and those data are saved in this data holder class
+ * for further references.
  */
 public class JMSDataHolder {
 
@@ -33,14 +34,22 @@ public class JMSDataHolder {
     private HashMap<String, Hashtable<String, String>> jmsProperties = new HashMap<>();
 
     private static final Log log = LogFactory.getLog(JMSDataHolder.class);
+
+    /**
+     *
+     */
     private JMSDataHolder(){
         try {
-            jmsProperties = ActiviitiFileReader.readJMSProviderInformation();
+            jmsProperties = JMSFileReader.readJMSProviderInformation();
         } catch (BPMNJMSException e) {
             log.error(e.getMessage());
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static JMSDataHolder getInstance(){
         if(jmsDataHolder == null){
             jmsDataHolder = new JMSDataHolder();
@@ -48,6 +57,10 @@ public class JMSDataHolder {
         return jmsDataHolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<String, Hashtable<String, String>> getJmsProperties() {
         return jmsProperties;
     }
