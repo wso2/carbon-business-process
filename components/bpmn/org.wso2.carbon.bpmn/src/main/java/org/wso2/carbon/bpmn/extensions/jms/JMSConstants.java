@@ -60,8 +60,7 @@ public class JMSConstants {
     public static final String TOPIC_PREFIX = "topic.";
     public static final String QUEUE_PREFIX = "queue.";
 
-    public static final String JMS_START_TASK = "org.wso2.carbon.bpmn.extensions.jms.JMSListener";
-
+    //constants to refer to the parameter values given by the user in the BPMN process file.
     public static final String JMS_PROVIDER = "jmsProviderID";
     public static final String JMS_DESTINATION_TYPE = "destinationType";
     public static final String JMS_DESTINATION_NAME = "destinationName";
@@ -80,6 +79,7 @@ public class JMSConstants {
     public static final String JMS_RECON_PROGRESS_FACTORY = "reconnectProgressFactor";
     public static final String JMS_MAX_RECON_DURATION = "maxReconnectDuration";
 
+    //Content type user can use when sending a message to a JMS destination.
     public static final String CONTENT_TYPE_XML = "xml";
     public static final String CONTENT_TYPE_JSON = "json";
     public static final String CONTENT_TYPE_TEXT = "text";

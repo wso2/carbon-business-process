@@ -21,7 +21,6 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.namespace.QName;
@@ -32,20 +31,25 @@ import java.util.*;
 
 /**
  * Created by dilini on 12/9/15.
+ *
  */
-public class ActiviitiFileReader {
+public class JMSFileReader {
 
-    private static final Log log = LogFactory.getLog(ActiviitiFileReader.class);
+    private static final Log log = LogFactory.getLog(JMSFileReader.class);
 
     /**
      * @return
+     *
+     * reads the configuration file in the server and returns map of parameter tables.
+     * each parameter table contains parameters of a connection factory (either queue or topic)
      */
     public static HashMap<String, Hashtable<String, String>> readJMSProviderInformation() throws BPMNJMSException {
         HashMap<String, Hashtable<String, String>> jmsProperties = new HashMap<>();
 
         try {
             String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-            String activitiConfigPath = carbonConfigDirPath + File.separator + JMSConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+            String activitiConfigPath = carbonConfigDirPath + File.separator +
+                    JMSConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
             File configFile = new File(activitiConfigPath);
             String configContent = FileUtils.readFileToString(configFile);
             OMElement configElement = AXIOMUtil.stringToOM(configContent);
@@ -98,12 +102,17 @@ public class ActiviitiFileReader {
                                 break;
                         }
                     }
+
+                    //user should provide the JNDI Name of the InitialContextFactory of the JMSProvider
                     if(properties.get(JMSConstants.NAMING_FACTORY_INITIAL) == null){
                         String contextFactNotProvidedError = "InitialContextFactory is not provided. " +
                                 "java.naming.factory.initial of the JMS provider must be provided.";
 
                         throw new BPMNJMSException(contextFactNotProvidedError);
-                    }if(properties.get(JMSConstants.JMS_PROVIDER_URL) == null){
+                    }
+
+                    //user should provide the Provider URL of the JMSProvider
+                    if(properties.get(JMSConstants.JMS_PROVIDER_URL) == null){
                         String provURLNotProvidedError = "ProviderURL is not provided. " +
                                 "java.naming.provider.urlof the JMS provider must be provided.";
 
@@ -114,9 +123,9 @@ public class ActiviitiFileReader {
             }
 
         }catch (IOException e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         } catch (XMLStreamException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
         return jmsProperties;
     }

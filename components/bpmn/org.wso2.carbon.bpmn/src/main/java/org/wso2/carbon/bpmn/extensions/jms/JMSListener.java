@@ -54,46 +54,54 @@ public class JMSListener implements MessageListener{
     private Destination destination = null;
     private Hashtable<String, String> parameters = null;
     private int connectionIndex = 0;
-    private boolean isQueue = true;
 
+    /**
+     *
+     * @param jmsProviderID
+     * @param parameters
+     *
+     * jmsProviderID is given by the user and it refers to the type of the connection factory he wishes to use.
+     * parameters is a list of parameters read from the BPMN process file given by the user. If user has not provided
+     * those parameters, default parameters will be read from the configuration file in the server.
+     */
     public JMSListener(String jmsProviderID, Hashtable<String, String> parameters) {
         this.parameters = parameters;
         if(jmsProviderID != null) {
             try {
+
+                //retrieve destination type and name from the parameters list.
                 String destinationType = parameters.get(JMSConstants.PARAM_DESTINATION_TYPE);
                 String destinationName = parameters.get(JMSConstants.PARAM_DESTINATION);
 
+                //create a connection factory according to the destination type
                 if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(destinationType)){
+
+                    //a QueueConnectionFactory for a queue
                     connectionFactory = JMSConnectionFactoryManager.getInstance().getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
-                    isQueue = true;
                 } else if (JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(destinationType)) {
+
+                    //a TopicConnectionFactory for a topic
                     connectionFactory = JMSConnectionFactoryManager.getInstance().getConnectionFactory(JMSConstants.JMS_TOPIC_CONNECTION_FACTORY);
-                    isQueue = false;
                 }else {
                     log.error("Invalid destination type: " + destinationType);
                 }
 
-
+                //creates a connection object from the connection factory
                 connection = connectionFactory.getConnection();
+
+                //start the connection
                 connection.start();
 
-                int tempConnectionIndex = connectionFactory.getLastReturnedConnectionIndex();
-                if(tempConnectionIndex == 0)
-                    connectionIndex = connectionFactory.getLastReturnedConnectionIndex();
-                else
-                    connectionIndex = connectionFactory.getLastReturnedConnectionIndex() - 1;
-
+                //creates a session object from the connection object
                 session = connectionFactory.getSession(connection);
 
+                //creates the destination object
                 destination = connectionFactory.getDestination(destinationName, destinationType);
 
-                if (JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(destinationType)) {
-                    consumer = session.createConsumer(destination);
-                } else if (JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(destinationType)) {
-                    TopicSession topicSession = TopicSession.class.cast(session);
-                    consumer = topicSession.createSubscriber((Topic) destination);
-                }
+                //creates the consumer based on the destination type
+                consumer = JMSUtils.createConsumer(session, destination);
 
+                //if the consumer is not null, set its message listener.
                 if (consumer != null) {
                     consumer.setMessageListener(this);
                 }
@@ -101,55 +109,73 @@ public class JMSListener implements MessageListener{
                 log.info("JMS MessageListener for destination: " + destinationName + " started to listen");
 
             }catch (JMSException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
 
     }
 
-    public int getConnectionIndex(){
-        return connectionIndex;
-    }
-
+    /**
+     *
+     * @return the consumer which uses this listener
+     */
     public MessageConsumer getConsumer(){
         return consumer;
     }
 
-    public boolean isTypeQueue(){
-        return isQueue;
-    }
-
+    /**
+     *
+     * @param message
+     * This method will get executed once the destination receives a message.
+     */
     @Override
     public void onMessage(Message message) {
         try {
+
+            //checks whether the message is of type TextMessage
             if (message instanceof TextMessage) {
                 TextMessage text = (TextMessage) message;
-                ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-                RuntimeService runtimeService = processEngine.getRuntimeService();
 
                 Map<String, Object> variableMap = new HashMap<>();
+
+                //gets the list of xpath or json path expressions given by the user in the BPMN process file.
                 String outputMappings = parameters.get(JMSConstants.PARAM_OUTPUT_MAPPINGS);
                 String contentType = parameters.get(JMSConstants.PARAM_CONTENT_TYPE);
 
                 String expression = text.getText();
                 XPath xPath = XPathFactory.newInstance().newXPath();
                 if(outputMappings != null){
+                    //sample outputMappings string:
+                    // name#$.student.name#required;age#$.student.age#required;messageName#$.student.msgName#required
+                    //';' is used to separate set of variable names
                     String variables[] = outputMappings.split(";");
                     for (int i = 0; i < variables.length; i++) {
+                        //'#' is used to separate attributes of one variable.
+                        //these includes the variable name, xpath, json path or text expression, and whether the
+                        // variable is required or not.
                         String fields[] = variables[i].split("#");
-                        //the message body should include a value for messageName which will be used to invoke the process.
+
+                        //the message body should include a value for msgName which will be used to invoke the process.
                         if("required".equals(fields[2])){
+                            //if the message body content type is json
                             if(JMSConstants.CONTENT_TYPE_JSON.equalsIgnoreCase(contentType)){
                                 variableMap.put(fields[0], JsonPath.read(expression, fields[1]).toString());
-                            }else if(JMSConstants.CONTENT_TYPE_XML.equalsIgnoreCase(contentType)){
+                            }
+                            //if the message body content type is xml
+                            else if(JMSConstants.CONTENT_TYPE_XML.equalsIgnoreCase(contentType)){
                                 variableMap.put(fields[0], xPath.evaluate(fields[1], new InputSource(new StringReader(expression))));
-                            }else if(JMSConstants.CONTENT_TYPE_TEXT.equalsIgnoreCase(contentType)){
-                                //for a plain text message
+                            }
+                            //if the message body content type is plain text
+                            else if(JMSConstants.CONTENT_TYPE_TEXT.equalsIgnoreCase(contentType)){
                                 variableMap.put("messageName", text.getText());
                             }
                         }
                     }
                 }
+
+                //starts the process instance
+                ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+                RuntimeService runtimeService = processEngine.getRuntimeService();
                 runtimeService.startProcessInstanceByMessageAndTenantId(variableMap.get("messageName").toString(), variableMap, "-1234");
             }
         }catch (JMSException e){

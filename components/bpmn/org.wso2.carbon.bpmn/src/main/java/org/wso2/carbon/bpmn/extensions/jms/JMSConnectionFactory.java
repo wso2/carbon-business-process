@@ -60,20 +60,28 @@ public class JMSConnectionFactory {
 
     private int maxSharedConnectionCount = 10;
 
-    private HashMap<Integer, Integer> connectionCount;
+//    private HashMap<Integer, Integer> connectionCount;
 
     JMSUtils utils = new JMSUtils();
 
+    /**
+     *
+     * @param parameters
+     */
     public JMSConnectionFactory(Hashtable<String, String> parameters){
         this.parameters = parameters;
-        this.connectionCount = new HashMap<>();
+//        this.connectionCount = new HashMap<>();
 
+        //set the cacheLevel according to the value given by the user.
         digestCacheLevel();
 
         try {
+
+            //creates the connectionFactory object and the sharedDestination if any is given by the user.
             context = new InitialContext(parameters);
 
-            if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
+            if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(parameters.get
+                    (JMSConstants.PARAM_DESTINATION_TYPE))){
                 connectionFactory = utils.lookup(context, QueueConnectionFactory.class,
                         parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME));
             }else{
@@ -86,7 +94,8 @@ public class JMSConnectionFactory {
                         parameters.get(JMSConstants.PARAM_DESTINATION));
             }
 
-            log.info("JMS ConnectionFactory initialized for: " + parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME));
+            log.info("JMS ConnectionFactory initialized for: " + parameters.get
+                    (JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME));
         }catch (NamingException e){
             String errorMsg = "Cannot acquire JNDI context, JMS Connection factory : " +
                     parameters.get(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME) + " or default destination : " +
@@ -96,6 +105,9 @@ public class JMSConnectionFactory {
         }
     }
 
+    /**
+     * set the cacheLevel according to the value given by the user.
+     */
     private void digestCacheLevel(){
         String value = parameters.get(JMSConstants.PARAM_CACHE_LEVEL);
 
@@ -160,15 +172,15 @@ public class JMSConnectionFactory {
         return sharedDestination;
     }
 
-    private void incrementConnectionCounter(int connectionIndex){
-        if(connectionCount.get(connectionIndex) != null)
-            connectionCount.put(connectionIndex, connectionCount.get(connectionIndex) + 1);
-        else
-            connectionCount.put(connectionIndex, 1);
-    }
+//    private void incrementConnectionCounter(int connectionIndex){
+//        if(connectionCount.get(connectionIndex) != null)
+//            connectionCount.put(connectionIndex, connectionCount.get(connectionIndex) + 1);
+//        else
+//            connectionCount.put(connectionIndex, 1);
+//    }
     /**
      *
-     * @return
+     * @return the shared connection object
      */
     private synchronized Connection getSharedConnection(){
 
@@ -186,10 +198,9 @@ public class JMSConnectionFactory {
 
             if(connection!= null){
             }
-            sharedConnectionMap.put(lastReturnedConnectionIndex, connection);
+
 //            incrementConnectionCounter(lastReturnedConnectionIndex);
-
-
+            sharedConnectionMap.put(lastReturnedConnectionIndex, connection);
         }
 //        else{
 //            incrementConnectionCounter(lastReturnedConnectionIndex);
@@ -206,9 +217,9 @@ public class JMSConnectionFactory {
 //        return connectionCount;
 //    }
 
-    public int getLastReturnedConnectionIndex(){
-        return lastReturnedConnectionIndex;
-    }
+//    public int getLastReturnedConnectionIndex(){
+//        return lastReturnedConnectionIndex;
+//    }
 
 //    public Connection getConnection(int lastReturnedConnectionIndex){
 //        return sharedConnectionMap.get(lastReturnedConnectionIndex);
@@ -220,7 +231,7 @@ public class JMSConnectionFactory {
 
     /**
      *
-     * @return
+     * @return the shared session
      */
     private synchronized Session getSharedSession(int connectionIndex){
 
@@ -237,7 +248,7 @@ public class JMSConnectionFactory {
      *
      * @param destinationName
      * @param destinationType
-     * @return
+     * @return the destination object given the destination name and type by the user.
      */
     public Destination getDestination(String destinationName, String destinationType){
         try {
@@ -250,13 +261,19 @@ public class JMSConnectionFactory {
         return null;
     }
 
+    /**
+     *
+     * @return whether the destination type is queue or topic based on the parameters given by the user.
+     */
     public Boolean isQueue(){
         if(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE) == null){
             return false;
         }else{
-            if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
+            if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(parameters.get
+                    (JMSConstants.PARAM_DESTINATION_TYPE))){
                 return true;
-            }else if(JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(parameters.get(JMSConstants.PARAM_DESTINATION_TYPE))){
+            }else if(JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(parameters.get
+                    (JMSConstants.PARAM_DESTINATION_TYPE))){
                 return false;
             }else{
                 String invalidDestTypeErrorMsg = "Invalid " + JMSConstants.PARAM_DESTINATION_TYPE + ": " +
@@ -268,13 +285,14 @@ public class JMSConnectionFactory {
     }
 
     /**
-     *
-     * @return
+     * create a connection object and
+     * @return it
      */
     private Connection createConnection(){
         Connection connection = null;
         try{
-            connection = JMSUtils.createConnection(connectionFactory, parameters.get(JMSConstants.PARAM_USERNAME), parameters.get(JMSConstants.PARAM_PASSWORD), isQueue());
+            connection = JMSUtils.createConnection(connectionFactory, parameters.get(JMSConstants.PARAM_USERNAME),
+                    parameters.get(JMSConstants.PARAM_PASSWORD), isQueue());
             if(log.isDebugEnabled()) {
                 log.debug("New JMS Connection was created from the JMS ConnectionFactory");
             }
@@ -288,6 +306,7 @@ public class JMSConnectionFactory {
      *
      * @param connection
      * @return
+     * create a session object and return it.
      */
     private Session createSession(Connection connection){
         Session session = null;
@@ -305,7 +324,7 @@ public class JMSConnectionFactory {
 
     /**
      *
-     * @return
+     * @return a connection object
      */
     public Connection getConnection(){
         if(cacheLevel > JMSConstants.CACHE_NONE){
@@ -318,7 +337,7 @@ public class JMSConnectionFactory {
     /**
      *
      * @param connection
-     * @return
+     * @return a session object
      */
     public Session getSession(Connection connection){
         if(cacheLevel > JMSConstants.CACHE_CONNECTION){
@@ -399,9 +418,4 @@ public class JMSConnectionFactory {
     public int getCacheLevel() {
         return cacheLevel;
     }
-
-
-
-
-
 }

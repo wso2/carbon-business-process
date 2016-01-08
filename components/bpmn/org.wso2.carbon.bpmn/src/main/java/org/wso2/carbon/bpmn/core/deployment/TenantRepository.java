@@ -330,6 +330,7 @@ public class TenantRepository {
                 if (listener != null) {
                     messageListeners.remove(deploymentId);
                     listener.getConsumer().close();
+                    log.info("JMS Listener for process with ID: " + deployment.getId() + " stopped listening...");
                 }
             }
         } catch (JMSException e) {
