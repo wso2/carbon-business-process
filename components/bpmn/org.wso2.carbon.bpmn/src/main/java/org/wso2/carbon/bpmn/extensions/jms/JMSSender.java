@@ -27,14 +27,17 @@ import org.apache.axis2.context.MessageContext;
 import javax.jms.*;
 
 
+/**
+ *Takes the destination type, destination name and message content from the user using juel expressions
+ * and performs the sending of the message.
+ *
+ */
 
 public class JMSSender implements JavaDelegate {
 
     private JuelExpression destinationName;
     private JuelExpression input;
     private JuelExpression destinationType;
-    private JuelExpression serviceProviderID;
-    private JuelExpression cacheLevel;
 
     Log log = LogFactory.getLog(JMSSender.class);
 
@@ -45,22 +48,18 @@ public class JMSSender implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
 
-        String providerID;
         String destType;
         String destName;
         String text;
-        //String cache;
 
         JMSConnectionFactory conFac = null;
 
 
-        providerID = serviceProviderID.getValue(execution).toString();
         destType = destinationType.getValue(execution).toString();
         destName = destinationName.getValue(execution).toString();
         text = input.getValue(execution).toString();
-        // = cacheLevel.getValue(execution).toString();
 
-
+        //if destination is a queue conFac should be assigned a QueueConnectionFactory and vice versa
         if(JMSConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(destType)){
             conFac = JMSConnectionFactoryManager.getInstance().getConnectionFactory(JMSConstants.JMS_QUEUE_CONNECTION_FACTORY);
         } else if (JMSConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(destType)) {
@@ -69,7 +68,7 @@ public class JMSSender implements JavaDelegate {
             log.error("Invalid destination type: " + destinationType);
         }
 
-
+        //sending the message
         sendMessage(conFac, conFac.getCacheLevel(), destName, text);
 
     }
@@ -78,7 +77,7 @@ public class JMSSender implements JavaDelegate {
 
 
     /**
-     * Sends a message to a queue/topic
+     * Sends a message to a queue/topic using shared connections, sessions and message producers
      * @param connectionFactory
      * @param text
      */
@@ -89,7 +88,6 @@ public class JMSSender implements JavaDelegate {
         try {
 
         Connection connection = connectionFactory.getConnection();
-
         Session session = connectionFactory.getSession(connection);
         Destination destination;
 
@@ -109,9 +107,7 @@ public class JMSSender implements JavaDelegate {
 
                 JMSMessageSender jmsMessageSender = new JMSMessageSender(connection, session, producer, destination,
                         cacheLevel, connectionFactory.isQueue());
-
                 TextMessage message = session.createTextMessage(text);
-
                 jmsMessageSender.send(message, null);
 
             }
@@ -119,7 +115,7 @@ public class JMSSender implements JavaDelegate {
                 log.error("Destination not specified");
             }
         }catch (JMSException ex){
-            log.error(ex.toString(), ex);
+            log.error(ex.getMessage(), ex);
         }
     }
 

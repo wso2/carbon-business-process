@@ -120,6 +120,7 @@ public class JMSMessageSender {
 
         boolean sendingSuccessful = false;
         // perform actual message sending
+        log.info("sending JMS message..");
         try {
             if (isQueue == null) {
                 producer.send(message);
@@ -162,8 +163,7 @@ public class JMSMessageSender {
 //            }
 
         } catch (JMSException e) {
-            log.error("Error sending message with MessageContext ID : " +
-                    msgCtx.getMessageID() + " to destination : " + destination, e);
+            log.error("Error sending message to destination : " + destination, e);
 
         } finally {
 
@@ -216,11 +216,11 @@ public class JMSMessageSender {
         }
     }
     /**
-     * Creating a temporary  Queue Consumer; The objective of this is to make
+     * Creating a temporary  Queue Consumer; The purpose of this is to make
      * a binding for this destination in the message broker. If there is no
      * bindings created in the server before sending messages, messages will not
      * be stored in the server. So we create a consumer and close it, if there
-     * are not any bindings already created in the server
+     * are no bindings already created in the server
      *
      * */
     public void createTempQueueConsumer() throws JMSException {
