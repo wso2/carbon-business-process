@@ -967,7 +967,7 @@ public class WorkflowTaskService extends BaseTaskService {
         RestResponseFactory restResponseFactory = new RestResponseFactory();
         String baseUri = uriInfo.getBaseUri().toString();
 
-        for (Attachment attachment : taskService.getTaskAttachments(task.getId())) {
+        for (Attachment attachment : taskService.getProcessInstanceAttachments(task.getProcessInstanceId())) {
             result.add(restResponseFactory.createAttachmentResponse(attachment, baseUri));
         }
 
@@ -987,7 +987,7 @@ public class WorkflowTaskService extends BaseTaskService {
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Attachment attachment = taskService.getAttachment(attachmentId);
-        if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+        if (attachment == null) {
             throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
         }
 
@@ -1003,7 +1003,7 @@ public class WorkflowTaskService extends BaseTaskService {
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         Attachment attachment = taskService.getAttachment(attachmentId);
-        if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+        if (attachment == null) {
             throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
         }
 
@@ -1021,7 +1021,7 @@ public class WorkflowTaskService extends BaseTaskService {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         Attachment attachment = taskService.getAttachment(attachmentId);
 
-        if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+        if (attachment == null) {
             throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Attachment.class);
         }
 
