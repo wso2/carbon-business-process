@@ -15,11 +15,14 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher.internal;
 
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
+import org.wso2.carbon.bpmn.analytics.publisher.BPMNAnalyticsAxis2ConfigurationContextObserverImpl;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
@@ -45,6 +48,9 @@ public class BPMNAnalyticsServiceComponent {
         try {
 //            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
 //            analyticsPublisher.initialize();
+            ConfigurationContext cxt = new ConfigurationContext(new AxisConfiguration());
+            BPMNAnalyticsAxis2ConfigurationContextObserverImpl configCtx = new BPMNAnalyticsAxis2ConfigurationContextObserverImpl();
+            configCtx.createdConfigurationContext(cxt);
         } catch (Throwable e) {
             log.error("Failed to initialize the Analytics Service component.", e);
         }

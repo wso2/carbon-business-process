@@ -67,7 +67,7 @@ public class AnalyticsPublisher {
 	            analyticsExecutorService = Executors.newSingleThreadExecutor();
 
 	            //RegistryUtils.setTrustStoreSystemProperties();
-	            dataPublisher = createDataPublisher(config);
+	            //dataPublisher = createDataPublisher(config);
 	            processInstanceStreamId = getProcessStreamId();
 	            taskInstanceStreamId = getTaskInstanceStreamId();
 	            analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
@@ -154,6 +154,7 @@ public class AnalyticsPublisher {
 			            Thread.sleep(AnalyticsPublisherConstants.NEXT_CHECK_DELAY);
 		            }
 	            } else {
+		            dataPublisher = null;
 		            if (log.isDebugEnabled()) {
 			            log.debug("Analytics publisher is disabled for this tenant. Next check will be in " +
 			                      AnalyticsPublisherConstants.NEXT_CHECK_DELAY + " ms.");
