@@ -28,9 +28,6 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
 
     private String processDefinitionId = null;
     private String processDefinitionKey = null;
-    @XmlElementWrapper(name = "QueryVariables")
-    @XmlElement(name = "QueryVariable", type = QueryVariable.class)
-    private List<QueryVariable> variables;
 
     @XmlElementWrapper(name = "QueryProcessInstanceVariables")
     @XmlElement(name = "QueryVariable", type = QueryVariable.class)
@@ -61,14 +58,6 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
 
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
-    }
-
-    public List<QueryVariable> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(List<QueryVariable> variables) {
-        this.variables = variables;
     }
 
     public List<QueryVariable> getCorrelationVariables() {
