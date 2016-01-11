@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,36 +35,69 @@ import org.wso2.carbon.user.core.service.RealmService;
 public class BPMNAnalyticsServiceComponent {
     private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
 
+	/**
+	 * Activate BPMN analytics component.
+	 *
+	 * @param ctxt ComponentContext
+	 */
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN Analytics Service component...");
         try {
-            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-            analyticsPublisher.initialize();
+//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
+//            analyticsPublisher.initialize();
         } catch (Throwable e) {
             log.error("Failed to initialize the Analytics Service component.", e);
         }
     }
 
+	/**
+	 * Set RegistryService instance when bundle get bind to OSGI runtime.
+	 *
+	 * @param registryService
+	 */
     public void setRegistryService(RegistryService registryService) {
         BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
     }
 
+	/**
+	 * Unset RegistryService instance when bundle get unbind from OSGI runtime.
+	 *
+	 * @param registryService
+	 */
     public void unsetRegistryService(RegistryService registryService) {
         BPMNAnalyticsHolder.getInstance().setRegistryService(null);
     }
 
+	/**
+	 * Set RealmService instance when bundle get bind to OSGI runtime.
+	 *
+	 * @param realmService
+	 */
     public void setRealmService(RealmService realmService) {
         BPMNAnalyticsHolder.getInstance().setRealmService(realmService);
     }
 
+	/**
+	 * Unset RealmService instance when bundle get unbind from OSGI runtime.
+	 *
+	 * @param realmService
+	 */
     public void unsetRealmService(RealmService realmService) {
         BPMNAnalyticsHolder.getInstance().setRealmService(null);
     }
 
+	/**
+	 * Set ServerConfigurationService instance when bundle get bind to OSGI runtime.
+	 * @param serverConfiguration
+	 */
     public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
         BPMNAnalyticsHolder.getInstance().setServerConfiguration(serverConfiguration);
     }
 
+	/**
+	 * Unset ServerConfigurationService instance when bundle get unbind from OSGI runtime.
+	 * @param serverConfiguration
+	 */
     public void unsetServerConfiguration(ServerConfigurationService serverConfiguration) {
         BPMNAnalyticsHolder.getInstance().setServerConfiguration(null);
     }

@@ -15,7 +15,7 @@
 -->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
@@ -26,67 +26,67 @@
 	      <div class="table-title"><%=taskListData.name%></div>
 		  <div class="col-lg-12 white-bg">
 				<div class="col-lg-12 margin-bottom margin-top padding-left-none">
-					<div class="col-lg-2 padding-top padding-left-none"><h3>Task definition key:</h3></div>
+					<div class="col-lg-2 padding-top padding-left-none"><h3><%=i18n.localize("task.definition.key", "Task definition key")%></h3></div>
 					<div class="col-lg-4 padding-top "><%=taskListData.definitionKey%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Process instance ID:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("process.instance.id", "Process instance ID")%></h3></div>
 					<div class="col-lg-4"><%=taskListData.processInstanceId%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Task description:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("task.description", "Task description")%></h3></div>
 					<div class="col-lg-4 "><%=taskListData.description%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Assignee:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("assignee", "Assignee")%></h3></div>
 					<div class="col-lg-4"><%=taskListData.assignee%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Duration in milliseconds:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("duration.in.milliseconds", "Duration in milliseconds")%></h3></div>
 					<div class="col-lg-4  "><%=taskListData.duration%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Claim Time:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("claim.time", "Claim time")%></h3></div>
 					<div class="col-lg-4 "><%=taskListData.claimTime%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Work time in milliseconds:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("work.time.in.milliseconds", "Work time in milliseconds")%></h3></div>
 					<div class="col-lg-4 "><%=taskListData.workTime%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom  padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Due date:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("due.date", "Due date")%></h3></div>
 					<div class="col-lg-4 "><%=taskListData.dueDate%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Tenant ID:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("tenant.id", "Tenant ID")%></h3></div>
 					<div class="col-lg-4 "><%=taskListData.tenantId%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Execution ID:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("execution.id", "Execution ID")%></h3></div>
 					<div class="col-lg-4 "><%=taskListData.executionId%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Priority:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("priority", "Priority")%></h3></div>
 					<div class="col-lg-4 capitalize"><%=taskListData.priority%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Status:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("status", "Status")%></h3></div>
 					<div class="col-lg-4 capitalize"><%=taskListData.deleteReason%></div>
 				</div>
 				<hr>
 				<div class="col-lg-12 margin-bottom padding-left-none">
-					<div class="col-lg-2 padding-left-none"><h3>Attachments:</h3></div>
+					<div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("attachments", "Attachments")%></h3></div>
 					<div class="col-lg-4 capitalize">
                         <!--Attachment List Table -->
                        <% if(attachmentList.length > 0 ) { %>

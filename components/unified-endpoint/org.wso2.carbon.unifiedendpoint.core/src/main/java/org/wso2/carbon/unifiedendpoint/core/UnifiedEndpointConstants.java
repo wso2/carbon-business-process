@@ -139,4 +139,8 @@ public final class UnifiedEndpointConstants {
     public static final String VIRTUAL_REG = "reg:";    
     public static final String VIRTUAL_GOV_REG = "gov:";
     public static final String VIRTUAL_CONF_REG = "conf:";
+
+    //NhttpConstants Constants.
+    public static final String REST_URL_POSTFIX = "REST_URL_POSTFIX";
+    public static final String ENDPOINT_PREFIX = "ENDPOINT_PREFIX";
 }

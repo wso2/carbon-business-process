@@ -129,8 +129,8 @@ public class WorkflowServiceClient {
     }
 
     public BPMNInstance[] getPaginatedInstanceByFilter(boolean finished, String instanceId,  String startAfter,
-                                                       String startBefore, String processId, String variable,
-                                                       String value, int start, int size) {
+                                                       String startBefore, String processId, boolean isActive,
+                                                       String variables, int start, int size) {
         BPMNInstance[] bpmnInstances = null;
 
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -152,19 +152,9 @@ public class WorkflowServiceClient {
         }
         try {
             bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(finished, instanceId, after, before, processId,
-                    variable, value, start, size);
+                    isActive, variables, start, size);
         } catch (RemoteException e) {
             log.error("Error getting process list by filter, RemoteException", e);
-        }
-        return bpmnInstances;
-    }
-
-    public BPMNInstance[] getPaginatedUnfinishedInstancesByStatus(boolean isActive, int start, int size) {
-        BPMNInstance[] bpmnInstances = null;
-        try {
-            bpmnInstances = instanceServiceStub.getPaginatedUnfinishedInstancesByStatus(isActive, start, size);
-        } catch (RemoteException e) {
-            log.error("Error getting process list by status filter, RemoteException", e);
         }
         return bpmnInstances;
     }
@@ -179,10 +169,10 @@ public class WorkflowServiceClient {
 
     public BPMNInstance getProcessInstanceById(String instanceId) throws Exception {
         BPMNInstance[] bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(true, instanceId, null,
-                null, null, null, null, 0, 1);
+                null, null, true, null, 0, 1);
         if (bpmnInstances == null || bpmnInstances.length <= 0) {
             bpmnInstances = instanceServiceStub.getPaginatedInstanceByFilter(false, instanceId, null, null, null,
-                    null, null, 0, 1);
+                    true, null, 0, 1);
         }
         return bpmnInstances[0];
     }
@@ -200,7 +190,7 @@ public class WorkflowServiceClient {
     }
 
     public void deleteAllProcessInstances() throws Exception {
-        BPMNInstance[] instances = getPaginatedInstanceByFilter(true, null, null, null, null, null, null, 0, 100);
+        BPMNInstance[] instances = getPaginatedInstanceByFilter(true, null, null, null, null, true, null, 0, 100);
         List<String> instanceIds = new ArrayList<String>();
         for(BPMNInstance instance : instances){
             instanceIds.add(instance.getInstanceId());

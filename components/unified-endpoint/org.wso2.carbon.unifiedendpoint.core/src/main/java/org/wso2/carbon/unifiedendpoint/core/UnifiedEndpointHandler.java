@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*  Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -29,13 +29,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.neethi.Policy;
 import org.apache.neethi.PolicyEngine;
-import org.apache.synapse.core.axis2.SOAPUtils;
-import org.apache.synapse.transport.nhttp.NhttpConstants;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.unifiedendpoint.core.utils.SOAPUtils;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.IOException;
@@ -71,58 +70,62 @@ public class UnifiedEndpointHandler extends AbstractHandler {
         if (uepMessageOutput != null) {
             /*Format*/
             String uepMessageOutputFormat = uepMessageOutput.getFormat();
-            if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_POX)) {
+            if (uepMessageOutputFormat != null) {
+                if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_POX)) {
 
-                msgContext.setDoingREST(true);
-                msgContext.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
-                                       org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_APPLICATION_XML);
+                    msgContext.setDoingREST(true);
+                    msgContext.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
+                            org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_APPLICATION_XML);
 
-            } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_GET)) {
-                msgContext.setDoingREST(true);
-                msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
-                                       Constants.Configuration.HTTP_METHOD_GET);
-                msgContext.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
-                                       org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_X_WWW_FORM);
+                } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_GET)) {
+                    msgContext.setDoingREST(true);
+                    msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
+                            Constants.Configuration.HTTP_METHOD_GET);
+                    msgContext.setProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE,
+                            org.apache.axis2.transport.http.HTTPConstants.MEDIA_TYPE_X_WWW_FORM);
 
-            } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_SOAP11)) {
-                msgContext.setDoingREST(false);
-                msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
-                msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
-                                       Constants.Configuration.HTTP_METHOD_POST);
+                } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_SOAP11)) {
+                    msgContext.setDoingREST(false);
+                    msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
+                    msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
+                            Constants.Configuration.HTTP_METHOD_POST);
 
-                if (msgContext.getSoapAction() == null && msgContext.getWSAAction() != null) {
-                    msgContext.setSoapAction(msgContext.getWSAAction());
+                    if (msgContext.getSoapAction() == null && msgContext.getWSAAction() != null) {
+                        msgContext.setSoapAction(msgContext.getWSAAction());
+                    }
+                    if (!msgContext.isSOAP11()) {
+                        SOAPUtils.convertSOAP12toSOAP11(msgContext);
+                    }
+                } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_SOAP12)) {
+                    msgContext.setDoingREST(false);
+                    msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
+                    msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
+                            Constants.Configuration.HTTP_METHOD_POST);
+                    if (msgContext.getSoapAction() == null && msgContext.getWSAAction() != null) {
+                        msgContext.setSoapAction(msgContext.getWSAAction());
+                    }
+                    if (msgContext.isSOAP11()) {
+                        SOAPUtils.convertSOAP11toSOAP12(msgContext);
+                    }
+                } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_REST)) {
+                    msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
+                    msgContext.setDoingREST(true);
+                } else {
+                    processHttpGetMethod(msgContext, msgContext);
                 }
-                if (!msgContext.isSOAP11()) {
-                    SOAPUtils.convertSOAP12toSOAP11(msgContext);
-                }
-            } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_SOAP12)) {
-                msgContext.setDoingREST(false);
-                msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
-                msgContext.setProperty(Constants.Configuration.HTTP_METHOD,
-                                       Constants.Configuration.HTTP_METHOD_POST);
-                if (msgContext.getSoapAction() == null && msgContext.getWSAAction() != null) {
-                    msgContext.setSoapAction(msgContext.getWSAAction());
-                }
-                if (msgContext.isSOAP11()) {
-                    SOAPUtils.convertSOAP11toSOAP12(msgContext);
-                }
-            } else if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_REST)) {
-                msgContext.removeProperty(org.apache.axis2.Constants.Configuration.MESSAGE_TYPE);
-                msgContext.setDoingREST(true);
-            } else {
-                processHttpGetMethod(msgContext, msgContext);
             }
 
             /*Optimize*/
-            if (uepMessageOutput.getOptimize().equals(UnifiedEndpointConstants.OPTIMIZE_MTOM)) {
-                msgContext.setDoingMTOM(true);
-                msgContext.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_MTOM,
-                                       org.apache.axis2.Constants.VALUE_TRUE);
-            } else if (uepMessageOutput.getOptimize().equals(UnifiedEndpointConstants.OPTIMIZE_SWA)) {
-                msgContext.setDoingSwA(true);
-                msgContext.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_SWA,
-                                       org.apache.axis2.Constants.VALUE_TRUE);
+            if (uepMessageOutput.getOptimize() != null) {
+                if (uepMessageOutput.getOptimize().equals(UnifiedEndpointConstants.OPTIMIZE_MTOM)) {
+                    msgContext.setDoingMTOM(true);
+                    msgContext.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_MTOM,
+                            org.apache.axis2.Constants.VALUE_TRUE);
+                } else if (uepMessageOutput.getOptimize().equals(UnifiedEndpointConstants.OPTIMIZE_SWA)) {
+                    msgContext.setDoingSwA(true);
+                    msgContext.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_SWA,
+                            org.apache.axis2.Constants.VALUE_TRUE);
+                }
             }
 
             /*Charset*/
@@ -132,15 +135,15 @@ public class UnifiedEndpointHandler extends AbstractHandler {
             }
 
              /**/
-            if (uep.getAddress() != null) {
+            if (uep.getAddress() != null && uepMessageOutputFormat!=null) {
                 if (uepMessageOutputFormat.equals(UnifiedEndpointConstants.FORMAT_REST)
-                    && msgContext.getProperty(NhttpConstants.REST_URL_POSTFIX) != null) {
+                    && msgContext.getProperty(UnifiedEndpointConstants.REST_URL_POSTFIX) != null) {
                     msgContext.setTo(new EndpointReference(uep.getAddress() +
-                                                           msgContext.getProperty(NhttpConstants.REST_URL_POSTFIX)));
+                                                           msgContext.getProperty(UnifiedEndpointConstants.REST_URL_POSTFIX)));
                 } else {
                     msgContext.setTo(new EndpointReference(uep.getAddress()));
                 }
-                msgContext.setProperty(NhttpConstants.ENDPOINT_PREFIX, uep.getAddress());
+                msgContext.setProperty(UnifiedEndpointConstants.ENDPOINT_PREFIX, uep.getAddress());
             }
 
             if (uep.isSeparateListener()) {
@@ -199,7 +202,7 @@ public class UnifiedEndpointHandler extends AbstractHandler {
             return;
         }
         /** HTTP Transport */
-        if (uepTransport.getTransportType().equals(UnifiedEndpointConstants.TRANSPORT_TYPE_HTTP)) {
+        if (uepTransport.getTransportType()!= null && uepTransport.getTransportType().equals(UnifiedEndpointConstants.TRANSPORT_TYPE_HTTP)) {
             if (uepTransport.getTransportProperties() != null && (!uepTransport.getTransportProperties().isEmpty())) {
                 //Here some-properties like (disable chunking has to be fixed case by case. So
                 // just adding a property map for HTTPConstants.HTTP_HEADERS may not work. So the
@@ -227,7 +230,9 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 }
 
                 try {
-                    CarbonUtils.setBasicAccessSecurityHeaders(uep.getAuthorizationUserName(), uep.getAuthorizationPassword(), false, msgContext);
+                    if(uep.getAuthorizationUserName()!=null && uep.getAuthorizationUserName()!=null) {
+                        CarbonUtils.setBasicAccessSecurityHeaders(uep.getAuthorizationUserName(), uep.getAuthorizationPassword(), false, msgContext);
+                    }
                 } catch (AxisFault e) {
                     log.error("Error while authorizing the user ", e);
                 }
