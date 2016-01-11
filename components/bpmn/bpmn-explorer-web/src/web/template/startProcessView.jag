@@ -15,7 +15,7 @@
 -->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
@@ -27,7 +27,7 @@
 	</ol-->
 	<div class="panel panel-primary">
 		<!-- Default panel contents -->
-		<div class="panel-heading">Start Process</div>
+		<div class="panel-heading"><%=i18n.localize("start.process","Start Process")%></div>
 
 	  	<div class="col-lg-12 white-bg margin-bottom">
 	  		<form>
@@ -36,7 +36,7 @@
 	  			</div>
 	  		</form>
 	  		<div class="col-lg-12 margin-bottom-double">
-	  			<button id="startProcessButton" onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info">Start</button>
+	  			<button id="startProcessButton" onclick="startProcessWithData($('form').serializeArray(), '<%=id%>');" class="btn  btn-info"><%=i18n.localize("start","Start")%></button>
 	  			<div id="loadingStartProcessButton" hidden><img src="images/loader.gif"/></div>
 			</div>
 	  		</div>

@@ -30,6 +30,7 @@ import org.wso2.carbon.bpel.b4p.coordination.configuration.CoordinationConfigura
 import org.wso2.carbon.bpel.b4p.internal.B4PContentHolder;
 import org.wso2.carbon.bpel.b4p.internal.B4PServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
+import org.wso2.carbon.context.CarbonContext;
 
 public class EventListener implements BpelEventListener {
 
@@ -50,6 +51,7 @@ public class EventListener implements BpelEventListener {
                                 + " has a B4P activity. Initiating Exit Protocol Messages to task(s).");
                     }
                     TerminationTask terminationTask = new TerminationTask(Long.toString(event.getProcessInstanceId()));
+                    terminationTask.setTenantID(CarbonContext.getThreadLocalCarbonContext().getTenantId());
                     B4PContentHolder.getInstance().getCoordinationController().runTask(terminationTask);
                 }
 
