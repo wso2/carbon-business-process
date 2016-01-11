@@ -34,8 +34,6 @@ import org.wso2.carbon.databridge.commons.exception.TransportException;
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
-import org.wso2.carbon.registry.core.utils.RegistryUtils;
-import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -44,7 +42,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * AnalyticsPublisher uses to publish events to the data receiver in data-bridge
+ * AnalyticsPublisher uses to publish events to the data receiver in the data-bridge
+ * Two streams are defined. One is for the processes and the other is for the tasks.
+ * process_stream(processDefinitionId, processInstanceId, startActivityId, startUserId, startTime, endTime, duration, tenantId)
+ * task_stream(taskDefinitionKey, taskInstanceId, processInstanceId, createTime, startTime, endTime, duration, assignee)
  */
 public class AnalyticsPublisher {
     private static final Log log = LogFactory.getLog(AnalyticsPublisher.class);
@@ -59,14 +60,14 @@ public class AnalyticsPublisher {
     /**
      * Initialize the objects for AnalyticsPublisher
      */
-    public boolean initialize(BPMNDataReceiverConfig config) {
+    public boolean initialize(BPMNDataReceiverConfig config) throws Exception {
         try {
             if (BPMNDataReceiverConfig.isDASPublisherActivated()) {
 
 	            analyticsExecutorService = Executors.newSingleThreadExecutor();
 
 	            //RegistryUtils.setTrustStoreSystemProperties();
-	            dataPublisher = createDataPublisher(config);
+	            //dataPublisher = createDataPublisher(config);
 	            processInstanceStreamId = getProcessStreamId();
 	            taskInstanceStreamId = getTaskInstanceStreamId();
 	            analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
@@ -74,7 +75,7 @@ public class AnalyticsPublisher {
 	            String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 	            Registry registry =
 			            BPMNAnalyticsHolder.getInstance().getRegistryService().getGovernanceSystemRegistry();
-	            setPrivilegeContext(tenantId, tenantDomain, registry, config);
+	            startPollingForInstances(tenantId, tenantDomain, registry, config);
 
             } else {
                 if (log.isDebugEnabled()) {
@@ -85,7 +86,7 @@ public class AnalyticsPublisher {
             }
         } catch (IOException | RegistryException | XMLStreamException e) {
             String errMsg = "Data publisher objects initialization error.";
-            log.error(errMsg, e);
+            throw new Exception(errMsg, e);
         }
 	    return false;
     }
@@ -93,10 +94,11 @@ public class AnalyticsPublisher {
     /**
      * Set thread local privileges to polling thread
      */
-    private void setPrivilegeContext(final int tenantId, final String tenantDomain,
-                                     final Registry registry, final BPMNDataReceiverConfig config) {
+    private void startPollingForInstances(final int tenantId, final String tenantDomain,
+                                          final Registry registry,
+                                          final BPMNDataReceiverConfig config) {
         if (log.isDebugEnabled()) {
-            log.debug("Run setPrivilegeContext method... " + tenantId + ", " + tenantDomain + ", " + registry);
+            log.debug("Run startPollingForInstances method... " + tenantId + ", " + tenantDomain + ", " + registry);
         }
 	    analyticsExecutorService.execute(new Runnable() {
 		    @Override
@@ -152,6 +154,7 @@ public class AnalyticsPublisher {
 			            Thread.sleep(AnalyticsPublisherConstants.NEXT_CHECK_DELAY);
 		            }
 	            } else {
+		            dataPublisher = null;
 		            if (log.isDebugEnabled()) {
 			            log.debug("Analytics publisher is disabled for this tenant. Next check will be in " +
 			                      AnalyticsPublisherConstants.NEXT_CHECK_DELAY + " ms.");

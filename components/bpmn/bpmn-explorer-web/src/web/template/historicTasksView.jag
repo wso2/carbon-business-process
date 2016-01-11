@@ -15,7 +15,7 @@
 -->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
@@ -26,16 +26,16 @@
 	  <li><a href="stats">Home</a></li>
 	  <li class="active">Historical Tasks</li>
 	</ol-->
-		<div class=" margin-left-double table-title">Completed Tasks</div>
+		<div class=" margin-left-double table-title"><%=i18n.localize("completed.tasks", "Completed Tasks")%></div>
     	<div class="table-body margin-left-double">
 		  <!-- Table -->
 		  <table class="table">
 		    <thead>
 		    	<tr class="table-title-row">
-		    		<th>ID</th>
-		    		<th>Process Definition ID</th>
-		    		<th>Start Time</th>
-		    		<th>End Time</th>
+		    		<th><%=i18n.localize("id", "ID")%></th>
+		    		<th><%=i18n.localize("process.definition.id", "Process Definition ID")%></th>
+		    		<th><%=i18n.localize("start.time", "Start Time")%></th>
+		    		<th><%=i18n.localize("end.time", "End Time")%></th>
 		    	</tr>
 		    </thead>
 		    <tbody>
