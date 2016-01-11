@@ -60,7 +60,7 @@ public class AnalyticsPublisher {
     /**
      * Initialize the objects for AnalyticsPublisher
      */
-    public boolean initialize(BPMNDataReceiverConfig config) {
+    public boolean initialize(BPMNDataReceiverConfig config) throws Exception {
         try {
             if (BPMNDataReceiverConfig.isDASPublisherActivated()) {
 
@@ -86,7 +86,7 @@ public class AnalyticsPublisher {
             }
         } catch (IOException | RegistryException | XMLStreamException e) {
             String errMsg = "Data publisher objects initialization error.";
-            log.error(errMsg, e);
+            throw new Exception(errMsg, e);
         }
 	    return false;
     }
