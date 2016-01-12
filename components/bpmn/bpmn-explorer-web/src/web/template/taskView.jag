@@ -188,11 +188,8 @@ else{%>
                 </div>
                 <div class="modal-body">
                     <%=i18n.localize("user.name","Username")%>
-                    <select id="transferName">
-                    	<% for(var i=0; i<userList.length; i++){ %>
-                    		<option id="<%=userList[i]%>"><%=userList[i]%></option>
-                    	<% } %>
-                    </select><br>
+                    <input id="transferName" type="text"/>
+                    <br>
                 </div>
                 <div class="modal-footer">
                 	<div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
@@ -215,11 +212,8 @@ else{%>
                 </div>
                 <div class="modal-body">
                     <%=i18n.localize("user.name","Username")%>
-                    <select id="reassignName">
-                    	<% for(var i=0; i<userList.length; i++){ %>
-                    		<option id="<%=userList[i]%>"><%=userList[i]%></option>
-                    	<% } %>
-                    </select><br>
+                    <input id="reassignName" type="text"/>
+                    <br>
                 </div>
                 <div class="modal-footer">
                 	<div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
