@@ -17,6 +17,9 @@ package org.wso2.carbon.bpmn.analytics.publisher.models;
 
 import java.util.Date;
 
+/**
+ * BPMNTaskInstance is a POJO which provides to create the Task Instances
+ */
 public class BPMNTaskInstance {
     private String taskDefinitionKey;
     private String taskInstanceId;

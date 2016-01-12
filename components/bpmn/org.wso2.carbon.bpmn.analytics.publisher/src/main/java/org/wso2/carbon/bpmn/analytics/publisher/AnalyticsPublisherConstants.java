@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
+/**
+ * AnalyticsPublisherConstants class holds all the constants which are used in the Analytics Publisher
+ */
 public class AnalyticsPublisherConstants {
     public static final String USER_NAME = "admin";
     public static final String PASSWORD = "admin";
