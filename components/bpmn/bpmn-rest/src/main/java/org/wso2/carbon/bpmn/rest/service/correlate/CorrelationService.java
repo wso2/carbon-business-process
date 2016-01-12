@@ -27,6 +27,7 @@ import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
