@@ -60,16 +60,17 @@
 
         CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
         Registry configRegistry = context.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
+        String registryPath = "bpmn/data_analytics_publisher/publisher_configuration";
 
         try {
-            if (configRegistry.resourceExists("bpmn/data_analytics_publisher/thrift_configuration")) {
-                Resource resource = configRegistry.get("bpmn/data_analytics_publisher/thrift_configuration");
+            if (configRegistry.resourceExists(registryPath)) {
+                Resource resource = configRegistry.get(registryPath);
                 if ("POST".equalsIgnoreCase(request.getMethod()) && "Save".equalsIgnoreCase(buttonVal)) {
                     if (thriftUrl != null && username != null && password != null) {
                         String passwordFromReg = resource.getProperty("password");
                         byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(passwordFromReg);
                         String decryptedPlainPassword = new String(decryptedPasswordBinary);
-                        if (thriftUrl.equals(resource.getProperty("data_receiver_thrift_url")) &&
+                        if (thriftUrl.equals(resource.getProperty("receiverURLSet")) &&
                                 username.equals(resource.getProperty("username")) &&
                                 password.equals(decryptedPlainPassword)) {
                         %>
@@ -85,13 +86,13 @@
                 //if resource is available then get properties and set them to the text fields
                 if (thriftUrl == null) {
                     //if thrift url is null then set value from the registry
-                    if (resource.getProperty("data_receiver_thrift_url") != null) {
-                        thriftUrl = resource.getProperty("data_receiver_thrift_url");
+                    if (resource.getProperty("receiverURLSet") != null) {
+                        thriftUrl = resource.getProperty("receiverURLSet");
                     }
-                } else if (!thriftUrl.equals(resource.getProperty("data_receiver_thrift_url"))) {
+                } else if (!thriftUrl.equals(resource.getProperty("receiverURLSet"))) {
                     //else if user updates the thrift url then update the registry property
-                    resource.setProperty("data_receiver_thrift_url", thriftUrl);
-                    configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
+                    resource.setProperty("receiverURLSet", thriftUrl);
+                    configRegistry.put(registryPath, resource);
                 }
                 if (username == null) {
                     //if username is null then set value from the registry
@@ -101,7 +102,7 @@
                 } else if (!username.equals(resource.getProperty("username"))) {
                     //else if user updates the username then update the registry property
                     resource.setProperty("username", username);
-                    configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
+                    configRegistry.put(registryPath, resource);
                 }
                 if (password == null) {
                     //if password is null then set value from the registry
@@ -113,16 +114,16 @@
                     //else if user updates the password then update the registry property
                     String encryptedPassword = CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes());
                     resource.setProperty("password", encryptedPassword);
-                    configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
+                    configRegistry.put(registryPath, resource);
                 }
             } else {
                 //if resource doesn't exists then create a new resource and add properties to it.
                 if ((thriftUrl != null && (thriftUrl.startsWith("tcp://") || thriftUrl.startsWith("ssl://"))) || (username != null) || (password != null)) {
                     Resource resource = configRegistry.newResource();
-                    resource.addProperty("data_receiver_thrift_url", thriftUrl);
+                    resource.addProperty("receiverURLSet", thriftUrl);
                     resource.addProperty("username", username);
                     resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes()));
-                    configRegistry.put("bpmn/data_analytics_publisher/thrift_configuration", resource);
+                    configRegistry.put(registryPath, resource);
                 }
             }
         } catch (RegistryException e) {
