@@ -17,6 +17,7 @@
 package org.wso2.carbon.bpmn.rest.model.correlation;
 
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
 
 import javax.xml.bind.annotation.*;
@@ -29,10 +30,10 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
     private String processDefinitionId = null;
     private String processDefinitionKey = null;
 
-    @XmlElementWrapper(name = "QueryProcessInstanceVariables")
-    @XmlElement(name = "QueryVariable", type = QueryVariable.class)
-    private List<QueryVariable> processInstanceVariables;
-
+   /* @XmlElementWrapper(name = "RestProcessInstanceVariables")
+    @XmlElement(name = "RestVariable", type = RestVariable.class)
+    private List<RestVariable> processInstanceVariables;
+*/
     @XmlElementWrapper(name = "CorrelationRestVariables")
     @XmlElement(name = "QueryVariable", type = QueryVariable.class)
     private List<QueryVariable> correlationVariables;
@@ -102,13 +103,13 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
         this.messageName = messageName;
     }
 
-    public List<QueryVariable> getProcessInstanceVariables() {
+ /*   public List<RestVariable> getProcessInstanceVariables() {
         return processInstanceVariables;
     }
 
-    public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
+    public void setProcessInstanceVariables(List<RestVariable> processInstanceVariables) {
         this.processInstanceVariables = processInstanceVariables;
-    }
+    }*/
 
     @Override
     public String getAction() {
