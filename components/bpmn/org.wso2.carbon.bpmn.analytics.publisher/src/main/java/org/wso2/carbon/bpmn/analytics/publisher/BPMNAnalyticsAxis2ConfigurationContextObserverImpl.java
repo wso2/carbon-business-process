@@ -36,7 +36,11 @@ public class BPMNAnalyticsAxis2ConfigurationContextObserverImpl extends Abstract
 		BPMNDataReceiverConfig config = new BPMNDataReceiverConfig(tenantId);
 		config.init();
 		AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-		analyticsPublisher.initialize(config);
+		try {
+			analyticsPublisher.initialize(config);
+		} catch (Exception e) {
+			log.error("Analytics Publisher Initialization error", e);
+		}
 		BPMNAnalyticsHolder.getInstance().addAnalyticsPublisher(tenantId, analyticsPublisher);
 
 	}

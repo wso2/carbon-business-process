@@ -137,21 +137,38 @@ function completeTask(data, id) {
 }
 
 function reassign(username, id) {
-
     username = username.trim();
     if (username.length > 0) {
-        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
-        var body = {
-            "assignee": username
-        };
-
+        var url = "/" + CONTEXT + "/backendRequest?operation=userExists&username=" + username;
         $.ajax({
-            type: 'PUT',
+            type: 'GET',
             contentType: "application/json",
             url: httpUrl + url,
-            data: JSON.stringify(body),
+            //data: JSON.stringify(body),
             success: function (data) {
-                window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                if (data.valid) {
+                    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+                    var body = {
+                        "assignee": username
+                    };
+
+                    $.ajax({
+                        type: 'PUT',
+                        contentType: "application/json",
+                        url: httpUrl + url,
+                        data: JSON.stringify(body),
+                        success: function (data) {
+                            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                        }
+                    });
+                } else {
+                    $('#reassignErrMsg').html("Please enter valid username to assignee");
+                    $('#reassignErrorMessageArea').show();
+                    //set callback to remove error message when hiding the modal
+                    $('#reassign').on('hide.bs.modal', function (e) {
+                            $('#reassignErrorMessageArea').hide();
+                    });
+                }
             }
         });
     } else {
@@ -183,23 +200,42 @@ function claim(username, id){
 
 
 function transfer(username, id) {
+    username = username.trim();
     if (username.length > 0) {
-        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
-        var body = {
-            "owner": username
-        };
-
+        var url = "/" + CONTEXT + "/backendRequest?operation=userExists&username=" + username;
         $.ajax({
-            type: 'PUT',
+            type: 'GET',
             contentType: "application/json",
             url: httpUrl + url,
-            data: JSON.stringify(body),
+            //data: JSON.stringify(body),
             success: function (data) {
-                window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                if (data.valid) {
+                    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+                    var body = {
+                        "owner": username
+                    };
+
+                    $.ajax({
+                        type: 'PUT',
+                        contentType: "application/json",
+                        url: httpUrl + url,
+                        data: JSON.stringify(body),
+                        success: function (data) {
+                            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                        }
+                    });
+                } else {
+                    $('#transferErrMsg').html("Please enter valid username to assignee");
+                    $('#transferErrorMessageArea').show();
+                    //set callback to remove error message when hiding the modal
+                    $('#transfer').on('hide.bs.modal', function (e) {
+                            $('#transferErrorMessageArea').hide();
+                    });
+                }
             }
         });
     } else {
-        $('#transferErrMsg').html("Please enter the username");
+        $$('#transferErrMsg').html("Please enter the username");
         $('#transferErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#transfer').on('hide.bs.modal', function (e) {
