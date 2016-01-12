@@ -68,19 +68,19 @@
             if (configRegistry.resourceExists(registryPath)) {
                 Resource resource = configRegistry.get(registryPath);
                 if ("POST".equalsIgnoreCase(request.getMethod()) && "Save".equalsIgnoreCase(buttonVal)) {
-                    if (thriftUrl != null && username != null && password != null) {
+                    if (thriftUrl != null && username != null && password != null && authUrl != null) {
                         String passwordFromReg = resource.getProperty("password");
                         byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(passwordFromReg);
                         String decryptedPlainPassword = new String(decryptedPasswordBinary);
                         if (thriftUrl.equals(resource.getProperty("receiverURLSet")) &&
                                 username.equals(resource.getProperty("username")) &&
-                                password.equals(decryptedPlainPassword)) {
+                                password.equals(decryptedPlainPassword) && authUrl.equals(resource.getProperty("authURLSet"))) {
                         %>
-                        <script type="text/javascript">CARBON.showInfoDialog("Thrift Configuration is already exists.");</script>
+                        <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is already exists.");</script>
                         <%
                         } else {
                         %>
-                        <script type="text/javascript">CARBON.showInfoDialog("Thrift Configuration is saved successfully.");</script>
+                        <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
                         <%
                         }
                     }
@@ -130,14 +130,13 @@
                 }
             } else {
                 //if resource doesn't exists then create a new resource and add properties to it.
-                if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) || (username != null) || (password != null)) {
+                if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) || (authUrl != null && authUrl.startsWith("ssl://"))
+                    || (username != null) || (password != null)) {
                     Resource resource = configRegistry.newResource();
                     resource.addProperty("receiverURLSet", thriftUrl);
                     resource.addProperty("username", username);
                     resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes()));
-                    if(authUrl != null && authUrl.startsWith("ssl://")){
-                        resource.addProperty("authURLSet", authUrl);
-                    }
+                    resource.addProperty("authURLSet", authUrl);
                     configRegistry.put(registryPath, resource);
                 }
             }
@@ -160,14 +159,12 @@
             var password = document.bpmnDataPublisher.password.value;
             var authUrl = document.bpmnDataPublisher.auth_url.value;
 
-            if ((thriftUrl.length == 0) || (username.length == 0) || (password.length == 0)) {
+            if ((thriftUrl.length == 0) || (username.length == 0) || (password.length == 0) || authUrl.length == 0) {
                 CARBON.showWarningDialog('Please provide correct publisher configuration or select required fields to publish bpmn instances.');
             } else if ((!thriftUrl.startsWith("tcp"))) {
                 CARBON.showWarningDialog('Incorrect thrift url is provided.');
-            } else if (authUrl.length != 0) {
-                if(!authUrl.startsWith("ssl")){
-                    CARBON.showWarningDialog('Incorrect thrift ssl url is provided.');
-                }
+            } else if (!authUrl.startsWith("ssl")) {
+                CARBON.showWarningDialog('Incorrect thrift ssl url is provided.');
             } else {
                 document.bpmnDataPublisher.publishBtn.value = document.bpmnDataPublisher.publish.value;
                 document.bpmnDataPublisher.submit();
