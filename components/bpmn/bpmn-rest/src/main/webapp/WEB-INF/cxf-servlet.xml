@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright 2011 WSO2, Inc. (http://wso2.com)
+  ~ Copyright 2015 WSO2, Inc. (http://wso2.com)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -47,6 +48,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -65,6 +67,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -80,6 +83,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -91,6 +95,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -102,6 +107,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -113,6 +119,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -123,6 +130,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -135,6 +143,7 @@
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
             <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -142,5 +151,7 @@
     <bean id="authenticationBean" class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
     <bean id="exceptionHandlerBean"
           class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+    <bean id="errorHandlerBean"
+          class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNErrorHandler"/>
     <bean id="jacksonBean" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
 </beans>

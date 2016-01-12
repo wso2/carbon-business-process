@@ -123,16 +123,6 @@ public class CorrelationService extends BaseExecutionService {
             addVariables(query, updatedQueryVariableList, true);
         }
 
-        queryVariableList  = correlationActionRequest.getProcessInstanceVariables();
-
-        if(queryVariableList != null){
-            addVariables(query, queryVariableList, true);
-        }
-
-        queryVariableList = correlationActionRequest.getVariables();
-        if(queryVariableList != null){
-            addVariables(query, queryVariableList, false);
-        }
 
         value = correlationActionRequest.getActivityId();
         if (value != null) {
@@ -143,12 +133,6 @@ public class CorrelationService extends BaseExecutionService {
             if(value != null) {
                 query.executionTenantId(value);
             }
-
-/*        PaginateRequest paginateRequest = new PaginateRequest();
-        paginateRequest.setStart(0);
-        paginateRequest.setSize(10);
-        paginateRequest.setSort("processInstanceId");
-        paginateRequest.setOrder("asc");*/
 
         QueryProperty qp = allowedSortProperties.get("processInstanceId");
         ((AbstractQuery) query).orderBy(qp);
