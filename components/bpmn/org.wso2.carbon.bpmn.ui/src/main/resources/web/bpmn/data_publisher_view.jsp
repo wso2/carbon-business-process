@@ -54,8 +54,10 @@
         RegistryUtils.setTrustStoreSystemProperties();
 
         String thriftUrl = CharacterEncoder.getSafeText(request.getParameter("thrift_url"));
+        String authUrl = CharacterEncoder.getSafeText(request.getParameter("auth_url"));
         String username = CharacterEncoder.getSafeText(request.getParameter("username"));
         String password = CharacterEncoder.getSafeText(request.getParameter("password"));
+        String publisherEnable = CharacterEncoder.getSafeText(request.getParameter("publisher_enable"));
         String buttonVal = CharacterEncoder.getSafeText(request.getParameter("publishBtn"));
 
         CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
@@ -94,6 +96,16 @@
                     resource.setProperty("receiverURLSet", thriftUrl);
                     configRegistry.put(registryPath, resource);
                 }
+                if (authUrl == null) {
+                    //if auth url is null then set value from the registry
+                    if (resource.getProperty("authURLSet") != null) {
+                        authUrl = resource.getProperty("authURLSet");
+                    }
+                } else if (!authUrl.equals(resource.getProperty("authURLSet"))) {
+                    //else if user updates the auth url then update the registry property
+                    resource.setProperty("authURLSet", authUrl);
+                    configRegistry.put(registryPath, resource);
+                }
                 if (username == null) {
                     //if username is null then set value from the registry
                     if (resource.getProperty("username") != null) {
@@ -118,11 +130,14 @@
                 }
             } else {
                 //if resource doesn't exists then create a new resource and add properties to it.
-                if ((thriftUrl != null && (thriftUrl.startsWith("tcp://") || thriftUrl.startsWith("ssl://"))) || (username != null) || (password != null)) {
+                if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) || (username != null) || (password != null)) {
                     Resource resource = configRegistry.newResource();
                     resource.addProperty("receiverURLSet", thriftUrl);
                     resource.addProperty("username", username);
                     resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes()));
+                    if(authUrl != null && authUrl.startsWith("ssl://")){
+                        resource.addProperty("authURLSet", authUrl);
+                    }
                     configRegistry.put(registryPath, resource);
                 }
             }
@@ -143,11 +158,16 @@
             var thriftUrl = document.bpmnDataPublisher.thrift_url.value;
             var username = document.bpmnDataPublisher.username.value;
             var password = document.bpmnDataPublisher.password.value;
+            var authUrl = document.bpmnDataPublisher.auth_url.value;
 
             if ((thriftUrl.length == 0) || (username.length == 0) || (password.length == 0)) {
-                CARBON.showWarningDialog('Please provide correct thrift API configuration or select required fields to publish bpmn instances.');
-            } else if ((!thriftUrl.startsWith("tcp")) && (!thriftUrl.startsWith("ssl"))) {
-                CARBON.showWarningDialog('Incorrect thrift url is provided:' + (thriftUrl.startsWith("tcp")));
+                CARBON.showWarningDialog('Please provide correct publisher configuration or select required fields to publish bpmn instances.');
+            } else if ((!thriftUrl.startsWith("tcp"))) {
+                CARBON.showWarningDialog('Incorrect thrift url is provided.');
+            } else if (authUrl.length != 0) {
+                if(!authUrl.startsWith("ssl")){
+                    CARBON.showWarningDialog('Incorrect thrift ssl url is provided.');
+                }
             } else {
                 document.bpmnDataPublisher.publishBtn.value = document.bpmnDataPublisher.publish.value;
                 document.bpmnDataPublisher.submit();
@@ -172,7 +192,7 @@
                     <table class="styledLeft" id="thriftUrlTable">
                         <thead>
                         <tr>
-                            <th colspan="6"><fmt:message key="bpmn.data.publisher.thrift.configuration"/></th>
+                            <th colspan="6"><fmt:message key="bpmn.data.publisher.configuration"/></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -194,6 +214,27 @@
                                 <input id="password" type="password" style="width:100%" name="password"
                                        value="<%=(password == null) ? "" : password%>"
                                        placeholder="">
+                            </td>
+                        </tr>
+                        <tr class="tableEvenRow">
+                            <td>Thrift SSL URL</td>
+                            <td>
+                                <input id="authUrl" type="text" style="width:100%" name="auth_url"
+                                       value="<%=(authUrl == null) ? "" : authUrl%>"
+                                       placeholder="ssl://<ip address>:7611">
+                            </td>
+                            <td>Type</td>
+                            <td>
+                                <input id="publisherType" type="text" style="width:100%" name="publisher_type"
+                                       value=""
+                                       placeholder="">
+                            </td>
+                            <td>Enable</td>
+                            <td>
+                                <input id="publisherEnable" type="radio" name="publisher_enable" value="true">
+                                <fmt:message key="bpmn.data.publisher.enable.true"/>
+                                <input id="publisherDisable" type="radio" name="publisher_enable" value="false">
+                                <fmt:message key="bpmn.data.publisher.enable.false"/>
                             </td>
                         </tr>
                         </tbody>
