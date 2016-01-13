@@ -204,19 +204,19 @@
                         </thead>
                         <tbody>
                         <tr class="tableEvenRow">
-                            <td>Thrift URL</td>
+                            <td>Thrift URL<span style="color:red">*</span></td>
                             <td>
                                 <input id="thriftUrl" type="text" style="width:100%" name="thrift_url"
                                        value="<%=(thriftUrl == null) ? "" : thriftUrl%>"
                                        placeholder="tcp://<ip address>:7611">
                             </td>
-                            <td>Username</td>
+                            <td>Username<span style="color:red">*</span></td>
                             <td>
                                 <input id="username" type="text" style="width:100%" name="username"
                                        value="<%=(username == null) ? "" : username%>"
                                        placeholder="">
                             </td>
-                            <td>Password</td>
+                            <td>Password<span style="color:red">*</span></td>
                             <td>
                                 <input id="password" type="password" style="width:100%" name="password"
                                        value="<%=(password == null) ? "" : password%>"
@@ -224,7 +224,7 @@
                             </td>
                         </tr>
                         <tr class="tableEvenRow">
-                            <td>Thrift SSL URL</td>
+                            <td>Thrift SSL URL<span style="color:red">*</span></td>
                             <td>
                                 <input id="authUrl" type="text" style="width:100%" name="auth_url"
                                        value="<%=(authUrl == null) ? "" : authUrl%>"
