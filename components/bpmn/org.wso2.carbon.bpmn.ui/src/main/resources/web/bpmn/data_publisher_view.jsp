@@ -333,16 +333,6 @@
                         </tr>
                         </tbody>
                     </table>
-                    <%--<input name="publishBtn" type="hidden">--%>
-                    <%--<table class="styledLeft">--%>
-                        <%--<tr>--%>
-                            <%--<td class="buttonRow">--%>
-                                <%--<input name="publish" class="button registryWriteOperation" type="button"--%>
-                                       <%--style="float: right;"--%>
-                                       <%--value="<fmt:message key="bpmn.publish"/>" onclick="validate()"/>--%>
-                            <%--</td>--%>
-                        <%--</tr>--%>
-                    <%--</table>--%>
                 </form>
             </div>
         </div>
