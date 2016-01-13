@@ -68,13 +68,14 @@
             if (configRegistry.resourceExists(registryPath)) {
                 Resource resource = configRegistry.get(registryPath);
                 if ("POST".equalsIgnoreCase(request.getMethod()) && "Save".equalsIgnoreCase(buttonVal)) {
-                    if (thriftUrl != null && username != null && password != null && authUrl != null) {
+                    if (thriftUrl != null && username != null && password != null && authUrl != null && publisherEnable != null) {
                         String passwordFromReg = resource.getProperty("password");
                         byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(passwordFromReg);
                         String decryptedPlainPassword = new String(decryptedPasswordBinary);
                         if (thriftUrl.equals(resource.getProperty("receiverURLSet")) &&
-                                username.equals(resource.getProperty("username")) &&
-                                password.equals(decryptedPlainPassword) && authUrl.equals(resource.getProperty("authURLSet"))) {
+                            username.equals(resource.getProperty("username")) &&
+                            password.equals(decryptedPlainPassword) && authUrl.equals(resource.getProperty("authURLSet")) &&
+                            publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
                         %>
                         <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is already exists.");</script>
                         <%
@@ -84,6 +85,14 @@
                         <%
                         }
                     }
+                }
+                if (publisherEnable == null) {
+                    if (resource.getProperty("dataPublishingEnabled") != null) {
+                        publisherEnable = resource.getProperty("dataPublishingEnabled");
+                    }
+                } else if (!publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
+                    resource.setProperty("dataPublishingEnabled", publisherEnable);
+                    configRegistry.put(registryPath, resource);
                 }
                 //if resource is available then get properties and set them to the text fields
                 if (thriftUrl == null) {
@@ -131,12 +140,13 @@
             } else {
                 //if resource doesn't exists then create a new resource and add properties to it.
                 if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) || (authUrl != null && authUrl.startsWith("ssl://"))
-                    || (username != null) || (password != null)) {
+                    || (username != null) || (password != null) || (publisherEnable != null)) {
                     Resource resource = configRegistry.newResource();
                     resource.addProperty("receiverURLSet", thriftUrl);
                     resource.addProperty("username", username);
                     resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes()));
                     resource.addProperty("authURLSet", authUrl);
+                    resource.addProperty("dataPublishingEnabled", publisherEnable);
                     configRegistry.put(registryPath, resource);
                 }
             }
@@ -228,9 +238,9 @@
                             </td>
                             <td>Enable</td>
                             <td>
-                                <input id="publisherEnable" type="radio" name="publisher_enable" value="true">
+                                <input id="publisherEnable" type="radio" name="publisher_enable" <%=(publisherEnable.equals("true")) ? "checked" : ""%> value="true">
                                 <fmt:message key="bpmn.data.publisher.enable.true"/>
-                                <input id="publisherDisable" type="radio" name="publisher_enable" value="false">
+                                <input id="publisherDisable" type="radio" name="publisher_enable" <%=(publisherEnable.equals("false")) ? "checked" : ""%> value="false">
                                 <fmt:message key="bpmn.data.publisher.enable.false"/>
                             </td>
                         </tr>
