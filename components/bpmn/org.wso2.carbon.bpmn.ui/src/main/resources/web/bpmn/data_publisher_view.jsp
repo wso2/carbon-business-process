@@ -35,8 +35,9 @@
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
     <%
         String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
-        ConfigurationContext configContext =
-                (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
+        ConfigurationContext configContext = (ConfigurationContext) config.getServletContext()
+                                                                          .getAttribute(
+                                                                                  CarbonConstants.CONFIGURATION_CONTEXT);
         String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
 
         WorkflowServiceClient client;
@@ -57,7 +58,9 @@
         String authUrl = CharacterEncoder.getSafeText(request.getParameter("auth_url"));
         String username = CharacterEncoder.getSafeText(request.getParameter("username"));
         String password = CharacterEncoder.getSafeText(request.getParameter("password"));
-        String publisherEnable = CharacterEncoder.getSafeText(request.getParameter("publisher_enable"));
+        String publisherEnable =
+                CharacterEncoder.getSafeText(request.getParameter("publisher_enable"));
+        String selectType = CharacterEncoder.getSafeText(request.getParameter("publisher_type"));
         String buttonVal = CharacterEncoder.getSafeText(request.getParameter("publishBtn"));
 
         CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
@@ -67,22 +70,28 @@
         try {
             if (configRegistry.resourceExists(registryPath)) {
                 Resource resource = configRegistry.get(registryPath);
-                if ("POST".equalsIgnoreCase(request.getMethod()) && "Save".equalsIgnoreCase(buttonVal)) {
-                    if (thriftUrl != null && username != null && password != null && authUrl != null && publisherEnable != null) {
+                if ("POST".equalsIgnoreCase(request.getMethod()) &&
+                    "Save".equalsIgnoreCase(buttonVal)) {
+                    if (thriftUrl != null && username != null && password != null &&
+                        authUrl != null && publisherEnable != null && selectType != null) {
                         String passwordFromReg = resource.getProperty("password");
-                        byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(passwordFromReg);
+                        byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil()
+                                                                   .base64DecodeAndDecrypt(
+                                                                           passwordFromReg);
                         String decryptedPlainPassword = new String(decryptedPasswordBinary);
                         if (thriftUrl.equals(resource.getProperty("receiverURLSet")) &&
                             username.equals(resource.getProperty("username")) &&
-                            password.equals(decryptedPlainPassword) && authUrl.equals(resource.getProperty("authURLSet")) &&
-                            publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
-                        %>
-                        <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is already exists.");</script>
-                        <%
-                        } else {
-                        %>
-                        <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
-                        <%
+                            password.equals(decryptedPlainPassword) &&
+                            authUrl.equals(resource.getProperty("authURLSet")) &&
+                            publisherEnable.equals(resource.getProperty("dataPublishingEnabled")) &&
+                            selectType.equals(resource.getProperty("type"))) {
+    %>
+    <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is already exists.");</script>
+    <%
+    } else {
+    %>
+    <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
+    <%
                         }
                     }
                 }
@@ -92,6 +101,16 @@
                     }
                 } else if (!publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
                     resource.setProperty("dataPublishingEnabled", publisherEnable);
+                    configRegistry.put(registryPath, resource);
+                }
+                if (selectType == null) {
+                    if (resource.getProperty("type") != null) {
+                        selectType = resource.getProperty("type");
+                    } else {
+                        selectType = "Default";
+                    }
+                } else if (!selectType.equals(resource.getProperty("type"))) {
+                    resource.setProperty("type", selectType);
                     configRegistry.put(registryPath, resource);
                 }
                 //if resource is available then get properties and set them to the text fields
@@ -128,23 +147,31 @@
                 if (password == null) {
                     //if password is null then set value from the registry
                     if (resource.getProperty("password") != null) {
-                        byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(resource.getProperty("password"));
+                        byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil()
+                                                             .base64DecodeAndDecrypt(
+                                                                     resource.getProperty(
+                                                                             "password"));
                         password = new String(decryptedPassword);
                     }
                 } else if (!password.equals(resource.getProperty("password"))) {
                     //else if user updates the password then update the registry property
-                    String encryptedPassword = CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes());
+                    String encryptedPassword = CryptoUtil.getDefaultCryptoUtil()
+                                                         .encryptAndBase64Encode(
+                                                                 password.getBytes());
                     resource.setProperty("password", encryptedPassword);
                     configRegistry.put(registryPath, resource);
                 }
             } else {
                 //if resource doesn't exists then create a new resource and add properties to it.
-                if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) || (authUrl != null && authUrl.startsWith("ssl://"))
-                    || (username != null) || (password != null) || (publisherEnable != null)) {
+                if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) ||
+                    (authUrl != null && authUrl.startsWith("ssl://")) || (username != null) ||
+                    (password != null) || (publisherEnable != null)) {
                     Resource resource = configRegistry.newResource();
                     resource.addProperty("receiverURLSet", thriftUrl);
                     resource.addProperty("username", username);
-                    resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes()));
+                    resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil()
+                                                               .encryptAndBase64Encode(
+                                                                       password.getBytes()));
                     resource.addProperty("authURLSet", authUrl);
                     resource.addProperty("dataPublishingEnabled", publisherEnable);
                     configRegistry.put(registryPath, resource);
@@ -199,14 +226,16 @@
                     <table class="styledLeft" id="thriftUrlTable">
                         <thead>
                         <tr>
-                            <th colspan="6"><fmt:message key="bpmn.data.publisher.configuration"/></th>
+                            <th colspan="6"><fmt:message
+                                    key="bpmn.data.publisher.configuration"/></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr class="tableEvenRow">
                             <td>Thrift URL<span style="color:red">*</span></td>
                             <td>
-                                <input id="thriftUrl" type="text" style="width:100%" name="thrift_url"
+                                <input id="thriftUrl" type="text" style="width:100%"
+                                       name="thrift_url"
                                        value="<%=(thriftUrl == null) ? "" : thriftUrl%>"
                                        placeholder="tcp://<ip address>:7611">
                             </td>
@@ -218,7 +247,8 @@
                             </td>
                             <td>Password<span style="color:red">*</span></td>
                             <td>
-                                <input id="password" type="password" style="width:100%" name="password"
+                                <input id="password" type="password" style="width:100%"
+                                       name="password"
                                        value="<%=(password == null) ? "" : password%>"
                                        placeholder="">
                             </td>
@@ -232,15 +262,57 @@
                             </td>
                             <td>Type</td>
                             <td>
-                                <input id="publisherType" type="text" style="width:100%" name="publisher_type"
-                                       value=""
-                                       placeholder="">
+                                <select id="publisherType" name="publisher_type">
+                                    <option <%
+                                        if (selectType == null) {
+                                    %>
+                                            <%="selected='selected'"%>
+                                            <%
+                                            } else {
+                                            %>
+                                            <%=(selectType.equals("Default")) ?
+                                               "selected='selected'" : ""%>
+                                            <%
+                                                }%> value="">
+                                        <fmt:message key="bpmn.data.agent.default"/>
+                                    </option>
+                                    <option <%
+                                        if (selectType != null) {
+                                    %>
+                                            <%=(selectType.equals("Thrift")) ?
+                                               "selected='selected'" : ""%>
+                                            <%
+                                                }%> value="Thrift">
+                                        <fmt:message key="bpmn.data.agent.thrift"/>
+                                    </option>
+                                    <option <%
+                                        if (selectType != null) {
+                                    %>
+                                            <%=(selectType.equals("Binary")) ?
+                                               "selected='selected'" : ""%>
+                                            <%
+                                                }%> value="Binary">
+                                        <fmt:message key="bpmn.data.agent.binary"/>
+                                    </option>
+                                </select>
                             </td>
                             <td>Enable</td>
                             <td>
-                                <input id="publisherEnable" type="radio" name="publisher_enable" <%=(publisherEnable.equals("true")) ? "checked" : ""%> value="true">
+                                <input id="publisherEnable" type="radio" name="publisher_enable" <%if (publisherEnable != null) {
+                                    %>
+                                        <%=(publisherEnable.equals("true")) ? "checked" : ""%>
+                                        <%
+                                }%> value="true">
                                 <fmt:message key="bpmn.data.publisher.enable.true"/>
-                                <input id="publisherDisable" type="radio" name="publisher_enable" <%=(publisherEnable.equals("false")) ? "checked" : ""%> value="false">
+                                <input id="publisherDisable" type="radio" name="publisher_enable" <%if (publisherEnable == null) {
+                                    %>
+                                        <%="checked"%>
+                                        <%
+                                } else {
+                                    %>
+                                        <%=(publisherEnable.equals("false")) ? "checked" : ""%>
+                                        <%
+                                }%> value="false">
                                 <fmt:message key="bpmn.data.publisher.enable.false"/>
                             </td>
                         </tr>
@@ -250,9 +322,11 @@
                     <table class="styledLeft">
                         <tr>
                             <td class="buttonRow">
-                                <input name="publish" class="button registryWriteOperation" type="button"
+                                <input name="publish" class="button registryWriteOperation"
+                                       type="button"
                                        style="float: right;"
-                                       value="<fmt:message key="bpmn.publish"/>" onclick="validate()"/>
+                                       value="<fmt:message key="bpmn.publish"/>"
+                                       onclick="validate()"/>
                             </td>
                         </tr>
                     </table>
@@ -261,8 +335,10 @@
                     <table class="styledLeft" id="instanceTable">
                         <thead>
                         <tr>
-                            <th width="50%"><fmt:message key="bpmn.data.publisher.process.instances"/></th>
-                            <th width="50%"><fmt:message key="bpmn.data.publisher.task.instances"/></th>
+                            <th width="50%"><fmt:message
+                                    key="bpmn.data.publisher.process.instances"/></th>
+                            <th width="50%"><fmt:message
+                                    key="bpmn.data.publisher.task.instances"/></th>
                         </tr>
                         </thead>
                         <tbody>
