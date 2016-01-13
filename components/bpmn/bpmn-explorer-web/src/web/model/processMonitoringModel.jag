@@ -32,7 +32,7 @@ else{
 }
 
     var id = request.getParameter("instanceId");
-    var query1 = get( httpUrl +"/bpmn/history/historic-process-instances?processInstanceId=" + id ,null, headers, "json" ).data;
+    var query1 = get( httpUrl +"/bpmn/history/historic-process-instances?processInstanceId=" + id +"&tenantId=" + bpsTenantID ,null, headers, "json" ).data;
 
             if (query1.data.length != 0) {
                      
