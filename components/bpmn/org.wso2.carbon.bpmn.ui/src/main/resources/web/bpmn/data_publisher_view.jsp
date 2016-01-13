@@ -92,89 +92,89 @@
     %>
     <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
     <%
-                        }
-                    }
                 }
-                if (publisherEnable == null) {
-                    if (resource.getProperty("dataPublishingEnabled") != null) {
-                        publisherEnable = resource.getProperty("dataPublishingEnabled");
-                    }
-                } else if (!publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
-                    resource.setProperty("dataPublishingEnabled", publisherEnable);
-                    configRegistry.put(registryPath, resource);
-                }
-                if (selectType == null) {
-                    if (resource.getProperty("type") != null) {
-                        selectType = resource.getProperty("type");
-                    } else {
-                        selectType = "Default";
-                    }
-                } else if (!selectType.equals(resource.getProperty("type"))) {
-                    resource.setProperty("type", selectType);
-                    configRegistry.put(registryPath, resource);
-                }
-                //if resource is available then get properties and set them to the text fields
-                if (thriftUrl == null) {
-                    //if thrift url is null then set value from the registry
-                    if (resource.getProperty("receiverURLSet") != null) {
-                        thriftUrl = resource.getProperty("receiverURLSet");
-                    }
-                } else if (!thriftUrl.equals(resource.getProperty("receiverURLSet"))) {
-                    //else if user updates the thrift url then update the registry property
-                    resource.setProperty("receiverURLSet", thriftUrl);
-                    configRegistry.put(registryPath, resource);
-                }
-                if (authUrl == null) {
-                    //if auth url is null then set value from the registry
-                    if (resource.getProperty("authURLSet") != null) {
-                        authUrl = resource.getProperty("authURLSet");
-                    }
-                } else if (!authUrl.equals(resource.getProperty("authURLSet"))) {
-                    //else if user updates the auth url then update the registry property
-                    resource.setProperty("authURLSet", authUrl);
-                    configRegistry.put(registryPath, resource);
-                }
-                if (username == null) {
-                    //if username is null then set value from the registry
-                    if (resource.getProperty("username") != null) {
-                        username = resource.getProperty("username");
-                    }
-                } else if (!username.equals(resource.getProperty("username"))) {
-                    //else if user updates the username then update the registry property
-                    resource.setProperty("username", username);
-                    configRegistry.put(registryPath, resource);
-                }
-                if (password == null) {
-                    //if password is null then set value from the registry
-                    if (resource.getProperty("password") != null) {
-                        byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil()
-                                                             .base64DecodeAndDecrypt(
-                                                                     resource.getProperty(
-                                                                             "password"));
-                        password = new String(decryptedPassword);
-                    }
-                } else if (!password.equals(resource.getProperty("password"))) {
-                    //else if user updates the password then update the registry property
-                    String encryptedPassword = CryptoUtil.getDefaultCryptoUtil()
-                                                         .encryptAndBase64Encode(
-                                                                 password.getBytes());
-                    resource.setProperty("password", encryptedPassword);
-                    configRegistry.put(registryPath, resource);
-                }
+            }
+        }
+        if (publisherEnable == null) {
+            if (resource.getProperty("dataPublishingEnabled") != null) {
+                publisherEnable = resource.getProperty("dataPublishingEnabled");
+            }
+        } else if (!publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
+            resource.setProperty("dataPublishingEnabled", publisherEnable);
+            configRegistry.put(registryPath, resource);
+        }
+        if (selectType == null) {
+            if (resource.getProperty("type") != null) {
+                selectType = resource.getProperty("type");
             } else {
-                //if resource doesn't exists then create a new resource and add properties to it.
-                if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) ||
-                    (authUrl != null && authUrl.startsWith("ssl://")) || (username != null) ||
-                    (password != null) || (publisherEnable != null)) {
-                    Resource resource = configRegistry.newResource();
-                    resource.addProperty("receiverURLSet", thriftUrl);
-                    resource.addProperty("username", username);
-                    resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil()
-                                                               .encryptAndBase64Encode(
-                                                                       password.getBytes()));
-                    resource.addProperty("authURLSet", authUrl);
-                    resource.addProperty("dataPublishingEnabled", publisherEnable);
-                    configRegistry.put(registryPath, resource);
+                selectType = "Default";
+            }
+        } else if (!selectType.equals(resource.getProperty("type"))) {
+            resource.setProperty("type", selectType);
+            configRegistry.put(registryPath, resource);
+        }
+        //if resource is available then get properties and set them to the text fields
+        if (thriftUrl == null) {
+            //if thrift url is null then set value from the registry
+            if (resource.getProperty("receiverURLSet") != null) {
+                thriftUrl = resource.getProperty("receiverURLSet");
+            }
+        } else if (!thriftUrl.equals(resource.getProperty("receiverURLSet"))) {
+            //else if user updates the thrift url then update the registry property
+            resource.setProperty("receiverURLSet", thriftUrl);
+            configRegistry.put(registryPath, resource);
+        }
+        if (authUrl == null) {
+            //if auth url is null then set value from the registry
+            if (resource.getProperty("authURLSet") != null) {
+                authUrl = resource.getProperty("authURLSet");
+            }
+        } else if (!authUrl.equals(resource.getProperty("authURLSet"))) {
+            //else if user updates the auth url then update the registry property
+            resource.setProperty("authURLSet", authUrl);
+            configRegistry.put(registryPath, resource);
+        }
+        if (username == null) {
+            //if username is null then set value from the registry
+            if (resource.getProperty("username") != null) {
+                username = resource.getProperty("username");
+            }
+        } else if (!username.equals(resource.getProperty("username"))) {
+            //else if user updates the username then update the registry property
+            resource.setProperty("username", username);
+            configRegistry.put(registryPath, resource);
+        }
+        if (password == null) {
+            //if password is null then set value from the registry
+            if (resource.getProperty("password") != null) {
+                byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(
+                        resource.getProperty("password"));
+                password = new String(decryptedPassword);
+            }
+        } else if (!password.equals(resource.getProperty("password"))) {
+            //else if user updates the password then update the registry property
+            String encryptedPassword =
+                    CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes());
+            resource.setProperty("password", encryptedPassword);
+            configRegistry.put(registryPath, resource);
+        }
+    } else {
+        //if resource doesn't exists then create a new resource and add properties to it.
+        if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) ||
+            (authUrl != null && authUrl.startsWith("ssl://")) || (username != null) ||
+            (password != null) || (publisherEnable != null)) {
+            Resource resource = configRegistry.newResource();
+            resource.addProperty("receiverURLSet", thriftUrl);
+            resource.addProperty("username", username);
+            resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil()
+                                                       .encryptAndBase64Encode(
+                                                               password.getBytes()));
+            resource.addProperty("authURLSet", authUrl);
+            resource.addProperty("dataPublishingEnabled", publisherEnable);
+            configRegistry.put(registryPath, resource);
+    %>
+    <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
+    <%
                 }
             }
         } catch (RegistryException e) {
