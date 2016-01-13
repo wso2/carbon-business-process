@@ -29,126 +29,26 @@
 	</ol-->
         <div class=" margin-left-double table-title"> Process Monitoring </div>
       	<div class=" margin-left-double">
-
-		 <script type="text/javascript">
-			function changeImg(image){
-				
-			  var imghol = document.getElementById("imageHolder");
-			  imghol.src = image;
-
-			  var auditLog = document.getElementById("auditLog");			 	  
-			  auditLog.innerHTML="<h3> Select a process instance to view the audit log </h3>";			  
-			  
-			  var variables = document.getElementById("variables");			  		  
-			  variables.innerHTML="<h3> Select a process instance to view the variables </h3>";			  
-			  
-			  var userTasks = document.getElementById("userTasks");			 		  
-			  userTasks.innerHTML="<h3> Select a process instance to view the user tasks </h3>";			  
-
-			  var calledInstances = document.getElementById("calledInstances");			 		  
-			  calledInstances.innerHTML="<h3> Select a completed process instance to view any called process instances</h3>";		
-
-			
- 			$('#runningCombo option[value="0"]').prop('selected', true);
-    		
-			$('#completedCombo option[value="0"]').prop('selected', true);
-
-    		$('.selectpicker').selectpicker('refresh');
-
-    		/*var selects = document.getElementsByTagName('select');
-			var sel;
-
-			for(var z=0; z<selects.length; z++){
-			     sel = selects[z];
-			     console.log(sel);
-			     sel.selectedIndex=0;
-			     $("select").selectpicker('refresh');
-
-			}*/
-
-			
-		}	
-			
-		</script>
-		    	
-		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">   		    	
-
-		    	<% for (var i=0; i<list.length; i++) { %>
-		    	<div>
-		    	 <ul class="nav nav-sidebar nav-pills nav-stacked margin-bottom-double margin-top-double">
-		    	 <li>
-		    		<a data-toggle="collapse" href="#collapseOverview<%=list[i].deployment.split(":")[0]+i%>" aria-expanded="true" class="collapsing-h2"  onclick="changeImg('<%=list[i].imageUrl%>');">
-
-		    			<% var log = new Log();
-		    				log.info("view --- "+list.length);
-		    			%>
-            			<div class="process-title" style="width:99%">
-            				<i class="cu-btn-exp-col btn-collapsed"></i>    		
-		    					<%=list[i].deployment%>  
-		    			</div>		    		
-        			</a>
-		    		
-		    		<div class="collapse" id="collapseOverview<%=list[i].deployment.split(":")[0]+i%>" aria-expanded="true" style="">
-		    		<table class="table-status-column">
-		    		<tr>
-		    		<th> <u> Running Instances </u> </th>
-		    		</tr>	   
-		           <%var c = list[i].running.length;
-					if(c == 0){ %>
-						
-			            <th><i> No running processes</i></th>
-			          <% } else { %>
-			          <br>
-			            <th>
-			          	<select id="runningCombo" class="selectpicker show-tick" data-size="5" data-live-search="true"
-			          	 onchange="javascript:runningProcessInstances('<%=list[i].deployment%> ',this.value)">
-			          	 <option class="placeholder" selected disabled value="0">Select a process instance</option>
-			          	 
-						<% for (var q=0; q<list[i].running.length; q++) { %>
-						
-							<option ><%=list[i].running[q]%></option>					 
-				           <%}%>
-				           </select>
-				       </th>
-		          <% } %>				
-		    		<tr>
-		    		<th> <u>Completed Instances  </u> </th>
-		    		</tr>
-
-		    		 <%var c = list[i].completed.length;
-					if(c == 0){ %>
-			            <th><i> No completed processes</i></th>
-			          <% } else { %>
-			          <br>
-			            <th>
-			          	<select id="completedCombo" name="completedCombo" class="selectpicker show-tick" data-live-search="true" data-size="5"
-			          	 onchange="javascript:completedProcessInstances(this.value)">
-			          	 <option class="placeholder" selected disabled value="0">Select a process instance</option>
-						<% for (var q=0; q<list[i].completed.length; q++) { %>
-				            
-				            <option><%=list[i].completed[q]%></option>			           
-				           <%}%>
-				           </select>
-				       </th>
-			          <% } %>
-			          </table>    		
-			          </div>	    		    	
-		    	</li>
-		    	</ul>
-		    	</div>
-		    	<%}%>	
-		    	<%
-					var numberOfPages = paginatePageCount;
-					var currentPage = parseInt(pagination);
-					var redirectPage = "processMonitoring";
-					var queryParams = "";
-
-					%>
-					<% include("/template/partials/pagination.jag"); %>
-		    	</div>
+		    <div class="col-sm-3 col-md-3 col-lg-3 sidebar table-status-column " style="height: 100%; overflow-y: scroll">   
+		    	<br/>
+		    	<label for="instanceId">Instance Id</label>
+		    	<br/>
+                <input id="instanceId" name="instanceId" type="text" value="<%=instanceId%>" class="form-control" placeholder="Enter the instance id" >
+                <br/>
+                <input type="button" class="btn btn-default btn-info" onclick="filterResults(document.getElementById('instanceId').value)"
+                 value="View Info">
+                 <br/>
+                 <a href="advancedFilter"> Filter the instance id  </a>
+                 <br/>
+                 <div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden style="display: none;">
+		                <button type="button" class="close" onclick="$('#transferErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		                <p id="transferErrMsg"></p>		              
+		            </div>		    	
+		    </div>
+		
 		    	<div class="col-sm-9 col-md-9 col-lg-9 " style="height:100%;" >
 		    		<div style="border:4px solid black; height:50%; width:100%;">
-		    			<img id="imageHolder"  style="position:absolute; left:20%; top:10%; "/>
+		    			<img id="imageHolder"  src="<%=imageUrl%>" style="position:absolute; left:20%; top:10%; "/>
 		    		</div>
 		    		<div class="col-sm-9 col-md-9 col-lg-9" style="border:4px solid black; height:50%; width:100%; " >
 				    	<div class="tabs">
@@ -194,23 +94,7 @@
 		    	
 		    		</div> 
 		    		<div style="height: 500px"></div>
-
 		    	</div> 
-		    	   			    
-		 <!--   <script type="text/javascript">
-		   	function tabClick(){
-		   		var tabs = $('input[name=tab-group-1]');
-		   		for (var i = 0; i < tabs.length; i++) {
-		   			if (tabs[i].checked) {	
-		   				 $(tabs[i]).next().next().attr("style", "");
-		   			} else {		   				
-		   				 $(tabs[i]).next().next().attr("style", "display: none");
-		   			}
-		   		}
-		   		
-		   	}
-		   </script> -->
-		
 		</div>	
 	</div>
 	<% }else{ %>
@@ -219,4 +103,3 @@
       <br/><br/>
     <% }%>
 </div>	
-

@@ -1,4 +1,3 @@
-
 <!--
  ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
@@ -15,17 +14,11 @@
  ~ limitations under the License.
 -->
 <%
+
 var wsRequest = require ('/assets/wsRequest.js');
 wsRequest.initHTServerInfo(httpServiceUrl, session.get('BPSSessionCookie'));
+var log = new Log();            
 
-var pagination = request.getParameter("pagination");
-if (pagination == null || pagination == ""){
-    pagination = 1;
-}
-var start = 0;
-if(pagination > 0){
-    start = (pagination - 1)*10 ;
-}
 var headers = {"Authorization":"Basic " + auth};
 
 var isProcessesDeployed = false;
@@ -37,73 +30,89 @@ if(countOfProcesses == 0){
 else{
     isProcessesDeployed =true;
 }
-var processDefinitions = get( httpUrl +"/bpmn/repository/process-definitions?tenantId="+ bpsTenantID+"&start=" + start + "&size=10", null, headers, "json" ).data;
 
+    var id = request.getParameter("instanceId");
+    var query1 = get( httpUrl +"/bpmn/history/historic-process-instances?processInstanceId=" + id ,null, headers, "json" ).data;
 
-var paginatePageCount = Math.ceil(processDefinitions.total / 10);
+            if (query1.data.length != 0) {
+                     
+             var endTime = query1.data[0].endTime;
+                   
+                if (endTime != null) {
+                    var instanceId = query1.data[0].id; 
+                    var pId = query1.data[0].processDefinitionId;    
+                    
+                    print("<script type='text/javascript'>setTimeout(function() { completedProcessInstances(" + instanceId + "); }, 100);</script>")
 
-var list = [];
-var runtimeInstanceList = [];
-var completedInstanceList  = [];
+                      //Get the bpmn diagram
+                    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+pId, null, headers, "json" ).data.data;
 
-for(var j = 0; j < processDefinitions.data.length; j++) {
-    var pId = processDefinitions.data[j].id;
-    var runtimeInstanceList = [];
-    var completedInstanceList  = [];
+                    var imageUrl = "";
+                    if (resource == null) {
+                        imageUrl = "not supported";
+                    } else {
+                        var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
 
-    var runtimeInstances = get( httpUrl +"/bpmn/runtime/process-instances?processDefinitionId=" +pId+ "&size=0" ,null, headers, "json" ).data;
+                        if (BPSResponseXML == null || BPSResponseXML == "") {
+                            if (log.isDebugEnabled()) {
+                                log.debug('Session timed out for request' + wsRequest);
+                            }
+                            session.put('authSuccess', false);
+                            response.sendRedirect('login');
+                            throw "HTTPS Session with BPS has timed out";
+                        } else {
+                            var imageData = BPSResponseXML.toString().split(":return")[1];
+                            imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);
+                        } 
+                    }
 
-    for(var i = 0; i < runtimeInstances.data.length; i++) {
-        var runtimeInstanceId = runtimeInstances.data[i].id;
-        runtimeInstanceList.push(runtimeInstanceId);
-    }
+                } else {                        
+                   var instanceId = query1.data[0].id; 
+                   var pId = query1.data[0].processDefinitionId;     
+                               
+                   print("<script type='text/javascript'>setTimeout(function() { runningProcessInstances('"+ pId +"', "+ instanceId + "); }, 100);</script>")                    
 
-    var completedInstances = get( httpUrl +"/bpmn/history/historic-process-instances?finished=true&processDefinitionId=" +pId+ "&size=0",null, headers, "json" ).data;
+                   //Get the bpmn diagram
+                    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+pId, null, headers, "json" ).data.data;
 
-    for(var k = 0; k < completedInstances.data.length; k++) {
-        var completedInstanceId = completedInstances.data[k].id;
-        completedInstanceList.push(completedInstanceId);
-    }
+                    var imageUrl = "";
+                    if (resource == null) {
+                        imageUrl = "not supported";
+                    } else {
+                        var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
 
-    //Get the bpmn diagram
-    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+pId, null, headers, "json" ).data.data;
+                        if (BPSResponseXML == null || BPSResponseXML == "") {
+                            if (log.isDebugEnabled()) {
+                                log.debug('Session timed out for request' + wsRequest);
+                            }
+                            session.put('authSuccess', false);
+                            response.sendRedirect('login');
+                            throw "HTTPS Session with BPS has timed out";
+                        } else {
+                            var imageData = BPSResponseXML.toString().split(":return")[1];
+                            imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);
+                        }  
+                    }
+               }
+            } else {
+                var instanceId = ''; 
+                var imageUrl = '';
+                if (id != null) {
+                    instanceId = id;
+                    %><script type='text/javascript'>setTimeout(function() {  
 
-
-    var imageUrl = "";
-    if (resource == null) {
-        imageUrl = "not supported";
-    } else {
-        var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
-
-        if(BPSResponseXML == null || BPSResponseXML == ""){
-            if (log.isDebugEnabled()) {
-                log.debug('Session timed out for request' + wsRequest);
-            }
-            session.put('authSuccess', false);
-            response.sendRedirect('login');
-            throw "HTTPS Session with BPS has timed out";
-        } else {
-
-            var imageData = BPSResponseXML.toString().split(":return")[1];
-            imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);
-
-        }
-    }
-
-
-    var instanceList = {
-        deployment: pId,
-        running: runtimeInstanceList,
-        completed: completedInstanceList,
-        imageUrl: imageUrl
-    };
-
-    list.push(instanceList);
-
-}
-
+                        $('#transferErrMsg').html('Please enter a valid instance id');
+                        $('#transferErrorMessageArea').show();
+                            
+                        $('#transfer').on('hide.bs.modal', function (e) {
+                            $('#transferErrorMessageArea').hide();
+                        }); 
+                    }, 100);</script><%
+                }
+            }       
 
 //Set current active veiw as process view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
 processMonitoringNavActive = 'class="active"';
 %>
+
