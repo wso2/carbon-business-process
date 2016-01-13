@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Path("/recieve")
+@Path("/receive")
 public class CorrelationService extends BaseExecutionService {
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
