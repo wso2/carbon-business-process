@@ -113,6 +113,29 @@
    "password":"Password",
    "save":"Save",
    "reassign.task":"Reassign Task",
-   "no.sub.tasks":"No subtasks"
+   "no.sub.tasks":"No subtasks",
+   "processMonitoring":"Process Monitoring",
+   "advancedFilter":"Advanced Filter",
+   "process.Monitoring":"Process Monitoring",
+   "view.details":"View Details",
+   "filter.instances":"Filter the instances",
+   "audit.log":"Audit Log",
+   "variables":"Variables",
+   "user.tasks":"User Tasks",
+   "called.instances":"Called Instances",
+   "select.audit.log":"Select a process instance to view the audit log ",
+   "select.user.tasks":"Select a process instance to view the user tasks",
+   "select.variables":"Select a process instance to view the variables",
+   "select.called.instances":"Select a process instance to view the called process instances",
+   "welcome.msg.process.monitoring":"Please deploy processes from admin view to view the details of each instance.",
+   "advanced.filter":"Advanced Filter",
+   "started.before":"Started Before",
+   "started.after":"Started After",
+   "variable.value.like":"Variable Value Like",
+   "variable.name":"Variable Name",
+   "equals":" = ",
+   "instance.id":" Instance ID ",
+   "plus.button":" + "
+
 
 }

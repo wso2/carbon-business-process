@@ -19,32 +19,37 @@
  %>
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">
+      <%=i18n.localize("close", "Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
  <div class="row">
     <div class="panel-inbox">
-        <div class=" margin-left-double table-title">Advanced Filter</div>
+        <div class=" margin-left-double table-title"> <%=i18n.localize("advanced.filter" , "Advanced Filter")%> </div>
         <div class=" col-lg-12 margin-bottom margin-left-double white-bg">
 
             <form role="form" class="white-bg" action="advancedFilter" method="GET">
 
                 <div class="col-lg-3 margin-top-double white-bg">
                     <div class="form-group">
-                        <label for="instanceId" class="control-label"> Process Instance Id </label>                        
-                            <input type="text" class="form-control" id="instanceId" name="processInstanceId" placeholder="Enter Process Instance ID">                        
+                        <label for="instanceId" class="control-label"> <%=i18n.localize("process.instance.id" , "Process instance ID")%>
+                         </label>                        
+                            <input type="text" class="form-control" id="instanceId" name="processInstanceId" 
+                                placeholder='<%=i18n.localize("enter.process.instance.id","Enter Process Instance ID")%>'>                        
                     </div>
                 </div>
 
                 <div class="col-lg-3 margin-top-double white-bg">
                     <div class="form-group">
-                        <label for="instanceStatus" class="control-label">Instance Status</label>
+                        <label for="instanceStatus" class="control-label"> 
+                            <%=i18n.localize("process.instance.status" , "Process Instance Status")%> 
+                        </label>
 
                         <select id="instanceStatus" name="instanceStatus" class="form-control" 
                         onchange="instanceStatusChange(this.value)">
-                            <option value="IN_PROGRESS">In-Progress</option>
-                            <option value="COMPLETED">Completed</option>
+                            <option value="IN_PROGRESS"><%=i18n.localize("in.progress","In-Progress")%></option>
+                            <option value="COMPLETED"><%=i18n.localize("completed","Completed")%></option>
                         </select>
                     </div>
                 </div>
@@ -70,26 +75,30 @@
 
                  <div class="col-lg-3 margin-top-double white-bg">
                     <div class="form-group">
-                        <label for="endDate">Started Before</label>
-                        <input id="endDate" name="endDate" type="text" class="form-control" onfocus="setDatePicker('endDate')" placeholder="MM/DD/YYYY" disabled>
+                        <label for="endDate"><%=i18n.localize("started.before" , "Started Before")%></label>
+                        <input id="endDate" name="endDate" type="text" class="form-control" onfocus="setDatePicker('endDate')" placeholder='<%=i18n.localize("mm.dd.yyyy","MM/DD/YYYY")%>' disabled>
                         <input id="endDateISO" name="createdBefore" type="hidden" class="form-control">
                     </div>
                 </div>
 
                 <div class="col-lg-3 margin-top-double white-bg">
                     <div class="form-group">
-                        <label for="startDate">Started After</label>
-                        <input id="startDate" name="startDate" type="text" class="form-control" onfocus="setDatePicker('startDate')" placeholder="MM/DD/YYYY" disabled>
+                        <label for="startDate"><%=i18n.localize("started.after", "Started After")%></label>
+                        <input id="startDate" name="startDate" type="text" class="form-control" onfocus="setDatePicker('startDate')" placeholder='<%=i18n.localize("mm.dd.yyyy","MM/DD/YYYY")%>' disabled>
                         <input id="startDateISO" name="createdAfter" type="hidden" class="form-control">
                     </div>
                 </div>               
               
                 <div class="col-lg-4 margin-top-double">
                     <div class="form-group">
-                        <label for="processDefs" class="control-label"> Process Definition ID</label>                        
+                        <label for="processDefs" class="control-label"> 
+                            <%=i18n.localize("process.definition.id" , "Process Definition ID")%>
+                        </label>                        
                         <select id="processId" name="processDefinitionNameLike" class="selectpicker show-tick form-control" data-size="6" data-live-search="true"
                          onchange="">
-                         <option class="placeholder" selected disabled value="0">Select a process</option>
+                         <option class="placeholder" selected disabled value="0">
+                            <%=i18n.localize("select.a.process" , "Select a process")%>
+                        </option>
                             <% for (var i=0; i<list.length; i++) { %>
                                 <% var dataObj = list[i];%>
                                 <option value= '<%=dataObj.deployment%>'><%=dataObj.deployment%></option>                  
@@ -100,19 +109,25 @@
                
                 <div class="col-lg-6 margin-top-double">
                     <div class="form-group">
-                        <label for="variable" class="control-label">Variable Value Like </label>
-                        <input type="button" id="addVar" onclick="addVariable()" value="+">  
+                        <label for="variable" class="control-label"><%=i18n.localize("variable.value.like" , "Variable Value Like")%>
+                         </label>
+                        <input type="button" id="addVar" onclick="addVariable()" 
+                            value='<%=i18n.localize("plus.button" , " + ")%>'>  
 
                         <div id="variablesRow">
-                        <input type="text" class="form-control" id="variableName" name="variableName" placeholder="Variable Name" style="width: initial; float: left;" > 
+                        <input type="text" class="form-control" id="variableName" name="variableName" 
+                            placeholder='<%=i18n.localize("variable.name" , "Variable Name")%>' style="width: initial; float: left;" > 
 
-                        <label for="equals" class="control-label" style="width: initial; float: left; font-size:25px;"> &nbsp;=&nbsp; </label> 
+                        <label for="equals" class="control-label" style="width: initial; float: left; font-size:25px;"> 
+                            &nbsp;<%=i18n.localize("equals" , " = ")%>&nbsp; </label> 
 
-                        <input type="text" id="variableValue" name="variableValue" class="form-control" placeholder="Variable value like" style="width: initial;" > 
+                        <input type="text" id="variableValue" name="variableValue" class="form-control" 
+                            placeholder='<%=i18n.localize("variable.value.like" , "Variable Value Like")%>' style="width: initial;" > 
 
                         </div>   
-                        <br/>   
-                        <script type="text/javascript">
+                        <br/>  
+                        <!--Script to add more variable names and values to filter for instances--> 
+                        <script>
 
                             function addVariable(){
                                 var vNames = document.getElementsByName("variableName");
@@ -157,7 +172,8 @@
                 </div>
 
                 <div class="col-lg-12 margin-top margin-bottom-double">                   
-                    <button type="submit" class="btn btn-default btn-info" onclick="validateFilter()">Search</button>           
+                    <button type="submit" class="btn btn-default btn-info" onclick="validateFilter()">
+                        <%=i18n.localize("search" , "Search")%></button>           
                 </div>
             </form>
         </div>
@@ -168,16 +184,16 @@
 <% if (commonErrorMessage == null && queryReceived == true && numOfTasks > 0) { %>
 <div class="row">
     <div class="panel-inbox">            
-        <div class=" margin-left-double table-title margin-top-double">Search Results</div>
+        <div class=" margin-left-double table-title margin-top-double"><%=i18n.localize("search.results","Search Results")%></div>
         <div class="table-body margin-left-double">
             <!-- Table -->
             <table class="table">
                 <thead>
                     <tr class="table-title-row">
-                        <th>Instance ID</th>                        
-                        <th>Process Definition ID</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>                        
+                        <th><%=i18n.localize("instance.id" , " Instance ID ")%></th>                        
+                        <th><%=i18n.localize("process.definition.id" , "Process Definition ID")%></th>
+                        <th><%=i18n.localize("start.time" , "Start Time")%></th>
+                        <th><%=i18n.localize( "end.time" , "End Time")%></th>                        
                     </tr>
                 </thead>
                  <tbody>
