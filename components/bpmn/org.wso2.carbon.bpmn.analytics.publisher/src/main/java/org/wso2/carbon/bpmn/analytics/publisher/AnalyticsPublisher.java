@@ -85,8 +85,7 @@ public class AnalyticsPublisher {
 	            return true;
             }
         } catch (IOException | RegistryException | XMLStreamException e) {
-            String errMsg = "Data publisher objects initialization error.";
-            throw new Exception(errMsg, e);
+            throw new Exception("Data publisher objects initialization error.", e);
         }
 	    return false;
     }
