@@ -20,10 +20,13 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
 
@@ -61,14 +64,13 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
     @Override
     public GroupQuery createNewGroupQuery() {
-        String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        return new GroupQueryImpl(((ProcessEngineConfigurationImpl) BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration()).getCommandExecutor());
+
     }
 
     @Override
     public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
-        String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        return getDbSqlSession().selectList("selectGroupByQueryCriteria", query, page);
     }
 
     @Override

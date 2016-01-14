@@ -112,7 +112,7 @@
 
       <div class="col-lg-4 float-left" id="pieChartDisplay" hidden>
 
-               <div class="table-title"  style="width:100%"><%=i18n.localize("task.durations.of.completed.process","Task Durations Of Completed Process")%> </div>
+               <div class="table-title"  style="width:100%"><%=i18n.localize("task.durations.of.completed.process","Task Durations Of Completed Process in Milliseconds.")%> </div>
                <br>
 
               <form>

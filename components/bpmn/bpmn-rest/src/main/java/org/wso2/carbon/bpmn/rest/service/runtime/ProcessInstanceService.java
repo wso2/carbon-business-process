@@ -21,6 +21,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.context.*;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -31,10 +40,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNRestException;
+import org.wso2.carbon.bpmn.rest.common.exception.*;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
@@ -42,15 +50,14 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 
 import javax.activation.DataHandler;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -107,6 +114,11 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             if (processInstanceCreateRequest.getProcessDefinitionId() != null) {
                 throw new ActivitiIllegalArgumentException("TenantId can only be used with either processDefinitionKey or message.");
             }
+        }
+
+        //Have to add the validation part here
+        if( !isValidUserToStartProcess(processInstanceCreateRequest) ){
+            throw new RestApiBasicAuthenticationException("User doesn't have the necessary permission to start the process");
         }
 
         if (processInstanceCreateRequest.getSkipInstanceCreationIfExist()) {
@@ -1064,5 +1076,102 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 RestResponseFactory.VARIABLE_EXECUTION, includeBinary, uriInfo.getBaseUri().toString());
     }
 
+    private boolean isValidUserToStartProcess(ProcessInstanceCreateRequest processInstanceCreateRequest){
+
+        //check whether the users/groups exist
+        String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
+        if( processDefinitionId == null){
+
+            final String processDefinitionKey = processInstanceCreateRequest.getProcessDefinitionKey();
+            final String tenantId = processInstanceCreateRequest.getTenantId();
+
+
+            ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
+
+            if (processEngine != null) {
+                if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() != null) {
+                    CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+                    if(commandExecutor != null) {
+
+                        processDefinitionId  =
+                                (String) commandExecutor.execute(new Command<Object>() {
+                                    public Object execute(CommandContext commandContext) {
+                                        ProcessDefinitionEntityManager processDefinitionEntityManager = commandContext.getSession(ProcessDefinitionEntityManager.class);
+                                        ProcessDefinitionEntity processDefinitionEntity = processDefinitionEntityManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+                                        if(processDefinitionEntity != null && processDefinitionEntity
+                                                .getProcessDefinition() != null){
+                                            return processDefinitionEntity.getProcessDefinition().getId();
+                                        }
+                                        return null;
+                                    }
+                                });
+                    }
+                }
+            }
+
+        }
+
+        if(processDefinitionId == null){
+            return false;
+        }
+
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        String userName = carbonContext.getUsername();
+        String tenantDomain = carbonContext.getTenantDomain();
+        String userNameWithTenantDomain = userName + "@" + tenantDomain;
+
+
+        BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
+        List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
+
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        List<IdentityLink> identityLinkList = repositoryService.getIdentityLinksForProcessDefinition
+                (processDefinitionId);
+
+        boolean valueExistsForUserId = false;
+        boolean valueExistsForGroupId = false;
+        for (IdentityLink identityLink:identityLinkList){
+
+            String userId = identityLink.getUserId();
+            if(userId != null ){
+                valueExistsForUserId = true;
+                if(userId.contains("$")){
+                    userId = resolveVariable(processInstanceCreateRequest.getVariables(), userId);
+                }
+                if(userId.equals(userName) || userId.equals(userNameWithTenantDomain)){
+                    return true;
+                }
+            }
+
+            String groupId = identityLink.getGroupId();
+
+            if(groupId != null){
+                valueExistsForGroupId = true;
+                if(groupId.contains("$")){
+                    groupId = resolveVariable(processInstanceCreateRequest.getVariables(), groupId);
+                }
+                if(groupList.contains(groupId)){
+                    return true;
+                }
+            }
+        }
+
+        if( !valueExistsForGroupId && !valueExistsForUserId){
+            return true;
+        }
+
+        return false;
+    }
+
+    private String resolveVariable(List<RestVariable> variableList, String resolvingName){
+
+        int initialIndex = resolvingName.indexOf("{");
+        int lastIndex = resolvingName.indexOf("}");
+
+        if(initialIndex != -1 && lastIndex != -1 && initialIndex < lastIndex){
+            resolvingName = resolvingName.substring(initialIndex +1, lastIndex);
+        }
+        return resolvingName;
+    }
 
 }
