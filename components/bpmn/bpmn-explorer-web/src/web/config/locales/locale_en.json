@@ -65,7 +65,7 @@
    "user.performance.of.task.instances.over.time":"User Performance Of Tasks Instances Over Time",
    "select.a.user":"Select a User",
    "select.a.user.to.view.the.performance":"Select a user to view the performance",
-   "task.durations.of.completed.process":"Task Durations Of Completed Process",
+   "task.durations.of.completed.process":"Task Durations Of Completed Process in Milliseconds.",
    "select.a.process":"Select a process",
    "select.a.process.to.view.the.task.duration":"Select a process to view the task duration",
    "no.processes.deployed.to.generate.statistics":"Currently there are no processes deployed to generate statistics.",
