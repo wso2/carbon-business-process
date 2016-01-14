@@ -135,6 +135,9 @@ public class AnalyticsPublisher {
 		            // Still data publisher can be null, due to miss configuration.
 		            if(dataPublisher != null) {
 			            BPMNProcessInstance[] bpmnProcessInstances = analyticsPublishServiceUtils.getCompletedProcessInstances();
+			            if (log.isDebugEnabled()) {
+				            log.debug("publishing data to the receiver urlset:" + config.getReceiverURLsSet());
+			            }
 			            if (bpmnProcessInstances != null && bpmnProcessInstances.length > 0) {
 				            for (BPMNProcessInstance instance : bpmnProcessInstances) {
 					            publishBPMNProcessInstanceEvent(instance);
@@ -163,8 +166,7 @@ public class AnalyticsPublisher {
             }
 
         } catch (InterruptedException e) {
-            String errMsg = "I/O exception in polling thread for BPMN process instances.";
-            log.error(errMsg, e);
+            //nothing to do
         }
     }
 
@@ -329,11 +331,12 @@ public class AnalyticsPublisher {
 	    if (analyticsExecutorService != null && !analyticsExecutorService.isShutdown()) {
 
 		    log.info("Shutting down analytics executor service for tenant : " + tenantId);
-		    analyticsExecutorService.shutdown();
+		    analyticsExecutorService.shutdownNow();
 
 		    for (int i = 0; i < 5; i++) {
 			    if (analyticsExecutorService.isShutdown()) {
 				    log.info("analytics executor service shutdowned for tenant : " + tenantId);
+				    return true;
 			    } else {
 				    try {
 					    Thread.sleep(AnalyticsPublisherConstants.REPEATEDLY_DELAY);
