@@ -1176,10 +1176,20 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         int initialIndex = resolvingName.indexOf("{");
         int lastIndex = resolvingName.indexOf("}");
 
+        String variableName = null;
         if (initialIndex != -1 && lastIndex != -1 && initialIndex < lastIndex) {
-            resolvingName = resolvingName.substring(initialIndex + 1, lastIndex);
+            variableName = resolvingName.substring(initialIndex + 1, lastIndex);
         }
-        return resolvingName;
+
+        if(variableList != null && variableName != null){
+            for (RestVariable restVariable:variableList){
+                if(restVariable.getName().equals(variableName)){
+                    return restVariable.getValue().toString();
+                }
+            }
+        }
+
+        return "";
     }
 
 }
