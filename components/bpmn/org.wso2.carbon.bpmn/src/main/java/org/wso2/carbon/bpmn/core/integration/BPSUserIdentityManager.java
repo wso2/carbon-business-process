@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.bpmn.core.integration;
 
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
@@ -30,7 +31,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.stratos.common.beans.TenantInfoBean;
@@ -38,7 +41,10 @@ import org.wso2.carbon.tenant.mgt.services.TenantMgtAdminService;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.claim.Claim;
+import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.user.core.tenant.TenantManager;
 import org.wso2.carbon.user.mgt.UserAdmin;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -321,27 +327,51 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public Boolean checkPassword(String userId, String password) {
+        String tenantDomain = MultitenantUtils.getTenantDomain(userId);
+        String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userId);
+        String userNameWithTenantDomain = tenantAwareUserName + "@" + tenantDomain;
+
+        RealmService realmService = RegistryContext.getBaseInstance().getRealmService();
+        TenantManager mgr = realmService.getTenantManager();
+
+        int tenantId = 0;
         try {
-            //TenantManagement Service will be used to get the domain of user who sent service request.
-            String[] userNameTokens = userId.split("@");
-            int tenantId = BPMNConstants.SUPER_TENANT_ID;
-            if (userNameTokens.length > 1) {
-                TenantInfoBean tenantInfoBean = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]);
-                if (tenantInfoBean != null) {
-                    tenantId = tenantInfoBean.getTenantId();
-                } else {
-                    return false;
-                }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Rest Service request from user:" + userId);
-            }
-            return BPMNServerHolder.getInstance().getRegistryService().getUserRealm(tenantId).getUserStoreManager().authenticate(userNameTokens[0], password);
-        } catch (Exception e) {
-            String msg = "Error in authenticating user: " + userId;
-            log.error(msg, e);
+            tenantId = mgr.getTenantId(tenantDomain);
+        } catch (UserStoreException e) {
+            throw new BPMNAuthenticationException(
+                    "Identity exception thrown while getting tenant ID for user : " + userNameWithTenantDomain,
+                    e);
         }
-        return false;
+
+        // tenantId == -1, means an invalid tenant.
+        if (tenantId == -1) {
+            if (log.isDebugEnabled()) {
+                log.debug("Basic authentication request with an invalid tenant : " + userNameWithTenantDomain);
+            }
+            return false;
+        }
+
+        org.wso2.carbon.user.api.UserStoreManager userStoreManager = null;
+        boolean authStatus = false;
+
+        try {
+            userStoreManager = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
+            authStatus = userStoreManager.authenticate(tenantAwareUserName, password);
+        } catch (UserStoreException e) {
+            throw new BPMNAuthenticationException(
+                    "User store exception thrown while authenticating user : " + userNameWithTenantDomain, e);
+        }
+
+       /* IdentityService identityService = BPMNOSGIService.getIdentityService();
+        authStatus = identityService.checkPassword(userName, password);*/
+        if (log.isDebugEnabled()) {
+            log.debug("Basic authentication request completed. " +
+                    "Username : " + userNameWithTenantDomain +
+                    ", Authentication State : " + authStatus);
+        }
+
+        return authStatus;
+
     }
 
     private int getTenantIdFromUserId(String userId) throws Exception {
