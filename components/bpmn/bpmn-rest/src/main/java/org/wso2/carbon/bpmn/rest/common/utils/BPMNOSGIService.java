@@ -160,48 +160,4 @@ public class BPMNOSGIService {
         throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't be identified");
 
     }
-
-    public static ProcessDefinitionEntityManager getProcessDefinitionEntityManager(){
-
-     /*   ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().getProcessEngine();
-
-        ProcessEngineConfigurationImpl processEngineConfigurationImpl= null;
-
-        if(processEngine != null){
-            processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
-
-            if(processEngineConfigurationImpl != null){
-                BPSGroupIdentityManager bpsGroupIdentityManager = null;
-                if(processEngineConfigurationImpl.getSessionFactories() != null) {
-
-                    ProcessDefinitionEntityManager processDefinitionManager = (ProcessDefinitionEntityManager) processEngineConfigurationImpl.getSessionFactories().get
-                            (ProcessDefinitionEntityManager.class);
-
-
-                    BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory) processEngineConfigurationImpl.getSessionFactories().get
-                            (GroupIdentityManager.class);
-                    return (BPSGroupIdentityManager)bpsGroupManagerFactory.openSession();
-                }
-            }
-        }
-*/
-        ProcessEngine processEngine = getBPMNEngineService().getProcessEngine();
-
-        if (processEngine != null) {
-            if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() != null) {
-                CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
-                if(commandExecutor != null) {
-                    return (ProcessDefinitionEntityManager) commandExecutor.execute(new Command<Object>() {
-                        public Object execute(CommandContext commandContext) {
-                            ProcessDefinitionEntityManager processDefinitionEntityManager = commandContext.getSession(ProcessDefinitionEntityManager.class);
-                            return processDefinitionEntityManager;
-                        }
-                    });
-                }
-            }
-        }
-
-        throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't be identified");
-
-    }
 }
