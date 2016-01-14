@@ -19,6 +19,9 @@ import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
 
 import java.util.Date;
 
+/**
+ * BPMNProcessInstance is a POJO which provides to create the Process Instances
+ */
 public class BPMNProcessInstance {
     private String processDefinitionId;
     private String instanceId;

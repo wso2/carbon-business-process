@@ -22,9 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
+import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsSchedulerShutdown;
 import org.wso2.carbon.bpmn.analytics.publisher.BPMNAnalyticsAxis2ConfigurationContextObserverImpl;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
@@ -36,75 +38,82 @@ import org.wso2.carbon.user.core.service.RealmService;
  * cardinality="1..1" policy="dynamic" bind="setServerConfiguration" unbind="unsetServerConfiguration"
  */
 public class BPMNAnalyticsServiceComponent {
-    private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
+	private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
 
 	/**
 	 * Activate BPMN analytics component.
 	 *
 	 * @param ctxt ComponentContext
 	 */
-    protected void activate(ComponentContext ctxt) {
-        log.info("Initializing the BPMN Analytics Service component...");
-        try {
-//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-//            analyticsPublisher.initialize();
-            ConfigurationContext cxt = new ConfigurationContext(new AxisConfiguration());
-            BPMNAnalyticsAxis2ConfigurationContextObserverImpl configCtx = new BPMNAnalyticsAxis2ConfigurationContextObserverImpl();
-            configCtx.createdConfigurationContext(cxt);
-        } catch (Throwable e) {
-            log.error("Failed to initialize the Analytics Service component.", e);
-        }
-    }
+	protected void activate(ComponentContext ctxt) {
+		log.info("Initializing the BPMN Analytics Service component...");
+		try {
+			//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
+			//            analyticsPublisher.initialize();
+			ConfigurationContext cxt = new ConfigurationContext(new AxisConfiguration());
+			BPMNAnalyticsAxis2ConfigurationContextObserverImpl configCtx =
+					new BPMNAnalyticsAxis2ConfigurationContextObserverImpl();
+			configCtx.createdConfigurationContext(cxt);
+
+			ctxt.getBundleContext()
+			    .registerService(WaitBeforeShutdownObserver.class, new AnalyticsSchedulerShutdown(),
+			                     null);
+		} catch (Throwable e) {
+			log.error("Failed to initialize the Analytics Service component.", e);
+		}
+	}
 
 	/**
 	 * Set RegistryService instance when bundle get bind to OSGI runtime.
 	 *
 	 * @param registryService
 	 */
-    public void setRegistryService(RegistryService registryService) {
-        BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
-    }
+	public void setRegistryService(RegistryService registryService) {
+		BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
+	}
 
 	/**
 	 * Unset RegistryService instance when bundle get unbind from OSGI runtime.
 	 *
 	 * @param registryService
 	 */
-    public void unsetRegistryService(RegistryService registryService) {
-        BPMNAnalyticsHolder.getInstance().setRegistryService(null);
-    }
+	public void unsetRegistryService(RegistryService registryService) {
+		BPMNAnalyticsHolder.getInstance().setRegistryService(null);
+	}
 
 	/**
 	 * Set RealmService instance when bundle get bind to OSGI runtime.
 	 *
 	 * @param realmService
 	 */
-    public void setRealmService(RealmService realmService) {
-        BPMNAnalyticsHolder.getInstance().setRealmService(realmService);
-    }
+	public void setRealmService(RealmService realmService) {
+		BPMNAnalyticsHolder.getInstance().setRealmService(realmService);
+	}
 
 	/**
 	 * Unset RealmService instance when bundle get unbind from OSGI runtime.
 	 *
 	 * @param realmService
 	 */
-    public void unsetRealmService(RealmService realmService) {
-        BPMNAnalyticsHolder.getInstance().setRealmService(null);
-    }
+	public void unsetRealmService(RealmService realmService) {
+		BPMNAnalyticsHolder.getInstance().setRealmService(null);
+	}
 
 	/**
 	 * Set ServerConfigurationService instance when bundle get bind to OSGI runtime.
+	 *
 	 * @param serverConfiguration
 	 */
-    public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
-        BPMNAnalyticsHolder.getInstance().setServerConfiguration(serverConfiguration);
-    }
+	public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
+		BPMNAnalyticsHolder.getInstance().setServerConfiguration(serverConfiguration);
+	}
 
 	/**
 	 * Unset ServerConfigurationService instance when bundle get unbind from OSGI runtime.
+	 *
 	 * @param serverConfiguration
 	 */
-    public void unsetServerConfiguration(ServerConfigurationService serverConfiguration) {
-        BPMNAnalyticsHolder.getInstance().setServerConfiguration(null);
-    }
+	public void unsetServerConfiguration(ServerConfigurationService serverConfiguration) {
+		BPMNAnalyticsHolder.getInstance().setServerConfiguration(null);
+	}
 }
