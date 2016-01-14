@@ -26,13 +26,13 @@ import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.jaxrs.ext.RequestHandler;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.message.Message;
-import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
+import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
+import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.TenantManager;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
@@ -116,6 +116,19 @@ public class AuthenticationHandler implements RequestHandler {
      *                                             the user
      */
     private boolean authenticate(String userName, String password) throws RestApiBasicAuthenticationException {
+
+        boolean authStatus;
+        try {
+            IdentityService identityService = BPMNOSGIService.getIdentityService();
+            authStatus = identityService.checkPassword(userName, password);
+
+            if (!authStatus) {
+                return false;
+            }
+        } catch (BPMNAuthenticationException e) {
+            throw new RestApiBasicAuthenticationException(e.getMessage(), e);
+        }
+
         String tenantDomain = MultitenantUtils.getTenantDomain(userName);
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userName);
         String userNameWithTenantDomain = tenantAwareUserName + "@" + tenantDomain;
@@ -126,49 +139,29 @@ public class AuthenticationHandler implements RequestHandler {
         int tenantId = 0;
         try {
             tenantId = mgr.getTenantId(tenantDomain);
+
+            // tenantId == -1, means an invalid tenant.
+            if (tenantId == -1) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Basic authentication request with an invalid tenant : " + userNameWithTenantDomain);
+                }
+                return false;
+            }
+
         } catch (UserStoreException e) {
             throw new RestApiBasicAuthenticationException(
                     "Identity exception thrown while getting tenant ID for user : " + userNameWithTenantDomain, e);
         }
 
-        // tenantId == -1, means an invalid tenant.
-        if (tenantId == -1) {
-            if (log.isDebugEnabled()) {
-                log.debug("Basic authentication request with an invalid tenant : " + userNameWithTenantDomain);
-            }
-            return false;
-        }
-
-        UserStoreManager userStoreManager = null;
-        boolean authStatus = false;
-
-        try {
-            userStoreManager = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
-            authStatus = userStoreManager.authenticate(tenantAwareUserName, password);
-        } catch (UserStoreException e) {
-            throw new RestApiBasicAuthenticationException(
-                    "User store exception thrown while authenticating user : " + userNameWithTenantDomain, e);
-        }
-
-       /* IdentityService identityService = BPMNOSGIService.getIdentityService();
-        authStatus = identityService.checkPassword(userName, password);*/
-        if (log.isDebugEnabled()) {
-            log.debug("Basic authentication request completed. " +
-                    "Username : " + userNameWithTenantDomain +
-                    ", Authentication State : " + authStatus);
-        }
-
-        if (authStatus) {
             /* Upon successful authentication existing thread local carbon context
              * is updated to mimic the authenticated user */
 
-            PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-            carbonContext.setUsername(userName);
-            carbonContext.setTenantId(tenantId);
-            carbonContext.setTenantDomain(tenantDomain);
-        }
-        return authStatus;
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        carbonContext.setUsername(tenantAwareUserName);
+        carbonContext.setTenantId(tenantId);
+        carbonContext.setTenantDomain(tenantDomain);
 
+        return true;
     }
 
     private Response authenticationFail() {
