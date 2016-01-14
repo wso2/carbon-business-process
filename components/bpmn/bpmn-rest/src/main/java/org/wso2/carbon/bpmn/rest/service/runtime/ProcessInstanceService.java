@@ -89,7 +89,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     @Path("/")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response startInstance(ProcessInstanceCreateRequest processInstanceCreateRequest, @Context HttpHeaders headers) {
+    public Response startInstance(ProcessInstanceCreateRequest processInstanceCreateRequest) {
 
         if (log.isDebugEnabled()) {
             log.debug("ProcessInstanceCreateRequest:" + processInstanceCreateRequest.getProcessDefinitionId());
@@ -1170,7 +1170,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         if(initialIndex != -1 && lastIndex != -1 && initialIndex < lastIndex){
             resolvingName = resolvingName.substring(initialIndex +1, lastIndex);
-            System.out.println(resolvingName);
         }
         return resolvingName;
     }
