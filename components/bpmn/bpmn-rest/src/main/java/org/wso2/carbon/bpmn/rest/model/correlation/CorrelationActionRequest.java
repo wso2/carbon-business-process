@@ -30,10 +30,6 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
     private String processDefinitionId = null;
     private String processDefinitionKey = null;
 
-   /* @XmlElementWrapper(name = "RestProcessInstanceVariables")
-    @XmlElement(name = "RestVariable", type = RestVariable.class)
-    private List<RestVariable> processInstanceVariables;
-*/
     @XmlElementWrapper(name = "CorrelationRestVariables")
     @XmlElement(name = "QueryVariable", type = QueryVariable.class)
     private List<QueryVariable> correlationVariables;
@@ -102,14 +98,6 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
     public void setMessageName(String messageName) {
         this.messageName = messageName;
     }
-
- /*   public List<RestVariable> getProcessInstanceVariables() {
-        return processInstanceVariables;
-    }
-
-    public void setProcessInstanceVariables(List<RestVariable> processInstanceVariables) {
-        this.processInstanceVariables = processInstanceVariables;
-    }*/
 
     @Override
     public String getAction() {
