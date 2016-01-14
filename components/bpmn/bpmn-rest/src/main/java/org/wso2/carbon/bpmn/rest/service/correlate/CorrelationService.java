@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.correlate;
@@ -19,15 +19,12 @@ package org.wso2.carbon.bpmn.rest.service.correlate;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.AbstractQuery;
-import org.activiti.engine.impl.HistoricProcessInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
-import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
@@ -57,12 +54,12 @@ public class CorrelationService extends BaseExecutionService {
 
     @POST
     @Path("/")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response recieveMessage(CorrelationActionRequest correlationActionRequest){
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response recieveMessage(CorrelationActionRequest correlationActionRequest) {
 
-        if(correlationActionRequest.getProcessDefinitionId() == null && correlationActionRequest
+        if (correlationActionRequest.getProcessDefinitionId() == null && correlationActionRequest
                 .getProcessDefinitionKey() == null &&
-                (correlationActionRequest.getMessageName() == null &&  correlationActionRequest.getSignalName() == null) ){
+                (correlationActionRequest.getMessageName() == null && correlationActionRequest.getSignalName() == null)) {
             throw new ActivitiIllegalArgumentException("Either processDefinitionId, processDefinitionKey, signal or " +
                     "message is required.");
         }
@@ -74,7 +71,7 @@ public class CorrelationService extends BaseExecutionService {
             throw new ActivitiIllegalArgumentException("Only one of processDefinitionId or processDefinitionKey should be set.");
         }
 
-        paramsSet =  ((correlationActionRequest.getMessageName() != null) ? 1 : 0)
+        paramsSet = ((correlationActionRequest.getMessageName() != null) ? 1 : 0)
                 + ((correlationActionRequest.getSignalName() != null) ? 1 : 0);
 
         if (paramsSet > 1) {
@@ -91,32 +88,32 @@ public class CorrelationService extends BaseExecutionService {
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         String value = correlationActionRequest.getProcessDefinitionId();
-        if( value != null){
+        if (value != null) {
             query.processDefinitionId(value);
         }
 
         value = correlationActionRequest.getProcessDefinitionKey();
-        if(value != null){
+        if (value != null) {
             query.processDefinitionKey(value);
         }
 
         value = correlationActionRequest.getMessageName();
-        if(value != null){
+        if (value != null) {
             query.messageEventSubscriptionName(value);
         }
 
         value = correlationActionRequest.getSignalName();
-        if(value != null){
+        if (value != null) {
             query.signalEventSubscriptionName(value);
         }
 
-        List<QueryVariable> queryVariableList =  correlationActionRequest.getCorrelationVariables();
+        List<QueryVariable> queryVariableList = correlationActionRequest.getCorrelationVariables();
 
-        if(queryVariableList != null){
+        if (queryVariableList != null) {
 
             List<QueryVariable> updatedQueryVariableList = new ArrayList<>();
-            for (QueryVariable queryVariable:queryVariableList){
-                if(queryVariable.getVariableOperation() == null ){
+            for (QueryVariable queryVariable : queryVariableList) {
+                if (queryVariable.getVariableOperation() == null) {
                     queryVariable.setOperation("equals");
                 }
                 updatedQueryVariableList.add(queryVariable);
@@ -131,9 +128,9 @@ public class CorrelationService extends BaseExecutionService {
         }
 
         value = correlationActionRequest.getTenantId();
-            if(value != null) {
-                query.executionTenantId(value);
-            }
+        if (value != null) {
+            query.executionTenantId(value);
+        }
 
         QueryProperty qp = allowedSortProperties.get("processInstanceId");
         ((AbstractQuery) query).orderBy(qp);
@@ -141,11 +138,11 @@ public class CorrelationService extends BaseExecutionService {
 
         List<Execution> executionList = query.listPage(0, 10);
         int size = executionList.size();
-        if( size == 0){
+        if (size == 0) {
             throw new ActivitiIllegalArgumentException("No Executions found to correlate with given information");
         }
 
-        if(size > 1){
+        if (size > 1) {
             throw new ActivitiIllegalArgumentException("More than one Executions found to correlate with given information");
         }
 
@@ -158,7 +155,7 @@ public class CorrelationService extends BaseExecutionService {
             } else {
                 runtimeService.signal(execution.getId());
             }
-        } else if(CorrelationActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(action)) {
+        } else if (CorrelationActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(action)) {
             if (correlationActionRequest.getSignalName() == null) {
                 throw new ActivitiIllegalArgumentException("Signal name is required");
             }
@@ -215,13 +212,13 @@ public class CorrelationService extends BaseExecutionService {
 
                 case EQUALS:
                     if (nameLess) {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueEquals(actualValue);
                         } else {
                             processInstanceQuery.variableValueEquals(actualValue);
                         }
                     } else {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueEquals(variable.getName(), actualValue);
                         } else {
                             processInstanceQuery.variableValueEquals(variable.getName(), actualValue);
@@ -231,7 +228,7 @@ public class CorrelationService extends BaseExecutionService {
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
                         } else {
                             processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
@@ -243,7 +240,7 @@ public class CorrelationService extends BaseExecutionService {
                     break;
 
                 case NOT_EQUALS:
-                    if(process) {
+                    if (process) {
                         processInstanceQuery.processVariableValueNotEquals(variable.getName(), actualValue);
                     } else {
                         processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
@@ -252,7 +249,7 @@ public class CorrelationService extends BaseExecutionService {
 
                 case NOT_EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        if(process) {
+                        if (process) {
                             processInstanceQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
                         } else {
                             processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
