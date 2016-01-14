@@ -50,7 +50,7 @@
 		
 		    	<div class="col-sm-9 col-md-9 col-lg-9 " style="height:100%;" >
 		    		<div style="border:4px solid black; height:50%; width:100%;">
-		    			<img id="imageHolder"  src="<%=imageUrl%>" style="position:absolute; left:20%; top:10%; "/>
+		    			<img id="imageHolder"  src="<%=imageUrl%>" style="position:absolute; left:20%; top:5%; "/>
 		    		</div>
 		    		<div class="col-sm-9 col-md-9 col-lg-9" style="border:4px solid black; height:50%; width:100%; " >
 				    	<div class="tabs">
