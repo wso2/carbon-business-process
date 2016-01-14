@@ -170,7 +170,7 @@ function generateForm(data, disabled) {
             } else {
                 formContent += genTextBox(data[i],disabled);
             }
-        } else if (data[i].type == "long") {
+        } else if (data[i].type == "long" || data[i].type == "double") {
             if (data[i].value) {
                 formContent += genNumberBoxWithValues(data[i],disabled);
             } else {
