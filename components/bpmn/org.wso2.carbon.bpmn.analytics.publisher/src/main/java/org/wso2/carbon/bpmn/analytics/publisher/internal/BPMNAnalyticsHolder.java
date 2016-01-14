@@ -155,6 +155,10 @@ public class BPMNAnalyticsHolder {
 		return this.tenantAnalyticsPublisherMap.get(tenantID);
 	}
 
+	public HashMap<Integer, AnalyticsPublisher> getAllPublishers() {
+		return this.tenantAnalyticsPublisherMap;
+	}
+
 	private static class BPMNServerInstanceHolder {
 		private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
 	}
