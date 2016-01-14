@@ -57,7 +57,7 @@ if (countOfProcesses == 0) {
                             }
                             session.put('authSuccess', false);
                             response.sendRedirect('login');
-                            throw "HTTPS Session with BPS has timed out";
+                            //throw "HTTPS Session with BPS has timed out";
                         } else {
                             var imageData = BPSResponseXML.toString().split(":return")[1];
                             imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);
@@ -85,7 +85,7 @@ if (countOfProcesses == 0) {
                             }
                             session.put('authSuccess', false);
                             response.sendRedirect('login');
-                            throw "HTTPS Session with BPS has timed out";
+                           // throw "HTTPS Session with BPS has timed out";
                         } else {
                             var imageData = BPSResponseXML.toString().split(":return")[1];
                             imageUrl = "data:image/png;base64,"+ imageData.substring(1, imageData.length - 4);
