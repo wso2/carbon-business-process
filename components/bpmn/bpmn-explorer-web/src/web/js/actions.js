@@ -990,11 +990,10 @@ function getVariablesOfCompletedProcessInstances(id){
 
             $("#variables").html("");
             var variableInfo = data;
-            if(variableInfo.data.length == 0){
+            if (variableInfo.data.length == 0) {
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
-            }
-            else{
+            } else {
                 var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.data.length; k++) {
                     var name = variableInfo.data[k].variable.name;
@@ -1002,7 +1001,6 @@ function getVariablesOfCompletedProcessInstances(id){
                     var value = variableInfo.data[k].variable.value;
                     var scope = variableInfo.data[k].variable.scope;
                     DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
-
 
                 }
                 DIV = DIV+"</tbody></table>"
@@ -1071,7 +1069,6 @@ function getCalledProcessInstancesOfCompleted(id){
 
                     var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + calledPId ;
 
-
                     $.ajax({
                         type: 'GET',
                         contentType: "application/json",
@@ -1080,7 +1077,6 @@ function getCalledProcessInstancesOfCompleted(id){
                         success: function (data){
 
                             var calledPInfo = data;
-
                             $("#calledInstances").html("");
                             var DIV = "<table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
 
@@ -1201,8 +1197,7 @@ function getVariablesOfRunningProcessInstances(id){
             if (variableInfo.restVariables.length == 0) {
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
-            }
-            else{
+            } else {
                 var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.restVariables.length; k++) {
                     var name = variableInfo.restVariables[k].name;
@@ -1233,7 +1228,6 @@ function getUserTasksOfRunningProcessInstances(pid,id){
 
                 var taskList = data;
                 var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
-
 
                 $.ajax({
                     type: 'GET',
@@ -1285,7 +1279,6 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                                 }
                                 DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+taskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
                             } else {
-
                             }
                         }
                         DIV = DIV+"</tbody></table>"

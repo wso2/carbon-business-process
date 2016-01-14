@@ -131,7 +131,7 @@
 
                             function addVariable(){
                                 var vNames = document.getElementsByName("variableName");
-                                if(vNames[vNames.length - 1].value !== "") {
+                                if (vNames[vNames.length - 1].value !== "") {
                                     var vRow = document.getElementById("variablesRow");
 
                                     var vBr1 = document.createElement("BR");
@@ -198,12 +198,12 @@
                 </thead>
                  <tbody>
                     <% for (var i=0; i < numOfTasks; i++) { %>
-                        <tr class="white-bg" style="cursor:pointer;"  onclick="window.location='<%=onclickUrl%>?instanceId=<%=taskListResponse.data[i].id%>'"
+                        <tr class="white-bg" style="cursor:pointer;"  onclick="window.location='<%=onclickUrl%>?instanceId=<%=instanceListResponse.data[i].id%>'"
                             onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-                            <td><%=taskListResponse.data[i].id%></td>
-                            <td><%=taskListResponse.data[i].processDefinitionId%></td>
-                            <td><%=taskListResponse.data[i].startTime%></td>
-                            <td><%=taskListResponse.data[i].endTime%></td>                        
+                            <td><%=instanceListResponse.data[i].id%></td>
+                            <td><%=instanceListResponse.data[i].processDefinitionId%></td>
+                            <td><%=instanceListResponse.data[i].startTime%></td>
+                            <td><%=instanceListResponse.data[i].endTime%></td>                        
                         </tr>
                     <% } %>
                 </tbody>

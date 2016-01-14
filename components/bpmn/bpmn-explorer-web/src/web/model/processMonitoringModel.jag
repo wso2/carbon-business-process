@@ -24,13 +24,11 @@ var headers = {"Authorization":"Basic " + auth};
 var isProcessesDeployed = false;
 
 var countOfProcesses = get( httpUrl +"/bpmn/stats/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
-if(countOfProcesses == 0){
+if (countOfProcesses == 0) {
     isProcessesDeployed = false;
-}
-else{
+} else {
     isProcessesDeployed =true;
 }
-
     var id = request.getParameter("instanceId");
     var query1 = get( httpUrl +"/bpmn/history/historic-process-instances?processInstanceId=" + id +"&tenantId=" + bpsTenantID ,null, headers, "json" ).data;
 
@@ -45,7 +43,7 @@ else{
                     print("<script type='text/javascript'>setTimeout(function() { completedProcessInstances(" + instanceId + "); }, 100);</script>")
 
                       //Get the bpmn diagram
-                    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+pId, null, headers, "json" ).data.data;
+                    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/" + pId, null, headers, "json" ).data.data;
 
                     var imageUrl = "";
                     if (resource == null) {
@@ -73,7 +71,7 @@ else{
                    print("<script type='text/javascript'>setTimeout(function() { runningProcessInstances('"+ pId +"', "+ instanceId + "); }, 100);</script>")                    
 
                    //Get the bpmn diagram
-                    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+pId, null, headers, "json" ).data.data;
+                    var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+ pId, null, headers, "json" ).data.data;
 
                     var imageUrl = "";
                     if (resource == null) {

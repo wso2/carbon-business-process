@@ -1079,16 +1079,16 @@ hr {
     color: white;
 }
 
-.footer{
+.footer {
     z-index: 1;
 }
 
-.table-status-column a{
+.table-status-column a {
     color: #000000;
     font-size: 18px;
 }
 
-.table-status-column a:hover{
+.table-status-column a:hover {
      color : red;
 }
 

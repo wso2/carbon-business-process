@@ -16,20 +16,12 @@
 <%
 
 var headers = {"Authorization":"Basic " + auth};
-var isProcessesDeployed = false;
-
-var countOfProcesses = get( httpUrl +"/bpmn/stats/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
-if (countOfProcesses == 0) {
-    isProcessesDeployed = false;
-} else {
-    isProcessesDeployed =true;
-}
 
 var deployedProcessCount = get( httpUrl +"/bpmn/stats/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
 
 var list = [];
 
-for(var i= 0; i < deployedProcessCount.length; i++){
+for (var i= 0; i < deployedProcessCount.length; i++) {
     var processDefinitionId = deployedProcessCount[i].processDefinitionId;
     var instanceList = {
         deployment: processDefinitionId       
@@ -54,7 +46,7 @@ if (request.getQueryString() != null) {
     var searchActiveInstances = true;//state that the user is searching for active tasks or completed historic tasks
     var requestUrl = '';//BPS BPMN REST API call url
 
-    if (log.isDebugEnabled()){
+    if (log.isDebugEnabled()) {
         log.debug("Request parameters:" +stringify(requestParameters));
         log.debug("Request parameters:" +request.getQueryString());
     }
@@ -67,7 +59,7 @@ if (request.getQueryString() != null) {
     }
 
     //remove pagiantion parameter if exists
-    if (request.getParameter("pagination") !== null){
+    if (request.getParameter("pagination") !== null) {
         //split query string with "&" to remove pagination part from the query string
         var qs = request.getQueryString();
         newQueryString = qs.substring( qs.indexOf('&') + 1 );
@@ -78,7 +70,7 @@ if (request.getQueryString() != null) {
     var bodyOfRequest = {};
     var vCollection = {};
 
-    if (request.getParameter("instanceStatus") === "COMPLETED"){
+    if (request.getParameter("instanceStatus") === "COMPLETED") {
 
         searchActiveInstances = false;              
     
@@ -207,25 +199,25 @@ if (request.getQueryString() != null) {
 
     try {
         //make rest call
-        var taskListResponse = post(requestUrl, stringify(bodyOfRequest), headers, "json").data;        
+        var instanceListResponse = post(requestUrl, stringify(bodyOfRequest), headers, "json").data;        
         
         var numOfTasks = 0;//used to display tasks in searchView
         var paginatePageCount = 0; //used to display tasks in pagination
 
         if (log.isDebugEnabled()) {
-            log.debug("BPMN Rest API Response: " + stringify(taskListResponse));
+            log.debug("BPMN Rest API Response: " + stringify(instanceListResponse));
         }
 
         //Check for error response
-        if (taskListResponse.errorMessage != undefined) {
-            throw "Error " + taskListResponse.statusCode + " : " + taskListResponse.errorMessage;
+        if (instanceListResponse.errorMessage != undefined) {
+            throw "Error " + instanceListResponse.statusCode + " : " + instanceListResponse.errorMessage;
         }
 
-        if (taskListResponse.data !== undefined) {
-            numOfTasks = taskListResponse.data.length;
+        if (instanceListResponse.data !== undefined) {
+            numOfTasks = instanceListResponse.data.length;
             //calculate pagination page count
-            paginatePageCount = parseInt(taskListResponse.total / 10);
-            if ((taskListResponse.total % pageSize) > 0) {
+            paginatePageCount = parseInt(instanceListResponse.total / 10);
+            if ((instanceListResponse.total % pageSize) > 0) {
                 paginatePageCount += 1;
             }
         }

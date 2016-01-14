@@ -522,9 +522,9 @@ public class ProcessAndTaskService {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(pId);
-        if(processDefinition!=null){
+        if (processDefinition!=null) {
 
-            for(ActivityImpl activity: processDefinition.getActivities()){
+            for (ActivityImpl activity: processDefinition.getActivities()) {
                 TaskInfo taskInfo = new TaskInfo();
                     String taskDefKey = activity.getId();
                     String type = (String) activity.getProperty("type");
@@ -533,7 +533,6 @@ public class ProcessAndTaskService {
                     taskInfo.setType(type);
                     taskInfo.setName(taskName);
                     list.add(taskInfo);
-
             }
         }
 
