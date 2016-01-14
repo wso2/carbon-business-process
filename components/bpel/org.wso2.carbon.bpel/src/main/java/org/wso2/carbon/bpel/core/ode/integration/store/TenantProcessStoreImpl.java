@@ -921,7 +921,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
      * "AbsenceRequest([-\\.](\d)+)?/AbsenceRequest.ode" will be matched against
      * "AbsenceRequest-2/AbsenceRequest.ode" and setRetirePackage() will be called accordingly.
      *
-     * @param du DeploymentUnitDir object containing in-memory representation of BPEL package. 
+     * @param du DeploymentUnitDir object containing in-memory representation of BPEL package.
      */
     private void retirePreviousPackageVersions(DeploymentUnitDir du) {
         //retire all the other versions of the same DU
