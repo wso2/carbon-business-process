@@ -30,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -1083,38 +1084,69 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         //check whether the users/groups exist
         String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+
         if (processDefinitionId == null) {
 
             final String processDefinitionKey = processInstanceCreateRequest.getProcessDefinitionKey();
             final String tenantId = processInstanceCreateRequest.getTenantId();
 
-
             ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
 
             if (processEngine != null) {
-                if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() != null) {
-                    CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
-                    if (commandExecutor != null) {
 
-                        processDefinitionId =
-                                (String) commandExecutor.execute(new Command<Object>() {
-                                    public Object execute(CommandContext commandContext) {
-                                        ProcessDefinitionEntityManager processDefinitionEntityManager = commandContext.
-                                                getSession(ProcessDefinitionEntityManager.class);
-                                        ProcessDefinitionEntity processDefinitionEntity = processDefinitionEntityManager.
-                                                findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-                                        if (processDefinitionEntity != null && processDefinitionEntity
-                                                .getProcessDefinition() != null) {
-                                            return processDefinitionEntity.getProcessDefinition().getId();
+                if(processDefinitionKey != null){
+
+                    if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() != null) {
+                        CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+                        if (commandExecutor != null) {
+
+                            processDefinitionId =
+                                    (String) commandExecutor.execute(new Command<Object>() {
+                                        public Object execute(CommandContext commandContext) {
+                                            ProcessDefinitionEntityManager processDefinitionEntityManager = commandContext.
+                                                    getSession(ProcessDefinitionEntityManager.class);
+                                            ProcessDefinitionEntity processDefinitionEntity = processDefinitionEntityManager.
+                                                    findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+                                            if (processDefinitionEntity != null && processDefinitionEntity
+                                                    .getProcessDefinition() != null) {
+                                                return processDefinitionEntity.getProcessDefinition().getId();
+                                            }
+                                            return null;
                                         }
-                                        return null;
-                                    }
-                                });
+                                    });
+                        }
+                    }
+                    if (processDefinitionId == null) {
+                        return false;
                     }
                 }
-                if (processDefinitionId == null) {
-                    return false;
+
+                String messageName = processInstanceCreateRequest.getMessage();
+                if(messageName != null && !messageName.isEmpty()){
+
+                    ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+                            .messageEventSubscriptionName(messageName);
+                    if(processDefinitionQuery != null){
+                        processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId
+                                (processInstanceCreateRequest.getTenantId());
+                        if(processDefinitionQuery != null && processDefinitionQuery.count() > 1){
+                            processDefinitionQuery = processDefinitionQuery.latestVersion();
+                        }
+                    }
+
+                    if(processDefinitionQuery != null){
+                        ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+                        if(processDefinition != null){
+                            processDefinitionId = processDefinition.getId();
+                        }
+                    }
+
+                    if (processDefinitionId == null) {
+                        return false;
+                    }
                 }
+
             }
 
         }
@@ -1128,9 +1160,39 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
         List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+
+
+/*        if(processDefinitionId == null){
+            String messageName = processInstanceCreateRequest.getMessage();
+
+            if(messageName != null && !messageName.isEmpty()){
+
+                ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+                        .messageEventSubscriptionName(messageName);
+                if(processDefinitionQuery != null){
+                    processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId
+                            (processInstanceCreateRequest.getTenantId());
+                    if(processDefinitionQuery != null && processDefinitionQuery.count() > 1){
+                        processDefinitionQuery = processDefinitionQuery.latestVersion();
+                    }
+                }
+
+                if(processDefinitionQuery != null){
+                     ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+                    if(processDefinition != null){
+                        processDefinitionId = processDefinition.getId();
+                    }
+                }
+
+                if (processDefinitionId == null) {
+                    return false;
+                }
+            }
+        }*/
+
         List<IdentityLink> identityLinkList = repositoryService.getIdentityLinksForProcessDefinition
                 (processDefinitionId);
+
 
         boolean valueExistsForUserId = false;
         boolean valueExistsForGroupId = false;
