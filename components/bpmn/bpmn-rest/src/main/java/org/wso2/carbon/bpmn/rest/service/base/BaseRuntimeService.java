@@ -222,7 +222,7 @@ public class BaseRuntimeService {
 
     protected Map<String, Object> getVariablesToSet(ExecutionActionRequest actionRequest) {
         Map<String, Object> variablesToSet = new HashMap<String, Object>();
-        for (RestVariable var : actionRequest.getRestVariables()) {
+        for (RestVariable var : actionRequest.getVariables()) {
             if (var.getName() == null) {
                 throw new ActivitiIllegalArgumentException("Variable name is required");
             }

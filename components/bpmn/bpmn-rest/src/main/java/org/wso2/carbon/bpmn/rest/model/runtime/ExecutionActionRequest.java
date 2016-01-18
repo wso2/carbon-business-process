@@ -35,15 +35,15 @@ public class ExecutionActionRequest extends RestActionRequest{
     protected String messageName;
     @XmlElementWrapper(name = "RestVariables")
     @XmlElement(name = "RestVariable", type = RestVariable.class)
-    protected List<RestVariable> restVariables;
+    protected List<RestVariable> variables;
 
-    public void setRestVariables(List<RestVariable> restVariables) {
-        this.restVariables = restVariables;
+    public void setVariables(List<RestVariable> variables) {
+        this.variables = variables;
     }
 
     @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=RestVariable.class)
-    public List<RestVariable> getRestVariables() {
-        return restVariables;
+    public List<RestVariable> getVariables() {
+        return variables;
     }
 
     public String getSignalName() {

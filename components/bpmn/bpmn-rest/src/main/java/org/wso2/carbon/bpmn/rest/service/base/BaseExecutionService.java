@@ -18,7 +18,6 @@
 package org.wso2.carbon.bpmn.rest.service.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.xsom.impl.util.Uri;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -45,7 +44,6 @@ import org.wso2.carbon.bpmn.rest.model.runtime.*;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -251,7 +249,7 @@ public class BaseExecutionService {
 
     protected Map<String, Object> getVariablesToSet(ExecutionActionRequest actionRequest) {
         Map<String, Object> variablesToSet = new HashMap<String, Object>();
-        for (RestVariable var : actionRequest.getRestVariables()) {
+        for (RestVariable var : actionRequest.getVariables()) {
             if (var.getName() == null) {
                 throw new ActivitiIllegalArgumentException("Variable name is required");
             }
@@ -265,7 +263,7 @@ public class BaseExecutionService {
 
     protected Map<String, Object> getVariablesToSet(CorrelationActionRequest correlationActionRequest) {
         Map<String, Object> variablesToSet = new HashMap<String, Object>();
-        for (RestVariable var : correlationActionRequest.getRestVariables()) {
+        for (RestVariable var : correlationActionRequest.getVariables()) {
             if (var.getName() == null) {
                 throw new ActivitiIllegalArgumentException("Variable name is required");
             }
@@ -281,11 +279,11 @@ public class BaseExecutionService {
         List<RestVariable> result = new ArrayList<RestVariable>();
         Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
 
-        // Check if it's a valid execution to get the restVariables for
+        // Check if it's a valid execution to get the variables for
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
 
         if (variableScope == null) {
-            // Use both local and global restVariables
+            // Use both local and global variables
             addLocalVariables(execution, variableType, variableMap, uriInfo);
             addGlobalVariables(execution, variableType, variableMap, uriInfo);
 
@@ -296,7 +294,7 @@ public class BaseExecutionService {
             addLocalVariables(execution, variableType, variableMap, uriInfo);
         }
 
-        // Get unique restVariables from map
+        // Get unique variables from map
         result.addAll(variableMap.values());
         return result;
     }
@@ -319,8 +317,8 @@ public class BaseExecutionService {
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());
 
-        // Overlay global restVariables over local ones. In case they are present the values are not overridden,
-        // since local restVariables get precedence over global ones at all times.
+        // Overlay global variables over local ones. In case they are present the values are not overridden,
+        // since local variables get precedence over global ones at all times.
         for (RestVariable var : globalVariables) {
             if (!variableMap.containsKey(var.getName())) {
                 variableMap.put(var.getName(), var);
@@ -558,7 +556,7 @@ public class BaseExecutionService {
         }
 
         if (inputVariables.size() == 0) {
-            throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
+            throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
         }
 
         RestVariable.RestVariableScope sharedScope = null;
@@ -579,7 +577,7 @@ public class BaseExecutionService {
                 sharedScope = varScope;
             }
             if (varScope != sharedScope) {
-                throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
+                throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
             }
 
             if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
@@ -598,11 +596,11 @@ public class BaseExecutionService {
                 runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
             } else {
                 if (execution.getParentId() != null) {
-                    // Explicitly set on parent, setting non-local restVariables on execution itself will override local-restVariables if exists
+                    // Explicitly set on parent, setting non-local variables on execution itself will override local-variables if exists
                     runtimeService.setVariables(execution.getParentId(), variablesToSet);
                 } else {
-                    // Standalone task, no global restVariables possible
-                    throw new ActivitiIllegalArgumentException("Cannot set global restVariables on execution '" + execution.getId() + "', task is not part of process.");
+                    // Standalone task, no global variables possible
+                    throw new ActivitiIllegalArgumentException("Cannot set global variables on execution '" + execution.getId() + "', task is not part of process.");
                 }
             }
         }
@@ -688,7 +686,7 @@ public class BaseExecutionService {
     }*/
 
     protected void setVariable(Execution execution, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
-        // Create can only be done on new restVariables. Existing restVariables should be updated using PUT
+        // Create can only be done on new variables. Existing variables should be updated using PUT
         boolean hasVariable = hasVariableOnScope(execution, name, scope);
         if (isNew && hasVariable) {
             throw new ActivitiException("Variable '" + name + "' is already present on execution '" + execution.getId() + "'.");
@@ -738,7 +736,7 @@ public class BaseExecutionService {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
-            // First, check local restVariables (which have precedence when no scope is supplied)
+            // First, check local variables (which have precedence when no scope is supplied)
             if (runtimeService.hasVariableLocal(execution.getId(), variableName)) {
                 value = runtimeService.getVariableLocal(execution.getId(), variableName);
                 variableScope = RestVariable.RestVariableScope.LOCAL;
@@ -751,7 +749,7 @@ public class BaseExecutionService {
                 }
             }
         } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
-            // Use parent to get restVariables
+            // Use parent to get variables
             if (execution.getParentId() != null) {
                 value = runtimeService.getVariable(execution.getParentId(), variableName);
                 variableScope = RestVariable.RestVariableScope.GLOBAL;
