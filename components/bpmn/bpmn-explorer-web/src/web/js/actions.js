@@ -1014,7 +1014,7 @@ function getUserTasksOfCompletedProcessInstances(id){
         success: function (data) {
 
             $("#userTasks").html("");
-            var completedTaskInstances = data;
+            var completedTaskInstances = JSON.parse(data);
             var DIV = "<table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
@@ -1047,7 +1047,7 @@ function getVariablesOfCompletedProcessInstances(id){
         success: function (data) {
 
             $("#variables").html("");
-            var variableInfo = data;
+            var variableInfo = JSON.parse(data);
             if (variableInfo.data.length == 0) {
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
@@ -1081,7 +1081,7 @@ function getAuditLogForCompletedProcessInstances(id){
         success: function (data) {
 
             $("#auditLog").html("");
-            var completedTaskInstances = data;
+            var completedTaskInstances = JSON.parse(data);
             var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
@@ -1118,7 +1118,7 @@ function getCalledProcessInstancesOfCompleted(id){
         success:
 
             function innerFunction(data){
-                var calledPId= data.superProcessInstanceId;
+                var calledPId= JSON.parse(data).superProcessInstanceId;
                 $("#calledInstances").html("");
                 if (calledPId == null) {
                     var result = "<h3> No Called Process Instances </h3>";
@@ -1134,7 +1134,7 @@ function getCalledProcessInstancesOfCompleted(id){
 
                         success: function (data){
 
-                            var calledPInfo = data;
+                            var calledPInfo = JSON.parse(data);
                             $("#calledInstances").html("");
                             var DIV = "<table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
 
@@ -1180,7 +1180,8 @@ function getAuditLogForRunningProcessInstances(pid,id){
 
             function innerFunction(data){
 
-                var taskList = data;
+                var taskList = JSON.parse(data);
+                
                 var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
 
                 $.ajax({
@@ -1190,8 +1191,8 @@ function getAuditLogForRunningProcessInstances(pid,id){
                     success: function (data){
 
                         $("#auditLog").html("");
-                        var taskList2 = data;
-
+                        var taskList2 = JSON.parse(data);
+                        
                         var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
 
                         for (var k = 0; k < taskList.data.length; k++) {
@@ -1251,7 +1252,7 @@ function getVariablesOfRunningProcessInstances(id){
         success: function (data) {
 
             $("#variables").html("");
-            var variableInfo = data;
+            var variableInfo = JSON.parse(data);
             if (variableInfo.restVariables.length == 0) {
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
@@ -1284,7 +1285,7 @@ function getUserTasksOfRunningProcessInstances(pid,id){
 
             function innerFunction(data){
 
-                var taskList = data;
+                var taskList = JSON.parse(data);
                 var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
 
                 $.ajax({
@@ -1294,7 +1295,7 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                     success: function (data){
 
                         $("#userTasks").html("");
-                        var taskList2 = data;
+                        var taskList2 = JSON.parse(data);
 
                         var DIV = "<table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
 
