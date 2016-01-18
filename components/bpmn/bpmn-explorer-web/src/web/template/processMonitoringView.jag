@@ -37,7 +37,7 @@
                 <input id="instanceId" name="instanceId" type="text" value="<%=instanceId%>" class="form-control" 
                 placeholder='<%=i18n.localize("enter.process.instance.id","Enter Process Instance ID")%>'>
                 <br/>
-                <input type="button" class="btn btn-default btn-info" onclick="filterResults(document.getElementById('instanceId').value)"
+                <input type="button" class="btn btn-default btn-info" onclick="filterResults((document.getElementById('instanceId').value).replace(/ /g,''))"
                  value='<%=i18n.localize("view.details" , "View Details")%>'>
                  <br/>
                  <a href="advancedFilter"> <%=i18n.localize("filter.instances" , "Filter the instances")%>  </a>
