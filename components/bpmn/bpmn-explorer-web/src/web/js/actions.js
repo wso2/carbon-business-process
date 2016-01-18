@@ -1101,7 +1101,7 @@ function getCalledProcessInstancesOfCompleted(id){
 
 //Generates the details for a completed process instance
 function completedProcessInstances(id){
-
+   
     getAuditLogForCompletedProcessInstances(id);
     getUserTasksOfCompletedProcessInstances(id);
     getVariablesOfCompletedProcessInstances(id);
@@ -1379,7 +1379,7 @@ function validateFilter(){
  * Function to filter the records for the instance id in advanced filtering
  */
 function filterResults(id){
-
+   
     window.location = httpUrl + "/" + CONTEXT + "/processMonitoring?instanceId=" + id ;   
 }
 

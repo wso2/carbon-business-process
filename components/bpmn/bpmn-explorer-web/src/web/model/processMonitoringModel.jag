@@ -38,11 +38,18 @@ if (countOfProcesses == 0) {
                    
                 if (endTime != null) {
                     var instanceId = query1.data[0].id; 
-                    var pId = query1.data[0].processDefinitionId;    
+                    var pId = query1.data[0].processDefinitionId;    %>
                     
-                    print("<script type='text/javascript'>setTimeout(function() { completedProcessInstances(" + instanceId + "); }, 100);</script>")
+                  
+                   <script type='text/javascript'>
+
+                    var instanceId = <%=instanceId%> ;                    
+                    setTimeout(function() { completedProcessInstances(instanceId); }, 100);
+
+                   </script>
 
                       //Get the bpmn diagram
+                   <%
                     var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/" + pId, null, headers, "json" ).data.data;
 
                     var imageUrl = "";
@@ -66,11 +73,22 @@ if (countOfProcesses == 0) {
 
                 } else {                        
                    var instanceId = query1.data[0].id; 
-                   var pId = query1.data[0].processDefinitionId;     
+                   var pId = query1.data[0].processDefinitionId; 
+                   var processID = String(pId);
+
+                       %>
                                
-                   print("<script type='text/javascript'>setTimeout(function() { runningProcessInstances('"+ pId +"', "+ instanceId + "); }, 100);</script>")                    
+                  
+                  <script type='text/javascript'>
+
+                    var instanceId = <%=instanceId%> ;                  
+                    
+                    setTimeout(function() { runningProcessInstances('<%=processID%>',instanceId); }, 100);
+
+                   </script>               
 
                    //Get the bpmn diagram
+                    <%
                     var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+ pId, null, headers, "json" ).data.data;
 
                     var imageUrl = "";
@@ -96,8 +114,8 @@ if (countOfProcesses == 0) {
                 var instanceId = ''; 
                 var imageUrl = '';
                 if (id != null) {
-                    instanceId = id;
-                    %><script type='text/javascript'>setTimeout(function() {  
+                    instanceId = id; 
+                    %> <script type='text/javascript'>setTimeout(function() {  
 
                         $('#transferErrMsg').html('Please enter a valid instance id');
                         $('#transferErrorMessageArea').show();
@@ -105,7 +123,7 @@ if (countOfProcesses == 0) {
                         $('#transfer').on('hide.bs.modal', function (e) {
                             $('#transferErrorMessageArea').hide();
                         }); 
-                    }, 100);</script><%
+                    }, 100);</script> <%
                 }
             }       
 
