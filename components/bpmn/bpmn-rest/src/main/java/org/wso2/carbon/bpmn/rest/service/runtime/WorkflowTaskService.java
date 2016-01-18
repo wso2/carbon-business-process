@@ -349,12 +349,12 @@ public class WorkflowTaskService extends BaseTaskService {
         List<RestVariable> result = new ArrayList<>();
         Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
 
-        // Check if it's a valid task to get the restVariables for
+        // Check if it's a valid task to get the variables for
         Task task = getTaskFromRequest(taskId);
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
-            // Use both local and global restVariables
+            // Use both local and global variables
             addLocalVariables(task, variableMap, uriInfo.getBaseUri().toString());
             addGlobalVariables(task, variableMap, uriInfo.getBaseUri().toString());
 
@@ -365,7 +365,7 @@ public class WorkflowTaskService extends BaseTaskService {
             addLocalVariables(task, variableMap, uriInfo.getBaseUri().toString());
         }
 
-        // Get unique restVariables from map
+        // Get unique variables from map
         result.addAll(variableMap.values());
 
         RestVariableCollection restVariableCollection = new RestVariableCollection();
@@ -504,7 +504,7 @@ public class WorkflowTaskService extends BaseTaskService {
         }
 
         if (inputVariables.size() == 0) {
-            throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
+            throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
         }
 
         RestVariable.RestVariableScope sharedScope = null;
@@ -527,7 +527,7 @@ public class WorkflowTaskService extends BaseTaskService {
                 sharedScope = varScope;
             }
             if (varScope != sharedScope) {
-                throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
+                throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
             }
 
             if (hasVariableOnScope(task, var.getName(), varScope)) {
@@ -550,11 +550,11 @@ public class WorkflowTaskService extends BaseTaskService {
                 taskService.setVariablesLocal(task.getId(), variablesToSet);
             } else {
                 if (task.getExecutionId() != null) {
-                    // Explicitly set on execution, setting non-local restVariables on task will override local-restVariables if exists
+                    // Explicitly set on execution, setting non-local variables on task will override local-variables if exists
                     runtimeService.setVariables(task.getExecutionId(), variablesToSet);
                 } else {
-                    // Standalone task, no global restVariables possible
-                    throw new ActivitiIllegalArgumentException("Cannot set global restVariables on task '" + task.getId() + "', task is not part of process.");
+                    // Standalone task, no global variables possible
+                    throw new ActivitiIllegalArgumentException("Cannot set global variables on task '" + task.getId() + "', task is not part of process.");
                 }
             }
         }

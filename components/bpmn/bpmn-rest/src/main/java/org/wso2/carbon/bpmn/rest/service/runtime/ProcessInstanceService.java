@@ -96,7 +96,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         if (log.isDebugEnabled()) {
             log.debug("ProcessInstanceCreateRequest:" + processInstanceCreateRequest.getProcessDefinitionId());
-            log.debug(" processInstanceCreateRequest.getRestVariables().size():" + processInstanceCreateRequest.getVariables().size());
+            log.debug(" processInstanceCreateRequest.getVariables().size():" + processInstanceCreateRequest.getVariables().size());
         }
 
         if (processInstanceCreateRequest.getProcessDefinitionId() == null && processInstanceCreateRequest.getProcessDefinitionKey() == null
@@ -681,7 +681,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         if (inputVariables.size() == 0) {
-            throw new ActivitiIllegalArgumentException("Request didn't contain a list of restVariables to create.");
+            throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
         }
 
         RestVariable.RestVariableScope sharedScope = null;
@@ -702,7 +702,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 sharedScope = varScope;
             }
             if (varScope != sharedScope) {
-                throw new ActivitiIllegalArgumentException("Only allowed to update multiple restVariables in the same scope.");
+                throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
             }
 
             if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
@@ -724,11 +724,11 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
             } else {
                 if (execution.getParentId() != null) {
-                    // Explicitly set on parent, setting non-local restVariables on execution itself will override local-restVariables if exists
+                    // Explicitly set on parent, setting non-local variables on execution itself will override local-variables if exists
                     runtimeService.setVariables(execution.getParentId(), variablesToSet);
                 } else {
-                    // Standalone task, no global restVariables possible
-                    throw new ActivitiIllegalArgumentException("Cannot set global restVariables on execution '" + execution.getId() + "', task is not part of process.");
+                    // Standalone task, no global variables possible
+                    throw new ActivitiIllegalArgumentException("Cannot set global variables on execution '" + execution.getId() + "', task is not part of process.");
                 }
             }
         }
@@ -913,7 +913,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     protected void setVariable(Execution execution, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
-        // Create can only be done on new restVariables. Existing restVariables should be updated using PUT
+        // Create can only be done on new variables. Existing variables should be updated using PUT
         if (log.isDebugEnabled()) {
             log.debug("Going to invoke has variable from set binary variable");
         }
@@ -987,7 +987,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
-            // First, check local restVariables (which have precedence when no scope is supplied)
+            // First, check local variables (which have precedence when no scope is supplied)
             if (runtimeService.hasVariableLocal(execution.getId(), variableName)) {
                 value = runtimeService.getVariableLocal(execution.getId(), variableName);
                 variableScope = RestVariable.RestVariableScope.LOCAL;
@@ -1000,7 +1000,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 }
             }
         } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
-            // Use parent to get restVariables
+            // Use parent to get variables
             if (execution.getParentId() != null) {
                 value = runtimeService.getVariable(execution.getParentId(), variableName);
                 variableScope = RestVariable.RestVariableScope.GLOBAL;
@@ -1026,11 +1026,11 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         List<RestVariable> result = new ArrayList<RestVariable>();
         Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
 
-        // Check if it's a valid execution to get the restVariables for
+        // Check if it's a valid execution to get the variables for
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
 
         if (variableScope == null) {
-            // Use both local and global restVariables
+            // Use both local and global variables
             addLocalVariables(execution, variableType, variableMap);
             addGlobalVariables(execution, variableType, variableMap);
 
@@ -1041,7 +1041,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             addLocalVariables(execution, variableType, variableMap);
         }
 
-        // Get unique restVariables from map
+        // Get unique variables from map
         result.addAll(variableMap.values());
         return result;
     }
@@ -1063,8 +1063,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());
 
-        // Overlay global restVariables over local ones. In case they are present the values are not overridden,
-        // since local restVariables get precedence over global ones at all times.
+        // Overlay global variables over local ones. In case they are present the values are not overridden,
+        // since local variables get precedence over global ones at all times.
         for (RestVariable var : globalVariables) {
             if (!variableMap.containsKey(var.getName())) {
                 variableMap.put(var.getName(), var);

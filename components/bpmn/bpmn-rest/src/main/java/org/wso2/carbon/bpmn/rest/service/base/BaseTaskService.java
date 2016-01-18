@@ -514,8 +514,8 @@ public class BaseTaskService {
                             .getId(),
                     RestResponseFactory.VARIABLE_TASK, RestVariable.RestVariableScope.GLOBAL, baseUri);
 
-            // Overlay global restVariables over local ones. In case they are present the values are not overridden,
-            // since local restVariables get precedence over global ones at all times.
+            // Overlay global variables over local ones. In case they are present the values are not overridden,
+            // since local variables get precedence over global ones at all times.
             for (RestVariable var : globalVariables) {
                 if (!variableMap.containsKey(var.getName())) {
                     variableMap.put(var.getName(), var);
@@ -534,7 +534,7 @@ public class BaseTaskService {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
         if (variableScope == null) {
-            // First, check local restVariables (which have precedence when no scope is supplied)
+            // First, check local variables (which have precedence when no scope is supplied)
             if (taskService.hasVariableLocal(taskId, variableName)) {
                 value = taskService.getVariableLocal(taskId, variableName);
                 variableScope = RestVariable.RestVariableScope.LOCAL;
@@ -577,7 +577,7 @@ public class BaseTaskService {
         boolean debugEnabled = log.isDebugEnabled();
 
         if(debugEnabled) {
-            log.debug("Processing Binary restVariables");
+            log.debug("Processing Binary variables");
         }
 
         Object result = null;
@@ -746,7 +746,7 @@ public class BaseTaskService {
         boolean debugEnabled = log.isDebugEnabled();
 
         if(debugEnabled) {
-            log.debug("Processing Binary restVariables");
+            log.debug("Processing Binary variables");
         }
 
         byte[] byteArray = Utils.processMultiPartFile(httpServletRequest, "file content");
@@ -810,7 +810,7 @@ public class BaseTaskService {
 */
 
     protected void setVariable(Task task, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
-        // Create can only be done on new restVariables. Existing restVariables should be updated using PUT
+        // Create can only be done on new variables. Existing variables should be updated using PUT
         boolean hasVariable = hasVariableOnScope(task, name, scope);
         if (isNew && hasVariable) {
             throw new ActivitiException("Variable '" + name + "' is already present on task '" + task.getId() + "'.");
@@ -830,7 +830,7 @@ public class BaseTaskService {
                 // Explicitly set on execution, setting non-local variable on task will override local-variable if exists
                 runtimeService.setVariable(task.getExecutionId(), name, value);
             } else {
-                // Standalone task, no global restVariables possible
+                // Standalone task, no global variables possible
                 throw new ActivitiIllegalArgumentException("Cannot set global variable '" + name + "' on task '" +
                         task.getId() +"', task is not part of process.");
             }
