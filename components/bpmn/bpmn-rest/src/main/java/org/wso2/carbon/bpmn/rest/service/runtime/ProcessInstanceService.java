@@ -1112,12 +1112,11 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                                 });
                     }
                 }
+                if (processDefinitionId == null) {
+                    return false;
+                }
             }
 
-        }
-
-        if (processDefinitionId == null) {
-            return false;
         }
 
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
@@ -1143,9 +1142,10 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 if (userId.contains("$")) {
                     userId = resolveVariable(processInstanceCreateRequest.getVariables(), userId);
                 }
-                if (userId.equals(userName) || userId.equals(userNameWithTenantDomain)) {
+                if ( !userId.isEmpty() && ( userId.equals(userName) || userId.equals(userNameWithTenantDomain)) ) {
                     return true;
                 }
+                continue;
             }
 
             String groupId = identityLink.getGroupId();
@@ -1157,7 +1157,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 }
 
                 for (Group identityGroup:groupList){
-                    if(identityGroup.getId() != null && identityGroup.getId().equals(groupId)){
+                    if(!groupId.isEmpty() && identityGroup.getId() != null && identityGroup.getId().equals(groupId)){
                         return true;
                     }
                 }
