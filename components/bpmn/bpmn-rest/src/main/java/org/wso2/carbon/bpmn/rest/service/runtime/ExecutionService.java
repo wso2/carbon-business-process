@@ -65,7 +65,7 @@ public class ExecutionService  extends BaseExecutionService {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
         if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
-            if (actionRequest.getRestVariables() != null) {
+            if (actionRequest.getVariables() != null) {
                 runtimeService.signal(execution.getId(), getVariablesToSet(actionRequest));
             } else {
                 runtimeService.signal(execution.getId());
@@ -74,7 +74,7 @@ public class ExecutionService  extends BaseExecutionService {
             if (actionRequest.getSignalName() == null) {
                 throw new ActivitiIllegalArgumentException("Signal name is required");
             }
-            if (actionRequest.getRestVariables() != null) {
+            if (actionRequest.getVariables() != null) {
                 runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId(),
                         getVariablesToSet(actionRequest));
             } else {
@@ -84,7 +84,7 @@ public class ExecutionService  extends BaseExecutionService {
             if (actionRequest.getMessageName() == null) {
                 throw new ActivitiIllegalArgumentException("Message name is required");
             }
-            if (actionRequest.getRestVariables() != null) {
+            if (actionRequest.getVariables() != null) {
                 runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId(),
                         getVariablesToSet(actionRequest));
             } else {
@@ -222,7 +222,7 @@ public class ExecutionService  extends BaseExecutionService {
         }
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
-        if (actionRequest.getRestVariables() != null) {
+        if (actionRequest.getVariables() != null) {
             runtimeService.signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest));
         } else {
             runtimeService.signalEventReceived(actionRequest.getSignalName());

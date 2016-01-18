@@ -150,7 +150,7 @@ public class CorrelationService extends BaseExecutionService {
 
         String action = correlationActionRequest.getAction();
         if (CorrelationActionRequest.ACTION_SIGNAL.equals(action)) {
-            if (correlationActionRequest.getRestVariables() != null) {
+            if (correlationActionRequest.getVariables() != null) {
                 runtimeService.signal(execution.getId(), getVariablesToSet(correlationActionRequest));
             } else {
                 runtimeService.signal(execution.getId());
@@ -159,7 +159,7 @@ public class CorrelationService extends BaseExecutionService {
             if (correlationActionRequest.getSignalName() == null) {
                 throw new ActivitiIllegalArgumentException("Signal name is required");
             }
-            if (correlationActionRequest.getRestVariables() != null) {
+            if (correlationActionRequest.getVariables() != null) {
                 runtimeService.signalEventReceived(correlationActionRequest.getSignalName(), execution.getId(), getVariablesToSet(correlationActionRequest));
             } else {
                 runtimeService.signalEventReceived(correlationActionRequest.getSignalName(), execution.getId());
@@ -168,7 +168,7 @@ public class CorrelationService extends BaseExecutionService {
             if (correlationActionRequest.getMessageName() == null) {
                 throw new ActivitiIllegalArgumentException("Message name is required");
             }
-            if (correlationActionRequest.getRestVariables() != null) {
+            if (correlationActionRequest.getVariables() != null) {
                 runtimeService.messageEventReceived(correlationActionRequest.getMessageName(), execution.getId(), getVariablesToSet(correlationActionRequest));
             } else {
                 runtimeService.messageEventReceived(correlationActionRequest.getMessageName(), execution.getId());
