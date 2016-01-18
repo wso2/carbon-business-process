@@ -1374,7 +1374,7 @@
     </profiles>
 
     <properties>
-
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <carbon.business-process.version>4.4.5-SNAPSHOT</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.4.0,4.5.0)
         </carbon.business-process.imp.pkg.version>
