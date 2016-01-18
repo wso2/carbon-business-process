@@ -44,7 +44,7 @@ if (countOfProcesses == 0) {
                    <script type='text/javascript'>
 
                     var instanceId = <%=instanceId%> ;                    
-                    setTimeout(function() { completedProcessInstances(instanceId); }, 100);
+                    setTimeout(function() { completedProcessInstances(instanceId); }, 300);
 
                    </script>
 
@@ -83,7 +83,7 @@ if (countOfProcesses == 0) {
 
                     var instanceId = <%=instanceId%> ;                  
                     
-                    setTimeout(function() { runningProcessInstances('<%=processID%>',instanceId); }, 100);
+                    setTimeout(function() { runningProcessInstances('<%=processID%>',instanceId); }, 300);
 
                    </script>               
 
