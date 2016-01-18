@@ -1159,37 +1159,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
         List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
-
-
-
-/*        if(processDefinitionId == null){
-            String messageName = processInstanceCreateRequest.getMessage();
-
-            if(messageName != null && !messageName.isEmpty()){
-
-                ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
-                        .messageEventSubscriptionName(messageName);
-                if(processDefinitionQuery != null){
-                    processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId
-                            (processInstanceCreateRequest.getTenantId());
-                    if(processDefinitionQuery != null && processDefinitionQuery.count() > 1){
-                        processDefinitionQuery = processDefinitionQuery.latestVersion();
-                    }
-                }
-
-                if(processDefinitionQuery != null){
-                     ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
-                    if(processDefinition != null){
-                        processDefinitionId = processDefinition.getId();
-                    }
-                }
-
-                if (processDefinitionId == null) {
-                    return false;
-                }
-            }
-        }*/
-
         List<IdentityLink> identityLinkList = repositoryService.getIdentityLinksForProcessDefinition
                 (processDefinitionId);
 
