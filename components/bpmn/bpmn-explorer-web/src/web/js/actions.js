@@ -426,7 +426,9 @@ function processSearch(){
     if (SDate.value.length > 0) {
         var startDateTemp = new Date(SDate.value);
         var startDateISOTemp = document.getElementById("startDateISO");
-        startDateISOTemp.value = startDateTemp.toISOString();                       
+        startDateISOTemp.value = startDateTemp.toISOString();
+        startDateISOTemp.value = startDateTemp.toISOString().split('.')[0] + 'Z';
+
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("startDateISO").disabled = true;
@@ -442,7 +444,8 @@ function processSearch(){
         console.log(endDateTemp);
         console.log(endDateTemp.toISOString());
         var endDateISOTemp = document.getElementById("endDateISO");
-        endDateISOTemp.value = endDateTemp.toISOString();                       
+        endDateISOTemp.value = endDateTemp.toISOString();
+        endDateISOTemp.value = endDateTemp.toISOString().split('.')[0] + 'Z';
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("endDateISO").disabled = true;
