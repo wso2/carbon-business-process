@@ -1026,7 +1026,11 @@ function getUserTasksOfCompletedProcessInstances(id){
                 var assignee = completedTaskInstances.data[k].assignee;
                 var duration = completedTaskInstances.data[k].durationInMillis;
 
-                DIV = DIV + "<tr><td>"+state+"</td><td>"+taskDefKey+"</td><td>"+taskName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
+                var length = 25;
+                var trimmedName = taskName.substring(0, length);
+                var trimmedTaskDefKey = taskDefKey.substring(0, length);
+               
+                DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedTaskDefKey+"</td><td>"+trimmedName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
 
             }
             DIV = DIV+"</tbody></table>"
@@ -1058,7 +1062,12 @@ function getVariablesOfCompletedProcessInstances(id){
                     var type =variableInfo.data[k].variable.type;
                     var value = variableInfo.data[k].variable.value;
                     var scope = variableInfo.data[k].variable.scope;
-                    DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
+
+                    var length = 25;
+                    var trimmedName = name.substring(0, length);
+                    var trimmedValue = value.substring(0, length);
+
+                    DIV = DIV + "<tr><td>"+trimmedName+"</td><td>"+type+"</td><td>"+trimmedValue+"</td><td>"+scope+"</td></tr>";
 
                 }
                 DIV = DIV+"</tbody></table>"
@@ -1096,7 +1105,10 @@ function getAuditLogForCompletedProcessInstances(id){
                     taskId = "N/A";
                 }
 
-                DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+activityType+"</td><td>"+activityStartTime+"</td><td>"+activityEndTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
+                var length = 25;
+                var trimmedName = activityName.substring(0, length);
+                
+                DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedName+"</td><td>"+activityType+"</td><td>"+activityStartTime+"</td><td>"+activityEndTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
 
             }
             DIV = DIV+"</tbody></table>"
@@ -1144,7 +1156,10 @@ function getCalledProcessInstancesOfCompleted(id){
                             var endTime  = calledPInfo.endTime;
                             var durationInMillis  = calledPInfo.durationInMillis;
 
-                            DIV = DIV + "<tr><td>"+id+"</td><td>"+processDefinitionId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
+                            var length = 25;
+                            var trimmedPId = processDefinitionId.substring(0, length);
+
+                            DIV = DIV + "<tr><td>"+id+"</td><td>"+trimmedPId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
                             DIV = DIV+"</tbody></table>"
 
                             $("#calledInstances").html(DIV);
@@ -1228,7 +1243,10 @@ function getAuditLogForRunningProcessInstances(pid,id){
 
                             }
 
-                            DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
+                            var length = 25;
+                            var trimmedName = activityName.substring(0, length);
+
+                            DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
 
                         }
                         DIV = DIV+"</tbody></table>"
@@ -1262,8 +1280,13 @@ function getVariablesOfRunningProcessInstances(id){
                     var name = variableInfo.restVariables[k].name;
                     var type =variableInfo.restVariables[k].type;
                     var value = variableInfo.restVariables[k].value;
+
+                    var length = 25;
+                    var trimmedName = name.substring(0, length);
+                    var trimmedValue = value.substring(0, length);
+
                     var scope = variableInfo.restVariables[k].variableScope;
-                    DIV = DIV + "<tr><td>"+name+"</td><td>"+type+"</td><td>"+value+"</td><td>"+scope+"</td></tr>";
+                    DIV = DIV + "<tr><td>"+trimmedName+"</td><td>"+type+"</td><td>"+trimmedValue+"</td><td>"+scope+"</td></tr>";
                 }
                 DIV = DIV+"</tbody></table>"
                 $("#variables").html(DIV);
@@ -1336,7 +1359,10 @@ function getUserTasksOfRunningProcessInstances(pid,id){
 
                                     }
                                 }
-                                DIV = DIV + "<tr><td>"+state+"</td><td>"+activityName+"</td><td>"+taskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
+                                var length = 25;
+                                var trimmedName = activityName.substring(0, length);
+                                var trimmedTaskDefKey = taskDefKey.substring(0, length);
+                                DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedName+"</td><td>"+trimmedTaskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
                             } else {
                             }
                         }
