@@ -1017,7 +1017,7 @@ function getUserTasksOfCompletedProcessInstances(id){
 
             $("#userTasks").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
+            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
@@ -1027,15 +1027,11 @@ function getUserTasksOfCompletedProcessInstances(id){
                 var endTime = completedTaskInstances.data[k].endTime;
                 var assignee = completedTaskInstances.data[k].assignee;
                 var duration = completedTaskInstances.data[k].durationInMillis;
-
-                var length = 25;
-                var trimmedName = taskName.substring(0, length);
-                var trimmedTaskDefKey = taskDefKey.substring(0, length);
-               
-                DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedTaskDefKey+"</td><td>"+trimmedName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
+                              
+                DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+taskDefKey+"</td><td style='word-wrap: break-word'>"+taskName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
 
             }
-            DIV = DIV+"</tbody></table>"
+            DIV = DIV+"</tbody></table></div>"
             $("#userTasks").html(DIV);
 
         }
@@ -1058,21 +1054,17 @@ function getVariablesOfCompletedProcessInstances(id){
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
             } else {
-                var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.data.length; k++) {
                     var name = variableInfo.data[k].variable.name;
                     var type =variableInfo.data[k].variable.type;
                     var value = variableInfo.data[k].variable.value;
                     var scope = variableInfo.data[k].variable.scope;
-
-                    var length = 25;
-                    var trimmedName = name.substring(0, length);
-                    var trimmedValue = value.substring(0, length);
-
-                    DIV = DIV + "<tr><td>"+trimmedName+"</td><td>"+type+"</td><td>"+trimmedValue+"</td><td>"+scope+"</td></tr>";
+                    
+                    DIV = DIV + "<tr><td style='word-wrap: break-word'>"+name+"</td><td>"+type+"</td><td style='word-wrap: break-word'>"+value+"</td><td>"+scope+"</td></tr>";
 
                 }
-                DIV = DIV+"</tbody></table>"
+                DIV = DIV+"</tbody></table></div>"
                 $("#variables").html(DIV);
             }
 
@@ -1093,7 +1085,7 @@ function getAuditLogForCompletedProcessInstances(id){
 
             $("#auditLog").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
@@ -1106,14 +1098,11 @@ function getAuditLogForCompletedProcessInstances(id){
                 if (taskId == null) {
                     taskId = "N/A";
                 }
-
-                var length = 25;
-                var trimmedName = activityName.substring(0, length);
-                
-                DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedName+"</td><td>"+activityType+"</td><td>"+activityStartTime+"</td><td>"+activityEndTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
+               
+                DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td>"+activityType+"</td><td>"+activityStartTime+"</td><td>"+activityEndTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
 
             }
-            DIV = DIV+"</tbody></table>"
+            DIV = DIV+"</tbody></table></div>"
             $("#auditLog").html(DIV);
 
         }
@@ -1150,19 +1139,16 @@ function getCalledProcessInstancesOfCompleted(id){
 
                             var calledPInfo = JSON.parse(data);
                             $("#calledInstances").html("");
-                            var DIV = "<table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
+                            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
 
                             var id  = calledPInfo.id;
                             var processDefinitionId= calledPInfo.processDefinitionId;
                             var startTime  = calledPInfo.startTime;
                             var endTime  = calledPInfo.endTime;
                             var durationInMillis  = calledPInfo.durationInMillis;
-
-                            var length = 25;
-                            var trimmedPId = processDefinitionId.substring(0, length);
-
-                            DIV = DIV + "<tr><td>"+id+"</td><td>"+trimmedPId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
-                            DIV = DIV+"</tbody></table>"
+                          
+                            DIV = DIV + "<tr><td>"+id+"</td><td style='word-wrap: break-word'>"+processDefinitionId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
+                            DIV = DIV+"</tbody></table></div>"
 
                             $("#calledInstances").html(DIV);
 
@@ -1210,7 +1196,7 @@ function getAuditLogForRunningProcessInstances(pid,id){
                         $("#auditLog").html("");
                         var taskList2 = JSON.parse(data);
                         
-                        var DIV = "<table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+                        var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
 
                         for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1244,14 +1230,11 @@ function getAuditLogForRunningProcessInstances(pid,id){
                                 }
 
                             }
-
-                            var length = 25;
-                            var trimmedName = activityName.substring(0, length);
-
-                            DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
+                         
+                            DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
 
                         }
-                        DIV = DIV+"</tbody></table>"
+                        DIV = DIV+"</tbody></table></div>"
                         $("#auditLog").html(DIV);
 
                     }
@@ -1277,20 +1260,16 @@ function getVariablesOfRunningProcessInstances(id){
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
             } else {
-                var DIV = "<table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.restVariables.length; k++) {
                     var name = variableInfo.restVariables[k].name;
                     var type =variableInfo.restVariables[k].type;
-                    var value = variableInfo.restVariables[k].value;
-
-                    var length = 25;
-                    var trimmedName = name.substring(0, length);
-                    var trimmedValue = value.substring(0, length);
-
+                    var value = variableInfo.restVariables[k].value;                    
                     var scope = variableInfo.restVariables[k].variableScope;
-                    DIV = DIV + "<tr><td>"+trimmedName+"</td><td>"+type+"</td><td>"+trimmedValue+"</td><td>"+scope+"</td></tr>";
+
+                    DIV = DIV + "<tr><td style='word-wrap: break-word'>"+name+"</td><td>"+type+"</td><td style='word-wrap: break-word'>"+value+"</td><td>"+scope+"</td></tr>";
                 }
-                DIV = DIV+"</tbody></table>"
+                DIV = DIV+"</tbody></table></div>"
                 $("#variables").html(DIV);
             }
         }
@@ -1322,7 +1301,7 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                         $("#userTasks").html("");
                         var taskList2 = JSON.parse(data);
 
-                        var DIV = "<table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
+                        var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
 
                         for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1360,15 +1339,13 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                                         var assignee = "Unassigned";
 
                                     }
-                                }
-                                var length = 25;
-                                var trimmedName = activityName.substring(0, length);
-                                var trimmedTaskDefKey = taskDefKey.substring(0, length);
-                                DIV = DIV + "<tr><td>"+state+"</td><td>"+trimmedName+"</td><td>"+trimmedTaskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
+                                }                
+                               
+                                DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td style='word-wrap: break-word'>"+taskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
                             } else {
                             }
                         }
-                        DIV = DIV+"</tbody></table>"
+                        DIV = DIV+"</tbody></table></div>"
                         $("#userTasks").html(DIV);
 
                     }
