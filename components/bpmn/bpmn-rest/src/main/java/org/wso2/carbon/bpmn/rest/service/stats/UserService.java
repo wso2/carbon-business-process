@@ -45,10 +45,7 @@ public class UserService {
     private static final Log log = LogFactory.getLog(UserService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     String str = String.valueOf(tenantId);
-
     String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-
-
 
     /**
      * @return list of users retrieved from the UserStore
