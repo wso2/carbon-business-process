@@ -47,6 +47,9 @@ public class UserService {
     String str = String.valueOf(tenantId);
     String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 
+    private static final String DOMAIN_OF_SUPER_TENANT = "carbon.super";
+    private static final String ADDRESS_SIGN = "@";
+
     /**
      * @return list of users retrieved from the UserStore
      */
@@ -89,10 +92,10 @@ public class UserService {
                 UserTaskCount userInfo = new UserTaskCount();
                 userInfo.setUserName(u);
                 String assignee ;
-                if ( tenantDomain == "carbon.super" ) {
+                if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
                     assignee = u ;
                 } else {
-                    assignee = u.concat("@").concat(tenantDomain);
+                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
                 long count = BPMNOSGIService.getHistoryService()
                         .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().count();
@@ -130,10 +133,10 @@ public class UserService {
                 userInfo.setUserName(u);
 
                 String assignee ;
-                if ( tenantDomain == "carbon.super" ) {
+                if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
                     assignee = u ;
                 } else {
-                    assignee = u.concat("@").concat(tenantDomain);
+                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
 
                 long count = BPMNOSGIService.getHistoryService()
@@ -179,10 +182,10 @@ public class UserService {
         }
 
         String taskAssignee ;
-        if ( tenantDomain == "carbon.super" ) {
+        if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
             taskAssignee = assignee ;
         } else {
-            taskAssignee = assignee.concat("@").concat(tenantDomain);
+            taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
         }
 
         ResponseHolder response = new ResponseHolder();
