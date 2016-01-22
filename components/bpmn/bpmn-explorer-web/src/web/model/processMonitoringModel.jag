@@ -48,7 +48,7 @@ if (countOfProcesses == 0) {
 
                    </script>
 
-                      //Get the bpmn diagram
+                      
                    <%
                     var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/" + pId, null, headers, "json" ).data.data;
 
@@ -87,7 +87,7 @@ if (countOfProcesses == 0) {
 
                    </script>               
 
-                   //Get the bpmn diagram
+                   
                     <%
                     var resource = get( httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/"+ pId, null, headers, "json" ).data.data;
 
