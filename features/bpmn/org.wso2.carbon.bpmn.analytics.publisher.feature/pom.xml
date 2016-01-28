@@ -73,7 +73,7 @@
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:server
                                     </propertyDef>
-                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:true
                                     </propertyDef>
                                 </properties>
                             </adviceFile>
