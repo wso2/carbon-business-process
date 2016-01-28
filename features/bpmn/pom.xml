@@ -34,8 +34,8 @@
     <modules>
         <module>org.wso2.carbon.bpmn.server.feature</module>
         <module>org.wso2.carbon.bpmn.ui.feature</module>
-        <module>org.wso2.carbon.bpmn.feature</module>
         <module>org.wso2.carbon.bpmn.analytics.publisher.feature</module>
+        <module>org.wso2.carbon.bpmn.feature</module>
     </modules>
 </project>
 
