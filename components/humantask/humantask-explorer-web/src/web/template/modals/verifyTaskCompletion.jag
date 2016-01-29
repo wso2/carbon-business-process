@@ -31,7 +31,7 @@
             </div>
 
             <div class="modal-body">
-                <p><%=i18n.localize("confirm.task.complete", "Do you want to complete task")%> <%=id%> ?</p>
+                <p><%=i18n.localize("confirm.task.complete", "Do you want to complete task")%> <%=Encode.forJavaScript(id)%> ?</p>
             </div>
 
             <div class="modal-footer">
