@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.core.db;
+/*package org.wso2.carbon.bpmn.core.db;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
 import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 
-/**
- * Initializes and starts the BPMN database.
- *
- */
 
 public class DataSourceHandler {
 
@@ -41,4 +37,4 @@ public class DataSourceHandler {
     public void closeDataSource(){
         database.shutdown();
     }
-}
+}*/

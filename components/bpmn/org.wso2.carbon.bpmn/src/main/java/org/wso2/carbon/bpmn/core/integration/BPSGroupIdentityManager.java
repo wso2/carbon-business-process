@@ -27,8 +27,8 @@ import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.UserStoreManager;
+//import org.wso2.carbon.user.api.UserStoreException;
+//import org.wso2.carbon.user.core.UserStoreManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +38,15 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
     private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
 
-    private UserStoreManager userStoreManager;
+   // private UserStoreManager userStoreManager;
 
-    public BPSGroupIdentityManager(UserStoreManager userStoreManager) {
-        this.userStoreManager = userStoreManager;
-    }
+   // public BPSGroupIdentityManager(UserStoreManager userStoreManager) {
+    //    this.userStoreManager = userStoreManager;
+    //}
 
+public BPSGroupIdentityManager() {
+
+     }
     @Override
     public Group createNewGroup(String groupId) {
         String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
@@ -82,16 +85,18 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     @Override
     public List<Group> findGroupsByUser(String userId) {
         List<Group> groups = new ArrayList<Group>();
-        try {
-            String[] roles = userStoreManager.getRoleListOfUser(userId);
+       // try {
+          //  String[] roles = userStoreManager.getRoleListOfUser(userId);
+           //TODO
+        String[] roles = {"admin","everyone"};
             for (String role : roles) {
                 Group group = new GroupEntity(role);
                 groups.add(group);
             }
-        } catch (UserStoreException e) {
+        /*} catch (UserStoreException e) {
             String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
             log.error(msg, e);
-        }
+        }*/
         return groups;
     }
 

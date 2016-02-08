@@ -16,22 +16,38 @@
 
 package org.wso2.carbon.bpmn.core.deployment;
 
-import org.apache.axis2.context.ConfigurationContext;
+/*import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.deployment.AbstractDeployer;
 import org.apache.axis2.deployment.DeploymentException;
-import org.apache.axis2.deployment.repository.util.DeploymentFileData;
+import org.apache.axis2.deployment.repository.util.DeploymentFileData;*/
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
+/*import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.utils.CarbonUtils;
-
+import org.wso2.carbon.utils.CarbonUtils;*/
+import org.wso2.carbon.kernel.deployment.Artifact;
+import org.wso2.carbon.kernel.deployment.ArtifactType;
+import org.wso2.carbon.kernel.deployment.Deployer;
+import org.wso2.carbon.kernel.deployment.exception.CarbonDeploymentException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.zip.ZipInputStream;
 
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
@@ -42,24 +58,29 @@ import java.io.File;
  * identify the deployment of a new package.
  *
  */
+public class BPMNDeployer implements Deployer {
 
-public class BPMNDeployer extends AbstractDeployer {
-
-    private static Log log = LogFactory.getLog(BPMNDeployer.class);
-    private TenantRepository tenantRepository = null;
-
+    //private static Log log = LogFactory.getLog(BPMNDeployer.class);
+   // private TenantRepository tenantRepository = null;
+ private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
+    private static final String DEPLOYMENT_PATH = "file:bpmn";
+   private static final String SUPPORTED_EXTENSIONS = "bar";
+    private URL deploymentLocation;
+    private ArtifactType artifactType;
+    private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
 	/**
 	 * Initializes the deployment per tenant
 	 *
 	 * @param configurationContext axis2 configurationContext
 	 */
     @Override
-    public void init(ConfigurationContext configurationContext) {
-
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
+    public void init() {
+        log.info("BPMNDeployer initializing");
+       artifactType = new ArtifactType<>("BPMN");
+        //Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+       // log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
         try {
-            File tenantRepoFolder = createTenantRepo(configurationContext);
+           /* File tenantRepoFolder = createTenantRepo(configurationContext);
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
             tenantRepository.setRepoFolder(tenantRepoFolder);
 
@@ -68,7 +89,10 @@ public class BPMNDeployer extends AbstractDeployer {
             }
         }  catch (BPSFault e) {
             String msg = "Tenant Error: " + tenantId;
-            log.error(msg, e);
+            log.error(msg, e);*/
+            deploymentLocation = new URL(DEPLOYMENT_PATH);
+        } catch (MalformedURLException e) {
+           log.error("BPMN deployer location error");
         }
     }
 
@@ -78,19 +102,27 @@ public class BPMNDeployer extends AbstractDeployer {
 	 * @throws DeploymentException On failure , deployment exception is thrown
 	 */
 
-    public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
-
-	    // Deployment logic is dependent on whether a given node is a worker node or not.Since process
-	    // information is shared though a persistence db and process is stored into the database, there
-	    // is no need to deploy process in worker nodes.
-
-
-        // Worker nodes cannot deploy BPMN packages, hence return
-        if (isWorkerNode()) {
-            return;
+    public Object deploy(Artifact
+         artifact) throws CarbonDeploymentException{
+	    File artifactFile = artifact.getFile();
+        String artifactPath = artifactFile.getAbsolutePath();
+        if (isSupportedFile(artifactFile)) {
+            try {
+                Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+               String deploymentName = FilenameUtils.getBaseName(artifact.getFile().getName());
+                ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+                RepositoryService repositoryService = engine.getRepositoryService();
+                DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
+                ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(artifact.getFile()));
+                deploymentBuilder.addZipInputStream(archiveStream);
+                deploymentBuilder.deploy();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+        return artifactPath;
 
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+      /*  Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         log.info("Deploying BPMN archive " + deploymentFileData.getFile().getName() +
                  " for tenant: " + tenantId);
         try {
@@ -103,7 +135,7 @@ public class BPMNDeployer extends AbstractDeployer {
         } catch (DeploymentException e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentFileData.getAbsolutePath();
             throw new DeploymentException(errorMessage, e);
-        }
+        }*/
     }
 
 	/**
@@ -113,7 +145,7 @@ public class BPMNDeployer extends AbstractDeployer {
 	 * @throws DeploymentException   Deployment failure will result in this exception
 	 */
 
-    public void undeploy(String bpmnArchivePath) throws DeploymentException {
+    /*public void undeploy(String bpmnArchivePath) throws DeploymentException {
 
 	    // Worker nodes does not perform any action related to bpmn undeployment, manager node takes
 	    // care of all deployment/undeployment actions
@@ -141,7 +173,17 @@ public class BPMNDeployer extends AbstractDeployer {
             throw new DeploymentException(errorMsg, be);
         }
 
+    }*/
+     public void undeploy(Object var1) throws CarbonDeploymentException {
+        //TODO
     }
+ 
+    public Object update(Artifact artifact) throws CarbonDeploymentException {
+        File artifactFile = artifact.getFile();
+       String artifactPath = artifactFile.getAbsolutePath();
+       //TODO
+       return artifactPath;
+     }
 
 	/**
 	 *
@@ -149,7 +191,7 @@ public class BPMNDeployer extends AbstractDeployer {
 	 * @return                     bpmn repo file
 	 * @throws BPSFault        repo creation failure will result in this xception
 	 */
-    private File createTenantRepo(ConfigurationContext configurationContext) throws BPSFault {
+   /* private File createTenantRepo(ConfigurationContext configurationContext) throws BPSFault {
         String axisRepoPath = configurationContext.getAxisConfiguration().getRepository().getPath();
         if (CarbonUtils.isURL(axisRepoPath)) {
             String msg = "URL Repositories are not supported: " + axisRepoPath;
@@ -166,22 +208,24 @@ public class BPMNDeployer extends AbstractDeployer {
             }
         }
         return bpmnRepo;
-    }
+    }*/
+    public URL getLocation() {
+        return deploymentLocation;
+     }
 
-    @Override
-    public void setDirectory(String s) {
-    }
+     public ArtifactType getArtifactType() {
+        return artifactType;
+     }
 
-    @Override
-    public void setExtension(String s) {
-    }
-
+    private boolean isSupportedFile(File file) {
+        return SUPPORTED_EXTENSIONS.equalsIgnoreCase(getFileExtension(file));
+     }
     /**
      * Whether a bps node is worker ( a node that does not participate in archive deployment and only handles
      * input/output . This is determined by looking at the registry read/only property
      * @return
      */
-    private boolean isWorkerNode() {
+   /* private boolean isWorkerNode() {
         RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
         boolean isWorker = true;
         try {
@@ -190,5 +234,17 @@ public class BPMNDeployer extends AbstractDeployer {
             log.error("Error accessing the configuration registry");
         }
         return isWorker;
-    }
+    }*/
+     private String getFileExtension(File file) {
+        String fileName = file.getName();
+        String extension = "";
+        if (file.isFile()) {
+           int i = fileName.lastIndexOf('.');
+           if (i > 0) {
+                extension = fileName.substring(i + 1);
+            }
+         }
+          return extension;
+     }
 }
+

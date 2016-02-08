@@ -29,10 +29,10 @@ import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.BPMNConstants;
+//import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
-import org.wso2.carbon.context.CarbonContext;
+/*import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -43,7 +43,7 @@ import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.claim.Claim;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.TenantManager;
-import org.wso2.carbon.user.mgt.UserAdmin;
+import org.wso2.carbon.user.mgt.UserAdmin;*/
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.ArrayList;
@@ -53,9 +53,9 @@ import java.util.Map;
 public class BPSUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
-    private TenantMgtAdminService tenantMgtAdminService;
+   /* private TenantMgtAdminService tenantMgtAdminService;
     private UserAdmin userAdmin;
-    private RegistryService registryService;
+    private RegistryService registryService;*/
 
     //list of Claim URIs
     private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
@@ -68,9 +68,9 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
 
     public BPSUserIdentityManager() {
-        this.tenantMgtAdminService = new TenantMgtAdminService();
-        this.userAdmin = new UserAdmin();
-        this.registryService = BPMNServerHolder.getInstance().getRegistryService();
+       // this.tenantMgtAdminService = new TenantMgtAdminService();
+       // this.userAdmin = new UserAdmin();
+       // this.registryService = BPMNServerHolder.getInstance().getRegistryService();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public UserEntity findUserById(String userId) {
-        try {
+       /* try {
             UserStoreManager userStoreManager = registryService.getUserRealm(getTenantIdFromUserId(userId)).getUserStoreManager();
 
             if (userStoreManager.isExistingUser(userId)) {
@@ -108,10 +108,16 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 return null;
             }
 
+
         } catch (Exception e) {
             log.error("Error retrieving user info by id for: " + userId, e);
             return null;
-        }
+        }*/
+        UserEntity userEntity = new UserEntity(userId);
+        userEntity.setFirstName("Dimuthu");
+       userEntity.setLastName("Lee");
+       userEntity.setEmail("dimuthul@wso2.com");
+        return userEntity;
     }
 
     @Override
@@ -124,9 +130,9 @@ public class BPSUserIdentityManager extends UserEntityManager {
     public List<User> findUserByQueryCriteria(UserQueryImpl userQuery, Page page) {
 
         //get current tenant id
-        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+       // int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            List<Claim> claimList = transformQueryToClaim(userQuery);
+           /* List<Claim> claimList = transformQueryToClaim(userQuery);
             if (claimList.size() > 0) {
                 //todo: need to add support to search by query
                 String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
@@ -135,14 +141,15 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 //return all users
                 String[] userList = registryService.getUserRealm(tenantId).getUserStoreManager().listUsers("*", -1);
                 return pageUserList(page, userList, tenantId);
-            }
-
+            }*/
+          String[] userList = {"admin"};
+          return pageUserList(page, userList);
         } catch (org.wso2.carbon.user.core.UserStoreException e) {
             log.error("error getting user list", e);
             return new ArrayList<>();
-        } catch (RegistryException e) {
+       /* } catch (RegistryException e) {
             log.error("error getting user list", e);
-            return new ArrayList<>();
+            return new ArrayList<>();*/
         }
     }
 
@@ -171,8 +178,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
         return result;
     }
 
-    private List<User> pageUserList(Page page, String[] users, int tenantId)
-            throws RegistryException, org.wso2.carbon.user.core.UserStoreException {
+    private List<User> pageUserList(Page page, String[] users)
+            throws org.wso2.carbon.user.core.UserStoreException {
         List<User> userList = new ArrayList<>();
         int resultLength = users.length;
         int max;
@@ -199,7 +206,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
         return userList;
     }
 
-    private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
+   /* private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
         List<Claim> claimList = new ArrayList<Claim>();
 
         if (userQuery.getEmail() != null) {
@@ -266,7 +273,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
         }
 
         return claimList;
-    }
+    }*/
 
 
     @Override
@@ -278,7 +285,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
     public List<Group> findGroupsByUser(String userId) {
 
         List<Group> groups = new ArrayList<Group>();
-        try {
+       /* try {
             String[] userNameTokens = userId.split("@");
             int tenantId = BPMNConstants.SUPER_TENANT_ID;
             if (userNameTokens.length > 1) {
@@ -303,8 +310,9 @@ public class BPSUserIdentityManager extends UserEntityManager {
             log.error(msg, e);
         }catch (Exception e) {
             log.error("error retrieving user tenant info", e);
-        }
-
+        }*/
+Group group = new GroupEntity("admin");
+        groups.add(group);
         return groups;
     }
 
@@ -327,7 +335,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public Boolean checkPassword(String userId, String password) {
-        String tenantDomain = MultitenantUtils.getTenantDomain(userId);
+       /* String tenantDomain = MultitenantUtils.getTenantDomain(userId);
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userId);
         String userNameWithTenantDomain = tenantAwareUserName + "@" + tenantDomain;
 
@@ -364,7 +372,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
        /* IdentityService identityService = BPMNOSGIService.getIdentityService();
         authStatus = identityService.checkPassword(userName, password);*/
-        if (log.isDebugEnabled()) {
+      /*  if (log.isDebugEnabled()) {
             log.debug("Basic authentication request completed. " +
                     "Username : " + userNameWithTenantDomain +
                     ", Authentication State : " + authStatus);
@@ -386,7 +394,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
             }
         }
 
-        return tenantId;
+        return tenantId;*/
+        return true;
     }
 
     @Override

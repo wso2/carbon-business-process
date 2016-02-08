@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.core.deployment;
+/*package org.wso2.carbon.bpmn.core.deployment;
 
 import java.io.File;
 
@@ -43,4 +43,4 @@ public class BPMNDeploymentContext {
     public void setBpmnArchive(File bpmnArchive) {
         this.bpmnArchive = bpmnArchive;
     }
-}
+}*/
