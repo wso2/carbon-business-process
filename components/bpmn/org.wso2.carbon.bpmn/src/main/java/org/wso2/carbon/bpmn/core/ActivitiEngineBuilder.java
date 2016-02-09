@@ -54,7 +54,7 @@ public class ActivitiEngineBuilder {
            // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
            // String activitiConfigPath = carbonConfigDirPath + File.separator +
                   //  BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-            String activitiConfigPath = "/Users/himasha/Desktop/C5/test" + File.separator +
+            String activitiConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
                      BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
             File activitiConfigFile = new File(activitiConfigPath);
             ProcessEngineConfigurationImpl processEngineConfigurationImpl =
