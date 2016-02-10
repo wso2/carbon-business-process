@@ -25,9 +25,7 @@ import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @XmlRootElement(name = "ProcessInstanceCreateRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -36,12 +34,17 @@ public class ProcessInstanceCreateRequest {
     private String processDefinitionId;
     private String processDefinitionKey;
     private String message;
+    private String messageName;
     private String businessKey;
-    @XmlElementWrapper(name = "RestVariables")
-    @XmlElement(name = "RestVariable", type = RestVariable.class)
+    @XmlElementWrapper(name = "Variables")
+    @XmlElement(name = "Variable", type = RestVariable.class)
     private List<RestVariable> variables;
+    @XmlElementWrapper(name = "AdditionalVariabls")
+    @XmlElement(name = "AdditionalVariable", type = RestVariable.class)
+    private List<RestVariable> additionalVariables;
     private String tenantId;
     private Boolean skipInstanceCreationIfExist = false;
+    private Boolean correlate = false;
 
     public ProcessInstanceCreateRequest(){}
 
@@ -53,10 +56,6 @@ public class ProcessInstanceCreateRequest {
         this.arrayIterated = arrayIterated;
     }
 
-   /* public boolean isReturnVariables() {
-        return returnVariables;
-    }
-*/
     private boolean arrayIterated;
 
     private boolean returnVariables;
@@ -113,12 +112,10 @@ public class ProcessInstanceCreateRequest {
         return tenantId != null && !StringUtils.isEmpty(tenantId);
     }
 
-    //Added by Ryan Johnston
     public boolean getReturnVariables() {
         return returnVariables;
     }
 
-    //Added by Ryan Johnston
     public void setReturnVariables(boolean returnVariables) {
         this.returnVariables = returnVariables;
     }
@@ -133,6 +130,30 @@ public class ProcessInstanceCreateRequest {
 
     public boolean isReturnVariables() {
         return returnVariables;
+    }
+
+    public List<RestVariable> getAdditionalVariables() {
+        return additionalVariables;
+    }
+
+    public void setAdditionalVariables(List<RestVariable> additionalVariables) {
+        this.additionalVariables = additionalVariables;
+    }
+
+    public Boolean getCorrelate() {
+        return correlate;
+    }
+
+    public void setCorrelate(Boolean correlate) {
+        this.correlate = correlate;
+    }
+
+    public String getMessageName() {
+        return messageName;
+    }
+
+    public void setMessageName(String messageName) {
+        this.messageName = messageName;
     }
 
     public ProcessInstanceQueryRequest cloneInstanceCreationRequest(){
