@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
-        <version>4.4.6-SNAPSHOT</version>
+        <version>4.4.7-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -166,7 +166,6 @@
                                 <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:2.2.3.wso2v1</importBundleDef>
                                 <importBundleDef>com.fasterxml.jackson.core:jackson-annotations:2.2.3</importBundleDef>
                                 <importBundleDef>joda-time:joda-time:2.1</importBundleDef>
-                                <importBundleDef>org.apache.commons:commons-email:1.2</importBundleDef>
                                 <!-- importBundleDef>org.wso2.orbit.javax.mail:mail:1.4.1.wso2v1</importBundleDef -->
                                 <importBundleDef>org.mybatis:mybatis:3.2.5</importBundleDef>
                                 <!-- importBundleDef>commons-logging:commons-logging:1.1.3</importBundleDef -->

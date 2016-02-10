@@ -75,7 +75,7 @@ public abstract  class AbstractPaginateList {
 
         String sort = paginateRequest.getSort();
         if(sort == null) {
-            sort = defaultSort;
+            sort = defaultSort;//id
         }
         String order = paginateRequest.getOrder();
         if(order == null) {

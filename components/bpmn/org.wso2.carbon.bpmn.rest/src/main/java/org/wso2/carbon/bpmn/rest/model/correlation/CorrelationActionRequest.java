@@ -34,7 +34,7 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
     @XmlElement(name = "QueryVariable", type = QueryVariable.class)
     private List<QueryVariable> correlationVariables;
 
-    private String activityId;
+    //private String activityId;
     private String tenantId;
 
     private String action;
@@ -65,13 +65,13 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
         this.correlationVariables = correlationVariables;
     }
 
-    public String getActivityId() {
+  /*  public String getActivityId() {
         return activityId;
     }
 
     public void setActivityId(String activityId) {
         this.activityId = activityId;
-    }
+    }*/
 
 
     public String getTenantId() {

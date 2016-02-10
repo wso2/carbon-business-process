@@ -17,17 +17,10 @@
 package org.wso2.carbon.bpmn.rest.service.correlate;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.query.QueryProperty;
-import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ExecutionQuery;
-import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
-import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -36,13 +29,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Path("/receive")
-public class CorrelationService extends BaseExecutionService {
+public class CorrelationService/* extends BaseExecutionService */{
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
     @Context
@@ -78,11 +69,13 @@ public class CorrelationService extends BaseExecutionService {
             throw new ActivitiIllegalArgumentException("Only one of message name or signal should be " +
                     "set.");
         }
-        return getQueryResponse(correlationActionRequest);
+
+        CorrelationProcess correlationProcess = new CorrelationProcess();
+        return correlationProcess.getQueryResponse(correlationActionRequest, uriInfo);
 
     }
 
-    protected Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {
+   /* protected Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
@@ -122,10 +115,10 @@ public class CorrelationService extends BaseExecutionService {
         }
 
 
-        value = correlationActionRequest.getActivityId();
+*//*        value = correlationActionRequest.getActivityId();
         if (value != null) {
             query.activityId(value);
-        }
+        }*//*
 
         value = correlationActionRequest.getTenantId();
         if (value != null) {
@@ -264,5 +257,5 @@ public class CorrelationService extends BaseExecutionService {
             }
         }
     }
-
+*/
 }
