@@ -20,8 +20,10 @@ package org.wso2.carbon.bpmn.core.deployment;
 import org.apache.axis2.deployment.AbstractDeployer;
 import org.apache.axis2.deployment.DeploymentException;
 import org.apache.axis2.deployment.repository.util.DeploymentFileData;*/
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
+import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.context.CarbonContext;
 /*import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -42,12 +45,16 @@ import org.wso2.carbon.kernel.deployment.exception.CarbonDeploymentException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
+import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
@@ -61,24 +68,28 @@ import java.util.zip.ZipInputStream;
 public class BPMNDeployer implements Deployer {
 
     //private static Log log = LogFactory.getLog(BPMNDeployer.class);
-   // private TenantRepository tenantRepository = null;
- private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
+    // private TenantRepository tenantRepository = null;
+    private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
     private static final String DEPLOYMENT_PATH = "file:bpmn";
-   private static final String SUPPORTED_EXTENSIONS = "bar";
+    private static final String SUPPORTED_EXTENSIONS = "bar";
     private URL deploymentLocation;
     private ArtifactType artifactType;
     private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
-	/**
-	 * Initializes the deployment per tenant
-	 *
-	 * @param configurationContext axis2 configurationContext
-	 */
+    private ActivitiDAO activitiDAO;
+    private Integer tenantId;
+    /**
+     * Initializes the deployment per tenant
+     *
+     * @param configurationContext axis2 configurationContext
+     */
     @Override
     public void init() {
         log.info("BPMNDeployer initializing");
-       artifactType = new ArtifactType<>("BPMN");
+        artifactType = new ArtifactType<>("BPMN");
+        this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        this.activitiDAO = new ActivitiDAO();
         //Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-       // log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
+        // log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
         try {
            /* File tenantRepoFolder = createTenantRepo(configurationContext);
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
@@ -92,105 +103,133 @@ public class BPMNDeployer implements Deployer {
             log.error(msg, e);*/
             deploymentLocation = new URL(DEPLOYMENT_PATH);
         } catch (MalformedURLException e) {
-           log.error("BPMN deployer location error");
+            log.error("BPMN deployer location error");
         }
     }
 
-	/**
-	 * Deploys a given bpmn package in acitiviti bpmn engine.
-	 * @param deploymentFileData Provide information about the deployment file
-	 * @throws DeploymentException On failure , deployment exception is thrown
-	 */
+    /**
+     * Deploys a given bpmn package in acitiviti bpmn engine.
+     * @param
+     * @throws CarbonDeploymentException On failure , deployment exception is thrown
+     */
 
-    public Object deploy(Artifact
-         artifact) throws CarbonDeploymentException{
-	    File artifactFile = artifact.getFile();
+    public Object deploy(Artifact artifact) throws CarbonDeploymentException{
+        File artifactFile = artifact.getFile();
         String artifactPath = artifactFile.getAbsolutePath();
+        String checksum = "";
+        ZipInputStream archiveStream = null;
+        //check if extension is bar
         if (isSupportedFile(artifactFile)) {
+
+           // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
+            //get checksum value of new file
             try {
-                Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-               String deploymentName = FilenameUtils.getBaseName(artifact.getFile().getName());
+                checksum = Utils.getMD5Checksum(artifactFile);
+            } catch (NoSuchAlgorithmException e) {
+                log.error("Checksum generation algorithm not found", e);
+            } catch (IOException e) {
+                log.error("Checksum generation failed for IO operation", e);
+            }
+
+            // get stored metadata model from activiti reg table if available
+            DeploymentMetaDataModel deploymentMetaDataModel =
+                    activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
+
+            if (log.isDebugEnabled()) {
+                log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
+                log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
+            }
+
+            if (deploymentMetaDataModel == null) {
                 ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
                 RepositoryService repositoryService = engine.getRepositoryService();
-                DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
-                ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(artifact.getFile()));
+                DeploymentBuilder deploymentBuilder =
+                        repositoryService.createDeployment().tenantId(tenantId.toString()).
+                                name(deploymentName);
+                try {
+                    archiveStream =
+                            new ZipInputStream(new FileInputStream(artifact.getFile()));
+                } catch (FileNotFoundException e) {
+                    String errMsg = "Archive stream not found for BPMN repsoitory";
+                    throw new CarbonDeploymentException(errMsg, e);
+                }
+
                 deploymentBuilder.addZipInputStream(archiveStream);
-                deploymentBuilder.deploy();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Deployment deployment = deploymentBuilder.deploy();
+
+                //Store deployed metadata record in activiti
+                deploymentMetaDataModel = new DeploymentMetaDataModel();
+                deploymentMetaDataModel.setPackageName(deploymentName);
+                deploymentMetaDataModel.setCheckSum(checksum);
+                deploymentMetaDataModel.setTenantID(tenantId.toString());
+                deploymentMetaDataModel.setId(deployment.getId());
+
+                //call for insertion
+                activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
+            }
+            else if(deploymentMetaDataModel != null) {
+                if (checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
+                    // It is not a new deployment, but a version update
+                    update(artifact); //TODO
+                    deploymentMetaDataModel.setCheckSum(checksum);
+                    activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
+                }
             }
         }
         return artifactPath;
 
-      /*  Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Deploying BPMN archive " + deploymentFileData.getFile().getName() +
-                 " for tenant: " + tenantId);
-        try {
-            BPMNDeploymentContext deploymentContext = new BPMNDeploymentContext(tenantId);
-            deploymentContext.setBpmnArchive(deploymentFileData.getFile());
-            tenantRepository.deploy(deploymentContext);
-
-	        //log.info( "Deployment Status " + deploymentFileData.getFile() + " deployed = " + deployed );
-
-        } catch (DeploymentException e) {
-            String errorMessage = "Failed to deploy the archive: " + deploymentFileData.getAbsolutePath();
-            throw new DeploymentException(errorMessage, e);
-        }*/
     }
 
-	/**
-	 * Undeployment operation for Bpmn Deployer
-	 *
-	 * @param bpmnArchivePath        archivePatch
-	 * @throws DeploymentException   Deployment failure will result in this exception
-	 */
+    public void undeploy(Object key) throws CarbonDeploymentException {
+        //TODO : cluster workernode
+        String deploymentName = "";
+       // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
+             deploymentName = FilenameUtils.getBaseName(key.toString());//CHECK
 
-    /*public void undeploy(String bpmnArchivePath) throws DeploymentException {
+            // Remove the deployment from the activiti registry
 
-	    // Worker nodes does not perform any action related to bpmn undeployment, manager node takes
-	    // care of all deployment/undeployment actions
+            DeploymentMetaDataModel undeployModel = activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(),deploymentName);
 
-
-	    if (isWorkerNode()) {
-		    return;
-	    }
-        File bpmnArchiveFile = new File(bpmnArchivePath);
-        if (bpmnArchiveFile.exists()) {
-            if (log.isTraceEnabled()) {
-                log.trace("BPMN package: " + bpmnArchivePath + " exists in the deployment folder. " +
-                          "Therefore, this can be an update of the package and the undeployment will be aborted.");
+            if(undeployModel != null)
+            {
+                activitiDAO.deleteDeploymentMetaDataModel(undeployModel);
             }
-            return;
-        }
+            //TODO: Remove from file repo
 
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
-        String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
-        try {
-           tenantRepository.undeploy(deploymentName, true);
-        } catch (BPSFault be) {
-            String errorMsg = "Error un deploying BPMN Package " + deploymentName;
-            throw new DeploymentException(errorMsg, be);
-        }
+            // Delete all versions of this package from the Activiti engine.
+            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+            RepositoryService repositoryService = engine.getRepositoryService();
+            List<Deployment> deployments =
+                    repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
+            for (Deployment deployment : deployments) {
+                repositoryService.deleteDeployment(deployment.getId(), true);
+            }
 
-    }*/
-     public void undeploy(Object var1) throws CarbonDeploymentException {
-        //TODO
+
+        }
+        catch(ActivitiException e) {
+            String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " + tenantId;
+            log.error(msg, e);
+            throw new CarbonDeploymentException(msg, e);
+        }
     }
- 
+
+
     public Object update(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
-       String artifactPath = artifactFile.getAbsolutePath();
-       //TODO
-       return artifactPath;
-     }
+        String artifactPath = artifactFile.getAbsolutePath();
+        //TODO
+        return artifactPath;
+    }
 
-	/**
-	 *
-	 * @param configurationContext axis2 configurationContext
-	 * @return                     bpmn repo file
-	 * @throws BPSFault        repo creation failure will result in this xception
-	 */
+    /**
+     *
+     * @param configurationContext axis2 configurationContext
+     * @return                     bpmn repo file
+     * @throws BPSFault        repo creation failure will result in this xception
+     */
    /* private File createTenantRepo(ConfigurationContext configurationContext) throws BPSFault {
         String axisRepoPath = configurationContext.getAxisConfiguration().getRepository().getPath();
         if (CarbonUtils.isURL(axisRepoPath)) {
@@ -211,15 +250,15 @@ public class BPMNDeployer implements Deployer {
     }*/
     public URL getLocation() {
         return deploymentLocation;
-     }
+    }
 
-     public ArtifactType getArtifactType() {
+    public ArtifactType getArtifactType() {
         return artifactType;
-     }
+    }
 
     private boolean isSupportedFile(File file) {
         return SUPPORTED_EXTENSIONS.equalsIgnoreCase(getFileExtension(file));
-     }
+    }
     /**
      * Whether a bps node is worker ( a node that does not participate in archive deployment and only handles
      * input/output . This is determined by looking at the registry read/only property
@@ -235,16 +274,16 @@ public class BPMNDeployer implements Deployer {
         }
         return isWorker;
     }*/
-     private String getFileExtension(File file) {
+    private String getFileExtension(File file) {
         String fileName = file.getName();
         String extension = "";
         if (file.isFile()) {
-           int i = fileName.lastIndexOf('.');
-           if (i > 0) {
+            int i = fileName.lastIndexOf('.');
+            if (i > 0) {
                 extension = fileName.substring(i + 1);
             }
-         }
-          return extension;
-     }
+        }
+        return extension;
+    }
 }
 
