@@ -168,14 +168,17 @@ public class BPMNDeployer implements Deployer {
                 //call for insertion
                 activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
             }
-            else if(deploymentMetaDataModel != null) {
-                if (checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
+            /////
+            else if(deploymentMetaDataModel != null) { //deployment exists
+                // not the same version that is already deployed
+                if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
                     // It is not a new deployment, but a version update
-                    update(artifact); //TODO
+                    update(artifact); //TODO update new version deployment and file repo
                     deploymentMetaDataModel.setCheckSum(checksum);
                     activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
                 }
-            }
+
+            }/////
         }
         return artifactPath;
 
@@ -216,11 +219,29 @@ public class BPMNDeployer implements Deployer {
         }
     }
 
-
+  //Perform version support : update activiti deployment and file repo /registry done
     public Object update(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
         String artifactPath = artifactFile.getAbsolutePath();
-        //TODO
+        String deploymentName = artifactFile.getName();
+
+        //Update activiti engine based deployment
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RepositoryService repositoryService = engine.getRepositoryService();
+        DeploymentBuilder deploymentBuilder =
+                repositoryService.createDeployment().tenantId(tenantId.toString()).
+                        name(deploymentName);
+        try {
+            ZipInputStream archiveStream =
+                    new ZipInputStream(new FileInputStream(artifact.getFile()));
+            deploymentBuilder.addZipInputStream(archiveStream);
+            deploymentBuilder.deploy();
+        } catch (FileNotFoundException e) {
+            String errMsg = "Archive stream not found for BPMN repsoitory";
+            throw new CarbonDeploymentException(errMsg, e);
+        }
+
+        //TODO: update file repo
         return artifactPath;
     }
 
