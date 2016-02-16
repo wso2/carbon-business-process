@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.bpmn.core.mgt.model;
 
-import org.activiti.engine.history.HistoricProcessInstance;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 
 import java.util.ArrayList;
 import java.util.List;

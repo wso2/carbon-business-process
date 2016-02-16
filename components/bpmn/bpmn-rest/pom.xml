@@ -119,10 +119,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.orbit.org.activiti</groupId>
-            <artifactId>activiti-all</artifactId>
-            <scope>provided</scope>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm.identity</groupId>
+            <artifactId>camunda-identity-ldap</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.eclipse.osgi</groupId>
             <artifactId>org.eclipse.osgi</artifactId>

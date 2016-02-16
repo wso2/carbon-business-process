@@ -12,7 +12,8 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 
 package org.wso2.carbon.bpmn.core.integration;
 
@@ -93,10 +94,12 @@ public BPSGroupIdentityManager() {
                 Group group = new GroupEntity(role);
                 groups.add(group);
             }
-        /*} catch (UserStoreException e) {
+        */
+/*} catch (UserStoreException e) {
             String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
             log.error(msg, e);
-        }*/
+        }*//*
+
         return groups;
     }
 
@@ -113,3 +116,4 @@ public BPSGroupIdentityManager() {
         throw new UnsupportedOperationException(msg);
     }
 }
+*/
