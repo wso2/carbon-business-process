@@ -53,7 +53,7 @@ public class ActivitiEngineBuilder {
            // String activitiConfigPath = carbonConfigDirPath + File.separator +
                   //  BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
             String activitiConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
-                     BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+                     BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME; //CHANGED TO CAMUNDA
             File activitiConfigFile = new File(activitiConfigPath);
             ProcessEngineConfigurationImpl processEngineConfigurationImpl =
                     (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
