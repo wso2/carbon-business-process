@@ -118,14 +118,12 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.camunda.bpm</groupId>
             <artifactId>camunda-engine</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.camunda.bpm.identity</groupId>
-            <artifactId>camunda-identity-ldap</artifactId>
-        </dependency>
+
 
         <dependency>
             <groupId>org.eclipse.osgi</groupId>

@@ -17,7 +17,7 @@
 
 package org.wso2.carbon.bpmn.rest.common;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.MessageFormat;
@@ -40,7 +40,7 @@ public class RestUrlBuilder {
 
     /** Uses baseUrl as the base URL */
     public static RestUrlBuilder usingBaseUrl(String baseUrl){
-        if(baseUrl == null) throw new ActivitiIllegalArgumentException("baseUrl can not be null");
+      //  if(baseUrl == null) throw new ActivitiIllegalArgumentException("baseUrl can not be null");
         if(baseUrl.endsWith("/")) baseUrl = baseUrl.substring(0, baseUrl.length()-1);
         return new RestUrlBuilder(baseUrl);
     }

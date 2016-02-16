@@ -1013,7 +1013,11 @@
                 <artifactId>jibx</artifactId>
                 <version>${jibx.wso2.version}</version>
             </dependency>
-
+            <!--dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-bom</artifactId>
+                <version>${org.activiti.wso2.version}</version>
+            </dependency-->
             <dependency>
                 <groupId>org.camunda.bpm</groupId>
                 <artifactId>camunda-engine</artifactId>

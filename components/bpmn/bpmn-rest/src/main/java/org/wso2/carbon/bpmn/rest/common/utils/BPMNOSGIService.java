@@ -17,17 +17,17 @@
 
 package org.wso2.carbon.bpmn.rest.common.utils;
 
-import org.activiti.engine.*;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.impl.ProcessEngineImpl;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.impl.interceptor.Command;
+import org.camunda.bpm.engine.impl.interceptor.CommandContext;
+import org.camunda.bpm.engine.impl.interceptor.CommandExecutor;
+//import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+//import org.camunda.bpm.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+//import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
+//import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
@@ -138,26 +138,26 @@ public class BPMNOSGIService {
         return getBPMNEngineService().getProcessEngine().getManagementService();
    }
 
-    public static BPSGroupIdentityManager getGroupIdentityManager(){
-
-        ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().getProcessEngine();
-
-        ProcessEngineConfigurationImpl processEngineConfigurationImpl= null;
-
-        if(processEngine != null){
-            processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
-
-            if(processEngineConfigurationImpl != null){
-                BPSGroupIdentityManager bpsGroupIdentityManager = null;
-                if(processEngineConfigurationImpl.getSessionFactories() != null) {
-                    BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory) processEngineConfigurationImpl.getSessionFactories().get
-                            (GroupIdentityManager.class);
-                    return (BPSGroupIdentityManager)bpsGroupManagerFactory.openSession();
-                }
-            }
-        }
-
-        throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't be identified");
-
-    }
+//    public static BPSGroupIdentityManager getGroupIdentityManager(){
+//
+//        ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().getProcessEngine();
+//
+//        ProcessEngineConfigurationImpl processEngineConfigurationImpl= null;
+//
+//        if(processEngine != null){
+//            processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
+//
+//            if(processEngineConfigurationImpl != null){
+//                BPSGroupIdentityManager bpsGroupIdentityManager = null;
+//                if(processEngineConfigurationImpl.getSessionFactories() != null) {
+//                    BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory) processEngineConfigurationImpl.getSessionFactories().get
+//                            (GroupIdentityManager.class);
+//                    return (BPSGroupIdentityManager)bpsGroupManagerFactory.openSession();
+//                }
+//            }
+//        }
+//
+//        throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't be identified");
+//
+//    }
 }

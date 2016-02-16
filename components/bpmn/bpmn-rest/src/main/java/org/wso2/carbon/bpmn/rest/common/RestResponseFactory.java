@@ -12,28 +12,29 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 
 
 
 package org.wso2.carbon.bpmn.rest.common;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.form.FormData;
-import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.history.*;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.Model;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.*;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.camunda.bpm.engine.form.FormData;
+import org.camunda.bpm.engine.form.FormProperty;
+import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.form.TaskFormData;
+import org.camunda.bpm.engine.history.*;
+import org.camunda.bpm.engine.identity.Group;
+import org.camunda.bpm.engine.identity.User;
+import org.camunda.bpm.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.camunda.bpm.engine.repository.Deployment;
+import org.camunda.bpm.engine.repository.Model;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.Execution;
+import org.camunda.bpm.engine.runtime.Job;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.*;
 import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
@@ -272,9 +273,11 @@ public class RestResponseFactory {
         return responseList;
     }
 
+*/
 /*    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance, String baseUri) {
         return createProcessInstanceResponse(processInstance,baseUri);
-    }*/
+    }*//*
+
 
     public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance, boolean returnVariables,
                                                                  Map<String, Object> runtimeVariableMap,
@@ -328,11 +331,13 @@ public class RestResponseFactory {
         return result;
     }
 
-    /*public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariableScope scope,
+    */
+/*public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariableScope scope,
                                            String id, int variableType, boolean includeBinaryValue, String baseUri){
 
         return createRestVariable(name, value, scope, id, variableType, includeBinaryValue, baseUri);
-    }*/
+    }*//*
+
 
     public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariableScope scope,
                                            String id, int variableType, boolean includeBinaryValue, String baseUri) {
@@ -1060,3 +1065,4 @@ public class RestResponseFactory {
         return createTableResponse(name, count, createUrlBuilder(baseUrl));
     }
 }
+*/

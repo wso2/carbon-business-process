@@ -17,10 +17,10 @@
 
 package org.wso2.carbon.bpmn.rest.common;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.AbstractQuery;
-import org.activiti.engine.query.Query;
-import org.activiti.engine.query.QueryProperty;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.camunda.bpm.engine.impl.AbstractQuery;
+import org.camunda.bpm.engine.query.Query;
+import org.camunda.bpm.engine.query.QueryProperty;
 
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 
@@ -86,7 +86,7 @@ public abstract  class AbstractPaginateList {
         if (sort != null && !properties.isEmpty()) {
             QueryProperty qp = properties.get(sort);
             if (qp == null) {
-                throw new ActivitiIllegalArgumentException("Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
+               // throw new ActivitiIllegalArgumentException("Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
             }
             ((AbstractQuery) query).orderBy(qp);
             if (order.equals("asc")) {
@@ -96,7 +96,7 @@ public abstract  class AbstractPaginateList {
                 query.desc();
             }
             else {
-                throw new ActivitiIllegalArgumentException("Value for param 'order' is not valid : '" + order + "', must be 'asc' or 'desc'");
+               // throw new ActivitiIllegalArgumentException("Value for param 'order' is not valid : '" + order + "', must be 'asc' or 'desc'");
             }
         }
 
