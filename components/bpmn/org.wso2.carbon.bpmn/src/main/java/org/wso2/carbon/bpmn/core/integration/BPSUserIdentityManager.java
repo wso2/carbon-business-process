@@ -1,4 +1,5 @@
-/**
+/*
+*
  *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +13,27 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+
+
 
 package org.wso2.carbon.bpmn.core.integration;
 
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
-import org.activiti.engine.identity.UserQuery;
-import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.UserQueryImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.GroupEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
-import org.activiti.engine.impl.persistence.entity.UserEntity;
-import org.activiti.engine.impl.persistence.entity.UserEntityManager;
+import org.camunda.bpm.engine.BpmnParseException;
+import org.camunda.bpm.engine.identity.Group;
+import org.camunda.bpm.engine.identity.User;
+import org.camunda.bpm.engine.identity.UserQuery;
+import org.camunda.bpm.engine.impl.Page;
+import org.camunda.bpm.engine.impl.UserQueryImpl;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
+import org.camunda.bpm.engine.impl.persistence.entity.IdentityInfoEntity;
+import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
-/*import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -43,19 +44,21 @@ import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.claim.Claim;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.TenantManager;
-import org.wso2.carbon.user.mgt.UserAdmin;*/
+import org.wso2.carbon.user.mgt.UserAdmin;
+
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BPSUserIdentityManager extends UserEntityManager {
+public class BPSUserIdentityManager extends UserEntity {
 
     private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
-   /* private TenantMgtAdminService tenantMgtAdminService;
+ private TenantMgtAdminService tenantMgtAdminService;
     private UserAdmin userAdmin;
-    private RegistryService registryService;*/
+    private RegistryService registryService;
+
 
     //list of Claim URIs
     private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
@@ -87,7 +90,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     @Override
     public UserEntity findUserById(String userId) {
-       /* try {
+ try {
             UserStoreManager userStoreManager = registryService.getUserRealm(getTenantIdFromUserId(userId)).getUserStoreManager();
 
             if (userStoreManager.isExistingUser(userId)) {
@@ -112,7 +115,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
         } catch (Exception e) {
             log.error("Error retrieving user info by id for: " + userId, e);
             return null;
-        }*/
+        }
+
         UserEntity userEntity = new UserEntity(userId);
         userEntity.setFirstName("Dimuthu");
        userEntity.setLastName("Lee");
@@ -132,7 +136,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
         //get current tenant id
        // int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-           /* List<Claim> claimList = transformQueryToClaim(userQuery);
+ List<Claim> claimList = transformQueryToClaim(userQuery);
             if (claimList.size() > 0) {
                 //todo: need to add support to search by query
                 String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
@@ -141,15 +145,17 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 //return all users
                 String[] userList = registryService.getUserRealm(tenantId).getUserStoreManager().listUsers("*", -1);
                 return pageUserList(page, userList, tenantId);
-            }*/
+            }
+
           String[] userList = {"admin"};
           return pageUserList(page, userList);
         } catch (org.wso2.carbon.user.core.UserStoreException e) {
             log.error("error getting user list", e);
             return new ArrayList<>();
-       /* } catch (RegistryException e) {
+ } catch (RegistryException e) {
             log.error("error getting user list", e);
-            return new ArrayList<>();*/
+            return new ArrayList<>();
+
         }
     }
 
@@ -206,7 +212,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
         return userList;
     }
 
-   /* private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
+ private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
         List<Claim> claimList = new ArrayList<Claim>();
 
         if (userQuery.getEmail() != null) {
@@ -273,7 +279,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
         }
 
         return claimList;
-    }*/
+    }
+
 
 
     @Override
@@ -285,7 +292,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
     public List<Group> findGroupsByUser(String userId) {
 
         List<Group> groups = new ArrayList<Group>();
-       /* try {
+ try {
             String[] userNameTokens = userId.split("@");
             int tenantId = BPMNConstants.SUPER_TENANT_ID;
             if (userNameTokens.length > 1) {
@@ -310,7 +317,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
             log.error(msg, e);
         }catch (Exception e) {
             log.error("error retrieving user tenant info", e);
-        }*/
+        }
+
 Group group = new GroupEntity("admin");
         groups.add(group);
         return groups;
@@ -335,7 +343,7 @@ Group group = new GroupEntity("admin");
 
     @Override
     public Boolean checkPassword(String userId, String password) {
-       /* String tenantDomain = MultitenantUtils.getTenantDomain(userId);
+ String tenantDomain = MultitenantUtils.getTenantDomain(userId);
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userId);
         String userNameWithTenantDomain = tenantAwareUserName + "@" + tenantDomain;
 
@@ -370,9 +378,10 @@ Group group = new GroupEntity("admin");
                     "User store exception thrown while authenticating user : " + userNameWithTenantDomain, e);
         }
 
-       /* IdentityService identityService = BPMNOSGIService.getIdentityService();
-        authStatus = identityService.checkPassword(userName, password);*/
-      /*  if (log.isDebugEnabled()) {
+ IdentityService identityService = BPMNOSGIService.getIdentityService();
+        authStatus = identityService.checkPassword(userName, password);
+
+  if (log.isDebugEnabled()) {
             log.debug("Basic authentication request completed. " +
                     "Username : " + userNameWithTenantDomain +
                     ", Authentication State : " + authStatus);
@@ -394,7 +403,8 @@ Group group = new GroupEntity("admin");
             }
         }
 
-        return tenantId;*/
+        return tenantId;
+
         return true;
     }
 
@@ -417,3 +427,4 @@ Group group = new GroupEntity("admin");
         throw new UnsupportedOperationException(msg);
     }
 }
+*/

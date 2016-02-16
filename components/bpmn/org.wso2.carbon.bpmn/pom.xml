@@ -29,10 +29,15 @@
     <name>WSO2 Carbon - BPMN Core Component</name>
     <url>http://wso2.org</url>
 
+
     <dependencies>
         <dependency>
-            <groupId>org.wso2.orbit.org.activiti</groupId>
-            <artifactId>activiti-all</artifactId>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm.identity</groupId>
+            <artifactId>camunda-identity-ldap</artifactId>
         </dependency>
 
         <dependency>

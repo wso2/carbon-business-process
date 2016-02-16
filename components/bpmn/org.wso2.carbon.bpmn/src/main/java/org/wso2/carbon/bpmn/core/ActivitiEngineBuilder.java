@@ -15,16 +15,14 @@
  */
 
 package org.wso2.carbon.bpmn.core;
-
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngineConfiguration;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.impl.persistence.entity.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
+//import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+//import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,13 +61,12 @@ public class ActivitiEngineBuilder {
                                     activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
-            processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-                    new BPSUserManagerFactory());
-            processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-                    new BPSGroupManagerFactory());
+           // processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
+               //     new BPSUserManagerFactory());
+          //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
+                 //   new BPSGroupManagerFactory());
 
-            dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
-                    .getDataSourceJndiName();
+            dataSourceJndiName =   processEngineConfigurationImpl.getDataSourceJndiName();
 
         } catch (FileNotFoundException e) {
             String msg = "Failed to create an Activiti engine. Activiti configuration file not found";

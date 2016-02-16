@@ -12,14 +12,15 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 
 package org.wso2.carbon.bpmn.core.mgt.dao;
-
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.cmd.AbstractCustomSqlExecution;
-import org.activiti.engine.impl.cmd.CustomSqlExecution;
+import org.camunda.bpm.engine.ManagementService;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.impl.cmd.AbstractCustomSqlExecution;
+import org.camunda.bpm.engine.impl.cmd.CreateUserQueryCmd;
+import org.camunda.bpm.engine.impl.cmd.CustomSqlExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
@@ -28,10 +29,12 @@ import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 
 import java.util.List;
 
+*/
 /**
  * This class provides the implementation interface between TenantRepository object and DeploymentMapper interface.
  * Implements the execute method for each type of queries of CustomSqlExecution interface
- */
+ *//*
+
 public class ActivitiDAO {
 
     private static final Log log = LogFactory.getLog(DeploymentMapper.class);
@@ -43,13 +46,15 @@ public class ActivitiDAO {
         managementService = engine.getManagementService();
     }
 
-    /**
+    */
+/**
      * invokes the DeploymentMapper.selectMetaData for a given tenant id and package name
      *
      * @param tenantID        tenant id
      * @param bpmnPackageName package name
      * @return                DeploymentMetaDataModel object
-     */
+     *//*
+
     public DeploymentMetaDataModel selectTenantAwareDeploymentModel(final String tenantID, final String bpmnPackageName){
 
         CustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel> customSqlExecution =
@@ -72,11 +77,13 @@ public class ActivitiDAO {
         return deploymentMetaDataModel;
     }
 
-    /**
+    */
+/**
      * invokes the DeploymentMapper.selectAllMetaData to retrieve all rows from BPS_BPMN_DEPLOYMENT_METADATA
      *
      * @return each row will be returned as DeploymentMetaDataModel with in list
-     */
+     *//*
+
     public List<DeploymentMetaDataModel> selectAllDeploymentModel(){
 
         CustomSqlExecution<DeploymentMapper,  List<DeploymentMetaDataModel> > customSqlExecution =
@@ -89,11 +96,13 @@ public class ActivitiDAO {
         return managementService.executeCustomSql(customSqlExecution);
     }
 
-    /**
+    */
+/**
      * invokes the DeploymentMapper.insertDeploymentMetaData to insert a new row from BPS_BPMN_DEPLOYMENT_METADATA
      *
      * @param deploymentMetaDataModel Object to be inserted in to the table
-     */
+     *//*
+
     public void insertDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
 
         CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution =
@@ -111,11 +120,13 @@ public class ActivitiDAO {
 
     }
 
-    /**
+    */
+/**
      * invokes the DeploymentMapper.updateDeploymentMetaData to insert a new row from BPS_BPMN_DEPLOYMENT_METADATA
      *
      * @param deploymentMetaDataModel Object to be updated in to the table
-     */
+     *//*
+
     public void updateDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
 
         CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution =
@@ -132,12 +143,14 @@ public class ActivitiDAO {
         }
     }
 
-    /**
+    */
+/**
      * invokes the DeploymentMapper.deleteDeploymentMetaData to delete a new row from BPS_BPMN_DEPLOYMENT_METADATA
      *
      * @param deploymentMetaDataModel the object to be deleted
      * @return total number of rows deleted
-     */
+     *//*
+
     public int deleteDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
 
         CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution =
@@ -157,3 +170,4 @@ public class ActivitiDAO {
     }
 
 }
+*/
