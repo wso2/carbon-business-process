@@ -1023,11 +1023,7 @@
                 <artifactId>camunda-engine</artifactId>
                 <version>${org.activiti.wso2.version}</version>
             </dependency>
-            <dependency>
-            <groupId>org.camunda.bpm.identity</groupId>
-            <artifactId>camunda-identity-ldap</artifactId>
-            <version>${org.activiti.wso2.version}</version>
-        </dependency>
+
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.application.mgt.bpel.server.feature</artifactId>

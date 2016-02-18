@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.bpmn.core.deployment;
 
-/*import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.deployment.AbstractDeployer;
 import org.apache.axis2.deployment.DeploymentException;
 import org.apache.axis2.deployment.repository.util.DeploymentFileData;*/
@@ -54,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
-
+import  org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
  * under repository/deployment/server directory. Currently associated file extension is .bar.
@@ -74,7 +74,7 @@ public class BPMNDeployer implements Deployer {
     private URL deploymentLocation;
     private ArtifactType artifactType;
     private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
- //   private ActivitiDAO activitiDAO;
+    private ActivitiDAO activitiDAO;
     private Integer tenantId;
     /**
      * Initializes the deployment per tenant
@@ -83,11 +83,11 @@ public class BPMNDeployer implements Deployer {
      */
     @Override
     public void init() {
-//        log.info("BPMNDeployer initializing");
-//        artifactType = new ArtifactType<>("BPMN");
-//        this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        this.activitiDAO = new ActivitiDAO();
-//        //Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        log.info("BPMNDeployer initializing");
+        artifactType = new ArtifactType<>("BPMN");
+      this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        this.activitiDAO = new ActivitiDAO();
+//     Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 //        // log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
 //        try {
 //           /* File tenantRepoFolder = createTenantRepo(configurationContext);
@@ -118,52 +118,53 @@ public class BPMNDeployer implements Deployer {
         String checksum = "";
         ZipInputStream archiveStream = null;
         //check if extension is bar
-//        if (isSupportedFile(artifactFile)) {
-//
-//           // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//            String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
-//            //get checksum value of new file
-//            try {
-//                checksum = Utils.getMD5Checksum(artifactFile);
-//            } catch (NoSuchAlgorithmException e) {
-//                log.error("Checksum generation algorithm not found", e);
-//            } catch (IOException e) {
-//                log.error("Checksum generation failed for IO operation", e);
-//            }
-//
-//            // get stored metadata model from activiti reg table if available
-//            DeploymentMetaDataModel deploymentMetaDataModel =
-//                    activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
-//
+      /*  if (isSupportedFile(artifactFile)) {
+
+           // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
+            //get checksum value of new file
+            try {
+                checksum = Utils.getMD5Checksum(artifactFile);
+            } catch (NoSuchAlgorithmException e) {
+                log.error("Checksum generation algorithm not found", e);} catch (IOException e) {
+               log.error("Checksum generation failed for IO operation", e);
+            }*/
+
+       /*     // get stored metadata model from activiti reg table if available
+            DeploymentMetaDataModel deploymentMetaDataModel =
+                    activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
+//*/
 //            if (log.isDebugEnabled()) {
 //                log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
 //                log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
 //            }
-//
-//            if (deploymentMetaDataModel == null) {
-//                ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-//                RepositoryService repositoryService = engine.getRepositoryService();
-//                DeploymentBuilder deploymentBuilder =
-//                        repositoryService.createDeployment().tenantId(tenantId.toString()).
-//                                name(deploymentName);
-//                try {
-//                    archiveStream =
-//                            new ZipInputStream(new FileInputStream(artifact.getFile()));
-//                } catch (FileNotFoundException e) {
-//                    String errMsg = "Archive stream not found for BPMN repsoitory";
-//                    throw new CarbonDeploymentException(errMsg, e);
-//                }
-//
-//                deploymentBuilder.addZipInputStream(archiveStream);
-//                Deployment deployment = deploymentBuilder.deploy();
-//
-//                //Store deployed metadata record in activiti
-//                deploymentMetaDataModel = new DeploymentMetaDataModel();
-//                deploymentMetaDataModel.setPackageName(deploymentName);
-//                deploymentMetaDataModel.setCheckSum(checksum);
-//                deploymentMetaDataModel.setTenantID(tenantId.toString());
-//                deploymentMetaDataModel.setId(deployment.getId());
-//
+
+/*            if (deploymentMetaDataModel == null) {
+                ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+                RepositoryService repositoryService = engine.getRepositoryService();
+                //REMOVED TENANTID HERE?
+                DeploymentBuilder deploymentBuilder =
+                       repositoryService.createDeployment().
+                                name(deploymentName);
+                try {
+                    archiveStream =
+                            new ZipInputStream(new FileInputStream(artifact.getFile()));
+                } catch (FileNotFoundException e) {
+                    String errMsg = "Archive stream not found for BPMN repsoitory";
+                    throw new CarbonDeploymentException(errMsg, e);
+                }
+
+                deploymentBuilder.addZipInputStream(archiveStream);
+                Deployment deployment = deploymentBuilder.deploy();
+
+                //Store deployed metadata record in activiti
+
+                deploymentMetaDataModel = new DeploymentMetaDataModel();
+                deploymentMetaDataModel.setPackageName(deploymentName);
+                deploymentMetaDataModel.setCheckSum(checksum);
+                deploymentMetaDataModel.setTenantID(tenantId.toString());
+                deploymentMetaDataModel.setId(deployment.getId());*/
+//                  }
 //                //call for insertion
 //                activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
 //            }
