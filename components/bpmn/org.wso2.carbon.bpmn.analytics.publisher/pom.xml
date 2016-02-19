@@ -31,9 +31,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wso2.orbit.org.activiti</groupId>
-            <artifactId>activiti-all</artifactId>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm.identity</groupId>
+            <artifactId>camunda-identity-ldap</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn</artifactId>

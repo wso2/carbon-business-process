@@ -16,11 +16,11 @@
 package org.wso2.carbon.bpmn.extensions.rest;
 
 import com.jayway.jsonpath.JsonPath;
-import org.activiti.engine.delegate.BpmnError;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.el.FixedValue;
-import org.activiti.engine.impl.el.JuelExpression;
+import org.camunda.bpm.engine.delegate.BpmnError;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.impl.el.FixedValue;
+import org.camunda.bpm.engine.impl.el.JuelExpression;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;

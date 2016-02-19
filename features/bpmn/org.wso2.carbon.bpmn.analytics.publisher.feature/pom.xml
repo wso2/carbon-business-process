@@ -37,7 +37,11 @@
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
+<<<<<<< HEAD
             <version>${carbon.business-process.version}</version>
+=======
+            <version>4.4.7-SNAPSHOT</version>
+>>>>>>> aa2bf453779e52a38752f662844f973c721a3fbf
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

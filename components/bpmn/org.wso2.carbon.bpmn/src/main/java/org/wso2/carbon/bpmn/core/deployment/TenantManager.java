@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.core.deployment;
+/*package org.wso2.carbon.bpmn.core.deployment;
 
 import org.wso2.carbon.bpmn.core.BPSFault;
 
@@ -36,3 +36,4 @@ public class TenantManager {
     }
 
 }
+*/

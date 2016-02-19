@@ -12,15 +12,16 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.history.HistoricVariableInstanceQuery;
-import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
-import org.activiti.engine.query.QueryProperty;
+import org.camunda.bpm.engine.BadUserRequestException;
+import org.camunda.bpm.engine.HistoryService;
+import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
+import org.camunda.bpm.engine.impl.HistoricVariableInstanceQueryProperty;
+import org.camunda.bpm.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
@@ -28,6 +29,7 @@ import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
 
+import javax.management.Query;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ import java.util.Map;
 
 public class BaseHistoricVariableInstanceService {
 
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
+    protected static Map<String,QueryProperty> allowedSortProperties = new HashMap<>();
     protected static final List<String> allPropertiesList  = new ArrayList<>();
 
 
@@ -70,16 +72,16 @@ public class BaseHistoricVariableInstanceService {
         // Populate query based on request
         if(queryRequest.getExcludeTaskVariables() != null) {
             if (queryRequest.getExcludeTaskVariables()) {
-                query.excludeTaskVariables();
+              //  query.excludeTaskVariables();
             }
         }
 
         if (queryRequest.getTaskId() != null) {
-            query.taskId(queryRequest.getTaskId());
+            query.taskIdIn(queryRequest.getTaskId());
         }
 
         if(queryRequest.getExecutionId() != null) {
-            query.executionId(queryRequest.getExecutionId());
+            query.executionIdIn(queryRequest.getExecutionId());
         }
 
         if (queryRequest.getProcessInstanceId() != null) {
@@ -98,18 +100,20 @@ public class BaseHistoricVariableInstanceService {
             addVariables(query, queryRequest.getVariables());
         }
 
+        //return new HistoricVariableInstancePaginateList(new RestResponseFactory(),uriInfo).p
+
         return new HistoricVariableInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
-                allRequestParams, query, "variableName", allowedSortProperties);
+               allRequestParams, (Query)query, "variableName", allowedSortProperties);
     }
 
 
     protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery, List<QueryVariable> variables) {
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+              //  throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+               // throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -118,7 +122,7 @@ public class BaseHistoricVariableInstanceService {
 
             // A value-only query is only possible using equals-operator
             if (nameLess) {
-                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported");
+              //  throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported");
             }
 
             switch (variable.getVariableOperation()) {
@@ -128,9 +132,10 @@ public class BaseHistoricVariableInstanceService {
                     break;
 
                 default:
-                    throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                 //   throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
             }
         }
     }
 
 }
+*/

@@ -17,10 +17,10 @@
 
 package org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+//import org.activiti.engine.ActivitiException;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
+//import org.activiti.engine.ActivitiObjectNotFoundException;
+//import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
@@ -41,7 +41,7 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(Exception e) {
 
-        if(e instanceof ActivitiIllegalArgumentException){
+      /*  if(e instanceof ActivitiIllegalArgumentException){
             log.error("Exception during service invocation ", e);
             return createRestErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }  else if(e instanceof ActivitiTaskAlreadyClaimedException){
@@ -52,8 +52,9 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             return createRestErrorResponse(Response.Status.NOT_FOUND, e.getMessage());
         } else if(e instanceof ActivitiException){
             log.error("Activiti Exception Occured ", e);
-            return createRestErrorResponse(Response.Status.NOT_ACCEPTABLE, e.getMessage());
-        } else if(e instanceof BPMNOSGIServiceException){
+            return createRestErrorResponse(Response.Status.NOT_ACCEPTABLE, e.getMessage());*/
+        //}
+     if(e instanceof BPMNOSGIServiceException){
             log.error("Exception due to issues on osgi service ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Exception due to issues on osgi " +
                     "service");
