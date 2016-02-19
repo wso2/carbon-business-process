@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.security.auth.login.Configuration;
-import sun.tools.java.Environment;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 public class MyBatisExtendedSessionFactory extends StandaloneProcessEngineConfiguration {
     private String resourceName;
@@ -38,6 +35,7 @@ public class MyBatisExtendedSessionFactory extends StandaloneProcessEngineConfig
         setDatabaseTablePrefix(processEngineConfiguration.getDatabaseTablePrefix());
 
         initDataSource();
+        initSerialization();
        // initVariableTypes();
         initCommandContextFactory();
         initTransactionFactory();

@@ -19,7 +19,7 @@ package org.wso2.carbon.bpmn.core.deployment;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.deployment.AbstractDeployer;
 import org.apache.axis2.deployment.DeploymentException;
-import org.apache.axis2.deployment.repository.util.DeploymentFileData;*/
+import org.apache.axis2.deployment.repository.util.DeploymentFileData;
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
@@ -79,7 +79,7 @@ public class BPMNDeployer implements Deployer {
     /**
      * Initializes the deployment per tenant
      *
-     * @param configurationContext axis2 configurationContext
+     * @param
      */
     @Override
     public void init() {
@@ -247,7 +247,7 @@ public class BPMNDeployer implements Deployer {
 
     /**
      *
-     * @param configurationContext axis2 configurationContext
+     * @param
      * @return                     bpmn repo file
      * @throws BPSFault        repo creation failure will result in this xception
      */

@@ -31,6 +31,15 @@ import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 //import org.wso2.carbon.registry.core.service.RegistryService;
 //import org.wso2.carbon.utils.WaitBeforeShutdownObserver; //TODO
+import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
@@ -61,9 +70,15 @@ public class BPMNServiceComponent {
             //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
 
-//            DataSourceHandler dataSourceHandler = new DataSourceHandler();
-//            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-//            dataSourceHandler.closeDataSource();
+         //   DataSourceHandler dataSourceHandler = new DataSourceHandler();
+          //  dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+//            TransactionFactory transactionFactory = new JdbcTransactionFactory();
+//            Environment environment = new Environment("development", transactionFactory, dataSourceHandler.getDataSource());
+//            Configuration configuration = new Configuration(environment);
+//            configuration.addMapper(DeploymentMapper.class);
+//            SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+
+           // dataSourceHandler.closeDataSource();
 //        } catch (BPMNMetaDataTableCreationException e) {
 //            log.error("Could not create BPMN checksum table", e);
 //        } catch (DatabaseConfigurationException e) {

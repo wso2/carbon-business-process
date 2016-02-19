@@ -21,6 +21,7 @@ import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.persistence.entity.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 //import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 //import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 
@@ -61,6 +62,7 @@ public class ActivitiEngineBuilder {
                                     activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
+           // ActivitiDAO a = new ActivitiDAO();
            // processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
                //     new BPSUserManagerFactory());
           //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,

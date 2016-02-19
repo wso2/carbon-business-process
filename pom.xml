@@ -1019,9 +1019,9 @@
                 <version>${org.activiti.wso2.version}</version>
             </dependency-->
             <dependency>
-                <groupId>org.camunda.bpm</groupId>
+                <groupId>org.camunda.bpm.wso2</groupId>
                 <artifactId>camunda-engine</artifactId>
-                <version>${org.activiti.wso2.version}</version>
+                <version>${org.camunda.wso2.version}</version>
             </dependency>
 
             <dependency>
@@ -1624,7 +1624,7 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>7.4.0</org.activiti.wso2.version>
+        <org.camunda.wso2.version>7.4.0-wso2v2</org.camunda.wso2.version>
         <!--<restlet.version>2.2.1.wso2v1</restlet.version>-->
         <commons.lang3.version>3.3.2</commons.lang3.version>
 	    <project.scm.id>wso2-scm-server</project.scm.id>

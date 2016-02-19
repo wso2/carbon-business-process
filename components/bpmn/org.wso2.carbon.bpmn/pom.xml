@@ -34,7 +34,7 @@
 
 
         <dependency>
-            <groupId>org.camunda.bpm</groupId>
+            <groupId>org.camunda.bpm.wso2</groupId>
             <artifactId>camunda-engine</artifactId>
         </dependency>
 
