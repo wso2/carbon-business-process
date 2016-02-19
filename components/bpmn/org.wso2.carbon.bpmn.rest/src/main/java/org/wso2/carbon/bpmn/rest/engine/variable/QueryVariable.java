@@ -12,12 +12,13 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 
 
 package org.wso2.carbon.bpmn.rest.engine.variable;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -95,8 +96,10 @@ public class QueryVariable {
                     return type;
                 }
             }
-            throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + friendlyName);
+
+          //  throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + friendlyName);
         }
     }
 
 }
+*/

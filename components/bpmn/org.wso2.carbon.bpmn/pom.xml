@@ -29,10 +29,13 @@
     <name>WSO2 Carbon - BPMN Core Component</name>
     <url>http://wso2.org</url>
 
+
     <dependencies>
+
+
         <dependency>
-            <groupId>org.wso2.orbit.org.activiti</groupId>
-            <artifactId>activiti-all</artifactId>
+            <groupId>org.camunda.bpm.wso2</groupId>
+            <artifactId>camunda-engine</artifactId>
         </dependency>
 
         <dependency>
@@ -42,12 +45,13 @@
 
         <dependency>
             <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
+            <!--artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon</groupId-->
             <artifactId>org.wso2.carbon.core</artifactId>
+             <version>5.0.0</version>
         </dependency>
 
         <dependency>
@@ -56,11 +60,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <!--groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.registry.core</artifactId>
         </dependency>
 
-        <dependency>
+        <dependency-->
             <groupId>org.wso2.carbon.multitenancy</groupId>
             <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
         </dependency>
@@ -187,6 +191,7 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
+
     </repositories>
 
 

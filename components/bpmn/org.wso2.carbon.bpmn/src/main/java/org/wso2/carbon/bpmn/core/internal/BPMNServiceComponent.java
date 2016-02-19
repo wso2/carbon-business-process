@@ -17,7 +17,7 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-import org.activiti.engine.ProcessEngines;
+//import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
@@ -25,17 +25,26 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.deployment.TenantManager;
-import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
+//import org.wso2.carbon.bpmn.core.deployment.TenantManager;
+//import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
 import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
+//import org.wso2.carbon.registry.core.service.RegistryService;
+//import org.wso2.carbon.utils.WaitBeforeShutdownObserver; //TODO
+import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
- * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
- * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
+ * //@scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * //cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  */
 public class BPMNServiceComponent {
 
@@ -48,20 +57,28 @@ public class BPMNServiceComponent {
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
             ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
             holder.setEngine(activitiEngineBuilder.buildEngine());
-            holder.setTenantManager(new TenantManager());
+            //holder.setTenantManager(new TenantManager());
 
-            BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
+            //TODO:COMMENTED
+           // BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
-            restHolder.setRestInvoker(new RESTInvoker());
+            //restHolder.setRestInvoker(new RESTInvoker());
+            //TODO:COMMENTED
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
-            bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
-            bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
+            //bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
+            //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
 
-//            DataSourceHandler dataSourceHandler = new DataSourceHandler();
-//            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-//            dataSourceHandler.closeDataSource();
+         //   DataSourceHandler dataSourceHandler = new DataSourceHandler();
+          //  dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+//            TransactionFactory transactionFactory = new JdbcTransactionFactory();
+//            Environment environment = new Environment("development", transactionFactory, dataSourceHandler.getDataSource());
+//            Configuration configuration = new Configuration(environment);
+//            configuration.addMapper(DeploymentMapper.class);
+//            SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+
+           // dataSourceHandler.closeDataSource();
 //        } catch (BPMNMetaDataTableCreationException e) {
 //            log.error("Could not create BPMN checksum table", e);
 //        } catch (DatabaseConfigurationException e) {
@@ -76,7 +93,7 @@ public class BPMNServiceComponent {
 //		ProcessEngines.destroy();
     }
 
-    protected void setRegistryService(RegistryService registrySvc) {
+   /* protected void setRegistryService(RegistryService registrySvc) {
         if (log.isDebugEnabled()) {
             log.debug("RegistryService bound to the BPMN component");
         }
@@ -88,6 +105,6 @@ public class BPMNServiceComponent {
             log.debug("RegistryService unbound from the BPMN component");
         }
         BPMNServerHolder.getInstance().unsetRegistryService(registryService);
-    }
+    }*/
 
 }

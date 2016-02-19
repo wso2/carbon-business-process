@@ -12,14 +12,15 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 
 
 package org.wso2.carbon.bpmn.rest.engine.variable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.activiti.engine.ActivitiIllegalArgumentException;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
 
 import javax.xml.bind.annotation.*;
 
@@ -93,9 +94,10 @@ public class RestVariable {
                     return s;
                 }
             }
-            throw new ActivitiIllegalArgumentException("Invalid variable scope: '" + scope + "'");
+          //  throw new ActivitiIllegalArgumentException("Invalid variable scope: '" + scope + "'");
         } else {
             return null;
         }
     }
 }
+*/

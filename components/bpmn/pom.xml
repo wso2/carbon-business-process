@@ -33,10 +33,17 @@
 
     <modules>
         <module>org.wso2.carbon.bpmn</module>
+<<<<<<< HEAD
         <module>org.wso2.carbon.bpmn.ui</module>
         <module>org.wso2.carbon.bpmn.rest</module>
         <module>bpmn-explorer-web</module>
         <module>org.wso2.carbon.bpmn.analytics.publisher</module>
+=======
+        <!--module>org.wso2.carbon.bpmn.ui</module-->
+        <!--module>bpmn-rest</module-->
+        <!--module>bpmn-explorer-web</module-->
+        <!--module>org.wso2.carbon.bpmn.analytics.publisher</module-->
+>>>>>>> aa2bf453779e52a38752f662844f973c721a3fbf
     </modules>
 
 </project>

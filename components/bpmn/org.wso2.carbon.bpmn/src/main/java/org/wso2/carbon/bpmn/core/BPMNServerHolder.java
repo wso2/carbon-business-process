@@ -17,10 +17,10 @@
 package org.wso2.carbon.bpmn.core;
 
 
-import org.activiti.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.deployment.TenantManager;
+//import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 public final class BPMNServerHolder {
@@ -30,7 +30,7 @@ public final class BPMNServerHolder {
     private static BPMNServerHolder bpmnServerHolder = new BPMNServerHolder();
 
     private ProcessEngine engine = null;
-    private TenantManager tenantManager = null;
+   // private TenantManager tenantManager = null;
     private RegistryService registryService = null;
 
 
@@ -49,7 +49,7 @@ public final class BPMNServerHolder {
         this.engine = engine;
     }
 
-    public TenantManager getTenantManager() {
+   /* public TenantManager getTenantManager() {
         return tenantManager;
     }
 
@@ -67,5 +67,5 @@ public final class BPMNServerHolder {
 
     public RegistryService getRegistryService() {
         return registryService;
-    }
+    }*/
 }

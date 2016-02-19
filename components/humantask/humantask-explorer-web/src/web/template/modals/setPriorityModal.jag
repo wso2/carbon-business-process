@@ -53,7 +53,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("cancel", "Cancel")%></button>
-                <button type="button" class="btn btn-default" onclick="setPriority(<%=id%>)" id="sePriorityBtn"><%=i18n.localize("set", "Set")%></button>
+                <button type="button" class="btn btn-default" onclick="setPriority(<%=Encode.forJavaScript(id)%>)" id="sePriorityBtn"><%=i18n.localize("set", "Set")%></button>
             </div>
         </div><!-- /.modal-content -->
     </div>

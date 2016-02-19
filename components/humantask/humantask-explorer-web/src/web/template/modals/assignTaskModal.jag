@@ -48,7 +48,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("cancel", "Cancel")%></button>
-                <button type="button" class="btn btn-default" onclick="assignTask(<%=id%>)" id="taskAssignBtn"><%=i18n.localize("assign", "Assign")%></button>
+                <button type="button" class="btn btn-default" onclick="assignTask(<%=Encode.forJavaScript(id)%>)" id="taskAssignBtn"><%=i18n.localize("assign", "Assign")%></button>
             </div>
         </div><!-- /.modal-content -->
     </div>

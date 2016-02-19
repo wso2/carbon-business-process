@@ -15,17 +15,15 @@
  */
 
 package org.wso2.carbon.bpmn.core;
-
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngineConfiguration;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.impl.persistence.entity.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
-import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+//import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+//import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,9 +50,11 @@ public class ActivitiEngineBuilder {
     public ProcessEngine buildEngine() throws BPSFault {
 
         try {
-            String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-            String activitiConfigPath = carbonConfigDirPath + File.separator +
-                    BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+           // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+           // String activitiConfigPath = carbonConfigDirPath + File.separator +
+                  //  BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+            String activitiConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
+                     BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME; //CHANGED TO CAMUNDA
             File activitiConfigFile = new File(activitiConfigPath);
             ProcessEngineConfigurationImpl processEngineConfigurationImpl =
                     (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
@@ -62,13 +62,13 @@ public class ActivitiEngineBuilder {
                                     activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
-            processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-                    new BPSUserManagerFactory());
-            processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-                    new BPSGroupManagerFactory());
+           // ActivitiDAO a = new ActivitiDAO();
+           // processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
+               //     new BPSUserManagerFactory());
+          //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
+                 //   new BPSGroupManagerFactory());
 
-            dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
-                    .getDataSourceJndiName();
+            dataSourceJndiName =   processEngineConfigurationImpl.getDataSourceJndiName();
 
         } catch (FileNotFoundException e) {
             String msg = "Failed to create an Activiti engine. Activiti configuration file not found";
