@@ -39,6 +39,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 
 
 /**
@@ -69,6 +70,8 @@ public class BPMNServiceComponent {
             //bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
             //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
+
+            ActivitiDAO a = new ActivitiDAO();
 
          //   DataSourceHandler dataSourceHandler = new DataSourceHandler();
           //  dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
