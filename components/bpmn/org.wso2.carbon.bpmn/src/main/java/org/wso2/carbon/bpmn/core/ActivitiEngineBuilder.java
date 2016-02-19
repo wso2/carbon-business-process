@@ -62,7 +62,7 @@ public class ActivitiEngineBuilder {
                                     activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
-           // ActivitiDAO a = new ActivitiDAO();
+            ActivitiDAO a = new ActivitiDAO();
            // processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
                //     new BPSUserManagerFactory());
           //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,

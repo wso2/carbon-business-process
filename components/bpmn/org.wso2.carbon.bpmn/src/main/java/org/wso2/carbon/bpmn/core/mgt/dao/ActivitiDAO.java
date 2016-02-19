@@ -55,7 +55,7 @@ public class ActivitiDAO {
         //managementService = engine.getManagementService();
        ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
          processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-         commandExecutor = new MyBatisQueryCommandExecutor(processEngineConfiguration, "/Users/himasha/localCBP16/carbon-business-process/components/bpmn/org.wso2.carbon.bpmn/src/main/resources/META-INF/services/mappings.xml");
+         commandExecutor = new MyBatisQueryCommandExecutor(processEngineConfiguration, "mappings.xml");
 
         //
       // s= (SqlSessionFactory)new BuildSqlSessionFactoryBuilder();
