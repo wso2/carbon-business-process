@@ -23,7 +23,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
+import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,6 @@ import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.interceptor.Command;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
-
 
 //import org.wso2.carbon.bpmn.core.internal.BuildSqlSessionFactoryBuilder;
 
@@ -70,26 +69,21 @@ public class ActivitiDAO {
 
 
 
-    public DeploymentMetaDataModel selectTenantAwareDeploymentModel(final String tenantID, final String bpmnPackageName){
+    public DeploymentMetaDataModelEntity selectTenantAwareDeploymentModel(final String tenantID, final String bpmnPackageName){
              //TESt
-       // MyBatisQueryCommandExecutor commandExecutor = new MyBatisQueryCommandExecutor(processEngineConfiguration, "DeploymentMapper");
-        return commandExecutor.executeQueryCommand(new Command<DeploymentMetaDataModel>() {
+        return commandExecutor.executeQueryCommand(new Command<DeploymentMetaDataModelEntity>() {
+
             @SuppressWarnings("unchecked")
-            public DeploymentMetaDataModel execute(CommandContext commandContext) {
-               // SqlSession ss =  s.openSession();
-               // ss.getMapper(DeploymentMapper.class).selectMetaData(tenantID, bpmnPackageName);
-               // return commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).selectMetaData(tenantID,bpmnPackageName);
-               ListQueryParameterObject queryParameterObject = new ListQueryParameterObject();
-                queryParameterObject.setParameter(tenantID);
-               queryParameterObject.setParameter(bpmnPackageName);
+            public DeploymentMetaDataModelEntity execute(CommandContext commandContext) {
 
-                // select for this query
-                //
-                return (DeploymentMetaDataModel) commandContext.getDbEntityManager().selectOne("selectMetaData", queryParameterObject);
+                // TODO: Add more parameters
+                        ListQueryParameterObject queryParameterObject = new ListQueryParameterObject();
+                        queryParameterObject.setParameter(tenantID);
+                     queryParameterObject.setParameter(bpmnPackageName);
 
-
+                // select the first 100 elements for this query
+                return (DeploymentMetaDataModelEntity) commandContext.getDbEntityManager().selectOne("selectDeploymentMetaDataModel", queryParameterObject);
             }
-
         });
     }
 
@@ -120,13 +114,13 @@ public class ActivitiDAO {
 
 
     //selectList method
-    public List<DeploymentMetaDataModel> selectAllDeploymentModel(){
+    public List<DeploymentMetaDataModelEntity> selectAllDeploymentModel(){
 
-        return commandExecutor.executeQueryCommand(new Command <List<DeploymentMetaDataModel>>() {
+        return commandExecutor.executeQueryCommand(new Command <List<DeploymentMetaDataModelEntity>>() {
             @SuppressWarnings("unchecked")
-            public List<DeploymentMetaDataModel> execute(CommandContext commandContext) {
+            public List<DeploymentMetaDataModelEntity> execute(CommandContext commandContext) {
               // return commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).selectAllMetaData();
-               return commandContext.getDbEntityManager().selectList("selectAllMetaData");
+               return commandContext.getDbEntityManager().selectList("selectDeploymentMetaDataModels");
                // return modelList;
 
 
@@ -151,18 +145,20 @@ public class ActivitiDAO {
             */
 
 
-     public void insertDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel) {
-         commandExecutor.executeQueryCommand(new Command<Integer>() {
+     public void insertDeploymentMetaDataModel(final DeploymentMetaDataModelEntity deploymentMetaDataModel) {
+         commandExecutor.executeQueryCommand(new Command<Void>() {
              @SuppressWarnings("unchecked")
 
-             public Integer execute(CommandContext commandContext) {
+             public Void execute(CommandContext commandContext) {
 
               //  Integer count = commandContext.getDbSqlSession().getSqlSession().
                   //      getMapper(DeploymentMapper.class).insertDeploymentMetaData(deploymentMetaDataModel);
+                 commandContext.getDbEntityManager().insert(deploymentMetaDataModel);
 
-                 Integer count = commandContext.getDbSqlSession().getSqlSession().insert("insertMetaData", deploymentMetaDataModel);
-
-                 return count;
+                // commandContext.getDbEntityManager().insert(DeploymentMetaDataModel.class,"insertMetaData",deploymentMetaDataModel);
+                // Integer count = commandContext.getDbSqlSession().getSqlSession().insert("insertMetaData", deploymentMetaDataModel);
+                   return null;
+                 //return count;
              }
 
          });
@@ -188,16 +184,18 @@ public class ActivitiDAO {
 */
 
 
-    public void updateDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
+    public void updateDeploymentMetaDataModel(final DeploymentMetaDataModelEntity deploymentMetaDataModel){
 
-        commandExecutor.executeQueryCommand(new Command<Integer>() {
+        commandExecutor.executeQueryCommand(new Command<Void>() {
             @SuppressWarnings("unchecked")
 
-            public Integer execute(CommandContext commandContext) {
+            public Void execute(CommandContext commandContext) {
                // Integer count = commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).updateDeploymentMetaData(deploymentMetaDataModel);
-                Integer count = commandContext.getDbSqlSession().getSqlSession().update("updateMetaData", deploymentMetaDataModel);
+                commandContext.getDbEntityManager().update(DeploymentMetaDataModelEntity.class,"updateDeploymentMetaDataModel",deploymentMetaDataModel);
 
-                return count;
+                        // Integer count = commandContext.getDbSqlSession().getSqlSession().update("updateMetaData", deploymentMetaDataModel);
+
+                         return null;
             }
 
         });
@@ -215,21 +213,23 @@ public class ActivitiDAO {
 */
 
 
-    public int deleteDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel) {
-        return commandExecutor.executeQueryCommand(new Command<Integer>() {
-            @SuppressWarnings("unchecked")
+    public Void deleteDeploymentMetaDataModel(final DeploymentMetaDataModelEntity deploymentMetaDataModel) {
+         commandExecutor.executeQueryCommand(new Command<Void>() {
+             @SuppressWarnings("unchecked")
 
-            public Integer execute(CommandContext commandContext) {
-                //Integer count = commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).deleteDeploymentMetaData(deploymentMetaDataModel);
-                  Integer count =  commandContext.getDbSqlSession().getSqlSession(). delete("deleteMetaData", deploymentMetaDataModel);
+             public Void execute(CommandContext commandContext) {
+                 //Integer count = commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).deleteDeploymentMetaData(deploymentMetaDataModel);
+                 commandContext.getDbEntityManager().delete(DeploymentMetaDataModelEntity.class, "deleteDeploymentMetaDataModel", deploymentMetaDataModel);
+                 //  commandContext.getDbEntityManager().delete(deploymentMetaDataModel);
+                 // Integer count =  commandContext.getDbSqlSession().getSqlSession(). delete("deleteMetaData", deploymentMetaDataModel);
 //                );
 //
 //
+                 // return count;
+                 return null;
+             }
 
-                return count;
-            }
-
-        });
+         });
 
 /*
        CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution = new AbstractCustomSqlExecution<DeploymentMapper, Integer>(DeploymentMapper.class) {

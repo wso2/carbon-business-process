@@ -17,16 +17,32 @@
 
 package org.wso2.carbon.bpmn.core.mgt.model;
 
+import  java.util.HashMap;
+import java.util.Map;
+import org.camunda.bpm.engine.impl.db.DbEntity;
+import java.io.Serializable;
+import org.camunda.bpm.engine.impl.db.HasDbRevision;
+
 /**
  * Model class for BPS_BPMN_DEPLOYMENT_METADATA table.
  * When querying with the activiti engine table this object is used for ORM puprose
  */
-public class DeploymentMetaDataModel {
+public class DeploymentMetaDataModelEntity implements DbEntity, Serializable{
 
 	private String id;
 	private String packageName;
 	private String checkSum;
 	private String tenantID;
+    protected int revision;
+
+    public Object getPersistentState(){
+
+        Map<String, Object> persistentState = new HashMap<String, Object>();
+        persistentState.put("checkSum", checkSum);
+       // persistentState.put("packageName", packageName);
+       // persistentState.put("tenantID", tenantID);
+        return persistentState;
+    }
 
 	public String getId() {
 		return id;
