@@ -53,7 +53,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
-import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
+import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
 import  org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory

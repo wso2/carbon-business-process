@@ -213,23 +213,24 @@ public class ActivitiDAO {
 */
 
 
-    public Void deleteDeploymentMetaDataModel(final DeploymentMetaDataModelEntity deploymentMetaDataModel) {
-         commandExecutor.executeQueryCommand(new Command<Void>() {
-             @SuppressWarnings("unchecked")
+    public void deleteDeploymentMetaDataModel(final DeploymentMetaDataModelEntity deploymentMetaDataModel) {
+        commandExecutor.executeQueryCommand(new Command<Void>() {
+            @SuppressWarnings("unchecked")
 
-             public Void execute(CommandContext commandContext) {
-                 //Integer count = commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).deleteDeploymentMetaData(deploymentMetaDataModel);
-                 commandContext.getDbEntityManager().delete(DeploymentMetaDataModelEntity.class, "deleteDeploymentMetaDataModel", deploymentMetaDataModel);
-                 //  commandContext.getDbEntityManager().delete(deploymentMetaDataModel);
-                 // Integer count =  commandContext.getDbSqlSession().getSqlSession(). delete("deleteMetaData", deploymentMetaDataModel);
+            public Void execute(CommandContext commandContext) {
+                //Integer count = commandContext.getDbSqlSession().getSqlSession().getMapper(DeploymentMapper.class).deleteDeploymentMetaData(deploymentMetaDataModel);
+                commandContext.getDbEntityManager().delete(DeploymentMetaDataModelEntity.class, "deleteDeploymentMetaDataModel", deploymentMetaDataModel);
+                //  commandContext.getDbEntityManager().delete(deploymentMetaDataModel);
+                // Integer count =  commandContext.getDbSqlSession().getSqlSession(). delete("deleteMetaData", deploymentMetaDataModel);
 //                );
 //
 //
-                 // return count;
-                 return null;
-             }
+                // return count;
+                return null;
+            }
 
-         });
+        });
+    }
 
 /*
        CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution = new AbstractCustomSqlExecution<DeploymentMapper, Integer>(DeploymentMapper.class) {
@@ -245,5 +246,5 @@ public class ActivitiDAO {
 
         return rowCount;
     }*/
-    }
+    
 }
