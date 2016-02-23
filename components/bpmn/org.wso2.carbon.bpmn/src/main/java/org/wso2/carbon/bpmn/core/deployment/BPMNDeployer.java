@@ -34,10 +34,9 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.Utils;
+import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 import org.wso2.carbon.context.CarbonContext;
-/*import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.utils.CarbonUtils;*/
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.kernel.deployment.Artifact;
 import org.wso2.carbon.kernel.deployment.ArtifactType;
 import org.wso2.carbon.kernel.deployment.Deployer;
@@ -54,7 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
-import  org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+import  org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
  * under repository/deployment/server directory. Currently associated file extension is .bar.
@@ -67,14 +66,13 @@ import  org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 public class BPMNDeployer implements Deployer {
 
     //private static Log log = LogFactory.getLog(BPMNDeployer.class);
-    // private TenantRepository tenantRepository = null;
     private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
     private static final String DEPLOYMENT_PATH = "file:bpmn";
     private static final String SUPPORTED_EXTENSIONS = "bar";
     private URL deploymentLocation;
     private ArtifactType artifactType;
     private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
-    private ActivitiDAO activitiDAO;
+    private CamundaDAO camundaDAO;
     private Integer tenantId;
     /**
      * Initializes the deployment per tenant
@@ -86,24 +84,14 @@ public class BPMNDeployer implements Deployer {
         log.info("BPMNDeployer initializing");
         artifactType = new ArtifactType<>("BPMN");
       this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        this.activitiDAO = new ActivitiDAO();
-//     Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-//        // log.info("Initializing BPMN Deployer for tenant " + tenantId + ".");
-//        try {
-//           /* File tenantRepoFolder = createTenantRepo(configurationContext);
-//            tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
-//            tenantRepository.setRepoFolder(tenantRepoFolder);
-//
-//             if (!CarbonUtils.isWorkerNode()) {
-//                tenantRepository.fixDeployments();
-//            }
-//        }  catch (BPSFault e) {
-//            String msg = "Tenant Error: " + tenantId;
-//            log.error(msg, e);*/
-//            deploymentLocation = new URL(DEPLOYMENT_PATH);
-//        } catch (MalformedURLException e) {
-//            log.error("BPMN deployer location error");
-//        }
+        //TODO: add try: catch
+        try{
+        this.camundaDAO = new CamundaDAO();
+        }
+        catch(ExceptionInInitializerError e){
+            String msg = "Failed to initialize camundaDAO : "+ " for tenant: " + tenantId;
+            log.error(msg, e);
+        }
     }
 
     /**
@@ -118,9 +106,9 @@ public class BPMNDeployer implements Deployer {
         String checksum = "";
         ZipInputStream archiveStream = null;
         //check if extension is bar
-      /*  if (isSupportedFile(artifactFile)) {
+       if (isSupportedFile(artifactFile)) {
 
-           // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
             String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
             //get checksum value of new file
             try {
@@ -128,21 +116,20 @@ public class BPMNDeployer implements Deployer {
             } catch (NoSuchAlgorithmException e) {
                 log.error("Checksum generation algorithm not found", e);} catch (IOException e) {
                log.error("Checksum generation failed for IO operation", e);
-            }*/
+            }
 
-       /*     // get stored metadata model from activiti reg table if available
-            DeploymentMetaDataModel deploymentMetaDataModel =
-                    activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
-//*/
-//            if (log.isDebugEnabled()) {
-//                log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
-//                log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
-//            }
+            // get stored metadata model from activiti reg table if available
+            DeploymentMetaDataModelEntity deploymentMetaDataModel =
+                    camundaDAO.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
 
-/*            if (deploymentMetaDataModel == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
+                log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
+            }
+             //A new deployment
+            if (deploymentMetaDataModel == null) {
                 ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
                 RepositoryService repositoryService = engine.getRepositoryService();
-                //REMOVED TENANTID HERE?
                 DeploymentBuilder deploymentBuilder =
                        repositoryService.createDeployment().
                                 name(deploymentName);
@@ -159,27 +146,26 @@ public class BPMNDeployer implements Deployer {
 
                 //Store deployed metadata record in activiti
 
-                deploymentMetaDataModel = new DeploymentMetaDataModel();
+                deploymentMetaDataModel = new DeploymentMetaDataModelEntity();
                 deploymentMetaDataModel.setPackageName(deploymentName);
                 deploymentMetaDataModel.setCheckSum(checksum);
                 deploymentMetaDataModel.setTenantID(tenantId.toString());
-                deploymentMetaDataModel.setId(deployment.getId());*/
-//                  }
-//                //call for insertion
-//                activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
-//            }
-//            /////
-//            else if(deploymentMetaDataModel != null) { //deployment exists
-//                // not the same version that is already deployed
-//                if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
-//                    // It is not a new deployment, but a version update
-//                    update(artifact); //TODO update new version deployment and file repo
-//                    deploymentMetaDataModel.setCheckSum(checksum);
-//                    activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
-//                }
-//
-//            }/////
-       // }
+                deploymentMetaDataModel.setId(deployment.getId());
+
+               //call for insertion
+                camundaDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
+          }
+           else if(deploymentMetaDataModel != null) { //deployment exists
+               // not the same version that is already deployed
+              if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
+                    // It is not a new deployment, but a version update
+                    update(artifact); //TODO update new version deployment and file repo
+                    deploymentMetaDataModel.setCheckSum(checksum);
+                    camundaDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
+               }
+
+            }
+        }
         return artifactPath;
 
     }
@@ -187,59 +173,58 @@ public class BPMNDeployer implements Deployer {
     public void undeploy(Object key) throws CarbonDeploymentException {
         //TODO : cluster workernode
         String deploymentName = "";
-       // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-      //  try {
-          //   deploymentName = FilenameUtils.getBaseName(key.toString());//CHECK
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+          try {
+             deploymentName = FilenameUtils.getBaseName(key.toString());//CHECK
 
-            // Remove the deployment from the activiti registry
+            // Remove the deployment from  camunda registry
 
-        //    DeploymentMetaDataModel undeployModel = activitiDAO.selectTenantAwareDeploymentModel(tenantId.toString(),deploymentName);
+            DeploymentMetaDataModelEntity undeployModel = camundaDAO.selectTenantAwareDeploymentModel(tenantId.toString(),deploymentName);
 
-//            if(undeployModel != null)
-//            {
-//                activitiDAO.deleteDeploymentMetaDataModel(undeployModel);
-//            }
-//            //TODO: Remove from file repo
-//
-//            // Delete all versions of this package from the Activiti engine.
-//            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-//            RepositoryService repositoryService = engine.getRepositoryService();
-//            List<Deployment> deployments =
-//                    repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).list();
-//            for (Deployment deployment : deployments) {
-//                repositoryService.deleteDeployment(deployment.getId(), true);
-//            }
-//
-//
-//        }
-//        catch(ActivitiException e) {
-//            String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " + tenantId;
-//            log.error(msg, e);
-//            throw new CarbonDeploymentException(msg, e);
-//        }
+            if(undeployModel != null)
+           {
+               camundaDAO.deleteDeploymentMetaDataModel(undeployModel);
+           }
+
+            //TODO: Remove from file repo
+
+           // Delete all versions of this package from the Activiti engine.
+            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+            RepositoryService repositoryService = engine.getRepositoryService();
+            List<Deployment> deployments =
+                    repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
+            for (Deployment deployment : deployments) {
+                repositoryService.deleteDeployment(deployment.getId(), true);
+            }
+
+
+       }
+        catch(ProcessEngineException e) {
+            String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " + tenantId;
+            log.error(msg, e);
+            throw new CarbonDeploymentException(msg, e);
+        }
     }
 
-  //Perform version support : update activiti deployment and file repo /registry done
+  //Perform version support : update camunda deployment and file repo
     public Object update(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
         String artifactPath = artifactFile.getAbsolutePath();
         String deploymentName = artifactFile.getName();
 
-        //Update activiti engine based deployment
-//        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-//        RepositoryService repositoryService = engine.getRepositoryService();
-//        DeploymentBuilder deploymentBuilder =
-//                repositoryService.createDeployment().tenantId(tenantId.toString()).
-//                        name(deploymentName);
-//        try {
-//            ZipInputStream archiveStream =
-//                    new ZipInputStream(new FileInputStream(artifact.getFile()));
-//            deploymentBuilder.addZipInputStream(archiveStream);
-//            deploymentBuilder.deploy();
-//        } catch (FileNotFoundException e) {
-//            String errMsg = "Archive stream not found for BPMN repsoitory";
-//            throw new CarbonDeploymentException(errMsg, e);
-//        }
+        //Update camunda engine based deployment
+       ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        RepositoryService repositoryService = engine.getRepositoryService();
+       DeploymentBuilder deploymentBuilder =
+                repositoryService.createDeployment().name(deploymentName);
+        try {
+            ZipInputStream archiveStream =
+                   new ZipInputStream(new FileInputStream(artifact.getFile()));
+            deploymentBuilder.addZipInputStream(archiveStream);
+           deploymentBuilder.deploy();
+        } catch (FileNotFoundException e) {
+            String errMsg = "Archive stream not found for BPMN repsoitory";throw new CarbonDeploymentException(errMsg, e);
+        }
 
         //TODO: update file repo
         return artifactPath;

@@ -27,6 +27,7 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 //import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 //import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
+import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 //import org.wso2.carbon.registry.core.service.RegistryService;
@@ -39,7 +40,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 
 
 /**
@@ -71,7 +72,7 @@ public class BPMNServiceComponent {
             //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
 
-            ActivitiDAO a = new ActivitiDAO();
+            CamundaDAO a = new CamundaDAO();
 
          //   DataSourceHandler dataSourceHandler = new DataSourceHandler();
           //  dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());

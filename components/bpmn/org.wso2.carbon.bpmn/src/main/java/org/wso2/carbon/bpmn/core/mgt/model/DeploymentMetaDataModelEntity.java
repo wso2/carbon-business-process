@@ -24,10 +24,10 @@ import java.io.Serializable;
 import org.camunda.bpm.engine.impl.db.HasDbRevision;
 
 /**
- * Model class for BPS_BPMN_DEPLOYMENT_METADATA table.
- * When querying with the activiti engine table this object is used for ORM puprose
+ * Entity Model class for BPS_BPMN_DEPLOYMENT_METADATA table.
+ * When querying with camunda engine table this object is used
  */
-public class DeploymentMetaDataModelEntity implements DbEntity, Serializable{
+public class DeploymentMetaDataModelEntity implements DbEntity{
 
 	private String id;
 	private String packageName;
@@ -39,8 +39,6 @@ public class DeploymentMetaDataModelEntity implements DbEntity, Serializable{
 
         Map<String, Object> persistentState = new HashMap<String, Object>();
         persistentState.put("checkSum", checkSum);
-       // persistentState.put("packageName", packageName);
-       // persistentState.put("tenantID", tenantID);
         return persistentState;
     }
 
