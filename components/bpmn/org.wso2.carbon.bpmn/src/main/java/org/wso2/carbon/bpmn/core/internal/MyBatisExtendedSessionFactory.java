@@ -61,11 +61,7 @@ public class MyBatisExtendedSessionFactory extends StandaloneProcessEngineConfig
 	}
 
 	/**
-	 * In order to always open a new command context set the property
-	 * "alwaysOpenNew" to true inside the CommandContextInterceptor.
-	 * <p/>
-	 * If you execute the custom queries inside the process engine
-	 * (for example in a service task), you have to do this.
+	 * CommandInterceptor to create command object
 	 */
 	@Override
 	protected Collection<? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
@@ -76,6 +72,13 @@ public class MyBatisExtendedSessionFactory extends StandaloneProcessEngineConfig
 				.add(new CommandContextInterceptor(commandContextFactory, this, true));
 		return defaultCommandInterceptorsTxRequired;
 	}
+
+	/**
+	 * +
+	 * Return the name of the custom Mybatis configuration file
+	 *
+	 * @return
+	 */
 
 	@Override
 	protected InputStream getMyBatisXmlConfigurationSteam() {

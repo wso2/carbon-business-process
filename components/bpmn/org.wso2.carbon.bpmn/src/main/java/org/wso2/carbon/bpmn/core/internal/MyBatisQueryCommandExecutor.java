@@ -31,6 +31,12 @@ public class MyBatisQueryCommandExecutor {
 		                                                                 mappingResourceName);
 	}
 
+	/**
+	 * Method to execute the custom query command using myBatis session
+	 * @param command
+	 * @param <T> Type of returned object
+	 * @return
+	 */
 	public <T> T executeQueryCommand(Command<T> command) {
 		return myBatisExtendedSessionFactory.getCommandExecutorTxRequired().execute(command);
 	}

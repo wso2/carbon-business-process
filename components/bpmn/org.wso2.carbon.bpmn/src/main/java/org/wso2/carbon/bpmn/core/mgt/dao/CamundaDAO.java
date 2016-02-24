@@ -1,4 +1,4 @@
-/*  Copyright (c) 2014-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/*  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import org.camunda.bpm.engine.impl.db.ListQueryParameterObject;
 import org.wso2.carbon.bpmn.core.internal.MyBatisQueryCommandExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
 
 import java.util.List;
@@ -32,7 +31,7 @@ import org.camunda.bpm.engine.impl.interceptor.CommandContext;
 
 public class CamundaDAO {
 
-	//  private static final Log log = LogFactory.getLog(DeploymentMapper.class);
+	private static final Log log = LogFactory.getLog(DeploymentMetaDataModelEntity.class);
 	private ProcessEngineConfigurationImpl processEngineConfiguration;
 	private MyBatisQueryCommandExecutor commandExecutor;
 
@@ -41,7 +40,7 @@ public class CamundaDAO {
 		ProcessEngineImpl processEngine =
 				(ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
 		processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-		//TODO: Add proper path to mappings.xml
+		//TODO: Add mappings.xml to defined path
 		commandExecutor =
 				new MyBatisQueryCommandExecutor(processEngineConfiguration, "mappings.xml");
 
