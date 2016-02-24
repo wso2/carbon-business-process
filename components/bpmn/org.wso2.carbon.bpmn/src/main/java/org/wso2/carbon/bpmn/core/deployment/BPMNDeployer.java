@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.core.deployment;
 
-import org.apache.axis2.context.ConfigurationContext;
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
@@ -29,11 +28,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.kernel.deployment.Artifact;
 import org.wso2.carbon.kernel.deployment.ArtifactType;
 import org.wso2.carbon.kernel.deployment.Deployer;
@@ -50,8 +47,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
+
 import org.apache.commons.io.FileUtils;
 
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Set;
 
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
 import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
@@ -66,7 +67,6 @@ import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
  */
 public class BPMNDeployer implements Deployer {
 
-	//private static Log log = LogFactory.getLog(BPMNDeployer.class);
 	private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
 	private static final String DEPLOYMENT_PATH = "file:bpmn";
 	private static final String SUPPORTED_EXTENSIONS = "bar";
@@ -76,7 +76,9 @@ public class BPMNDeployer implements Deployer {
 	private CamundaDAO camundaDAO;
 	private Integer tenantId;
 	private String testDir;
+	private File destinationFolder;
 
+	//TODO : cluster workernode/master
 
 	/**
 	 * Initializes the DAO for camunda registry queries
@@ -93,19 +95,20 @@ public class BPMNDeployer implements Deployer {
 		try {
 			deploymentLocation = new URL(DEPLOYMENT_PATH);
 			testDir = "src" + File.separator + "test" + File.separator + "resources" +
-			                         File.separator + "carbon-repo" + File.separator + DEPLOYMENT_PATH;
+			          File.separator + "carbon-repo" + File.separator + DEPLOYMENT_PATH;
 
 			this.camundaDAO = new CamundaDAO();
-		} catch (MalformedURLException |ExceptionInInitializerError e) {
+		} catch (MalformedURLException | ExceptionInInitializerError e) {
 			String msg = "Failed to initialize BPMNDeployer: " + " for tenant: " + tenantId;
 			log.error(msg, e);
 		}
+		destinationFolder = new File(testDir);
 	}
 
 	/**
 	 * Deploys a given bpmn package in acitiviti bpmn engine.
 	 *
-	 * @param
+	 * @param artifact represents the bpmn.bar file to be deployed
 	 * @throws CarbonDeploymentException On failure , deployment exception is thrown
 	 */
 
@@ -163,13 +166,18 @@ public class BPMNDeployer implements Deployer {
 				camundaDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
 
 				//TODO:add to file repo
-				FileUtils.copyFileToDirectory(artifactFile,testDir);
+				try {
+					FileUtils.copyFileToDirectory(artifactFile, destinationFolder);
+				} catch (IOException e) {
+					log.error("Unable to add file " + artifactFile + "to directory" +
+					          destinationFolder);
+				}
 
 			} else if (deploymentMetaDataModel != null) { //deployment exists
 				// not the same version that is already deployed
 				if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
 					// It is not a new deployment, but a version update
-					update(artifact); //TODO update new version deployment and file repo
+					update(artifact);
 					deploymentMetaDataModel.setCheckSum(checksum);//set new checksum value to model
 					// update new version in camunda registry
 					camundaDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
@@ -181,8 +189,15 @@ public class BPMNDeployer implements Deployer {
 
 	}
 
+	/**
+	 * Undeploy the artifact related to provided deployment key from file repository,
+	 * camunda and metadata
+	 * @param key  deployedArtifactName
+	 * @throws CarbonDeploymentException
+	 */
+
 	public void undeploy(Object key) throws CarbonDeploymentException {
-		//TODO : cluster workernode
+
 		String deploymentName = "";
 		Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 		try {
@@ -195,19 +210,29 @@ public class BPMNDeployer implements Deployer {
 
 			if (undeployModel != null) {
 				camundaDAO.deleteDeploymentMetaDataModel(undeployModel);
+			} else {
+				log.error("File" + deploymentName + "does not exist in camunda metadata registry");
 			}
 
 			//TODO: Remove from file repo
 			File fileToUndeploy = new File(testDir + File.separator + key);
-			FileUtils.deleteQuietly(fileToUndeploy);
-			////////
+			if (fileToUndeploy != null) {
+				FileUtils.deleteQuietly(fileToUndeploy);
+			} else {
+				log.error("File" + fileToUndeploy + "does not exist in file repository" + testDir);
+			}
+
 			// Delete all versions of this package from the Camunda engine.
 			ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
 			RepositoryService repositoryService = engine.getRepositoryService();
 			List<Deployment> deployments =
 					repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
-			for (Deployment deployment : deployments) {
-				repositoryService.deleteDeployment(deployment.getId(), true);
+			if (deployments != null) {
+				for (Deployment deployment : deployments) {
+					repositoryService.deleteDeployment(deployment.getId(), true);
+				}
+			} else {
+				log.error("Deployment" + deploymentName + "does not exist in camunda database");
 			}
 
 		} catch (ProcessEngineException e) {
@@ -218,7 +243,12 @@ public class BPMNDeployer implements Deployer {
 		}
 	}
 
-	//Perform version support : update camunda deployment and file repo
+	/**
+	 * Perform version support in deployments : update camunda deployment and file repository
+	 * @param artifact to be deployed
+	 * @return artifactPath
+	 * @throws CarbonDeploymentException
+	 */
 	public Object update(Artifact artifact) throws CarbonDeploymentException {
 		File artifactFile = artifact.getFile();
 		String artifactPath = artifactFile.getAbsolutePath();
@@ -242,7 +272,7 @@ public class BPMNDeployer implements Deployer {
 		//TODO: update file repo
 		File fileToUpdate = new File(testDir + File.separator + deploymentName);
 		try {
-			FileUtils.copyFile(artifactFile,fileToUpdate);
+			FileUtils.copyFile(artifactFile, fileToUpdate);
 		} catch (IOException e) {
 			log.error("Unable to copy from " + artifactFile + "to" + fileToUpdate);
 		}
@@ -250,7 +280,96 @@ public class BPMNDeployer implements Deployer {
 		return artifactPath;
 	}
 
-	//TODO: add method fixDeployments()
+	/**
+	 * Information about BPMN deployments are recorded in 3 places:
+	 * Camunda database, camunda metadata registry and the file system (deployment folder).
+	 * If information about a particular deployment is not recorded in all these 3 places, BPS may not work correctly.
+	 * Therefore, this method checks whether deployments are recorded in all these places and undeploys packages, if
+	 * they are missing in few places in an inconsistent way.
+	 *
+	 * */
+	public void fixDeployments() {
+
+		// get all added files from file directory
+		List<String> fileArchiveNames = new ArrayList<String>();
+		File[] fileDeployments = destinationFolder.listFiles();
+		if (fileDeployments != null) {
+			for (File fileDeployment : fileDeployments) {
+				String deploymentName = FilenameUtils.getBaseName(fileDeployment.getName());
+				fileArchiveNames.add(deploymentName);
+			}
+		} else {
+			log.error("File deployments returned null for tenant" + tenantId);
+		}
+
+		// get all deployments in  Camunda
+		List<String> camundaDeploymentNames = new ArrayList<String>();
+		ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+		RepositoryService repositoryService = engine.getRepositoryService();
+		List<Deployment> camundaDeployments = repositoryService.createDeploymentQuery().list();
+		for (Deployment deployment : camundaDeployments) {
+			String deploymentName = deployment.getName();
+			camundaDeploymentNames.add(deploymentName);
+		}
+		// get all metadata in Camunda registry
+		List<String> metaDataDeploymentNames = new ArrayList<String>();
+		List<DeploymentMetaDataModelEntity> deploymentMetaDataModelList =
+				camundaDAO.selectAllDeploymentModel();
+
+		if (deploymentMetaDataModelList != null) {
+			int deploymentMetaDataModelListSize = deploymentMetaDataModelList.size();
+			for (int i = 0; i < deploymentMetaDataModelListSize; i++) {
+				DeploymentMetaDataModelEntity deploymentMetaDataModel =
+						deploymentMetaDataModelList.get(i);
+
+				if (deploymentMetaDataModel != null) {
+					String deploymentMetadataName = deploymentMetaDataModel.getPackageName();
+					metaDataDeploymentNames.add(deploymentMetadataName);
+				}
+			}
+		} else {
+			log.error("No metadata models can be found in camunda registry");
+		}
+		// construct the union of all deployments
+		Set<String> allDeploymentNames = new HashSet<String>();
+		allDeploymentNames.addAll(fileArchiveNames);
+		allDeploymentNames.addAll(camundaDeploymentNames);
+		allDeploymentNames.addAll(metaDataDeploymentNames);
+
+		for (String deploymentName : allDeploymentNames) {
+			try {
+				if (!(fileArchiveNames.contains(deploymentName))) {
+					if (log.isDebugEnabled()) {
+						log.debug(deploymentName +
+						          " has been removed from the deployment folder. Undeploying the package...");
+					}
+
+					undeploy(deploymentName);
+				} else {
+					if (camundaDeploymentNames.contains(deploymentName) &&
+					    !metaDataDeploymentNames.contains(deploymentName)) {
+						if (log.isDebugEnabled()) {
+							log.debug(deploymentName +
+							          " is missing in camunda metadata registry. Undeploying the package to avoid inconsistencies...");
+						}
+						undeploy(deploymentName);
+					}
+
+					if (!camundaDeploymentNames.contains(deploymentName) &&
+					    metaDataDeploymentNames.contains(deploymentName)) {
+						if (log.isDebugEnabled()) {
+							log.debug(deploymentName +
+							          " is missing in the BPS database. Undeploying the package to avoid inconsistencies...");
+						}
+						undeploy(deploymentName);
+					}
+				}
+			} catch (CarbonDeploymentException e) {
+				log.error("Unable to deploy artifact" + deploymentName + e);
+			}
+		}
+	}
+
 	public void setLocation(URL deploymentLocation) {
 		this.deploymentLocation = deploymentLocation;
 	}

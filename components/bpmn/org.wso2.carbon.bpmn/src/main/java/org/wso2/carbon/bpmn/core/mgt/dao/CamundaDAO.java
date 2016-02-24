@@ -90,6 +90,7 @@ public class CamundaDAO {
 							CommandContext commandContext) {
 						return commandContext.getDbEntityManager()
 						                     .selectList("selectDeploymentMetaDataModels");
+
 					}
 
 				});
@@ -109,7 +110,6 @@ public class CamundaDAO {
 
 			public Void execute(CommandContext commandContext) {
 				commandContext.getDbEntityManager().insert(deploymentMetaDataModel);
-				//TODO: check return
 				return null;
 			}
 
@@ -117,8 +117,8 @@ public class CamundaDAO {
 	}
 
     /*
-     * Invokes the DeploymentMapper.updateDeploymentMetaDataModel to insert a new row
-     * from BPS_BPMN_DEPLOYMENT_METADATA
+     * Invokes the DeploymentMapper.updateDeploymentMetaDataModel to update  row
+     * in BPS_BPMN_DEPLOYMENT_METADATA
      *
      * @param deploymentMetaDataModel Object to be updated in to the table
      */
@@ -133,7 +133,7 @@ public class CamundaDAO {
 				commandContext.getDbEntityManager().update(DeploymentMetaDataModelEntity.class,
 				                                           "updateDeploymentMetaDataModel",
 				                                           deploymentMetaDataModel);
-				//TODO: check return add try:catch
+
 				return null;
 			}
 
@@ -157,7 +157,7 @@ public class CamundaDAO {
 				commandContext.getDbEntityManager().delete(DeploymentMetaDataModelEntity.class,
 				                                           "deleteDeploymentMetaDataModel",
 				                                           deploymentMetaDataModel);
-				//TODO:check return
+
 				return null;
 			}
 
