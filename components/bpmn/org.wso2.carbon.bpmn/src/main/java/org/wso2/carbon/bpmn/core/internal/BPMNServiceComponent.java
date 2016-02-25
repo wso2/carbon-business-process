@@ -28,6 +28,7 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 //import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 //import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
 import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
+import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
 import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 //import org.wso2.carbon.registry.core.service.RegistryService;
@@ -73,6 +74,15 @@ public class BPMNServiceComponent {
 
 
             CamundaDAO a = new CamundaDAO();
+	        DeploymentMetaDataModelEntity model = new DeploymentMetaDataModelEntity();
+	        String idd = "1234";
+	        String id = "1";
+	        model.setId(id);
+	        model.setTenantID(idd);
+	        model.setPackageName("testDeploy");
+	        model.setCheckSum("abcd123");
+	        a.insertDeploymentMetaDataModel(model);
+
 
          //   DataSourceHandler dataSourceHandler = new DataSourceHandler();
           //  dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());

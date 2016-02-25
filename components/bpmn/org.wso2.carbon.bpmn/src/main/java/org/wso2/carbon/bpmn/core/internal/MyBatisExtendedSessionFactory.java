@@ -74,9 +74,7 @@ public class MyBatisExtendedSessionFactory extends StandaloneProcessEngineConfig
 	}
 
 	/**
-	 * +
 	 * Return the name of the custom Mybatis configuration file
-	 *
 	 * @return
 	 */
 
