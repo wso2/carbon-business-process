@@ -15,10 +15,11 @@
 
     <!-- Default execution as PREPARED statements -->
     <select id="selectDeploymentMetaDataModel"
-            parameterType="org.camunda.bpm.engine.impl.db.ListQueryParameterObject"
+            parameterType="map"
             resultMap="selectMetaDataMap">
-        select * from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA WHERE TENANT_ID_ = #{tenantID} AND NAME_
-        = #{name}
+        select * from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA
+        where TENANT_ID_ = #{tenantID}
+        and NAME_ = #{packageName}
     </select>
     <select id="selectDeploymentMetaDataModels" resultMap="selectMetaDataMap">
         select * from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA

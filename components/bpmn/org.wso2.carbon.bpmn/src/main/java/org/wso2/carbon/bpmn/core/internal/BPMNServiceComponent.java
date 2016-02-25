@@ -42,7 +42,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
-
+import java.util.List;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
@@ -74,14 +74,26 @@ public class BPMNServiceComponent {
 
 
             CamundaDAO a = new CamundaDAO();
-	        DeploymentMetaDataModelEntity model = new DeploymentMetaDataModelEntity();
+	         DeploymentMetaDataModelEntity model = new DeploymentMetaDataModelEntity();
 	        String idd = "1234";
 	        String id = "1";
+	        String packageName = "testDeploy";
 	        model.setId(id);
 	        model.setTenantID(idd);
 	        model.setPackageName("testDeploy");
 	        model.setCheckSum("abcd123");
-	        a.insertDeploymentMetaDataModel(model);
+	        //a.insertDeploymentMetaDataModel(model);
+
+	        model.setCheckSum("adcf345");
+	        a.updateDeploymentMetaDataModel(model);
+	       DeploymentMetaDataModelEntity c =  a.selectTenantAwareDeploymentModel(idd, packageName);
+	        if(c != null) {
+		        log.error("Got model" + c.getPackageName());
+	        }
+	        List<DeploymentMetaDataModelEntity> e = a.selectAllDeploymentModel();
+	        if(e !=null) {
+		        log.error("GOT from all models" + e.get(0).getPackageName());
+	        }
 
 
          //   DataSourceHandler dataSourceHandler = new DataSourceHandler();

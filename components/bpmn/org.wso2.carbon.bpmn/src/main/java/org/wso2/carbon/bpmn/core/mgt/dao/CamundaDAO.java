@@ -15,11 +15,12 @@
 
 package org.wso2.carbon.bpmn.core.mgt.dao;
 
-import org.camunda.bpm.engine.impl.db.ListQueryParameterObject;
 import org.wso2.carbon.bpmn.core.internal.MyBatisQueryCommandExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.util.List;
 
@@ -60,14 +61,14 @@ public class CamundaDAO {
 			@SuppressWarnings("unchecked")
 			public DeploymentMetaDataModelEntity execute(CommandContext commandContext) {
 				//Adding query parameters to one object
-				ListQueryParameterObject queryParameterObject = new ListQueryParameterObject();
-				queryParameterObject.setParameter(tenantID);
-				queryParameterObject.setParameter(bpmnPackageName);
+				Map<String, String> parameters = new HashMap<String, String>();
+				parameters.put("tenantID", tenantID);
+				parameters.put("packageName", bpmnPackageName);
 
 				return (DeploymentMetaDataModelEntity) commandContext.getDbEntityManager()
 				                                                     .selectOne(
 						                                                     "selectDeploymentMetaDataModel",
-						                                                     queryParameterObject);
+						                                                     parameters);
 			}
 		});
 	}
