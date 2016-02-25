@@ -314,7 +314,7 @@ public class BPMNDeployer implements Deployer {
 		// get all metadata in Camunda registry
 		List<String> metaDataDeploymentNames = new ArrayList<String>();
 		List<DeploymentMetaDataModelEntity> deploymentMetaDataModelList =
-				camundaDAO.selectAllDeploymentModel();
+				camundaDAO.selectAllDeploymentModels();
 
 		if (deploymentMetaDataModelList != null) {
 			int deploymentMetaDataModelListSize = deploymentMetaDataModelList.size();

@@ -81,7 +81,7 @@ public class CamundaDAO {
      */
 
 	//selectList method
-	public List<DeploymentMetaDataModelEntity> selectAllDeploymentModel() {
+	public List<DeploymentMetaDataModelEntity> selectAllDeploymentModels() {
 
 		return commandExecutor
 				.executeQueryCommand(new Command<List<DeploymentMetaDataModelEntity>>() {
