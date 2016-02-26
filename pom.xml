@@ -1382,33 +1382,33 @@
 
         <version.jettison>1.3.4</version.jettison>
 
-        <orbit.version.axis2>1.6.1.wso2v16</orbit.version.axis2>
+        <orbit.version.axis2>1.6.1.wso2v17</orbit.version.axis2>
         <!--axis2.wso2.version.aar.plugin>1.6.2</axis2.wso2.version.aar.plugin-->
         <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
 
         <!-- Carbon kernel version -->
-        <carbon.kernel.version>4.4.3</carbon.kernel.version>
+        <carbon.kernel.version>4.4.4</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.4.8</carbon.commons.version>
+        <carbon.commons.version>4.5.1</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.version>5.0.7</carbon.identity.version>
+        <carbon.identity.version>5.0.8</carbon.identity.version>
         <carbon.identity.imp.pkg.version>[5.0.0, 6.0.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
-        <carbon.deployment.version>4.6.0</carbon.deployment.version>
+        <carbon.deployment.version>4.6.1</carbon.deployment.version>
         <carbon.deployment.imp.pkg.version>[4.6.0, 5.0.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
-        <carbon.registry.version>4.4.9</carbon.registry.version>
+        <carbon.registry.version>4.5.1</carbon.registry.version>
         <carbon.registry.imp.pkg.version>[4.4.0,5.0.0)</carbon.registry.imp.pkg.version>
 
         <!-- Carbon Multi-tenancy version-->
-        <carbon.multitenancy.version>4.5.0</carbon.multitenancy.version>
-        <carbon.multitenancy.imp.pkg.version>[4.5.0, 5.0.0)</carbon.multitenancy.imp.pkg.version>
+        <carbon.multitenancy.version>4.5.1</carbon.multitenancy.version>
+        <carbon.multitenancy.imp.pkg.version>[4.5.1, 5.0.0)</carbon.multitenancy.imp.pkg.version>
 
         <!-- Carbon Event-processing version-->
         <!--carbon.event.processing.version>2.0.4-SNAPSHOT</carbon.event.processing.version-->
@@ -1417,21 +1417,22 @@
 
         <!-- Axiom Version -->
 
-        <axiom.wso2.version>1.2.11.wso2v9</axiom.wso2.version>
-        <orbit.version.axiom>1.2.11.wso2v9</orbit.version.axiom>
+        <axiom.wso2.version>1.2.11.wso2v10</axiom.wso2.version>
+        <orbit.version.axiom>1.2.11.wso2v10</orbit.version.axiom>
         <!--axiom.version>1.2.11.wso2v6</axiom.version-->
-        <axiom.osgi.version.range>[1.2.11.wso2v9, 1.3.0)</axiom.osgi.version.range>
+        <axiom.osgi.version.range>[1.2.11, 1.3.0)</axiom.osgi.version.range>
         <!--exp.pkg.version.axiom>1.2.11.wso2v6</exp.pkg.version.axiom>
         <imp.pkg.version.axiom>[1.2.11.wso2v6, 1.3.0)</imp.pkg.version.axiom-->
-        <axiom.osgi.version.range.unifiedendpoint>[1.2.11.wso2v9, 1.3.0)</axiom.osgi.version.range.unifiedendpoint>
+        <axiom.osgi.version.range.unifiedendpoint>[1.2.11, 1.3.0)</axiom.osgi.version.range.unifiedendpoint>
 
         <!-- Axis2 Version -->
-        <axis2.version>1.6.1-wso2v16</axis2.version>
-        <axis2.wso2.version>1.6.1-wso2v16</axis2.wso2.version>
-        <exp.pkg.version.axis2>1.6.1-wso2v16</exp.pkg.version.axis2>
-        <imp.pkg.version.axis2>[1.6.1.wso2v16, 1.7.0)</imp.pkg.version.axis2>
-        <axis2-transports.version>1.1.1-wso2v1</axis2-transports.version>
-        <axis2.osgi.version.range>[1.6.1.wso2v16, 1.7.0)</axis2.osgi.version.range>
+        <axis2.version>1.6.1-wso2v17</axis2.version>
+        <axis2.wso2.version>1.6.1-wso2v17</axis2.wso2.version>
+        <exp.pkg.version.axis2>1.6.1</exp.pkg.version.axis2>
+        <imp.pkg.version.axis2>[1.6.1, 1.7.0)</imp.pkg.version.axis2>
+        <axis2-transports.version>1.1.1-wso2v2</axis2-transports.version>
+        <imp.pkg.version.axis2-transport-jms>[1.1.0, 1.2.0)</imp.pkg.version.axis2-transport-jms>
+        <axis2.osgi.version.range>[1.6.1, 1.7.0)</axis2.osgi.version.range>
 
 
         <neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>
@@ -1589,7 +1590,7 @@
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
        <!-- <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>-->
-        <orbit.ode.version>1.3.5-wso2v15</orbit.ode.version>
+        <orbit.ode.version>1.3.5-wso2v16</orbit.ode.version>
         <mybatis.version>3.2.5</mybatis.version>
         <jsonpath.wso2.version>1.2.0.wso2v1</jsonpath.wso2.version>
 

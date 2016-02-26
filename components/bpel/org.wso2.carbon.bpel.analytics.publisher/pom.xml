@@ -83,7 +83,6 @@
                             org.wso2.carbon.agent.publish.*,
                             org.wso2.carbon.analytics.service.*,
                             org.apache.ode.*,
-                            org.apache.axis2.*; version="${axis2.osgi.version.range.bpel}",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>
