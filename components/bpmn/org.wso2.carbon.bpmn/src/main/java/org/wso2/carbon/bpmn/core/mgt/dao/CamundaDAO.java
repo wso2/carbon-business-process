@@ -30,6 +30,7 @@ import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.interceptor.Command;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
 
 /**
  * Perform custom  myBatis queries of Camunda database
@@ -71,7 +72,7 @@ public class CamundaDAO {
 
 				return (DeploymentMetaDataModelEntity) commandContext.getDbEntityManager()
 				                                                     .selectOne(
-						                                                     "selectDeploymentMetaDataModel",
+						                                                     BPMNConstants.SELECT_META_MODEL_QUERY,
 						                                                     parameters);
 			}
 		});
@@ -93,7 +94,7 @@ public class CamundaDAO {
 					public List<DeploymentMetaDataModelEntity> execute(
 							CommandContext commandContext) {
 						return commandContext.getDbEntityManager()
-						                     .selectList("selectDeploymentMetaDataModels");
+						                     .selectList(BPMNConstants.SELECT_META_MODELS_QUERY);
 
 					}
 
@@ -135,7 +136,7 @@ public class CamundaDAO {
 
 			public Void execute(CommandContext commandContext) {
 				commandContext.getDbEntityManager().update(DeploymentMetaDataModelEntity.class,
-				                                           "updateDeploymentMetaDataModel",
+				                                           BPMNConstants.UPDATE_META_MODEL_QUERY,
 				                                           deploymentMetaDataModel);
 
 				return null;
@@ -159,7 +160,7 @@ public class CamundaDAO {
 
 			public Void execute(CommandContext commandContext) {
 				commandContext.getDbEntityManager().delete(DeploymentMetaDataModelEntity.class,
-				                                           "deleteDeploymentMetaDataModel",
+				                                           BPMNConstants.DELETE_META_MODEL_QUERY,
 				                                           deploymentMetaDataModel);
 
 				return null;
