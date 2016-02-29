@@ -48,8 +48,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
+import org.wso2.carbon.kernel.utils.Utils.*;
 import org.apache.commons.io.FileUtils;
 
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Set;
@@ -75,8 +77,9 @@ public class BPMNDeployer implements Deployer {
 	private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
 	private CamundaDAO camundaDAO;
 	private Integer tenantId;
-	private String testDir;
+	private String deploymentDir;
 	private File destinationFolder;
+	private Path home;
 
 	//TODO : cluster workernode/master
 
@@ -94,15 +97,19 @@ public class BPMNDeployer implements Deployer {
 
 		try {
 			deploymentLocation = new URL(DEPLOYMENT_PATH);
-			testDir = "src" + File.separator + "test" + File.separator + "resources" +
-			          File.separator + "carbon-repo" + File.separator + DEPLOYMENT_PATH;
+			//testDir = "src" + File.separator + "test" + File.separator + "resources" +
+			//  File.separator + "carbon-repo" + File.separator + DEPLOYMENT_PATH;
 
+			//Get carbon home
+			home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
+			deploymentDir = home + File.separator + "repository" + File.separator + "deployment" +
+			                File.separator + deploymentLocation; //
 			this.camundaDAO = new CamundaDAO();
 		} catch (MalformedURLException | ExceptionInInitializerError e) {
 			String msg = "Failed to initialize BPMNDeployer: " + " for tenant: " + tenantId;
 			log.error(msg, e);
 		}
-		destinationFolder = new File(testDir);
+		destinationFolder = new File(deploymentDir);
 	}
 
 	/**
@@ -192,7 +199,8 @@ public class BPMNDeployer implements Deployer {
 	/**
 	 * Undeploy the artifact related to provided deployment key from file repository,
 	 * camunda and metadata
-	 * @param key  deployedArtifactName
+	 *
+	 * @param key deployedArtifactName
 	 * @throws CarbonDeploymentException
 	 */
 
@@ -215,11 +223,12 @@ public class BPMNDeployer implements Deployer {
 			}
 
 			//TODO: Remove from file repo
-			File fileToUndeploy = new File(testDir + File.separator + key);
+			File fileToUndeploy = new File(d + File.separator + key);
 			if (fileToUndeploy != null) {
 				FileUtils.deleteQuietly(fileToUndeploy);
 			} else {
-				log.error("File" + fileToUndeploy + "does not exist in file repository" + testDir);
+				log.error("File" + fileToUndeploy + "does not exist in file repository" +
+				          deploymentDir);
 			}
 
 			// Delete all versions of this package from the Camunda engine.
@@ -245,6 +254,7 @@ public class BPMNDeployer implements Deployer {
 
 	/**
 	 * Perform version support in deployments : update camunda deployment and file repository
+	 *
 	 * @param artifact to be deployed
 	 * @return artifactPath
 	 * @throws CarbonDeploymentException
@@ -270,7 +280,7 @@ public class BPMNDeployer implements Deployer {
 		}
 
 		//TODO: update file repo
-		File fileToUpdate = new File(testDir + File.separator + deploymentName);
+		File fileToUpdate = new File(deploymentDir + File.separator + deploymentName);
 		try {
 			FileUtils.copyFile(artifactFile, fileToUpdate);
 		} catch (IOException e) {
@@ -286,8 +296,7 @@ public class BPMNDeployer implements Deployer {
 	 * If information about a particular deployment is not recorded in all these 3 places, BPS may not work correctly.
 	 * Therefore, this method checks whether deployments are recorded in all these places and undeploys packages, if
 	 * they are missing in few places in an inconsistent way.
-	 *
-	 * */
+	 */
 	public void fixDeployments() {
 
 		// get all added files from file directory
