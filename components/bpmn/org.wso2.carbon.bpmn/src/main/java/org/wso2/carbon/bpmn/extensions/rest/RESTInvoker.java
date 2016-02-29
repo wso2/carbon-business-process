@@ -30,7 +30,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -56,7 +55,7 @@ public class RESTInvoker {
         int maxTotalPerRoute = 100;
 
        // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-        String activitiConfigPath =  "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+        String activitiConfigPath =  "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator + BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
         File configFile = new File(activitiConfigPath);
         String configContent = FileUtils.readFileToString(configFile);
         OMElement configElement = AXIOMUtil.stringToOM(configContent);

@@ -18,12 +18,8 @@ package org.wso2.carbon.bpmn.core;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.engine.impl.identity.WritableIdentityProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
-//import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-//import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,9 +29,9 @@ import java.io.FileNotFoundException;
  * Class responsible for building and initiating the activiti engine
  *
  */
-public class ActivitiEngineBuilder {
+public class CamundaEngineBuilder {
 
-	private static final Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
+	private static final Log log = LogFactory.getLog(CamundaEngineBuilder.class);
 
 	private String dataSourceJndiName = null;
     private static ProcessEngine processEngine = null;
@@ -52,16 +48,17 @@ public class ActivitiEngineBuilder {
         try {
            // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
            // String activitiConfigPath = carbonConfigDirPath + File.separator +
-                  //  BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-            String activitiConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
-                     BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME; //CHANGED TO CAMUNDA
-            File activitiConfigFile = new File(activitiConfigPath);
+                  //  BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
+            String camundaConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
+                     BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
+            File camundaConfigFile = new File(camundaConfigPath);
             ProcessEngineConfigurationImpl processEngineConfigurationImpl =
                     (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
                             new FileInputStream(
-                                    activitiConfigFile));
+                                    camundaConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
+
           //  ActivitiDAO a = new ActivitiDAO();
            // processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
                //     new BPSUserManagerFactory());
@@ -71,7 +68,7 @@ public class ActivitiEngineBuilder {
             dataSourceJndiName =   processEngineConfigurationImpl.getDataSourceJndiName();
 
         } catch (FileNotFoundException e) {
-            String msg = "Failed to create an Activiti engine. Activiti configuration file not found";
+            String msg = "Failed to create Camunda engine. Camunda configuration file not found";
             throw new BPSFault(msg, e);
         }
         return processEngine;
@@ -82,6 +79,6 @@ public class ActivitiEngineBuilder {
     }
 
     public static ProcessEngine getProcessEngine(){
-        return ActivitiEngineBuilder.processEngine;
+        return CamundaEngineBuilder.processEngine;
     }
 }

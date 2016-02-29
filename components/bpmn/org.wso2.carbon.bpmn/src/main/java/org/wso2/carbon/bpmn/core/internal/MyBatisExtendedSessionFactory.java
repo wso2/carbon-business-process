@@ -33,7 +33,8 @@ public class MyBatisExtendedSessionFactory extends StandaloneProcessEngineConfig
 
 	protected void init() {
 		throw new IllegalArgumentException(
-				"Normal 'init' on process engine only used for extended MyBatis mappings is not allowed, please use 'initFromProcessEngineConfiguration'. You cannot construct a process engine with this configuration.");
+				"Normal 'init' on process engine is not allowed for Mybatis session creation, " +
+				"please use 'initFromProcessEngineConfiguration");
 	}
 
 	/**

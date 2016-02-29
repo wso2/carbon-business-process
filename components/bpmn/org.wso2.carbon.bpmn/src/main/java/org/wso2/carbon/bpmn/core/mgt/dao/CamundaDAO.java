@@ -19,6 +19,7 @@ import org.wso2.carbon.bpmn.core.internal.MyBatisQueryCommandExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -30,6 +31,9 @@ import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.interceptor.Command;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
 
+/**
+ * Perform custom  myBatis queries of Camunda database
+ */
 public class CamundaDAO {
 
 	private static final Log log = LogFactory.getLog(DeploymentMetaDataModelEntity.class);

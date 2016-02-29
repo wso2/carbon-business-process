@@ -176,7 +176,7 @@ public class BPMNDeployer implements Deployer {
 			} else if (deploymentMetaDataModel != null) { //deployment exists
 				// not the same version that is already deployed
 				if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
-					// It is not a new deployment, but a version update
+					//  version update to existing deployment
 					update(artifact);
 					deploymentMetaDataModel.setCheckSum(checksum);//set new checksum value to model
 					// update new version in camunda registry
