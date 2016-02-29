@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 
 /**
  * Class responsible for building and initiating the activiti engine
@@ -46,9 +47,10 @@ public class CamundaEngineBuilder {
     public ProcessEngine buildEngine() throws BPSFault {
 
         try {
-           // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-           // String activitiConfigPath = carbonConfigDirPath + File.separator +
-                  //  BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
+             //TODO: ADD proper path
+	        // Path carbonConfigDirPath = org.wso2.carbon.kernel.utils.Utils.getCarbonConfigHome();
+	        //String camundaConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
+	        //
             String camundaConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
                      BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
             File camundaConfigFile = new File(camundaConfigPath);

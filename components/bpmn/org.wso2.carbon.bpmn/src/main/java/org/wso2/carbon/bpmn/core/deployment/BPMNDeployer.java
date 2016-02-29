@@ -223,7 +223,7 @@ public class BPMNDeployer implements Deployer {
 			}
 
 			//TODO: Remove from file repo
-			File fileToUndeploy = new File(d + File.separator + key);
+			File fileToUndeploy = new File(deploymentDir + File.separator + key);
 			if (fileToUndeploy != null) {
 				FileUtils.deleteQuietly(fileToUndeploy);
 			} else {
