@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel</artifactId>
-        <version>4.4.7-SNAPSHOT</version>
+        <version>4.4.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -83,7 +83,6 @@
                             org.wso2.carbon.agent.publish.*,
                             org.wso2.carbon.analytics.service.*,
                             org.apache.ode.*,
-                            org.apache.axis2.*; version="${axis2.osgi.version.range.bpel}",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>
