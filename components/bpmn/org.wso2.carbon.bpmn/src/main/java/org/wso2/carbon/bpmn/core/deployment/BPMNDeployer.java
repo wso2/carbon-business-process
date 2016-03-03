@@ -103,7 +103,7 @@ public class BPMNDeployer implements Deployer {
 			//Get carbon home
 			home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
 			deploymentDir = home + File.separator + "repository" + File.separator + "deployment" +
-			                File.separator + deploymentLocation; //
+			                File.separator + "server" + File.separator + deploymentLocation; //
 			this.camundaDAO = new CamundaDAO();
 		} catch (MalformedURLException | ExceptionInInitializerError e) {
 			String msg = "Failed to initialize BPMNDeployer: " + " for tenant: " + tenantId;

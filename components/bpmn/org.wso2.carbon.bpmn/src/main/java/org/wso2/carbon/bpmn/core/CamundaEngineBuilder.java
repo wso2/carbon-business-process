@@ -48,7 +48,7 @@ public class CamundaEngineBuilder {
 
         try {
              //TODO: ADD proper path
-	        // Path carbonConfigDirPath = org.wso2.carbon.kernel.utils.Utils.getCarbonConfigHome();
+	        //Path carbonConfigDirPath = org.wso2.carbon.kernel.utils.Utils.getCarbonConfigHome();
 	        //String camundaConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.CAMUNDA_CONFIGURATION_FILE_NAME;
 	        //
             String camundaConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
