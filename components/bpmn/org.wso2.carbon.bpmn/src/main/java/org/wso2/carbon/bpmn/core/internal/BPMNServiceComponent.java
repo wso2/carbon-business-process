@@ -17,29 +17,16 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-//import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.core.CamundaEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-//import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 //import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
-import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
-import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
+import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 //import org.wso2.carbon.registry.core.service.RegistryService;
 //import org.wso2.carbon.utils.WaitBeforeShutdownObserver; //TODO
-import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
@@ -55,8 +42,8 @@ public class BPMNServiceComponent {
         try {
             BundleContext bundleContext = ctxt.getBundleContext();
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
-            ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
-            holder.setEngine(activitiEngineBuilder.buildEngine());
+            CamundaEngineBuilder camundaEngineBuilder = new CamundaEngineBuilder();
+            holder.setEngine(camundaEngineBuilder.buildEngine());
             //holder.setTenantManager(new TenantManager());
 
             //TODO:COMMENTED
@@ -65,24 +52,37 @@ public class BPMNServiceComponent {
             //restHolder.setRestInvoker(new RESTInvoker());
             //TODO:COMMENTED
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
-            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
+            bpmnEngineService.setProcessEngine(CamundaEngineBuilder.getProcessEngine());
             //bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
             //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
+         // ------- TEST MAPPINGS ------ //
+            CamundaDAO a = new CamundaDAO();
+//	         DeploymentMetaDataModelEntity model = new DeploymentMetaDataModelEntity();
+//	        String idd = "1234";
+//	        String id = "1";
+//	        String packageName = "testDeploy";
+//	        model.setId(id);
+//	        model.setTenantID(idd);
+//	        model.setPackageName("testDeploy");
+//	        model.setCheckSum("abcd123");
+//	        //a.insertDeploymentMetaDataModel(model);
+//
+//	        model.setCheckSum("adcf345");
+//	        a.updateDeploymentMetaDataModel(model);
+//	       DeploymentMetaDataModelEntity c =  a.selectTenantAwareDeploymentModel(idd, packageName);
+//	        if(c != null) {
+//		        log.error("Got model" + c.getPackageName());
+//	        }
+//	        List<DeploymentMetaDataModelEntity> e = a.selectAllDeploymentModels();
+//	        if(e !=null) {
+//		        log.error("GOT from all models" + e.get(0).getPackageName());
+//	        }
+//	        a.deleteDeploymentMetaDataModel(model);
 
-         //   DataSourceHandler dataSourceHandler = new DataSourceHandler();
-          //  dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-//            TransactionFactory transactionFactory = new JdbcTransactionFactory();
-//            Environment environment = new Environment("development", transactionFactory, dataSourceHandler.getDataSource());
-//            Configuration configuration = new Configuration(environment);
-//            configuration.addMapper(DeploymentMapper.class);
-//            SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 
-           // dataSourceHandler.closeDataSource();
-//        } catch (BPMNMetaDataTableCreationException e) {
-//            log.error("Could not create BPMN checksum table", e);
-//        } catch (DatabaseConfigurationException e) {
-//            log.error("Could not create BPMN checksum table", e);
+	        // ------- TEST MAPPINGS ------ //
+
         }catch (Throwable e) {
             log.error("Failed to initialize the BPMN core component.", e);
         }

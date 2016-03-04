@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,19 +14,31 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.core.mgt.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.camunda.bpm.engine.impl.db.DbEntity;
+
 /**
- * Model class for BPS_BPMN_DEPLOYMENT_METADATA table.
- * When querying with the activiti engine table this object is used for ORM puprose
+ * Entity Model class for BPS_BPMN_DEPLOYMENT_METADATA table.
+ * When querying with camunda engine table this object is used
  */
-public class DeploymentMetaDataModel {
+public class DeploymentMetaDataModelEntity implements DbEntity {
 
 	private String id;
 	private String packageName;
 	private String checkSum;
 	private String tenantID;
+	protected int revision;
+
+	public Object getPersistentState() {
+
+		Map<String, Object> persistentState = new HashMap<String, Object>();
+		persistentState.put("checkSum", checkSum);
+		return persistentState;
+	}
 
 	public String getId() {
 		return id;
