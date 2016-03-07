@@ -70,7 +70,7 @@ import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 public class BPMNDeployer implements Deployer {
 
 	private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
-	private static final String DEPLOYMENT_PATH = "file:bpmn";
+	private static final String DEPLOYMENT_PATH = "bpmn";
 	private static final String SUPPORTED_EXTENSIONS = "bar";
 	private URL deploymentLocation;
 	private ArtifactType artifactType;
@@ -91,9 +91,11 @@ public class BPMNDeployer implements Deployer {
 	@Override
 	public void init() {
 		log.info("BPMNDeployer initializing");
-		artifactType = new ArtifactType<>("BPMN");
-		this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-		//TODO:create File repository
+		artifactType = new ArtifactType<>("bar");
+		//TODO : class definition error
+	//	this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+		this.tenantId = new Integer("1234");
+
 
 		try {
 			deploymentLocation = new URL(DEPLOYMENT_PATH);
@@ -126,8 +128,8 @@ public class BPMNDeployer implements Deployer {
 		ZipInputStream archiveStream = null;
 		//check if extension is bar
 		if (isSupportedFile(artifactFile)) {
-
-			Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+               //todo: Uncomment tenantid
+			//Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 			String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
 			//get checksum value of new file
 			try {
@@ -207,7 +209,8 @@ public class BPMNDeployer implements Deployer {
 	public void undeploy(Object key) throws CarbonDeploymentException {
 
 		String deploymentName = "";
-		Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+		//todo: Uncomment tenantid
+		//Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 		try {
 			deploymentName = FilenameUtils.getBaseName(key.toString());//CHECK
 
