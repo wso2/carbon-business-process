@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,14 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
+ */
 
 
 package org.wso2.carbon.bpmn.core.integration;
+import org.camunda.bpm.engine.impl.db.entitymanager.DbEntityManager;
+import org.camunda.bpm.engine.impl.identity.ReadOnlyIdentityProvider;
+import org.camunda.bpm.engine.impl.identity.WritableIdentityProvider;
+import org.camunda.bpm.engine.impl.identity.db.DbIdentityServiceProvider;
 import org.camunda.bpm.engine.impl.interceptor.Session;
 import org.camunda.bpm.engine.impl.interceptor.SessionFactory;
 import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
@@ -29,13 +33,13 @@ public class BPSUserManagerFactory implements SessionFactory {
 
     @Override
     public Class<?> getSessionType() {
-        return UserEntity.class;
+        return DbIdentityServiceProvider.class;
     }
 
     @Override
     public Session openSession() {
         try {
-            return new BPSUserIdentityManager();
+	        return new BPSUserIdentityManager1();
         } catch (Exception e) {
             String msg = "Failed to obtain an user identity manager.";
             log.error(msg, e);
@@ -43,4 +47,4 @@ public class BPSUserManagerFactory implements SessionFactory {
         }
     }
 }
-*/
+
