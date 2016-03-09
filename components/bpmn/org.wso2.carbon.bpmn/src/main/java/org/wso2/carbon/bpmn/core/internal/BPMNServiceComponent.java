@@ -19,6 +19,8 @@ package org.wso2.carbon.bpmn.core.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.RuntimeService;
 import org.wso2.carbon.kernel.deployment.Artifact;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
@@ -28,6 +30,9 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 import org.wso2.carbon.kernel.deployment.ArtifactType;
+import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
+import java.util.List;
 //import org.wso2.carbon.registry.core.service.RegistryService;
 //import org.wso2.carbon.utils.WaitBeforeShutdownObserver; //TODO
 import java.io.File;
@@ -95,8 +100,23 @@ public class BPMNServiceComponent {
 //	       ArtifactType artifactType = new ArtifactType<>("bar");
 //	        artifact.setKey("HelloWorld.bar");
 //	        artifact.setType(artifactType);
-//	        customDeployer.deploy(artifact);
+//           customDeployer.deploy(artifact);
 //	        log.error("Deployed in c5");
+//	        ProcessEngine eng = CamundaEngineBuilder.getProcessEngine();
+//	        RepositoryService repositoryService = eng.getRepositoryService();
+//	        RuntimeService runtimeService = eng.getRuntimeService();
+//	       //   repositoryService.activateProcessDefinitionById("helloWorldProcess");
+//	       //   repositoryService.activateProcessDefinitionById("helloWorldProcess");
+//	        log.error("activated");
+//	        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+//	                                                                      .processDefinitionKey("helloWorldProcess")
+//	                                                                      .orderByProcessDefinitionVersion()
+//	                                                                      .asc()
+//	                                                                      .list();
+//	        log.error("DEFS" + processDefinitions);
+//	        runtimeService.createProcessInstanceByKey("helloWorldProcess");
+//	        runtimeService.startProcessInstanceByKey("helloWorldProcess");
+//	        log.error("STARTED");
 //	        customDeployer.undeploy("HelloWorld.bar");
 //	        log.error("Undeployed in c5");
 	        // ---- TEST DEPLOYER ------//

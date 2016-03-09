@@ -58,8 +58,7 @@ public class CamundaDAO {
      * @param bpmnPackageName package name
      * @return                DeploymentMetaDataModelEntity object*/
 
-	public DeploymentMetaDataModelEntity selectTenantAwareDeploymentModel(final String tenantID,
-	                                                                      final String bpmnPackageName) {
+	public DeploymentMetaDataModelEntity selectDeploymentModel(final String bpmnPackageName) {
 
 		return commandExecutor.executeQueryCommand(new Command<DeploymentMetaDataModelEntity>() {
 
@@ -67,7 +66,7 @@ public class CamundaDAO {
 			public DeploymentMetaDataModelEntity execute(CommandContext commandContext) {
 				//Adding query parameters to one object
 				Map<String, String> parameters = new HashMap<String, String>();
-				parameters.put("tenantID", tenantID);
+				//parameters.put("tenantID", tenantID);
 				parameters.put("packageName", bpmnPackageName);
 
 				return (DeploymentMetaDataModelEntity) commandContext.getDbEntityManager()

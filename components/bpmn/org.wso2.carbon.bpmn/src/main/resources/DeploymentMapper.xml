@@ -9,7 +9,7 @@
                id="selectMetaDataMap">
         <id property="id" column="ID_"/>
         <result property="packageName" column="NAME_"/>
-        <result property="tenantID" column="TENANT_ID_"/>
+        <!--result property="tenantID" column="TENANT_ID_"/-->
         <result property="checkSum" column="CHECK_SUM_"/>
     </resultMap>
 
@@ -18,8 +18,7 @@
             parameterType="map"
             resultMap="selectMetaDataMap">
         select * from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA
-        where TENANT_ID_ = #{tenantID}
-        and NAME_ = #{packageName}
+        where NAME_ = #{packageName}
     </select>
     <select id="selectDeploymentMetaDataModels" resultMap="selectMetaDataMap">
         select * from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA
@@ -27,8 +26,8 @@
 
     <insert id="insertDeploymentMetaDataModel"
             parameterType="org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity">
-        insert into ${prefix}BPS_BPMN_DEPLOYMENT_METADATA (ID_, NAME_, TENANT_ID_, CHECK_SUM_)
-        values (#{id}, #{packageName}, #{tenantID}, #{checkSum})
+        insert into ${prefix}BPS_BPMN_DEPLOYMENT_METADATA (ID_, NAME_,CHECK_SUM_)
+        values (#{id}, #{packageName},#{checkSum})
     </insert>
 
     <update id="updateDeploymentMetaDataModel"
@@ -37,13 +36,12 @@
         <set>
             CHECK_SUM_ = #{checkSum}
         </set>
-        where NAME_=#{packageName} and TENANT_ID_ = #{tenantID}
+        where NAME_=#{packageName}
     </update>
 
     <delete id="deleteDeploymentMetaDataModel"
             parameterType="org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModelEntity">
-        delete from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA where NAME_= #{packageName} and TENANT_ID_
-        = #{tenantID}
+        delete from ${prefix}BPS_BPMN_DEPLOYMENT_METADATA where NAME_= #{packageName}
     </delete>
 
 </mapper>
