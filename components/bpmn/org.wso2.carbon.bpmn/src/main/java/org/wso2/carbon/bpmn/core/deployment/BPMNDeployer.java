@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
+import org.wso2.carbon.kernel.internal.deployment.DeploymentEngine;
 import org.wso2.carbon.kernel.utils.Utils.*;
 import org.apache.commons.io.FileUtils;
 
@@ -62,7 +63,6 @@ import org.wso2.carbon.bpmn.core.mgt.dao.CamundaDAO;
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
  * under repository/deployment/server directory. Currently associated file extension is .bar.
- * Separate deployer instance is created for each tenant.
  * Camunda Engine versions same package if deployed twice. In order to overcome this issue,
  * we are using an additional table which will keep track of the deployed package's md5sum in-order to
  * identify the deployment of a new package.
@@ -76,12 +76,10 @@ public class BPMNDeployer implements Deployer {
 	private ArtifactType artifactType;
 	private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
 	private CamundaDAO camundaDAO;
-	private Integer tenantId;
+	//private Integer tenantId;
 	private String deploymentDir;
 	private File destinationFolder;
 	private Path home;
-
-	//TODO : cluster workernode/master
 
 	/**
 	 * Initializes the DAO for camunda registry queries
@@ -91,22 +89,20 @@ public class BPMNDeployer implements Deployer {
 	@Override
 	public void init() {
 		log.info("BPMNDeployer initializing");
-		artifactType = new ArtifactType<>("BPMN");
-		this.tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-		//TODO:create File repository
-
+		artifactType = new ArtifactType<>("bar");
 		try {
 			deploymentLocation = new URL(DEPLOYMENT_PATH);
-			//testDir = "src" + File.separator + "test" + File.separator + "resources" +
-			//  File.separator + "carbon-repo" + File.separator + DEPLOYMENT_PATH;
-
+			//TEST
+//            DeploymentEngine d;
+//			deploymentDir = d.getRepositoryDirectory();
+			//
 			//Get carbon home
 			home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
 			deploymentDir = home + File.separator + "repository" + File.separator + "deployment" +
-			                File.separator + "server" + File.separator + deploymentLocation; //
+			                File.separator + "server" + File.separator + deploymentLocation;
 			this.camundaDAO = new CamundaDAO();
 		} catch (MalformedURLException | ExceptionInInitializerError e) {
-			String msg = "Failed to initialize BPMNDeployer: " + " for tenant: " + tenantId;
+			String msg = "Failed to initialize BPMNDeployer: ";
 			log.error(msg, e);
 		}
 		destinationFolder = new File(deploymentDir);
@@ -126,8 +122,6 @@ public class BPMNDeployer implements Deployer {
 		ZipInputStream archiveStream = null;
 		//check if extension is bar
 		if (isSupportedFile(artifactFile)) {
-
-			Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 			String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
 			//get checksum value of new file
 			try {
@@ -140,7 +134,7 @@ public class BPMNDeployer implements Deployer {
 
 			// get stored metadata model from camunda reg table if available
 			DeploymentMetaDataModelEntity deploymentMetaDataModel = camundaDAO
-					.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
+					.selectDeploymentModel(deploymentName);
 
 			if (log.isDebugEnabled()) {
 				log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
@@ -168,7 +162,7 @@ public class BPMNDeployer implements Deployer {
 				deploymentMetaDataModel = new DeploymentMetaDataModelEntity();
 				deploymentMetaDataModel.setPackageName(deploymentName);
 				deploymentMetaDataModel.setCheckSum(checksum);
-				deploymentMetaDataModel.setTenantID(tenantId.toString());
+				//deploymentMetaDataModel.setTenantID(tenantId.toString());
 				deploymentMetaDataModel.setId(deployment.getId());
 				camundaDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
 
@@ -207,14 +201,14 @@ public class BPMNDeployer implements Deployer {
 	public void undeploy(Object key) throws CarbonDeploymentException {
 
 		String deploymentName = "";
-		Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
 		try {
 			deploymentName = FilenameUtils.getBaseName(key.toString());//CHECK
 
 			// Remove metadata record from  camunda registry
 
 			DeploymentMetaDataModelEntity undeployModel = camundaDAO
-					.selectTenantAwareDeploymentModel(tenantId.toString(), deploymentName);
+					.selectDeploymentModel(deploymentName);
 
 			if (undeployModel != null) {
 				camundaDAO.deleteDeploymentMetaDataModel(undeployModel);
@@ -245,8 +239,7 @@ public class BPMNDeployer implements Deployer {
 			}
 
 		} catch (ProcessEngineException e) {
-			String msg = "Failed to undeploy BPMN deployment: " + deploymentName + " for tenant: " +
-			             tenantId;
+			String msg = "Failed to undeploy BPMN deployment: " + deploymentName ;
 			log.error(msg, e);
 			throw new CarbonDeploymentException(msg, e);
 		}
@@ -308,7 +301,7 @@ public class BPMNDeployer implements Deployer {
 				fileArchiveNames.add(deploymentName);
 			}
 		} else {
-			log.error("File deployments returned null for tenant" + tenantId);
+			log.error("File deployments returned null");
 		}
 
 		// get all deployments in  Camunda

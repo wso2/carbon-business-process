@@ -30,7 +30,7 @@ public class DeploymentMetaDataModelEntity implements DbEntity {
 	private String id;
 	private String packageName;
 	private String checkSum;
-	private String tenantID;
+	//private String tenantID;
 	protected int revision;
 
 	public Object getPersistentState() {
@@ -64,19 +64,18 @@ public class DeploymentMetaDataModelEntity implements DbEntity {
 		this.packageName = packageName;
 	}
 
-	public String getTenantID() {
-		return tenantID;
-	}
-
-	public void setTenantID(String tenantID) {
-		this.tenantID = tenantID;
-	}
+//	public String getTenantID() {
+//		return tenantID;
+//	}
+//
+//	public void setTenantID(String tenantID) {
+//		this.tenantID = tenantID;
+//	}
 
 	public String toString() {
 
 		return " Deployment ID=" + id + " \n" +
 		       " Checksum= " + checkSum +
-		       " packageName= " + packageName +
-		       " tenantID=" + tenantID;
+		       " packageName= " + packageName;
 	}
 }

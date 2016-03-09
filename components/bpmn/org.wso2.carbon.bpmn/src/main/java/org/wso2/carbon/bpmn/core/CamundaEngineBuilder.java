@@ -17,9 +17,11 @@
 package org.wso2.carbon.bpmn.core;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.camunda.bpm.engine.impl.identity.db.DbIdentityServiceProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,11 +63,10 @@ public class CamundaEngineBuilder {
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
 
-          //  ActivitiDAO a = new ActivitiDAO();
-           // processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-               //     new BPSUserManagerFactory());
-          //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-                 //   new BPSGroupManagerFactory());
+          // processEngineConfigurationImpl.getSessionFactories().put(DbIdentityServiceProvider.class,
+             //      new BPSUserManagerFactory());
+          //  processEngineConfigurationImpl.getSessionFactories().put(DbIdentityServiceProvider.class,
+               //    new BPSGroupManagerFactory());
 
             dataSourceJndiName =   processEngineConfigurationImpl.getDataSourceJndiName();
 

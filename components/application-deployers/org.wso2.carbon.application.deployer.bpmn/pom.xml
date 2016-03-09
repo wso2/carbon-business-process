@@ -35,6 +35,12 @@
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.application.deployer</artifactId>
         </dependency>
+        <!--ADDED-->
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.core</artifactId>
+            <version>5.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -60,6 +66,7 @@
                             org.wso2.carbon.application.deployer.bpmn.*
                         </Export-Package>
                         <Import-Package>
+                            org.wso2.carbon.kernel.deployment.*,
                             org.wso2.carbon.application.deployer.*,
                             org.apache.commons.logging.*,
                             *;resolution:=optional

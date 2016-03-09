@@ -70,6 +70,7 @@ public class BPMNAppDeployer implements AppDeploymentHandler {
             }
 
             if (BPMN_TYPE.equals(artifact.getType())) {
+
                 deployer = AppDeployerUtils.getArtifactDeployer(axisConfig, BPMN_DIR, "bar");
             } else {
                 continue;
