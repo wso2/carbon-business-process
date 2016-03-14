@@ -18,6 +18,7 @@
 package org.wso2.carbon.bpmn.core.internal;
 
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
@@ -28,6 +29,15 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.db.*;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
 import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
+import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+import org.wso2.carbon.kernel.deployment.ArtifactType;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.repository.ProcessDefinition;
+import java.io.File;
+import java.util.List;
+import org.wso2.carbon.kernel.deployment.Artifact;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent" immediate="true"
@@ -58,14 +68,39 @@ public class BPMNServiceComponent {
             //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
 
-            DataSourceHandler dataSourceHandler = new DataSourceHandler();
-           dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-            dataSourceHandler.closeDataSource();
-        } catch (BPMNMetaDataTableCreationException e) {
-            log.error("Could not create BPMN checksum table", e);
-        } catch (DatabaseConfigurationException e) {
-            log.error("Could not create BPMN checksum table", e);
-        }catch (Throwable e) {
+           // DataSourceHandler dataSourceHandler = new DataSourceHandler();
+           //dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+           // dataSourceHandler.closeDataSource();
+
+	        // ---- TEST DEPLOYER ------//
+	        	       BPMNDeployer customDeployer = new BPMNDeployer();
+	        	        customDeployer.init();
+	        	        File ab = new File("/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
+	        	        Artifact artifact =new Artifact( ab);
+	        	       ArtifactType artifactType = new ArtifactType<>("bar");
+	        	        artifact.setKey("HelloWorld.bar");
+	        	        artifact.setType(artifactType);
+	                   customDeployer.deploy(artifact);
+	        	        log.error("Deployed in c5");
+	        	        ProcessEngine eng = ActivitiEngineBuilder.getProcessEngine();
+	        	        RepositoryService repositoryService = eng.getRepositoryService();
+	        	        RuntimeService runtimeService = eng.getRuntimeService();
+	        	       //   repositoryService.activateProcessDefinitionById("helloWorldProcess");
+	        //	       //   repositoryService.activateProcessDefinitionById("helloWorldProcess");
+	        	        log.error("activated");
+	        	        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+	        	                                                                      .processDefinitionKey("helloWorldProcess")
+	        	                                                                      .orderByProcessDefinitionVersion()
+	        	                                                                      .asc()
+	        	                                                                      .list();
+	        	        log.error("DEFS" + processDefinitions);
+	        	      //  runtimeService.createProcessInstanceByKey("helloWorldProcess");
+	        	        runtimeService.startProcessInstanceByKey("helloWorldProcess");
+	        	        log.error("STARTED");
+	        //	        customDeployer.undeploy("HelloWorld.bar");
+	        //	        log.error("Undeployed in c5");
+	        // ---- TEST DEPLOYER ------//
+        } catch (Throwable e) {
             log.error("Failed to initialize the BPMN core component.", e);
         }
     }

@@ -116,8 +116,9 @@ public class BPMNDeployer implements Deployer {
         //check if extension is bar
         if (isSupportedFile(artifactFile)) {
 
-           // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-            String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
+         //   String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
+   //TODO:
+	        String deploymentName = "HelloWorld";
             //get checksum value of new file
             try {
                 checksum = Utils.getMD5Checksum(artifactFile);
