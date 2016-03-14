@@ -122,8 +122,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 throw new ActivitiIllegalArgumentException("TenantId can only be used with either processDefinitionKey or message.");
             }
         } else {
-            if(processInstanceCreateRequest.getProcessDefinitionKey() == null &&  processInstanceCreateRequest
-                    .getMessage() == null){
+            //if no tenantId, it must be from definitionId
+            if(processInstanceCreateRequest.getProcessDefinitionId() == null){
                 throw new ActivitiIllegalArgumentException("TenantId should be specified to be used with either " +
                         "processDefinitionKey or message.");
             }
