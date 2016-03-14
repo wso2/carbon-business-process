@@ -17,8 +17,7 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RuntimeService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
@@ -31,6 +30,7 @@ import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
 import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 import org.wso2.carbon.kernel.deployment.ArtifactType;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.ProcessEngine;
@@ -55,15 +55,10 @@ public class BPMNServiceComponent {
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
             ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
             holder.setEngine(activitiEngineBuilder.buildEngine());
-            //holder.setTenantManager(new TenantManager());
-
-            //TODO:COMMENTED
-           // BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             //restHolder.setRestInvoker(new RESTInvoker());
-            //TODO:COMMENTED
-            BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
-            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
+	        BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
+	        bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
             //bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
             //bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
@@ -73,30 +68,43 @@ public class BPMNServiceComponent {
            // dataSourceHandler.closeDataSource();
 
 	        // ---- TEST DEPLOYER ------//
-	        	       BPMNDeployer customDeployer = new BPMNDeployer();
-	        	        customDeployer.init();
-	        	        File ab = new File("/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
-	        	        Artifact artifact =new Artifact( ab);
-	        	       ArtifactType artifactType = new ArtifactType<>("bar");
-	        	        artifact.setKey("HelloWorld.bar");
-	        	        artifact.setType(artifactType);
-	                   customDeployer.deploy(artifact);
-	        	        log.error("Deployed in c5");
-	        	        ProcessEngine eng = ActivitiEngineBuilder.getProcessEngine();
-	        	        RepositoryService repositoryService = eng.getRepositoryService();
-	        	        RuntimeService runtimeService = eng.getRuntimeService();
-	        	       //   repositoryService.activateProcessDefinitionById("helloWorldProcess");
+//	        ActivitiDAO a = new ActivitiDAO();
+//	        DeploymentMetaDataModel model = new DeploymentMetaDataModel();
+//	        	        String idd = "1234";
+//	        	        String id = "1";
+//	        	        String packageName = "testDeploy";
+//	        	        model.setId(id);
+//	        	        model.setPackageName("testDeploy");
+//	        	        model.setCheckSum("abcd123");
+//	        	        a.insertDeploymentMetaDataModel(model);
+//
+//	        	        model.setCheckSum("adcf345");
+//	        	        a.updateDeploymentMetaDataModel(model);
+//	        	       DeploymentMetaDataModel c =  a.selectDeploymentModel( packageName);
+//	        	       BPMNDeployer customDeployer = new BPMNDeployer();
+//	        	        customDeployer.init();
+//	        	        File ab = new File("/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
+//	        	        Artifact artifact =new Artifact( ab);
+//	        	       ArtifactType artifactType = new ArtifactType<>("bar");
+//	        	        artifact.setKey("HelloWorld.bar");
+//	        	        artifact.setType(artifactType);
+//	                   customDeployer.deploy(artifact);
+//	        	        log.error("Deployed in c5");
+	        	    //    ProcessEngine eng = ActivitiEngineBuilder.getProcessEngine();
+	        	    //    RepositoryService repositoryService = eng.getRepositoryService();
+	        	    //    RuntimeService runtimeService = eng.getRuntimeService();
+	        	    //      repositoryService.activateProcessDefinitionById("helloWorldProcess");
 	        //	       //   repositoryService.activateProcessDefinitionById("helloWorldProcess");
-	        	        log.error("activated");
-	        	        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
-	        	                                                                      .processDefinitionKey("helloWorldProcess")
-	        	                                                                      .orderByProcessDefinitionVersion()
-	        	                                                                      .asc()
-	        	                                                                      .list();
-	        	        log.error("DEFS" + processDefinitions);
+	        	//        log.error("activated");
+	        //	        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+	        //	                                                                      .processDefinitionKey("helloWorldProcess")
+	        //	                                                                      .orderByProcessDefinitionVersion()
+	        //	                                                                      .asc()
+	        //	                                                                      .list();
+	        //	        log.error("DEFS" + processDefinitions);
 	        	      //  runtimeService.createProcessInstanceByKey("helloWorldProcess");
-	        	        runtimeService.startProcessInstanceByKey("helloWorldProcess");
-	        	        log.error("STARTED");
+	        //	        runtimeService.startProcessInstanceByKey("helloWorldProcess");
+	        //	        log.error("STARTED");
 	        //	        customDeployer.undeploy("HelloWorld.bar");
 	        //	        log.error("Undeployed in c5");
 	        // ---- TEST DEPLOYER ------//
@@ -107,7 +115,7 @@ public class BPMNServiceComponent {
 
     protected void deactivate(ComponentContext ctxt) {
         log.info("Stopping the BPMN core component...");
-		ProcessEngines.destroy();
+//		ProcessEngines.destroy();
     }
 
 

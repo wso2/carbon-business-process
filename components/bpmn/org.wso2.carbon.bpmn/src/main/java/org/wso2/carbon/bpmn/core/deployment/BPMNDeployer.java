@@ -116,9 +116,8 @@ public class BPMNDeployer implements Deployer {
         //check if extension is bar
         if (isSupportedFile(artifactFile)) {
 
-         //   String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
-   //TODO:
-	        String deploymentName = "HelloWorld";
+            String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
+
             //get checksum value of new file
             try {
                 checksum = Utils.getMD5Checksum(artifactFile);
@@ -174,7 +173,7 @@ public class BPMNDeployer implements Deployer {
                 // not the same version that is already deployed
                 if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
                     // It is not a new deployment, but a version update
-                    update(artifact); //TODO update new version deployment and file repo
+                    update(artifact); 
                     deploymentMetaDataModel.setCheckSum(checksum);
                     activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
                 }

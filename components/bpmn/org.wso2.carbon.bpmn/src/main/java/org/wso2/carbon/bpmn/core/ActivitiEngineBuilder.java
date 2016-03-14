@@ -63,10 +63,10 @@ public class ActivitiEngineBuilder {
                                     activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
-            processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-                    new BPSUserManagerFactory());
-            processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-                    new BPSGroupManagerFactory());
+          //  processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
+                 //   new BPSUserManagerFactory());
+          //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
+                    //new BPSGroupManagerFactory());
 
             dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
                     .getDataSourceJndiName();
