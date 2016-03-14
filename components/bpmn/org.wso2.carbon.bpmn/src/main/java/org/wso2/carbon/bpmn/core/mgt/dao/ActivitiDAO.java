@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,16 +46,15 @@ public class ActivitiDAO {
     /**
      * invokes the DeploymentMapper.selectMetaData for a given tenant id and package name
      *
-     * @param tenantID        tenant id
      * @param bpmnPackageName package name
      * @return                DeploymentMetaDataModel object
      */
-    public DeploymentMetaDataModel selectTenantAwareDeploymentModel(final String tenantID, final String bpmnPackageName){
+    public DeploymentMetaDataModel selectDeploymentModel(final String bpmnPackageName){
 
         CustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel> customSqlExecution =
                 new AbstractCustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel>(DeploymentMapper.class) {
                     public DeploymentMetaDataModel execute(DeploymentMapper deploymentMapper) {
-                        return deploymentMapper.selectMetaData(tenantID, bpmnPackageName);
+                        return deploymentMapper.selectMetaData( bpmnPackageName);
                     }
                 };
 
@@ -77,7 +76,7 @@ public class ActivitiDAO {
      *
      * @return each row will be returned as DeploymentMetaDataModel with in list
      */
-    public List<DeploymentMetaDataModel> selectAllDeploymentModel(){
+    public List<DeploymentMetaDataModel> selectAllDeploymentModels(){
 
         CustomSqlExecution<DeploymentMapper,  List<DeploymentMetaDataModel> > customSqlExecution =
                 new AbstractCustomSqlExecution<DeploymentMapper,  List<DeploymentMetaDataModel> >(DeploymentMapper.class) {

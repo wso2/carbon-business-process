@@ -26,7 +26,6 @@ public class DeploymentMetaDataModel {
 	private String id;
 	private String packageName;
 	private String checkSum;
-	private String tenantID;
 
 	public String getId() {
 		return id;
@@ -52,19 +51,10 @@ public class DeploymentMetaDataModel {
 		this.packageName = packageName;
 	}
 
-	public String getTenantID() {
-		return tenantID;
-	}
-
-	public void setTenantID(String tenantID) {
-		this.tenantID = tenantID;
-	}
-
 	public String toString() {
 
 		return " Deployment ID=" + id + " \n" +
 		       " Checksum= " + checkSum +
-		       " packageName= " + packageName +
-		       " tenantID=" + tenantID;
+		       " packageName= " + packageName;
 	}
 }
