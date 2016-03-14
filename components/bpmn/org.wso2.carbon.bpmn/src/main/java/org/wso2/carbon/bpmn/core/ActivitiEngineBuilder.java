@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
+import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,11 +52,12 @@ public class ActivitiEngineBuilder {
     public ProcessEngine buildEngine() throws BPSFault {
 
         try {
-           // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-           // String activitiConfigPath = carbonConfigDirPath + File.separator +
-                  //  BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-            String activitiConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
-                     BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+            String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+            String activitiConfigPath = carbonConfigDirPath + File.separator +
+                   BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+	        //For testing purposes
+          //  String activitiConfigPath = "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
+                  //   BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
             File activitiConfigFile = new File(activitiConfigPath);
             ProcessEngineConfigurationImpl processEngineConfigurationImpl =
                     (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
