@@ -30,6 +30,7 @@ public class DeploymentMetaDataModelEntity implements DbEntity {
 	private String id;
 	private String packageName;
 	private String checkSum;
+<<<<<<< HEAD:components/bpmn/org.wso2.carbon.bpmn/src/main/java/org/wso2/carbon/bpmn/core/mgt/model/DeploymentMetaDataModelEntity.java
 	//private String tenantID;
 	protected int revision;
 
@@ -39,6 +40,8 @@ public class DeploymentMetaDataModelEntity implements DbEntity {
 		persistentState.put("checkSum", checkSum);
 		return persistentState;
 	}
+=======
+>>>>>>> a97b84a03c59ff4570ff155e58145868fd7a12b6:components/bpmn/org.wso2.carbon.bpmn/src/main/java/org/wso2/carbon/bpmn/core/mgt/model/DeploymentMetaDataModel.java
 
 	public String getId() {
 		return id;
@@ -64,6 +67,7 @@ public class DeploymentMetaDataModelEntity implements DbEntity {
 		this.packageName = packageName;
 	}
 
+<<<<<<< HEAD:components/bpmn/org.wso2.carbon.bpmn/src/main/java/org/wso2/carbon/bpmn/core/mgt/model/DeploymentMetaDataModelEntity.java
 //	public String getTenantID() {
 //		return tenantID;
 //	}
@@ -72,6 +76,8 @@ public class DeploymentMetaDataModelEntity implements DbEntity {
 //		this.tenantID = tenantID;
 //	}
 
+=======
+>>>>>>> a97b84a03c59ff4570ff155e58145868fd7a12b6:components/bpmn/org.wso2.carbon.bpmn/src/main/java/org/wso2/carbon/bpmn/core/mgt/model/DeploymentMetaDataModel.java
 	public String toString() {
 
 		return " Deployment ID=" + id + " \n" +
