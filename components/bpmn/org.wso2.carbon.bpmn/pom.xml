@@ -34,8 +34,8 @@
 
 
         <dependency>
-            <groupId>org.camunda.bpm.wso2</groupId>
-            <artifactId>camunda-engine</artifactId>
+            <groupId>org.wso2.orbit.org.activiti</groupId>
+            <artifactId>activiti-all</artifactId>
         </dependency>
 
         <dependency>

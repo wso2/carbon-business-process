@@ -1013,15 +1013,11 @@
                 <artifactId>jibx</artifactId>
                 <version>${jibx.wso2.version}</version>
             </dependency>
-            <!--dependency>
-            <groupId>org.camunda.bpm</groupId>
-            <artifactId>camunda-bom</artifactId>
-                <version>${org.activiti.wso2.version}</version>
-            </dependency-->
+
             <dependency>
-                <groupId>org.camunda.bpm.wso2</groupId>
-                <artifactId>camunda-engine</artifactId>
-                <version>${org.camunda.wso2.version}</version>
+                <groupId>org.wso2.orbit.org.activiti</groupId>
+                <artifactId>activiti-all</artifactId>
+                <version>${org.activiti.wso2.version}</version>
             </dependency>
 
             <dependency>
@@ -1624,7 +1620,7 @@
 
         <!-- Activiti Version -->
 
-        <org.camunda.wso2.version>7.4.0-wso2v2</org.camunda.wso2.version>
+        <org.activiti.wso2.version>5.19.0.wso2v2</org.activiti.wso2.version>
         <!--<restlet.version>2.2.1.wso2v1</restlet.version>-->
         <commons.lang3.version>3.3.2</commons.lang3.version>
 	    <project.scm.id>wso2-scm-server</project.scm.id>

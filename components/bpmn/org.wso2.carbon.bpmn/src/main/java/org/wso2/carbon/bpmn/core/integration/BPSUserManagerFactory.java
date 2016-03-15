@@ -39,7 +39,7 @@ public class BPSUserManagerFactory implements SessionFactory {
     @Override
     public Session openSession() {
         try {
-	        return new BPSUserIdentityManager1();
+	       // return new BPSUserIdentityManager1();
         } catch (Exception e) {
             String msg = "Failed to obtain an user identity manager.";
             log.error(msg, e);
