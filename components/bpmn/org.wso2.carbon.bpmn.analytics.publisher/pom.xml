@@ -30,14 +30,6 @@
     <url>http://wso2.org</url>
 
     <dependencies>
-        <dependency>
-            <groupId>org.camunda.bpm</groupId>
-            <artifactId>camunda-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.camunda.bpm.identity</groupId>
-            <artifactId>camunda-identity-ldap</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>

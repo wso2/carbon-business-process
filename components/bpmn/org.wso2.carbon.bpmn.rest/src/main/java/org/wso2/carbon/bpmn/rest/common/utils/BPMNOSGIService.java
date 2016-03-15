@@ -17,12 +17,12 @@
 
 package org.wso2.carbon.bpmn.rest.common.utils;
 
-import org.camunda.bpm.engine.*;
-import org.camunda.bpm.engine.impl.ProcessEngineImpl;
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.engine.impl.interceptor.Command;
-import org.camunda.bpm.engine.impl.interceptor.CommandContext;
-import org.camunda.bpm.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.*;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 //import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 //import org.camunda.bpm.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;

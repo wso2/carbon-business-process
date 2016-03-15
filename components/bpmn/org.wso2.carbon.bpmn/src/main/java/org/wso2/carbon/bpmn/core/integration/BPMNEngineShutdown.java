@@ -16,8 +16,8 @@
 
 package org.wso2.carbon.bpmn.core.integration;
 
-import org.camunda.bpm.engine.ProcessEngines;
-import org.camunda.bpm.engine.impl.context.Context;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.context.Context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;

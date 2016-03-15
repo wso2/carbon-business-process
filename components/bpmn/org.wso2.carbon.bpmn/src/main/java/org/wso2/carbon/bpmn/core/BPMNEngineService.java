@@ -1,6 +1,6 @@
 package org.wso2.carbon.bpmn.core;
 
-import org.camunda.bpm.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngine;
 
 public interface BPMNEngineService {
 

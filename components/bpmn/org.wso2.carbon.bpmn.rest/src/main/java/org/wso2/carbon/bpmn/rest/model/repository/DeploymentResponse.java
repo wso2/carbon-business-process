@@ -18,7 +18,7 @@
 package org.wso2.carbon.bpmn.rest.model.repository;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.camunda.bpm.engine.repository.Deployment;
+import org.activiti.engine.repository.Deployment;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

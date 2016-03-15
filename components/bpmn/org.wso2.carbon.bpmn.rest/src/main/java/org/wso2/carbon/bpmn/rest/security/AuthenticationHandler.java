@@ -19,7 +19,7 @@
 package org.wso2.carbon.bpmn.rest.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.camunda.bpm.engine.IdentityService;
+import org.activiti.bpm.engine.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;

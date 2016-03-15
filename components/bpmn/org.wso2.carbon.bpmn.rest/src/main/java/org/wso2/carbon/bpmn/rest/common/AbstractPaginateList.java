@@ -18,9 +18,9 @@
 package org.wso2.carbon.bpmn.rest.common;
 
 //import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.camunda.bpm.engine.impl.AbstractQuery;
-import org.camunda.bpm.engine.query.Query;
-import org.camunda.bpm.engine.query.QueryProperty;
+import org.activiti.engine.impl.AbstractQuery;
+import org.activiti.engine.query.Query;
+import org.activiti.engine.query.QueryProperty;
 
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 

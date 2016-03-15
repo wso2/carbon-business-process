@@ -16,13 +16,13 @@
 
 
 package org.wso2.carbon.bpmn.core.integration;
-import org.camunda.bpm.engine.impl.db.entitymanager.DbEntityManager;
-import org.camunda.bpm.engine.impl.identity.ReadOnlyIdentityProvider;
-import org.camunda.bpm.engine.impl.identity.WritableIdentityProvider;
-import org.camunda.bpm.engine.impl.identity.db.DbIdentityServiceProvider;
-import org.camunda.bpm.engine.impl.interceptor.Session;
-import org.camunda.bpm.engine.impl.interceptor.SessionFactory;
-import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
+import org.activiti.engine.impl.db.entitymanager.DbEntityManager;
+import org.activiti.engine.impl.identity.ReadOnlyIdentityProvider;
+import org.activiti.engine.impl.identity.WritableIdentityProvider;
+import org.activiti.engine.impl.identity.db.DbIdentityServiceProvider;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
