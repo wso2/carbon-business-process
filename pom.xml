@@ -21,14 +21,14 @@
     <groupId>org.wso2.carbon.business-process</groupId>
     <artifactId>carbon-business-process</artifactId>
     <packaging>pom</packaging>
-    <version>4.4.7-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <name>WSO2 Carbon Business Process Aggregator Pom</name>
     <url>http://wso2.org</url>
 
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>1</version>
+        <version>3</version>
     </parent>
 
     <modules>
@@ -1380,7 +1380,7 @@
 
     <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <carbon.business-process.version>4.4.7-SNAPSHOT</carbon.business-process.version>
+        <carbon.business-process.version>5.0.0-SNAPSHOT</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.4.0,4.5.0)
         </carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>${carbon.business-process.version}</carbon.business-process.exp.pkg.version>
