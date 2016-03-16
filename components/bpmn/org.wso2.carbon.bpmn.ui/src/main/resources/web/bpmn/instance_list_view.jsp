@@ -27,6 +27,7 @@
 <%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNVariable" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -41,6 +42,7 @@
         WorkflowServiceClient client;
         BPMNInstance[] bpmnInstances;
         BPMNProcess[] bpmnProcesses;
+        BPMNVariable[] bpmnVariables = null;
 
         String operation = CharacterEncoder.getSafeText(request.getParameter("operation"));
         String instanceId = CharacterEncoder.getSafeText(request.getParameter("instanceID"));
@@ -50,23 +52,17 @@
         String pid = CharacterEncoder.getSafeText(request.getParameter("pid"));
         String startAfter = CharacterEncoder.getSafeText(request.getParameter("startAfter"));
         String startBefore = CharacterEncoder.getSafeText(request.getParameter("startBefore"));
-        String variableName = CharacterEncoder.getSafeText(request.getParameter("variable"));
-        String variableValue = CharacterEncoder.getSafeText(request.getParameter("value"));
+        String variables = CharacterEncoder.getSafeText(request.getParameter("variables"));
 
-        String parameters = "region=region1&item=bpmn_menu";
+        String parameters = "region=region1&item=bpmn_instance_menu";
         boolean finished = false;
-        boolean suspended = false;
-        boolean activeFilter = false;
+        boolean activeFilter = true;
         if (state != null && state.equals("completed")) {
             parameters += "&state=completed";
             finished = true;
         } else if (state != null && state.equals("suspended")) {
             parameters += "&state=suspended";
-            suspended = true;
-        } else if (state != null && state.equals("activeFilter")) {
-            //added separate state to filter active, since historyProcessInstanceQuery must be used
-            parameters += "&state=active";
-            activeFilter = true;
+            activeFilter = false;
         } else {
             parameters += "&state=active";
         }
@@ -82,11 +78,21 @@
         if (startBefore != null && !startBefore.equals("")) {
             parameters += ("&startBefore=" + startBefore);
         }
-        if (variableName != null && !variableName.equals("")) {
-            parameters += ("&variable=" + variableName);
-        }
-        if (variableValue != null && !variableValue.equals("")) {
-            parameters += ("&value=" + variableValue);
+        if (variables != null && !variables.equals("")) {
+            parameters += ("&variables=" + variables);
+            String variablePairs[] = variables.split(",");
+            bpmnVariables = new BPMNVariable[variablePairs.length];
+            for (int i = 0; i < variablePairs.length; i++){
+                String pair[] = variablePairs[i].split(":");
+                bpmnVariables[i] = new BPMNVariable();
+                if(pair.length == 1){
+                    bpmnVariables[i].setName(pair[0]);
+                    bpmnVariables[i].setValue("");
+                } else {
+                    bpmnVariables[i].setName(pair[0]);
+                    bpmnVariables[i].setValue(pair[1]);
+                }
+            }
         }
         int currentPage = 0;
         if(pageNumber != null && !pageNumber.equals("")){
@@ -107,19 +113,9 @@
                 client.deleteAllProcessInstances();
             }
 
-            if (finished) {
-                bpmnInstances = client
-                        .getPaginatedInstanceByFilter(finished, iid, startAfter, startBefore, pid, variableName,
-                                variableValue, start, 10);
-            } else if (activeFilter) {
-                bpmnInstances = client
-                        .getPaginatedInstanceByFilter(finished, iid, startAfter, startBefore, pid, variableName,
-                                variableValue, start, 10);
-            } else if (suspended) {
-                bpmnInstances = client.getPaginatedUnfinishedInstancesByStatus(false, start, 10);
-            } else {
-                bpmnInstances = client.getPaginatedUnfinishedInstancesByStatus(true, start, 10);
-            }
+            bpmnInstances = client
+                    .getPaginatedInstanceByFilter(finished, iid, startAfter, startBefore, pid, activeFilter, variables,
+                            start, 10);
 
             bpmnProcesses = client.getProcessList();
             numberOfPages = (int) Math.ceil(client.getInstanceCount()/10.0);
@@ -148,7 +144,7 @@
             type: 'POST',
             url: location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instace_menu&operation=deleteAllProcessInstances",
             success: function(data){
-                window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_menu&state=completed";
+                window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?region=region1&item=bpmn_instance_menu&state=completed";
                }
             });
             }
@@ -214,16 +210,18 @@
         }
         function instanceFilter() {
             <% if (finished) { %>
-                var query = "region=region1&item=bpmn_menu&state=completed";
-            <% } else {%>
-                var query = "region=region1&item=bpmn_menu&state=activeFilter";
+                var query = "region=region1&item=bpmn_instance_menu&state=completed";
+            <% } else if (activeFilter) {%>
+                var query = "region=region1&item=bpmn_instance_menu&state=active";
+            <% } else { %>
+                var query = "region=region1&item=bpmn_instance_menu&state=suspended";
             <% } %>
             var iid = document.getElementById("instanceId").value;
             var pid = document.getElementById("processId").value;
             var after = document.getElementById("startAfter").value;
             var before = document.getElementById("startBefore").value;
-            var variable = document.getElementById("variableName").value;
-            var value = document.getElementById("variableValue").value;
+            var variables = document.getElementsByName("variableName");
+            var values = document.getElementsByName("variableValue");
             if (iid != null && iid !== "") {
                 query += "&iid=" + iid;
             }
@@ -236,8 +234,16 @@
             if (before != null && before !== "") {
                 query += "&startBefore=" + before;
             }
-            if (variable != null && variable !== "" && value != null && value !== "") {
-                query += "&variable=" + variable + "&value=" + value;
+            var vCollection = "";
+            for (var i = 0; i < variables.length; i++) {
+                if (variables[i].value != null && variables[i].value !== "") {
+                    vCollection += "," + variables[i].value + ":" + values[i].value;
+                } else {
+                    break;
+                }
+            }
+            if (vCollection !== "") {
+                query += "&variables=" + vCollection.substring(1, vCollection.length);
             }
             window.location = location.protocol + "//" + location.host + "/carbon/bpmn/instance_list_view.jsp?" + query;
         }
@@ -246,8 +252,30 @@
             document.getElementById("processId").selectedIndex = 0;
             document.getElementById("startAfter").value = "";
             document.getElementById("startBefore").value = "";
-            document.getElementById("variableName").value = "";
-            document.getElementById("variableValue").value = "";
+            document.getElementById("variablesRow").innerHTML = "<input type=\"text\" name=\"variableName\" " +
+                    "placeholder=\"Variable Name\"/> = " +
+            "<input type=\"text\" name=\"variableValue\" placeholder=\"Variable value like\"/>";
+        }
+
+        function addVariable(){
+            var vNames = document.getElementsByName("variableName");
+            if(vNames[vNames.length - 1].value !== "") {
+                var vRow = document.getElementById("variablesRow");
+                var vNameNode = document.createElement("INPUT");
+                vNameNode.setAttribute("type", "text");
+                vNameNode.setAttribute("name", "variableName");
+                vNameNode.setAttribute("placeholder", "Variable Name");
+                vRow.appendChild(vNameNode);
+                var t = document.createTextNode(" = ");
+                vRow.appendChild(t);
+                var vValueNode = document.createElement("INPUT");
+                vValueNode.setAttribute("type", "text");
+                vValueNode.setAttribute("name", "variableValue");
+                vValueNode.setAttribute("placeholder", "Variable value like");
+                vRow.appendChild(vValueNode);
+                var vBr = document.createElement("BR");
+                vRow.appendChild(vBr);
+            }
         }
 
         //set datepicker for start date in advanced search
@@ -288,15 +316,15 @@
                 <tbody>
                 <tr>
                     <td id="cell"><a href="#" onclick="toggleAdvFilter()"><fmt:message key="bpmn.advanced.filter"/></a></td>
-                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_menu&state=active"
+                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_instance_menu&state=active"
                                      style="background-image: url('images/bpmn-ins-active.gif')">
                         <fmt:message key="bpmn.active"/>
                     </a></td>
-                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_menu&state=suspended"
+                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_instance_menu&state=suspended"
                                      style="background-image: url('images/bpmn-ins-suspended.gif')">
                         <fmt:message key="bpmn.suspended"/>
                     </a></td>
-                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_menu&state=completed"
+                    <td id="cell"><a id="cellLink" href="instance_list_view.jsp?region=region1&item=bpmn_instance_menu&state=completed"
                                      style="background-image: url('images/bpmn-ins-completed.gif')">
                         <fmt:message key="bpmn.completed"/>
                     </a></td>
@@ -366,14 +394,18 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><fmt:message key="bpmn.variable.like"/>&nbsp;&nbsp;&nbsp;</td>
-                    <td>
-                        <% if (variableName == null || variableName.equals("") || variableValue == null || variableValue.equals("")) { %>
-                        <input type="text" id="variableName" placeholder="Variable Name"/> =
-                        <input type="text" id="variableValue" placeholder="Variable value like"/>
+                    <td><fmt:message key="bpmn.variable.like"/>&nbsp;&nbsp;&nbsp;<input type="button" onclick="addVariable()" value="+"/></td>
+                    <td id="variablesRow">
+                        <% if (bpmnVariables != null && bpmnVariables.length > 0) { %>
+                            <% for (BPMNVariable variable: bpmnVariables) { %>
+                            <input type="text" name="variableName" placeholder="Variable Name" value="<%=variable.getName()%>"/> =
+                            <input type="text" name="variableValue" placeholder="Variable value like" value="<%=variable.getValue()%>"/>
+                            <br/>
+                            <% } %>
                         <% } else { %>
-                        <input type="text" id="variableName" placeholder="Variable Name" value="<%=variableName%>"/> =
-                        <input type="text" id="variableValue" placeholder="Variable value like" value="<%=variableValue%>"/>
+                        <input type="text" name="variableName" placeholder="Variable Name"/> =
+                        <input type="text" name="variableValue" placeholder="Variable value like"/>
+                        <br/>
                         <% } %>
                     </td>
                 </tr>

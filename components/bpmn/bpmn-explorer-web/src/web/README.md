@@ -24,4 +24,6 @@ Configuring bpmn-Explorer for tenants
     3.2 Copy above bpmn-explorer.zip to <BPS_HOME>/repository/tenants/<TENANT_ID>/jaggeryapps directory
     3.3 Copy bpmn-explorer directory to <BPS_HOME>/repository/tenants/<TENANT_ID>/jaggeryapps directory
 
-4. Then goto url https://<HOST>:<PORT>/t/<TENANT_DOMAIN>/jaggeryapps/bpmn-explorer/ using favourite web browser
+4. Copy <BPS_HOME>/repository/deployment/server/webapps/bpmn.war file to <BPS_HOME>/repository/tenants/<TENANT_ID>/webapps directory
+
+5. Then goto url https://<HOST>:<PORT>/t/<TENANT_DOMAIN>/jaggeryapps/bpmn-explorer/ using favourite web browser

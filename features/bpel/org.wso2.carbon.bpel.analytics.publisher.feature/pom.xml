@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel-feature</artifactId>
-        <version>4.4.5-SNAPSHOT</version>
+        <version>4.4.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -72,14 +72,14 @@
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.bpel</importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.databridge.agent.thrift.server:${carbon.commons.version}
+                                    org.wso2.carbon.databridge.datapublisher:${carbon.analytics.common.version}
                                 </importFeatureDef>
-                                <importFeatureDef>
-                                    org.wso2.carbon.databridge.commons.thrift.server:${carbon.commons.version}
-                                </importFeatureDef>
-                                <importFeatureDef>
-                                    org.wso2.carbon.databridge.commons.server:${carbon.commons.version}
-                                </importFeatureDef>
+                                <!--<importFeatureDef>-->
+                                    <!--org.wso2.carbon.databridge.commons.thrift.server:${carbon.commons.version}-->
+                                <!--</importFeatureDef>-->
+                                <!--<importFeatureDef>-->
+                                    <!--org.wso2.carbon.databridge.commons.server:${carbon.commons.version}-->
+                                <!--</importFeatureDef>-->
                             </importFeatures>
                         </configuration>
                     </execution>

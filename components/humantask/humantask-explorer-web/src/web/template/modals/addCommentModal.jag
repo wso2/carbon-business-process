@@ -27,17 +27,17 @@
                       &times;
                 </button>
                 <h4 class="modal-title" id="addCommentModalLabel">
-                   Add New Comment
+                   <%=i18n.localize("new.comment", "Add New Comment")%>
                 </h4>
             </div>
 
             <div class="modal-body">
-                <textarea id="addCommentTextArea" class="form-control" placeholder="Add comment here ..." style="resize:vertical"></textarea>
+                <textarea id="addCommentTextArea" class="form-control" placeholder="<%=i18n.localize("comment.here", "Add comment here")%> ..." style="resize:vertical"></textarea>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="document.getElementById('addCommentTextArea').value  = '';">Cancel</button>
-                <button type="button" class="btn btn-default" onclick="addComment(<%=id%>)">Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="document.getElementById('addCommentTextArea').value  = '';"><%=i18n.localize("cancel", "Cancel")%></button>
+                <button type="button" class="btn btn-default" onclick="addComment(<%=id%>)"><%=i18n.localize("submit", "Submit")%></button>
             </div>
         </div><!-- /.modal-content -->
     </div>

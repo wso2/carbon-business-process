@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
-        <version>4.4.5-SNAPSHOT</version>
+        <version>4.4.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -56,6 +56,9 @@
                                 </includedFeatureDef>
                                 <includedFeatureDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui.feature:${carbon.business-process.version}
+                                </includedFeatureDef>
+                                <includedFeatureDef>
+                                    org.wso2.carbon.business-process:org.wso2.carbon.bpmn.analytics.publisher.feature:${carbon.business-process.version}
                                 </includedFeatureDef>
                             </includedFeatures>
                         </configuration>

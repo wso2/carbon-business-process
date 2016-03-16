@@ -18,20 +18,36 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * Attributes of a link i.e. the source and the target activity
+ */
 public class Link {
-
+    /**
+     * Gets the Start/Source activity of the link
+     * @return Start/Source Activity of the link
+     */
     public ActivityInterface getSource() {
         return source;
     }
 
+    /**
+     * Sets the Start/Source activity of the link
+     * @param source Start/Source activity of the link
+     */
     public void setSource(ActivityInterface source) {
         this.source = source;
     }
-
+    /**
+     * Gets the End/Target activity of the link
+     * @return End/Target Activity of the link
+     */
     public ActivityInterface getTarget() {
         return target;
     }
-
+    /**
+     * Sets the End/Target activity of the link
+     * @param target End/Target activity of the link
+     */
     public void setTarget(ActivityInterface target) {
         this.target = target;
     }

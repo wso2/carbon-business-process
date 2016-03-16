@@ -18,7 +18,8 @@
 var id = request.getParameter("id");
 var log = new Log();
 var headers = {"Authorization": "Basic " + auth,
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "Accept" : "application/json"
 };
 var formGenTool = require("/assets/dynamicFormGen.js");
 var formData = get(httpUrl + "/bpmn/process-definition/" + id + "/properties", null, headers, "json").data;

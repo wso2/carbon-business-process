@@ -15,7 +15,7 @@
 -->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
       <p id="errorMsg"><%=commonErrorMessage%></p>
     </div>
 </div>
@@ -25,18 +25,18 @@
 	  <li><a href="stats">Home</a></li>
 	  <li class="active">Processes</li>
 	</ol-->
-        <div class=" margin-left-double table-title">Processes
+        <div class=" margin-left-double table-title"><%=i18n.localize("processes", "Processes")%>
        	</div>
       	<div class="table-body margin-left-double">
 		  <!-- Table -->
 		  <table class="table">
 		    <thead>
 		    	<tr class="table-title-row">
-		    		<th>Package Name</th>
-		    		<th>Process Name</th>
-		    		<th>Process Definition ID</th>
-		    		<th>Version</th>
-		    		<th>Action</th>
+		    		<th><%=i18n.localize("package.name", "Package Name")%></th>
+		    		<th><%=i18n.localize("process.name", "Process Name")%></th>
+		    		<th><%=i18n.localize("process.definition.id", "Process Definition ID")%></th>
+		    		<th><%=i18n.localize("version", "Version")%></th>
+		    		<th><%=i18n.localize("action", "Action")%></th>
 		    	</tr>
 		    </thead>
 		    <% if (commonErrorMessage == null && list.length > 0) { %>
@@ -54,7 +54,7 @@
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram"
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
-	                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
+	                                onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('<%=i18n.localize("bpmn.diagram.not.defined", "BPMN Diagram is not defined in the process definition")%>');">
 	                            <% } else { %>
 	                                onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
@@ -62,7 +62,7 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-count].version%></td>
-							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn-start btn btn-xs btn-info"><%=i18n.localize("start", "Start")%></button></a></td>
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
@@ -72,7 +72,7 @@
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 			    					<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
-	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
+	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('<%=i18n.localize("bpmn.diagram.not.defined", "BPMN Diagram is not defined in the process definition")%>');">
 	                                <% } else { %>
 	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 				    				<% } %>
@@ -80,7 +80,7 @@
 				    				</a>
 				    			</td>
 								<td><%=list[i-j].version%></td>
-								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn-start btn btn-xs btn-info"><%=i18n.localize("start", "Start")%></button></a></td>
 							</tr>
 			    		<%
 		    			}
@@ -94,7 +94,7 @@
 			    			<td>
 			    				<a href="" data-toggle="modal" data-target="#diagram" 
 			    				<% if (list[i-count].imageUrl.indexOf("not supported") >= 0) { %>
-			    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
+			    					onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('<%=i18n.localize("bpmn.diagram.not.defined", "BPMN Diagram is not defined in the process definition")%>');">
 			    				<% } else { %>
 			    					onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-count].imageUrl%>');">
 								<% } %>
@@ -102,7 +102,7 @@
 			    				</a>
 			    			</td>
 							<td><%=list[i-count].version%></td>
-							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+							<td><a href="startProcess?id=<%=list[i-count].processId%>"><button class="btn-start btn btn-xs btn-info"><%=i18n.localize("start", "Start")%></button></a></td>
 						</tr>
 		    		<%
 		    			for (var j=count-1; j>0; j--) {
@@ -112,7 +112,7 @@
 				    			<td>
 				    				<a href="" data-toggle="modal" data-target="#diagram"
 				    				<% if (list[i-j].imageUrl.indexOf("not supported") >= 0) { %>
-	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('BPMN diagram is not defined in the process definition.');">
+	                                    onclick="$('#processDiagram').attr('src', ''); $('#imgStatus').text('<%=i18n.localize("bpmn.diagram.not.defined", "BPMN Diagram is not defined in the process definition")%>');">
 	                                <% } else { %>
 	                                    onclick="$('#imgStatus').text(''); $('#processDiagram').attr('src','<%=list[i-j].imageUrl%>');">
 									<% } %>
@@ -120,7 +120,7 @@
 				    				</a>
 				    			</td>
 								<td><%=list[i-j].version%></td>
-								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn btn-xs btn-info">Start</button></a></td>
+								<td><a href="startProcess?id=<%=list[i-j].processId%>"><button class="btn-start btn btn-xs btn-info"><%=i18n.localize("start", "Start")%></button></a></td>
 							</tr>
 			    	<%
 		    			}
@@ -137,7 +137,7 @@
 				%>
 					<script>
 						window.onload = function() {
-							$('.processStatus').html("<b>Process Started: </b> <%=startProcess%>");
+							$('.processStatus').html("<b><%=i18n.localize("process.started","Process Started")%> </b> <%=startProcess%>");
 							$('#processStart').modal('show');
 							if (typeof (history.pushState) != "undefined") {
 								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
@@ -153,7 +153,7 @@
 				%>
 					<script>
 						window.onload = function() {
-							$('#processStartErrorMsg').html("<b>Error starting process: </b><%=errorMessage%>");
+							$('#processStartErrorMsg').html("<b><%=i18n.localize("error.starting.process", "Error starting process")%> </b><%=errorMessage%>");
 							$('#processStartError').modal('show');
 							if (typeof (history.pushState) != "undefined") {
 								var obj = { Title: document.title, Url: window.location.href.split("?")[0] };
@@ -180,7 +180,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Process Diagram</h4>
+                    <h4 class="modal-title" id="myModalLabel"><%=i18n.localize("process.diagram", "Process Diagram")%></h4>
                 </div>
                 <div class="modal-body">
                 	<div id="diagramScroll">
@@ -189,7 +189,7 @@
                 	</div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close", "Close")%></button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -199,10 +199,10 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel"><span class="processStatus">Process</span></h4>
+                    <h4 class="modal-title" id="myModalLabel"><span class="processStatus"><%=i18n.localize("process", "Process")%></span></h4>
                 </div>
                 <div class="modal-footer" style="text-align:center">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close", "Close")%></button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -212,7 +212,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="processStartErrorLabel" style="color: #a94442;"><span class="processStatusError">Error Occured</span></h4>
+                    <h4 class="modal-title" id="processStartErrorLabel" style="color: #a94442;"><span class="processStatusError"><%=i18n.localize("error.occurred","Error Occurred")%></span></h4>
                 </div>
                 <div class="modal-body">
                     <div id="reassignErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left">
@@ -220,7 +220,7 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="text-align:center">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close", "Close")%></button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

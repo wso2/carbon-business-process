@@ -22,35 +22,52 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.RepeatUntilInterface;
 
 /**
- * RepeatUntil tag UI impl
+ * RepeatUntil tag UI implementation
  */
 public class RepeatUntilImpl extends ForEachImpl implements RepeatUntilInterface {
-
+	/**
+     * Initializes a new instance of the RepeatUntilImpl class using the specified string i.e. the token
+     * @param token
+     */
     public RepeatUntilImpl(String token) {
         super(token);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     * Initializes a new instance of the RepeatUntilImpl class using the specified omElement
+     * @param omElement which matches the RepeatUntil tag
+     */
     public RepeatUntilImpl(OMElement omElement) {
         super(omElement);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	/**
+     * Initializes a new instance of the RepeatUntilImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an RepeatUntil Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the RepeatUntil tag
+     * @param parent
+     */
     public RepeatUntilImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
+
+        //Set the parent of the activity
         setParent(parent);
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+	 /**
+     *
+     * @return String with the end tag of RepeatUntil Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.REPEATUNTIL_END_TAG;

@@ -64,6 +64,7 @@
                     </xsd:element>
                 </xsd:sequence>
                 <xsd:attribute name="id" type="xsd:string"/>
+                <xsd:attribute name="readOnly" type="xsd:boolean"/>
             </xsd:complexType>
 
             <xsd:complexType name="valueType">

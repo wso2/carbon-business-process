@@ -35,15 +35,15 @@
             }
 
            if(max >= 100 && count > 1){
-              var hTitle='Task instance count (log scale)';
+              var hTitle="<%=i18n.localize("htitle", "Task instance count (log scale)")%>";
               var logScaleEnabled = true;
             }
             else{
-              var hTitle='Task instance count';
+              var hTitle="<%=i18n.localize("htitle", "Task instance count")%>";
               var logScaleEnabled = false;
             }
              var options = {
-               vAxis: {title: 'Status of the Task',  titleTextStyle: { color: 'grey' }},
+               vAxis: {title: "<%=i18n.localize("status.task", "Status of the Task")%>",  titleTextStyle: { color: 'grey' }},
                hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                colors:['#be2d28'],
                height: ((data.getNumberOfRows()+2) * 70),
@@ -58,14 +58,14 @@
 
       <div class="col-lg-12 float-left">
             <!-- Default panel contents -->
-            <div class="table-title"  style="width:100%">  Task Status Count </div>
+            <div class="table-title"  style="width:100%">  <%=i18n.localize("task.status.count", "Task Status Count")%> </div>
             <div id="taskStatusCountBar" style="height: 650px"></div>
       
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
      function drawChart(){
         var data = google.visualization.arrayToDataTable([
-          ['Status Of the Task', ' Task Count'],
+          ['<%=i18n.localize("status.task", "Status Of the Task")%>', ' <%=i18n.localize("task.count", "Task Count")%>'],
          
           <% for(var j = 0; j < statusArrayPie.length; j++){ %>
             <%=JSON.stringify(statusArrayPie[j]) %>
@@ -88,7 +88,7 @@
 
        chart.setAction({
                  id: 'taskList',
-                 text: 'View Tasks',
+                 text: '<%=i18n.localize("view.tasks", "View Tasks")%>',
                  action: function() {
                    selection = chart.getSelection();
                    switch (selection[0].row) {
@@ -112,13 +112,13 @@
        }
     </script>
 
-            <div class="table-subtitle"  style="width:100%"> View the Tasks in Each State By Clicking on the Tooltip of the PieChart </div>
+            <div class="table-subtitle"  style="width:100%"> <%=i18n.localize("click.tooltips", "Click tooltips to view tasks")%> </div>
             <div id="taskStatusCountPie" style="height: 500px;"></div>
         </div>
    
     <% }else{ %>
       <br/>
-      &nbsp;&nbsp;Welcome to Human Explorer statistical view. Please deploy human tasks from admin view to generate statistics.
+      &nbsp;&nbsp;<%=i18n.localize("stat.view.welcome", "Welcome to stats view")%>
       <br/><br/>
     <% }%>
   </div>

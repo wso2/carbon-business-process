@@ -30,6 +30,7 @@ import org.wso2.carbon.bpel.b4p.coordination.configuration.CoordinationConfigura
 import org.wso2.carbon.bpel.b4p.internal.B4PContentHolder;
 import org.wso2.carbon.bpel.b4p.internal.B4PServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
+import org.wso2.carbon.context.CarbonContext;
 
 public class EventListener implements BpelEventListener {
 
@@ -44,12 +45,13 @@ public class EventListener implements BpelEventListener {
                 ProcessTerminationEvent event = (ProcessTerminationEvent) bpelEvent;
 
                 ProcessConfigurationImpl processConf = getProcessConfiguration(event);
-                if (processConf.isB4PTaskIncluded()) {
+                if (processConf!=null && processConf.isB4PTaskIncluded()) {
                     if (log.isDebugEnabled()) {
                         log.debug("TERMINATED Process instance " + event.getProcessInstanceId()
                                 + " has a B4P activity. Initiating Exit Protocol Messages to task(s).");
                     }
                     TerminationTask terminationTask = new TerminationTask(Long.toString(event.getProcessInstanceId()));
+                    terminationTask.setTenantID(processConf.getTenantId());
                     B4PContentHolder.getInstance().getCoordinationController().runTask(terminationTask);
                 }
 
@@ -58,12 +60,13 @@ public class EventListener implements BpelEventListener {
                 if (ProcessState.STATE_COMPLETED_WITH_FAULT == instanceStateChangeEvent.getNewState()) {
 
                     ProcessConfigurationImpl processConf = getProcessConfiguration(instanceStateChangeEvent);
-                    if (processConf.isB4PTaskIncluded()) {
+                    if (processConf!=null && processConf.isB4PTaskIncluded()) {
                         if (log.isDebugEnabled()) {
                             log.debug("Process Instance, COMPLETED WITH FAULT " + instanceStateChangeEvent.getProcessInstanceId()
                                     + " has a B4P activity. Initiating Exit Protocol Messages to task(s)");
                         }
                         TerminationTask terminationTask = new TerminationTask(Long.toString(instanceStateChangeEvent.getProcessInstanceId()));
+                        terminationTask.setTenantID(processConf.getTenantId());
                         B4PContentHolder.getInstance().getCoordinationController().runTask(terminationTask);
                     }
                 }

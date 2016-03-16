@@ -17,11 +17,13 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
+import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
@@ -37,7 +39,7 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  */
 public class BPMNServiceComponent {
 
-	private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
+    private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN core component...");
@@ -51,9 +53,11 @@ public class BPMNServiceComponent {
             BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             restHolder.setRestInvoker(new RESTInvoker());
+            BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
+            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
+            bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
+            bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
-
-            bundleContext.registerService(WaitBeforeShutdownObserver.class.getName(), new BPMNEngineShutdown(), null);
 
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
 //            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
@@ -67,10 +71,10 @@ public class BPMNServiceComponent {
         }
     }
 
-	protected void deactivate(ComponentContext ctxt) {
-		log.info("Stopping the BPMN core component...");
+    protected void deactivate(ComponentContext ctxt) {
+        log.info("Stopping the BPMN core component...");
 //		ProcessEngines.destroy();
-	}
+    }
 
     protected void setRegistryService(RegistryService registrySvc) {
         if (log.isDebugEnabled()) {

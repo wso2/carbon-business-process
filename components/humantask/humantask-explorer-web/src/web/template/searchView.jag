@@ -26,47 +26,47 @@
 </div>-->
 <div class="row">   
     <div class="panel-inbox">
-        <div class=" margin-left-double table-title">Advanced Search</div>
+        <div class=" margin-left-double table-title"><%=i18n.localize("advanced.search", "Advanced Search")%></div>
         <div class="table-body margin-left-double">
             <form role="form" class="" action="search" method="GET">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group">
-                        <label for="taskName" class="control-label">Task Name</label>
+                        <label for="taskName" class="control-label"><%=i18n.localize("name", "Task Name")%></label>
                         <div class="">
-                            <input type="text" class="form-control" id="taskName" name="taskName" placeholder="Enter Task Name">
+                            <input type="text" class="form-control" id="taskName" name="taskName" placeholder="<%=i18n.localize("enter.task.name", "Enter Task Name")%>">
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label for="taskStatus" class="control-label">Status</label>
+                        <label for="taskStatus" class="control-label"><%=i18n.localize("status", "Status")%></label>
 
                         <select id="taskStatus" name="taskStatus" class="form-control">
-                            <option value="" selected>ALL</option>
-                            <option value="CREATED">CREATED</option>
-                            <option value="READY">READY</option>
-                            <option value="RESERVED">RESERVED</option>
-                            <option value="IN_PROGRESS">IN_PROGRESS</option>
-                            <option value="COMPLETED">COMPLETED</option>
-                            <option value="SUSPENDED">SUSPENDED</option>
-                            <option value="FAILED">FAILED</option>
-                            <option value="ERROR">ERROR</option>
-                            <option value="EXITED">EXITED</option>
-                            <option value="OBSOLETE">OBSOLETE</option>
-                            <option value="REMOVED">REMOVED</option>
-                            <option value="UNDEFINED">UNDEFINED</option>
+                            <option value="" selected><%=i18n.localize("all", "ALL")%></option>
+                            <option value="CREATED"><%=i18n.localize("created.caps", "CREATED")%></option>
+                            <option value="READY"><%=i18n.localize("ready.caps", "READY")%></option>
+                            <option value="RESERVED"><%=i18n.localize("reserved.caps", "RESERVED")%></option>
+                            <option value="IN_PROGRESS"><%=i18n.localize("in.progress.caps", "IN_PROGRESS")%></option>
+                            <option value="COMPLETED"><%=i18n.localize("completed.caps", "COMPLETED")%></option>
+                            <option value="SUSPENDED"><%=i18n.localize("suspended.caps", "SUSPENDED")%></option>
+                            <option value="FAILED"><%=i18n.localize("failed.caps", "FAILED")%></option>
+                            <option value="ERROR"><%=i18n.localize("error.caps", "ERROR")%></option>
+                            <option value="EXITED"><%=i18n.localize("exited.caps", "EXITED")%></option>
+                            <option value="OBSOLETE"><%=i18n.localize("obsolete.caps", "OBSOLETE")%></option>
+                            <option value="REMOVED"><%=i18n.localize("removed.caps", "REMOVED")%></option>
+                            <option value="UNDEFINED"><%=i18n.localize("undefined.caps", "UNDEFINED")%></option>
                         </select>
                     </div>
                 </div>
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label for="taskCategory">Category</label>
+                        <label for="taskCategory"><%=i18n.localize("category", "Category")%></label>
                         <select id="taskCategory" name="taskCategory" class="form-control">
-                            <option value="ASSIGNED_TO_ME">ASSIGNED TO ME</option>
-                            <option value="ASSIGNABLE">ADMIN TASKS</option>
-                            <option value="CLAIMABLE">CLAIMABLE</option>
-                            <option value="ALL_TASKS" selected>ALL TASKS</option>
-                            <option value="NOTIFICATIONS">NOTIFICATIONS</option>
+                            <option value="ASSIGNED_TO_ME"><%=i18n.localize("assigned.me.caps", "ASSIGNED TO ME")%></option>
+                            <option value="ASSIGNABLE"><%=i18n.localize("admin.tasks.caps", "ADMIN TASKS")%></option>
+                            <option value="CLAIMABLE"><%=i18n.localize("claimable.caps", "CLAIMABLE")%></option>
+                            <option value="ALL_TASKS" selected><%=i18n.localize("all.tasks.caps", "ALL TASKS")%></option>
+                            <option value="NOTIFICATIONS"><%=i18n.localize("notifications.caps", "NOTIFICATIONS")%></option>
                         </select>
                     </div>
                 </div>
@@ -81,12 +81,12 @@
 
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label for="queryOrderBy">Order</label>
+                        <label for="queryOrderBy"><%=i18n.localize("order", "Order")%></label>
                         <select id="queryOrderBy" name="queryOrderBy" class="form-control">
-                            <option value="TASK_NAME">TASK NAME</option>
-                            <option value="CREATED_DATE" selected>CREATED DATE</option>
-                            <option value="UPDATED_DATE">UPDATED DATE</option>
-                            <option value="PRIORITY">PRIORITY</option>
+                            <option value="TASK_NAME"><%=i18n.localize("task.name.caps", "TASK NAME")%></option>
+                            <option value="CREATED_DATE" selected><%=i18n.localize("created.date.caps", "CREATED DATE")%></option>
+                            <option value="UPDATED_DATE"><%=i18n.localize("updated.date.caps", "UPDATED DATE")%></option>
+                            <option value="PRIORITY"><%=i18n.localize("priority.caps", "PRIORITY")%></option>
                             <!--option value="STATUS">STATUS</option-->
                             <!-- Querying by STATUS doesnt give a proper order of tasks-->
                         </select>
@@ -94,16 +94,16 @@
                 </div>
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     <div class="form-group">
-                        <label for="queryOrder">Order</label>
+                        <label for="queryOrder"><%=i18n.localize("order", "Order")%></label>
                         <select id="queryOrder" name="queryOrder" class="form-control">
-                            <option value="ASCENDING" selected>ASCENDING</option>
-                            <option value="DESCENDING">DESCENDING</option>
+                            <option value="ASCENDING" selected><%=i18n.localize("ascending.caps", "ASCENDING")%></option>
+                            <option value="DESCENDING"><%=i18n.localize("descending.caps", "DESCENDING")%></option>
                         </select>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-12">
                     <br/>
-                    <button type="submit" class="btn btn-default btn-info">Search</button>
+                    <button type="submit" class="btn btn-default btn-info"><%=i18n.localize("search", "Search")%></button>
                 </div>
             </form>
         </div>
@@ -112,18 +112,18 @@
 <div class="row">
     <div class="panel-inbox">
             <% if (queryReceived == true && taskXMLList != null) { %>
-                <div class=" margin-left-double table-title margin-top-double">Search Results</div>
+                <div class=" margin-left-double table-title margin-top-double"><%=i18n.localize("search.result", "Search Results")%></div>
                 <div class="table-body margin-left-double">
                     <!-- Table -->
                     <table class="table">
                             <thead>
                                 <tr class="table-title-row">
-                                    <th>ID</th>
-                                    <th>Type</th>
-                                    <th>Task Name</th>
-                                    <th>Subject</th>
-                                    <th>Status</th>
-                                    <th>Priority</th>
+                                    <th><%=i18n.localize("id", "ID")%></th>
+                                    <th><%=i18n.localize("type", "Type")%></th>
+                                    <th><%=i18n.localize("name", "Task Name")%></th>
+                                    <th><%=i18n.localize("subject", "Subject")%></th>
+                                    <th><%=i18n.localize("status", "Status")%></th>
+                                    <th><%=i18n.localize("priority", "Priority")%></th>
                                 </tr>
                             </thead>
                             <tbody>

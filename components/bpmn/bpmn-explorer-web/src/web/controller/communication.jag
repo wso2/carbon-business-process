@@ -1,5 +1,5 @@
-/*<!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+<%
+/* ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -11,9 +11,8 @@
  ~ distributed under the License is distributed on an "AS IS" BASIS,
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
- ~ limitations under the License.
--->*/
-<%
+ ~ limitations under the License.*/
+
 var log = new Log();
 include("/model/common.jag");
 
@@ -35,9 +34,11 @@ if (request.isSecure()) {//check whether the request is secure or not
     	contentType = request.getContentType(),	
     	headers = {
     		"Content-Type": contentType,
-    		"Authorization":"Basic " + auth
+    		"Authorization":"Basic " + auth,
+            "Accept" : "application/json"
     	},
-    	run = request.getMethod();
+    	run = request.getMethod(),
+        result = null;
     	if (run == "POST") {
             req = request.getParameter("req");
             url = req;
@@ -56,6 +57,14 @@ if (request.isSecure()) {//check whether the request is secure or not
                 log.debug("BPMN Rest PUT results: " + stringify(result));
             }
     	}
+        if (run == "GET") {
+            req = request.getParameter("req");
+            url = req;
+            result = get( httpUrl + url, null, headers, "text");
+            if (log.isDebugEnabled()){
+                log.debug("BPMN Rest PUT results: " + stringify(result));
+            }
+        }
 
         response.status = result.xhr.status;
 

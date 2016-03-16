@@ -22,44 +22,59 @@ import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.OnEventInterface;
 
 /**
- * OnEvent tag UI impl
+ * OnEvent tag UI implementation
  */
 public class OnEventImpl extends OnMessageImpl implements OnEventInterface {
-
+    /**
+     * Initializes a new instance of the OnEventImpl class using the specified string i.e. the token
+     * @param token
+     */
     public OnEventImpl(String token) {
         super(token);
-
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "OnEvent";
         displayName = "onEvent";
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+    /**
+     * Initializes a new instance of the OnEventImpl class using the specified omElement
+     * @param omElement which matches the OnEvent tag
+     */
     public OnEventImpl(OMElement omElement) {
         super(omElement);
-
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "OnEvent";
         displayName = "onEvent";
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+    /**
+     * Initializes a new instance of the OnEventImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an OnEvent Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the OnEvent tag
+     * @param parent
+     */
     public OnEventImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
         setParent(parent);
-
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "OnEvent";
         displayName = "onEvent";
 
-        // Set Icon and Size
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-
+    /**
+     *
+     * @return String with the end tag of OnEvent Activity
+     */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.ONEVENT_END_TAG;

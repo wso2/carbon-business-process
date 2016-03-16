@@ -1,0 +1,54 @@
+<%
+/*
+ ~ Copyright (c) 2005-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+*/
+var log = new Log();
+include("/model/common.jag");
+
+if (request.isSecure()) {//check whether the request is secure or not
+
+    if (!session.get("authSuccess")) {
+        var queryParameters = request.getQueryString();
+        response.sendRedirect("login");
+    } else {
+        response.addHeader('Content-Type', 'application/json');
+        var operation = request.getParameter("operation");
+        if (operation != null && operation == "userExists" && request.getParameter("username") != null) {
+            var username = request.getParameter("username");
+            var carbon = require('carbon');
+            var url = 'https://' + bpsHost + ":"+ bpsPort + '/admin/services/';
+            var server = new carbon.server.Server(url);
+            var userManager = new carbon.user.UserManager(server, bpsTenantID);
+
+            var userValid = userManager.userExists(username, 'default');
+            if (userValid) {
+                print('{"valid": true}');
+            } else {
+                print('{"valid": false}');
+            }
+        } else {
+            print('{"error": "Invalid request."}');
+        }
+    }
+
+} else {
+    //request is not secured, therefore need redirect to the secure channel
+    var queryStr = '';
+    if (request.getQueryString() != null) {
+        queryStr = '?' + request.getQueryString();
+    }
+    response.sendRedirect(application.get('serverAddress') + request.getRequestURI() + queryStr);
+}
+%>

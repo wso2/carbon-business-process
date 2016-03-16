@@ -19,6 +19,9 @@
 
     var log = new Log(),
     data = require('../config/config.json');
+    var i18n = require("i18n");
+    var localeResourcesBasePath="../config/locales/";
+    i18n.init(request,localeResourcesBasePath);
 
     //construct backend URI using config.json
     var BPSUrl = application.get('bpsURI');

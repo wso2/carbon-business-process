@@ -38,8 +38,7 @@ public class DateConverter {
         try {
             return df.parse(modifiedDateString);
         } catch (ParseException e) {
-            String errMsg = "Date converter parse error.";
-            log.error(errMsg, e);
+            log.error("Date converter parse error.", e);
             return null;
         }
     }

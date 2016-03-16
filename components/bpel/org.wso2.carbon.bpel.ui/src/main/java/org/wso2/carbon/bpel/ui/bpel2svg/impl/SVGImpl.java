@@ -42,24 +42,37 @@ public class SVGImpl implements SVGInterface {
 
     private SVGDocument svgDoc = null;
 
+    //Getter and Setter for the rootActivity
+
+    /**
+     * Gets the root activity of the process i.e. Process Activity
+     * @return root activity of the process i.e. Process Activity
+     */
     public ProcessInterface getRootActivity() {
         return rootActivity;
     }
 
+    /**
+     * Sets the root activity of the process i.e. Process Activity
+     * @param rootActivity root activity of the process i.e. Process Activity
+     */
     public void setRootActivity(ProcessInterface rootActivity) {
         this.rootActivity = rootActivity;
     }
 
     /*
-    * Return the image as a SVG string
+    * Return the SVG graph as a SVG string
     * */
     public String generateSVGString() {
         try {
+            //Define a String writer
             StringWriter writer = new StringWriter();
+            //Get the SVG document from the root activity i.e. the Process Activity
             SVGDocument svgDoc = getRootActivity().getSVGDocument();
             if (svgDoc != null) {
                 this.svgDoc = svgDoc;
             }
+            //Method wrapper for SVGTranscoder.
             DOMUtilities.writeDocument(svgDoc, writer);
             writer.close();
             svgStr = writer.toString();
@@ -97,7 +110,7 @@ public class SVGImpl implements SVGInterface {
             log.error("Error while flushing OutputStreamByteArray", e);
             return null;
         }
-
+        // Base64 encoding from byte array to string
         String base64 = new String(Base64.encodeBase64(((ByteArrayOutputStream) osByteArray).toByteArray()));
         return base64;
     }
@@ -133,6 +146,10 @@ public class SVGImpl implements SVGInterface {
         return ((ByteArrayOutputStream) osByteArray).toByteArray();
     }
 
+    /**
+     *
+     * @return String with the header of the SVG document
+     */
     public String getHeaders() {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<!DOCTYPE svg PUBLIC '" +
                 SVGConstants.SVG_PUBLIC_ID + "' '" + SVGConstants.SVG_SYSTEM_ID + "'>\n\n";

@@ -84,58 +84,115 @@ $( document ).ready(function() {
 function displayAttachmentData(id){
    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
 }
-function completeTask(data, id) {
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
-    var variables = [];
-    var emptyVar=true;
-    for (var i = 0; i < data.length; i++) {
 
-        if (data[i].value == "") {
+function completeTask(data, id) {
+    document.getElementById("completeButton").style.display='none';
+    document.getElementById("loadingCompleteButton").hidden = false;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/form/form-data%3FtaskId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (responseData) {
+            var vData = JSON.parse(responseData).formProperties;
+
+            var variables = [];
+            var emptyVar=true;
+            for (var i = 0; i < data.length; i++) {
+
+                for(var j = 0; j < vData.length; j++){
+                    if(vData[j].name==data[i].name){
+                        if (vData[j].required && vData[j].writable && data[i].value == "") {
+                            document.getElementById("commonErrorSection").hidden = false;
+                            document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
+                            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                            emptyVar = false;
+                            document.getElementById("loadingCompleteButton").hidden = true;
+                            document.getElementById("completeButton").style.display='';
+                            return;
+                        }
+                    }
+                }
+                variables.push({
+                    "name": data[i].name,
+                    "value": data[i].value
+                });
+            }
+            if (emptyVar == true) {
+                var body = {
+                    "action": "complete",
+                    "variables": variables
+                };
+
+                var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+                $.ajax({
+                    type: 'POST',
+                    contentType: "application/json",
+                    url: httpUrl + url,
+                    data: JSON.stringify(body),
+                    success: function (data) {
+                        document.getElementById("loadingCompleteButton").hidden = true;
+                        document.getElementById("completeButton").style.display='';
+                        window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                    },
+                    error: function (xhr, status, error) {
+                        document.getElementById("loadingCompleteButton").hidden = true;
+                        document.getElementById("completeButton").style.display='';
+                        document.getElementById("commonErrorSection").hidden = false;
+                        document.getElementById("errorMsg").innerHTML = "Task completion failed: " + xhr.responseText;
+                        $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                        emptyVar = false;
+                        return;
+                    }
+                });
+            }
+
+        },
+        error: function (xhr, status, error) {
+            document.getElementById("loadingCompleteButton").hidden = true;
+            document.getElementById("completeButton").style.display='';
             document.getElementById("commonErrorSection").hidden = false;
-            document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the fields";
+            document.getElementById("errorMsg").innerHTML = "Task completion failed: " + xhr.responseText;
             $(document.body).scrollTop($('#commonErrorSection').offset().top);
             emptyVar = false;
-            break;
+            return;
         }
-        variables.push({
-            "name": data[i].name,
-            "value": data[i].value
-        });
-    }
-    if (emptyVar == true) {
-        var body = {
-            "action": "complete",
-            "variables": variables
-        };
-
-        $.ajax({
-            type: 'POST',
-            contentType: "application/json",
-            url: httpUrl + url,
-            data: JSON.stringify(body),
-            success: function (data) {
-                window.location = httpUrl + "/" + CONTEXT + "/myTasks";
-            }
-        });
-    }
+    });
 }
 
 function reassign(username, id) {
-    
     username = username.trim();
     if (username.length > 0) {
-        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
-        var body = {
-            "assignee": username
-        };
-
+        var url = "/" + CONTEXT + "/backendRequest?operation=userExists&username=" + username;
         $.ajax({
-            type: 'PUT',
+            type: 'GET',
             contentType: "application/json",
             url: httpUrl + url,
-            data: JSON.stringify(body),
+            //data: JSON.stringify(body),
             success: function (data) {
-                window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                if (data.valid) {
+                    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+                    var body = {
+                        "assignee": username
+                    };
+
+                    $.ajax({
+                        type: 'PUT',
+                        contentType: "application/json",
+                        url: httpUrl + url,
+                        data: JSON.stringify(body),
+                        success: function (data) {
+                            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                        }
+                    });
+                } else {
+                    $('#reassignErrMsg').html("Please enter valid username to assignee");
+                    $('#reassignErrorMessageArea').show();
+                    //set callback to remove error message when hiding the modal
+                    $('#reassign').on('hide.bs.modal', function (e) {
+                            $('#reassignErrorMessageArea').hide();
+                    });
+                }
             }
         });
     } else {
@@ -167,23 +224,42 @@ function claim(username, id){
 
 
 function transfer(username, id) {
+    username = username.trim();
     if (username.length > 0) {
-        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
-        var body = {
-            "owner": username
-        };
-
+        var url = "/" + CONTEXT + "/backendRequest?operation=userExists&username=" + username;
         $.ajax({
-            type: 'PUT',
+            type: 'GET',
             contentType: "application/json",
             url: httpUrl + url,
-            data: JSON.stringify(body),
+            //data: JSON.stringify(body),
             success: function (data) {
-                window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                if (data.valid) {
+                    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+                    var body = {
+                        "owner": username
+                    };
+
+                    $.ajax({
+                        type: 'PUT',
+                        contentType: "application/json",
+                        url: httpUrl + url,
+                        data: JSON.stringify(body),
+                        success: function (data) {
+                            window.location = httpUrl + "/" + CONTEXT + "/myTasks";
+                        }
+                    });
+                } else {
+                    $('#transferErrMsg').html("Please enter valid username to assignee");
+                    $('#transferErrorMessageArea').show();
+                    //set callback to remove error message when hiding the modal
+                    $('#transfer').on('hide.bs.modal', function (e) {
+                            $('#transferErrorMessageArea').hide();
+                    });
+                }
             }
         });
     } else {
-        $('#transferErrMsg').html("Please enter the username");
+        $$('#transferErrMsg').html("Please enter the username");
         $('#transferErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#transfer').on('hide.bs.modal', function (e) {
@@ -215,31 +291,72 @@ function startProcess(processDefId) {
 }
 
 function startProcessWithData(data, id) {
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
-    var variables = [];
-    for (var i = 0; i < data.length; i++) {
-        variables.push({
-            "name": data[i].name,
-            "value": data[i].value
-        });
-    }
-    var body = {
-        "processDefinitionId": id,
-        "variables": variables
-    };
+    document.getElementById("startProcessButton").style.display='none';
+    document.getElementById("loadingStartProcessButton").hidden = false;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/process-definition/" + id + "/properties";
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         contentType: "application/json",
         url: httpUrl + url,
-        data: JSON.stringify(body),
-        success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
+        success: function (responseData) {
+            var vData = JSON.parse(responseData).data;
+
+            var variables = [];
+            var emptyVar=true;
+            for (var i = 0; i < data.length; i++) {
+
+                for(var j = 0; j < vData.length; j++){
+                    if(vData[j].name==data[i].name){
+                        if (vData[j].required && vData[j].writable && data[i].value == "") {
+                            document.getElementById("commonErrorSection").hidden = false;
+                            document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
+                            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                            emptyVar = false;
+                            document.getElementById("startProcessButton").style.display='';
+                            document.getElementById("loadingStartProcessButton").hidden = true;
+                            return;
+                        }
+                    }
+                }
+                variables.push({
+                    "name": data[i].name,
+                    "value": data[i].value
+                });
+            }
+            var body = {
+                "processDefinitionId": id,
+                "variables": variables
+            };
+            var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
+            $.ajax({
+                type: 'POST',
+                contentType: "application/json",
+                url: httpUrl + url,
+                data: JSON.stringify(body),
+                success: function (data) {
+                    document.getElementById("startProcessButton").style.display='';
+                    document.getElementById("loadingStartProcessButton").hidden = true;
+                    window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
+                },
+                error: function (xhr, status, error) {
+                    document.getElementById("startProcessButton").style.display='';
+                    document.getElementById("loadingStartProcessButton").hidden = true;
+                    var errorJson = eval("(" + xhr.responseText + ")");
+                    var errorJson = eval("(" + xhr.responseText + ")");
+                    window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+                }
+            });
         },
         error: function (xhr, status, error) {
-            var errorJson = eval("(" + xhr.responseText + ")");
-            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+            document.getElementById("loadingCompleteButton").hidden = true;
+            document.getElementById("completeButton").style.display='';
+            document.getElementById("commonErrorSection").hidden = false;
+            document.getElementById("errorMsg").innerHTML = "Task completion failed: " + xhr.responseText;
+            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            emptyVar = false;
+            return;
         }
-    });
+    });    
 }
 
 
@@ -309,7 +426,9 @@ function processSearch(){
     if (SDate.value.length > 0) {
         var startDateTemp = new Date(SDate.value);
         var startDateISOTemp = document.getElementById("startDateISO");
-        startDateISOTemp.value = startDateTemp.toISOString();                       
+        startDateISOTemp.value = startDateTemp.toISOString();
+        startDateISOTemp.value = startDateTemp.toISOString().split('.')[0] + 'Z';
+
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("startDateISO").disabled = true;
@@ -325,7 +444,8 @@ function processSearch(){
         console.log(endDateTemp);
         console.log(endDateTemp.toISOString());
         var endDateISOTemp = document.getElementById("endDateISO");
-        endDateISOTemp.value = endDateTemp.toISOString();                       
+        endDateISOTemp.value = endDateTemp.toISOString();
+        endDateISOTemp.value = endDateTemp.toISOString().split('.')[0] + 'Z';
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("endDateISO").disabled = true;
@@ -405,7 +525,7 @@ function selectUserForPerformance(){
 
             function drawChart(data) {
 
-                var dataArr = [['Month', 'Completed Tasks', 'Started Tasks']];
+                var dataArr = [['Month', 'Started Tasks', 'Completed Tasks']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1], data[i][2]]);
 
@@ -732,7 +852,7 @@ function taskVariationOverTime(){
 
 
             function drawChart(data) {
-                var dataArr = [['Months', 'Completed Tasks','Tasks Started']];
+                var dataArr = [['Months', 'Tasks Started','Tasks Completed']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1],data[i][2]]);
                 }
@@ -805,7 +925,7 @@ function processVariationOverTime(){
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
-                var dataArr = [['Months', 'Completed Processes','Started Processes']];
+                var dataArr = [['Months', 'Started Processes','Completed Processes']];
                 for(var i = 0;i < data.length;i++){
                     dataArr.push([data[i][0] , data[i][1],data[i][2]]);
                 }

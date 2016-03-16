@@ -65,10 +65,10 @@ public class AnalyticsPublishServiceUtils {
             Date timeInDateFormat = DateConverter.convertStringToDate(time);
             int listSize = instanceQuery.finished().startedAfter(timeInDateFormat).list().size();
             if (listSize != 0) {
-                //When using the startedAfter() method it returns the finished objects according to the time stored of
-                //last completed instance. But if the list length is one then it always return the same object in the
-                // list twice from the last updated time which stored in the carbon registry.
-                //(avoid to return same object repeatedly if the list has only one object)
+                /*When using the startedAfter() method it returns the finished objects according to the time stored of
+                  last completed instance. But if the list length is one then it always return the same object in the
+                  list twice from the last updated time which stored in the carbon registry.
+                  (avoid to return same object repeatedly if the list has only one object)*/
                 if (listSize == 1) {
                     return null;
                 }
@@ -80,8 +80,12 @@ public class AnalyticsPublishServiceUtils {
         }
         if (historicProcessInstanceList != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Write BPMN process instance to the carbon registry..." + historicProcessInstanceList.toString());
+                log.debug("Write the published time of the last BPMN process instance to the carbon registry..." + historicProcessInstanceList.toString());
             }
+            /*write the last published time to the registry because lets say as an example when a new process is completed,
+              then the attributes belong to that process instance should be published to the DAS and if we are not stored
+              the last published time, then all the completed processes which were previously published are also re-published
+              to the DAS.*/
             writePublishTimeToRegistry(historicProcessInstanceList);
             //return ProcessInstances set as BPMNProcessInstance array
             return getBPMNProcessInstances(historicProcessInstanceList);
@@ -110,10 +114,10 @@ public class AnalyticsPublishServiceUtils {
             Date dateFormat = DateConverter.convertStringToDate(time);
             int listSize = instanceQuery.finished().taskCompletedAfter(dateFormat).list().size();
             if (listSize != 0) {
-                //When using the startedAfter() method it returns the finished objects according to the time stored of
-                //last completed instance. But if the list length is one then it always return the same object in the
-                // list twice from the last updated time which stored in the carbon registry.
-                //(avoid to return same object repeatedly if the list has only one object)
+                /*When using the startedAfter() method it returns the finished objects according to the time stored of
+                  last completed instance. But if the list length is one then it always return the same object in the
+                  list twice from the last updated time which stored in the carbon registry.
+                  (avoid to return same object repeatedly if the list has only one object)*/
                 if (listSize == 1) {
                     return null;
                 }
@@ -175,13 +179,10 @@ public class AnalyticsPublishServiceUtils {
             bpmnTaskInstance.setTaskDefinitionKey(taskInstance.getTaskDefinitionKey());
             bpmnTaskInstance.setTaskInstanceId(taskInstance.getId());
             bpmnTaskInstance.setAssignee(taskInstance.getAssignee());
-            //claim time is not stored in the DB
-            //bpmnTaskInstance.setClaimTime(taskInstance.getClaimTime());
             bpmnTaskInstance.setStartTime(taskInstance.getStartTime());
             bpmnTaskInstance.setEndTime(taskInstance.getEndTime());
             bpmnTaskInstance.setTaskName(taskInstance.getName());
             bpmnTaskInstance.setDurationInMills(taskInstance.getDurationInMillis());
-            //bpmnTaskInstance.setWorkTimeInMills(taskInstance.getWorkTimeInMillis());
             bpmnTaskInstance.setCreateTime(taskInstance.getCreateTime());
             bpmnTaskInstance.setOwner(taskInstance.getOwner());
             bpmnTaskInstance.setProcessInstanceId(taskInstance.getProcessInstanceId());
@@ -310,6 +311,7 @@ public class AnalyticsPublishServiceUtils {
                 if (log.isDebugEnabled()) {
                     log.debug("Registry is null...");
                 }
+                throw new RegistryException("Registry is null");
             }
         } catch (RegistryException e) {
             String errMsg = "Registry error while reading the process instance publish time.";

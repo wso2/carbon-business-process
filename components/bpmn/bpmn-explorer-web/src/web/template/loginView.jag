@@ -18,24 +18,24 @@
                 <!-- content -->
                	<div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
                     <div>
-                          <h2 class="wr-title uppercase dark-red-bg padding-double white boarder-bottom-blue margin-none">Sign in</h2>
+                          <h2 class="wr-title uppercase dark-red-bg padding-double white boarder-bottom-blue margin-none"><%=i18n.localize("sign.in", "Sign in")%></h2>
                     </div>
                         <div class="boarder-all">
                             <div class="clear"></div>
-                        <h3 class="padding-double float-left">Sign in to continue</h3>
+                        <h3 class="padding-double float-left"><%=i18n.localize("sign.in.to.continue", "Sign in to continue")%></h3>
                     <!-- validation -->
 					<form method="POST" action="auth">
                         <div class="wr-input-control padding-double">
-                          <input name="username" type="text" class="form-control" placeholder="Username" autofocus/>
+                          <input name="username" type="text" class="form-control" placeholder='<%=i18n.localize("user.name", "Username")%>' autofocus/>
                             <br>
-                           <input name="password" type="password" class="form-control" placeholder="Password"/>
+                           <input name="password" type="password" class="form-control" placeholder='<%=i18n.localize("password", "Password")%>'/>
                         </div>
 
                         <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
                         <% if (message != "") { %>
                                 <div class="alert alert-danger" role="alert"><%=message%></div>
                             <% } %>
-                            <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"  type="submit">Login</button>
+                            <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"  type="submit"><%=i18n.localize("login", "Login")%></button>
                             </div>
                             </form>
                         </div>

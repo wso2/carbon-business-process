@@ -1,4 +1,4 @@
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://services.mgt.core.bpmn.carbon.wso2.org" xmlns:ax221="http://core.bpmn.carbon.wso2.org/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax223="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ax221="http://core.bpmn.carbon.wso2.org/xsd" xmlns:ns="http://services.mgt.core.bpmn.carbon.wso2.org" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ax219="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
     <wsdl:documentation>BPMNInstanceService</wsdl:documentation>
     <wsdl:types>
         <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd">
@@ -10,7 +10,7 @@
                     <xs:element minOccurs="0" name="processName" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="startTime" nillable="true" type="xs:date"/>
                     <xs:element minOccurs="0" name="suspended" type="xs:boolean"/>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="variables" nillable="true" type="ax223:BPMNVariable"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="variables" nillable="true" type="ax219:BPMNVariable"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="BPMNVariable">
@@ -25,35 +25,9 @@
                 <xs:sequence/>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax222="http://core.bpmn.carbon.wso2.org/xsd" xmlns:ax224="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
-            <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"/>
+        <xs:schema xmlns:ax222="http://core.bpmn.carbon.wso2.org/xsd" xmlns:ax220="http://model.mgt.core.bpmn.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.mgt.core.bpmn.carbon.wso2.org">
             <xs:import namespace="http://model.mgt.core.bpmn.carbon.wso2.org/xsd"/>
-            <xs:element name="BPMNInstanceServiceBPSFault">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="BPSFault" nillable="true" type="ax221:BPSFault"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="startProcess">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="processID" nillable="true" type="xs:string"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getProcessInstances">
-                <xs:complexType>
-                    <xs:sequence/>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getProcessInstancesResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:import namespace="http://core.bpmn.carbon.wso2.org/xsd"/>
             <xs:element name="getPaginatedInstanceByFilter">
                 <xs:complexType>
                     <xs:sequence>
@@ -62,8 +36,8 @@
                         <xs:element minOccurs="0" name="startAfter" nillable="true" type="xs:date"/>
                         <xs:element minOccurs="0" name="startBefore" nillable="true" type="xs:date"/>
                         <xs:element minOccurs="0" name="processId" nillable="true" type="xs:string"/>
-                        <xs:element minOccurs="0" name="variable" nillable="true" type="xs:string"/>
-                        <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="isActive" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="variables" nillable="true" type="xs:string"/>
                         <xs:element minOccurs="0" name="start" type="xs:int"/>
                         <xs:element minOccurs="0" name="size" type="xs:int"/>
                     </xs:sequence>
@@ -72,23 +46,14 @@
             <xs:element name="getPaginatedInstanceByFilterResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax220:BPMNInstance"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="getPaginatedUnfinishedInstancesByStatus">
+            <xs:element name="BPMNInstanceServiceBPSFault">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="isActive" type="xs:boolean"/>
-                        <xs:element minOccurs="0" name="start" type="xs:int"/>
-                        <xs:element minOccurs="0" name="size" type="xs:int"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getPaginatedUnfinishedInstancesByStatusResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
+                        <xs:element minOccurs="0" name="BPSFault" nillable="true" type="ax221:BPSFault"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -103,7 +68,7 @@
             <xs:element name="getPaginatedInstancesResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax220:BPMNInstance"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -130,7 +95,7 @@
             <xs:element name="getPaginatedHistoryInstancesResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax223:BPMNInstance"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax220:BPMNInstance"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -193,6 +158,25 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="startProcess">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="processID" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessInstances">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getProcessInstancesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax220:BPMNInstance"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="deleteProcessInstance">
                 <xs:complexType>
                     <xs:sequence>
@@ -202,53 +186,20 @@
             </xs:element>
         </xs:schema>
     </wsdl:types>
-    <wsdl:message name="suspendProcessInstanceRequest">
-        <wsdl:part name="parameters" element="ns:suspendProcessInstance"/>
+    <wsdl:message name="getPaginatedInstancesRequest">
+        <wsdl:part name="parameters" element="ns:getPaginatedInstances"/>
+    </wsdl:message>
+    <wsdl:message name="getPaginatedInstancesResponse">
+        <wsdl:part name="parameters" element="ns:getPaginatedInstancesResponse"/>
     </wsdl:message>
     <wsdl:message name="BPMNInstanceServiceBPSFault">
         <wsdl:part name="parameters" element="ns:BPMNInstanceServiceBPSFault"/>
     </wsdl:message>
-    <wsdl:message name="getInstanceCountRequest">
-        <wsdl:part name="parameters" element="ns:getInstanceCount"/>
-    </wsdl:message>
-    <wsdl:message name="getInstanceCountResponse">
-        <wsdl:part name="parameters" element="ns:getInstanceCountResponse"/>
-    </wsdl:message>
-    <wsdl:message name="getPaginatedHistoryInstancesRequest">
-        <wsdl:part name="parameters" element="ns:getPaginatedHistoryInstances"/>
-    </wsdl:message>
-    <wsdl:message name="getPaginatedHistoryInstancesResponse">
-        <wsdl:part name="parameters" element="ns:getPaginatedHistoryInstancesResponse"/>
-    </wsdl:message>
-    <wsdl:message name="deleteAllCompletedInstancesRequest">
-        <wsdl:part name="parameters" element="ns:deleteAllCompletedInstances"/>
-    </wsdl:message>
-    <wsdl:message name="getHistoryInstanceCountRequest">
-        <wsdl:part name="parameters" element="ns:getHistoryInstanceCount"/>
-    </wsdl:message>
-    <wsdl:message name="getHistoryInstanceCountResponse">
-        <wsdl:part name="parameters" element="ns:getHistoryInstanceCountResponse"/>
-    </wsdl:message>
     <wsdl:message name="deleteHistoryInstanceRequest">
         <wsdl:part name="parameters" element="ns:deleteHistoryInstance"/>
     </wsdl:message>
-    <wsdl:message name="activateProcessInstanceRequest">
-        <wsdl:part name="parameters" element="ns:activateProcessInstance"/>
-    </wsdl:message>
-    <wsdl:message name="deleteProcessInstanceSetRequest">
-        <wsdl:part name="parameters" element="ns:deleteProcessInstanceSet"/>
-    </wsdl:message>
-    <wsdl:message name="getProcessInstancesRequest">
-        <wsdl:part name="parameters" element="ns:getProcessInstances"/>
-    </wsdl:message>
-    <wsdl:message name="getProcessInstancesResponse">
-        <wsdl:part name="parameters" element="ns:getProcessInstancesResponse"/>
-    </wsdl:message>
-    <wsdl:message name="getProcessInstanceDiagramRequest">
-        <wsdl:part name="parameters" element="ns:getProcessInstanceDiagram"/>
-    </wsdl:message>
-    <wsdl:message name="getProcessInstanceDiagramResponse">
-        <wsdl:part name="parameters" element="ns:getProcessInstanceDiagramResponse"/>
+    <wsdl:message name="deleteAllCompletedInstancesRequest">
+        <wsdl:part name="parameters" element="ns:deleteAllCompletedInstances"/>
     </wsdl:message>
     <wsdl:message name="startProcessRequest">
         <wsdl:part name="parameters" element="ns:startProcess"/>
@@ -259,63 +210,59 @@
     <wsdl:message name="getPaginatedInstanceByFilterResponse">
         <wsdl:part name="parameters" element="ns:getPaginatedInstanceByFilterResponse"/>
     </wsdl:message>
-    <wsdl:message name="getPaginatedUnfinishedInstancesByStatusRequest">
-        <wsdl:part name="parameters" element="ns:getPaginatedUnfinishedInstancesByStatus"/>
+    <wsdl:message name="getInstanceCountRequest">
+        <wsdl:part name="parameters" element="ns:getInstanceCount"/>
     </wsdl:message>
-    <wsdl:message name="getPaginatedUnfinishedInstancesByStatusResponse">
-        <wsdl:part name="parameters" element="ns:getPaginatedUnfinishedInstancesByStatusResponse"/>
+    <wsdl:message name="getInstanceCountResponse">
+        <wsdl:part name="parameters" element="ns:getInstanceCountResponse"/>
+    </wsdl:message>
+    <wsdl:message name="deleteProcessInstanceSetRequest">
+        <wsdl:part name="parameters" element="ns:deleteProcessInstanceSet"/>
     </wsdl:message>
     <wsdl:message name="deleteProcessInstanceRequest">
         <wsdl:part name="parameters" element="ns:deleteProcessInstance"/>
     </wsdl:message>
-    <wsdl:message name="getPaginatedInstancesRequest">
-        <wsdl:part name="parameters" element="ns:getPaginatedInstances"/>
+    <wsdl:message name="suspendProcessInstanceRequest">
+        <wsdl:part name="parameters" element="ns:suspendProcessInstance"/>
     </wsdl:message>
-    <wsdl:message name="getPaginatedInstancesResponse">
-        <wsdl:part name="parameters" element="ns:getPaginatedInstancesResponse"/>
+    <wsdl:message name="getProcessInstancesRequest">
+        <wsdl:part name="parameters" element="ns:getProcessInstances"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessInstancesResponse">
+        <wsdl:part name="parameters" element="ns:getProcessInstancesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="activateProcessInstanceRequest">
+        <wsdl:part name="parameters" element="ns:activateProcessInstance"/>
+    </wsdl:message>
+    <wsdl:message name="getPaginatedHistoryInstancesRequest">
+        <wsdl:part name="parameters" element="ns:getPaginatedHistoryInstances"/>
+    </wsdl:message>
+    <wsdl:message name="getPaginatedHistoryInstancesResponse">
+        <wsdl:part name="parameters" element="ns:getPaginatedHistoryInstancesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessInstanceDiagramRequest">
+        <wsdl:part name="parameters" element="ns:getProcessInstanceDiagram"/>
+    </wsdl:message>
+    <wsdl:message name="getProcessInstanceDiagramResponse">
+        <wsdl:part name="parameters" element="ns:getProcessInstanceDiagramResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getHistoryInstanceCountRequest">
+        <wsdl:part name="parameters" element="ns:getHistoryInstanceCount"/>
+    </wsdl:message>
+    <wsdl:message name="getHistoryInstanceCountResponse">
+        <wsdl:part name="parameters" element="ns:getHistoryInstanceCountResponse"/>
     </wsdl:message>
     <wsdl:portType name="BPMNInstanceServicePortType">
-        <wsdl:operation name="suspendProcessInstance">
-            <wsdl:input message="ns:suspendProcessInstanceRequest" wsaw:Action="urn:suspendProcessInstance"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:suspendProcessInstanceBPMNInstanceServiceBPSFault"/>
-        </wsdl:operation>
-        <wsdl:operation name="getInstanceCount">
-            <wsdl:input message="ns:getInstanceCountRequest" wsaw:Action="urn:getInstanceCount"/>
-            <wsdl:output message="ns:getInstanceCountResponse" wsaw:Action="urn:getInstanceCountResponse"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getInstanceCountBPMNInstanceServiceBPSFault"/>
-        </wsdl:operation>
-        <wsdl:operation name="getPaginatedHistoryInstances">
-            <wsdl:input message="ns:getPaginatedHistoryInstancesRequest" wsaw:Action="urn:getPaginatedHistoryInstances"/>
-            <wsdl:output message="ns:getPaginatedHistoryInstancesResponse" wsaw:Action="urn:getPaginatedHistoryInstancesResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="deleteAllCompletedInstances">
-            <wsdl:input message="ns:deleteAllCompletedInstancesRequest" wsaw:Action="urn:deleteAllCompletedInstances"/>
-        </wsdl:operation>
-        <wsdl:operation name="getHistoryInstanceCount">
-            <wsdl:input message="ns:getHistoryInstanceCountRequest" wsaw:Action="urn:getHistoryInstanceCount"/>
-            <wsdl:output message="ns:getHistoryInstanceCountResponse" wsaw:Action="urn:getHistoryInstanceCountResponse"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getHistoryInstanceCountBPMNInstanceServiceBPSFault"/>
+        <wsdl:operation name="getPaginatedInstances">
+            <wsdl:input message="ns:getPaginatedInstancesRequest" wsaw:Action="urn:getPaginatedInstances"/>
+            <wsdl:output message="ns:getPaginatedInstancesResponse" wsaw:Action="urn:getPaginatedInstancesResponse"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getPaginatedInstancesBPMNInstanceServiceBPSFault"/>
         </wsdl:operation>
         <wsdl:operation name="deleteHistoryInstance">
             <wsdl:input message="ns:deleteHistoryInstanceRequest" wsaw:Action="urn:deleteHistoryInstance"/>
         </wsdl:operation>
-        <wsdl:operation name="activateProcessInstance">
-            <wsdl:input message="ns:activateProcessInstanceRequest" wsaw:Action="urn:activateProcessInstance"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:activateProcessInstanceBPMNInstanceServiceBPSFault"/>
-        </wsdl:operation>
-        <wsdl:operation name="deleteProcessInstanceSet">
-            <wsdl:input message="ns:deleteProcessInstanceSetRequest" wsaw:Action="urn:deleteProcessInstanceSet"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:deleteProcessInstanceSetBPMNInstanceServiceBPSFault"/>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstances">
-            <wsdl:input message="ns:getProcessInstancesRequest" wsaw:Action="urn:getProcessInstances"/>
-            <wsdl:output message="ns:getProcessInstancesResponse" wsaw:Action="urn:getProcessInstancesResponse"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getProcessInstancesBPMNInstanceServiceBPSFault"/>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstanceDiagram">
-            <wsdl:input message="ns:getProcessInstanceDiagramRequest" wsaw:Action="urn:getProcessInstanceDiagram"/>
-            <wsdl:output message="ns:getProcessInstanceDiagramResponse" wsaw:Action="urn:getProcessInstanceDiagramResponse"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getProcessInstanceDiagramBPMNInstanceServiceBPSFault"/>
+        <wsdl:operation name="deleteAllCompletedInstances">
+            <wsdl:input message="ns:deleteAllCompletedInstancesRequest" wsaw:Action="urn:deleteAllCompletedInstances"/>
         </wsdl:operation>
         <wsdl:operation name="startProcess">
             <wsdl:input message="ns:startProcessRequest" wsaw:Action="urn:startProcess"/>
@@ -325,33 +272,51 @@
             <wsdl:input message="ns:getPaginatedInstanceByFilterRequest" wsaw:Action="urn:getPaginatedInstanceByFilter"/>
             <wsdl:output message="ns:getPaginatedInstanceByFilterResponse" wsaw:Action="urn:getPaginatedInstanceByFilterResponse"/>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
-            <wsdl:input message="ns:getPaginatedUnfinishedInstancesByStatusRequest" wsaw:Action="urn:getPaginatedUnfinishedInstancesByStatus"/>
-            <wsdl:output message="ns:getPaginatedUnfinishedInstancesByStatusResponse" wsaw:Action="urn:getPaginatedUnfinishedInstancesByStatusResponse"/>
+        <wsdl:operation name="getInstanceCount">
+            <wsdl:input message="ns:getInstanceCountRequest" wsaw:Action="urn:getInstanceCount"/>
+            <wsdl:output message="ns:getInstanceCountResponse" wsaw:Action="urn:getInstanceCountResponse"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getInstanceCountBPMNInstanceServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="deleteProcessInstanceSet">
+            <wsdl:input message="ns:deleteProcessInstanceSetRequest" wsaw:Action="urn:deleteProcessInstanceSet"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:deleteProcessInstanceSetBPMNInstanceServiceBPSFault"/>
         </wsdl:operation>
         <wsdl:operation name="deleteProcessInstance">
             <wsdl:input message="ns:deleteProcessInstanceRequest" wsaw:Action="urn:deleteProcessInstance"/>
             <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:deleteProcessInstanceBPMNInstanceServiceBPSFault"/>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedInstances">
-            <wsdl:input message="ns:getPaginatedInstancesRequest" wsaw:Action="urn:getPaginatedInstances"/>
-            <wsdl:output message="ns:getPaginatedInstancesResponse" wsaw:Action="urn:getPaginatedInstancesResponse"/>
-            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getPaginatedInstancesBPMNInstanceServiceBPSFault"/>
+        <wsdl:operation name="suspendProcessInstance">
+            <wsdl:input message="ns:suspendProcessInstanceRequest" wsaw:Action="urn:suspendProcessInstance"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:suspendProcessInstanceBPMNInstanceServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <wsdl:input message="ns:getProcessInstancesRequest" wsaw:Action="urn:getProcessInstances"/>
+            <wsdl:output message="ns:getProcessInstancesResponse" wsaw:Action="urn:getProcessInstancesResponse"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getProcessInstancesBPMNInstanceServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <wsdl:input message="ns:activateProcessInstanceRequest" wsaw:Action="urn:activateProcessInstance"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:activateProcessInstanceBPMNInstanceServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedHistoryInstances">
+            <wsdl:input message="ns:getPaginatedHistoryInstancesRequest" wsaw:Action="urn:getPaginatedHistoryInstances"/>
+            <wsdl:output message="ns:getPaginatedHistoryInstancesResponse" wsaw:Action="urn:getPaginatedHistoryInstancesResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstanceDiagram">
+            <wsdl:input message="ns:getProcessInstanceDiagramRequest" wsaw:Action="urn:getProcessInstanceDiagram"/>
+            <wsdl:output message="ns:getProcessInstanceDiagramResponse" wsaw:Action="urn:getProcessInstanceDiagramResponse"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getProcessInstanceDiagramBPMNInstanceServiceBPSFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getHistoryInstanceCount">
+            <wsdl:input message="ns:getHistoryInstanceCountRequest" wsaw:Action="urn:getHistoryInstanceCount"/>
+            <wsdl:output message="ns:getHistoryInstanceCountResponse" wsaw:Action="urn:getHistoryInstanceCountResponse"/>
+            <wsdl:fault message="ns:BPMNInstanceServiceBPSFault" name="BPMNInstanceServiceBPSFault" wsaw:Action="urn:getHistoryInstanceCountBPMNInstanceServiceBPSFault"/>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="BPMNInstanceServiceSoap11Binding" type="ns:BPMNInstanceServicePortType">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="suspendProcessInstance">
-            <soap:operation soapAction="urn:suspendProcessInstance" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getInstanceCount">
-            <soap:operation soapAction="urn:getInstanceCount" style="document"/>
+        <wsdl:operation name="getPaginatedInstances">
+            <soap:operation soapAction="urn:getPaginatedInstances" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -361,33 +326,6 @@
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
                 <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getPaginatedHistoryInstances">
-            <soap:operation soapAction="urn:getPaginatedHistoryInstances" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getHistoryInstanceCount">
-            <soap:operation soapAction="urn:getHistoryInstanceCount" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="deleteAllCompletedInstances">
-            <soap:operation soapAction="urn:deleteAllCompletedInstances" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
         </wsdl:operation>
         <wsdl:operation name="deleteHistoryInstance">
             <soap:operation soapAction="urn:deleteHistoryInstance" style="document"/>
@@ -395,47 +333,11 @@
                 <soap:body use="literal"/>
             </wsdl:input>
         </wsdl:operation>
-        <wsdl:operation name="activateProcessInstance">
-            <soap:operation soapAction="urn:activateProcessInstance" style="document"/>
+        <wsdl:operation name="deleteAllCompletedInstances">
+            <soap:operation soapAction="urn:deleteAllCompletedInstances" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="deleteProcessInstanceSet">
-            <soap:operation soapAction="urn:deleteProcessInstanceSet" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstances">
-            <soap:operation soapAction="urn:getProcessInstances" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstanceDiagram">
-            <soap:operation soapAction="urn:getProcessInstanceDiagram" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="startProcess">
             <soap:operation soapAction="urn:startProcess" style="document"/>
@@ -455,23 +357,23 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
-            <soap:operation soapAction="urn:getPaginatedUnfinishedInstancesByStatus" style="document"/>
+        <wsdl:operation name="getInstanceCount">
+            <soap:operation soapAction="urn:getInstanceCount" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap:body use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedInstances">
-            <soap:operation soapAction="urn:getPaginatedInstances" style="document"/>
+        <wsdl:operation name="deleteProcessInstanceSet">
+            <soap:operation soapAction="urn:deleteProcessInstanceSet" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
                 <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
@@ -485,41 +387,74 @@
                 <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:binding name="BPMNInstanceServiceSoap12Binding" type="ns:BPMNInstanceServicePortType">
-        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="suspendProcessInstance">
-            <soap12:operation soapAction="urn:suspendProcessInstance" style="document"/>
+            <soap:operation soapAction="urn:suspendProcessInstance" style="document"/>
             <wsdl:input>
-                <soap12:body use="literal"/>
+                <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="getInstanceCount">
-            <soap12:operation soapAction="urn:getInstanceCount" style="document"/>
+        <wsdl:operation name="getProcessInstances">
+            <soap:operation soapAction="urn:getProcessInstances" style="document"/>
             <wsdl:input>
-                <soap12:body use="literal"/>
+                <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <soap12:body use="literal"/>
+                <soap:body use="literal"/>
             </wsdl:output>
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <soap:operation soapAction="urn:activateProcessInstance" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="getPaginatedHistoryInstances">
-            <soap12:operation soapAction="urn:getPaginatedHistoryInstances" style="document"/>
+            <soap:operation soapAction="urn:getPaginatedHistoryInstances" style="document"/>
             <wsdl:input>
-                <soap12:body use="literal"/>
+                <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <soap12:body use="literal"/>
+                <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getProcessInstanceDiagram">
+            <soap:operation soapAction="urn:getProcessInstanceDiagram" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
         <wsdl:operation name="getHistoryInstanceCount">
-            <soap12:operation soapAction="urn:getHistoryInstanceCount" style="document"/>
+            <soap:operation soapAction="urn:getHistoryInstanceCount" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BPMNInstanceServiceSoap12Binding" type="ns:BPMNInstanceServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getPaginatedInstances">
+            <soap12:operation soapAction="urn:getPaginatedInstances" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
@@ -529,12 +464,6 @@
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
                 <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="deleteAllCompletedInstances">
-            <soap12:operation soapAction="urn:deleteAllCompletedInstances" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
         </wsdl:operation>
         <wsdl:operation name="deleteHistoryInstance">
             <soap12:operation soapAction="urn:deleteHistoryInstance" style="document"/>
@@ -542,47 +471,11 @@
                 <soap12:body use="literal"/>
             </wsdl:input>
         </wsdl:operation>
-        <wsdl:operation name="activateProcessInstance">
-            <soap12:operation soapAction="urn:activateProcessInstance" style="document"/>
+        <wsdl:operation name="deleteAllCompletedInstances">
+            <soap12:operation soapAction="urn:deleteAllCompletedInstances" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="deleteProcessInstanceSet">
-            <soap12:operation soapAction="urn:deleteProcessInstanceSet" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstances">
-            <soap12:operation soapAction="urn:getProcessInstances" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstanceDiagram">
-            <soap12:operation soapAction="urn:getProcessInstanceDiagram" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BPMNInstanceServiceBPSFault">
-                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
-            </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="startProcess">
             <soap12:operation soapAction="urn:startProcess" style="document"/>
@@ -602,23 +495,23 @@
                 <soap12:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
-            <soap12:operation soapAction="urn:getPaginatedUnfinishedInstancesByStatus" style="document"/>
+        <wsdl:operation name="getInstanceCount">
+            <soap12:operation soapAction="urn:getInstanceCount" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
             <wsdl:output>
                 <soap12:body use="literal"/>
             </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedInstances">
-            <soap12:operation soapAction="urn:getPaginatedInstances" style="document"/>
+        <wsdl:operation name="deleteProcessInstanceSet">
+            <soap12:operation soapAction="urn:deleteProcessInstanceSet" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
             <wsdl:fault name="BPMNInstanceServiceBPSFault">
                 <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
@@ -632,47 +525,80 @@
                 <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
             </wsdl:fault>
         </wsdl:operation>
+        <wsdl:operation name="suspendProcessInstance">
+            <soap12:operation soapAction="urn:suspendProcessInstance" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <soap12:operation soapAction="urn:getProcessInstances" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <soap12:operation soapAction="urn:activateProcessInstance" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedHistoryInstances">
+            <soap12:operation soapAction="urn:getPaginatedHistoryInstances" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstanceDiagram">
+            <soap12:operation soapAction="urn:getProcessInstanceDiagram" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getHistoryInstanceCount">
+            <soap12:operation soapAction="urn:getHistoryInstanceCount" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BPMNInstanceServiceBPSFault">
+                <soap12:fault use="literal" name="BPMNInstanceServiceBPSFault"/>
+            </wsdl:fault>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:binding name="BPMNInstanceServiceHttpBinding" type="ns:BPMNInstanceServicePortType">
         <http:binding verb="POST"/>
-        <wsdl:operation name="suspendProcessInstance">
-            <http:operation location="suspendProcessInstance"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-        </wsdl:operation>
-        <wsdl:operation name="getInstanceCount">
-            <http:operation location="getInstanceCount"/>
+        <wsdl:operation name="getPaginatedInstances">
+            <http:operation location="getPaginatedInstances"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
             <wsdl:output>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getPaginatedHistoryInstances">
-            <http:operation location="getPaginatedHistoryInstances"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getHistoryInstanceCount">
-            <http:operation location="getHistoryInstanceCount"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="deleteAllCompletedInstances">
-            <http:operation location="deleteAllCompletedInstances"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
         </wsdl:operation>
         <wsdl:operation name="deleteHistoryInstance">
             <http:operation location="deleteHistoryInstance"/>
@@ -680,35 +606,11 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
         </wsdl:operation>
-        <wsdl:operation name="activateProcessInstance">
-            <http:operation location="activateProcessInstance"/>
+        <wsdl:operation name="deleteAllCompletedInstances">
+            <http:operation location="deleteAllCompletedInstances"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
-        </wsdl:operation>
-        <wsdl:operation name="deleteProcessInstanceSet">
-            <http:operation location="deleteProcessInstanceSet"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstances">
-            <http:operation location="getProcessInstances"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getProcessInstanceDiagram">
-            <http:operation location="getProcessInstanceDiagram"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="startProcess">
             <http:operation location="startProcess"/>
@@ -725,8 +627,8 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedUnfinishedInstancesByStatus">
-            <http:operation location="getPaginatedUnfinishedInstancesByStatus"/>
+        <wsdl:operation name="getInstanceCount">
+            <http:operation location="getInstanceCount"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
@@ -734,14 +636,11 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="getPaginatedInstances">
-            <http:operation location="getPaginatedInstances"/>
+        <wsdl:operation name="deleteProcessInstanceSet">
+            <http:operation location="deleteProcessInstanceSet"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="deleteProcessInstance">
             <http:operation location="deleteProcessInstance"/>
@@ -749,16 +648,64 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
         </wsdl:operation>
+        <wsdl:operation name="suspendProcessInstance">
+            <http:operation location="suspendProcessInstance"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstances">
+            <http:operation location="getProcessInstances"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="activateProcessInstance">
+            <http:operation location="activateProcessInstance"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="getPaginatedHistoryInstances">
+            <http:operation location="getPaginatedHistoryInstances"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getProcessInstanceDiagram">
+            <http:operation location="getProcessInstanceDiagram"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getHistoryInstanceCount">
+            <http:operation location="getHistoryInstanceCount"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="BPMNInstanceService">
         <wsdl:port name="BPMNInstanceServiceHttpsSoap11Endpoint" binding="ns:BPMNInstanceServiceSoap11Binding">
-            <soap:address location="https://192.168.2.105:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap11Endpoint/"/>
+            <soap:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap11Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="BPMNInstanceServiceHttpsSoap12Endpoint" binding="ns:BPMNInstanceServiceSoap12Binding">
-            <soap12:address location="https://192.168.2.105:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap12Endpoint/"/>
+            <soap12:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsSoap12Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="BPMNInstanceServiceHttpsEndpoint" binding="ns:BPMNInstanceServiceHttpBinding">
-            <http:address location="https://192.168.2.105:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsEndpoint/"/>
+            <http:address location="https://10.100.1.177:9443/services/BPMNInstanceService.BPMNInstanceServiceHttpsEndpoint/"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

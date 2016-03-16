@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel</artifactId>
-        <version>4.4.5-SNAPSHOT</version>
+        <version>4.4.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -37,12 +37,12 @@
             <artifactId>org.wso2.carbon.logging</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.commons</groupId>
+            <groupId>org.wso2.carbon.analytics-common</groupId>
             <artifactId>org.wso2.carbon.databridge.commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.commons</groupId>
-            <artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
+            <groupId>org.wso2.carbon.analytics-common</groupId>
+            <artifactId>org.wso2.carbon.databridge.agent</artifactId>
         </dependency>
     </dependencies>
 
@@ -83,7 +83,6 @@
                             org.wso2.carbon.agent.publish.*,
                             org.wso2.carbon.analytics.service.*,
                             org.apache.ode.*,
-                            org.apache.axis2.*; version="${axis2.osgi.version.range.bpel}",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>

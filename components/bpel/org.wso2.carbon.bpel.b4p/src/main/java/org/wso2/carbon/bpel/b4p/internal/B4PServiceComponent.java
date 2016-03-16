@@ -23,6 +23,7 @@ import org.wso2.carbon.bpel.b4p.coordination.B4PCoordinationException;
 import org.wso2.carbon.bpel.b4p.coordination.CoordinationController;
 import org.wso2.carbon.bpel.core.BPELEngineService;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
+import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
@@ -34,6 +35,8 @@ import org.wso2.carbon.user.core.service.RealmService;
  * interface="org.wso2.carbon.user.core.service.RealmService"
  * cardinality="1..1" policy="dynamic" bind="setRealmService"
  * unbind="unsetRealmService"
+ * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  */
 
 public class B4PServiceComponent {
@@ -75,6 +78,24 @@ public class B4PServiceComponent {
 
     protected void unsetRealmService(RealmService realmService) {
         B4PContentHolder.getInstance().setRealmService(null);
+    }
+
+    /**
+     * Set RegistryService instance when bundle get bind to OSGI runtime.
+     *
+     * @param registryService
+     */
+    public void setRegistryService(RegistryService registryService) {
+        B4PContentHolder.getInstance().setRegistryService(registryService);
+    }
+
+    /**
+     * Unset RegistryService instance when bundle get unbind from OSGI runtime.
+     *
+     * @param registryService
+     */
+    public void unsetRegistryService(RegistryService registryService) {
+        B4PContentHolder.getInstance().setRegistryService(null);
     }
 
     private void initHumanTaskCoordination() throws B4PCoordinationException {
