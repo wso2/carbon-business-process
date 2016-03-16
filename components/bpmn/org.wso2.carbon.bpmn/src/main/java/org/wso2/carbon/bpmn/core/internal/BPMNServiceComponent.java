@@ -23,12 +23,14 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import org.osgi.service.component.annotations.Component;
-//import org.osgi.service.component.annotations.Reference;
-//import org.osgi.service.component.annotations.ReferenceCardinality;
-//import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.jndi.JNDIContextManager;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 
 //import org.wso2.carbon.bpmn.core.BPMNEngineService;
 //import org.wso2.carbon.bpmn.core.db.*;
@@ -54,13 +56,20 @@ public class BPMNServiceComponent {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNServiceComponent.class);
 
-    /*@Reference(
-            name = "org.wso2.carbon.kernel.datasource.core.internal.DataSourceListenerComponent",
-            service = RequiredCapabilityListener.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "deactivate"
-    )*/
+//    @Reference(
+//            name = "org.wso2.carbon.kernel.datasource.core.internal.DataSourceListenerComponent",
+//            service = RequiredCapabilityListener.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "deactivate"
+//    )
+@Reference(
+		name = "org.wso2.carbon.datasource.jndi",
+		service = JNDIContextManager.class,
+		cardinality = ReferenceCardinality.AT_LEAST_ONE,
+		policy = ReferencePolicy.DYNAMIC,
+		unbind = "onJNDIUnregister"
+)
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN core component...");
         try {
