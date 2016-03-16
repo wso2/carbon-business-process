@@ -72,11 +72,11 @@ public class BPMNProcess {
     }
 
     public Date getDeploymentTime() {
-        return deploymentTime;
+        return deploymentTime == null ? null : (Date) this.deploymentTime.clone();
     }
 
     public void setDeploymentTime(Date deploymentTime) {
-        this.deploymentTime = deploymentTime;
+        this.deploymentTime = deploymentTime == null ? null : (Date) this.deploymentTime.clone();
     }
 
     public String getDeploymentName() {

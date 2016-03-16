@@ -16,7 +16,8 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-import org.osgi.framework.BundleContext;
+//import org.osgi.framework.BundleContext;
+
 import org.osgi.service.component.ComponentContext;
 
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class BPMNServiceComponent {
     protected void activate(ComponentContext ctxt) {
         log.info("Initializing the BPMN core component...");
         try {
-            BundleContext bundleContext = ctxt.getBundleContext();
+            // BundleContext bundleContext = ctxt.getBundleContext();
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
             ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
             holder.setEngine(activitiEngineBuilder.buildEngine());

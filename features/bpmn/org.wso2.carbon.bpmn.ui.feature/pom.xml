@@ -19,10 +19,10 @@
     </description>
 
     <dependencies>
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.ui</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.stub</artifactId>
@@ -42,7 +42,7 @@
                         <goals>
                             <goal>p2-feature-gen</goal>
                         </goals>
-                        <configuration>
+                        <!--configuration>
                             <id>org.wso2.carbon.bpmn.ui</id>
                             <propertiesFile>../../etc/feature.properties</propertiesFile>
                             <adviceFile>
@@ -65,7 +65,7 @@
                                 <importFeatureDef>org.wso2.carbon.core.ui:${carbon.kernel.version}
                                 </importFeatureDef>
                             </importFeatures>
-                        </configuration>
+                        </configuration-->
                     </execution>
                 </executions>
             </plugin>

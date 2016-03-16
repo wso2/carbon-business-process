@@ -44,7 +44,7 @@ public class BPMNActivitiConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNActivitiConfiguration.class);
 
-    private static BPMNActivitiConfiguration instance = null;
+    private static volatile BPMNActivitiConfiguration instance = null;
     private Map<String, BPMNBean> bpmnBeanMap = null;
 
     private BPMNActivitiConfiguration() throws BPMNException {

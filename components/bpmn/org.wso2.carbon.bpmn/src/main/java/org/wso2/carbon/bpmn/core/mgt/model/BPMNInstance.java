@@ -56,11 +56,11 @@ public class BPMNInstance {
     }
 
     public BPMNVariable[] getVariables() {
-        return variables;
+        return variables == null ? null : (BPMNVariable[]) this.variables.clone();
     }
 
     public void setVariables(BPMNVariable[] variables) {
-        this.variables = variables;
+        this.variables = variables == null ? null : (BPMNVariable[]) variables.clone();
     }
 
     public boolean isSuspended() {
@@ -72,18 +72,18 @@ public class BPMNInstance {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return startTime == null ? null : (Date) this.startTime.clone();
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = startTime == null ? null : (Date) startTime.clone();
     }
 
     public Date getEndTime() {
-        return endTime;
+        return endTime == null ? null : (Date) this.endTime.clone();
     }
 
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = endTime == null ? null : (Date) endTime.clone();
     }
 }

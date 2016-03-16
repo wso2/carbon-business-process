@@ -34,11 +34,11 @@
     </description>
 
     <dependencies>
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
             <version>${carbon.business-process.version}</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

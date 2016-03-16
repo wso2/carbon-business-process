@@ -35,7 +35,7 @@ public class ActivitiEngineBuilder {
     private static final Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
 
     private String dataSourceJndiName = null;
-    private static ProcessEngine processEngine = null;
+    private static  ProcessEngine processEngine = null;
 
 
      /* Instantiates the engine. Builds the state of the engine
@@ -56,7 +56,7 @@ public class ActivitiEngineBuilder {
                             .createProcessEngineConfigurationFromInputStream(
                                     new FileInputStream(activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
-            processEngine = processEngineConfigurationImpl.buildProcessEngine();
+          processEngine = processEngineConfigurationImpl.buildProcessEngine();
             //  processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
             //   new BPSUserManagerFactory());
             //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,

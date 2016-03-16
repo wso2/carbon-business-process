@@ -31,8 +31,6 @@
 
 
     <dependencies>
-
-
         <dependency>
             <groupId>org.wso2.orbit.org.activiti</groupId>
             <artifactId>activiti-all</artifactId>
@@ -53,15 +51,15 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon</groupId>
-            <!--artifactId>org.wso2.carbon.utils</artifactId>
-        </dependency>
+            <artifactId>org.wso2.carbon.utils</artifactId>
+        </dependency-->
 
         <dependency>
-            <groupId>org.wso2.carbon</groupId-->
+            <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.core</artifactId>
-             <version>5.0.0</version>
+            <!--version>5.0.0</version-->
         </dependency>
 
         <dependency>

@@ -23,11 +23,11 @@
             <artifactId>org.wso2.carbon.bpmn.server.feature</artifactId>
             <type>zip</type>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.ui.feature</artifactId>
             <type>zip</type>
-        </dependency>
+        </dependency-->
     </dependencies>
 
     <build>
@@ -54,12 +54,12 @@
                                 <includedFeatureDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.server.feature:${carbon.business-process.version}
                                 </includedFeatureDef>
-                                <includedFeatureDef>
+                                <!--includedFeatureDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.ui.feature:${carbon.business-process.version}
-                                </includedFeatureDef>
-                                <includedFeatureDef>
+                                </includedFeatureDef-->
+                                <!--includedFeatureDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.analytics.publisher.feature:${carbon.business-process.version}
-                                </includedFeatureDef>
+                                </includedFeatureDef-->
                             </includedFeatures>
                         </configuration>
                     </execution>

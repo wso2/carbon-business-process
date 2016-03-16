@@ -50,7 +50,6 @@ public class ActivitiDAO {
      * @return DeploymentMetaDataModel object
      */
     public DeploymentMetaDataModel selectDeploymentModel(final String bpmnPackageName) {
-
         CustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel> customSqlExecution =
                 new AbstractCustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel>(
                         DeploymentMapper.class) {

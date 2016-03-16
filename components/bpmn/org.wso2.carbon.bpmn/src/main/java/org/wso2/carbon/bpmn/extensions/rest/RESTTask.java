@@ -21,8 +21,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.el.JuelExpression;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.util.AXIOMUtil;
+//import org.apache.axiom.om.OMElement;
+//import org.apache.axiom.om.util.AXIOMUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -183,10 +183,10 @@ public class RESTTask implements JavaDelegate {
                 }
                 Resource urlResource = registry.get(registryPath);
                 if (urlResource != null) {
-                    String uepContent = new String((byte[]) urlResource.getContent());
+                    //String uepContent = new String((byte[]) urlResource.getContent());
 
                     //UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
-                    OMElement uepElement = AXIOMUtil.stringToOM(uepContent);
+                  //  OMElement uepElement = AXIOMUtil.stringToOM(uepContent);
                     //UnifiedEndpoint uep = uepFactory.createEndpoint(uepElement);
                     //url = uep.getAddress();
                     //bUsername = uep.getAuthorizationUserName();

@@ -163,7 +163,7 @@ public class BPMNDeployer implements Deployer {
                     log.error("Unable to add file " + artifactFile + "to directory" +
                               destinationFolder);
                 }
-            } else if (deploymentMetaDataModel != null) { //deployment exists
+            } else { //deployment exists
                 // not the same version that is already deployed
                 if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
                     // It is not a new deployment, but a version update
@@ -193,13 +193,14 @@ public class BPMNDeployer implements Deployer {
             } else {
                 log.error("File" + deploymentName + "does not exist in camunda metadata registry");
             }
-            //TODO: Remove from file repo
-            File fileToUndeploy = new File(deploymentDir + File.separator + key);
-            if (fileToUndeploy != null) {
+            try {
+                File fileToUndeploy = new File(deploymentDir + File.separator + key);
+
                 FileUtils.deleteQuietly(fileToUndeploy);
-            } else {
-                log.error("File" + fileToUndeploy + "does not exist in file repository" +
-                          deploymentDir);
+
+            } catch (NullPointerException e) {
+                log.error("File does not exist in file repository" +
+                          deploymentDir + e);
             }
             // Delete all versions of this package from the Activiti engine.
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
