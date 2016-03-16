@@ -30,10 +30,10 @@
     <description>A custom wso2 products or solution</description>
     <url>http://wso2.org</url>
 
-    <modules>
+    <!--modules>
         <module>org.wso2.carbon.attachment.mgt</module>
         <module>org.wso2.carbon.attachment.mgt.ui</module>
-    </modules>
+    </modules-->
 
         <dependencies>
             <dependency>

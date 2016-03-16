@@ -35,6 +35,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BPELAppDeployer implements AppDeploymentHandler {
 
     private static final Log log = LogFactory.getLog(BPELAppDeployer.class);
@@ -141,7 +144,7 @@ public class BPELAppDeployer implements AppDeploymentHandler {
                     artifact.setDeploymentStatus(AppDeployerConstants.DEPLOYMENT_STATUS_PENDING);
                 } catch (DeploymentException e) {
                     artifact.setDeploymentStatus(AppDeployerConstants.DEPLOYMENT_STATUS_FAILED);
-                    log.error("Error occured while trying to un deploy : "+artifact.getName());
+                    log.error("Error occured while trying to un deploy : " + artifact.getName());
                 }
             }
         }
