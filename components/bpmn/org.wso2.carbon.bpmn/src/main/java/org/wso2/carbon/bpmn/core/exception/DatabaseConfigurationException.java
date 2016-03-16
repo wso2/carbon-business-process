@@ -17,11 +17,11 @@
 package org.wso2.carbon.bpmn.core.exception;
 
 /**
- *  Throws exception for faulty datasource configurations
+ * Throws exception for faulty datasource configurations
  */
-public class DatabaseConfigurationException extends  Exception{
+public class DatabaseConfigurationException extends Exception {
 
-    private static final long serialVersionUID =  45L;
+    private static final long serialVersionUID = 45L;
 
     public DatabaseConfigurationException(String msg, Exception ex) {
         super(msg, ex);

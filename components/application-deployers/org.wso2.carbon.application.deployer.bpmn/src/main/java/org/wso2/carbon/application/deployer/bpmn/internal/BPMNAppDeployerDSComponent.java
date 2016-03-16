@@ -25,8 +25,8 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.application.deployer.AppDeployerConstants;
 import org.wso2.carbon.application.deployer.AppDeployerUtils;
 import org.wso2.carbon.application.deployer.Feature;
-import org.wso2.carbon.application.deployer.handler.AppDeploymentHandler;
 import org.wso2.carbon.application.deployer.bpmn.BPMNAppDeployer;
+import org.wso2.carbon.application.deployer.handler.AppDeploymentHandler;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -37,27 +37,27 @@ import java.util.Map;
  * @scr.component name="application.deployer.bpmn" immediate="true"
  */
 public class BPMNAppDeployerDSComponent {
-
     private static Log log = LogFactory.getLog(BPMNAppDeployerDSComponent.class);
 
-    private static Map<String, List<Feature>> requiredFeatures;
+    private Map<String, List<Feature>> requiredFeatures;
 
-    private static ServiceRegistration appHandlerRegistration;
+    private ServiceRegistration appHandlerRegistration;
 
     protected void activate(ComponentContext ctxt) {
         try {
             //register bpmn deployer as an OSGi Service
-            BPMNAppDeployer BPMNAppDeployer = new BPMNAppDeployer();
-            appHandlerRegistration = ctxt.getBundleContext().registerService(
-                    AppDeploymentHandler.class.getName(), BPMNAppDeployer, null);
+            BPMNAppDeployer bpmnAppDeployer = new BPMNAppDeployer();
+            setRegistration(ctxt.getBundleContext()
+                                .registerService(AppDeploymentHandler.class.getName(),
+                                                 bpmnAppDeployer, null));
 
             // read required-features.xml
             URL reqFeaturesResource = ctxt.getBundleContext().getBundle()
-                    .getResource(AppDeployerConstants.REQ_FEATURES_XML);
+                                          .getResource(AppDeployerConstants.REQ_FEATURES_XML);
             if (reqFeaturesResource != null) {
                 InputStream xmlStream = reqFeaturesResource.openStream();
-                requiredFeatures = AppDeployerUtils
-                        .readRequiredFeaturs(new StAXOMBuilder(xmlStream).getDocumentElement());
+                setFeatures(AppDeployerUtils.readRequiredFeaturs(
+                        new StAXOMBuilder(xmlStream).getDocumentElement()));
             }
         } catch (Throwable e) {
             log.error("Failed to activate BPMN Application Deployer", e);
@@ -71,8 +71,20 @@ public class BPMNAppDeployerDSComponent {
         }
     }
 
-    public static Map<String, List<Feature>> getRequiredFeatures() {
+    protected void setRegistration(ServiceRegistration service) {
+        this.appHandlerRegistration = service;
+    }
+
+    protected void setFeatures(Map features) {
+        this.requiredFeatures = features;
+    }
+
+    protected Map getFeatures() {
         return requiredFeatures;
+    }
+
+    public Map<String, List<Feature>> getRequiredFeatures() {
+        return getFeatures();
     }
 
 }

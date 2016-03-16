@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+/**
+ *
+ */
 public class BPMNRESTException extends Exception {
     public BPMNRESTException(String msg) {
         super(msg);

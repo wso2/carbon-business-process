@@ -194,10 +194,10 @@
                 <groupId>org.apache.batik.wso2</groupId>
                 <artifactId>batik</artifactId>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>com.googlecode.json-simple.wso2</groupId>
                 <artifactId>json-simple</artifactId>

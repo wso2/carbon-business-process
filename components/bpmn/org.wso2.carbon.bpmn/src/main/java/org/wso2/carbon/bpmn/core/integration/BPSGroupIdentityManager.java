@@ -68,7 +68,8 @@ public BPSGroupIdentityManager() {
 
     @Override
     public GroupQuery createNewGroupQuery() {
-        return new GroupQueryImpl(((ProcessEngineConfigurationImpl) BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration()).getCommandExecutor());
+        return new GroupQueryImpl(((ProcessEngineConfigurationImpl) BPMNServerHolder.getInstance().
+        getEngine().getProcessEngineConfiguration()).getCommandExecutor());
 
     }
 

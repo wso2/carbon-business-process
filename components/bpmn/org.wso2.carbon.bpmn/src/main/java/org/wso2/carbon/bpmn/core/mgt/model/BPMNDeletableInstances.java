@@ -33,7 +33,7 @@ public class BPMNDeletableInstances {
     private List<HistoricProcessInstance> activeHistoricProcessInstance = null;
     private List<String> completedProcessDefinitionIds = null;
 
-    public BPMNDeletableInstances(){
+    public BPMNDeletableInstances() {
         activeHistoricProcessInstance = new ArrayList<>();
         completedProcessDefinitionIds = new ArrayList<>();
     }
@@ -66,9 +66,10 @@ public class BPMNDeletableInstances {
         return activeHistoricProcessInstance;
     }
 
-    public void setActiveProcessInstance(List<HistoricProcessInstance> activeHistoricProcessInstance) {
+    public void setActiveProcessInstance(
+            List<HistoricProcessInstance> activeHistoricProcessInstance) {
 
-        if(activeHistoricProcessInstance != null && activeHistoricProcessInstance.size() > 0 ){
+        if (activeHistoricProcessInstance != null && activeHistoricProcessInstance.size() > 0) {
             this.activeHistoricProcessInstance.addAll(activeHistoricProcessInstance);
         }
     }

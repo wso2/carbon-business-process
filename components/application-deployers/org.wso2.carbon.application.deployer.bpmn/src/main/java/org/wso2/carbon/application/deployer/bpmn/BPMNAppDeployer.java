@@ -35,6 +35,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BPMNAppDeployer implements AppDeploymentHandler {
 
     private static final Log log = LogFactory.getLog(BPMNAppDeployer.class);
@@ -144,7 +147,7 @@ public class BPMNAppDeployer implements AppDeploymentHandler {
                     artifact.setDeploymentStatus(AppDeployerConstants.DEPLOYMENT_STATUS_PENDING);
                 } catch (DeploymentException e) {
                     artifact.setDeploymentStatus(AppDeployerConstants.DEPLOYMENT_STATUS_FAILED);
-                    log.error("Error occured while trying to un deploy : "+artifact.getName());
+                    log.error("Error occured while trying to un deploy : " + artifact.getName());
                 }
             }
         }
@@ -161,7 +164,8 @@ public class BPMNAppDeployer implements AppDeploymentHandler {
      */
     private boolean isAccepted(String serviceType) {
         if (acceptanceList == null) {
-            acceptanceList = AppDeployerUtils.buildAcceptanceList(BPMNAppDeployerDSComponent
+            BPMNAppDeployerDSComponent ds = new BPMNAppDeployerDSComponent();
+            acceptanceList = AppDeployerUtils.buildAcceptanceList(ds
                     .getRequiredFeatures());
         }
         Boolean acceptance = acceptanceList.get(serviceType);

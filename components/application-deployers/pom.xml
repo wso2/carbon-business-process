@@ -39,8 +39,8 @@
     </dependencies>
 
     <modules>
-        <module>org.wso2.carbon.application.deployer.bpel</module>
-        <module>org.wso2.carbon.application.deployer.humantask</module>
+        <!--module>org.wso2.carbon.application.deployer.bpel</module>
+        <module>org.wso2.carbon.application.deployer.humantask</module-->
         <module>org.wso2.carbon.application.deployer.bpmn</module>
     </modules>
 </project>

@@ -17,12 +17,15 @@
 package org.wso2.carbon.bpmn.core;
 
 
-import org.activiti.bpm.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
+/**
+ *
+ */
 public final class BPMNServerHolder {
 
     private static final Log log = LogFactory.getLog(BPMNServerHolder.class);

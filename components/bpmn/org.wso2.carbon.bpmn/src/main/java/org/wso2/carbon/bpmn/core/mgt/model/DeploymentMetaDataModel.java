@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.core.mgt.model;
 
 /**
@@ -23,38 +22,38 @@ package org.wso2.carbon.bpmn.core.mgt.model;
  */
 public class DeploymentMetaDataModel {
 
-	private String id;
-	private String packageName;
-	private String checkSum;
+    private String id;
+    private String packageName;
+    private String checkSum;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getCheckSum() {
-		return checkSum;
-	}
+    public String getCheckSum() {
+        return checkSum;
+    }
 
-	public void setCheckSum(String checkSum) {
-		this.checkSum = checkSum;
-	}
+    public void setCheckSum(String checkSum) {
+        this.checkSum = checkSum;
+    }
 
-	public String getPackageName() {
-		return packageName;
-	}
+    public String getPackageName() {
+        return packageName;
+    }
 
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
-	}
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
 
-	public String toString() {
+    public String toString() {
 
-		return " Deployment ID=" + id + " \n" +
-		       " Checksum= " + checkSum +
-		       " packageName= " + packageName;
-	}
+        return " Deployment ID=" + id + " \n" +
+               " Checksum= " + checkSum +
+               " packageName= " + packageName;
+    }
 }

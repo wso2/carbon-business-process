@@ -30,7 +30,7 @@
     <url>http://wso2.org</url>
 
     <modules>
-        <module>org.wso2.carbon.unifiedendpoint.core</module>
+        <!--module>org.wso2.carbon.unifiedendpoint.core</module-->
         <!--<module>org.wso2.carbon.unifiedendpoint.service</module>-->
         <!--<module>org.wso2.carbon.unifiedendpoint.ui</module>-->
     </modules>

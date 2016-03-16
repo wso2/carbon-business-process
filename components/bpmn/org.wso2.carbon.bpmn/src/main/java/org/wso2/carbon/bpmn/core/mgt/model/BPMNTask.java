@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpmn.core.mgt.model;
 
+/**
+ *
+ */
 public class BPMNTask {
 
     private String id;

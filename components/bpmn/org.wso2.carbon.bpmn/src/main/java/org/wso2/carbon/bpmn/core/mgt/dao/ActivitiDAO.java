@@ -20,8 +20,8 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cmd.AbstractCustomSqlExecution;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class ActivitiDAO {
 
-    private static final Log log = LogFactory.getLog(DeploymentMapper.class);
+    private static final Logger log = LoggerFactory.getLogger(DeploymentMapper.class);
 
     private ManagementService managementService = null;
 
@@ -47,24 +47,26 @@ public class ActivitiDAO {
      * invokes the DeploymentMapper.selectMetaData for a given tenant id and package name
      *
      * @param bpmnPackageName package name
-     * @return                DeploymentMetaDataModel object
+     * @return DeploymentMetaDataModel object
      */
-    public DeploymentMetaDataModel selectDeploymentModel(final String bpmnPackageName){
+    public DeploymentMetaDataModel selectDeploymentModel(final String bpmnPackageName) {
 
         CustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel> customSqlExecution =
-                new AbstractCustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel>(DeploymentMapper.class) {
+                new AbstractCustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel>(
+                        DeploymentMapper.class) {
                     public DeploymentMetaDataModel execute(DeploymentMapper deploymentMapper) {
-                        return deploymentMapper.selectMetaData( bpmnPackageName);
+                        return deploymentMapper.selectMetaData(bpmnPackageName);
                     }
                 };
 
-        DeploymentMetaDataModel deploymentMetaDataModel = managementService.executeCustomSql(customSqlExecution);
-        if(log.isDebugEnabled()) {
+        DeploymentMetaDataModel deploymentMetaDataModel =
+                managementService.executeCustomSql(customSqlExecution);
+        if (log.isDebugEnabled()) {
 
-            if(deploymentMetaDataModel != null) {
-                log.debug("DeploymentDataModel exists when selecting models=" + deploymentMetaDataModel.getId());
-            }
-            else {
+            if (deploymentMetaDataModel != null) {
+                log.debug("DeploymentDataModel exists when selecting models=" +
+                          deploymentMetaDataModel.getId());
+            } else {
                 log.debug("DeploymentDataModel null when selecting models");
             }
         }
@@ -76,11 +78,13 @@ public class ActivitiDAO {
      *
      * @return each row will be returned as DeploymentMetaDataModel with in list
      */
-    public List<DeploymentMetaDataModel> selectAllDeploymentModels(){
+    public List<DeploymentMetaDataModel> selectAllDeploymentModels() {
 
-        CustomSqlExecution<DeploymentMapper,  List<DeploymentMetaDataModel> > customSqlExecution =
-                new AbstractCustomSqlExecution<DeploymentMapper,  List<DeploymentMetaDataModel> >(DeploymentMapper.class) {
-                    public  List<DeploymentMetaDataModel>  execute(DeploymentMapper deploymentMapper) {
+        CustomSqlExecution<DeploymentMapper, List<DeploymentMetaDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<DeploymentMapper, List<DeploymentMetaDataModel>>(
+                        DeploymentMapper.class) {
+                    public List<DeploymentMetaDataModel> execute(
+                            DeploymentMapper deploymentMapper) {
                         return deploymentMapper.selectAllMetaData();
                     }
                 };
@@ -93,7 +97,8 @@ public class ActivitiDAO {
      *
      * @param deploymentMetaDataModel Object to be inserted in to the table
      */
-    public void insertDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
+    public void insertDeploymentMetaDataModel(
+            final DeploymentMetaDataModel deploymentMetaDataModel) {
 
         CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution =
                 new AbstractCustomSqlExecution<DeploymentMapper, Integer>(DeploymentMapper.class) {
@@ -104,7 +109,7 @@ public class ActivitiDAO {
 
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("insertDeploymentMetaDataModel" + rowCount);
         }
 
@@ -115,7 +120,8 @@ public class ActivitiDAO {
      *
      * @param deploymentMetaDataModel Object to be updated in to the table
      */
-    public void updateDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
+    public void updateDeploymentMetaDataModel(
+            final DeploymentMetaDataModel deploymentMetaDataModel) {
 
         CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution =
                 new AbstractCustomSqlExecution<DeploymentMapper, Integer>(DeploymentMapper.class) {
@@ -126,7 +132,7 @@ public class ActivitiDAO {
 
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("updated DeploymentMetaDataModel" + rowCount);
         }
     }
@@ -137,7 +143,8 @@ public class ActivitiDAO {
      * @param deploymentMetaDataModel the object to be deleted
      * @return total number of rows deleted
      */
-    public int deleteDeploymentMetaDataModel(final DeploymentMetaDataModel deploymentMetaDataModel){
+    public int deleteDeploymentMetaDataModel(
+            final DeploymentMetaDataModel deploymentMetaDataModel) {
 
         CustomSqlExecution<DeploymentMapper, Integer> customSqlExecution =
                 new AbstractCustomSqlExecution<DeploymentMapper, Integer>(DeploymentMapper.class) {
@@ -148,7 +155,7 @@ public class ActivitiDAO {
 
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("deleteDeploymentMetaDataModel" + rowCount);
         }
 

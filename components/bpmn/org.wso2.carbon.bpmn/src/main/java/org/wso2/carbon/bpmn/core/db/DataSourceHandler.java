@@ -20,24 +20,29 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
 import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
+
 import javax.sql.DataSource;
 
+/**
+ *
+ */
 public class DataSourceHandler {
 
     private static final Log log = LogFactory.getLog(DataSourceHandler.class);
     private Database database = null;
 
-  public DataSource getDataSource(){
-      return database.getDataSource();
-  }
-    public void initDataSource(String jndiDataSourceName) throws
-            BPMNMetaDataTableCreationException, DatabaseConfigurationException {
+    public DataSource getDataSource() {
+        return database.getDataSource();
+    }
+
+    public void initDataSource(String jndiDataSourceName)
+            throws BPMNMetaDataTableCreationException, DatabaseConfigurationException {
         database = new Database(jndiDataSourceName);
         database.init();
 
     }
 
-    public void closeDataSource(){
+    public void closeDataSource() {
         database.shutdown();
     }
 }

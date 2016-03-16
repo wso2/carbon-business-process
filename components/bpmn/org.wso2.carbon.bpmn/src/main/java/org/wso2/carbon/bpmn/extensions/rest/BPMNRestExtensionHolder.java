@@ -15,13 +15,17 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+/**
+ *
+ */
 public class BPMNRestExtensionHolder {
 
     private static BPMNRestExtensionHolder bpmnRestHolder = new BPMNRestExtensionHolder();
 
     private RESTInvoker restInvoker = null;
 
-    private BPMNRestExtensionHolder() {}
+    private BPMNRestExtensionHolder() {
+    }
 
     public static BPMNRestExtensionHolder getInstance() {
         return bpmnRestHolder;

@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.core.db;
 
 import org.apache.commons.logging.Log;
@@ -34,144 +33,145 @@ import javax.sql.DataSource;
 
 public class Database {
 
-	private static final Log log = LogFactory.getLog(Database.class);
+    private static final Log log = LogFactory.getLog(Database.class);
 
-	private String jndiDataSourceName;
-	private DataSource dataSource;
+    private String jndiDataSourceName;
+    private DataSource dataSource;
 
-	private boolean started;
+    private boolean started;
 
-	/**
-	 * Obtains the DataSource object of activiti database
-	 *
-	 * @return The BPMN DataSource..
-	 */
+    /**
+     * Obtains the DataSource object of activiti database
+     *
+     * @return The BPMN DataSource..
+     */
 
-	public synchronized DataSource getDataSource() {
-		if (this.dataSource == null) {
-			throw new RuntimeException("Activiti Engine Database is not properly initialised!");
-		}
-		return this.dataSource;
-	}
+    public synchronized DataSource getDataSource() {
+        if (this.dataSource == null) {
+            throw new RuntimeException("Activiti Engine Database is not properly initialised!");
+        }
+        return this.dataSource;
+    }
 
-	/**
-	 * Constructor for initializing the database class which connects and manages the activiti engine database
-	 * @param jndiDataSourceName activiti's JNDI datasource name
-	 */
-	public Database(String jndiDataSourceName) {
-		this.jndiDataSourceName = jndiDataSourceName;
-	}
+    /**
+     * Constructor for initializing the database class which connects and manages the activiti engine database
+     *
+     * @param jndiDataSourceName activiti's JNDI datasource name
+     */
+    public Database(String jndiDataSourceName) {
+        this.jndiDataSourceName = jndiDataSourceName;
+    }
 
-	/**
-	 * Database initialization logic.
-	 *
-	 * @throws DatabaseConfigurationException Error in activiti db configuration
-	 * @throws BPMNMetaDataTableCreationException Error on creating BPMNMetaDataTable inside activiti DB
-	 */
-	public synchronized void init() throws DatabaseConfigurationException,
-	                                       BPMNMetaDataTableCreationException {
-		this.dataSource = null;
-		initDataSource();
-		createActivitiMetaDataTable();
-		started = true;
-	}
+    /**
+     * Database initialization logic.
+     *
+     * @throws DatabaseConfigurationException     Error in activiti db configuration
+     * @throws BPMNMetaDataTableCreationException Error on creating BPMNMetaDataTable inside activiti DB
+     */
+    public synchronized void init()
+            throws DatabaseConfigurationException, BPMNMetaDataTableCreationException {
+        this.dataSource = null;
+        initDataSource();
+        createActivitiMetaDataTable();
+        started = true;
+    }
 
-	/**
-	 * during the start up of the server this method will create BPS_BPMN_DEPLOYMENT_METADATA table
-	 * if it doesn't exist in the activiti database.
-	 *
-	 * @throws org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException
-	 */
-	private void createActivitiMetaDataTable() throws BPMNMetaDataTableCreationException {
-		BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
-		String bpmnDeploymentMetaDataQuery = "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
+    /**
+     * during the start up of the server this method will create BPS_BPMN_DEPLOYMENT_METADATA table
+     * if it doesn't exist in the activiti database.
+     *
+     * @throws org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException
+     */
+    private void createActivitiMetaDataTable() throws BPMNMetaDataTableCreationException {
+        BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
+        String bpmnDeploymentMetaDataQuery =
+                "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
 
-		if (!bpmnDatabaseCreator.isDatabaseStructureCreated(bpmnDeploymentMetaDataQuery)) {
-			try {
-				bpmnDatabaseCreator.createRegistryDatabase();
-			} catch (Exception e) {
-				String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
-				throw new BPMNMetaDataTableCreationException(errMsg, e);
-			}
-		} else {
-			if (log.isDebugEnabled()) {
-				log.debug("BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
-			}
-		}
-	}
+        if (!bpmnDatabaseCreator.isDatabaseStructureCreated(bpmnDeploymentMetaDataQuery)) {
+            try {
+                bpmnDatabaseCreator.createRegistryDatabase();
+            } catch (Exception e) {
+                String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
+                throw new BPMNMetaDataTableCreationException(errMsg, e);
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug(
+                        "BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
+            }
+        }
+    }
 
+    /**
+     * Shut down logic for the Database related resources.
+     */
+    public synchronized void shutdown() {
+        if (!started) {
+            return;
+        }
+        this.dataSource = null;
+        this.started = false;
+    }
 
-	/**
-	 * Shut down logic for the Database related resources.
-	 */
-	public synchronized void shutdown() {
-		if (!started) {
-			return;
-		}
-		this.dataSource = null;
-		this.started = false;
-	}
+    /**
+     * Initializes the data source
+     *
+     * @throws DatabaseConfigurationException - throws when database configuration failed
+     */
+    private void initDataSource() throws DatabaseConfigurationException {
+        initExternalDb();
+    }
 
-	/**
-	 * Initializes the data source
-	 *
-	 * @throws DatabaseConfigurationException - throws when database configuration failed
-	 */
-	private void initDataSource() throws DatabaseConfigurationException {
-		initExternalDb();
-	}
+    /**
+     * Initializes the activiti db
+     *
+     * @throws DatabaseConfigurationException - throws when database configuration failed
+     */
+    private void initExternalDb() throws DatabaseConfigurationException {
+        try {
+            this.dataSource = lookupInJndi(jndiDataSourceName);
 
-	/**
-	 * Initializes the activiti db
-	 *
-	 * @throws DatabaseConfigurationException - throws when database configuration failed
-	 */
-	private void initExternalDb() throws DatabaseConfigurationException {
-		try {
-			this.dataSource = lookupInJndi(jndiDataSourceName);
+            if (log.isDebugEnabled()) {
+                log.debug("BPMN Activiti initialization using external DataSource " +
+                          jndiDataSourceName);
+            }
+        } catch (NamingException e) {
+            String errorMsg = "Failed to resolved external DataSource at " + jndiDataSourceName;
+            throw new DatabaseConfigurationException(errorMsg, e);
+        }
+    }
 
-			if (log.isDebugEnabled()) {
-				log.debug("BPMN Activiti initialization using external DataSource " +
-				          jndiDataSourceName);
-			}
-		} catch (NamingException e) {
-			String errorMsg = "Failed to resolved external DataSource at " +
-			                  jndiDataSourceName;
-			throw new DatabaseConfigurationException(errorMsg, e);
-		}
-	}
+    /**
+     * Performs lookup of JNDI datasource name
+     *
+     * @param objName Lookup jndi data source name
+     * @param <T>     Lookup object type
+     * @return DataSource object
+     * @throws NamingException Throws exception when lookup naming failed
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T lookupInJndi(String objName) throws NamingException {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        InitialContext ctx = null;
 
-	/**
-	 * Performs lookup of JNDI datasource name
-	 *
-	 * @param objName       Lookup jndi data source name
-	 * @param <T>           Lookup object type
-	 * @return              DataSource object
-	 * @throws NamingException   Throws exception when lookup naming failed
-	 */
-	@SuppressWarnings("unchecked")
-	private <T> T lookupInJndi(String objName) throws NamingException {
-		ClassLoader old = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-		InitialContext ctx = null;
+        try {
 
-		try {
+            try {
+                ctx = new InitialContext();
+                return (T) ctx.lookup(objName);
+            } finally {
+                if (ctx != null) {
+                    try {
+                        ctx.close();
+                    } catch (NamingException ex1) {
+                        log.error("Error closing JNDI connection.", ex1);
+                    }
+                }
 
-			try {
-				ctx = new InitialContext();
-				return (T) ctx.lookup(objName);
-			} finally {
-				if (ctx != null) {
-					try {
-						ctx.close();
-					} catch (NamingException ex1) {
-						log.error("Error closing JNDI connection.", ex1);
-					}
-				}
-
-			}
-		} finally {
-			Thread.currentThread().setContextClassLoader(old);
-		}
-	}
+            }
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
 }

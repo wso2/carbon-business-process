@@ -68,8 +68,6 @@ public class BPSUserIdentityManager extends UserEntity {
     private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/emailaddress";
     private static final String ROLE_CLAIM_URI = "http://wso2.org/claims/role";
 
-
-
     public BPSUserIdentityManager() {
        // this.tenantMgtAdminService = new TenantMgtAdminService();
        // this.userAdmin = new UserAdmin();
@@ -91,7 +89,8 @@ public class BPSUserIdentityManager extends UserEntity {
     @Override
     public UserEntity findUserById(String userId) {
  try {
-            UserStoreManager userStoreManager = registryService.getUserRealm(getTenantIdFromUserId(userId)).getUserStoreManager();
+            UserStoreManager userStoreManager = registryService.
+            getUserRealm(getTenantIdFromUserId(userId)).getUserStoreManager();
 
             if (userStoreManager.isExistingUser(userId)) {
                 UserEntity userEntity = new UserEntity(userId);
@@ -326,7 +325,8 @@ Group group = new GroupEntity("admin");
 
     @Override
     public UserQuery createNewUserQuery() {
-        return new UserQueryImpl(((ProcessEngineConfigurationImpl)BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration()).getCommandExecutor());
+        return new UserQueryImpl(((ProcessEngineConfigurationImpl)BPMNServerHolder.getInstance()
+        .getEngine().getProcessEngineConfiguration()).getCommandExecutor());
     }
 
     @Override

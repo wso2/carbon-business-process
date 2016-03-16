@@ -18,6 +18,9 @@ package org.wso2.carbon.bpmn.core.mgt.model;
 
 import java.util.Date;
 
+/**
+ *
+ */
 public class BPMNInstance {
 
     private String instanceId;

@@ -21,10 +21,10 @@ package org.wso2.carbon.bpmn.core.exception;
  */
 public class BPMNMetaDataTableCreationException extends Exception {
 
-	private static final long serialVersionUID = 234L;
+    private static final long serialVersionUID = 234L;
 
-	public BPMNMetaDataTableCreationException(String message, Exception ex) {
-		super(message, ex);
-	}
+    public BPMNMetaDataTableCreationException(String message, Exception ex) {
+        super(message, ex);
+    }
 
 }

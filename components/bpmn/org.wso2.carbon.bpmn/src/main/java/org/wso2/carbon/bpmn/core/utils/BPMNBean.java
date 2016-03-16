@@ -19,10 +19,11 @@ package org.wso2.carbon.bpmn.core.utils;
 import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 
-import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 /**
  * This class holds the activiti's bean configuration in to separate bean objects
@@ -34,8 +35,7 @@ public class BPMNBean {
 
     private Map<String, String> propertyMap = null;
 
-
-    public BPMNBean(OMElement bean){
+    public BPMNBean(OMElement bean) {
 
         propertyMap = new HashMap<>();
         initializeBean(bean);
@@ -49,10 +49,10 @@ public class BPMNBean {
         return beanClass;
     }
 
-    public String getPropertyValue(String propertyName){
+    public String getPropertyValue(String propertyName) {
 
         String propertyValue = propertyMap.get(propertyName);
-        if(propertyValue != null){
+        if (propertyValue != null) {
             return propertyValue;
         }
 
@@ -63,19 +63,21 @@ public class BPMNBean {
         return propertyMap;
     }
 
-    private void initializeBean(OMElement bean){
+    private void initializeBean(OMElement bean) {
 
         this.beanId = bean.getAttributeValue(new QName(null, BPMNConstants.BEAN_ID));
         this.beanClass = bean.getAttributeValue(new QName(null, BPMNConstants.BEAN_CLASS));
 
-        Iterator beanProps = bean.getChildrenWithName(new QName(BPMNConstants.SPRING_NAMESPACE,
-                BPMNConstants.PROPERTY));
+        Iterator beanProps = bean.getChildrenWithName(
+                new QName(BPMNConstants.SPRING_NAMESPACE, BPMNConstants.PROPERTY));
         while (beanProps.hasNext()) {
             OMElement beanProp = (OMElement) beanProps.next();
 
-            if(beanProp != null){
-                String propertyName = beanProp.getAttributeValue(new QName(null, BPMNConstants.NAME));
-                String propertyValue = beanProp.getAttributeValue(new QName(null, BPMNConstants.VALUE));
+            if (beanProp != null) {
+                String propertyName =
+                        beanProp.getAttributeValue(new QName(null, BPMNConstants.NAME));
+                String propertyValue =
+                        beanProp.getAttributeValue(new QName(null, BPMNConstants.VALUE));
 
                 propertyMap.put(propertyName, propertyValue);
             }

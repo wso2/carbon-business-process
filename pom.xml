@@ -40,18 +40,18 @@
         <module>service-stubs/application-mgt</module-->
         <module>components/application-deployers</module>
         <!--module>components/attachment-mgt</module-->
-        <module>components/application-mgt</module>
-        <module>components/common</module>
-        <module>components/unified-endpoint</module>
-        <module>components/bpel</module>
-        <module>components/humantask</module>
+        <!--module>components/application-mgt</module-->
+        <!--module>components/common</module-->
+        <!--module>components/unified-endpoint</module-->
+        <!--module>components/bpel</module>
+        <module>components/humantask</module-->
         <module>components/bpmn</module>
         <module>features/application-deployers</module>
-        <module>features/unified-endpoint</module>
-        <module>features/attachment-mgt</module>
-        <module>features/bpel</module>
+        <!--module>features/unified-endpoint</module-->
+        <!--module>features/attachment-mgt</module>
+        <module>features/bpel</module-->
         <module>features/bpmn</module>
-        <module>features/humantask</module>
+        <!--module>features/humantask</module-->
         <module>features/application-mgt</module>
     </modules>
 
@@ -713,7 +713,7 @@
                 <version>${carbon.business-process.version}</version>
                 <type>zip</type>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.server.feature</artifactId>
                 <version>${carbon.business-process.version}</version>
@@ -724,7 +724,7 @@
                 <artifactId>org.wso2.carbon.unifiedendpoint.ui.feature</artifactId>
                 <version>${carbon.business-process.version}</version>
                 <type>zip</type>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.application.deployer</artifactId>
@@ -745,7 +745,7 @@
                 <artifactId>org.wso2.carbon.application.deployer.bpmn</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
-            <dependency>
+            <!--dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.stub</artifactId>
                 <version>${carbon.business-process.version}</version>
@@ -770,7 +770,7 @@
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.unifiedendpoint.ui</artifactId>
                 <version>${carbon.business-process.version}</version>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>org.wso2.carbon.registry</groupId>
                 <artifactId>org.wso2.carbon.registry.resource.ui</artifactId>
@@ -1424,7 +1424,7 @@
         <axiom.osgi.version.range>[1.2.11.wso2v9, 1.3.0)</axiom.osgi.version.range>
         <!--exp.pkg.version.axiom>1.2.11.wso2v6</exp.pkg.version.axiom>
         <imp.pkg.version.axiom>[1.2.11.wso2v6, 1.3.0)</imp.pkg.version.axiom-->
-        <axiom.osgi.version.range.unifiedendpoint>[1.2.11.wso2v9, 1.3.0)</axiom.osgi.version.range.unifiedendpoint>
+        <!--axiom.osgi.version.range.unifiedendpoint>[1.2.11.wso2v9, 1.3.0)</axiom.osgi.version.range.unifiedendpoint-->
 
         <!-- Axis2 Version -->
         <axis2.version>1.6.1-wso2v16</axis2.version>

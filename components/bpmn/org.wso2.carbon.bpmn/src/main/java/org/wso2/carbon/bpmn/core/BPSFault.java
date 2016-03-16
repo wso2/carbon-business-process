@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpmn.core;
 
+/**
+ *
+ */
 public class BPSFault extends Exception {
 
     private static final long serialVersionUID = 1L;
