@@ -89,10 +89,10 @@
             <artifactId>json-path</artifactId>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
-        </dependency>
+        </dependency-->
 
     </dependencies>
 
