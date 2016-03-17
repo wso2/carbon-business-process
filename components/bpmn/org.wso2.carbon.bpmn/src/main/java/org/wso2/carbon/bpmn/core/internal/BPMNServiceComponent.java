@@ -23,17 +23,16 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.jndi.JNDIContextManager;
+//import org.osgi.service.component.annotations.Reference;
+//import org.osgi.service.component.annotations.ReferenceCardinality;
+//import org.osgi.service.component.annotations.ReferencePolicy;
+//import org.osgi.service.jndi.JNDIContextManager;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.kernel.deployment.Artifact;
 import org.wso2.carbon.kernel.deployment.ArtifactType;
-import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
+//import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 
 import java.io.File;
 
@@ -60,13 +59,22 @@ import java.io.File;
 public class BPMNServiceComponent {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNServiceComponent.class);
-//@Reference(
-//		name = "org.wso2.carbon.datasource.jndi",
-//		service = JNDIContextManager.class,
-//		cardinality = ReferenceCardinality.AT_LEAST_ONE,
-//		policy = ReferencePolicy.DYNAMIC,
-//		unbind = "deactivate"
-//)
+    //@Reference(
+    //name = "org.wso2.carbon.datasource.jndi",
+    //service = JNDIContextManager.class,
+    //cardinality = ReferenceCardinality.AT_LEAST_ONE,
+    //policy = ReferencePolicy.DYNAMIC,
+    //unbind = "deactivate"
+    //)
+    //@Reference(
+    //name = "org.wso2.carbon.kernel.datasource.core.
+    // internal.DataSourceListenerComponent",
+    //service = RequiredCapabilityListener.class,
+    //cardinality = ReferenceCardinality.AT_LEAST_ONE,
+    //policy = ReferencePolicy.DYNAMIC,
+    //unbind = "deactivate"
+    //)
+
     protected void activate(ComponentContext ctxt) {
         log.error("Initializing the BPMN core component...");
         try {
@@ -78,15 +86,16 @@ public class BPMNServiceComponent {
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
 
-	        BPMNDeployer customDeployer = new BPMNDeployer();
-	        	        customDeployer.init();
-	        	        File ab = new File("/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
-	        	        Artifact artifact =new Artifact( ab);
-	        	       ArtifactType artifactType = new ArtifactType<>("bar");
-	        	        artifact.setKey("HelloWorld.bar");
-	        	        artifact.setType(artifactType);
-	                   customDeployer.deploy(artifact);
-	        	        log.error("Deployed in c5");
+            BPMNDeployer customDeployer = new BPMNDeployer();
+            customDeployer.init();
+            File ab = new File(
+                    "/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
+            Artifact artifact = new Artifact(ab);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("HelloWorld.bar");
+            artifact.setType(artifactType);
+            customDeployer.deploy(artifact);
+            log.error("Deployed in c5");
 
             // DataSourceHandler dataSourceHandler = new DataSourceHandler();
             //dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
