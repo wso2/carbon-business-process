@@ -96,7 +96,8 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Export-Package>
                             org.wso2.carbon.bpmn.stub.*,
-                            org.wso2.carbon.bpmn.core.mgt.model.xsd.*
+                            org.wso2.carbon.bpmn.core.mgt.model.xsd.*,
+                            org.wso2.carbon.bpmn.core.mgt.services.*
                         </Export-Package>
                         <Import-Package />
                         <DynamicImport-Package>*</DynamicImport-Package>

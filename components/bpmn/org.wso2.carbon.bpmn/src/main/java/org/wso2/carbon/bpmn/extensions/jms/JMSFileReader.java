@@ -26,6 +26,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;;
 import java.util.*;
 
@@ -51,21 +52,23 @@ public class JMSFileReader {
             String activitiConfigPath = carbonConfigDirPath + File.separator +
                     JMSConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
             File configFile = new File(activitiConfigPath);
-            String configContent = FileUtils.readFileToString(configFile);
-            OMElement configElement = AXIOMUtil.stringToOM(configContent);
-            Iterator jmsTransport = configElement.getChildrenWithName(new QName(null, "jmsTransport"));
-            while (jmsTransport.hasNext()) {
-                OMElement transports = (OMElement) jmsTransport.next();
-                Iterator parameters = transports.getChildrenWithName(new QName(null, "parameters"));
-                while (parameters.hasNext()) {
-                    OMElement parameter = (OMElement) parameters.next();
-                    String paramId = parameter.getAttributeValue(new QName(null, "name"));
-                    Iterator params = parameter.getChildrenWithName(new QName(null, "parameter"));
-                    Hashtable<String, String> properties = new Hashtable<>();
-                    while(params.hasNext()){
-                        OMElement param = (OMElement)params.next();
-                        String value = param.getAttributeValue(new QName(null, "value"));
-                        switch (param.getAttributeValue(new QName(null, "name"))){
+            String configContent = null;
+            try {
+                configContent = FileUtils.readFileToString(configFile);
+                OMElement configElement = AXIOMUtil.stringToOM(configContent);
+                Iterator jmsTransport = configElement.getChildrenWithName(new QName(null, "jmsTransport"));
+                while (jmsTransport.hasNext()) {
+                    OMElement transports = (OMElement) jmsTransport.next();
+                    Iterator parameters = transports.getChildrenWithName(new QName(null, "parameters"));
+                    while (parameters.hasNext()) {
+                        OMElement parameter = (OMElement) parameters.next();
+                        String paramId = parameter.getAttributeValue(new QName(null, "name"));
+                        Iterator params = parameter.getChildrenWithName(new QName(null, "parameter"));
+                        Hashtable<String, String> properties = new Hashtable<>();
+                        while(params.hasNext()){
+                            OMElement param = (OMElement)params.next();
+                            String value = param.getAttributeValue(new QName(null, "value"));
+                            switch (param.getAttributeValue(new QName(null, "name"))){
                             case JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME:
                                 properties.put(JMSConstants.PARAM_CONNECTION_FACTORY_JNDI_NAME, value);
                                 break;
@@ -100,28 +103,30 @@ public class JMSFileReader {
                             case JMSConstants.PARAM_MAX_RECON_DURATION:
                                 properties.put(JMSConstants.PARAM_MAX_RECON_DURATION, value);
                                 break;
+                            }
                         }
+
+                        //user should provide the JNDI Name of the InitialContextFactory of the JMSProvider
+                        if(properties.get(JMSConstants.NAMING_FACTORY_INITIAL) == null){
+                            String contextFactNotProvidedError = "InitialContextFactory is not provided. " +
+                                    "java.naming.factory.initial of the JMS provider must be provided.";
+
+                            throw new BPMNJMSException(contextFactNotProvidedError);
+                        }
+
+                        //user should provide the Provider URL of the JMSProvider
+                        if(properties.get(JMSConstants.JMS_PROVIDER_URL) == null){
+                            String provURLNotProvidedError = "ProviderURL is not provided. " +
+                                    "java.naming.provider.url of the JMS provider must be provided.";
+
+                            throw new BPMNJMSException(provURLNotProvidedError);
+                        }
+                        jmsProperties.put(paramId, properties);
                     }
-
-                    //user should provide the JNDI Name of the InitialContextFactory of the JMSProvider
-                    if(properties.get(JMSConstants.NAMING_FACTORY_INITIAL) == null){
-                        String contextFactNotProvidedError = "InitialContextFactory is not provided. " +
-                                "java.naming.factory.initial of the JMS provider must be provided.";
-
-                        throw new BPMNJMSException(contextFactNotProvidedError);
-                    }
-
-                    //user should provide the Provider URL of the JMSProvider
-                    if(properties.get(JMSConstants.JMS_PROVIDER_URL) == null){
-                        String provURLNotProvidedError = "ProviderURL is not provided. " +
-                                "java.naming.provider.urlof the JMS provider must be provided.";
-
-                        throw new BPMNJMSException(provURLNotProvidedError);
-                    }
-                    jmsProperties.put(paramId, properties);
                 }
+            }catch(FileNotFoundException e){
+                log.error("<Server-Home>/repository/conf/jms.xml does not exist");
             }
-
         }catch (IOException e){
             log.error(e.getMessage(), e);
         } catch (XMLStreamException e) {
