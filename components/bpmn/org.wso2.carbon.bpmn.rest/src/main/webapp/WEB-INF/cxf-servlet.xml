@@ -160,6 +160,18 @@
         </jaxrs:providers>
     </jaxrs:server>-->
 
+    <jaxrs:server id="pubishProcessVariablesForAnalyticsService" address="/variables-publish">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.analytics.PublishProcessVariablesService.java"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
+            <ref bean="jacksonBean"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
     <bean id="authenticationBean" class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
     <bean id="exceptionHandlerBean"
           class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
