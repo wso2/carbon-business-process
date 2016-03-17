@@ -30,7 +30,12 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.jndi.JNDIContextManager;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
+import org.wso2.carbon.kernel.deployment.Artifact;
+import org.wso2.carbon.kernel.deployment.ArtifactType;
 import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
+
+import java.io.File;
 
 //import org.wso2.carbon.bpmn.core.BPMNEngineService;
 //import org.wso2.carbon.bpmn.core.db.*;
@@ -55,14 +60,6 @@ import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 public class BPMNServiceComponent {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNServiceComponent.class);
-
-//    @Reference(
-//            name = "org.wso2.carbon.kernel.datasource.core.internal.DataSourceListenerComponent",
-//            service = RequiredCapabilityListener.class,
-//            cardinality = ReferenceCardinality.MANDATORY,
-//            policy = ReferencePolicy.DYNAMIC,
-//            unbind = "deactivate"
-//    )
 @Reference(
 		name = "org.wso2.carbon.datasource.jndi",
 		service = JNDIContextManager.class,
@@ -80,6 +77,17 @@ public class BPMNServiceComponent {
 
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
+
+	        BPMNDeployer customDeployer = new BPMNDeployer();
+	        	        customDeployer.init();
+	        	        File ab = new File("/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
+	        	        Artifact artifact =new Artifact( ab);
+	        	       ArtifactType artifactType = new ArtifactType<>("bar");
+	        	        artifact.setKey("HelloWorld.bar");
+	        	        artifact.setType(artifactType);
+	                   customDeployer.deploy(artifact);
+	        	        log.error("Deployed in c5");
+
             // DataSourceHandler dataSourceHandler = new DataSourceHandler();
             //dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
             // dataSourceHandler.closeDataSource();
