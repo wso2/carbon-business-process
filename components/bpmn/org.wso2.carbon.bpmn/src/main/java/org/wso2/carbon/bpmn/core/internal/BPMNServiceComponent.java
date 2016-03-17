@@ -60,15 +60,15 @@ import java.io.File;
 public class BPMNServiceComponent {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNServiceComponent.class);
-@Reference(
-		name = "org.wso2.carbon.datasource.jndi",
-		service = JNDIContextManager.class,
-		cardinality = ReferenceCardinality.AT_LEAST_ONE,
-		policy = ReferencePolicy.DYNAMIC,
-		unbind = "onJNDIUnregister"
-)
+//@Reference(
+//		name = "org.wso2.carbon.datasource.jndi",
+//		service = JNDIContextManager.class,
+//		cardinality = ReferenceCardinality.AT_LEAST_ONE,
+//		policy = ReferencePolicy.DYNAMIC,
+//		unbind = "deactivate"
+//)
     protected void activate(ComponentContext ctxt) {
-        log.info("Initializing the BPMN core component...");
+        log.error("Initializing the BPMN core component...");
         try {
             // BundleContext bundleContext = ctxt.getBundleContext();
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
