@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
-import org.wso2.carbon.kernel.deployment.Artifact;
-import org.wso2.carbon.kernel.deployment.ArtifactType;
+//import org.wso2.carbon.kernel.deployment.Artifact;
+//import org.wso2.carbon.kernel.deployment.ArtifactType;
 //import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 
-import java.io.File;
+//import java.io.File;
 
 //import org.wso2.carbon.bpmn.core.BPMNEngineService;
 //import org.wso2.carbon.bpmn.core.db.*;
@@ -88,14 +88,14 @@ public class BPMNServiceComponent {
 
             BPMNDeployer customDeployer = new BPMNDeployer();
             customDeployer.init();
-            File ab = new File(
-                    "/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
-            Artifact artifact = new Artifact(ab);
-            ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("HelloWorld.bar");
-            artifact.setType(artifactType);
-            customDeployer.deploy(artifact);
-            log.error("Deployed in c5");
+            //File ab = new File(
+                   // "/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
+            //Artifact artifact = new Artifact(ab);
+            //ArtifactType artifactType = new ArtifactType<>("bar");
+            //artifact.setKey("HelloWorld.bar");
+           // artifact.setType(artifactType);
+           // customDeployer.deploy(artifact);
+           // log.error("Deployed in c5");
 
             // DataSourceHandler dataSourceHandler = new DataSourceHandler();
             //dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
