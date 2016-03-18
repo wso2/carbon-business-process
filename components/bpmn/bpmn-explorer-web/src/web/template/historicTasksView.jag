@@ -44,8 +44,18 @@
 		    	onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
 	    			<td><%=task[i].id%></td>
 					<td><%=task[i].processDefinitionId%></td>
-					<td><%=task[i].startTime%></td>
-					<td><%=task[i].endTime%></td>
+					<td>
+					    <script>
+							var startDate = new Date(Number("<%=task[i].startTime%>"));
+							document.write(startDate);
+						</script>
+                    </td>
+					<td>
+					    <script>
+							var endDate = new Date(Number("<%=task[i].endTime%>"));
+							document.write(endDate);
+						</script>
+                    </td>
 		    	</tr>
 		    	<% } %>
 		    </tbody>

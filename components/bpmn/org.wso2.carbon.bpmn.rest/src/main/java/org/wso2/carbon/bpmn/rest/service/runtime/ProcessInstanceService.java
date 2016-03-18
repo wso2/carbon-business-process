@@ -40,6 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
+import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
@@ -47,9 +48,11 @@ import org.wso2.carbon.bpmn.rest.common.exception.BPMNRestException;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
+import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
@@ -118,6 +121,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             if (processInstanceCreateRequest.getProcessDefinitionId() != null) {
                 throw new ActivitiIllegalArgumentException("TenantId can only be used with either processDefinitionKey or message.");
             }
+        } else {
+            //if no tenantId, it must be from definitionId
+            if(processInstanceCreateRequest.getProcessDefinitionId() == null){
+                throw new ActivitiIllegalArgumentException("TenantId should be specified to be used with either " +
+                        "processDefinitionKey or message.");
+            }
         }
 
         //Have to add the validation part here
@@ -134,10 +143,34 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             if (log.isDebugEnabled()) {
                 log.debug("ProcessInstanceCreation check:" + dataResponse.getSize());
             }
-            if (dataResponse.getSize() > 0) {
-                dataResponse.setMessage("Returned the existing instances");
-                return Response.ok().entity(dataResponse).build();
+
+            int dataResponseSize = dataResponse.getSize();
+
+            if(dataResponseSize > 0){
+
+                if(processInstanceCreateRequest.getCorrelate()){
+
+                    if(dataResponseSize != 1){
+                        String responseMessage = "Join correlation failed as there are more than one instances with " +
+                                "given variables state";
+                        throw new NotFoundException(Response.ok().entity(responseMessage).status(Response.Status
+                                .NOT_FOUND).build());
+                    }
+
+                    //process the correlation aspect now
+
+                    if(processInstanceCreateRequest.getMessageName() == null){
+                        String responseMessage = "Join correlation failed as message name has not been mentioned";
+                        throw new ActivitiIllegalArgumentException(responseMessage);
+                    }
+
+                    return performCorrelation(processInstanceCreateRequest);
+                } else {
+                    dataResponse.setMessage("Returned the existing instances");
+                    return Response.ok().entity(dataResponse).build();
+                }
             }
+
         }
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
@@ -152,6 +185,21 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 startVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
             }
         }
+
+        //updated the additional variables
+        if (processInstanceCreateRequest.getAdditionalVariables() != null) {
+            if(startVariables == null){
+                startVariables = new HashMap<>();
+            }
+            for (RestVariable variable : processInstanceCreateRequest.getAdditionalVariables()) {
+                if (variable.getName() == null) {
+                    throw new ActivitiIllegalArgumentException("Additional Variable name is required.");
+                }
+                startVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
+            }
+        }
+
+
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
@@ -394,7 +442,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
 
-        RestVariable result = null;
+        RestVariable result;
         try {
             result = setBinaryVariable(multipartBody, execution, RestResponseFactory.VARIABLE_PROCESS, false);
         } catch (IOException | ServletException e) {
@@ -426,7 +474,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             }
         } else if (MediaType.APPLICATION_XML.equals(MediaType.APPLICATION_JSON)) {
 
-            JAXBContext jaxbContext = null;
+            JAXBContext jaxbContext;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -446,10 +494,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         if (!restVariable.getName().equals(variableName)) {
             throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
         }
-        RestVariable result = setSimpleVariable(restVariable, execution, false);
         // }
 
-        return result;
+        return setSimpleVariable(restVariable, execution, false);
     }
 
     @POST
@@ -479,7 +526,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     HttpServletRequest httpServletRequest) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
-        Response response = null;
+        Response response;
         try {
             response = createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS,
                     httpServletRequest);
@@ -516,7 +563,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                                                     @Context HttpServletRequest httpServletRequest) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
-        Object result = null;
+        Object result;
         try {
             result = createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, httpServletRequest);
         } catch (IOException | ServletException e) {
@@ -570,7 +617,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     protected byte[] getVariableDataByteArray(Execution execution, String variableName, String scope, Response.ResponseBuilder responseBuilder) {
 
         try {
-            byte[] result = null;
+            byte[] result;
 
             RestVariable variable = getVariableFromRequest(execution, variableName, scope, true);
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
@@ -618,7 +665,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         Response.ResponseBuilder responseBuilder = Response.ok();
         Object result = setBinaryVariable(multipartBody, execution, variableType, !override);
-        ;
         responseBuilder.entity(result);
         return responseBuilder.status(Response.Status.CREATED).build();
     }
@@ -630,7 +676,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         if (debugEnabled) {
             log.debug("httpServletRequest.getContentType():" + httpServletRequest.getContentType());
         }
-        Object result = null;
         Response.ResponseBuilder responseBuilder = Response.ok();
 
         if (debugEnabled) {
@@ -652,7 +697,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                     inputVariables.add(restVariable);
                 }
             } else if (MediaType.APPLICATION_XML.equals(contentType)) {
-                JAXBContext jaxbContext = null;
+                JAXBContext jaxbContext;
                 try {
                     jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -686,8 +731,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         RestVariable.RestVariableScope sharedScope = null;
-        RestVariable.RestVariableScope varScope = null;
-        Map<String, Object> variablesToSet = new HashMap<String, Object>();
+        RestVariable.RestVariableScope varScope;
+        Map<String, Object> variablesToSet = new HashMap<>();
 
         for (RestVariable var : inputVariables) {
             // Validate if scopes match
@@ -774,7 +819,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 String dispositionName = contentDispositionHeaderValueMap.get("name");
                 DataHandler dataHandler = attachment.getDataHandler();
 
-                OutputStream outputStream = null;
+                OutputStream outputStream;
 
                 if ("name".equals(dispositionName)) {
                     try {
@@ -817,7 +862,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 if (contentType != null) {
                     if ("file".equals(dispositionName)) {
 
-                        InputStream inputStream = null;
+                        InputStream inputStream;
                         try {
                             inputStream = dataHandler.getInputStream();
                         } catch (IOException e) {
@@ -1025,7 +1070,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
     protected List<RestVariable> processVariables(Execution execution, String scope, int variableType) {
         List<RestVariable> result = new ArrayList<RestVariable>();
-        Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
+        Map<String, RestVariable> variableMap = new HashMap<>();
 
         // Check if it's a valid execution to get the variables for
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
@@ -1171,7 +1216,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             if (userId != null) {
                 valueExistsForUserId = true;
                 if (userId.contains("$")) {
-                    userId = resolveVariable(processInstanceCreateRequest.getVariables(), userId);
+                    userId = resolveVariable(processInstanceCreateRequest, userId);
                 }
                 if ( !userId.isEmpty() && ( userId.equals(userName) || userId.equals(userNameWithTenantDomain)) ) {
                     return true;
@@ -1184,7 +1229,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             if (groupId != null) {
                 valueExistsForGroupId = true;
                 if (groupId.contains("$")) {
-                    groupId = resolveVariable(processInstanceCreateRequest.getVariables(), groupId);
+                    groupId = resolveVariable(processInstanceCreateRequest, groupId);
                 }
 
                 for (Group identityGroup:groupList){
@@ -1202,7 +1247,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         return false;
     }
 
-    private String resolveVariable(List<RestVariable> variableList, String resolvingName) {
+    private String resolveVariable(ProcessInstanceCreateRequest processInstanceCreateRequest, String resolvingName) {
 
         int initialIndex = resolvingName.indexOf("{");
         int lastIndex = resolvingName.indexOf("}");
@@ -1212,6 +1257,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             variableName = resolvingName.substring(initialIndex + 1, lastIndex);
         }
 
+        List<RestVariable> variableList = processInstanceCreateRequest.getVariables();
         if(variableList != null && variableName != null){
             for (RestVariable restVariable:variableList){
                 if(restVariable.getName().equals(variableName)){
@@ -1220,7 +1266,61 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             }
         }
 
+        variableList = processInstanceCreateRequest.getAdditionalVariables();
+        if(variableList != null && variableName != null){
+            for (RestVariable restVariable:variableList){
+                if(restVariable.getName().equals(variableName)){
+                    return restVariable.getValue().toString();
+                }
+            }
+        }
         return "";
     }
 
+    private Response performCorrelation(ProcessInstanceCreateRequest processInstanceCreateRequest){
+
+        CorrelationActionRequest correlationActionRequest = new CorrelationActionRequest();
+
+        String requestValue = processInstanceCreateRequest.getProcessDefinitionId();
+        if( requestValue != null){
+            correlationActionRequest.setProcessDefinitionId(processInstanceCreateRequest.getProcessDefinitionId());
+        }
+
+        requestValue = processInstanceCreateRequest.getProcessDefinitionKey();
+        if(requestValue != null){
+            correlationActionRequest.setProcessDefinitionKey(requestValue);
+        }
+
+        if(processInstanceCreateRequest.isCustomTenantSet()){
+            correlationActionRequest.setTenantId(processInstanceCreateRequest.getTenantId());
+        }
+
+        requestValue = processInstanceCreateRequest.getMessageName();
+        if(requestValue != null){
+            correlationActionRequest.setMessageName(requestValue);
+        }
+
+        List<RestVariable> variables = processInstanceCreateRequest.getVariables();
+        if(variables != null){
+            RestResponseFactory restResponseFactory = new RestResponseFactory();
+            List<QueryVariable> correlationVariableList = new ArrayList<>();
+            for (RestVariable variable:variables){
+                QueryVariable correlationVariable = new QueryVariable();
+                correlationVariable.setName(variable.getName());
+                correlationVariable.setOperation("equals");
+                correlationVariable.setType(variable.getType());
+                correlationVariable.setValue(restResponseFactory.getVariableValue(variable));
+                correlationVariableList.add(correlationVariable);
+            }
+            correlationActionRequest.setCorrelationVariables(correlationVariableList);
+        }
+
+        variables = processInstanceCreateRequest.getAdditionalVariables();
+        if(variables != null){
+            correlationActionRequest.setVariables(variables);
+        }
+
+        correlationActionRequest.setAction(CorrelationActionRequest.ACTION_MESSAGE_EVENT_RECEIVED);
+        return new CorrelationProcess().getQueryResponse(correlationActionRequest, uriInfo);
+    }
 }
