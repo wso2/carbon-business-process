@@ -74,4 +74,7 @@ public class AnalyticsPublisherConstants {
     public static final String TRUE = "true";
     public static final String VALUE = "value";
     public static final String PROPERTY = "property";
+
+    // Process variables publisher related constants
+    public static final String GREG_PATH = "/_system/governance/";
 }

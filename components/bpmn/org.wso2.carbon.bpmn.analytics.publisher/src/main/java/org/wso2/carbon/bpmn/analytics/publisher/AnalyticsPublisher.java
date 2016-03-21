@@ -17,6 +17,11 @@ package org.wso2.carbon.bpmn.analytics.publisher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
@@ -34,9 +39,16 @@ import org.wso2.carbon.databridge.commons.exception.TransportException;
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.registry.core.session.UserRegistry;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -140,7 +152,8 @@ public class AnalyticsPublisher {
 			            }
 			            if (bpmnProcessInstances != null && bpmnProcessInstances.length > 0) {
 				            for (BPMNProcessInstance instance : bpmnProcessInstances) {
-					            publishBPMNProcessInstanceEvent(instance);
+					            publishBPMNProcessInstanceGenericEvent(instance);
+					            publishBPMNProcessInstanceProcVariablesEvent(instance);
 				            }
 			            }
 			            BPMNTaskInstance[] bpmnTaskInstances = analyticsPublishServiceUtils.getCompletedTaskInstances();
@@ -175,7 +188,7 @@ public class AnalyticsPublisher {
      *
      * @param bpmnProcessInstance BPMN process instance to retrieve the data for payload param of data publisher's publish method
      */
-    private void publishBPMNProcessInstanceEvent(BPMNProcessInstance bpmnProcessInstance) {
+    private void publishBPMNProcessInstanceGenericEvent(BPMNProcessInstance bpmnProcessInstance) {
 
         Object[] payload = new Object[]{
                 bpmnProcessInstance.getProcessDefinitionId(),
@@ -195,6 +208,86 @@ public class AnalyticsPublisher {
             log.debug("Published BPMN process instance event... " + payload.toString());
         }
     }
+
+	private void publishBPMNProcessInstanceProcVariablesEvent(BPMNProcessInstance bpmnProcessInstance) {
+		//get a list of names of variables which are configured for analytics from registry
+
+
+
+		Object[] payload = new Object[]{
+				//bpmnProcessInstance.getProcessDefinitionId(),
+				bpmnProcessInstance.getInstanceId(),
+
+				bpmnProcessInstance.getStartActivityId(),
+				//bpmnProcessInstance.getStartUserId(),
+				//bpmnProcessInstance.getStartTime().toString(),
+				//bpmnProcessInstance.getEndTime().toString(),
+				//bpmnProcessInstance.getDuration(),
+				//bpmnProcessInstance.getTenantId()
+		};
+		if (log.isDebugEnabled()) {
+			log.debug("Start to Publish BPMN process instance event... " + payload.toString());
+		}
+		dataPublisher.tryPublish(getProcessStreamId(), getMeta(), null, payload);
+		if (log.isDebugEnabled()) {
+			log.debug("Published BPMN process instance event... " + payload.toString());
+		}
+	}
+
+	public String getProcessVariablesList(String resourcePath) {
+		String resourceString = "";
+		try {
+			/*//
+			Registry registry =
+					BPMNAnalyticsHolder.getInstance().getRegistryService().getGovernanceSystemRegistry();
+			//*/
+
+			RegistryService registryService =
+					BPMNAnalyticsHolder.getInstance().getRegistryService();
+			if (registryService != null) {
+				UserRegistry reg = registryService.getGovernanceSystemRegistry();
+				resourcePath = resourcePath.substring(AnalyticsPublisherConstants.GREG_PATH.length());
+				Resource resourceAsset = reg.get(resourcePath);
+				String resourceContent = new String((byte[]) resourceAsset.getContent());
+
+				JSONObject conObj = new JSONObject();
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder;
+				builder = factory.newDocumentBuilder();
+				Document document =
+						builder.parse(new InputSource(new StringReader(resourceContent)));
+
+				JSONArray variableArray = new JSONArray();
+
+				conObj.put("processVariables", variableArray);
+
+				NodeList processVariableElements =
+						((Element) document.getFirstChild()).getElementsByTagName("process_variable");
+
+				if (processVariableElements.getLength() != 0) {
+					for (int i = 0; i < processVariableElements.getLength(); i++) {
+						Element processVariableElement = (Element) processVariableElements.item(i);
+						String processVariableName =
+								processVariableElement.getElementsByTagName("name").item(0)
+										.getTextContent();
+						String processVariableType =
+								processVariableElement.getElementsByTagName("type").item(0)
+										.getTextContent();
+
+						JSONObject processVariable = new JSONObject();
+						processVariable.put("name", processVariableName);
+						processVariable.put("type", processVariableType);
+						variableArray.put(processVariable);
+					}
+				}
+				resourceString = conObj.toString();
+			}
+		} catch (Exception e) {
+			String errMsg="Failed to get the process variables list";
+			log.error(errMsg,e);
+		}
+		return resourceString;
+	}
 
     /**
      * Publish task instance as events to the data receiver
