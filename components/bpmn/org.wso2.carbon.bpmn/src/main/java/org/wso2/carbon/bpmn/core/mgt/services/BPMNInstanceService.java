@@ -617,6 +617,7 @@ public class BPMNInstanceService {
             log.info(msg);
             return null;
         }
+
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
                 .getDeployedProcessDefinition(processInstances.get(0).getProcessDefinitionId());
 
