@@ -37,6 +37,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.191</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -191,6 +196,7 @@
                                 <importBundleDef>net.minidev:json-smart:2.2</importBundleDef>
                                 <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec</importBundleDef>
                                 <importBundleDef>org.codehaus.woodstox:stax2-api</importBundleDef>
+                                <importBundleDef>com.h2database:h2</importBundleDef>
                             </importBundles>
 
 
