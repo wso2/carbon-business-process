@@ -23,14 +23,18 @@ import org.apache.axis2.deployment.repository.util.DeploymentFileData;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.CarbonUtils;
 
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 
 /**
@@ -104,6 +108,71 @@ public class BPMNDeployer extends AbstractDeployer {
             String errorMessage = "Failed to deploy the archive: " + deploymentFileData.getAbsolutePath();
             throw new DeploymentException(errorMessage, e);
         }
+
+        /*/////////Rsource adder tester
+        String processId="tttt";
+        //Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
+        Registry configRegistry = null;
+        try {
+            configRegistry = registryService.getConfigSystemRegistry(tenantId);
+            Resource deploymentEntryorProcesses=configRegistry.newCollection();
+
+            //create a resource registry collection "/bpmn/processes/" for processes if not available
+            if (!configRegistry.resourceExists("/bpmn/processes")) {
+                configRegistry.put("/bpmn/processes/",deploymentEntryorProcesses);
+            }
+
+            Resource deploymentEntryForProcess=configRegistry.newCollection();
+
+            //create a resource registry collection "/bpmn/processes/" for processes if not available
+            if (!configRegistry.resourceExists("/bpmn/processes/"+processId+"/")) {   //"/bpmn/processes/fff"
+                configRegistry.put("/bpmn/processes/"+processId+"/",deploymentEntryForProcess);
+            }
+
+            //create a resource registry collection  for the process in collection path "/bpmn/processes/"
+
+
+           //create a new resource text file to keep process variables
+            Resource procVariableJsonResource=configRegistry.newResource();
+            //File processFile=new File(processId+"xml")
+            String processVariablesJSONString= "[ { \"type\": \"home\", \"number\": \"212 555-1234\" }, { \"type\": \"fax\", \"number\": \"646 555-4567\" } ]";
+
+            //JSONArray jsonArray=new JSONArray(processVariablesJSONString);
+
+            procVariableJsonResource.setContent(processVariablesJSONString);
+
+            procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
+
+            configRegistry.put("/bpmn/processes/"+processId+"/filename.json", procVariableJsonResource);
+        } catch (org.wso2.carbon.registry.api.RegistryException e) {
+            e.printStackTrace();
+        }*/
+
+        //test2
+       // Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        String procesDefinitionId="tttt";
+        RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
+        Registry configRegistry = null;
+
+        try {
+            configRegistry = registryService.getConfigSystemRegistry(tenantId);
+        } catch (org.wso2.carbon.registry.core.exceptions.RegistryException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Resource processRegistryResource=configRegistry.get("bpmn/processes/"+procesDefinitionId+"/"+"filename.json");
+            //log.info("\ncontent:"+processRegistryResource.getContent().toString());
+
+            Object content = processRegistryResource.getContent();
+            String output = new String((byte[]) content);
+            log.info("\ncontent:"+output);
+
+        } catch (org.wso2.carbon.registry.api.RegistryException e) {
+            e.printStackTrace();
+        }
+
     }
 
 	/**

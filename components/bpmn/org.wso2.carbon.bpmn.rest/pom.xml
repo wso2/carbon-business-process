@@ -213,6 +213,11 @@
             <artifactId>commons-lang3</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
+            <version>4.4.8-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

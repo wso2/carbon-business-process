@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
-
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
@@ -30,11 +29,14 @@ import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.core.service.RegistryService;
+import javax.ws.rs.core.MediaType;
 
 /**
  * AnalyticsPublishServiceUtils is used by the AnalyticsPublisher to fetch the BPMN process instances and the task instances
@@ -319,6 +321,79 @@ public class AnalyticsPublishServiceUtils {
         }
         return time;
     }
+
+    public static void saveDASconfiguredProcessVariablesinRegistry(String processId, String processVariablesJSONString ){
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
+        Registry configRegistry = null;
+        try {
+            configRegistry = registryService.getConfigSystemRegistry(tenantId);
+            Resource deploymentEntryorProcesses=configRegistry.newCollection();
+
+            //create a resource registry collection "/bpmn/processes/" for processes if not available
+            if (!configRegistry.resourceExists("/bpmn/processes")) {
+                configRegistry.put("/bpmn/processes/",deploymentEntryorProcesses);
+            }
+
+            //create a resource registry collection "/bpmn/processes/<processID>/" for the specific process if not available
+            Resource deploymentEntryForProcess=configRegistry.newCollection();
+            if (!configRegistry.resourceExists("/bpmn/processes/"+processId+"/")) {   //"/bpmn/processes/fff"
+                configRegistry.put("/bpmn/processes/"+processId+"/",deploymentEntryForProcess);
+            }
+
+            //create a new resource text file to keep process variables
+            Resource procVariableJsonResource=configRegistry.newResource();
+            //processVariablesJSONString= "[ { \"type\": \"home\", \"number\": \"212 555-1234\" }, { \"type\": \"fax\", \"number\": \"646 555-4567\" } ]";
+
+            //JSONArray jsonArray=new JSONArray(processVariablesJSONString);
+
+            procVariableJsonResource.setContent(processVariablesJSONString);
+            procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
+            configRegistry.put("/bpmn/processes/"+processId+"/processs_variables.json", procVariableJsonResource);
+        } catch (RegistryException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+   /* public ResponseHolder getAllProcesses() {
+        //Get a list of the deployed processes
+        List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
+        List listOfProcesses = new ArrayList<>();
+        ResponseHolder response = new ResponseHolder();
+        for (ProcessDefinition processDefinition : deployements) {
+            listOfProcesses.add(processDefinition.getId());
+        }
+
+        response.setData(listOfProcesses);
+        return response;
+    }*/
+
+   /* FileInputStream fileInputStream = null;
+    try {
+        org.wso2.carbon.registry.core.Resource latestHumanTaskArchive = configRegistry.newResource();
+        fileInputStream = new FileInputStream(humanTaskFile);
+        latestHumanTaskArchive.setContent(fileInputStream);
+        configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
+                (humanTaskDeploymentUnit.getPackageName()), latestHumanTaskArchive);
+    } catch (FileNotFoundException ex) {
+        String errMsg = "HumanTask package zip file couldn't found on given location " +
+                humanTaskFile.getAbsolutePath();
+        throw new HumanTaskStoreException(errMsg, ex);
+    } catch (
+    org.wso2.carbon.registry.core.exceptions.RegistryException ex) {
+        String errMsg = "Exception occurred while adding latest archive to registry collection";
+        throw new org.wso2.carbon.registry.core.exceptions.RegistryException(errMsg, ex);
+    } finally {
+        if (fileInputStream != null) {
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                log.warn("Cannot close file input stream.", e);
+            }
+        }
+    }*/
 }
 
 

@@ -27,6 +27,7 @@ import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNTaskInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.utils.AnalyticsPublishServiceUtils;
 import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
@@ -39,7 +40,7 @@ import org.wso2.carbon.databridge.commons.exception.TransportException;
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
-import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.xml.sax.InputSource;
@@ -50,6 +51,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -210,8 +212,12 @@ public class AnalyticsPublisher {
     }
 
 	private void publishBPMNProcessInstanceProcVariablesEvent(BPMNProcessInstance bpmnProcessInstance) {
-		//get a list of names of variables which are configured for analytics from registry
+		String processDefinitionId=bpmnProcessInstance.getProcessDefinitionId();
 
+
+
+		//get a list of names of variables which are configured for analytics from registry
+		getProcessVariablesList(processDefinitionId);
 
 
 		Object[] payload = new Object[]{
@@ -232,61 +238,6 @@ public class AnalyticsPublisher {
 		if (log.isDebugEnabled()) {
 			log.debug("Published BPMN process instance event... " + payload.toString());
 		}
-	}
-
-	public String getProcessVariablesList(String resourcePath) {
-		String resourceString = "";
-		try {
-			/*//
-			Registry registry =
-					BPMNAnalyticsHolder.getInstance().getRegistryService().getGovernanceSystemRegistry();
-			//*/
-
-			RegistryService registryService =
-					BPMNAnalyticsHolder.getInstance().getRegistryService();
-			if (registryService != null) {
-				UserRegistry reg = registryService.getGovernanceSystemRegistry();
-				resourcePath = resourcePath.substring(AnalyticsPublisherConstants.GREG_PATH.length());
-				Resource resourceAsset = reg.get(resourcePath);
-				String resourceContent = new String((byte[]) resourceAsset.getContent());
-
-				JSONObject conObj = new JSONObject();
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder builder;
-				builder = factory.newDocumentBuilder();
-				Document document =
-						builder.parse(new InputSource(new StringReader(resourceContent)));
-
-				JSONArray variableArray = new JSONArray();
-
-				conObj.put("processVariables", variableArray);
-
-				NodeList processVariableElements =
-						((Element) document.getFirstChild()).getElementsByTagName("process_variable");
-
-				if (processVariableElements.getLength() != 0) {
-					for (int i = 0; i < processVariableElements.getLength(); i++) {
-						Element processVariableElement = (Element) processVariableElements.item(i);
-						String processVariableName =
-								processVariableElement.getElementsByTagName("name").item(0)
-										.getTextContent();
-						String processVariableType =
-								processVariableElement.getElementsByTagName("type").item(0)
-										.getTextContent();
-
-						JSONObject processVariable = new JSONObject();
-						processVariable.put("name", processVariableName);
-						processVariable.put("type", processVariableType);
-						variableArray.put(processVariable);
-					}
-				}
-				resourceString = conObj.toString();
-			}
-		} catch (Exception e) {
-			String errMsg="Failed to get the process variables list";
-			log.error(errMsg,e);
-		}
-		return resourceString;
 	}
 
     /**
@@ -473,5 +424,81 @@ public class AnalyticsPublisher {
 	private String getProcessStreamId() {
 		return DataBridgeCommonsUtils.generateStreamId(AnalyticsPublisherConstants.PROCESS_STREAM_NAME,
 		                                               AnalyticsPublisherConstants.STREAM_VERSION);
+	}
+
+	public HashMap getProcessVariablesList(String procesDefinitionId) {
+
+		Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+		RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
+		Registry configRegistry = null;
+
+		try {
+			configRegistry = registryService.getConfigSystemRegistry(tenantId);
+		} catch (org.wso2.carbon.registry.core.exceptions.RegistryException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			Resource processRegistryResource=configRegistry.get("bpmn/processes/"+procesDefinitionId+"/"+"processs_variables.json");
+			log.info("content:"+processRegistryResource.getContent().toString());
+		} catch (RegistryException e) {
+			e.printStackTrace();
+		}
+
+/*
+
+		String resourceString = "";
+		try {
+			*//*//*/
+		//Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService().getGovernanceSystemRegistry();
+			/*//*//*
+
+			RegistryService registryService =
+					BPMNAnalyticsHolder.getInstance().getRegistryService();
+			if (registryService != null) {
+				UserRegistry reg = registryService.getConfigSystemRegistry();//GovernanceSystemRegistry();
+				resourcePath = ;//resourcePath.substring(AnalyticsPublisherConstants.GREG_PATH.length());
+				Resource resourceAsset = reg.get(resourcePath);
+				String resourceContent = new String((byte[]) resourceAsset.getContent());
+
+				JSONObject conObj = new JSONObject();
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder;
+				builder = factory.newDocumentBuilder();
+				Document document =
+						builder.parse(new InputSource(new StringReader(resourceContent)));
+
+				JSONArray variableArray = new JSONArray();
+
+				conObj.put("processVariables", variableArray);
+
+				NodeList processVariableElements =
+						((Element) document.getFirstChild()).getElementsByTagName("process_variable");
+
+				if (processVariableElements.getLength() != 0) {
+					for (int i = 0; i < processVariableElements.getLength(); i++) {
+						Element processVariableElement = (Element) processVariableElements.item(i);
+						String processVariableName =
+								processVariableElement.getElementsByTagName("name").item(0)
+										.getTextContent();
+						String processVariableType =
+								processVariableElement.getElementsByTagName("type").item(0)
+										.getTextContent();
+
+						JSONObject processVariable = new JSONObject();
+						processVariable.put("name", processVariableName);
+						processVariable.put("type", processVariableType);
+						variableArray.put(processVariable);
+					}
+				}
+				resourceString = conObj.toString();
+			}
+		} catch (Exception e) {
+			String errMsg="Failed to get the process variables list";
+			log.error(errMsg,e);
+		}
+		return resourceString;
+	}*/
+		return  null;
 	}
 }
