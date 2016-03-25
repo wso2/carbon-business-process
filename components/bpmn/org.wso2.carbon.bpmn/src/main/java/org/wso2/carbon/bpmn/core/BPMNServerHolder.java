@@ -33,8 +33,6 @@ public final class BPMNServerHolder {
     private static BPMNServerHolder bpmnServerHolder = new BPMNServerHolder();
 
     private ProcessEngine engine = null;
-   // private TenantManager tenantManager = null;
-    private RegistryService registryService = null;
 
 
     private BPMNServerHolder() {
@@ -52,23 +50,4 @@ public final class BPMNServerHolder {
         this.engine = engine;
     }
 
-   /* public TenantManager getTenantManager() {
-        return tenantManager;
-    }
-
-    public void setTenantManager(TenantManager tenantManager) {
-        this.tenantManager = tenantManager;
-    }
-
-    public void setRegistryService(RegistryService registryService) {
-        this.registryService = registryService;
-    }
-
-    public void unsetRegistryService(RegistryService registryService) {
-        this.registryService = null;
-    }
-
-    public RegistryService getRegistryService() {
-        return registryService;
-    }*/
 }
