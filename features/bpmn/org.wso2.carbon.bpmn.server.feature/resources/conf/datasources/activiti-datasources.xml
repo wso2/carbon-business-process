@@ -1,7 +1,8 @@
 <datasources-configuration xmlns:svns="http://org.wso2.securevault/configuration">
   
     <providers>
-        <provider>org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceReader</provider>
+        <!--<provider>org.wso2.carbon.datasource.rdbms.hikari.HikariDataSourceReader</provider>-->
+        <provider>org.wso2.carbon.datasource.rdbms.tomcat.TomcatSDataSourceReader</provider>
     </providers>
   
     <datasources>
@@ -10,7 +11,7 @@
             <name>ACTIVITI_DB</name>
             <description>The datasource used for activiti engine</description>
             <jndiConfig>
-                <name>jdbc/ActivitiDB</name>
+                <name>java:comp/jdbc/ActivitiDB</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
