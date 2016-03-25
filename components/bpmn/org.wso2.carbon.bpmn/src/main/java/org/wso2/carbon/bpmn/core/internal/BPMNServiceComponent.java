@@ -34,6 +34,7 @@ import org.osgi.service.jndi.JNDIContextManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
@@ -56,15 +57,10 @@ import javax.naming.NamingException;
 
 @Component(
         name = "org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent",
-        immediate = true,
-        service = RequiredCapabilityListener.class,
-        property = {
-                "capability-name=org.wso2.carbon.datasource.core.api.DataSourceService," +
-                        "org.wso2.carbon.datasource.jndi.JNDIContextManager",
-                "component-key=carbon-bpmn-service"
-        }
+        immediate = true
 )
-public class BPMNServiceComponent implements RequiredCapabilityListener {
+
+public class BPMNServiceComponent  {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNServiceComponent.class);
     private DataSourceService datasourceService;
@@ -125,13 +121,18 @@ public class BPMNServiceComponent implements RequiredCapabilityListener {
     @Activate
     protected void activate(ComponentContext ctxt) {
         log.info("BPMN core component activator...");
-
         try {
             this.bundleContext = ctxt.getBundleContext();
+            registerJNDIContextForActiviti();
+            BPMNServerHolder holder = BPMNServerHolder.getInstance();
+            ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
+            holder.setEngine(activitiEngineBuilder.buildEngine());
+            BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
+            bpmnEngineService.setProcessEngine(activitiEngineBuilder.getProcessEngine());
+            bundleContext.registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
 
-
-        } catch (Throwable e) {
-            log.error("Failed to initialize the BPMN core component.", e);
+        }catch (Throwable t) {
+            log.error("Error initializing bpmn component " + t);
         }
     }
 
@@ -141,32 +142,15 @@ public class BPMNServiceComponent implements RequiredCapabilityListener {
         ProcessEngines.destroy();
     }
 
-    @Override
-    public void onAllRequiredCapabilitiesAvailable() {
-        log.info("OnAllRequiredCapabilitiesAvailable -> Initialzing the bpmn engine  ....");
-        try {
-
-            registerJNDIContextForActiviti();
-            BPMNServerHolder holder = BPMNServerHolder.getInstance();
-            ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
-            holder.setEngine(activitiEngineBuilder.buildEngine());
-            BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
-            bpmnEngineService.setProcessEngine(activitiEngineBuilder.getProcessEngine());
-            bundleContext.registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
-
-
-        } catch (DataSourceException | BPSFault | NamingException e ) {
-                log.error("Error on initalizing the bpmn component " + e.getMessage() + " " + e);
-        }
-
-    }
-
     private void registerJNDIContextForActiviti() throws DataSourceException, NamingException {
-        DataSourceMetadata activiti_db = datasourceManagementService.getDataSource("ACTIVITI_DB");
+        DataSourceMetadata activiti_db = datasourceManagementService.getDataSource(
+                BPMNConstants.BPMN_DB_NAME);
         JNDIConfig jndiConfig = activiti_db.getJndiConfig();
         Context context = jndiContextManager.newInitialContext();
+
         Context subcontext = context.createSubcontext("java:comp/jdbc");
-        subcontext.bind("ActivitiDB", datasourceService.getDataSource("ACTIVITI_DB"));
+        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME,
+                datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
     }
 
 }
