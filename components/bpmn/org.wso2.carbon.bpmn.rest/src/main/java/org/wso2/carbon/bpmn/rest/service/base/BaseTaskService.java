@@ -12,22 +12,22 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
+ */
 
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import org.camunda.bpm.engine.*;
-import org.camunda.bpm.engine.impl.TaskQueryProperty;
-import org.camunda.bpm.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.camunda.bpm.engine.query.QueryProperty;
-import org.camunda.bpm.engine.task.DelegationState;
-import org.camunda.bpm.engine.task.Task;
-import org.camunda.bpm.engine.task.TaskQuery;
+import org.activiti.engine.*;
+import org.activiti.engine.impl.TaskQueryProperty;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
@@ -571,7 +571,8 @@ public class BaseTaskService {
                     taskId, RestResponseFactory.VARIABLE_TASK, includeBinary, baseUri);
         }
     }
-
+	//todo
+/*
     protected RestVariable setBinaryVariable(MultipartBody multipartBody, Task
             task, boolean isNew, UriInfo uriInfo) throws IOException {
 
@@ -740,8 +741,9 @@ public class BaseTaskService {
         }
     }
 
-   */
-/* protected RestVariable setBinaryVariable(HttpServletRequest httpServletRequest, Task task,
+*/
+	/* TODO
+ protected RestVariable setBinaryVariable(HttpServletRequest httpServletRequest, Task task,
                                              boolean isNew, UriInfo uriInfo) throws IOException {
 
 
@@ -809,8 +811,8 @@ public class BaseTaskService {
         }
 
     }
-*//*
 
+*/
 
     protected void setVariable(Task task, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new variables. Existing variables should be updated using PUT
@@ -858,4 +860,4 @@ public class BaseTaskService {
         return variableFound;
     }
 }
-*/
+

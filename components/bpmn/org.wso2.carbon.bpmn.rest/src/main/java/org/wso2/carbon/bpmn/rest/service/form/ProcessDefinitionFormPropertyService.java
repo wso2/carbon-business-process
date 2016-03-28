@@ -39,9 +39,9 @@ import java.util.Map;
 public class ProcessDefinitionFormPropertyService {
 
     @GET
-    @Path("/{processDefinitionId}/properties")
+    @Path("/{process-definition-id}/properties")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getStartFormProperties(@PathParam("processDefinitionId") String processDefinitionId) {
+    public Response getStartFormProperties(@PathParam("process-definition-id") String processDefinitionId) {
 
         FormService formService = BPMNOSGIService.getFormService();
 

@@ -157,9 +157,9 @@ public class ManagementService {
     }
 
     @GET
-    @Path("/jobs/{jobId}/exception-stacktrace")
+    @Path("/jobs/{job-id}/exception-stacktrace")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String getJobStacktrace(@PathParam("jobId") String jobId) {
+    public String getJobStacktrace(@PathParam("job-id") String jobId) {
         Job job = getJobFromResponse(jobId);
 
         String stackTrace = managementService.getJobExceptionStacktrace(job.getId());
@@ -182,17 +182,17 @@ public class ManagementService {
     }
 
     @GET
-    @Path("/jobs/{jobId}")
+    @Path("/jobs/{job-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public JobResponse getJob(@PathParam("jobId") String jobId) {
+    public JobResponse getJob(@PathParam("job-id") String jobId) {
         Job job = getJobFromResponse(jobId);
 
         return restResponseFactory.createJobResponse(job, uriInfo.getBaseUri().toString());
     }
 
     @DELETE
-    @Path("/jobs/{jobId}")
-    public void deleteJob(@PathParam("jobId") String jobId) {
+    @Path("/jobs/{job-id}")
+    public void deleteJob(@PathParam("job-id") String jobId) {
         try {
             managementService.deleteJob(jobId);
         } catch(ActivitiObjectNotFoundException aonfe) {
@@ -203,10 +203,10 @@ public class ManagementService {
     }
 
     @POST
-    @Path("/jobs/{jobId}")
+    @Path("/jobs/{job-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void executeJobAction(@PathParam("jobId") String jobId, RestActionRequest actionRequest) {
+    public void executeJobAction(@PathParam("job-id") String jobId, RestActionRequest actionRequest) {
 
         if (actionRequest == null || ! EXECUTE_ACTION.equals(actionRequest.getAction())) {
             throw new ActivitiIllegalArgumentException("Invalid action, only 'execute' is supported.");
@@ -262,9 +262,9 @@ public class ManagementService {
     }
 
     @GET
-    @Path("/tables/{tableName}/columns")
+    @Path("/tables/{table-name}/columns")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public TableMetaData getTableMetaData(@PathParam("tableName") String tableName) {
+    public TableMetaData getTableMetaData(@PathParam("table-name") String tableName) {
         TableMetaData response = managementService.getTableMetaData(tableName);
 
         if (response == null) {
@@ -274,9 +274,9 @@ public class ManagementService {
     }
 
     @GET
-    @Path("/tables/{tableName}/data")
+    @Path("/tables/{table-name}/data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DataResponse getTableData(@PathParam("tableName") String tableName) {
+    public DataResponse getTableData(@PathParam("table-name") String tableName) {
 
         Map<String,String> allRequestParams = new HashMap<>();
         // Check if table exists before continuing
@@ -339,9 +339,9 @@ public class ManagementService {
     }
 
     @GET
-    @Path("/tables/{tableName}")
+    @Path("/tables/{table-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public TableResponse getTable(@PathParam("tableName") String tableName) {
+    public TableResponse getTable(@PathParam("table-name") String tableName) {
         Map<String, Long> tableCounts = managementService.getTableCount();
 
         TableResponse response = null;

@@ -14,18 +14,18 @@
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
  *  under the License.
- */
+ *//*
 
 package org.wso2.carbon.bpmn.rest.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.bpm.engine.IdentityService;
+import org.activiti.engine.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.configuration.security.AuthorizationPolicy;
-import org.apache.cxf.jaxrs.ext.RequestHandler;
-import org.apache.cxf.jaxrs.model.ClassResourceInfo;
-import org.apache.cxf.message.Message;
+//import org.apache.cxf.configuration.security.AuthorizationPolicy;
+//import org.apache.cxf.jaxrs.ext.RequestHandler;
+//import org.apache.cxf.jaxrs.model.ClassResourceInfo;
+//import org.apache.cxf.message.Message;
 import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
@@ -67,6 +67,7 @@ public class AuthenticationHandler implements RequestHandler {
      * @param classResourceInfo
      * @return Response
      */
+/*
     public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
 
@@ -115,6 +116,7 @@ public class AuthenticationHandler implements RequestHandler {
      * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when trying to authenticate
      *                                             the user
      */
+/*
     private boolean authenticate(String userName, String password) throws RestApiBasicAuthenticationException {
 
         boolean authStatus;
@@ -156,7 +158,7 @@ public class AuthenticationHandler implements RequestHandler {
             /* Upon successful authentication existing thread local carbon context
              * is updated to mimic the authenticated user */
 
-        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+     /*   PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         carbonContext.setUsername(tenantAwareUserName);
         carbonContext.setTenantId(tenantId);
         carbonContext.setTenantDomain(tenantDomain);
@@ -187,4 +189,4 @@ public class AuthenticationHandler implements RequestHandler {
     }
 
 
-}
+}*/

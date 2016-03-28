@@ -29,8 +29,6 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
-import org.apache.poi.util.IOUtils;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
@@ -41,10 +39,11 @@ import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
-
+import org.wso2.msf4j.HttpStreamHandler;
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
@@ -58,6 +57,8 @@ public class BaseExecutionService {
 
     private static final Log log = LogFactory.getLog(BaseExecutionService.class);
 
+	@Context //TODO:
+	HttpStreamHandler multiPartBody;
     //@Context
     //protected UriInfo uriInfo;
 
@@ -331,7 +332,10 @@ public class BaseExecutionService {
         Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
         runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
     }
+	//TODO:multipart
 
+
+/*
     protected RestVariable createBinaryExecutionVariable(Execution execution, int responseVariableType, UriInfo
             uriInfo, boolean isNew, MultipartBody multipartBody) {
 
@@ -502,7 +506,7 @@ public class BaseExecutionService {
                     .getMessage());
         }
 
-    }
+    }*/
 
     protected Response createExecutionVariable(Execution execution, boolean override, int variableType,
                                                HttpServletRequest httpServletRequest, UriInfo uriInfo) {

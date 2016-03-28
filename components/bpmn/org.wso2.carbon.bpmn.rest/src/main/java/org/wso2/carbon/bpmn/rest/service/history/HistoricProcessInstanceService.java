@@ -186,10 +186,10 @@ public class HistoricProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}")
+    @Path("/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
+    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
         HistoricProcessInstanceResponse historicProcessInstanceResponse = new RestResponseFactory()
                 .createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId),
                         uriInfo.getBaseUri().toString());
@@ -197,18 +197,18 @@ public class HistoricProcessInstanceService {
     }
 
     @DELETE
-    @Path("/{processInstanceId}")
-    public Response deleteProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
+    @Path("/{process-instance-id}")
+    public Response deleteProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         historyService.deleteHistoricProcessInstance(processInstanceId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
     @GET
-    @Path("/{processInstanceId}/identitylinks")
+    @Path("/{process-instance-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getProcessIdentityLinks(@PathParam("processInstanceId")  String processInstanceId) {
+    public Response getProcessIdentityLinks(@PathParam("process-instance-id")  String processInstanceId) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
@@ -227,9 +227,9 @@ public class HistoricProcessInstanceService {
 
 
     @GET
-    @Path("/{processInstanceId}/variables/{variableName}/data")
-    public Response getVariableData(@PathParam("processInstanceId") String processInstanceId,
-                                    @PathParam("variableName") String variableName) {
+    @Path("/{process-instance-id}/variables/{variable-name}/data")
+    public Response getVariableData(@PathParam("process-instance-id") String processInstanceId,
+                                    @PathParam("variable-name") String variableName) {
 
         try {
 
@@ -260,9 +260,9 @@ public class HistoricProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/comments")
+    @Path("/{process-instance-id}/comments")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getComments(@PathParam("processInstanceId") String processInstanceId) {
+    public Response getComments(@PathParam("process-instance-id") String processInstanceId) {
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList(taskService
@@ -273,10 +273,10 @@ public class HistoricProcessInstanceService {
     }
 
     @POST
-    @Path("/{processInstanceId}/comments")
+    @Path("/{process-instance-id}/comments")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createComment(@PathParam("processInstanceId") String processInstanceId, CommentResponse comment) {
+    public Response createComment(@PathParam("process-instance-id") String processInstanceId, CommentResponse comment) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
@@ -294,10 +294,10 @@ public class HistoricProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/comments/{commentId}")
+    @Path("/{process-instance-id}/comments/{comment-id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getComment(@PathParam("processInstanceId") String processInstanceId,
-                                      @PathParam("commentId") String commentId) {
+    public Response getComment(@PathParam("process-instance-id") String processInstanceId,
+                                      @PathParam("comment-id") String commentId) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -311,9 +311,9 @@ public class HistoricProcessInstanceService {
     }
 
     @DELETE
-    @Path("/{processInstanceId}/comments/{commentId}")
-    public Response deleteComment(@PathParam("processInstanceId") String processInstanceId,
-                              @PathParam("commentId") String commentId) {
+    @Path("/{process-instance-id}/comments/{comment-id}")
+    public Response deleteComment(@PathParam("process-instance-id") String processInstanceId,
+                              @PathParam("comment-id") String commentId) {
 
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);

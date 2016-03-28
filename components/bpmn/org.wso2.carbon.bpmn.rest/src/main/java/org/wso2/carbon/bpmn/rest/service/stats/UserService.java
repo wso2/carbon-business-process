@@ -40,7 +40,7 @@ import java.util.List;
  * Service class which includes functionalities related to users
  */
 
-@Path("/userServices/")
+@Path("/user-services/")
 public class UserService {
     private static final Log log = LogFactory.getLog(UserService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
@@ -54,7 +54,7 @@ public class UserService {
      * @return list of users retrieved from the UserStore
      */
     @GET
-    @Path("/allUsers/")
+    @Path("/all-users/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getUserList() throws UserStoreException {
         Object[] users = null;
@@ -78,7 +78,7 @@ public class UserService {
      * @return list with the no.of tasks completed by each user
      */
     @GET
-    @Path("/userVsTaskCount/")
+    @Path("/user-vs-task-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getNoOfTasksCompletedByUser() throws UserStoreException {
 
@@ -119,7 +119,7 @@ public class UserService {
      * @return list with the average time duration taken by each user to complete tasks
      */
     @GET
-    @Path("/userVsAvgTimeDuration/")
+    @Path("/user-vs-avg-time-duration/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAvgDurationForTasksCompletedByUser() throws UserStoreException {
 
@@ -172,7 +172,7 @@ public class UserService {
      * @return array with the tasks started and completed of the selected user
      */
     @GET
-    @Path("/userTaskVariation/{assignee}")
+    @Path("/user-task-variation/{assignee}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) throws UserStoreException {
 

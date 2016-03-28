@@ -175,18 +175,18 @@ public class ProcessDefinitionService {
     }
 
     @GET
-    @Path("/{processDefinitionId}")
+    @Path("/{process-definition-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ProcessDefinitionResponse getProcessDefinition(@PathParam("processDefinitionId") String processDefinitionId) {
+    public ProcessDefinitionResponse getProcessDefinition(@PathParam("process-definition-id") String processDefinitionId) {
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         return new RestResponseFactory().createProcessDefinitionResponse(processDefinition, uriInfo.getBaseUri().toString());
     }
 
 
     @GET
-    @Path("/{processDefinitionId}/resourcedata")
+    @Path("/{process-definition-id}/resource-data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessDefinitionResource(@PathParam("processDefinitionId") String processDefinitionId) {
+    public Response getProcessDefinitionResource(@PathParam("process-definition-id") String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
@@ -197,9 +197,9 @@ public class ProcessDefinitionService {
     }
 
     @GET
-    @Path("/{processDefinitionId}/identitylinks")
+    @Path("/{process-definition-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLinks(@PathParam("processDefinitionId") String processDefinitionId) {
+    public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
@@ -209,10 +209,10 @@ public class ProcessDefinitionService {
     }
 
     @GET
-    @Path("/{processDefinitionId}/identitylinks/{family}/{identityId}")
+    @Path("/{process-definition-id}/identity-links/{family}/{identity-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLink(@PathParam("processDefinitionId") String processDefinitionId, @PathParam("family") String family,
-                                    @PathParam("identityId") String identityId) {
+    public Response getIdentityLink(@PathParam("process-definition-id") String processDefinitionId, @PathParam("family") String family,
+                                    @PathParam("identity-id") String identityId) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);

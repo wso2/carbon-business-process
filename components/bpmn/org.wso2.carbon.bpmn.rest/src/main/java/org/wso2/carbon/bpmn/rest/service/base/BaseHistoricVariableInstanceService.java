@@ -12,16 +12,15 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
-
+ */
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import org.camunda.bpm.engine.BadUserRequestException;
-import org.camunda.bpm.engine.HistoryService;
-import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
-import org.camunda.bpm.engine.impl.HistoricVariableInstanceQueryProperty;
-import org.camunda.bpm.engine.query.QueryProperty;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.history.HistoricVariableInstanceQuery;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
+import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
@@ -29,7 +28,6 @@ import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
 
-import javax.management.Query;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
@@ -39,103 +37,100 @@ import java.util.Map;
 
 public class BaseHistoricVariableInstanceService {
 
-    protected static Map<String,QueryProperty> allowedSortProperties = new HashMap<>();
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
+	protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
+	protected static final List<String> allPropertiesList  = new ArrayList<>();
 
 
 
-    static {
-        allowedSortProperties.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
-    }
+	static {
+		allowedSortProperties.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
+		allowedSortProperties.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+	}
 
-    static {
-        allPropertiesList.add("processInstanceId");
-        allPropertiesList.add("taskId");
-        allPropertiesList.add("excludeTaskVariables");
-        allPropertiesList.add("variableName");
-        allPropertiesList.add("variableNameLike");
-        allPropertiesList.add("start");
-        allPropertiesList.add("size");
-        allPropertiesList.add("order");
-        allPropertiesList.add("sort");
-    }
+	static {
+		allPropertiesList.add("processInstanceId");
+		allPropertiesList.add("taskId");
+		allPropertiesList.add("excludeTaskVariables");
+		allPropertiesList.add("variableName");
+		allPropertiesList.add("variableNameLike");
+		allPropertiesList.add("start");
+		allPropertiesList.add("size");
+		allPropertiesList.add("order");
+		allPropertiesList.add("sort");
+	}
 
-    @Context
-    protected UriInfo uriInfo;
+	@Context
+	protected UriInfo uriInfo;
 
-    protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String>
-            allRequestParams) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
-        HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
+	protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String>
+			allRequestParams) {
+		HistoryService historyService = BPMNOSGIService.getHistoryService();
+		HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
-        // Populate query based on request
-        if(queryRequest.getExcludeTaskVariables() != null) {
-            if (queryRequest.getExcludeTaskVariables()) {
-              //  query.excludeTaskVariables();
-            }
-        }
+		// Populate query based on request
+		if(queryRequest.getExcludeTaskVariables() != null) {
+			if (queryRequest.getExcludeTaskVariables()) {
+				query.excludeTaskVariables();
+			}
+		}
 
-        if (queryRequest.getTaskId() != null) {
-            query.taskIdIn(queryRequest.getTaskId());
-        }
+		if (queryRequest.getTaskId() != null) {
+			query.taskId(queryRequest.getTaskId());
+		}
 
-        if(queryRequest.getExecutionId() != null) {
-            query.executionIdIn(queryRequest.getExecutionId());
-        }
+		if(queryRequest.getExecutionId() != null) {
+			query.executionId(queryRequest.getExecutionId());
+		}
 
-        if (queryRequest.getProcessInstanceId() != null) {
-            query.processInstanceId(queryRequest.getProcessInstanceId());
-        }
+		if (queryRequest.getProcessInstanceId() != null) {
+			query.processInstanceId(queryRequest.getProcessInstanceId());
+		}
 
-        if (queryRequest.getVariableName() != null) {
-            query.variableName(queryRequest.getVariableName());
-        }
+		if (queryRequest.getVariableName() != null) {
+			query.variableName(queryRequest.getVariableName());
+		}
 
-        if (queryRequest.getVariableNameLike() != null) {
-            query.variableNameLike(queryRequest.getVariableNameLike() );
-        }
+		if (queryRequest.getVariableNameLike() != null) {
+			query.variableNameLike(queryRequest.getVariableNameLike() );
+		}
 
-        if (queryRequest.getVariables() != null) {
-            addVariables(query, queryRequest.getVariables());
-        }
+		if (queryRequest.getVariables() != null) {
+			addVariables(query, queryRequest.getVariables());
+		}
 
-        //return new HistoricVariableInstancePaginateList(new RestResponseFactory(),uriInfo).p
-
-        return new HistoricVariableInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
-               allRequestParams, (Query)query, "variableName", allowedSortProperties);
-    }
+		return new HistoricVariableInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
+				allRequestParams, query, "variableName", allowedSortProperties);
+	}
 
 
-    protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery, List<QueryVariable> variables) {
-        for (QueryVariable variable : variables) {
-            if (variable.getVariableOperation() == null) {
-              //  throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
-            }
-            if (variable.getValue() == null) {
-               // throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
-            }
+	protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery, List<QueryVariable> variables) {
+		for (QueryVariable variable : variables) {
+			if (variable.getVariableOperation() == null) {
+				throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+			}
+			if (variable.getValue() == null) {
+				throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+			}
 
-            boolean nameLess = variable.getName() == null;
+			boolean nameLess = variable.getName() == null;
 
-            Object actualValue = new RestResponseFactory().getVariableValue(variable);
+			Object actualValue = new RestResponseFactory().getVariableValue(variable);
 
-            // A value-only query is only possible using equals-operator
-            if (nameLess) {
-              //  throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported");
-            }
+			// A value-only query is only possible using equals-operator
+			if (nameLess) {
+				throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported");
+			}
 
-            switch (variable.getVariableOperation()) {
+			switch (variable.getVariableOperation()) {
 
-                case EQUALS:
-                    variableInstanceQuery.variableValueEquals(variable.getName(), actualValue);
-                    break;
+				case EQUALS:
+					variableInstanceQuery.variableValueEquals(variable.getName(), actualValue);
+					break;
 
-                default:
-                 //   throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
-            }
-        }
-    }
+				default:
+					throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+			}
+		}
+	}
 
 }
-*/

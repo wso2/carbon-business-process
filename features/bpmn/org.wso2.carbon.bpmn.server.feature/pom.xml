@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
     <parent>
@@ -35,6 +37,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.191</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,7 +60,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete file="resources/conf/activiti.h2.db" />
+                                <delete file="resources/conf/activiti.h2.db"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -66,21 +73,27 @@
                         <configuration>
                             <tasks>
                                 <path id="h2.classpath">
-                                    <path refid="maven.compile.classpath" />
+                                    <path refid="maven.compile.classpath"/>
                                 </path>
 
-                                <echo message="########### Create Activiti Database ##############" />
+                                <echo message="########### Create Activiti Database ##############"/>
 
-                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/resources/conf/activiti;create=true" userid="wso2carbon" password="wso2carbon" autocommit="true" onerror="continue">
+                                <sql driver="org.h2.Driver"
+                                     url="jdbc:h2:${basedir}/resources/conf/activiti;create=true"
+                                     userid="wso2carbon" password="wso2carbon" autocommit="true"
+                                     onerror="continue">
                                     <classpath>
-                                        <path refid="h2.classpath" />
+                                        <path refid="h2.classpath"/>
                                     </classpath>
-                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql" />
-                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql" />
-                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql" />
+                                    <fileset
+                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql"/>
+                                    <fileset
+                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql"/>
+                                    <fileset
+                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql"/>
                                 </sql>
-                                <echo message="##################### END ############################" />
-                                <echo message="********Version of H2: " />
+                                <echo message="##################### END ############################"/>
+                                <echo message="********Version of H2: "/>
                                 <echo>${orbit.version.h2.engine}</echo>
                             </tasks>
                         </configuration>
@@ -90,9 +103,9 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <delete dir="src/main/resources" />
-                                <delete dir="src/main" />
-                                <delete dir="src" />
+                                <delete dir="src/main/resources"/>
+                                <delete dir="src/main"/>
+                                <delete dir="src"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -106,7 +119,6 @@
                 <executions>
                     <execution>
                         <id>2-copy-resources</id>
-                        <!--phase>generate-resources</phase-->
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -152,7 +164,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.slf4j:slf4j-log4j12</bundleDef>
+                                <!--<bundleDef>org.slf4j:slf4j-log4j12</bundleDef>-->
                                 <bundleDef>org.apache.commons:commons-lang3</bundleDef>
                                 <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn</bundleDef>
                                 <!-- <bundleDef>
@@ -160,7 +172,7 @@
                                  </bundleDef>-->
                             </bundles>
                             <importBundles>
-                                <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:5.19.0.wso2v2</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:5.19.0.wso2v3</importBundleDef>
                                 <importBundleDef>org.apache.commons:commons-lang3:3.3.2</importBundleDef>
                                 <importBundleDef>com.fasterxml.jackson.core:jackson-core:2.2.3</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:2.2.3.wso2v1</importBundleDef>
@@ -177,12 +189,15 @@
                                 <importBundleDef>org.yaml:snakeyaml:1.13</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.org.tinyjee.jgraphx:jgraphx:1.10.4.1.wso2v1</importBundleDef>
                                 <importBundleDef>commons-io:commons-io:2.0.1</importBundleDef>
-                                <importBundleDef>commons-fileupload:commons-fileupload:1.2.2</importBundleDef>
+                                <!--<importBundleDef>commons-fileupload:commons-fileupload:1.2.2</importBundleDef>-->
                                 <importBundleDef>org.codehaus.woodstox:stax2-api:3.1.1</importBundleDef>
 
                                 <importBundleDef>com.jayway.jsonpath.wso2:json-path:1.2.0.wso2v1</importBundleDef>
                                 <importBundleDef>net.minidev:json-smart:2.2</importBundleDef>
-
+                                <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec</importBundleDef>
+                                <importBundleDef>org.codehaus.woodstox:stax2-api</importBundleDef>
+                                <importBundleDef>com.h2database:h2</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.org.springframework.ws:spring.framework:4.1.6.wso2v1</importBundleDef>
                             </importBundles>
 
 
@@ -195,6 +210,111 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.wso2.carbon.maven</groupId>-->
+                <!--<artifactId>carbon-feature-plugin</artifactId>-->
+                <!--<extensions>true</extensions>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>1-p2-feature-generation</id>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<propertyFile>../../etc/feature.properties</propertyFile>-->
+                            <!--<adviceFileContents>-->
+                                <!--<advice>-->
+                                    <!--<name>org.wso2.carbon.p2.category.type</name>-->
+                                    <!--<value>server</value>-->
+                                <!--</advice>-->
+                                <!--<advice>-->
+                                    <!--<name>org.eclipse.equinox.p2.type.group</name>-->
+                                    <!--<value>false</value>-->
+                                <!--</advice>-->
+                            <!--</adviceFileContents>-->
+                            <!--<bundles>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>org.wso2.carbon.bpmn</symbolicName>-->
+                                    <!--<version>${project.version}</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>activiti-all</symbolicName>-->
+                                    <!--<version>5.19.0.wso2v3</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>org.apache.commons.lang3</symbolicName>-->
+                                    <!--<version>3.3.2</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>com.fasterxml.jackson.core.jackson-core</symbolicName>-->
+                                    <!--<version>2.2.3</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>com.fasterxml.jackson.core.jackson-annotations</symbolicName>-->
+                                    <!--<version>2.2.3</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>joda-time</symbolicName>-->
+                                    <!--<version>2.1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>mail</symbolicName>-->
+                                    <!--<version>1.4.1.wso2v1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>mybatis</symbolicName>-->
+                                    <!--<version>3.2.5</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>commons-logging</symbolicName>-->
+                                    <!--<version>1.1.3</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>restlet</symbolicName>-->
+                                    <!--<version>2.2.1.wso2v1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>jackson-dataformat</symbolicName>-->
+                                    <!--<version>2.2.3.wso2v1</version>-->
+                                <!--</bundle>-->
+
+                                <!--<bundle>-->
+                                    <!--<symbolicName>jackson-module-jaxb-annotations</symbolicName>-->
+                                    <!--<version>2.2.3.wso2v1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>woodstox-core-asl</symbolicName>-->
+                                    <!--<version>4.2.0</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>snakeyaml</symbolicName>-->
+                                    <!--<version>1.13</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>jgraphx</symbolicName>-->
+                                    <!--<version>1.10.4.1.wso2v1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>commons-io</symbolicName>-->
+                                    <!--<version>2.0.1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>stax2-api</symbolicName>-->
+                                    <!--<version>3.1.1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>json-path</symbolicName>-->
+                                    <!--<version>1.2.0.wso2v1</version>-->
+                                <!--</bundle>-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>json-smart</symbolicName>-->
+                                    <!--<version>2.2</version>-->
+                                <!--</bundle>-->
+                            <!--</bundles>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 </project>

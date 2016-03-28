@@ -152,9 +152,9 @@ public class DeploymentService {
     }
 
     @GET
-    @Path("/{deploymentId}")
+    @Path("/{deployment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getDeployment(@PathParam("deploymentId") String deploymentId) {
+    public Response getDeployment(@PathParam("deployment-id") String deploymentId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
@@ -169,12 +169,12 @@ public class DeploymentService {
     }
 
     @GET
-    @Path("/{deploymentId}/resources/{resourcePath:.*}")
+    @Path("/{deployment-id}/resources/{resource-path:.*}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getDeploymentResourceForDifferentUrl(@PathParam("deploymentId") String deploymentId, @PathParam("resourcePath") String resourcePath) {
+    public Response getDeploymentResourceForDifferentUrl(@PathParam("deployment-id") String deploymentId, @PathParam("resource-path") String resourcePath) {
 
         if (log.isDebugEnabled()) {
-            log.debug("deploymentId:" + deploymentId + " resourcePath:" + resourcePath);
+            log.debug("deployment-id:" + deploymentId + " resource-path:" + resourcePath);
         }
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         // Check if deployment exists
@@ -201,9 +201,9 @@ public class DeploymentService {
     }
 
     @GET
-    @Path("/{deploymentId}/resources")
+    @Path("/{deployment-id}/resources")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getDeploymentResources(@PathParam("deploymentId") String deploymentId) {
+    public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         // Check if deployment exists
@@ -220,9 +220,9 @@ public class DeploymentService {
 
 
     @GET
-    @Path("/{deploymentId}/resourcedata/{resourceId}")
-    public Response getDeploymentResource(@PathParam("deploymentId") String deploymentId,
-                                          @PathParam("resourceId") String resourceId) {
+    @Path("/{deployment-id}/resource-data/{resource-id}")
+    public Response getDeploymentResource(@PathParam("deployment-id") String deploymentId,
+                                          @PathParam("resource-id") String resourceId) {
         String contentType = Utils.resolveContentType(resourceId);
         return Response.ok().type(contentType).entity(getDeploymentResourceData(deploymentId, resourceId)).build();
     }
