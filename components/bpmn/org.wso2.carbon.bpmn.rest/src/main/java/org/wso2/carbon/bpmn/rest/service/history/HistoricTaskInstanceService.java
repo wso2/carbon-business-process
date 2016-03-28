@@ -227,9 +227,9 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
 
 
     @GET
-    @Path("/{taskId}")
+    @Path("/{task-id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getTaskInstance(@PathParam("taskId") String taskId) {
+    public Response getTaskInstance(@PathParam("task-id") String taskId) {
         HistoricTaskInstanceResponse historicTaskInstanceResponse = new RestResponseFactory()
                 .createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId), uriInfo.getBaseUri()
                         .toString());
@@ -237,17 +237,17 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     }
 
     @DELETE
-    @Path("/{taskId}")
-    public Response deleteTaskInstance(@PathParam("taskId") String taskId) {
+    @Path("/{task-id}")
+    public Response deleteTaskInstance(@PathParam("task-id") String taskId) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         historyService.deleteHistoricTaskInstance(taskId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
     @GET
-    @Path("/{taskId}/identitylinks")
+    @Path("/{task-id}/identitylinks")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getTaskIdentityLinks(@PathParam("taskId") String taskId) {
+    public Response getTaskIdentityLinks(@PathParam("task-id") String taskId) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForTask(taskId);
 
@@ -267,9 +267,9 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     }
 
     @GET
-    @Path("/{taskId}/variables/{variableName}/data")
-    public  byte[] getVariableData(@PathParam("taskId") String taskId,
-                                                @PathParam("variableName") String variableName) {
+    @Path("/{task-id}/variables/{variable-name}/data")
+    public  byte[] getVariableData(@PathParam("task-id") String taskId,
+                                                @PathParam("variable-name") String variableName) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         Response.ResponseBuilder response = Response.ok();

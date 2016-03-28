@@ -101,9 +101,9 @@ public class HistoricDetailService extends BaseHistoricDetailService {
     }
 
     @GET
-    @Path("/{detailId}/data")
+    @Path("/{detail-id}/data")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getVariableData(@PathParam("detailId") String detailId) {
+    public Response getVariableData(@PathParam("detail-id") String detailId) {
         try {
             byte[] result = null;
             RestVariable variable = getVariableFromRequest(true, detailId);

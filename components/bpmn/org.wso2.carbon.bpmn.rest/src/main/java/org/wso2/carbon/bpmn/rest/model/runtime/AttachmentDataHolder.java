@@ -18,7 +18,7 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.io.CachedOutputStream;
+//import org.apache.cxf.io.CachedOutputStream;
 
 import java.io.IOException;
 
@@ -80,7 +80,7 @@ public class AttachmentDataHolder {
     public void setScope(String scope) {
         this.scope = scope;
     }
-
+/* TODO
     public void printDebug(){
         boolean debugLogEnabled = log.isDebugEnabled();
 
@@ -101,5 +101,5 @@ public class AttachmentDataHolder {
             }
             log.debug("Stream String:" + new String(attachmentArray));
         }
-    }
+    }*/
 }

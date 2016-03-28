@@ -116,9 +116,9 @@ public class IdentityService extends BaseIdentityService {
      * @return GroupResponse
      */
     @GET
-    @Path("/groups/{groupId}")
+    @Path("/groups/{group-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public GroupResponse getGroup(@PathParam("groupId") String groupId) {
+    public GroupResponse getGroup(@PathParam("group-id") String groupId) {
         return new RestResponseFactory().createGroupResponse(getGroupFromRequest(groupId), uriInfo.getBaseUri().toString());
     }
 
@@ -192,9 +192,9 @@ public class IdentityService extends BaseIdentityService {
      * @return
      */
     @GET
-    @Path("/users/{userId}/info")
+    @Path("/users/{user-id}/info")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<UserInfoResponse> getUserInfo(@PathParam("userId") String userId) {
+    public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId) {
         User user = getUserFromRequest(userId);
 
         return new RestResponseFactory().createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId(), uriInfo.getBaseUri().toString());
@@ -206,9 +206,9 @@ public class IdentityService extends BaseIdentityService {
      * @return
      */
     @GET
-    @Path("/users/{userId}")
+    @Path("/users/{user-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public UserResponse getUser(@PathParam("userId") String userId) {
+    public UserResponse getUser(@PathParam("user-id") String userId) {
         return new RestResponseFactory().createUserResponse(getUserFromRequest(userId), false, uriInfo.getBaseUri().toString());
     }
 }
