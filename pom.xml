@@ -317,11 +317,11 @@
                 <artifactId>geronimo-connector</artifactId>
                 <version>${geronimo.transaction.version}</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.wso2.carbon</groupId>-->
-                <!--<artifactId>org.wso2.carbon.ndatasource.core</artifactId>-->
-                <!--<version>${carbon.kernel.version}</version>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>org.wso2.carbon.datasources</groupId>
+                <artifactId>org.wso2.carbon.datasource.core</artifactId>
+                <version>${carbon.datasource.version}</version>
+            </dependency>
 
             <!--<dependency>-->
                 <!--<groupId>org.apache.xmlbeans.wso2</groupId>-->
@@ -854,9 +854,10 @@
     </profiles>
 
     <properties>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <carbon.business-process.version>5.0.0-SNAPSHOT</carbon.business-process.version>
-        <carbon.business-process.imp.pkg.version>[4.4.0,4.5.0)
+        <carbon.business-process.imp.pkg.version>[5.0.0,5.1.0)
         </carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>${carbon.business-process.version}</carbon.business-process.exp.pkg.version>
 
@@ -870,7 +871,8 @@
         <carbon.kernel.version>5.0.0</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[5.0,6)</carbon.kernel.imp.pkg.version>
 
-        <!-- Carbon commons version -->
+        <carbon.datasource.version>1.0.0-SNAPSHOT</carbon.datasource.version>
+
         <carbon.commons.version>4.4.8</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 

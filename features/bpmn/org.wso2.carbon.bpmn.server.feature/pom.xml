@@ -197,6 +197,7 @@
                                 <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec</importBundleDef>
                                 <importBundleDef>org.codehaus.woodstox:stax2-api</importBundleDef>
                                 <importBundleDef>com.h2database:h2</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.org.springframework.ws:spring.framework:4.1.6.wso2v1</importBundleDef>
                             </importBundles>
 
 

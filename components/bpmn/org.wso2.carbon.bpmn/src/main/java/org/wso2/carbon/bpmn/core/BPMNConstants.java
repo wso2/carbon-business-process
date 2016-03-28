@@ -56,4 +56,7 @@ public class BPMNConstants {
     public static final String REST_CLIENT_CONFIG_ELEMENT = "restClientConfiguration";
     public static final String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
     public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
+
+    public static final String BPMN_DB_NAME = "ACTIVITI_DB";
+    public static final String BPMN_DB_CONTEXT_NAME = "ActivitiDB";
 }

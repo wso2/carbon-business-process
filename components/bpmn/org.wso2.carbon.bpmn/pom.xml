@@ -101,6 +101,11 @@
             <groupId>com.jayway.jsonpath.wso2</groupId>
             <artifactId>json-path</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.datasources</groupId>
+            <artifactId>org.wso2.carbon.datasource.core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <properties>
