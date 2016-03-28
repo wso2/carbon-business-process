@@ -50,7 +50,10 @@ import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
+import java.io.File;
+import org.wso2.carbon.kernel.deployment.Artifact;
+import org.wso2.carbon.kernel.deployment.ArtifactType;
 /**
  *
  */
@@ -130,6 +133,20 @@ public class BPMNServiceComponent  {
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(activitiEngineBuilder.getProcessEngine());
             bundleContext.registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
+
+	        DataSourceHandler dataSourceHandler = new DataSourceHandler();
+            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+	        dataSourceHandler.closeDataSource();
+
+	        BPMNDeployer customDeployer = new BPMNDeployer();
+	        	        customDeployer.init();
+	        File ab = new File("/Users/himasha/Desktop/Latest/new/wso2bps-3.5.1/repository/samples/bpmn/HelloWorld.bar");
+	         Artifact artifact =new Artifact( ab);
+	        	       ArtifactType artifactType = new ArtifactType<>("bar");
+	        	        artifact.setKey("HelloWorld.bar");
+	        artifact.setType(artifactType);
+	                   customDeployer.deploy(artifact);
+	        	        log.info("Deployed in c5");
 
         }catch (Throwable t) {
             log.error("Error initializing bpmn component " + t);

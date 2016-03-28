@@ -18,7 +18,7 @@ package org.wso2.carbon.bpmn.core.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
+import org.wso2.carbon.bpmn.core.db.DatabaseCreator;
 
 import java.io.File;
 import javax.sql.DataSource;
