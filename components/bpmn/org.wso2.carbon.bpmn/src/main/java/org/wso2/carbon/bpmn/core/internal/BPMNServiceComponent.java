@@ -50,7 +50,10 @@ import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
+import java.io.File;
+import org.wso2.carbon.kernel.deployment.Artifact;
+import org.wso2.carbon.kernel.deployment.ArtifactType;
 /**
  *
  */
@@ -130,6 +133,10 @@ public class BPMNServiceComponent  {
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(activitiEngineBuilder.getProcessEngine());
             bundleContext.registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
+            // Create metadata table for deployments
+	        DataSourceHandler dataSourceHandler = new DataSourceHandler();
+            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
+	        dataSourceHandler.closeDataSource();
 
         }catch (Throwable t) {
             log.error("Error initializing bpmn component " + t);

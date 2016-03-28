@@ -87,8 +87,7 @@ public class BPMNDeployer implements Deployer {
         try {
             deploymentLocation = new URL(DEPLOYMENT_PATH);
             home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
-            deploymentDir = home + File.separator + "repository" + File.separator + "deployment" +
-                            File.separator + "server" + File.separator + deploymentLocation;
+            deploymentDir = home + File.separator + "deployment" + File.separator + "bpmn";
             this.activitiDAO = new ActivitiDAO();
         } catch (MalformedURLException | ExceptionInInitializerError e) {
             String msg = "Failed to initialize BPMNDeployer: ";

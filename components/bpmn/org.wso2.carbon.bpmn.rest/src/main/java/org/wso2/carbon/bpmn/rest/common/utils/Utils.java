@@ -26,7 +26,7 @@ import org.apache.commons.fileupload.MultipartStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.io.CachedOutputStream;
+//import org.apache.cxf.io.CachedOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriInfo;
@@ -73,7 +73,7 @@ public class Utils {
             return os.toByteArray();
         }
     }
-
+/* TODO
     public static byte[] processMultiPartFile(HttpServletRequest httpServletRequest, String contentMessage) throws
             IOException {
         //Content-Type: multipart/form-data; boundary="----=_Part_2_1843361794.1448198281814"
@@ -125,6 +125,7 @@ public class Utils {
 
         byte[] boundary = boundaryString.getBytes(encoding);
         ByteArrayInputStream content = new ByteArrayInputStream(aggregatedRequestBodyByteArray);
+
         MultipartStream multipartStream = new MultipartStream(content, boundary, aggregatedRequestBodyByteArray.length,
                 null);
 
@@ -153,7 +154,7 @@ public class Utils {
         return byteArray;
     }
 
-
+*/
     public static Map<String, String> processContentDispositionHeader(String headerValue) {
 
         boolean debugEnabled = log.isDebugEnabled();
@@ -209,7 +210,7 @@ public class Utils {
         return contentDispositionHeaderMap;
     }
 
-
+/* TODO
     public static OutputStream getAttachmentStream(InputStream inputStream) throws IOException {
 
         if (inputStream != null) {
@@ -222,6 +223,7 @@ public class Utils {
 
         return null;
     }
+    */
 
     public static void printHeaders(String header) {
 

@@ -503,6 +503,11 @@
                 <artifactId>org.wso2.carbon.registry.extensions</artifactId>
                 <version>${carbon.registry.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.msf4j</groupId>
+                <artifactId>msf4j-core</artifactId>
+                <version>1.0.0</version>
+            </dependency>
             <!--<dependency>-->
                 <!--<groupId>org.wso2.carbon.business-process</groupId>-->
                 <!--<artifactId>org.wso2.carbon.humantask.stub</artifactId>-->

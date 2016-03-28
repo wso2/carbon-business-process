@@ -43,7 +43,7 @@ import java.util.List;
  * Service class which includes functionalities related to processes and tasks
  */
 
-@Path("/processTaskServices/")
+@Path("/process-task-services/")
 public class ProcessAndTaskService {
     private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
@@ -55,7 +55,7 @@ public class ProcessAndTaskService {
      * @return a list of deployed processes with their instance count
      */
     @GET
-    @Path("/deployedProcessCount/")
+    @Path("/deployed-process-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getDeployedProcesses() {
         List<ProcessDefinition> deployments = BPMNOSGIService.getRepositoryService().
@@ -113,7 +113,7 @@ public class ProcessAndTaskService {
      * @return list with the states and the count of process instances in each state
      */
     @GET
-    @Path("/processStatusCount/")
+    @Path("/process-status-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getCountOfProcessInstanceStatus() {
         List processCountList = new ArrayList<>();
@@ -169,7 +169,7 @@ public class ProcessAndTaskService {
      * @return list with the states and the count of task instances in each state
      */
     @GET
-    @Path("/taskStatusCount/")
+    @Path("/task-status-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getCountOfTaskInstanceStatus() {
 
@@ -225,7 +225,7 @@ public class ProcessAndTaskService {
      * @return list with the completed processes and the average time duration taken for each process
      */
     @GET
-    @Path("/avgDurationToCompleteProcess/")
+    @Path("/avg-duration-to-complete-process/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAvgTimeDurationForCompletedProcesses() {
         List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
@@ -276,9 +276,9 @@ public class ProcessAndTaskService {
      * @return list of completed tasks with the average time duration for the selected process
      */
     @GET
-    @Path("/avgTaskDurationForCompletedProcess/{pId}")
+    @Path("/avg-task-duration-for-completed-process/{p-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("pId") String pId) {
+    public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("p-id") String pId) {
         long countOfProcesses = BPMNOSGIService.getRepositoryService().
                 createProcessDefinitionQuery().processDefinitionTenantId(str).processDefinitionId(pId).count();
         if(countOfProcesses == 0){
@@ -345,7 +345,7 @@ public class ProcessAndTaskService {
      * @return array with the no. of tasks started and completed over the months
      */
     @GET
-    @Path("/taskVariation/")
+    @Path("/task-variation/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
@@ -401,7 +401,7 @@ public class ProcessAndTaskService {
      * @return array with the no. of processes started and completed over the months
      */
     @GET
-    @Path("/processVariation/")
+    @Path("/process-variation/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder processVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
@@ -448,7 +448,7 @@ public class ProcessAndTaskService {
      * @return list with the processDefinitions of all deployed processes
      */
     @GET
-    @Path("/allProcesses/")
+    @Path("/all-processes/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAllProcesses() {
         //Get a list of the deployed processes
@@ -470,7 +470,7 @@ public class ProcessAndTaskService {
      * @return list with the processDefinitions of all deployed processes
      */
     @GET
-    @Path("/countOfProcesses/")
+    @Path("/count-of-processes/")
     @Produces(MediaType.APPLICATION_JSON)
     public long getProcessCount() {
         //Get a list of the deployed processes

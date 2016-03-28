@@ -1,13 +1,14 @@
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
@@ -28,20 +29,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Path("/executions")
 public class ExecutionService  extends BaseExecutionService {
 
     @Context
     protected UriInfo uriInfo;
+
     /**
      * Get the process execution identified by given execution ID
      * @param executionId
      * @return ExecutionResponse
      */
     @GET
-    @Path("/{executionId}")
+    @Path("/{execution-id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getExecution(@PathParam("executionId") String executionId, @Context UriInfo uriInfo) {
+    public Response getExecution(@PathParam("execution-id") String executionId, @Context UriInfo uriInfo) {
 
         ExecutionResponse executionResponse = new RestResponseFactory()
                 .createExecutionResponse(getExecutionFromRequest(executionId), uriInfo.getBaseUri().toString());
@@ -55,10 +58,10 @@ public class ExecutionService  extends BaseExecutionService {
      * @return Response
      */
     @PUT
-    @Path("/{executionId}")
+    @Path("/{execution-id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response performExecutionAction(@PathParam("executionId") String executionId, ExecutionActionRequest
+    public Response performExecutionAction(@PathParam("execution-id") String executionId, ExecutionActionRequest
             actionRequest) {
 
         Execution execution = getExecutionFromRequest(executionId);
@@ -109,9 +112,9 @@ public class ExecutionService  extends BaseExecutionService {
     }
 
     @GET
-    @Path("/{executionId}/activities")
+    @Path("/{execution-id}/activities")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getActiveActivities(@PathParam("executionId") String executionId) {
+    public Response getActiveActivities(@PathParam("execution-id") String executionId) {
         Execution execution = getExecutionFromRequest(executionId);
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
@@ -233,9 +236,9 @@ public class ExecutionService  extends BaseExecutionService {
 
 
     @GET
-    @Path("/{executionId}/variables")
+    @Path("/{execution-id}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getVariables(@PathParam("executionId") String executionId) {
+    public Response getVariables(@PathParam("execution-id") String executionId) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionFromRequest(executionId);
@@ -247,17 +250,17 @@ public class ExecutionService  extends BaseExecutionService {
     }
 
     @PUT
-    @Path("/{executionId}/variables")
+    @Path("/{execution-id}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createOrUpdateExecutionVariable(@PathParam("executionId") String executionId, @Context
+    public Response createOrUpdateExecutionVariable(@PathParam("execution-id") String executionId, @Context
                                                   HttpServletRequest httpServletRequest) {
         Execution execution = getExecutionFromRequest(executionId);
         return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest,
                 uriInfo );
     }
-
-    @PUT
+//TODO
+   /* @PUT
     @Path("/{executionId}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -267,21 +270,22 @@ public class ExecutionService  extends BaseExecutionService {
         RestVariable restVariable = createBinaryExecutionVariable(execution,RestResponseFactory.VARIABLE_EXECUTION,
                 uriInfo, true, multipartBody);
         return Response.ok().status(Response.Status.CREATED).entity(restVariable).build();
-    }
+    }*/
 
 
     @POST
-    @Path("/{executionId}/variables")
+    @Path("/{execution-id}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createExecutionVariable(@PathParam("executionId") String executionId, @Context HttpServletRequest
+    public Response createExecutionVariable(@PathParam("execution-id") String executionId, @Context HttpServletRequest
             httpServletRequest) {
 
         Execution execution = getExecutionFromRequest(executionId);
         return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest,
                 uriInfo);
     }
-
+	//TODO
+/*
     @POST
     @Path("/{executionId}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
@@ -294,26 +298,26 @@ public class ExecutionService  extends BaseExecutionService {
                 uriInfo, true, multipartBody);
         return Response.ok().status(Response.Status.CREATED).entity(restVariable).build();
     }
-
+*/
     @DELETE
-    @Path("/{executionId}/variables")
-    public Response deleteLocalVariables(@PathParam("executionId") String executionId) {
+    @Path("/{execution-id}/variables")
+    public Response deleteLocalVariables(@PathParam("execution-id") String executionId) {
         Execution execution = getExecutionFromRequest(executionId);
         deleteAllLocalVariables(execution);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
     @GET
-    @Path("/{executionId}/variables/{variableName}")
+    @Path("/{execution-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public RestVariable getVariable(@PathParam("executionId") String executionId,
-                                    @PathParam("variableName") String variableName) {
+    public RestVariable getVariable(@PathParam("execution-id") String executionId,
+                                    @PathParam("variable-name") String variableName) {
        String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionFromRequest(executionId);
         return getVariableFromRequest(execution, variableName, scope, false, uriInfo);
     }
-
-
+//TODO
+/*
     @PUT
     @Path("/{executionId}/variables/{variableName}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
@@ -327,13 +331,13 @@ public class ExecutionService  extends BaseExecutionService {
 
         return Response.ok().status(Response.Status.CREATED).entity(result).build();
     }
-
+*/
     @PUT
-    @Path("/{executionId}/variables/{variableName}")
+    @Path("/{execution-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response updateVariable(@PathParam("executionId") String executionId,
-                                         @PathParam("variableName") String variableName,
+    public Response updateVariable(@PathParam("execution-id") String executionId,
+                                         @PathParam("variable-name") String variableName,
                                          @Context HttpServletRequest httpServletRequest) {
         Execution execution = getExecutionFromRequest(executionId);
         RestVariable result = null;
@@ -359,10 +363,10 @@ public class ExecutionService  extends BaseExecutionService {
     }
 
     @DELETE
-    @Path("/{executionId}/variables/{variableName}")
+    @Path("/{execution-id}/variables/{variable-name}")
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response deleteVariable(@PathParam("executionId") String executionId,
-                               @PathParam("variableName") String variableName) {
+    public Response deleteVariable(@PathParam("execution-id") String executionId,
+                               @PathParam("variable-name") String variableName) {
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionFromRequest(executionId);
         // Determine scope
@@ -388,9 +392,9 @@ public class ExecutionService  extends BaseExecutionService {
     }
 
     @GET
-    @Path("/{executionId}/variables/{variableName}/data")
-    public Response getVariableData(@PathParam("executionId") String executionId,
-                                    @PathParam("variableName") String variableName) {
+    @Path("/{execution-id}/variables/{variable-name}/data")
+    public Response getVariableData(@PathParam("execution-id") String executionId,
+                                    @PathParam("variable-name") String variableName) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
 

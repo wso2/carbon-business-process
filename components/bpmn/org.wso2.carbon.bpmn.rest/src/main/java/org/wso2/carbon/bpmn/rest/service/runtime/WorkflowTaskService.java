@@ -24,7 +24,7 @@ import org.activiti.engine.task.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
@@ -241,9 +241,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}")
+    @Path("/{task-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getTask(@PathParam("taskId") String taskId) {
+    public Response getTask(@PathParam("task-id") String taskId) {
         TaskResponse taskResponse = new RestResponseFactory().createTaskResponse(getTaskFromRequest(taskId), uriInfo
                 .getBaseUri()
                 .toString());
@@ -252,10 +252,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @PUT
-    @Path("/{taskId}")
+    @Path("/{task-id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateTask(@PathParam("taskId") String taskId,
+    public Response updateTask(@PathParam("task-id") String taskId,
                                TaskRequest taskRequest) {
 
         if (taskRequest == null) {
@@ -278,9 +278,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @POST
-    @Path("/{taskId}")
+    @Path("/{task-id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response executeTaskAction(@PathParam("taskId") String taskId, TaskActionRequest actionRequest) {
+    public Response executeTaskAction(@PathParam("task-id") String taskId, TaskActionRequest actionRequest) {
         if (actionRequest == null) {
             throw new ActivitiException("A request body was expected when executing a task action.");
         }
@@ -309,8 +309,8 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskId}")
-    public Response deleteTask(@PathParam("taskId") String taskId) {
+    @Path("/{task-id}")
+    public Response deleteTask(@PathParam("task-id") String taskId) {
 
         Boolean cascadeHistory = false;
 
@@ -339,10 +339,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/variables")
+    @Path("/{task-id}/variables")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getVariables(@PathParam("taskId") String taskId) {
+    public Response getVariables(@PathParam("task-id") String taskId) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
 
@@ -374,20 +374,20 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/variables/{variableName}")
+    @Path("/{task-id}/variables/{variable-name}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public RestVariable getVariable(@PathParam("taskId") String taskId,
-                                    @PathParam("variableName") String variableName) {
+    public RestVariable getVariable(@PathParam("task-id") String taskId,
+                                    @PathParam("variable-name") String variableName) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         return getVariableFromRequest(taskId, variableName, scope, false, uriInfo.getBaseUri().toString());
     }
 
     @GET
-    @Path("/{taskId}/variables/{variableName}/data")
+    @Path("/{task-id}/variables/{variable-name}/data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getVariableData(@PathParam("taskId") String taskId, @PathParam("variableName") String
+    public Response getVariableData(@PathParam("task-id") String taskId, @PathParam("variable-name") String
             variableName) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
@@ -417,7 +417,7 @@ public class WorkflowTaskService extends BaseTaskService {
             throw new ActivitiException("Unexpected error getting variable data", ioe);
         }
     }
-
+/* todo
     @POST
     @Path("/{taskId}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -439,12 +439,12 @@ public class WorkflowTaskService extends BaseTaskService {
         }
 
     }
-
+*/
     @POST
-    @Path("/{taskId}/variables")
+    @Path("/{task-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createTaskVariable(@PathParam("taskId") String taskId, @Context HttpServletRequest
+    public Response createTaskVariable(@PathParam("task-id") String taskId, @Context HttpServletRequest
             httpServletRequest) {
 
         Task task = getTaskFromRequest(taskId);
@@ -561,7 +561,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
         return Response.ok().status(Response.Status.CREATED).build();
     }
-
+/* TODO
     @PUT
     @Path("/{taskId}/variables/{variableName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -583,13 +583,13 @@ public class WorkflowTaskService extends BaseTaskService {
 
         return Response.ok().entity(result).build();
     }
-
+*/
     @PUT
-    @Path("/{taskId}/variables/{variableName}")
+    @Path("/{task-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateTaskVariable(@PathParam("taskId") String taskId,
-                                       @PathParam("variableName") String variableName, @Context HttpServletRequest httpServletRequest) {
+    public Response updateTaskVariable(@PathParam("task-id") String taskId,
+                                       @PathParam("variable-name") String variableName, @Context HttpServletRequest httpServletRequest) {
         Task task = getTaskFromRequest(taskId);
 
         RestVariable restVariable = null;
@@ -626,10 +626,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskId}/variables/{variableName}")
+    @Path("/{task-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteVariable(@PathParam("taskId") String taskId,
-                                   @PathParam("variableName") String variableName) {
+    public Response deleteVariable(@PathParam("task-id") String taskId,
+                                   @PathParam("variable-name") String variableName) {
         String scopeString = uriInfo.getQueryParameters().getFirst("scope");
         Task task = getTaskFromRequest(taskId);
 
@@ -659,9 +659,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskId}/variables")
+    @Path("/{task-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteAllLocalTaskVariables(@PathParam("taskId") String taskId) {
+    public Response deleteAllLocalTaskVariables(@PathParam("task-id") String taskId) {
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Task task = getTaskFromRequest(taskId);
@@ -672,9 +672,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/identitylinks")
+    @Path("/{task-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLinks(@PathParam("taskId") String taskId) {
+    public Response getIdentityLinks(@PathParam("task-id") String taskId) {
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
 
@@ -686,9 +686,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/identitylinks/{family}")
+    @Path("/{task-id}/identity-links/{family}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLinksForFamily(@PathParam("taskId") String taskId,
+    public Response getIdentityLinksForFamily(@PathParam("task-id") String taskId,
                                               @PathParam("family") String family) {
 
         Task task = getTaskFromRequest(taskId);
@@ -722,10 +722,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/identitylinks/{family}/{identityId}/{type}")
+    @Path("/{task-id}/identity-links/{family}/{identity-id}/{type}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLink(@PathParam("taskId") String taskId,
-                                    @PathParam("family") String family, @PathParam("identityId") String identityId,
+    public Response getIdentityLink(@PathParam("task-id") String taskId,
+                                    @PathParam("family") String family, @PathParam("identity-id") String identityId,
                                     @PathParam("type") String type,
                                     @Context HttpServletRequest httpServletRequest) {
 
@@ -739,9 +739,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskId}/identitylinks/{family}/{identityId}/{type}")
-    public Response deleteIdentityLink(@PathParam("taskId") String taskId,
-                                       @PathParam("family") String family, @PathParam("identityId") String identityId,
+    @Path("/{task-id}/identity-links/{family}/{identity-id}/{type}")
+    public Response deleteIdentityLink(@PathParam("task-id") String taskId,
+                                       @PathParam("family") String family, @PathParam("identity-id") String identityId,
                                        @PathParam("type") String type) {
 
         Task task = getTaskFromRequest(taskId);
@@ -764,9 +764,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @POST
-    @Path("/{taskId}/identitylinks")
+    @Path("/{task-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createIdentityLink(@PathParam("taskId") String taskId,
+    public Response createIdentityLink(@PathParam("task-id") String taskId,
                                        RestIdentityLink identityLink) {
 
         Task task = getTaskFromRequest(taskId);
@@ -796,7 +796,7 @@ public class WorkflowTaskService extends BaseTaskService {
 
         return Response.ok().status(Response.Status.CREATED).entity(restIdentityLink).build();
     }
-
+/* todo
     @POST
     @Path("/{taskId}/attachments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -935,12 +935,12 @@ public class WorkflowTaskService extends BaseTaskService {
 
         return responseBuilder.status(Response.Status.CREATED).entity(result).build();
     }
-
+*/
     @POST
-    @Path("/{taskId}/attachments")
+    @Path("/{task-id}/attachments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createAttachmentForNonBinary(@PathParam("taskId") String taskId, @Context HttpServletRequest
+    public Response createAttachmentForNonBinary(@PathParam("task-id") String taskId, @Context HttpServletRequest
             httpServletRequest, AttachmentRequest attachmentRequest) {
 
         AttachmentResponse result = null;
@@ -956,9 +956,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
 
     @GET
-    @Path("/{taskId}/attachments")
+    @Path("/{task-id}/attachments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAttachments(@PathParam("taskId") String taskId) {
+    public Response getAttachments(@PathParam("task-id") String taskId) {
         List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
@@ -978,10 +978,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/attachments/{attachmentId}")
+    @Path("/{task-id}/attachments/{attachment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAttachment(@PathParam("taskId") String taskId,
-                                  @PathParam("attachmentId") String attachmentId) {
+    public Response getAttachment(@PathParam("task-id") String taskId,
+                                  @PathParam("attachment-id") String attachmentId) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -996,9 +996,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskId}/attachments/{attachmentId}")
-    public Response deleteAttachment(@PathParam("taskId") String taskId,
-                                     @PathParam("attachmentId") String attachmentId) {
+    @Path("/{task-id}/attachments/{attachment-id}")
+    public Response deleteAttachment(@PathParam("task-id") String taskId,
+                                     @PathParam("attachment-id") String attachmentId) {
 
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1013,9 +1013,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/attachments/{attachmentId}/content")
-    public Response getAttachmentContent(@PathParam("taskId") String taskId,
-                                         @PathParam("attachmentId") String attachmentId) {
+    @Path("/{task-id}/attachments/{attachment-id}/content")
+    public Response getAttachmentContent(@PathParam("task-id") String taskId,
+                                         @PathParam("attachment-id") String attachmentId) {
 
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
@@ -1054,9 +1054,9 @@ public class WorkflowTaskService extends BaseTaskService {
 
 
     @GET
-    @Path("/{taskId}/comments")
+    @Path("/{task-id}/comments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getComments(@PathParam("taskId") String taskId) {
+    public Response getComments(@PathParam("task-id") String taskId) {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList(taskService
@@ -1068,10 +1068,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @POST
-    @Path("/{taskId}/comments")
+    @Path("/{task-id}/comments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createComment(@PathParam("taskId") String taskId, CommentRequest comment) {
+    public Response createComment(@PathParam("task-id") String taskId, CommentRequest comment) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -1093,10 +1093,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/comments/{commentId}")
+    @Path("/{task-id}/comments/{comment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getComment(@PathParam("taskId") String taskId,
-                               @PathParam("commentId") String commentId) {
+    public Response getComment(@PathParam("task-id") String taskId,
+                               @PathParam("comment-id") String commentId) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1110,10 +1110,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskId}/comments/{commentId}")
+    @Path("/{task-id}/comments/{comment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteComment(@PathParam("taskId") String taskId,
-                                  @PathParam("commentId") String commentId) {
+    public Response deleteComment(@PathParam("task-id") String taskId,
+                                  @PathParam("comment-id") String commentId) {
 
         // Check if task exists
         Task task = getTaskFromRequest(taskId);
@@ -1129,9 +1129,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/events")
+    @Path("/{task-id}/events")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getEvents(@PathParam("taskId") String taskId) {
+    public Response getEvents(@PathParam("task-id") String taskId) {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
         List<EventResponse> eventResponseList = new RestResponseFactory().createEventResponseList(taskService
@@ -1144,10 +1144,10 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @GET
-    @Path("/{taskId}/events/{eventId}")
+    @Path("/{task-id}/events/{event-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getEvent(@PathParam("taskId") String taskId,
-                             @PathParam("eventId") String eventId) {
+    public Response getEvent(@PathParam("task-id") String taskId,
+                             @PathParam("event-id") String eventId) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1163,9 +1163,9 @@ public class WorkflowTaskService extends BaseTaskService {
     }
 
     @DELETE
-    @Path("/{taskd}/events/{eventId}")
-    public Response deleteEvent(@PathParam("taskId") String taskId,
-                                @PathParam("eventId") String eventId) {
+    @Path("/{task-id}/events/{event-id}")
+    public Response deleteEvent(@PathParam("task-id") String taskId,
+                                @PathParam("event-id") String eventId) {
 
         // Check if task exists
         Task task = getTaskFromRequest(taskId);

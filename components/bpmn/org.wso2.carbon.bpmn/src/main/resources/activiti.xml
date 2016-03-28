@@ -12,6 +12,11 @@
 
         <property name="mailServerHost" value="mail.my-corp.com"/>
         <property name="mailServerPort" value="5025"/>
+        <property name="customMybatisMappers">
+            <set>
+                <value>org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper</value>
+            </set>
+        </property>
 
     </bean>
 

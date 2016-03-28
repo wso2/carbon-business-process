@@ -38,8 +38,8 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
@@ -257,9 +257,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/diagram")
+    @Path("/{process-instance-id}/diagram")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProcessInstanceDiagram(@PathParam("processInstanceId") String processInstanceId) {
+    public Response getProcessInstanceDiagram(@PathParam("process-instance-id") String processInstanceId) {
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
@@ -287,9 +287,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}")
+    @Path("/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
+    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         RestResponseFactory restResponseFactory = new RestResponseFactory();
@@ -300,9 +300,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @DELETE
-    @Path("/{processInstanceId}")
+    @Path("/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
+    public Response deleteProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         String deleteReason = uriInfo.getQueryParameters().getFirst("deleteReason");
@@ -316,9 +316,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @PUT
-    @Path("/{processInstanceId}")
+    @Path("/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response performProcessInstanceAction(@PathParam("processInstanceId") String
+    public Response performProcessInstanceAction(@PathParam("process-instance-id") String
                                                          processInstanceId,
                                                  ProcessInstanceActionRequest actionRequest) {
 
@@ -336,9 +336,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/identitylinks")
+    @Path("/{process-instance-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<RestIdentityLink> getIdentityLinks(@PathParam("processInstanceId") String processInstanceId) {
+    public List<RestIdentityLink> getIdentityLinks(@PathParam("process-instance-id") String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         return new RestResponseFactory().createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance
@@ -346,9 +346,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @POST
-    @Path("/{processInstanceId}/identitylinks")
+    @Path("/{process-instance-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createIdentityLink(@PathParam("processInstanceId") String processInstanceId,
+    public Response createIdentityLink(@PathParam("process-instance-id") String processInstanceId,
                                        RestIdentityLink identityLink) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
@@ -375,10 +375,10 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/identitylinks/users/{identityId}/{type}")
+    @Path("/{process-instance-id}/identity-links/users/{identity-id}/{type}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLinK(@PathParam("processInstanceId") String processInstanceId,
-                                    @PathParam("identityId") String identityId, @PathParam("type") String type) {
+    public Response getIdentityLinK(@PathParam("process-instance-id") String processInstanceId,
+                                    @PathParam("identity-id") String identityId, @PathParam("type") String type) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
@@ -391,10 +391,10 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @DELETE
-    @Path("/{processInstanceId}/identitylinks/users/{identityId}/{type}")
+    @Path("/{process-instance-id}/identity-links/users/{identity-id}/{type}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteIdentityLink(@PathParam("processInstanceId") String processInstanceId,
-                                       @PathParam("identityId") String identityId, @PathParam("type") String type) {
+    public Response deleteIdentityLink(@PathParam("process-instance-id") String processInstanceId,
+                                       @PathParam("identity-id") String identityId, @PathParam("type") String type) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
@@ -407,9 +407,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/variables")
+    @Path("/{process-instance-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getVariables(@PathParam("processInstanceId") String processInstanceId) {
+    public Response getVariables(@PathParam("process-instance-id") String processInstanceId) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
@@ -420,18 +420,18 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/variables/{variableName}")
+    @Path("/{process-instance-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getVariable(@PathParam("processInstanceId") String processInstanceId,
-                                @PathParam("variableName") String variableName) {
+    public Response getVariable(@PathParam("process-instance-id") String processInstanceId,
+                                @PathParam("variable-name") String variableName) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
         RestVariable restVariable = getVariableFromRequest(execution, variableName, scope, false);
         return Response.ok().entity(restVariable).build();
     }
-
+/* TODO
     @PUT
     @Path("/{processInstanceId}/variables/{variableName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -451,13 +451,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         return Response.ok().entity(result).build();
     }
-
+*/
     @PUT
-    @Path("/{processInstanceId}/variables/{variableName}")
+    @Path("/{process-instance-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public RestVariable updateVariable(@PathParam("processInstanceId") String processInstanceId,
-                                       @PathParam("variableName") String variableName,
+    public RestVariable updateVariable(@PathParam("process-instance-id") String processInstanceId,
+                                       @PathParam("variable-name") String variableName,
                                        @Context HttpServletRequest httpServletRequest) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
@@ -498,7 +498,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         return setSimpleVariable(restVariable, execution, false);
     }
-
+/* TODO
     @POST
     @Path("/{processInstanceId}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -516,13 +516,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
         return response;
     }
-
+*/
 
     @POST
-    @Path("/{processInstanceId}/variables")
+    @Path("/{process-instance-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createExecutionVariable(@PathParam("processInstanceId") String processInstanceId, @Context
+    public Response createExecutionVariable(@PathParam("process-instance-id") String processInstanceId, @Context
     HttpServletRequest httpServletRequest) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
@@ -535,7 +535,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
         return response;
     }
-
+/*TODO
     @PUT
     @Path("/{processInstanceId}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -553,13 +553,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
         return response;
     }
-
+*/
 
     @PUT
-    @Path("/{processInstanceId}/variables")
+    @Path("/{process-instance-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createOrUpdateExecutionVariable(@PathParam("processInstanceId") String processInstanceId,
+    public Response createOrUpdateExecutionVariable(@PathParam("process-instance-id") String processInstanceId,
                                                     @Context HttpServletRequest httpServletRequest) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
@@ -573,9 +573,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @GET
-    @Path("/{processInstanceId}/variables/{variableName}/data")
-    public Response getVariableData(@PathParam("processInstanceId") String processInstanceId,
-                                    @PathParam("variableName") String variableName,
+    @Path("/{process-instance-id}/variables/{variable-name}/data")
+    public Response getVariableData(@PathParam("process-instance-id") String processInstanceId,
+                                    @PathParam("variable-name") String variableName,
                                     @Context HttpServletRequest request) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
@@ -585,9 +585,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     @DELETE
-    @Path("/{processInstanceId}/variables/{variableName}")
-    public Response deleteVariable(@PathParam("processInstanceId") String processInstanceId,
-                                   @PathParam("variableName") String variableName) {
+    @Path("/{process-instance-id}/variables/{variable-name}")
+    public Response deleteVariable(@PathParam("process-instance-id") String processInstanceId,
+                                   @PathParam("variable-name") String variableName) {
 
         String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
@@ -658,7 +658,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         return constructRestVariable(restVariable.getName(), actualVariableValue, scope,
                 execution.getId(), false);
     }
-
+/*TODO
     protected Response createBinaryExecutionVariable(Execution execution, boolean override, int variableType,
                                                      MultipartBody multipartBody) throws
             IOException, ServletException {
@@ -668,7 +668,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         responseBuilder.entity(result);
         return responseBuilder.status(Response.Status.CREATED).build();
     }
-
+*/
     protected Response createExecutionVariable(Execution execution, boolean override, int variableType,
                                                HttpServletRequest httpServletRequest) throws IOException, ServletException {
 
@@ -785,7 +785,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         // }
         return responseBuilder.status(Response.Status.CREATED).build();
     }
-
+/* TODO
     protected RestVariable setBinaryVariable(MultipartBody multipartBody, Execution execution,
                                              int responseVariableType, boolean isNew) throws
             IOException, ServletException {
@@ -957,7 +957,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
     }
-
+*/
     protected void setVariable(Execution execution, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new variables. Existing variables should be updated using PUT
         if (log.isDebugEnabled()) {
@@ -1201,9 +1201,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         String tenantDomain = carbonContext.getTenantDomain();
         String userNameWithTenantDomain = userName + "@" + tenantDomain;
 
-
-        BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
-        List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
+//TODO
+        //BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
+       // List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
         List<IdentityLink> identityLinkList = repositoryService.getIdentityLinksForProcessDefinition
                 (processDefinitionId);
 
@@ -1231,18 +1231,18 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 if (groupId.contains("$")) {
                     groupId = resolveVariable(processInstanceCreateRequest, groupId);
                 }
-
-                for (Group identityGroup:groupList){
+//TODO
+               /* for (Group identityGroup:groupList){
                     if(!groupId.isEmpty() && identityGroup.getId() != null && identityGroup.getId().equals(groupId)){
                         return true;
                     }
-                }
+                }*/
             }
         }
-
-        if (!valueExistsForGroupId && !valueExistsForUserId) {
-            return true;
-        }
+//TODO
+        //if (!valueExistsForGroupId && !valueExistsForUserId) {
+           // return true;
+        //}//
 
         return false;
     }

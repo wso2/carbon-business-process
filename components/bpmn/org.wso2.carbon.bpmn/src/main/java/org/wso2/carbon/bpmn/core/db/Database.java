@@ -71,7 +71,7 @@ public class Database {
     public synchronized void init()
             throws DatabaseConfigurationException, BPMNMetaDataTableCreationException {
         this.dataSource = null;
-        initDataSource();
+	    initDataSource();
         createActivitiMetaDataTable();
         started = true;
     }
