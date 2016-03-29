@@ -239,7 +239,7 @@ public class DatabaseCreator {
 
 		try {
 			FileInputStream e = new FileInputStream(dbscriptName);
-			reader = new BufferedReader(new InputStreamReader(e));
+			reader = new BufferedReader(new InputStreamReader(e, Charset.defaultCharset()));
 
 			while(true) {
 				String line;
