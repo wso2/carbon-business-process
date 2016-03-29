@@ -17,19 +17,15 @@
 package org.wso2.carbon.bpmn.core.internal;
 
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-
 import org.osgi.service.jndi.JNDIContextManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,23 +33,16 @@ import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
-import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
-import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.beans.DataSourceMetadata;
 import org.wso2.carbon.datasource.core.beans.JNDIConfig;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
-import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
-import java.io.File;
-import org.wso2.carbon.kernel.deployment.Artifact;
-import org.wso2.carbon.kernel.deployment.ArtifactType;
+
 /**
  *
  */
@@ -63,7 +52,7 @@ import org.wso2.carbon.kernel.deployment.ArtifactType;
         immediate = true
 )
 
-public class BPMNServiceComponent  {
+public class BPMNServiceComponent {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNServiceComponent.class);
     private DataSourceService datasourceService;
@@ -128,17 +117,17 @@ public class BPMNServiceComponent  {
             this.bundleContext = ctxt.getBundleContext();
             registerJNDIContextForActiviti();
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
-            ActivitiEngineBuilder activitiEngineBuilder = new ActivitiEngineBuilder();
-            holder.setEngine(activitiEngineBuilder.buildEngine());
+            ActivitiEngineBuilder.getInstance();
+            holder.setEngine(ActivitiEngineBuilder.getInstance().buildEngine());
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
-            bpmnEngineService.setProcessEngine(activitiEngineBuilder.getProcessEngine());
+            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getInstance().getProcessEngine());
             bundleContext.registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
             // Create metadata table for deployments
-	        DataSourceHandler dataSourceHandler = new DataSourceHandler();
-            dataSourceHandler.initDataSource(activitiEngineBuilder.getDataSourceJndiName());
-	        dataSourceHandler.closeDataSource();
+            DataSourceHandler dataSourceHandler = new DataSourceHandler();
+            dataSourceHandler.initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
+            dataSourceHandler.closeDataSource();
 
-        }catch (Throwable t) {
+        } catch (Throwable t) {
             log.error("Error initializing bpmn component " + t);
         }
     }

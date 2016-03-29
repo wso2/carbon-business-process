@@ -23,21 +23,28 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.kernel.utils.Utils;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 /**
- * Class responsible for building and initiating the activiti engine
+ * Class responsible for building and initiating the activiti engine.
  */
 public class ActivitiEngineBuilder {
 
     private static final Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
+    private static ActivitiEngineBuilder instance = new ActivitiEngineBuilder();
+    private String dataSourceJndiName;
+    private ProcessEngine processEngine;
 
-    private String dataSourceJndiName = null;
-    private static ProcessEngine processEngine = null;
+    private ActivitiEngineBuilder() {
+        dataSourceJndiName = null;
+        processEngine = null;
+    }
 
+    public static ActivitiEngineBuilder getInstance() {
+        return instance;
+    }
 
      /* Instantiates the engine. Builds the state of the engine
      *
@@ -74,11 +81,18 @@ public class ActivitiEngineBuilder {
         return processEngine;
     }
 
-    public String getDataSourceJndiName() {
+    public String getDataSourceJndiName() throws BPSFault {
+        if (dataSourceJndiName == null) {
+            buildEngine();
+        }
         return dataSourceJndiName;
+
     }
 
-    public static ProcessEngine getProcessEngine() {
-        return ActivitiEngineBuilder.processEngine;
+    public ProcessEngine getProcessEngine() throws BPSFault {
+        if (processEngine == null) {
+            buildEngine();
+        }
+        return this.processEngine;
     }
 }
