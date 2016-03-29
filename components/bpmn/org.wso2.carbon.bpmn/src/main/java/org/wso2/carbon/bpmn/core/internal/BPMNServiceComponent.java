@@ -36,8 +36,6 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
-import org.wso2.carbon.datasource.core.beans.DataSourceMetadata;
-import org.wso2.carbon.datasource.core.beans.JNDIConfig;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
 
 import javax.naming.Context;
@@ -139,14 +137,12 @@ public class BPMNServiceComponent {
     }
 
     private void registerJNDIContextForActiviti() throws DataSourceException, NamingException {
-        DataSourceMetadata activiti_db = datasourceManagementService.getDataSource(
-                BPMNConstants.BPMN_DB_NAME);
-        JNDIConfig jndiConfig = activiti_db.getJndiConfig();
+        //DataSourceMetadata activitiDB = datasourceManagementService.getDataSource(BPMNConstants.BPMN_DB_NAME);
+        //JNDIConfig jndiConfig = activitiDB.getJndiConfig();
         Context context = jndiContextManager.newInitialContext();
 
         Context subcontext = context.createSubcontext("java:comp/jdbc");
-        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME,
-                datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
+        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME, datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
     }
 
 }
