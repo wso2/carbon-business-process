@@ -16,10 +16,14 @@
 
 package org.wso2.carbon.bpmn.core.db;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -28,8 +32,6 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.StringTokenizer;
 import javax.sql.DataSource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class DatabaseCreator {
 	private static Log log = LogFactory.getLog(DatabaseCreator.class);
@@ -80,9 +82,7 @@ public class DatabaseCreator {
 			try {
 				this.statement = this.conn.createStatement();
 				ResultSet e = this.statement.executeQuery(checkSQL);
-				if(e != null) {
-					e.close();
-				}
+				e.close();
 			} finally {
 				try {
 					if(this.statement != null) {
