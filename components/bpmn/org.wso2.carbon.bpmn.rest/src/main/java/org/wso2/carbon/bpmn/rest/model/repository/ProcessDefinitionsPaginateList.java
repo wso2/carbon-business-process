@@ -25,11 +25,11 @@ import java.util.List;
 
 public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
 
-    public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createProcessDefinitionResponseList(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createProcessDefinitionResponseList(list);
     }
 }

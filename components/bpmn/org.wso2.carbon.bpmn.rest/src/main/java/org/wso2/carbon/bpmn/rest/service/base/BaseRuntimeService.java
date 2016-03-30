@@ -133,7 +133,7 @@ public class BaseRuntimeService {
             requestParams.put("withoutTenantId", queryRequest.getWithoutTenantId().toString());
         }
 
-        return new ExecutionPaginateList(new RestResponseFactory(), uriInfo)
+        return new ExecutionPaginateList(new RestResponseFactory())
                 .paginateList(requestParams ,queryRequest, query, "processInstanceId", allowedSortProperties);
     }
 
@@ -261,7 +261,7 @@ public class BaseRuntimeService {
     protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawLocalvariables,
-                execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL, uriInfo.getBaseUri().toString());
+                execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL);
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
@@ -271,7 +271,7 @@ public class BaseRuntimeService {
     protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
-                execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());
+                execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL);
 
         // Overlay global variables over local ones. In case they are present the values are not overridden,
         // since local variables get precedence over global ones at all times.
@@ -538,7 +538,7 @@ public class BaseRuntimeService {
             RestVariable.RestVariableScope variableScope, String executionId, boolean includeBinary) {
 
         return new RestResponseFactory().createRestVariable(variableName, value, variableScope, executionId,
-                RestResponseFactory.VARIABLE_EXECUTION, includeBinary, uriInfo.getBaseUri().toString());
+                RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
     }
 
 }

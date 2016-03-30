@@ -15,6 +15,8 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricActivitiInstanceService;
@@ -37,19 +39,20 @@ public class HistoricActivitiInstanceQueryService extends BaseHistoricActivitiIn
     @POST
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response queryActivityInstances(HistoricActivityInstanceQueryRequest queryRequest, @Context UriInfo uriInfo) {
+    public Response queryActivityInstances(HistoricActivityInstanceQueryRequest queryRequest, @Context
+                                           HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
-
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+            String value= decoder.parameters().get(property).get(0);
 
             if(value != null){
                 allRequestParams.put(property, value);
             }
         }
 
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams, uriInfo);
+        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
         return Response.ok().entity(dataResponse).build();
     }
 

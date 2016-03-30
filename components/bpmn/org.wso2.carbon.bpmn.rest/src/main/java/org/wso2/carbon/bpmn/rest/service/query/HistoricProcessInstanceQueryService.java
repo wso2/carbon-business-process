@@ -15,6 +15,8 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryProperty;
@@ -42,8 +44,6 @@ public class HistoricProcessInstanceQueryService  {
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
     protected static final List<String> allPropertiesList  = new ArrayList<>();
 
-    @Context
-    UriInfo uriInfo;
 
     static {
         allowedSortProperties.put("processInstanceId", HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
@@ -83,12 +83,13 @@ public class HistoricProcessInstanceQueryService  {
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response queryProcessInstances(HistoricProcessInstanceQueryRequest queryRequest) {
+    public Response queryProcessInstances(HistoricProcessInstanceQueryRequest queryRequest,@Context
+                                          HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
-
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+            String value= decoder.parameters().get(property).get(0);
 
             if(value != null){
                 allRequestParams.put(property, value);
@@ -166,7 +167,7 @@ public class HistoricProcessInstanceQueryService  {
             query.processInstanceWithoutTenantId();
         }
 
-        DataResponse dataResponse = new HistoricProcessInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
+        DataResponse dataResponse = new HistoricProcessInstancePaginateList(new RestResponseFactory()).paginateList(
                 allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
         return Response.ok().entity(dataResponse).build();
 

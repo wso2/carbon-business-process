@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -25,6 +27,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.Comment;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
@@ -38,6 +44,7 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstancePaginateLi
 import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponseCollection;
+import org.wso2.msf4j.Microservice;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -48,17 +55,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.*;
-
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.history.HistoricProcessInstanceService",
+		service = Microservice.class,
+		immediate = true)
 @Path("/historic-process-instances")
-public class HistoricProcessInstanceService {
+public class HistoricProcessInstanceService implements Microservice {
 
     protected static final List<String> allPropertiesList  = new ArrayList<>();
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
-
-
-    @Context
-    UriInfo uriInfo;
 
     static {
         allPropertiesList.add("processInstanceId");
@@ -95,16 +101,26 @@ public class HistoricProcessInstanceService {
         allowedSortProperties.put("tenantId", HistoricProcessInstanceQueryProperty.TENANT_ID);
     }
 
-    @GET
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		// Nothing to do
+	}
+
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext) {
+		// Nothing to do
+	}
+
+	@GET
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getHistoricProcessInstances() {
+    public Response getHistoricProcessInstances(@Context HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
-
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+            String value= decoder.parameters().get(property).get(0);
 
             if(value != null){
                 allRequestParams.put(property, value);
@@ -191,8 +207,7 @@ public class HistoricProcessInstanceService {
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
         HistoricProcessInstanceResponse historicProcessInstanceResponse = new RestResponseFactory()
-                .createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId),
-                        uriInfo.getBaseUri().toString());
+                .createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId));
         return Response.ok().entity(historicProcessInstanceResponse).build();
     }
 
@@ -214,8 +229,7 @@ public class HistoricProcessInstanceService {
         List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
         if (identityLinks != null) {
             List<HistoricIdentityLinkResponse> historicIdentityLinkResponses = new RestResponseFactory()
-                    .createHistoricIdentityLinkResponseList(identityLinks, uriInfo.getBaseUri
-                    ().toString());
+                    .createHistoricIdentityLinkResponseList(identityLinks);
             HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection = new
                     HistoricIdentityLinkResponseCollection();
             historicIdentityLinkResponseCollection.setHistoricIdentityLinkResponses(historicIdentityLinkResponses);
@@ -266,7 +280,7 @@ public class HistoricProcessInstanceService {
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList(taskService
-                .getProcessInstanceComments(instance.getId()), uriInfo.getBaseUri().toString());
+                .getProcessInstanceComments(instance.getId()));
         CommentResponseCollection commentResponseCollection = new CommentResponseCollection();
         commentResponseCollection.setCommentResponseList(commentResponseList);
         return Response.ok().entity(commentResponseCollection).build();
@@ -287,8 +301,7 @@ public class HistoricProcessInstanceService {
         TaskService taskService = BPMNOSGIService.getTaskService();
         Comment createdComment = taskService.addComment(null, instance.getId(), comment.getMessage());
 
-        CommentResponse commentResponse = new RestResponseFactory().createRestComment(createdComment, uriInfo
-                .getBaseUri().toString());
+        CommentResponse commentResponse = new RestResponseFactory().createRestComment(createdComment);
 
         return Response.ok().status(Response.Status.CREATED).entity(commentResponse).build();
     }
@@ -306,7 +319,7 @@ public class HistoricProcessInstanceService {
         if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
             throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
         }
-        CommentResponse commentResponse = new RestResponseFactory().createRestComment(comment, uriInfo.getBaseUri().toString());
+        CommentResponse commentResponse = new RestResponseFactory().createRestComment(comment);
         return Response.ok().entity(commentResponse).build();
     }
 
@@ -343,7 +356,7 @@ public class HistoricProcessInstanceService {
             throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
         } else {
             return new RestResponseFactory().createRestVariable(variableName, value, null, processInstanceId,
-                    RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary, uriInfo.getBaseUri().toString());
+                    RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary);
         }
     }
 
@@ -423,7 +436,7 @@ public class HistoricProcessInstanceService {
         }
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
-        DataResponse dataResponse = new HistoricProcessInstancePaginateList(restResponseFactory, uriInfo).paginateList(
+        DataResponse dataResponse = new HistoricProcessInstancePaginateList(restResponseFactory).paginateList(
                 allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
 
         return dataResponse;

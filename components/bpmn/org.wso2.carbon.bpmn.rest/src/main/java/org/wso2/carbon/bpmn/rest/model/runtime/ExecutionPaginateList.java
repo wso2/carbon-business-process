@@ -23,12 +23,12 @@ import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 public class ExecutionPaginateList  extends AbstractPaginateList {
-    public ExecutionPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public ExecutionPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createExecutionResponseList(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createExecutionResponseList(list);
     }
 }

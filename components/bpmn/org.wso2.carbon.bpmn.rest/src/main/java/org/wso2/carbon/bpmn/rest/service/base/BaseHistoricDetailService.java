@@ -60,7 +60,7 @@ public class BaseHistoricDetailService {
     }
 
     protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String>
-            allRequestParams, UriInfo uriInfo) {
+            allRequestParams) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
@@ -88,7 +88,7 @@ public class BaseHistoricDetailService {
             }
         }
 
-        return new HistoricDetailPaginateList(new RestResponseFactory(),uriInfo ).paginateList(
+        return new HistoricDetailPaginateList(new RestResponseFactory() ).paginateList(
                 allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
     }
 }

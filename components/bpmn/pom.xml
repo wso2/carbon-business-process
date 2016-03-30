@@ -34,7 +34,7 @@
     <modules>
         <module>org.wso2.carbon.bpmn</module>
         <!--module>org.wso2.carbon.bpmn.ui</module-->
-        <!--module>bpmn-rest</module-->
+        <module>org.wso2.carbon.bpmn.rest</module>
         <!--module>bpmn-explorer-web</module-->
         <!--module>org.wso2.carbon.bpmn.analytics.publisher</module-->
     </modules>

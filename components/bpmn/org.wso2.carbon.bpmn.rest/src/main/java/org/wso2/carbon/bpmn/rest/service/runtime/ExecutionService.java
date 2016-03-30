@@ -1,7 +1,23 @@
+/**
+ * Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -9,19 +25,21 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
 //import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
+import org.wso2.msf4j.Microservice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -29,13 +47,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.runtime.ExecutionService",
+		service = Microservice.class,
+		immediate = true
+)
 
 @Path("/executions")
-public class ExecutionService  extends BaseExecutionService {
+public class ExecutionService  extends BaseExecutionService implements Microservice {
 
-    @Context
-    protected UriInfo uriInfo;
+	@Activate
+	protected void activate(BundleContext bundleContext){
+		// Nothing to do
+	}
 
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext){
+		// Nothing to do
+	}
     /**
      * Get the process execution identified by given execution ID
      * @param executionId
@@ -44,10 +73,10 @@ public class ExecutionService  extends BaseExecutionService {
     @GET
     @Path("/{execution-id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getExecution(@PathParam("execution-id") String executionId, @Context UriInfo uriInfo) {
+    public Response getExecution(@PathParam("execution-id") String executionId) {
 
         ExecutionResponse executionResponse = new RestResponseFactory()
-                .createExecutionResponse(getExecutionFromRequest(executionId), uriInfo.getBaseUri().toString());
+                .createExecutionResponse(getExecutionFromRequest(executionId));
         return Response.ok().entity(executionResponse).build();
     }
 
@@ -105,7 +134,7 @@ public class ExecutionService  extends BaseExecutionService {
             response.status(Response.Status.NO_CONTENT);
         } else {
             response.entity(new RestResponseFactory()
-                    .createExecutionResponse(execution, uriInfo.getBaseUri().toString())).build();
+                    .createExecutionResponse(execution)).build();
         }
 
         return response.build();
@@ -126,87 +155,123 @@ public class ExecutionService  extends BaseExecutionService {
 
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getProcessInstances() {
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML}) //TODO:
+    public Response getProcessInstances(@Context HttpRequest request) {
         // Populate query based on request
         ExecutionQueryRequest queryRequest = new ExecutionQueryRequest();
         Map<String, String> allRequestParams = new HashMap<>();
 
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+
         for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+            String value=  decoder.parameters().get(property).get(0);
 
             if(value != null){
                 allRequestParams.put(property, value);
             }
         }
 
-        String id = uriInfo.getQueryParameters().getFirst("id");
-        if (id != null) {
-            queryRequest.setId(id);
+	    if(decoder.parameters().containsKey("id")) {
+		    String id = decoder.parameters().get("id").get(0);
+
+		    if (id != null) {
+			    queryRequest.setId(id);
+		    }
+	    }
+
+	     if(decoder.parameters().containsKey("processInstanceId")) {
+		     String processInstanceId = decoder.parameters().get("processInstanceId").get(0);
+
+		     if (processInstanceId != null) {
+			     queryRequest.setProcessInstanceId(processInstanceId);
+		     }
+	     }
+
+	    if(decoder.parameters().containsKey("processInstanceBusinessKey")) {
+		    String processInstanceBusinessKey =
+				    decoder.parameters().get("processInstanceBusinessKey").get(0);
+
+		    if (processInstanceBusinessKey != null) {
+			    queryRequest.setProcessBusinessKey(processInstanceBusinessKey);
+		    }
+	    }
+
+	    if(decoder.parameters().containsKey("processDefinitionKey")) {
+		    String processDefinitionKey =
+				    decoder.parameters().get("processDefinitionKey").get(0);
+		    if (processDefinitionKey != null) {
+			    queryRequest.setProcessDefinitionKey(processDefinitionKey);
+		    }
+	    }
+
+	    if(decoder.parameters().containsKey("processDefinitionId")) {
+		    String processDefinitionId =
+				    decoder.parameters().get("processDefinitionId").get(0);
+
+		    if (processDefinitionId != null) {
+			    queryRequest.setProcessDefinitionId(processDefinitionId);
+		    }
+	    }
+
+        if(decoder.parameters().containsKey("messageEventSubscriptionName")) {
+	        String messageEventSubscriptionName =
+			        decoder.parameters().get("messageEventSubscriptionName").get(0);
+
+	        if (messageEventSubscriptionName != null) {
+		        queryRequest.setMessageEventSubscriptionName(messageEventSubscriptionName);
+	        }
         }
+        if(decoder.parameters().containsKey("signalEventSubscriptionName")) {
+	        String signalEventSubscriptionName =
+			        decoder.parameters().get("signalEventSubscriptionName").get(0);
 
-        String processInstanceId = uriInfo.getQueryParameters().getFirst("processInstanceId");
-        if (processInstanceId != null) {
-            queryRequest.setProcessInstanceId(processInstanceId);
+	        if (signalEventSubscriptionName != null) {
+		        queryRequest.setSignalEventSubscriptionName(signalEventSubscriptionName);
+	        }
         }
+        if(decoder.parameters().containsKey("activityId")) {
+	        String activityId = decoder.parameters().get("activityId").get(0);
 
-        String processInstanceBusinessKey = uriInfo.getQueryParameters().getFirst("processInstanceBusinessKey");
-        if (processInstanceBusinessKey != null) {
-            queryRequest.setProcessBusinessKey(processInstanceBusinessKey);
+	        if (activityId != null) {
+		        queryRequest.setActivityId(activityId);
+	        }
         }
+        if(decoder.parameters().containsKey("parentId")) {
+	        String parentId = decoder.parameters().get("parentId").get(0);
 
-        String processDefinitionKey = uriInfo.getQueryParameters().getFirst("processDefinitionKey");
-        if (processDefinitionKey != null) {
-            queryRequest.setProcessDefinitionKey(processDefinitionKey);
+	        if (parentId != null) {
+		        queryRequest.setParentId(parentId);
+	        }
         }
+       if(decoder.parameters().containsKey("tenantId")) {
+	       String tenantId = decoder.parameters().get("tenantId").get(0);
 
-        String processDefinitionId = uriInfo.getQueryParameters().getFirst("processDefinitionId");
-        if (processDefinitionId != null) {
-            queryRequest.setProcessDefinitionId(processDefinitionId);
+	       if (tenantId != null) {
+		       queryRequest.setTenantId(tenantId);
+	       }
+       }
+        if(decoder.parameters().containsKey("tenantIdLike")) {
+	        String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
+
+		    if (tenantIdLike != null) {
+		        queryRequest.setTenantIdLike(tenantIdLike);
+	        }
         }
+        if(decoder.parameters().containsKey("withoutTenantId")) {
+	        String withoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
 
-        String messageEventSubscriptionName = uriInfo.getQueryParameters().getFirst("messageEventSubscriptionName");
-        if (messageEventSubscriptionName != null) {
-            queryRequest.setMessageEventSubscriptionName(messageEventSubscriptionName);
-        }
+	        if (withoutTenantId != null) {
+		        if (Boolean.valueOf(withoutTenantId)) {
+			        queryRequest.setWithoutTenantId(Boolean.TRUE);
+		        }
 
-        String signalEventSubscriptionName = uriInfo.getQueryParameters().getFirst("signalEventSubscriptionName");
-        if (signalEventSubscriptionName != null) {
-            queryRequest.setSignalEventSubscriptionName(signalEventSubscriptionName);
-        }
-
-        String activityId = uriInfo.getQueryParameters().getFirst("activityId");
-        if (activityId != null) {
-            queryRequest.setActivityId(activityId);
-        }
-
-        String parentId = uriInfo.getQueryParameters().getFirst("parentId");
-        if (parentId != null) {
-            queryRequest.setParentId(parentId);
-        }
-
-        String tenantId = uriInfo.getQueryParameters().getFirst("tenantId");
-        if (tenantId != null) {
-            queryRequest.setTenantId(tenantId);
-        }
-
-        String tenantIdLike = uriInfo.getQueryParameters().getFirst("tenantIdLike");
-        if (tenantIdLike != null) {
-            queryRequest.setTenantIdLike(tenantIdLike);
-        }
-
-        String withoutTenantId = uriInfo.getQueryParameters().getFirst("withoutTenantId");
-        if (withoutTenantId != null) {
-            if (Boolean.valueOf(withoutTenantId)) {
-                queryRequest.setWithoutTenantId(Boolean.TRUE);
-            }
-
+	        }
         }
 
         //add common parameters such as sort,order,start etc.
         //allRequestParams = Utils.prepareCommonParameters(allRequestParams, uriInfo);
 
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams, uriInfo);
+        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
 
         return Response.ok().entity(dataResponse).build();
     }
@@ -238,12 +303,11 @@ public class ExecutionService  extends BaseExecutionService {
     @GET
     @Path("/{execution-id}/variables")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getVariables(@PathParam("execution-id") String executionId) {
+    public Response getVariables(@PathParam("execution-id") String executionId,@QueryParam("scope") String scope) {
 
-        String scope = uriInfo.getQueryParameters().getFirst("scope");
         Execution execution = getExecutionFromRequest(executionId);
         List<RestVariable> restVariableList = processVariables(execution, scope, RestResponseFactory
-                .VARIABLE_EXECUTION, uriInfo);
+                .VARIABLE_EXECUTION);
         RestVariableCollection restVariableCollection = new RestVariableCollection();
         restVariableCollection.setRestVariables(restVariableList);
         return Response.ok().entity(restVariableCollection).build();
@@ -256,8 +320,7 @@ public class ExecutionService  extends BaseExecutionService {
     public Response createOrUpdateExecutionVariable(@PathParam("execution-id") String executionId, @Context
                                                   HttpServletRequest httpServletRequest) {
         Execution execution = getExecutionFromRequest(executionId);
-        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest,
-                uriInfo );
+        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest);
     }
 //TODO
    /* @PUT
@@ -281,8 +344,7 @@ public class ExecutionService  extends BaseExecutionService {
             httpServletRequest) {
 
         Execution execution = getExecutionFromRequest(executionId);
-        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest,
-                uriInfo);
+        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, httpServletRequest);
     }
 	//TODO
 /*
@@ -311,10 +373,9 @@ public class ExecutionService  extends BaseExecutionService {
     @Path("/{execution-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public RestVariable getVariable(@PathParam("execution-id") String executionId,
-                                    @PathParam("variable-name") String variableName) {
-       String scope = uriInfo.getQueryParameters().getFirst("scope");
+                                    @PathParam("variable-name") String variableName,@QueryParam("scope") String scope) {
         Execution execution = getExecutionFromRequest(executionId);
-        return getVariableFromRequest(execution, variableName, scope, false, uriInfo);
+        return getVariableFromRequest(execution, variableName, scope, false);
     }
 //TODO
 /*
@@ -357,7 +418,7 @@ public class ExecutionService  extends BaseExecutionService {
             throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
         }
 
-        result = setSimpleVariable(restVariable, execution, false, uriInfo);
+        result = setSimpleVariable(restVariable, execution, false);
 
         return Response.ok().status(Response.Status.CREATED).entity(result).build();
     }
@@ -366,8 +427,7 @@ public class ExecutionService  extends BaseExecutionService {
     @Path("/{execution-id}/variables/{variable-name}")
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response deleteVariable(@PathParam("execution-id") String executionId,
-                               @PathParam("variable-name") String variableName) {
-        String scope = uriInfo.getQueryParameters().getFirst("scope");
+                               @PathParam("variable-name") String variableName,@QueryParam("scope") String scope) {
         Execution execution = getExecutionFromRequest(executionId);
         // Determine scope
         RestVariable.RestVariableScope variableScope = RestVariable.RestVariableScope.LOCAL;
@@ -394,15 +454,13 @@ public class ExecutionService  extends BaseExecutionService {
     @GET
     @Path("/{execution-id}/variables/{variable-name}/data")
     public Response getVariableData(@PathParam("execution-id") String executionId,
-                                    @PathParam("variable-name") String variableName) {
-
-        String scope = uriInfo.getQueryParameters().getFirst("scope");
+                                    @PathParam("variable-name") String variableName,@QueryParam("scope") String scope) {
 
         try {
             byte[] result = null;
             Response.ResponseBuilder response = Response.ok();
             Execution execution = getExecutionFromRequest(executionId);
-            RestVariable variable = getVariableFromRequest(execution, variableName, scope, true, uriInfo);
+            RestVariable variable = getVariableFromRequest(execution, variableName, scope, true);
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
                 response.type("application/octet-stream");

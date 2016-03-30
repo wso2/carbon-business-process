@@ -25,14 +25,14 @@ import java.util.List;
 
 public class ModelsPaginateList extends AbstractPaginateList {
 
-    public ModelsPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public ModelsPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
 
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createModelResponseList(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createModelResponseList(list);
     }
 }

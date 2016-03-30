@@ -15,11 +15,15 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import org.wso2.carbon.bpmn.rest.common.RestUrlBuilder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,17 +38,19 @@ public class HistoricTaskInstanceQueryService extends BaseHistoricTaskInstanceSe
     @Path("/")
     @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest) {
+    public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest,@Context
+                                              HttpRequest request) {
         Map<String, String> allRequestParams = new HashMap<>();
-
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+	    for (String property:allPropertiesList){
+		    String value=decoder.parameters().get(property).get(0);
 
             if(value != null){
                 allRequestParams.put(property, value);
             }
         }
-        String serverRootUrl = uriInfo.getBaseUri().toString().replace("/history/historic-task-instances", "");
+	    RestUrlBuilder builder = new RestUrlBuilder();
+	    String serverRootUrl =  builder.getBaseUrl();
         return getQueryResponse(queryRequest, allRequestParams, serverRootUrl);
     }
 }

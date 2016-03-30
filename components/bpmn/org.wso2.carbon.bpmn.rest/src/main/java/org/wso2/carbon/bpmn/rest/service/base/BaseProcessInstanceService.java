@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
@@ -75,11 +77,11 @@ public class BaseProcessInstanceService {
         allowedSortProperties.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
     }
 
-    protected Map<String, String> allRequestParams(UriInfo uriInfo){
+    protected Map<String, String> allRequestParams(HttpRequest request){
         Map<String, String> allRequestParams = new HashMap<>();
-
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+            String value= decoder.parameters().get(property).get(0);
 
             if(value != null){
                 allRequestParams.put(property, value);
@@ -111,7 +113,7 @@ public class BaseProcessInstanceService {
     }
 
 
-    protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance, UriInfo uriInfo) {
+    protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
         if (!processInstance.isSuspended()) {
             throw new BPMNConflictException("Process instance with id '" +
                     processInstance.getId() + "' is already active.");
@@ -120,8 +122,7 @@ public class BaseProcessInstanceService {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
-        ProcessInstanceResponse response = new RestResponseFactory().createProcessInstanceResponse(processInstance,
-                uriInfo.getBaseUri().toString());
+        ProcessInstanceResponse response = new RestResponseFactory().createProcessInstanceResponse(processInstance);
 
         // No need to re-fetch the instance, just alter the suspended state of the result-object
         response.setSuspended(false);
@@ -129,7 +130,7 @@ public class BaseProcessInstanceService {
     }
 
     protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance, RestResponseFactory
-            restResponseFactory, UriInfo uriInfo) {
+            restResponseFactory) {
         if (processInstance.isSuspended()) {
             throw new BPMNConflictException("Process instance with id '" +
                     processInstance.getId() + "' is already suspended.");
@@ -138,8 +139,7 @@ public class BaseProcessInstanceService {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         runtimeService.suspendProcessInstanceById(processInstance.getId());
 
-        ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance, uriInfo
-                .getBaseUri().toString());
+        ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
 
         // No need to re-fetch the instance, just alter the suspended state of the result-object
         response.setSuspended(true);
@@ -147,7 +147,7 @@ public class BaseProcessInstanceService {
     }
 
     protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest,
-                                            Map<String, String> requestParams, UriInfo uriInfo) {
+                                            Map<String, String> requestParams) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
@@ -205,7 +205,7 @@ public class BaseProcessInstanceService {
             query.processInstanceWithoutTenantId();
         }
 
-        return new ProcessInstancePaginateList(new RestResponseFactory(), uriInfo)
+        return new ProcessInstancePaginateList(new RestResponseFactory())
                 .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
     }
 

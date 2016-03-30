@@ -26,13 +26,13 @@ import java.util.List;
 public class HistoricDetailPaginateList  extends AbstractPaginateList {
 
 
-    public HistoricDetailPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public HistoricDetailPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createHistoricDetailResponse(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createHistoricDetailResponse(list);
     }
 }

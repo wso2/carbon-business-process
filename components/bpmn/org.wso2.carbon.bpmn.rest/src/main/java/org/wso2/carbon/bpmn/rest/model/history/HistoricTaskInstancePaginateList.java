@@ -29,12 +29,12 @@ public class HistoricTaskInstancePaginateList extends AbstractPaginateList {
 
     public HistoricTaskInstancePaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo, String
             serverRootURL) {
-        super(restResponseFactory, uriInfo);
+        super(restResponseFactory);
         this.serverRootURL = serverRootURL;
     }
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createHistoricTaskInstanceResponseList(list,uriInfo.getBaseUri().toString());
+        return restResponseFactory.createHistoricTaskInstanceResponseList(list);
     }
 }

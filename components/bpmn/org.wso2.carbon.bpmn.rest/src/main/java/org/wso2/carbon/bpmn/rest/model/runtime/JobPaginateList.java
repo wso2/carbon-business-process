@@ -26,14 +26,14 @@ import java.util.List;
 public class JobPaginateList extends AbstractPaginateList {
     protected RestResponseFactory restResponseFactory = new RestResponseFactory();
 
-    public JobPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory,uriInfo);
+    public JobPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createJobResponseList(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createJobResponseList(list);
     }
 
 

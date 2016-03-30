@@ -17,17 +17,25 @@
 
 package org.wso2.carbon.bpmn.rest.service.identity;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.impl.UserQueryProperty;
 import org.activiti.engine.query.QueryProperty;
+import org.bouncycastle.ocsp.Req;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.identity.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseIdentityService;
+import org.wso2.msf4j.Microservice;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,175 +48,226 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IdentityService extends BaseIdentityService {
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.identity.IdentityService",
+		service = Microservice.class,
+		immediate = true)
+public class IdentityService extends BaseIdentityService implements Microservice {
 
-    protected static HashMap<String, QueryProperty> groupProperties = new HashMap<String, QueryProperty>();
-    protected static HashMap<String, QueryProperty> userProperties = new HashMap<>();
+	protected static HashMap<String, QueryProperty> groupProperties =
+			new HashMap<String, QueryProperty>();
+	protected static HashMap<String, QueryProperty> userProperties = new HashMap<>();
 
-    static {
-        groupProperties.put("id", GroupQueryProperty.GROUP_ID);
-        groupProperties.put("name", GroupQueryProperty.NAME);
-        groupProperties.put("type", GroupQueryProperty.TYPE);
-    }
+	static {
+		groupProperties.put("id", GroupQueryProperty.GROUP_ID);
+		groupProperties.put("name", GroupQueryProperty.NAME);
+		groupProperties.put("type", GroupQueryProperty.TYPE);
+	}
 
-    static {
-        userProperties.put("id", UserQueryProperty.USER_ID);
-        userProperties.put("firstName", UserQueryProperty.FIRST_NAME);
-        userProperties.put("lastName", UserQueryProperty.LAST_NAME);
-        userProperties.put("email", UserQueryProperty.EMAIL);
-    }
+	static {
+		userProperties.put("id", UserQueryProperty.USER_ID);
+		userProperties.put("firstName", UserQueryProperty.FIRST_NAME);
+		userProperties.put("lastName", UserQueryProperty.LAST_NAME);
+		userProperties.put("email", UserQueryProperty.EMAIL);
+	}
 
-    @Context
-    UriInfo uriInfo;
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		// Nothing to do
+	}
 
-    /**
-     * Get all the groups that match the filters given by query parameters of the request.
-     * @return DataResponse
-     */
-    @GET
-    @Path("/groups")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DataResponse getGroups() {
-        GroupQuery query = identityService.createGroupQuery();
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext) {
+		// Nothing to do
+	}
 
-        Map<String, String> allRequestParams = new HashMap<>();
+	/**
+	 * Get all the groups that match the filters given by query parameters of the request.
+	 *
+	 * @return DataResponse
+	 */
+	@GET
+	@Path("/groups")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public DataResponse getGroups(@Context HttpRequest request) {
+		GroupQuery query = identityService.createGroupQuery();
 
-        String id = uriInfo.getQueryParameters().getFirst("id");
-        if (id != null) {
-            query.groupId(id);
-            allRequestParams.put("id", id);
-        }
-        String name = uriInfo.getQueryParameters().getFirst("name");
-        if (name != null) {
-            query.groupName(name);
-            allRequestParams.put("name", name);
-        }
-        String nameLike = uriInfo.getQueryParameters().getFirst("nameLike");
-        if (nameLike != null) {
-            query.groupNameLike(nameLike);
-            allRequestParams.put("nameLike", nameLike);
-        }
-        String type = uriInfo.getQueryParameters().getFirst("type");
-        if (type != null) {
-            query.groupType(type);
-            allRequestParams.put("type", type);
-        }
-        String member = uriInfo.getQueryParameters().getFirst("name");
-        if (member != null) {
-            query.groupMember(member);
-            allRequestParams.put("member", member);
-        }
-        String potentialStarter = uriInfo.getQueryParameters().getFirst("potentialStarter");
-        if (potentialStarter != null) {
-            query.potentialStarter(potentialStarter);
-            allRequestParams.put("potentialStarter", potentialStarter);
-        }
+		Map<String, String> allRequestParams = new HashMap<>();
+		QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        allRequestParams = Utils.prepareCommonParameters(allRequestParams, uriInfo);
+		if (decoder.parameters().containsKey("id")) {
+			String id = decoder.parameters().get("id").get(0);
+			if (id != null) {
+				query.groupId(id);
+				allRequestParams.put("id", id);
+			}
+		}
+		if (decoder.parameters().containsKey("name")) {
+			String name = decoder.parameters().get("name").get(0);
+			if (name != null) {
+				query.groupName(name);
+				allRequestParams.put("name", name);
+			}
+		}
+		if (decoder.parameters().containsKey("nameLike")) {
+			String nameLike = decoder.parameters().get("nameLike").get(0);
+			if (nameLike != null) {
+				query.groupNameLike(nameLike);
+				allRequestParams.put("nameLike", nameLike);
+			}
+		}
+		if (decoder.parameters().containsKey("type")) {
+			String type = decoder.parameters().get("type").get(0);
+			if (type != null) {
+				query.groupType(type);
+				allRequestParams.put("type", type);
+			}
+		}
+		if (decoder.parameters().containsKey("name")) {
+			String member = decoder.parameters().get("name").get(0);
+			if (member != null) {
+				query.groupMember(member);
+				allRequestParams.put("member", member);
+			}
+		}
+		if (decoder.parameters().containsKey("potentialStarter")) {
+			String potentialStarter = decoder.parameters().get("potentialStarter").get(0);
+			if (potentialStarter != null) {
+				query.potentialStarter(potentialStarter);
+				allRequestParams.put("potentialStarter", potentialStarter);
+			}
+		}
 
-        GroupPaginateList groupPaginateList = new GroupPaginateList(new RestResponseFactory(), uriInfo);
-        return groupPaginateList.paginateList(allRequestParams, query, "id", groupProperties);
-    }
+		allRequestParams = Utils.prepareCommonParameters(allRequestParams, decoder.parameters());
 
-    /**
-     * Get the user group identified by given group ID.
-     * @param groupId
-     * @return GroupResponse
-     */
-    @GET
-    @Path("/groups/{group-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public GroupResponse getGroup(@PathParam("group-id") String groupId) {
-        return new RestResponseFactory().createGroupResponse(getGroupFromRequest(groupId), uriInfo.getBaseUri().toString());
-    }
+		GroupPaginateList groupPaginateList = new GroupPaginateList(new RestResponseFactory());
+		return groupPaginateList.paginateList(allRequestParams, query, "id", groupProperties);
+	}
 
-    /**
-     * Get all the users that match the filters given by query parameters of the request.
-     * @return DataResponse
-     */
-    @GET
-    @Path("/users")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DataResponse getUsers() {
-        UserQuery query = identityService.createUserQuery();
+	/**
+	 * Get the user group identified by given group ID.
+	 *
+	 * @param groupId
+	 * @return GroupResponse
+	 */
+	@GET
+	@Path("/groups/{group-id}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public GroupResponse getGroup(@PathParam("group-id") String groupId) {
+		return new RestResponseFactory().createGroupResponse(getGroupFromRequest(groupId));
+	}
 
-        Map<String, String> allRequestParams = new HashMap<>();
+	/**
+	 * Get all the users that match the filters given by query parameters of the request.
+	 *
+	 * @return DataResponse
+	 */
+	@GET
+	@Path("/users")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public DataResponse getUsers(@Context HttpRequest request) {
+		UserQuery query = identityService.createUserQuery();
 
-        String id = uriInfo.getQueryParameters().getFirst("id");
-        if (id != null) {
-            query.userId(id);
-            allRequestParams.put("id",id);
-        }
-        String firstName = uriInfo.getQueryParameters().getFirst("firstName");
-        if (firstName != null) {
-            query.userFirstName(firstName);
-            allRequestParams.put("firstName", firstName);
-        }
-        String lastName = uriInfo.getQueryParameters().getFirst("lastName");
-        if (lastName != null) {
-            query.userLastName(lastName);
-            allRequestParams.put("lastName", lastName);
-        }
-        String email = uriInfo.getQueryParameters().getFirst("email");
-        if (email != null) {
-            query.userEmail(email);
-            allRequestParams.put("email", email);
-        }
-        String firstNameLike = uriInfo.getQueryParameters().getFirst("firstNameLike");
-        if (firstNameLike != null) {
-            query.userFirstNameLike(firstNameLike);
-            allRequestParams.put("firstNameLike", firstNameLike);
-        }
-        String lastNameLike = uriInfo.getQueryParameters().getFirst("lastNameLike");
-        if (lastNameLike != null) {
-            query.userLastNameLike(lastNameLike);
-            allRequestParams.put("lastNameLike", lastNameLike);
-        }
-        String emailLike = uriInfo.getQueryParameters().getFirst("emailLike");
-        if (emailLike != null) {
-            query.userEmailLike(emailLike);
-            allRequestParams.put("emailLike", emailLike);
-        }
-        String memberOfGroup = uriInfo.getQueryParameters().getFirst("memberOfGroup");
-        if (memberOfGroup != null) {
-            query.memberOfGroup(memberOfGroup);
-            allRequestParams.put("memberOfGroup", memberOfGroup);
-        }
-        String potentialStarter = uriInfo.getQueryParameters().getFirst("potentialStarter");
-        if (potentialStarter != null) {
-            query.potentialStarter(potentialStarter);
-            allRequestParams.put("potentialStarter", potentialStarter);
-        }
+		Map<String, String> allRequestParams = new HashMap<>();
+		QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        allRequestParams = Utils.prepareCommonParameters(allRequestParams, uriInfo);
+		if (decoder.parameters().containsKey("id")) {
+			String id = decoder.parameters().get("id").get(0);
+			if (id != null) {
+				query.userId(id);
+				allRequestParams.put("id", id);
+			}
+		}
+		if (decoder.parameters().containsKey("firstName")) {
+			String firstName = decoder.parameters().get("firstName").get(0);
+			if (firstName != null) {
+				query.userFirstName(firstName);
+				allRequestParams.put("firstName", firstName);
+			}
+		}
+		if (decoder.parameters().containsKey("lastName")) {
+			String lastName = decoder.parameters().get("lastName").get(0);
+			if (lastName != null) {
+				query.userLastName(lastName);
+				allRequestParams.put("lastName", lastName);
+			}
+		}
+		if (decoder.parameters().containsKey("email")) {
+			String email = decoder.parameters().get("email").get(0);
+			if (email != null) {
+				query.userEmail(email);
+				allRequestParams.put("email", email);
+			}
+		}
+		if (decoder.parameters().containsKey("firstNameLike")) {
+			String firstNameLike = decoder.parameters().get("firstNameLike").get(0);
+			if (firstNameLike != null) {
+				query.userFirstNameLike(firstNameLike);
+				allRequestParams.put("firstNameLike", firstNameLike);
+			}
+		}
+		if (decoder.parameters().containsKey("lastNameLike")) {
+			String lastNameLike = decoder.parameters().get("lastNameLike").get(0);
+			if (lastNameLike != null) {
+				query.userLastNameLike(lastNameLike);
+				allRequestParams.put("lastNameLike", lastNameLike);
+			}
+		}
+		if (decoder.parameters().containsKey("emailLike")) {
+			String emailLike = decoder.parameters().get("emailLike").get(0);
+			if (emailLike != null) {
+				query.userEmailLike(emailLike);
+				allRequestParams.put("emailLike", emailLike);
+			}
+		}
+		if (decoder.parameters().containsKey("memberOfGroup")) {
+			String memberOfGroup = decoder.parameters().get("memberOfGroup").get(0);
+			if (memberOfGroup != null) {
+				query.memberOfGroup(memberOfGroup);
+				allRequestParams.put("memberOfGroup", memberOfGroup);
+			}
+		}
+		if (decoder.parameters().containsKey("potentialStarter")) {
+			String potentialStarter = decoder.parameters().get("potentialStarter").get(0);
+			if (potentialStarter != null) {
+				query.potentialStarter(potentialStarter);
+				allRequestParams.put("potentialStarter", potentialStarter);
+			}
+		}
 
-        return new UserPaginateList(new RestResponseFactory(), uriInfo)
-                .paginateList(allRequestParams, query, "id", userProperties);
-    }
+		allRequestParams = Utils.prepareCommonParameters(allRequestParams, decoder.parameters());
 
-    /**
-     * Get the user information of the user identified by given user ID.
-     * @param userId
-     * @return
-     */
-    @GET
-    @Path("/users/{user-id}/info")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId) {
-        User user = getUserFromRequest(userId);
+		return new UserPaginateList(new RestResponseFactory())
+				.paginateList(allRequestParams, query, "id", userProperties);
+	}
 
-        return new RestResponseFactory().createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId(), uriInfo.getBaseUri().toString());
-    }
+	/**
+	 * Get the user information of the user identified by given user ID.
+	 *
+	 * @param userId
+	 * @return
+	 */
+	@GET
+	@Path("/users/{user-id}/info")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId) {
+		User user = getUserFromRequest(userId);
 
-    /**
-     * Get the user identified by given user ID,
-     * @param userId
-     * @return
-     */
-    @GET
-    @Path("/users/{user-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public UserResponse getUser(@PathParam("user-id") String userId) {
-        return new RestResponseFactory().createUserResponse(getUserFromRequest(userId), false, uriInfo.getBaseUri().toString());
-    }
+		return new RestResponseFactory()
+				.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()),
+				                            user.getId());
+	}
+
+	/**
+	 * Get the user identified by given user ID,
+	 *
+	 * @param userId
+	 * @return
+	 */
+	@GET
+	@Path("/users/{user-id}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public UserResponse getUser(@PathParam("user-id") String userId) {
+		return new RestResponseFactory().createUserResponse(getUserFromRequest(userId), false);
+	}
 }

@@ -60,7 +60,7 @@ public class BaseHistoricVariableInstanceService {
 	}
 
 	@Context
-	protected UriInfo uriInfo;
+	//protected UriInfo uriInfo;
 
 	protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String>
 			allRequestParams) {
@@ -98,7 +98,7 @@ public class BaseHistoricVariableInstanceService {
 			addVariables(query, queryRequest.getVariables());
 		}
 
-		return new HistoricVariableInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
+		return new HistoricVariableInstancePaginateList(new RestResponseFactory()).paginateList(
 				allRequestParams, query, "variableName", allowedSortProperties);
 	}
 

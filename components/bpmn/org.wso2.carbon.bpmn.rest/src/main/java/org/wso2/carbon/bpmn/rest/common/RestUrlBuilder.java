@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,18 +17,37 @@
 
 package org.wso2.carbon.bpmn.rest.common;
 
-//import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.lang3.StringUtils;
-
+import org.wso2.carbon.kernel.utils.Utils;
+import org.wso2.carbon.transport.http.netty.internal.config.ListenerConfiguration;
+import org.wso2.carbon.transport.http.netty.internal.config.TransportsConfiguration;
+import org.wso2.carbon.transport.http.netty.internal.config.YAMLTransportConfigurationBuilder;
+import java.net.URI;
 import java.text.MessageFormat;
+import java.util.Set;
 
 public class RestUrlBuilder {
 
     protected String baseUrl = "";
+	protected String createdUrl = "";
+    public RestUrlBuilder(){
+	    //TEST - get netty-transports config file and read host:port
+	    TransportsConfiguration trpConfig = YAMLTransportConfigurationBuilder.build();
+	    Set<ListenerConfiguration> configs  =  trpConfig.getListenerConfigurations();
+	    for(ListenerConfiguration config: configs){
+		    String hostname = config.getHost();
+		    String port =  Integer.toString(config.getPort());
+		    // TODO: http://host:port
+		   String  createdUrl = URI.create(String.format("http://%s:%d", hostname, port)).toASCIIString();
+		    setBaseUrl(createdUrl);
+	    }
 
-    protected RestUrlBuilder(){
     }
 
+	protected  void setBaseUrl(String createdUrl){
+		this.baseUrl = createdUrl;
+	}
     protected RestUrlBuilder(String baseUrl){
         this.baseUrl = baseUrl;
     }
@@ -36,17 +55,25 @@ public class RestUrlBuilder {
     /** Extracts the base URL from current request */
     public static RestUrlBuilder fromCurrentRequest(String baseUri){
         return usingBaseUrl(baseUri);
+
     }
 
     /** Uses baseUrl as the base URL */
     public static RestUrlBuilder usingBaseUrl(String baseUrl){
-      //  if(baseUrl == null) throw new ActivitiIllegalArgumentException("baseUrl can not be null");
+       if(baseUrl == null) throw new ActivitiIllegalArgumentException("baseUrl can not be null");
         if(baseUrl.endsWith("/")) baseUrl = baseUrl.substring(0, baseUrl.length()-1);
         return new RestUrlBuilder(baseUrl);
     }
 
+	public String getBaseUrl(){
+     return baseUrl;
+	}
+//USED
     public String buildUrl(String[] fragments, Object ... arguments) {
-        return new StringBuilder(baseUrl)
+	    if(baseUrl == null) {
+		    throw new ActivitiIllegalArgumentException("baseUrl can not be null");
+	    }
+        return new StringBuilder(getBaseUrl())
                 .append("/")
                 .append(MessageFormat.format(StringUtils.join(fragments, '/'), arguments))
                 .toString();

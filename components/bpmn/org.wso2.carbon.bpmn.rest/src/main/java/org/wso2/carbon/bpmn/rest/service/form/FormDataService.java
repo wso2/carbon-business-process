@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,17 +23,19 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.form.FormDataResponse;
 import org.wso2.carbon.bpmn.rest.model.form.RestFormProperty;
 import org.wso2.carbon.bpmn.rest.model.form.SubmitFormRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
+import org.wso2.msf4j.Microservice;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,19 +43,27 @@ import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.form.FormDataService",
+		service = Microservice.class,
+		immediate = true)
 @Path("/form-data")
-public class FormDataService {
+public class FormDataService implements Microservice {
 
-    @Context
-    UriInfo uriInfo;
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		// Nothing to do
+	}
+
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext) {
+		// Nothing to do
+	}
 
     @GET
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getFormData() {
-
-        String taskId = uriInfo.getQueryParameters().getFirst("taskId");
-        String processDefinitionId = uriInfo.getQueryParameters().getFirst("processDefinitionId");
+    public Response getFormData(@QueryParam("taskId")String taskId,@QueryParam("processDefinitionId") String processDefinitionId ) {
 
         if (taskId == null && processDefinitionId == null) {
             throw new ActivitiIllegalArgumentException("The taskId or processDefinitionId parameter has to be provided");
@@ -78,8 +88,7 @@ public class FormDataService {
             throw new ActivitiObjectNotFoundException("Could not find a form data with id '" + id + "'.", FormData.class);
         }
 
-        return Response.ok().entity(new RestResponseFactory().createFormDataResponse(formData, uriInfo.getBaseUri()
-                .toString())).build();
+        return Response.ok().entity(new RestResponseFactory().createFormDataResponse(formData)).build();
     }
 
     @POST
@@ -117,7 +126,7 @@ public class FormDataService {
                 processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
             }
             ProcessInstanceResponse processInstanceResponse = new RestResponseFactory().createProcessInstanceResponse
-                    (processInstance, uriInfo.getBaseUri().toString());
+                    (processInstance);
             return response.entity(processInstanceResponse).build();
         }
     }

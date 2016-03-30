@@ -76,7 +76,7 @@ public class BaseHistoricActivitiInstanceService {
         allPropertiesList.add("sort");
     }
 
-    protected HistoricActivityInstanceQueryRequest getHistoricActivityInstanceQueryRequest (@Context UriInfo uriInfo, Map<String,String> allRequestParams){
+    protected HistoricActivityInstanceQueryRequest getHistoricActivityInstanceQueryRequest ( Map<String,String> allRequestParams){
 
         HistoricActivityInstanceQueryRequest query = new HistoricActivityInstanceQueryRequest();
 
@@ -133,7 +133,7 @@ public class BaseHistoricActivitiInstanceService {
     }
 
     protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Map<String,String>
-            allRequestParams, UriInfo uriInfo) {
+            allRequestParams) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
@@ -191,7 +191,7 @@ public class BaseHistoricActivitiInstanceService {
             query.activityWithoutTenantId();
         }
 
-        return new HistoricActivityInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
+        return new HistoricActivityInstancePaginateList(new RestResponseFactory()).paginateList(
                 allRequestParams, queryRequest, query, "startTime", allowedSortProperties);
     }
 }

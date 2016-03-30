@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,9 +24,14 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.bpmn.rest.model.stats.*;
+import org.wso2.msf4j.Microservice;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,12 +48,26 @@ import java.util.List;
  * Service class which includes functionalities related to processes and tasks
  */
 
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService",
+		service = Microservice.class,
+		immediate = true
+)
+
 @Path("/process-task-services/")
-public class ProcessAndTaskService {
+public class ProcessAndTaskService implements Microservice {
     private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     String str = String.valueOf(tenantId);
+	@Activate
+	protected void activate(BundleContext bundleContext){
+		// Nothing to do
+	}
 
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext){
+		// Nothing to do
+	}
     /**
      * Get the deployed processes count
      *

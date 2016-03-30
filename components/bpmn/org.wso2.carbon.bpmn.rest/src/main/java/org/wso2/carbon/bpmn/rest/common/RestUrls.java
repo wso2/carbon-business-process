@@ -26,7 +26,7 @@ public class RestUrls {
     /**
      * Base segment for all repository-related resources: <i>repository</i>
      */
-    //public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
+    public static final String SEGMENT_REPOSITORY_RESOURCES = "repository";
     public static final String SEGMENT_RUNTIME_RESOURCES = "runtime";
     public static final String SEGMENT_MANAGEMENT_RESOURCES = "management";
     public static final String SEGMENT_HISTORY_RESOURCES = "history";

@@ -26,14 +26,14 @@ import java.util.List;
 public class UserPaginateList extends AbstractPaginateList {
 
 
-    public UserPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public UserPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createUserResponseList(list, false, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createUserResponseList(list, false);
     }
 
 }

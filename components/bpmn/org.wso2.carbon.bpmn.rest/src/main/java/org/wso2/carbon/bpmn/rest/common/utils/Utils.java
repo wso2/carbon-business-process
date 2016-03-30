@@ -278,10 +278,10 @@ public class Utils {
         }
     }
 
-    public static Map<String, String> populateRequestParams(List<String> propertiesList, UriInfo uriInfo) {
+    public static Map<String, String> populateRequestParams(List<String> propertiesList,  Map<String, List<String>> queryParams) {
         Map<String, String> requestParams = new HashMap<>();
         for (String property : propertiesList) {
-            String value = uriInfo.getQueryParameters().getFirst(property);
+            String value = queryParams.get(property).get(0);
 
             if (value != null) {
                 requestParams.put(property, value);
@@ -290,28 +290,34 @@ public class Utils {
         return requestParams;
     }
 
-    public static Map<String, String> prepareCommonParameters(Map<String, String> requestParams, UriInfo uriInfo) {
-        String start = uriInfo.getQueryParameters().getFirst("start");
-        if (start != null) {
-            requestParams.put("start", start);
-        }
+    public static Map<String, String> prepareCommonParameters(Map<String, String> requestParams,  Map<String, List<String>> queryParams) {
+	    if (queryParams.containsKey("start")) {
+		    String start = queryParams.get("start").get(0);
+		    if (start != null) {
+			    requestParams.put("start", start);
+		    }
+	    }
+	    if (queryParams.containsKey("size")) {
+		    String size = queryParams.get("size").get(0);
+		    if (size != null) {
+			    requestParams.put("size", size);
+		    }
+	    }
+	    if (queryParams.containsKey("order")) {
+		    String order = queryParams.get("start").get(0);
+		    if (order != null) {
+			    requestParams.put("order", order);
+		    }
+	    }
+	    if (queryParams.containsKey("sort")) {
+		    String sort = queryParams.get("sort").get(0);
+		    if (sort != null) {
+			    requestParams.put("sort", sort);
+		    }
+	    }
 
-        String size = uriInfo.getQueryParameters().getFirst("size");
-        if (size != null) {
-            requestParams.put("size", size);
-        }
+		    return requestParams;
 
-        String order = uriInfo.getQueryParameters().getFirst("order");
-        if (order != null) {
-            requestParams.put("order", order);
-        }
-
-        String sort = uriInfo.getQueryParameters().getFirst("sort");
-        if (sort != null) {
-            requestParams.put("sort", sort);
-        }
-
-        return requestParams;
     }
 
     public static String getValues(String fullString, String key) {

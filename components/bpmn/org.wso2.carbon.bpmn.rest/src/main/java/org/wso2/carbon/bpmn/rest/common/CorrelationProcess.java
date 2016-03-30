@@ -30,7 +30,7 @@ public class CorrelationProcess {
 
     public CorrelationProcess(){}
 
-    public Response getQueryResponse(CorrelationActionRequest correlationActionRequest, UriInfo uriInfo) {
+    public Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
@@ -128,8 +128,7 @@ public class CorrelationProcess {
             responseBuilder.status(Response.Status.NO_CONTENT);
             return responseBuilder.build();
         } else {
-            return responseBuilder.entity(new RestResponseFactory().createExecutionResponse(execution, uriInfo.getBaseUri()
-                    .toString())).build();
+            return responseBuilder.entity(new RestResponseFactory().createExecutionResponse(execution)).build();
         }
     }
 

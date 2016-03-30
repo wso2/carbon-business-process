@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,14 @@ package org.wso2.carbon.bpmn.rest.service.correlate;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.QueryProperty;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
+import org.wso2.msf4j.Microservice;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -32,18 +37,30 @@ import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.correlate.CorrelationService",
+		service = Microservice.class,
+		immediate = true)
 @Path("/receive")
-public class CorrelationService/* extends BaseExecutionService */{
+public class CorrelationService implements Microservice{
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
-    @Context
-    UriInfo uriInfo;
 
     static {
         allowedSortProperties.put("processInstanceId", CorrelationQueryProperty.PROCESS_INSTANCE_ID_);
     }
 
-    @POST
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		// Nothing to do
+	}
+
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext) {
+		// Nothing to do
+	}
+
+	@POST
     @Path("/")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response recieveMessage(CorrelationActionRequest correlationActionRequest) {
@@ -71,7 +88,7 @@ public class CorrelationService/* extends BaseExecutionService */{
         }
 
         CorrelationProcess correlationProcess = new CorrelationProcess();
-        return correlationProcess.getQueryResponse(correlationActionRequest, uriInfo);
+        return correlationProcess.getQueryResponse(correlationActionRequest);
 
     }
 

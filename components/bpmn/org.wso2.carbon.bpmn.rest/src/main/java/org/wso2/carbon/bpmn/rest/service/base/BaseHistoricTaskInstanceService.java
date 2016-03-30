@@ -363,7 +363,7 @@ public class BaseHistoricTaskInstanceService {
 
             RestResponseFactory restResponseFactory = new RestResponseFactory();
 
-            return new HistoricActivityInstancePaginateList(restResponseFactory, uriInfo).paginateList(
+            return new HistoricActivityInstancePaginateList(restResponseFactory).paginateList(
                     allRequestParams, queryRequest, query, "startTime", allowedSortProperties);
         }
 

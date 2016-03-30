@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.bpmn.rest.service.repository;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -27,6 +29,10 @@ import org.activiti.engine.repository.DeploymentQuery;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
@@ -36,6 +42,7 @@ import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponseCollection;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentsPaginateList;
+import org.wso2.msf4j.Microservice;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -51,8 +58,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Path("/deployments")
-public class DeploymentService {
+@Component(
+		name = "org.wso2.carbon.bpmn.rest.service.repository.DeploymentService",
+		service = Microservice.class,
+		immediate = true
+)
+@Path("/bps/bpmn/v.4.0/deployments")
+public class DeploymentService implements Microservice {
 
     private static final Log log = LogFactory.getLog(DeploymentService.class);
 
@@ -82,69 +94,86 @@ public class DeploymentService {
         allowedSortProperties.put("deployTime", DeploymentQueryProperty.DEPLOY_TIME);
         allowedSortProperties.put("tenantId", DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
     }
+	@Activate
+	protected void activate(BundleContext bundleContext){
+		// Nothing to do
+	}
 
-    @Context
-    UriInfo uriInfo;
+	@Deactivate
+	protected void deactivate(BundleContext bundleContext){
+		// Nothing to do
+	}
 
     @GET
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getDeployments() {
+    public Response getDeployments(@Context HttpRequest request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();
+	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
         for (String property : allPropertiesList) {
-            String value = uriInfo.getQueryParameters().getFirst(property);
+            String value =  decoder.parameters().get(property).get(0);
 
             if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
+	    Map<String, List<String>> parameters = decoder.parameters();
 
-        String name = uriInfo.getQueryParameters().getFirst("name");
-        if (name != null) {
-            deploymentQuery.deploymentName(name);
+        if(parameters.containsKey("name")) {
+	        String name = decoder.parameters().get("name").get(0);
+	        if (name != null) {
+		        deploymentQuery.deploymentName(name);
+	        }
+        }
+        if(parameters.containsKey("nameLike")) {
+	        String nameLike = decoder.parameters().get("nameLike").get(0);
+	        if (nameLike != null) {
+		        deploymentQuery.deploymentNameLike(nameLike);
+	        }
+        }
+	    if(parameters.containsKey("category")) {
+		    String category = decoder.parameters().get("category").get(0);
+		    if (category != null) {
+			    deploymentQuery.deploymentCategory(category);
+		    }
+	    }
+
+	    if(parameters.containsKey("categoryNotEquals")) {
+		    String categoryNotEquals = decoder.parameters().get("categoryNotEquals").get(0);
+		    if (categoryNotEquals != null) {
+			    deploymentQuery.deploymentCategoryNotEquals(categoryNotEquals);
+		    }
+	    }
+	    if(parameters.containsKey("tenantId")) {
+		    String tenantId = decoder.parameters().get("tenantId").get(0);
+		    if (tenantId != null) {
+			    deploymentQuery.deploymentTenantId(tenantId);
+		    }
+	    }
+        if(parameters.containsKey("tenantIdLike")) {
+	        String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
+	        if (tenantIdLike != null) {
+		        deploymentQuery.deploymentTenantIdLike(tenantIdLike);
+	        }
         }
 
-        String nameLike = uriInfo.getQueryParameters().getFirst("nameLike");
-        if (nameLike != null) {
-            deploymentQuery.deploymentNameLike(nameLike);
-        }
-
-        String category = uriInfo.getQueryParameters().getFirst("category");
-        if (category != null) {
-            deploymentQuery.deploymentCategory(category);
-        }
-
-        String categoryNotEquals = uriInfo.getQueryParameters().getFirst("categoryNotEquals");
-        if (categoryNotEquals != null) {
-            deploymentQuery.deploymentCategoryNotEquals(categoryNotEquals);
-        }
-
-        String tenantId = uriInfo.getQueryParameters().getFirst("tenantId");
-        if (tenantId != null) {
-            deploymentQuery.deploymentTenantId(tenantId);
-        }
-
-        String tenantIdLike = uriInfo.getQueryParameters().getFirst("tenantIdLike");
-        if (tenantIdLike != null) {
-            deploymentQuery.deploymentTenantIdLike(tenantIdLike);
-        }
+	    if(parameters.containsKey("withoutTenantId")) {
+		    String sWithoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
+		    if (sWithoutTenantId != null) {
+			    Boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
+			    if (withoutTenantId) {
+				    deploymentQuery.deploymentWithoutTenantId();
+			    }
+		    }
+	    }
 
 
-        String sWithoutTenantId = uriInfo.getQueryParameters().getFirst("withoutTenantId");
-        if (sWithoutTenantId != null) {
-            Boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
-            if (withoutTenantId) {
-                deploymentQuery.deploymentWithoutTenantId();
-            }
-        }
-
-
-        DeploymentsPaginateList deploymentsPaginateList = new DeploymentsPaginateList(new RestResponseFactory(), uriInfo);
+        DeploymentsPaginateList deploymentsPaginateList = new DeploymentsPaginateList(new RestResponseFactory());
         DataResponse dataResponse = deploymentsPaginateList.paginateList(allRequestParams, deploymentQuery, "id",
                 allowedSortProperties);
 
@@ -164,7 +193,7 @@ public class DeploymentService {
                     Deployment.class);
         }
 
-        DeploymentResponse deploymentResponse = new RestResponseFactory().createDeploymentResponse(deployment, uriInfo.getBaseUri().toString());
+        DeploymentResponse deploymentResponse = new RestResponseFactory().createDeploymentResponse(deployment);
         return Response.ok().entity(deploymentResponse).build();
     }
 
@@ -189,7 +218,7 @@ public class DeploymentService {
             // Build resource representation
             DeploymentResourceResponse deploymentResourceResponse = new RestResponseFactory()
                     .createDeploymentResourceResponse(deploymentId, resourcePath,
-                            Utils.resolveContentType(resourcePath), uriInfo.getBaseUri().toString());
+                            Utils.resolveContentType(resourcePath));
             return Response.ok().entity(deploymentResourceResponse).build();
 
         } else {
@@ -213,7 +242,7 @@ public class DeploymentService {
         }
 
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
-        DeploymentResourceResponseCollection deploymentResourceResponseCollection = new RestResponseFactory().createDeploymentResourceResponseList(deploymentId, resourceList, uriInfo.getBaseUri().toString());
+        DeploymentResourceResponseCollection deploymentResourceResponseCollection = new RestResponseFactory().createDeploymentResourceResponseList(deploymentId, resourceList);
 
         return Response.ok().entity(deploymentResourceResponseCollection).build();
     }
