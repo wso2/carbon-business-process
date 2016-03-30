@@ -15,17 +15,32 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
+
 /**
  *
  */
 public class BPMNRestExtensionHolder {
 
-    private static BPMNRestExtensionHolder bpmnRestHolder = new BPMNRestExtensionHolder();
+    private static final Logger log = LoggerFactory.getLogger(BPMNRestExtensionHolder.class);
 
+    private static BPMNRestExtensionHolder bpmnRestHolder = new BPMNRestExtensionHolder();
     private RESTInvoker restInvoker = null;
 
     private BPMNRestExtensionHolder() {
+        synchronized (this) {
+            try {
+                restInvoker = new RESTInvoker();
+            } catch (IOException | XMLStreamException e) {
+                log.error("Unable to initialize RestInvoker.", e);
+            }
+        }
     }
+
 
     public static BPMNRestExtensionHolder getInstance() {
         return bpmnRestHolder;
@@ -35,7 +50,4 @@ public class BPMNRestExtensionHolder {
         return restInvoker;
     }
 
-    public void setRestInvoker(RESTInvoker restInvoker) {
-        this.restInvoker = restInvoker;
-    }
 }
