@@ -138,7 +138,8 @@ public class ActivitiDAO {
         return rowCount;
     }
 
-    static class GetDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper, DeploymentMetaDataModel> {
+    static class GetDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper,
+            DeploymentMetaDataModel> {
 
         String bpmnPackageName;
 
@@ -166,7 +167,8 @@ public class ActivitiDAO {
 
     }
 
-    static class InsertDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper, Integer> {
+    static class InsertDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper,
+            Integer> {
 
         DeploymentMetaDataModel deploymentMetaDataModel;
 
@@ -181,7 +183,8 @@ public class ActivitiDAO {
 
     }
 
-    static class UpdateDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper, Integer> {
+    static class UpdateDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper,
+            Integer> {
 
         DeploymentMetaDataModel deploymentMetaDataModel;
 
@@ -196,7 +199,8 @@ public class ActivitiDAO {
 
     }
 
-    static class DeleteDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper, Integer> {
+    static class DeleteDeploymentMetaDataModelSqlExecution extends AbstractCustomSqlExecution<DeploymentMapper,
+            Integer> {
 
         DeploymentMetaDataModel deploymentMetaDataModel;
 

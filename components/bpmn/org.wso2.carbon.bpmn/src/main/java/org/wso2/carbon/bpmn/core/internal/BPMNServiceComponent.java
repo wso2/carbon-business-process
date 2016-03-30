@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 /**
- *
+ * BPMN Service Component.
  */
 
 @Component(
@@ -142,7 +142,8 @@ public class BPMNServiceComponent {
         Context context = jndiContextManager.newInitialContext();
 
         Context subcontext = context.createSubcontext("java:comp/jdbc");
-        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME, datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
+        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME, datasourceService.getDataSource(BPMNConstants
+                .BPMN_DB_NAME));
     }
 
 }
