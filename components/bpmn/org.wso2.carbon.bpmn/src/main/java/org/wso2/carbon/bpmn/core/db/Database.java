@@ -1,27 +1,25 @@
 /**
- *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.core.db;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException;
 import org.wso2.carbon.bpmn.core.exception.DatabaseConfigurationException;
-import org.wso2.carbon.bpmn.core.utils.BPMNDatabaseCreator;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -41,6 +39,15 @@ public class Database {
     private boolean started;
 
     /**
+     * Constructor for initializing the database class which connects and manages the activiti engine database
+     *
+     * @param jndiDataSourceName activiti's JNDI datasource name
+     */
+    public Database(String jndiDataSourceName) {
+        this.jndiDataSourceName = jndiDataSourceName;
+    }
+
+    /**
      * Obtains the DataSource object of activiti database
      *
      * @return The BPMN DataSource..
@@ -54,15 +61,6 @@ public class Database {
     }
 
     /**
-     * Constructor for initializing the database class which connects and manages the activiti engine database
-     *
-     * @param jndiDataSourceName activiti's JNDI datasource name
-     */
-    public Database(String jndiDataSourceName) {
-        this.jndiDataSourceName = jndiDataSourceName;
-    }
-
-    /**
      * Database initialization logic.
      *
      * @throws DatabaseConfigurationException     Error in activiti db configuration
@@ -71,36 +69,38 @@ public class Database {
     public synchronized void init()
             throws DatabaseConfigurationException, BPMNMetaDataTableCreationException {
         this.dataSource = null;
-	    initDataSource();
-        createActivitiMetaDataTable();
+        initDataSource();
+
+        // Following logic is commented, because creating a table at runtime is discouraged.
+//        createActivitiMetaDataTable();
         started = true;
     }
 
-    /**
-     * during the start up of the server this method will create BPS_BPMN_DEPLOYMENT_METADATA table
-     * if it doesn't exist in the activiti database.
-     *
-     * @throws org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException
-     */
-    private void createActivitiMetaDataTable() throws BPMNMetaDataTableCreationException {
-        BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
-        String bpmnDeploymentMetaDataQuery =
-                "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
-
-        if (!bpmnDatabaseCreator.isDatabaseStructureCreated(bpmnDeploymentMetaDataQuery)) {
-            try {
-                bpmnDatabaseCreator.createRegistryDatabase();
-            } catch (Exception e) {
-                String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
-                throw new BPMNMetaDataTableCreationException(errMsg, e);
-            }
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug(
-                        "BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
-            }
-        }
-    }
+//    /**
+//     * during the start up of the server this method will create BPS_BPMN_DEPLOYMENT_METADATA table
+//     * if it doesn't exist in the activiti database.
+//     *
+//     * @throws org.wso2.carbon.bpmn.core.exception.BPMNMetaDataTableCreationException
+//     */
+//    private void createActivitiMetaDataTable() throws BPMNMetaDataTableCreationException {
+//        BPMNDatabaseCreator bpmnDatabaseCreator = new BPMNDatabaseCreator(getDataSource());
+//        String bpmnDeploymentMetaDataQuery =
+//                "SELECT * FROM " + BPMNConstants.BPS_BPMN_DEPLOYMENT_METADATA_TABLE;
+//
+//        if (!bpmnDatabaseCreator.isDatabaseStructureCreated(bpmnDeploymentMetaDataQuery)) {
+//            try {
+//                bpmnDatabaseCreator.createRegistryDatabase();
+//            } catch (Exception e) {
+//                String errMsg = "Error creating BPS_BPMN_DEPLOYMENT_METADATA table";
+//                throw new BPMNMetaDataTableCreationException(errMsg, e);
+//            }
+//        } else {
+//            if (log.isDebugEnabled()) {
+//                log.debug(
+//                        "BPS_BPMN_DEPLOYMENT_METADATA table already exists. Using the old table.");
+//            }
+//        }
+//    }
 
     /**
      * Shut down logic for the Database related resources.
@@ -133,7 +133,7 @@ public class Database {
 
             if (log.isDebugEnabled()) {
                 log.debug("BPMN Activiti initialization using external DataSource " +
-                          jndiDataSourceName);
+                        jndiDataSourceName);
             }
         } catch (NamingException e) {
             String errorMsg = "Failed to resolved external DataSource at " + jndiDataSourceName;
