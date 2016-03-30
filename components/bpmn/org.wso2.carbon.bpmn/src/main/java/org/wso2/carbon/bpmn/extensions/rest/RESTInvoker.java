@@ -36,8 +36,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Iterator;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
@@ -55,10 +56,8 @@ public class RESTInvoker {
         int maxTotal = 100;
         int maxTotalPerRoute = 100;
 
-        // String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
-        String activitiConfigPath =
-                "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
-                BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+        String activitiConfigPath = org.wso2.carbon.kernel.utils.Utils.getCarbonConfigHome()
+                .resolve(BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME).toString();
         File configFile = new File(activitiConfigPath);
         String configContent = FileUtils.readFileToString(configFile);
         OMElement configElement = AXIOMUtil.stringToOM(configContent);
@@ -73,11 +72,11 @@ public class RESTInvoker {
                 while (beanProps.hasNext()) {
                     OMElement beanProp = (OMElement) beanProps.next();
                     if (beanProp.getAttributeValue(new QName(null, "name"))
-                                .equals(BPMNConstants.REST_CLIENT_MAX_TOTAL_CONNECTIONS)) {
+                            .equals(BPMNConstants.REST_CLIENT_MAX_TOTAL_CONNECTIONS)) {
                         String value = beanProp.getAttributeValue(new QName(null, "value"));
                         maxTotal = Integer.parseInt(value);
                     } else if (beanProp.getAttributeValue(new QName(null, "name"))
-                                       .equals(BPMNConstants.REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE)) {
+                            .equals(BPMNConstants.REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE)) {
                         String value = beanProp.getAttributeValue(new QName(null, "value"));
                         maxTotalPerRoute = Integer.parseInt(value);
                     }
@@ -92,7 +91,7 @@ public class RESTInvoker {
 
         if (log.isDebugEnabled()) {
             log.debug("BPMN REST client initialized with maxTotalConnection = " + maxTotal +
-                      " and maxConnectionsPerRoute = " + maxTotalPerRoute);
+                    " and maxConnectionsPerRoute = " + maxTotalPerRoute);
         }
     }
 
@@ -101,13 +100,14 @@ public class RESTInvoker {
 
         HttpGet httpGet = null;
         CloseableHttpResponse response = null;
+        BufferedReader rd = null;
         String output = "";
         try {
             httpGet = new HttpGet(uri);
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
-                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
-                httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
+                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes(Charset.defaultCharset()));
+                httpGet.addHeader("Authorization", "Basic " + Arrays.toString(encodedCredentials));
             }
             if (headerList != null) {
                 for (String header : headerList) {
@@ -120,8 +120,7 @@ public class RESTInvoker {
                 }
             }
             response = client.execute(httpGet);
-            BufferedReader rd =
-                    new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
             StringBuffer result = new StringBuffer();
             String line = "";
             while ((line = rd.readLine()) != null) {
@@ -134,6 +133,10 @@ public class RESTInvoker {
             EntityUtils.consume(response.getEntity());
 
         } finally {
+            if (rd != null) {
+                rd.close();
+            }
+
             if (response != null) {
                 response.close();
             }
@@ -150,6 +153,7 @@ public class RESTInvoker {
 
         HttpPost httpPost = null;
         CloseableHttpResponse response = null;
+        BufferedReader rd = null;
         String output = "";
         try {
             httpPost = new HttpPost(uri);
@@ -157,7 +161,8 @@ public class RESTInvoker {
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
                 String encodedCredentials =
-                        new String(Base64.encodeBase64(combinedCredentials.getBytes()));
+                        new String(Base64.encodeBase64(combinedCredentials.getBytes(Charset.defaultCharset())),
+                                Charset.defaultCharset());
                 httpPost.addHeader("Authorization", "Basic " + encodedCredentials);
             }
             if (headerList != null) {
@@ -172,8 +177,7 @@ public class RESTInvoker {
             }
             response = client.execute(httpPost);
 
-            BufferedReader rd =
-                    new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
             StringBuffer result = new StringBuffer();
             String line = "";
             while ((line = rd.readLine()) != null) {
@@ -182,11 +186,15 @@ public class RESTInvoker {
             output = result.toString();
             if (log.isTraceEnabled()) {
                 log.trace("Invoked POST " + uri.toString() + " - Input payload: " + payload +
-                          " - Response message: " + output);
+                        " - Response message: " + output);
             }
             EntityUtils.consume(response.getEntity());
 
         } finally {
+            if (rd != null) {
+                rd.close();
+            }
+
             if (response != null) {
                 response.close();
             }

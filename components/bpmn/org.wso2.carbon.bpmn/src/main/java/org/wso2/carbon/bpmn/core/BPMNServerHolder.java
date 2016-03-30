@@ -20,11 +20,9 @@ package org.wso2.carbon.bpmn.core;
 import org.activiti.engine.ProcessEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.wso2.carbon.bpmn.core.deployment.TenantManager;
-import org.wso2.carbon.registry.core.service.RegistryService;
 
 /**
- *
+ *  Content holder for BPMN Server component.
  */
 public final class BPMNServerHolder {
 
