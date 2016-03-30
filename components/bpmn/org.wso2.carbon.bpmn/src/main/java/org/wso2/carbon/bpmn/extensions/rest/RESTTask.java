@@ -21,8 +21,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.el.JuelExpression;
-//import org.apache.axiom.om.OMElement;
-//import org.apache.axiom.om.util.AXIOMUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -145,6 +143,13 @@ public class RESTTask implements JavaDelegate {
         if (log.isDebugEnabled()) {
             log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " +
                       serviceURL.getValue(execution).toString());
+        }
+        if (restInvoker == null) {
+            String errorMessage = "RestInvoker is not initialized. Failed to execute "
+                    + method.getValue(execution).toString() + " " + serviceURL.getValue(execution).toString() +
+                    " within task " + getTaskDetails(execution);
+            log.error(errorMessage);
+            throw new BpmnError(REST_INVOKE_ERROR, errorMessage);
         }
 
         String output = "";
