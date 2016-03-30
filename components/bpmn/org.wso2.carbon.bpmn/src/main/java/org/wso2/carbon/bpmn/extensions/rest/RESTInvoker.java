@@ -36,8 +36,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Iterator;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
@@ -106,7 +106,7 @@ public class RESTInvoker {
             httpGet = new HttpGet(uri);
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
-                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
+                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes(Charset.defaultCharset()));
                 httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
             }
             if (headerList != null) {
@@ -121,7 +121,7 @@ public class RESTInvoker {
             }
             response = client.execute(httpGet);
             BufferedReader rd =
-                    new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                    new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
             StringBuffer result = new StringBuffer();
             String line = "";
             while ((line = rd.readLine()) != null) {
@@ -157,7 +157,8 @@ public class RESTInvoker {
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
                 String encodedCredentials =
-                        new String(Base64.encodeBase64(combinedCredentials.getBytes()));
+                        new String(Base64.encodeBase64(combinedCredentials.getBytes(Charset.defaultCharset())),
+                                Charset.defaultCharset());
                 httpPost.addHeader("Authorization", "Basic " + encodedCredentials);
             }
             if (headerList != null) {
@@ -173,7 +174,7 @@ public class RESTInvoker {
             response = client.execute(httpPost);
 
             BufferedReader rd =
-                    new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                    new BufferedReader(new InputStreamReader(response.getEntity().getContent(),Charset.defaultCharset()));
             StringBuffer result = new StringBuffer();
             String line = "";
             while ((line = rd.readLine()) != null) {
