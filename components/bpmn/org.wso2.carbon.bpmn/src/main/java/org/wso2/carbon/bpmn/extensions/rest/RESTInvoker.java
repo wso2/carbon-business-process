@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Iterator;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -106,7 +107,7 @@ public class RESTInvoker {
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
                 byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes(Charset.defaultCharset()));
-                httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
+                httpGet.addHeader("Authorization", "Basic " + Arrays.toString(encodedCredentials));
             }
             if (headerList != null) {
                 for (String header : headerList) {
