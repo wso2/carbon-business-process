@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
-
-
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+/**
+ *
+ */
 public class DeploymentsPaginateList extends AbstractPaginateList {
 
     public DeploymentsPaginateList(RestResponseFactory restResponseFactory) {

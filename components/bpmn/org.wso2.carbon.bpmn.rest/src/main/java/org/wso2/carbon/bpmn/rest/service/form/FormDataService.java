@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.form;
 
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -29,48 +28,56 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.model.form.FormDataResponse;
+//import org.wso2.carbon.bpmn.rest.model.form.FormDataResponse;
 import org.wso2.carbon.bpmn.rest.model.form.RestFormProperty;
 import org.wso2.carbon.bpmn.rest.model.form.SubmitFormRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.msf4j.Microservice;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
 import java.util.Map;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+/**
+ *
+ */
 @Component(
-		name = "org.wso2.carbon.bpmn.rest.service.form.FormDataService",
-		service = Microservice.class,
-		immediate = true)
+        name = "org.wso2.carbon.bpmn.rest.service.form.FormDataService",
+        service = Microservice.class,
+        immediate = true)
 @Path("/form-data")
 public class FormDataService implements Microservice {
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		// Nothing to do
-	}
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
-	@Deactivate
-	protected void deactivate(BundleContext bundleContext) {
-		// Nothing to do
-	}
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getFormData(@QueryParam("taskId")String taskId,@QueryParam("processDefinitionId") String processDefinitionId ) {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getFormData(@QueryParam("taskId") String taskId,
+                                @QueryParam("processDefinitionId") String processDefinitionId) {
 
         if (taskId == null && processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException("The taskId or processDefinitionId parameter has to be provided");
+            throw new ActivitiIllegalArgumentException(
+                    "The taskId or processDefinitionId parameter has to be provided");
         }
 
         if (taskId != null && processDefinitionId != null) {
-            throw new ActivitiIllegalArgumentException("Not both a taskId and a processDefinitionId parameter can be provided");
+            throw new ActivitiIllegalArgumentException(
+                    "Not both a taskId and a processDefinitionId parameter can be provided");
         }
 
         FormData formData = null;
@@ -85,23 +92,27 @@ public class FormDataService implements Microservice {
         }
 
         if (formData == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a form data with id '" + id + "'.", FormData.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a form data with id '" + id + "'.", FormData.class);
         }
 
-        return Response.ok().entity(new RestResponseFactory().createFormDataResponse(formData)).build();
+        return Response.ok().entity(new RestResponseFactory().createFormDataResponse(formData))
+                       .build();
     }
 
     @POST
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response submitForm(SubmitFormRequest submitRequest) {
 
         if (submitRequest == null) {
-            throw new ActivitiException("A request body was expected when executing the form submit.");
+            throw new ActivitiException(
+                    "A request body was expected when executing the form submit.");
         }
 
         if (submitRequest.getTaskId() == null && submitRequest.getProcessDefinitionId() == null) {
-            throw new ActivitiIllegalArgumentException("The taskId or processDefinitionId property has to be provided");
+            throw new ActivitiIllegalArgumentException(
+                    "The taskId or processDefinitionId property has to be provided");
         }
 
         Map<String, String> propertyMap = new HashMap<String, String>();
@@ -120,13 +131,15 @@ public class FormDataService implements Microservice {
         } else {
             ProcessInstance processInstance = null;
             if (submitRequest.getBusinessKey() != null) {
-                processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(),
-                        submitRequest.getBusinessKey(), propertyMap);
+                processInstance = formService
+                        .submitStartFormData(submitRequest.getProcessDefinitionId(),
+                                             submitRequest.getBusinessKey(), propertyMap);
             } else {
-                processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
+                processInstance = formService
+                        .submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
             }
-            ProcessInstanceResponse processInstanceResponse = new RestResponseFactory().createProcessInstanceResponse
-                    (processInstance);
+            ProcessInstanceResponse processInstanceResponse =
+                    new RestResponseFactory().createProcessInstanceResponse(processInstance);
             return response.entity(processInstanceResponse).build();
         }
     }

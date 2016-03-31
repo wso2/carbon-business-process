@@ -17,12 +17,19 @@
 package org.wso2.carbon.bpmn.rest.model.correlation;
 
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+//import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "CorrelationActionRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CorrelationActionRequest extends ExecutionActionRequest {
@@ -39,7 +46,8 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
 
     private String action;
 
-    public CorrelationActionRequest(){}
+    public CorrelationActionRequest() {
+    }
 
     public String getProcessDefinitionId() {
         return processDefinitionId;
@@ -73,7 +81,6 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
         this.activityId = activityId;
     }*/
 
-
     public String getTenantId() {
         return tenantId;
     }
@@ -89,7 +96,6 @@ public class CorrelationActionRequest extends ExecutionActionRequest {
     public void setSignalName(String signalName) {
         this.signalName = signalName;
     }
-
 
     public String getMessageName() {
         return messageName;

@@ -14,17 +14,19 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
 
+/**
+ *
+ */
 @XmlRootElement(name = "AttachmentResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AttachmentResponse {
@@ -39,7 +41,7 @@ public class AttachmentResponse {
     private String processInstanceUrl;
     private String externalUrl;
     private String contentUrl;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     private Date time;
 
     public String getId() {

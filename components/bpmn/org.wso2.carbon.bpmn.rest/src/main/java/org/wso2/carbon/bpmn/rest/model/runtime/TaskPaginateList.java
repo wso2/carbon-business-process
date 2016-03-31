@@ -19,14 +19,16 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+/**
+ *
+ */
 public class TaskPaginateList extends AbstractPaginateList {
 
-
     public TaskPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);    }
+        super(restResponseFactory);
+    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override

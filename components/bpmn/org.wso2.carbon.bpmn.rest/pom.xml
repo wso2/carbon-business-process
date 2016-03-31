@@ -28,21 +28,14 @@
     <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
     <description>bpmn rest api</description>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - BPMN Rest Web Application</name>
+    <name>WSO2 Carbon - BPMN Rest Component</name>
     <url>http://wso2.org</url>
 
 
     <properties>
         <jackson.version>1.8.6</jackson.version>
         <jackson.databind.version>2.3.5</jackson.databind.version>
-        <export.package>
-            org.wso2.carbon.bpmn.rest.service.*;
-            version=${carbon.business-process.exp.pkg.version},
-        </export.package>
-        <import.package>
-            *;resolution:=optional
-        </import.package>
-        <dynamic.import.package>*</dynamic.import.package>
+        <checkstyle.skip>true</checkstyle.skip>
     </properties>
 
 
@@ -85,7 +78,7 @@
     <build>
 
         <!--<pluginManagement>-->
-        <plugins>
+        <!--plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -94,6 +87,15 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+        </plugins-->
+        <plugins>
+        <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+        <skip>true</skip>
+        </configuration>
+        </plugin>
         </plugins>
 
         <!--</pluginManagement>-->

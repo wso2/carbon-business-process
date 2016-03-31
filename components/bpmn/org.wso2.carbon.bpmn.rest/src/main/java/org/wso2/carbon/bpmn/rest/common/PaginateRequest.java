@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
-
-
 package org.wso2.carbon.bpmn.rest.common;
 
+/**
+ *
+ */
 public class PaginateRequest {
 
     protected Integer start;

@@ -17,9 +17,15 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "RestVariables")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RestVariableCollection {
@@ -27,7 +33,8 @@ public class RestVariableCollection {
     @XmlElement(name = "RestVariable", type = RestVariable.class)
     private List<RestVariable> restVariables;
 
-    public RestVariableCollection(){}
+    public RestVariableCollection() {
+    }
 
     public List<RestVariable> getRestVariables() {
         return restVariables;

@@ -20,12 +20,19 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "ExecutionActionRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ExecutionActionRequest extends RestActionRequest{
+public class ExecutionActionRequest extends RestActionRequest {
 
     public static final String ACTION_SIGNAL = "signal";
     public static final String ACTION_SIGNAL_EVENT_RECEIVED = "signalEventReceived";
@@ -41,7 +48,7 @@ public class ExecutionActionRequest extends RestActionRequest{
         this.variables = variables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=RestVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = RestVariable.class)
     public List<RestVariable> getVariables() {
         return variables;
     }

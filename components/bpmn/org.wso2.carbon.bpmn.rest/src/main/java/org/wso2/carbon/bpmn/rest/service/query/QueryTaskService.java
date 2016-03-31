@@ -22,25 +22,28 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 
+import java.util.List;
+import java.util.Map;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Map;
 
+/**
+ *
+ */
 @Path("/tasks")
 public class QueryTaskService extends BaseTaskService {
 
     @POST
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getTasks(TaskQueryRequest request,@Context HttpRequest currentRequest) {
-	    QueryStringDecoder decoder = new QueryStringDecoder(currentRequest.getUri());
-	    Map<String, List<String>> queryParams = decoder.parameters();
-        DataResponse dataResponse = getTasksFromQueryRequest(request,queryParams, null);
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getTasks(TaskQueryRequest request, @Context HttpRequest currentRequest) {
+        QueryStringDecoder decoder = new QueryStringDecoder(currentRequest.getUri());
+        Map<String, List<String>> queryParams = decoder.parameters();
+        DataResponse dataResponse = getTasksFromQueryRequest(request, queryParams, null);
         return Response.ok().entity(dataResponse).build();
     }
 }

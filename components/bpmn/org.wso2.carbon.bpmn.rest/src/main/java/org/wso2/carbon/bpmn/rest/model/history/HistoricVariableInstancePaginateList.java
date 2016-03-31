@@ -14,16 +14,17 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
 
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-public class HistoricVariableInstancePaginateList  extends AbstractPaginateList {
+/**
+ *
+ */
+public class HistoricVariableInstancePaginateList extends AbstractPaginateList {
 
     public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory) {
         super(restResponseFactory);

@@ -27,54 +27,56 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequ
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricActivitiInstanceService;
 import org.wso2.msf4j.Microservice;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ *
+ */
 @Component(
-		name = "org.wso2.carbon.bpmn.rest.service.history.HistoricActivitiInstanceService",
-		service = Microservice.class,
-		immediate = true)
+        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricActivitiInstanceService",
+        service = Microservice.class,
+        immediate = true)
 @Path("/historic-activity-instances")
-public class HistoricActivitiInstanceService extends BaseHistoricActivitiInstanceService implements
-                                                                                         Microservice {
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		// Nothing to do
-	}
+public class HistoricActivitiInstanceService extends BaseHistoricActivitiInstanceService
+        implements Microservice {
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
-	@Deactivate
-	protected void deactivate(BundleContext bundleContext) {
-		// Nothing to do
-	}
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getHistoricActivityInstances(@Context HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
-	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        for (String property:allPropertiesList){
-            String value= decoder.parameters().get(property).get(0);
+        for (String property : ALL_PROPERTIES_LIST) {
+            String value = decoder.parameters().get(property).get(0);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
 
-        HistoricActivityInstanceQueryRequest query = getHistoricActivityInstanceQueryRequest(allRequestParams);
+        HistoricActivityInstanceQueryRequest query =
+                getHistoricActivityInstanceQueryRequest(allRequestParams);
 
         DataResponse dataResponse = getQueryResponse(query, allRequestParams);
         return Response.ok().entity(dataResponse).build();
     }
-
 
 }

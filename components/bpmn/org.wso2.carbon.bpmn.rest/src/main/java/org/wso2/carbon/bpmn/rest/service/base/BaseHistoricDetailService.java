@@ -20,47 +20,50 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.HistoricDetailQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailPaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BaseHistoricDetailService {
 
     protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
+    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
 
     static {
-        allPropertiesList.add("id");
-        allPropertiesList.add("processInstanceId");
-        allPropertiesList.add("executionId");
-        allPropertiesList.add("activityInstanceId");
-        allPropertiesList.add("taskId");
-        allPropertiesList.add("selectOnlyFormProperties");
-        allPropertiesList.add("selectOnlyVariableUpdates");
-        allPropertiesList.add("start");
-        allPropertiesList.add("size");
-        allPropertiesList.add("order");
-        allPropertiesList.add("sort");
+        ALL_PROPERTIES_LIST.add("id");
+        ALL_PROPERTIES_LIST.add("processInstanceId");
+        ALL_PROPERTIES_LIST.add("executionId");
+        ALL_PROPERTIES_LIST.add("activityInstanceId");
+        ALL_PROPERTIES_LIST.add("taskId");
+        ALL_PROPERTIES_LIST.add("selectOnlyFormProperties");
+        ALL_PROPERTIES_LIST.add("selectOnlyVariableUpdates");
+        ALL_PROPERTIES_LIST.add("start");
+        ALL_PROPERTIES_LIST.add("size");
+        ALL_PROPERTIES_LIST.add("order");
+        ALL_PROPERTIES_LIST.add("sort");
     }
 
     static {
-        allowedSortProperties.put("processInstanceId", HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
+        allowedSortProperties
+                .put("processInstanceId", HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
         allowedSortProperties.put("time", HistoricDetailQueryProperty.TIME);
         allowedSortProperties.put("name", HistoricDetailQueryProperty.VARIABLE_NAME);
         allowedSortProperties.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
         allowedSortProperties.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
     }
 
-    protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String>
-            allRequestParams) {
+    protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest,
+                                            Map<String, String> allRequestParams) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
@@ -88,7 +91,8 @@ public class BaseHistoricDetailService {
             }
         }
 
-        return new HistoricDetailPaginateList(new RestResponseFactory() ).paginateList(
-                allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
+        return new HistoricDetailPaginateList(new RestResponseFactory())
+                .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
+                              allowedSortProperties);
     }
 }

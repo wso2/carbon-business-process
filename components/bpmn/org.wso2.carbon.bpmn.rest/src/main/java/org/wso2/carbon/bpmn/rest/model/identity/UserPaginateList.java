@@ -20,11 +20,12 @@ package org.wso2.carbon.bpmn.rest.model.identity;
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+/**
+ *
+ */
 public class UserPaginateList extends AbstractPaginateList {
-
 
     public UserPaginateList(RestResponseFactory restResponseFactory) {
         super(restResponseFactory);
@@ -37,3 +38,4 @@ public class UserPaginateList extends AbstractPaginateList {
     }
 
 }
+

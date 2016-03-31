@@ -28,6 +28,9 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.io.IOException;
 import java.util.Date;
 
+/**+
+ *
+ */
 public class DateToStringSerializer extends JsonSerializer<Date> {
     protected DateTimeFormatter isoFormatter = ISODateTimeFormat.dateTime();
 

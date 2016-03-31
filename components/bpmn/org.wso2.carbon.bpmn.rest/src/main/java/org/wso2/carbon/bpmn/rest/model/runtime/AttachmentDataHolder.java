@@ -20,8 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.apache.cxf.io.CachedOutputStream;
 
-import java.io.IOException;
+//import java.io.IOException;
 
+/**
+ *
+ */
 public class AttachmentDataHolder {
 
     private static final Log log = LogFactory.getLog(AttachmentDataHolder.class);
@@ -30,7 +33,7 @@ public class AttachmentDataHolder {
     private String description = null;
     private String type = null;
     private String contentType = null;
-    private String scope= null;
+    private String scope = null;
     private byte[] attachmentArray = null;
 
     public String getName() {

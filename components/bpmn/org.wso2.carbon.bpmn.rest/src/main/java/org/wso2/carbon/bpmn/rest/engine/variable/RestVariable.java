@@ -14,27 +14,37 @@
  *  limitations under the License.
  */
 
-
-
 package org.wso2.carbon.bpmn.rest.engine.variable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement (name = "RestVariable")
+/**
+ *
+ */
+@XmlRootElement(name = "RestVariable")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RestVariable {
 
+    public RestVariable() {
+    }
 
-    public RestVariable(){}
+    /**
+     *
+     */
     @XmlType
     @XmlEnum(String.class)
     public enum RestVariableScope {
-        @XmlEnumValue("LOCAL") LOCAL,
-        @XmlEnumValue("GLOBAL") GLOBAL
+        @XmlEnumValue("LOCAL")LOCAL,
+        @XmlEnumValue("GLOBAL")GLOBAL
     }
 
     private String name;
@@ -46,29 +56,37 @@ public class RestVariable {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
-    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     @JsonIgnore
     public RestVariableScope getVariableScope() {
         return variableScope;
     }
+
     public void setVariableScope(RestVariableScope variableScope) {
         this.variableScope = variableScope;
     }
+
     public Object getValue() {
         return value;
     }
+
     public void setValue(Object value) {
         this.value = value;
     }
+
     public String getScope() {
         String scope = null;
         if (variableScope != null) {
@@ -76,13 +94,16 @@ public class RestVariable {
         }
         return scope;
     }
+
     public void setScope(String scope) {
         setVariableScope(getScopeFromString(scope));
     }
+
     public void setValueUrl(String valueUrl) {
         this.valueUrl = valueUrl;
     }
-    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public String getValueUrl() {
         return valueUrl;
     }
@@ -94,7 +115,7 @@ public class RestVariable {
                     return s;
                 }
             }
-          throw new ActivitiIllegalArgumentException("Invalid variable scope: '" + scope + "'");
+            throw new ActivitiIllegalArgumentException("Invalid variable scope: '" + scope + "'");
         } else {
             return null;
         }

@@ -27,63 +27,66 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.IdentityLink;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BaseProcessInstanceService {
 
     protected static final String DEFAULT_ENCODING = "UTF-8";
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
+    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
     protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
 
-
     static {
-        allPropertiesList.add("id");
-        allPropertiesList.add("processDefinitionKey");
-        allPropertiesList.add("processDefinitionId");
-        allPropertiesList.add("businessKey");
-        allPropertiesList.add("involvedUser");
-        allPropertiesList.add("suspended");
-        allPropertiesList.add("superProcessInstanceId");
-        allPropertiesList.add("subProcessInstanceId");
-        allPropertiesList.add("excludeSubprocesses");
-        allPropertiesList.add("includeProcessVariables");
-        allPropertiesList.add("tenantId");
-        allPropertiesList.add("tenantIdLike");
-        allPropertiesList.add("withoutTenantId");
-        allPropertiesList.add("sort");
-        allPropertiesList.add("start");
-        allPropertiesList.add("size");
-        allPropertiesList.add("order");
+        ALL_PROPERTIES_LIST.add("id");
+        ALL_PROPERTIES_LIST.add("processDefinitionKey");
+        ALL_PROPERTIES_LIST.add("processDefinitionId");
+        ALL_PROPERTIES_LIST.add("businessKey");
+        ALL_PROPERTIES_LIST.add("involvedUser");
+        ALL_PROPERTIES_LIST.add("suspended");
+        ALL_PROPERTIES_LIST.add("superProcessInstanceId");
+        ALL_PROPERTIES_LIST.add("subProcessInstanceId");
+        ALL_PROPERTIES_LIST.add("excludeSubprocesses");
+        ALL_PROPERTIES_LIST.add("includeProcessVariables");
+        ALL_PROPERTIES_LIST.add("tenantId");
+        ALL_PROPERTIES_LIST.add("tenantIdLike");
+        ALL_PROPERTIES_LIST.add("withoutTenantId");
+        ALL_PROPERTIES_LIST.add("sort");
+        ALL_PROPERTIES_LIST.add("start");
+        ALL_PROPERTIES_LIST.add("size");
+        ALL_PROPERTIES_LIST.add("order");
     }
 
     static {
-        allowedSortProperties.put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
-        allowedSortProperties.put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
+        allowedSortProperties
+                .put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+        allowedSortProperties
+                .put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
         allowedSortProperties.put("id", ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID);
         allowedSortProperties.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
     }
 
-    protected Map<String, String> allRequestParams(HttpRequest request){
+    protected Map<String, String> allRequestParams(HttpRequest request) {
         Map<String, String> allRequestParams = new HashMap<>();
-	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-        for (String property:allPropertiesList){
-            String value= decoder.parameters().get(property).get(0);
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        for (String property : ALL_PROPERTIES_LIST) {
+            String value = decoder.parameters().get(property).get(0);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
@@ -96,7 +99,8 @@ public class BaseProcessInstanceService {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().
                 processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
-            throw new ActivitiObjectNotFoundException(" Could not find a process instance with id " +
+            throw new ActivitiObjectNotFoundException(
+                    " Could not find a process instance with id " +
                     processInstanceId + "'.", ProcessInstance.class);
         }
         return processInstance;
@@ -104,42 +108,46 @@ public class BaseProcessInstanceService {
 
     protected Execution getExecutionInstanceFromRequest(String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-        Execution execution = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        Execution execution =
+                runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+                              .singleResult();
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" +
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a process instance with id '" +
                     processInstanceId + "'.", ProcessInstance.class);
         }
         return execution;
     }
 
-
     protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
         if (!processInstance.isSuspended()) {
             throw new BPMNConflictException("Process instance with id '" +
-                    processInstance.getId() + "' is already active.");
+                                            processInstance.getId() + "' is already active.");
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
-        ProcessInstanceResponse response = new RestResponseFactory().createProcessInstanceResponse(processInstance);
+        ProcessInstanceResponse response =
+                new RestResponseFactory().createProcessInstanceResponse(processInstance);
 
         // No need to re-fetch the instance, just alter the suspended state of the result-object
         response.setSuspended(false);
         return response;
     }
 
-    protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance, RestResponseFactory
-            restResponseFactory) {
+    protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance,
+                                                             RestResponseFactory restResponseFactory) {
         if (processInstance.isSuspended()) {
             throw new BPMNConflictException("Process instance with id '" +
-                    processInstance.getId() + "' is already suspended.");
+                                            processInstance.getId() + "' is already suspended.");
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         runtimeService.suspendProcessInstanceById(processInstance.getId());
 
-        ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
+        ProcessInstanceResponse response =
+                restResponseFactory.createProcessInstanceResponse(processInstance);
 
         // No need to re-fetch the instance, just alter the suspended state of the result-object
         response.setSuspended(true);
@@ -193,15 +201,15 @@ public class BaseProcessInstanceService {
             addVariables(query, queryRequest.getVariables());
         }
 
-        if(queryRequest.getTenantId() != null) {
+        if (queryRequest.getTenantId() != null) {
             query.processInstanceTenantId(queryRequest.getTenantId());
         }
 
-        if(queryRequest.getTenantIdLike() != null) {
+        if (queryRequest.getTenantIdLike() != null) {
             query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
         }
 
-        if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+        if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
             query.processInstanceWithoutTenantId();
         }
 
@@ -209,15 +217,18 @@ public class BaseProcessInstanceService {
                 .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
     }
 
-    protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
+    protected void addVariables(ProcessInstanceQuery processInstanceQuery,
+                                List<QueryVariable> variables) {
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -225,8 +236,11 @@ public class BaseProcessInstanceService {
             Object actualValue = restResponseFactory.getVariableValue(variable);
 
             // A value-only query is only possible using equals-operator
-            if (nameLess && variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
-                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+            if (nameLess &&
+                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                throw new ActivitiIllegalArgumentException(
+                        "Value-only query (without a variable-name) is only supported when using " +
+                        "'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
@@ -241,10 +255,13 @@ public class BaseProcessInstanceService {
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                        processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
+                                                                           (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                                + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing, " +
+                                "but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -254,10 +271,13 @@ public class BaseProcessInstanceService {
 
                 case NOT_EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                        processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(),
+                                                                              (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                                + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing," +
+                                " but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -265,8 +285,9 @@ public class BaseProcessInstanceService {
                     if (actualValue instanceof String) {
                         processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: "
-                                + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported for like, but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -287,12 +308,14 @@ public class BaseProcessInstanceService {
                     break;
 
                 default:
-                    throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                    throw new ActivitiIllegalArgumentException(
+                            "Unsupported variable query operation: " +
+                            variable.getVariableOperation());
             }
         }
     }
 
-    protected ProcessInstanceQueryRequest getQueryRequest(Map<String, String> allRequestParams){
+    protected ProcessInstanceQueryRequest getQueryRequest(Map<String, String> allRequestParams) {
         // Populate query based on request
         ProcessInstanceQueryRequest queryRequest = new ProcessInstanceQueryRequest();
 
@@ -329,11 +352,13 @@ public class BaseProcessInstanceService {
         }
 
         if (allRequestParams.containsKey("excludeSubprocesses")) {
-            queryRequest.setExcludeSubprocesses(Boolean.valueOf(allRequestParams.get("excludeSubprocesses")));
+            queryRequest.setExcludeSubprocesses(
+                    Boolean.valueOf(allRequestParams.get("excludeSubprocesses")));
         }
 
         if (allRequestParams.containsKey("includeProcessVariables")) {
-            queryRequest.setIncludeProcessVariables(Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
+            queryRequest.setIncludeProcessVariables(
+                    Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
         }
 
         if (allRequestParams.containsKey("tenantId")) {
@@ -362,15 +387,18 @@ public class BaseProcessInstanceService {
         }
     }
 
-    protected IdentityLink getIdentityLink(String identityId, String type, String processInstanceId) {
+    protected IdentityLink getIdentityLink(String identityId, String type,
+                                           String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         // Perhaps it would be better to offer getting a single identity link from the API
-        List<IdentityLink> allLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
+        List<IdentityLink> allLinks =
+                runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
         for (IdentityLink link : allLinks) {
             if (identityId.equals(link.getUserId()) && link.getType().equals(type)) {
                 return link;
             }
         }
-        throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
+        throw new ActivitiObjectNotFoundException("Could not find the requested identity link.",
+                                                  IdentityLink.class);
     }
 }

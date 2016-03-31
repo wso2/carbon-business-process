@@ -36,13 +36,20 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.*;
 
+/**
+ *
+ */
 public class BaseRuntimeService {
 
     @Context
@@ -54,11 +61,14 @@ public class BaseRuntimeService {
     @Context
     protected HttpServletRequest httpServletRequest;
 
-    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
+    private static Map<String, QueryProperty> allowedSortProperties =
+            new HashMap<String, QueryProperty>();
 
     static {
-        allowedSortProperties.put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
-        allowedSortProperties.put("processDefinitionKey", ExecutionQueryProperty.PROCESS_DEFINITION_KEY);
+        allowedSortProperties
+                .put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
+        allowedSortProperties
+                .put("processDefinitionKey", ExecutionQueryProperty.PROCESS_DEFINITION_KEY);
         allowedSortProperties.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
         allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
     }
@@ -68,7 +78,8 @@ public class BaseRuntimeService {
     protected ObjectMapper objectMapper = new ObjectMapper();
 
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
-            Map<String, String> requestParams, String serverRootUrl) {
+                                            Map<String, String> requestParams,
+                                            String serverRootUrl) {
 
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
@@ -103,47 +114,53 @@ public class BaseRuntimeService {
         }
         if (queryRequest.getMessageEventSubscriptionName() != null) {
             query.messageEventSubscriptionName(queryRequest.getMessageEventSubscriptionName());
-            requestParams.put("messageEventSubscriptionName", queryRequest.getMessageEventSubscriptionName());
+            requestParams.put("messageEventSubscriptionName",
+                              queryRequest.getMessageEventSubscriptionName());
         }
         if (queryRequest.getSignalEventSubscriptionName() != null) {
             query.signalEventSubscriptionName(queryRequest.getSignalEventSubscriptionName());
-            requestParams.put("signalEventSubscriptionName", queryRequest.getSignalEventSubscriptionName());
+            requestParams.put("signalEventSubscriptionName",
+                              queryRequest.getSignalEventSubscriptionName());
         }
 
-        if(queryRequest.getVariables() != null) {
+        if (queryRequest.getVariables() != null) {
             addVariables(query, queryRequest.getVariables(), false);
         }
 
-        if(queryRequest.getProcessInstanceVariables() != null) {
+        if (queryRequest.getProcessInstanceVariables() != null) {
             addVariables(query, queryRequest.getProcessInstanceVariables(), true);
         }
 
-        if(queryRequest.getTenantId() != null) {
+        if (queryRequest.getTenantId() != null) {
             query.executionTenantId(queryRequest.getTenantId());
             requestParams.put("tenantId", queryRequest.getTenantId());
         }
 
-        if(queryRequest.getTenantIdLike() != null) {
+        if (queryRequest.getTenantIdLike() != null) {
             query.executionTenantIdLike(queryRequest.getTenantIdLike());
             requestParams.put("tenantIdLike", queryRequest.getTenantIdLike());
         }
 
-        if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+        if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
             query.executionWithoutTenantId();
             requestParams.put("withoutTenantId", queryRequest.getWithoutTenantId().toString());
         }
 
         return new ExecutionPaginateList(new RestResponseFactory())
-                .paginateList(requestParams ,queryRequest, query, "processInstanceId", allowedSortProperties);
+                .paginateList(requestParams, queryRequest, query, "processInstanceId",
+                              allowedSortProperties);
     }
 
-    protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables, boolean process) {
+    protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables,
+                                boolean process) {
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -151,71 +168,93 @@ public class BaseRuntimeService {
             Object actualValue = new RestResponseFactory().getVariableValue(variable);
 
             // A value-only query is only possible using equals-operator
-            if (nameLess && variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
-                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+            if (nameLess &&
+                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                throw new ActivitiIllegalArgumentException(
+                        "Value-only query (without a variable-name) is only supported when using " +
+                        "'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
 
-            case EQUALS:
-                if (nameLess) {
-                    if(process) {
-                        processInstanceQuery.processVariableValueEquals(actualValue);
+                case EQUALS:
+                    if (nameLess) {
+                        if (process) {
+                            processInstanceQuery.processVariableValueEquals(actualValue);
+                        } else {
+                            processInstanceQuery.variableValueEquals(actualValue);
+                        }
                     } else {
-                        processInstanceQuery.variableValueEquals(actualValue);
+                        if (process) {
+                            processInstanceQuery
+                                    .processVariableValueEquals(variable.getName(), actualValue);
+                        } else {
+                            processInstanceQuery
+                                    .variableValueEquals(variable.getName(), actualValue);
+                        }
                     }
-                } else {
-                    if(process) {
-                        processInstanceQuery.processVariableValueEquals(variable.getName(), actualValue);
-                    } else {
-                        processInstanceQuery.variableValueEquals(variable.getName(), actualValue);
-                    }
-                }
-                break;
+                    break;
 
-            case EQUALS_IGNORE_CASE:
-                if (actualValue instanceof String) {
-                    if(process) {
-                        processInstanceQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                case EQUALS_IGNORE_CASE:
+                    if (actualValue instanceof String) {
+                        if (process) {
+                            processInstanceQuery
+                                    .processVariableValueEqualsIgnoreCase(variable.getName(),
+                                                                          (String) actualValue);
+                        } else {
+                            processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
+                                                                               (String) actualValue);
+                        }
                     } else {
-                        processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing," +
+                                " but was: " +
+                                actualValue.getClass().getName());
                     }
-                } else {
-                    throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                            + actualValue.getClass().getName());
-                }
-                break;
+                    break;
 
-            case NOT_EQUALS:
-                if(process) {
-                    processInstanceQuery.processVariableValueNotEquals(variable.getName(), actualValue);
-                } else {
-                    processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
-                }
-                break;
-
-            case NOT_EQUALS_IGNORE_CASE:
-                if (actualValue instanceof String) {
-                    if(process) {
-                        processInstanceQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                case NOT_EQUALS:
+                    if (process) {
+                        processInstanceQuery
+                                .processVariableValueNotEquals(variable.getName(), actualValue);
                     } else {
-                        processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                        processInstanceQuery
+                                .variableValueNotEquals(variable.getName(), actualValue);
                     }
-                } else {
-                    throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                            + actualValue.getClass().getName());
-                }
-                break;
-            default:
-                throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                    break;
+
+                case NOT_EQUALS_IGNORE_CASE:
+                    if (actualValue instanceof String) {
+                        if (process) {
+                            processInstanceQuery
+                                    .processVariableValueNotEqualsIgnoreCase(variable.getName(),
+                                                                             (String) actualValue);
+                        } else {
+                            processInstanceQuery
+                                    .variableValueNotEqualsIgnoreCase(variable.getName(),
+                                                                      (String) actualValue);
+                        }
+                    } else {
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing, " +
+                                "but was: " +
+                                actualValue.getClass().getName());
+                    }
+                    break;
+                default:
+                    throw new ActivitiIllegalArgumentException(
+                            "Unsupported variable query operation: " +
+                            variable.getVariableOperation());
             }
         }
     }
 
     protected Execution getExecutionFromRequest(String executionId) {
-        Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
+        Execution execution =
+                runtimeService.createExecutionQuery().executionId(executionId).singleResult();
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException("Could not find an execution with id '" + executionId + "'.", Execution.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find an execution with id '" + executionId + "'.", Execution.class);
         }
         return execution;
     }
@@ -234,7 +273,8 @@ public class BaseRuntimeService {
         return variablesToSet;
     }
 
-    protected List<RestVariable> processVariables(Execution execution, String scope, int variableType) {
+    protected List<RestVariable> processVariables(Execution execution, String scope,
+                                                  int variableType) {
         List<RestVariable> result = new ArrayList<RestVariable>();
         Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
 
@@ -258,22 +298,27 @@ public class BaseRuntimeService {
         return result;
     }
 
-    protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
+    protected void addLocalVariables(Execution execution, int variableType,
+                                     Map<String, RestVariable> variableMap) {
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
-        List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawLocalvariables,
-                execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL);
+        List<RestVariable> localVariables = new RestResponseFactory()
+                .createRestVariables(rawLocalvariables, execution.getId(), variableType,
+                                     RestVariable.RestVariableScope.LOCAL);
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
         }
     }
 
-    protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
+    protected void addGlobalVariables(Execution execution, int variableType,
+                                      Map<String, RestVariable> variableMap) {
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
-        List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
-                execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL);
+        List<RestVariable> globalVariables = new RestResponseFactory()
+                .createRestVariables(rawVariables, execution.getId(), variableType,
+                                     RestVariable.RestVariableScope.GLOBAL);
 
-        // Overlay global variables over local ones. In case they are present the values are not overridden,
+        // Overlay global variables over local ones. In case they are present the values are
+        // not overridden,
         // since local variables get precedence over global ones at all times.
         for (RestVariable var : globalVariables) {
             if (!variableMap.containsKey(var.getName())) {
@@ -283,17 +328,20 @@ public class BaseRuntimeService {
     }
 
     public void deleteAllLocalVariables(Execution execution) {
-        Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
+        Collection<String> currentVariables =
+                runtimeService.getVariablesLocal(execution.getId()).keySet();
         runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
 
         Response.noContent().build();
     }
 
-/*    protected Object createExecutionVariable(Execution execution, boolean override, int variableType) {
+/*    protected Object createExecutionVariable(Execution execution, boolean override,
+int variableType) {
 
         Object result = null;
         if (request instanceof MultipartHttpServletRequest) {
-            result = setBinaryVariable((MultipartHttpServletRequest) request, execution, variableType, true);
+            result = setBinaryVariable((MultipartHttpServletRequest) request, execution,
+             variableType, true);
         } else {
 
             List<RestVariable> inputVariables = new ArrayList<RestVariable>();
@@ -301,17 +349,21 @@ public class BaseRuntimeService {
             result = resultVariables;
 
             try {
-                @SuppressWarnings("unchecked") List<Object> variableObjects = (List<Object>) objectMapper.readValue(httpServletRequest.getInputStream(), List.class);
+                @SuppressWarnings("unchecked") List<Object> variableObjects = (List<Object>)
+                objectMapper.readValue(httpServletRequest.getInputStream(), List.class);
                 for (Object restObject : variableObjects) {
-                    RestVariable restVariable = objectMapper.convertValue(restObject, RestVariable.class);
+                    RestVariable restVariable = objectMapper.convertValue(restObject,
+                    RestVariable.class);
                     inputVariables.add(restVariable);
                 }
             } catch (Exception e) {
-                throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
+                throw new ActivitiIllegalArgumentException("Failed to serialize to a
+                 RestVariable instance", e);
             }
 
             if (inputVariables == null || inputVariables.size() == 0) {
-                throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
+                throw new ActivitiIllegalArgumentException("Request didn't contain
+                a list of variables to create.");
             }
 
             RestVariable.RestVariableScope sharedScope = null;
@@ -332,16 +384,19 @@ public class BaseRuntimeService {
                     sharedScope = varScope;
                 }
                 if (varScope != sharedScope) {
-                    throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
+                    throw new ActivitiIllegalArgumentException("Only allowed to
+                    update multiple variables in the same scope.");
                 }
 
                 if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
-                    throw new BPMNConflictException("Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.");
+                    throw new BPMNConflictException("Variable '" + var.getName() +
+                     "' is already present on execution '" + execution.getId() + "'.");
                 }
 
                 Object actualVariableValue = new RestResponseFactory().getVariableValue(var);
                 variablesToSet.put(var.getName(), actualVariableValue);
-                resultVariables.add(new RestResponseFactory().createRestVariable(var.getName(), actualVariableValue, varScope,
+                resultVariables.add(new RestResponseFactory().createRestVariable(var.getName(),
+                 actualVariableValue, varScope,
                         execution.getId(), variableType, false, uriInfo.getBaseUri().toString()));
             }
 
@@ -350,11 +405,13 @@ public class BaseRuntimeService {
                     runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
                 } else {
                     if (execution.getParentId() != null) {
-                        // Explicitly set on parent, setting non-local variables on execution itself will override local-variables if exists
+                        // Explicitly set on parent, setting non-local variables on execution
+                        itself will override local-variables if exists
                         runtimeService.setVariables(execution.getParentId(), variablesToSet);
                     } else {
                         // Standalone task, no global variables possible
-                        throw new ActivitiIllegalArgumentException("Cannot set global variables on execution '" + execution.getId() +"', task is not part of process.");
+                        throw new ActivitiIllegalArgumentException("Cannot set global variables
+                        on execution '" + execution.getId() +"', task is not part of process.");
                     }
                 }
             }
@@ -404,12 +461,15 @@ public class BaseRuntimeService {
 
             // Validate input and set defaults
             if (variableName == null) {
-                throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
+                throw new ActivitiIllegalArgumentException("No variable name was found in request
+                 body.");
             }
 
             if (variableType != null) {
-                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
-                    throw new ActivitiIllegalArgumentException("Only 'binary' and 'serializable' are supported as variable type.");
+                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) &&
+                !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
+                    throw new ActivitiIllegalArgumentException("Only 'binary' and
+                    'serializable' are supported as variable type.");
                 }
             } else {
                 variableType = RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE;
@@ -434,31 +494,39 @@ public class BaseRuntimeService {
             }
 
             if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {
-                return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType,
+                return new RestResponseFactory().createBinaryRestVariable(variableName, scope,
+                 variableType,
                         null, null, execution.getId(), uriInfo.getBaseUri().toString());
             } else {
-                return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType, null,
+                return new RestResponseFactory().createBinaryRestVariable(variableName, scope,
+                 variableType, null,
                         execution.getId(), null, uriInfo.getBaseUri().toString());
             }
 
         } catch (IOException ioe) {
             throw new ActivitiIllegalArgumentException("Could not process multipart content", ioe);
         } catch (ClassNotFoundException ioe) {
-            throw new BPMNContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage());
+            throw new BPMNContentNotSupportedException("The provided body contains a serialized
+            object for which the class is nog found: " + ioe.getMessage());
         }
 
     }
 */
 
-    protected void setVariable(Execution execution, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
+    protected void setVariable(Execution execution, String name, Object value,
+                               RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new variables. Existing variables should be updated using PUT
         boolean hasVariable = hasVariableOnScope(execution, name, scope);
         if (isNew && hasVariable) {
-            throw new ActivitiException("Variable '" + name + "' is already present on execution '" + execution.getId() + "'.");
+            throw new ActivitiException(
+                    "Variable '" + name + "' is already present on execution '" +
+                    execution.getId() + "'.");
         }
 
         if (!isNew && !hasVariable) {
-            throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '"+ name + "'.", null);
+            throw new ActivitiObjectNotFoundException(
+                    "Execution '" + execution.getId() + "' doesn't have a variable with name: '" +
+                    name + "'.", null);
         }
 
         if (scope == RestVariable.RestVariableScope.LOCAL) {
@@ -472,11 +540,13 @@ public class BaseRuntimeService {
         }
     }
 
-    protected boolean hasVariableOnScope(Execution execution, String variableName, RestVariable.RestVariableScope scope) {
+    protected boolean hasVariableOnScope(Execution execution, String variableName,
+                                         RestVariable.RestVariableScope scope) {
         boolean variableFound = false;
 
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
-            if (execution.getParentId() != null && runtimeService.hasVariable(execution.getParentId(), variableName)) {
+            if (execution.getParentId() != null &&
+                runtimeService.hasVariable(execution.getParentId(), variableName)) {
                 variableFound = true;
             }
 
@@ -488,14 +558,15 @@ public class BaseRuntimeService {
         return variableFound;
     }
 
-    public RestVariable getVariableFromRequest(Execution execution, String variableName, String scope,
-            boolean includeBinary) {
+    public RestVariable getVariableFromRequest(Execution execution, String variableName,
+                                               String scope, boolean includeBinary) {
 
         boolean variableFound = false;
         Object value = null;
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException("Could not find an execution", Execution.class);
+            throw new ActivitiObjectNotFoundException("Could not find an execution",
+                                                      Execution.class);
         }
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
@@ -528,17 +599,22 @@ public class BaseRuntimeService {
 
         if (!variableFound) {
             throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() +
-                    "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
+                                                      "' doesn't have a variable with name: '" +
+                                                      variableName + "'.",
+                                                      VariableInstanceEntity.class);
         } else {
-            return constructRestVariable(variableName, value, variableScope, execution.getId(), includeBinary);
+            return constructRestVariable(variableName, value, variableScope, execution.getId(),
+                                         includeBinary);
         }
     }
 
     protected RestVariable constructRestVariable(String variableName, Object value,
-            RestVariable.RestVariableScope variableScope, String executionId, boolean includeBinary) {
+                                                 RestVariable.RestVariableScope variableScope,
+                                                 String executionId, boolean includeBinary) {
 
-        return new RestResponseFactory().createRestVariable(variableName, value, variableScope, executionId,
-                RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
+        return new RestResponseFactory()
+                .createRestVariable(variableName, value, variableScope, executionId,
+                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
     }
 
 }

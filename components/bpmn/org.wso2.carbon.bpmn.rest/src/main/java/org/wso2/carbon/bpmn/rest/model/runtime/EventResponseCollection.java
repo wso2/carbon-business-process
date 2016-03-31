@@ -14,11 +14,18 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *
+ */
 @XmlRootElement(name = "EventResponseCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EventResponseCollection {
@@ -27,7 +34,8 @@ public class EventResponseCollection {
         return eventResponseList;
     }
 
-    public EventResponseCollection(){}
+    public EventResponseCollection() {
+    }
 
     public void setEventResponseList(List<EventResponse> eventResponseList) {
         this.eventResponseList = eventResponseList;

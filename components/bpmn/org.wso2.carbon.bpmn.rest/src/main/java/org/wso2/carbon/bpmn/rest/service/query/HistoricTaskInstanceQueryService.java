@@ -22,35 +22,39 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
+
+/**
+ *
+ */
 
 @Path("/historic-task-instances")
 public class HistoricTaskInstanceQueryService extends BaseHistoricTaskInstanceService {
 
     @POST
     @Path("/")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest,@Context
-                                              HttpRequest request) {
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest,
+                                              @Context HttpRequest request) {
         Map<String, String> allRequestParams = new HashMap<>();
-	    QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-	    for (String property:allPropertiesList){
-		    String value=decoder.parameters().get(property).get(0);
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        for (String property : ALL_PROPERTIES_LIST) {
+            String value = decoder.parameters().get(property).get(0);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
-	    RestUrlBuilder builder = new RestUrlBuilder();
-	    String serverRootUrl =  builder.getBaseUrl();
+        RestUrlBuilder builder = new RestUrlBuilder();
+        String serverRootUrl = builder.getBaseUrl();
         return getQueryResponse(queryRequest, allRequestParams, serverRootUrl);
     }
 }

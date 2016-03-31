@@ -16,36 +16,36 @@
 package org.wso2.carbon.bpmn.rest.service.query;
 
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
 
-import javax.ws.rs.*;
+import java.util.Map;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.List;
-import java.util.Map;
 
+/**
+ *
+ */
 @Path("/process-instances")
 public class ProcessInstanceQueryService extends BaseProcessInstanceService {
 
     @POST
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getProcessInstances(ProcessInstanceQueryRequest processInstanceQueryRequest,@Context
-                                        HttpRequest request) {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getProcessInstances(ProcessInstanceQueryRequest processInstanceQueryRequest,
+                                        @Context HttpRequest request) {
 
         Map<String, String> allRequestParams = allRequestParams(request);
         // Populate query based on request
         //ProcessInstanceQueryRequest queryRequest = getQueryRequest(allRequestParams);
-        return Response.ok().entity(getQueryResponse(processInstanceQueryRequest, allRequestParams)).build();
+        return Response.ok().entity(getQueryResponse(processInstanceQueryRequest, allRequestParams))
+                       .build();
     }
-
-
-
-
 
 }

@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "ProcessDefinitionResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProcessDefinitionResponse {
@@ -44,90 +46,119 @@ public class ProcessDefinitionResponse {
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public String getUrl() {
         return url;
     }
+
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getKey() {
         return key;
     }
+
     public void setKey(String key) {
         this.key = key;
     }
+
     public int getVersion() {
         return version;
     }
+
     public void setVersion(int version) {
         this.version = version;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public String getTenantId() {
         return tenantId;
     }
+
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
+
     public String getDeploymentId() {
         return deploymentId;
     }
+
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
+
     public String getDeploymentUrl() {
         return deploymentUrl;
     }
+
     public void setDeploymentUrl(String deploymentUrl) {
         this.deploymentUrl = deploymentUrl;
     }
+
     public String getCategory() {
         return category;
     }
+
     public void setCategory(String category) {
         this.category = category;
     }
+
     public void setResource(String resource) {
         this.resource = resource;
     }
+
     public String getResource() {
         return resource;
     }
+
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public void setDiagramResource(String diagramResource) {
         this.diagramResource = diagramResource;
     }
+
     public String getDiagramResource() {
         return diagramResource;
     }
+
     public void setGraphicalNotationDefined(boolean graphicalNotationDefined) {
         this.graphicalNotationDefined = graphicalNotationDefined;
     }
+
     public boolean isGraphicalNotationDefined() {
         return graphicalNotationDefined;
     }
+
     public void setSuspended(boolean suspended) {
         this.suspended = suspended;
     }
+
     public boolean isSuspended() {
         return suspended;
     }
+
     public void setStartFormDefined(boolean startFormDefined) {
         this.startFormDefined = startFormDefined;
     }
+
     public boolean isStartFormDefined() {
         return startFormDefined;
     }

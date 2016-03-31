@@ -20,9 +20,16 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "ExecutionQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ExecutionQueryRequest extends PaginateRequest {
@@ -45,7 +52,7 @@ public class ExecutionQueryRequest extends PaginateRequest {
     private String tenantIdLike;
     private Boolean withoutTenantId;
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getVariables() {
         return variables;
     }
@@ -57,81 +64,67 @@ public class ExecutionQueryRequest extends PaginateRequest {
     public List<QueryVariable> getProcessInstanceVariables() {
         return processInstanceVariables;
     }
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
         this.processInstanceVariables = processInstanceVariables;
     }
-
 
     public String getId() {
         return id;
     }
 
-
     public void setId(String id) {
         this.id = id;
     }
-
 
     public String getProcessInstanceId() {
         return processInstanceId;
     }
 
-
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
-
 
     public String getProcessBusinessKey() {
         return processBusinessKey;
     }
 
-
     public void setProcessBusinessKey(String processBusinessKey) {
         this.processBusinessKey = processBusinessKey;
     }
-
 
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
 
-
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
-
 
     public String getProcessDefinitionKey() {
         return processDefinitionKey;
     }
 
-
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
     }
-
 
     public String getSignalEventSubscriptionName() {
         return signalEventSubscriptionName;
     }
 
-
     public void setSignalEventSubscriptionName(String signalEventSubscriptionName) {
         this.signalEventSubscriptionName = signalEventSubscriptionName;
     }
-
 
     public String getMessageEventSubscriptionName() {
         return messageEventSubscriptionName;
     }
 
-
     public void setMessageEventSubscriptionName(String messageEventSubscriptionName) {
         this.messageEventSubscriptionName = messageEventSubscriptionName;
     }
-
 
     public String getActivityId() {
         return activityId;
@@ -174,3 +167,4 @@ public class ExecutionQueryRequest extends PaginateRequest {
     }
 
 }
+

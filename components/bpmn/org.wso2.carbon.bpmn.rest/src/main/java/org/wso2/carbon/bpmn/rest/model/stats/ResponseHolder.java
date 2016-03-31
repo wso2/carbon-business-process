@@ -15,9 +15,13 @@
  */
 package org.wso2.carbon.bpmn.rest.model.stats;
 
-
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Holds the response of each REST call
@@ -26,22 +30,14 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ResponseHolder {
     @XmlElementWrapper(name = "DataResponse")
-    @XmlElements(value = {
-            @XmlElement(name = "Task",
-                    type = BPMNTaskInstance.class),
-            @XmlElement(name = "CompletedProcess",
-                    type = CompletedProcesses.class),
-            @XmlElement(name = "DeployedProcess",
-                    type = DeployedProcesses.class),
-            @XmlElement(name = "InstanceVariation",
-                    type = InstanceStatPerMonth.class),
-            @XmlElement(name = "ProcessTaskCount",
-                    type = ProcessTaskCount.class),
-            @XmlElement(name = "UserTaskCount",
-                    type = UserTaskCount.class),
-            @XmlElement(name = "UserTaskDuration",
-                    type = UserTaskDuration.class)
-    })
+    @XmlElements(value = { @XmlElement(name = "Task",
+            type = BPMNTaskInstance.class), @XmlElement(name = "CompletedProcess",
+            type = CompletedProcesses.class), @XmlElement(name = "DeployedProcess",
+            type = DeployedProcesses.class), @XmlElement(name = "InstanceVariation",
+            type = InstanceStatPerMonth.class), @XmlElement(name = "ProcessTaskCount",
+            type = ProcessTaskCount.class), @XmlElement(name = "UserTaskCount",
+            type = UserTaskCount.class), @XmlElement(name = "UserTaskDuration",
+            type = UserTaskDuration.class) })
     List<Object> data;
 
     public List<Object> getData() {

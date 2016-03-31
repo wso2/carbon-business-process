@@ -19,10 +19,17 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+
+/**
+ *
+ */
 @XmlRootElement(name = "ProcessInstanceQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProcessInstanceQueryRequest extends PaginateRequest {
@@ -44,7 +51,9 @@ public class ProcessInstanceQueryRequest extends PaginateRequest {
     private String tenantIdLike;
     private Boolean withoutTenantId;
 
-    public ProcessInstanceQueryRequest(){}
+    public ProcessInstanceQueryRequest() {
+    }
+
     public String getProcessInstanceId() {
         return processInstanceId;
     }
@@ -125,7 +134,7 @@ public class ProcessInstanceQueryRequest extends PaginateRequest {
         this.includeProcessVariables = includeProcessVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getVariables() {
         return variables;
     }

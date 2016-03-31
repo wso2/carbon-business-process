@@ -14,25 +14,28 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
+
+/**
+ *
+ */
 @XmlRootElement(name = "modelResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ModelResponse extends ModelRequest {
 
     protected String id;
     protected String url;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date createTime;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date lastUpdateTime;
     protected String deploymentUrl;
     //protected String tenantId;
@@ -90,12 +93,15 @@ public class ModelResponse extends ModelRequest {
     public String getSourceUrl() {
         return sourceUrl;
     }
+
     public void setSourceUrl(String sourceUrl) {
         this.sourceUrl = sourceUrl;
     }
+
     public String getSourceExtraUrl() {
         return sourceExtraUrl;
     }
+
     public void setSourceExtraUrl(String sourceExtraUrl) {
         this.sourceExtraUrl = sourceExtraUrl;
     }
