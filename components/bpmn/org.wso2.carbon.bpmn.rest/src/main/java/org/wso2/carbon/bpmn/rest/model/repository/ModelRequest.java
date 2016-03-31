@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,6 +22,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "model")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ModelRequest {
@@ -109,26 +111,32 @@ public class ModelRequest {
     public boolean isCategoryChanged() {
         return categoryChanged;
     }
+
     @JsonIgnore
     public boolean isKeyChanged() {
         return keyChanged;
     }
+
     @JsonIgnore
     public boolean isMetaInfoChanged() {
         return metaInfoChanged;
     }
+
     @JsonIgnore
     public boolean isNameChanged() {
         return nameChanged;
     }
+
     @JsonIgnore
     public boolean isVersionChanged() {
         return versionChanged;
     }
+
     @JsonIgnore
     public boolean isDeploymentChanged() {
         return deploymentChanged;
     }
+
     @JsonIgnore
     public boolean isTenantIdChanged() {
         return tenantChanged;

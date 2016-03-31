@@ -20,63 +20,69 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+//import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BaseHistoricActivitiInstanceService {
 
-
-
-    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
-
-
+    private static Map<String, QueryProperty> allowedSortProperties =
+            new HashMap<String, QueryProperty>();
+    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
 
     static {
         allowedSortProperties.put("activityId", HistoricActivityInstanceQueryProperty.ACTIVITY_ID);
-        allowedSortProperties.put("activityName", HistoricActivityInstanceQueryProperty.ACTIVITY_NAME);
-        allowedSortProperties.put("activityType", HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
+        allowedSortProperties
+                .put("activityName", HistoricActivityInstanceQueryProperty.ACTIVITY_NAME);
+        allowedSortProperties
+                .put("activityType", HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
         allowedSortProperties.put("duration", HistoricActivityInstanceQueryProperty.DURATION);
         allowedSortProperties.put("endTime", HistoricActivityInstanceQueryProperty.END);
-        allowedSortProperties.put("executionId", HistoricActivityInstanceQueryProperty.EXECUTION_ID);
-        allowedSortProperties.put("activityInstanceId", HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
-        allowedSortProperties.put("processDefinitionId", HistoricActivityInstanceQueryProperty.PROCESS_DEFINITION_ID);
-        allowedSortProperties.put("processInstanceId", HistoricActivityInstanceQueryProperty.PROCESS_INSTANCE_ID);
+        allowedSortProperties
+                .put("executionId", HistoricActivityInstanceQueryProperty.EXECUTION_ID);
+        allowedSortProperties.put("activityInstanceId",
+                                  HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
+        allowedSortProperties.put("processDefinitionId",
+                                  HistoricActivityInstanceQueryProperty.PROCESS_DEFINITION_ID);
+        allowedSortProperties.put("processInstanceId",
+                                  HistoricActivityInstanceQueryProperty.PROCESS_INSTANCE_ID);
         allowedSortProperties.put("startTime", HistoricActivityInstanceQueryProperty.START);
         allowedSortProperties.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
 
     }
 
     static {
-        allPropertiesList.add("activityId");
-        allPropertiesList.add("activityInstanceId");
-        allPropertiesList.add("activityName");
-        allPropertiesList.add("activityType");
-        allPropertiesList.add("executionId");
-        allPropertiesList.add("finished");
-        allPropertiesList.add("taskAssignee");
-        allPropertiesList.add("processInstanceId");
-        allPropertiesList.add("processDefinitionId");
-        allPropertiesList.add("tenantId");
-        allPropertiesList.add("tenantIdLike");
-        allPropertiesList.add("withoutTenantId");
-        allPropertiesList.add("start");
-        allPropertiesList.add("size");
-        allPropertiesList.add("order");
-        allPropertiesList.add("sort");
+        ALL_PROPERTIES_LIST.add("activityId");
+        ALL_PROPERTIES_LIST.add("activityInstanceId");
+        ALL_PROPERTIES_LIST.add("activityName");
+        ALL_PROPERTIES_LIST.add("activityType");
+        ALL_PROPERTIES_LIST.add("executionId");
+        ALL_PROPERTIES_LIST.add("finished");
+        ALL_PROPERTIES_LIST.add("taskAssignee");
+        ALL_PROPERTIES_LIST.add("processInstanceId");
+        ALL_PROPERTIES_LIST.add("processDefinitionId");
+        ALL_PROPERTIES_LIST.add("tenantId");
+        ALL_PROPERTIES_LIST.add("tenantIdLike");
+        ALL_PROPERTIES_LIST.add("withoutTenantId");
+        ALL_PROPERTIES_LIST.add("start");
+        ALL_PROPERTIES_LIST.add("size");
+        ALL_PROPERTIES_LIST.add("order");
+        ALL_PROPERTIES_LIST.add("sort");
     }
 
-    protected HistoricActivityInstanceQueryRequest getHistoricActivityInstanceQueryRequest (@Context UriInfo uriInfo, Map<String,String> allRequestParams){
+    protected HistoricActivityInstanceQueryRequest getHistoricActivityInstanceQueryRequest(
+            Map<String, String> allRequestParams) {
 
         HistoricActivityInstanceQueryRequest query = new HistoricActivityInstanceQueryRequest();
 
@@ -125,15 +131,15 @@ public class BaseHistoricActivitiInstanceService {
             query.setTenantIdLike(allRequestParams.get("tenantIdLike"));
         }
 
-        if(allRequestParams.get("withoutTenantId") != null) {
+        if (allRequestParams.get("withoutTenantId") != null) {
             query.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
         }
 
         return query;
     }
 
-    protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Map<String,String>
-            allRequestParams, UriInfo uriInfo) {
+    protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest,
+                                            Map<String, String> allRequestParams) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
@@ -179,19 +185,20 @@ public class BaseHistoricActivitiInstanceService {
             query.processDefinitionId(queryRequest.getProcessDefinitionId());
         }
 
-        if(queryRequest.getTenantId() != null) {
+        if (queryRequest.getTenantId() != null) {
             query.activityTenantId(queryRequest.getTenantId());
         }
 
-        if(queryRequest.getTenantIdLike() != null) {
+        if (queryRequest.getTenantIdLike() != null) {
             query.activityTenantIdLike(queryRequest.getTenantIdLike());
         }
 
-        if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+        if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
             query.activityWithoutTenantId();
         }
 
-        return new HistoricActivityInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
-                allRequestParams, queryRequest, query, "startTime", allowedSortProperties);
+        return new HistoricActivityInstancePaginateList(new RestResponseFactory())
+                .paginateList(allRequestParams, queryRequest, query, "startTime",
+                              allowedSortProperties);
     }
 }

@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
-
 
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 
@@ -24,9 +22,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "HistoricActivityInstanceQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class HistoricActivityInstanceQueryRequest  extends PaginateRequest {
+public class HistoricActivityInstanceQueryRequest extends PaginateRequest {
     private String activityId;
     private String activityInstanceId;
     private String activityName;
@@ -43,72 +44,95 @@ public class HistoricActivityInstanceQueryRequest  extends PaginateRequest {
     public String getActivityId() {
         return activityId;
     }
+
     public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
+
     public String getActivityInstanceId() {
         return activityInstanceId;
     }
+
     public void setActivityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
     }
+
     public String getActivityName() {
         return activityName;
     }
+
     public void setActivityName(String activityName) {
         this.activityName = activityName;
     }
+
     public String getActivityType() {
         return activityType;
     }
+
     public void setActivityType(String activityType) {
         this.activityType = activityType;
     }
+
     public String getExecutionId() {
         return executionId;
     }
+
     public void setExecutionId(String executionId) {
         this.executionId = executionId;
     }
+
     public Boolean getFinished() {
         return finished;
     }
+
     public void setFinished(Boolean finished) {
         this.finished = finished;
     }
+
     public String getTaskAssignee() {
         return taskAssignee;
     }
+
     public void setTaskAssignee(String taskAssignee) {
         this.taskAssignee = taskAssignee;
     }
+
     public String getProcessInstanceId() {
         return processInstanceId;
     }
+
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
+
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
+
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
+
     public String getTenantId() {
         return tenantId;
     }
+
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
+
     public String getTenantIdLike() {
         return tenantIdLike;
     }
+
     public void setTenantIdLike(String tenantIdLike) {
         this.tenantIdLike = tenantIdLike;
     }
+
     public Boolean getWithoutTenantId() {
         return withoutTenantId;
     }
+
     public void setWithoutTenantId(Boolean withoutTenantId) {
         this.withoutTenantId = withoutTenantId;
     }

@@ -20,19 +20,21 @@ package org.wso2.carbon.bpmn.rest.model.identity;
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+/**
+ *
+ */
 public class GroupPaginateList extends AbstractPaginateList {
 
     protected RestResponseFactory restResponseFactory;
 
-    public GroupPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public GroupPaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected List processList(List list) {
-        return restResponseFactory.createGroupResponseList(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createGroupResponseList(list);
     }
 }

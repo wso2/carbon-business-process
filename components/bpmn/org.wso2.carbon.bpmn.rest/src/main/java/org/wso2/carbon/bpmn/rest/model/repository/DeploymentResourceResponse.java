@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "DeploymentResourceResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeploymentResourceResponse {
@@ -31,7 +33,7 @@ public class DeploymentResourceResponse {
     private String mediaType;
     private String type;
 
-    public DeploymentResourceResponse(){
+    public DeploymentResourceResponse() {
 
     }
 
@@ -51,30 +53,39 @@ public class DeploymentResourceResponse {
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getUrl() {
         return url;
     }
+
     public void setContentUrl(String contentUrl) {
         this.contentUrl = contentUrl;
     }
+
     public String getContentUrl() {
         return contentUrl;
     }
+
     public void setMediaType(String mimeType) {
         this.mediaType = mimeType;
     }
+
     public String getMediaType() {
         return mediaType;
     }
+
     public void setType(String type) {
         this.type = type;
     }
+
     public String getType() {
         return type;
     }

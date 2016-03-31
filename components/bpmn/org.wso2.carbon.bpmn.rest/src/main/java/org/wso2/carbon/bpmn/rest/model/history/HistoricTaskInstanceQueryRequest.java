@@ -14,20 +14,26 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "HistoricTaskInstanceQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
+public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
 
     private String taskId;
     private String processInstanceId;
@@ -409,7 +415,7 @@ public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
         this.includeProcessVariables = includeProcessVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getTaskVariables() {
         return taskVariables;
     }
@@ -418,7 +424,7 @@ public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
         this.taskVariables = taskVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getProcessVariables() {
         return processVariables;
     }

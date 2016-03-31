@@ -96,7 +96,8 @@ public class AuthenticationHandler implements RequestHandler {
     }
 
     protected Response handleOAuth(Message message) {
-        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS)).get(AUTHORIZATION_HEADER_NAME);
+        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS))
+        .get(AUTHORIZATION_HEADER_NAME);
         if (headers != null) {
             String authHeader = headers.get(0);
             if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
@@ -107,17 +108,20 @@ public class AuthenticationHandler implements RequestHandler {
     }
 
     /**
-     * Checks whether a given userName:password combination authenticates correctly against carbon userStore
+     * Checks whether a given userName:password combination authenticates correctly against carbon
+      * userStore
      * Upon successful authentication returns true, false otherwise
      *
      * @param userName
      * @param password
      * @return
-     * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when trying to authenticate
+     * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when trying to
+      * authenticate
      *                                             the user
      */
 /*
-    private boolean authenticate(String userName, String password) throws RestApiBasicAuthenticationException {
+    private boolean authenticate(String userName, String password) throws
+     RestApiBasicAuthenticationException {
 
         boolean authStatus;
         try {
@@ -145,20 +149,23 @@ public class AuthenticationHandler implements RequestHandler {
             // tenantId == -1, means an invalid tenant.
             if (tenantId == -1) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Basic authentication request with an invalid tenant : " + userNameWithTenantDomain);
+                    log.debug("Basic authentication request with an invalid tenant : " +
+                     userNameWithTenantDomain);
                 }
                 return false;
             }
 
         } catch (UserStoreException e) {
             throw new RestApiBasicAuthenticationException(
-                    "Identity exception thrown while getting tenant ID for user : " + userNameWithTenantDomain, e);
+                    "Identity exception thrown while getting tenant ID for user : " +
+                     userNameWithTenantDomain, e);
         }
 
             /* Upon successful authentication existing thread local carbon context
              * is updated to mimic the authenticated user */
 
-     /*   PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+     /*   PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.
+     getThreadLocalCarbonContext();
         carbonContext.setUsername(tenantAwareUserName);
         carbonContext.setTenantId(tenantId);
         carbonContext.setTenantDomain(tenantDomain);
@@ -171,7 +178,8 @@ public class AuthenticationHandler implements RequestHandler {
     }
 
     private Response authenticationFail(String authType) {
-        //authentication failed, request the authetication, add the realm name if needed to the value of WWW-Authenticate
+        //authentication failed, request the authetication, add the realm name if
+         n eeded to the value of WWW-Authenticate
 
         RestErrorResponse restErrorResponse = new RestErrorResponse();
         restErrorResponse.setErrorMessage("Authentication required");
@@ -184,7 +192,8 @@ public class AuthenticationHandler implements RequestHandler {
         } catch (IOException e) { //log the error and continue. No need to specifically handle it
             log.error("Error Json String conversion failed", e);
         }
-        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
+        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).
+        header(WWW_AUTHENTICATE,
                 authType).entity(jsonString).build();
     }
 

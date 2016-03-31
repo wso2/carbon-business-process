@@ -14,36 +14,40 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.activiti.engine.repository.Deployment;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
+
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
 
+/**
+ *
+ */
 @XmlRootElement(name = "DeploymentResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeploymentResponse {
 
     String id;
     String name;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     Date deploymentTime;
     String category;
     String url;
     String tenantId;
 
-    public DeploymentResponse(){}
+    public DeploymentResponse() {
+    }
 
-    public DeploymentResponse(Deployment deployment, String url){
+    public DeploymentResponse(Deployment deployment, String url) {
         setId(deployment.getId());
         setName(deployment.getName());
         setDeploymentTime(deployment.getDeploymentTime());
-       // setCategory(deployment.getCategory());
+        // setCategory(deployment.getCategory());
         //setTenantId(deployment.getTenantId());
         setUrl(url);
     }

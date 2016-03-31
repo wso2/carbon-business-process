@@ -14,15 +14,17 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
+/**
+ *
+ */
 @XmlRootElement(name = "AttachmentResponseCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AttachmentResponseCollection {
@@ -30,7 +32,8 @@ public class AttachmentResponseCollection {
     @XmlElement(name = "AttachmentResponse", type = AttachmentResponse.class)
     private List<AttachmentResponse> attachmentResponseList;
 
-    public AttachmentResponseCollection(){}
+    public AttachmentResponseCollection() {
+    }
 
     public List<AttachmentResponse> getAttachmentResponseList() {
         return attachmentResponseList;

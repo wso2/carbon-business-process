@@ -16,11 +16,18 @@
 
 package org.wso2.carbon.bpmn.rest.model.form;
 
-import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+//import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "FormPropertyResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FormPropertyResponse {
@@ -37,7 +44,6 @@ public class FormPropertyResponse {
     private Boolean required;
     private Boolean readable;
     private Boolean writable;
-
 
     public String getId() {
         return id;

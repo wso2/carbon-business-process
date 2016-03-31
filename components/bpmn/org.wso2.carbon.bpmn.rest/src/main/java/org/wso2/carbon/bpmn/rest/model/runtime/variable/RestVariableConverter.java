@@ -20,7 +20,9 @@ package org.wso2.carbon.bpmn.rest.model.runtime.variable;
 
 
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-
+/**
+ *
+ */
 public interface RestVariableConverter {
 
     /**

@@ -17,13 +17,15 @@
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
-
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
+/**
+ *
+ */
 @XmlRootElement(name = "RestIdentityLinkCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RestIdentityLinkCollection {

@@ -19,22 +19,27 @@ package org.wso2.carbon.bpmn.rest.model.identity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ *
+ */
 public class UserInfoRequest {
 
     protected String key;
     protected String value;
 
-
     public void setKey(String key) {
         this.key = key;
     }
+
     public String getKey() {
         return key;
     }
-    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public void setValue(String value) {
         this.value = value;
     }
+
     public String getValue() {
         return value;
     }

@@ -14,12 +14,14 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.runtime.variable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
+/**
+ *
+ */
 public class BooleanRestVariableConverter implements RestVariableConverter {
 
     @Override
@@ -28,14 +30,14 @@ public class BooleanRestVariableConverter implements RestVariableConverter {
     }
 
     @Override
-    public Class< ? > getVariableType() {
+    public Class<?> getVariableType() {
         return Boolean.class;
     }
 
     @Override
     public Object getVariableValue(RestVariable result) {
-        if(result.getValue() != null) {
-            if(!(result.getValue() instanceof Boolean)) {
+        if (result.getValue() != null) {
+            if (!(result.getValue() instanceof Boolean)) {
                 throw new ActivitiIllegalArgumentException("Converter can only convert booleans");
             }
             return result.getValue();
@@ -45,8 +47,8 @@ public class BooleanRestVariableConverter implements RestVariableConverter {
 
     @Override
     public void convertVariableValue(Object variableValue, RestVariable result) {
-        if(variableValue != null) {
-            if(!(variableValue instanceof Boolean)) {
+        if (variableValue != null) {
+            if (!(variableValue instanceof Boolean)) {
                 throw new ActivitiIllegalArgumentException("Converter can only convert booleans");
             }
             result.setValue(variableValue);

@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
 
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
+/**
+ *
+ */
 public class HistoricActivityInstancePaginateList extends AbstractPaginateList {
-    public HistoricActivityInstancePaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-        super(restResponseFactory, uriInfo);
+    public HistoricActivityInstancePaginateList(RestResponseFactory restResponseFactory) {
+        super(restResponseFactory);
     }
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createHistoricActivityInstanceResponseList(list, uriInfo.getBaseUri().toString());
+        return restResponseFactory.createHistoricActivityInstanceResponseList(list);
     }
 }

@@ -18,20 +18,20 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
-
+/**
+ *
+ */
 public class ProcessInstancePaginateList extends AbstractPaginateList {
 
 
-  public ProcessInstancePaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo) {
-    super(restResponseFactory, uriInfo);
+  public ProcessInstancePaginateList(RestResponseFactory restResponseFactory) {
+    super(restResponseFactory);
   }
   
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    return restResponseFactory.createProcessInstanceResponseList(list, uriInfo.getBaseUri().toString());
+    return restResponseFactory.createProcessInstanceResponseList(list);
   }
 }

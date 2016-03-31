@@ -14,49 +14,53 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import org.activiti.engine.*;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.apache.commons.io.IOUtils;
+//import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentDataHolder;
+//import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentDataHolder;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 
-import javax.activation.DataHandler;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriInfo;
-import java.io.*;
+//import javax.activation.DataHandler;
+//import javax.servlet.http.HttpServletRequest;
+//import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BaseTaskService {
 
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
-    protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
+    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
+    protected static HashMap<String, QueryProperty> properties =
+            new HashMap<String, QueryProperty>();
     protected static final String DEFAULT_ENCODING = "UTF-8";
 
     private static final Log log = LogFactory.getLog(BaseTaskService.class);
-
 
     static {
         properties.put("id", TaskQueryProperty.TASK_ID);
@@ -72,75 +76,75 @@ public class BaseTaskService {
     }
 
     static {
-        allPropertiesList.add("name");
-        allPropertiesList.add("nameLike");
-        allPropertiesList.add("description");
-        allPropertiesList.add("priority");
-        allPropertiesList.add("minimumPriority");
-        allPropertiesList.add("maximumPriority");
-        allPropertiesList.add("assignee");
-        allPropertiesList.add("assigneeLike");
-        allPropertiesList.add("owner");
-        allPropertiesList.add("ownerLike");
-        allPropertiesList.add("unassigned");
-        allPropertiesList.add("delegationState");
-        allPropertiesList.add("candidateUser");
-        allPropertiesList.add("candidateGroup");
-        allPropertiesList.add("candidateGroups");
-        allPropertiesList.add("involvedUser");
-        allPropertiesList.add("taskDefinitionKey");
-        allPropertiesList.add("taskDefinitionKeyLike");
-        allPropertiesList.add("processInstanceId");
-        allPropertiesList.add("processInstanceBusinessKey");
-        allPropertiesList.add("processInstanceBusinessKeyLike");
-        allPropertiesList.add("processDefinitionKey");
-        allPropertiesList.add("processDefinitionKeyLike");
-        allPropertiesList.add("processDefinitionName");
-        allPropertiesList.add("processDefinitionNameLike");
-        allPropertiesList.add("executionId");
-        allPropertiesList.add("createdOn");
-        allPropertiesList.add("createdBefore");
-        allPropertiesList.add("createdAfter");
-        allPropertiesList.add("dueOn");
-        allPropertiesList.add("dueBefore");
-        allPropertiesList.add("dueAfter");
-        allPropertiesList.add("withoutDueDate");
-        allPropertiesList.add("excludeSubTasks");
-        allPropertiesList.add("active");
-        allPropertiesList.add("includeTaskLocalVariables");
-        allPropertiesList.add("includeProcessVariables");
-        allPropertiesList.add("tenantId");
-        allPropertiesList.add("tenantIdLike");
-        allPropertiesList.add("withoutTenantId");
-        allPropertiesList.add("candidateOrAssigned");
-        allPropertiesList.add("sort");
-        allPropertiesList.add("start");
-        allPropertiesList.add("size");
-        allPropertiesList.add("order");
+        ALL_PROPERTIES_LIST.add("name");
+        ALL_PROPERTIES_LIST.add("nameLike");
+        ALL_PROPERTIES_LIST.add("description");
+        ALL_PROPERTIES_LIST.add("priority");
+        ALL_PROPERTIES_LIST.add("minimumPriority");
+        ALL_PROPERTIES_LIST.add("maximumPriority");
+        ALL_PROPERTIES_LIST.add("assignee");
+        ALL_PROPERTIES_LIST.add("assigneeLike");
+        ALL_PROPERTIES_LIST.add("owner");
+        ALL_PROPERTIES_LIST.add("ownerLike");
+        ALL_PROPERTIES_LIST.add("unassigned");
+        ALL_PROPERTIES_LIST.add("delegationState");
+        ALL_PROPERTIES_LIST.add("candidateUser");
+        ALL_PROPERTIES_LIST.add("candidateGroup");
+        ALL_PROPERTIES_LIST.add("candidateGroups");
+        ALL_PROPERTIES_LIST.add("involvedUser");
+        ALL_PROPERTIES_LIST.add("taskDefinitionKey");
+        ALL_PROPERTIES_LIST.add("taskDefinitionKeyLike");
+        ALL_PROPERTIES_LIST.add("processInstanceId");
+        ALL_PROPERTIES_LIST.add("processInstanceBusinessKey");
+        ALL_PROPERTIES_LIST.add("processInstanceBusinessKeyLike");
+        ALL_PROPERTIES_LIST.add("processDefinitionKey");
+        ALL_PROPERTIES_LIST.add("processDefinitionKeyLike");
+        ALL_PROPERTIES_LIST.add("processDefinitionName");
+        ALL_PROPERTIES_LIST.add("processDefinitionNameLike");
+        ALL_PROPERTIES_LIST.add("executionId");
+        ALL_PROPERTIES_LIST.add("createdOn");
+        ALL_PROPERTIES_LIST.add("createdBefore");
+        ALL_PROPERTIES_LIST.add("createdAfter");
+        ALL_PROPERTIES_LIST.add("dueOn");
+        ALL_PROPERTIES_LIST.add("dueBefore");
+        ALL_PROPERTIES_LIST.add("dueAfter");
+        ALL_PROPERTIES_LIST.add("withoutDueDate");
+        ALL_PROPERTIES_LIST.add("excludeSubTasks");
+        ALL_PROPERTIES_LIST.add("active");
+        ALL_PROPERTIES_LIST.add("includeTaskLocalVariables");
+        ALL_PROPERTIES_LIST.add("includeProcessVariables");
+        ALL_PROPERTIES_LIST.add("tenantId");
+        ALL_PROPERTIES_LIST.add("tenantIdLike");
+        ALL_PROPERTIES_LIST.add("withoutTenantId");
+        ALL_PROPERTIES_LIST.add("candidateOrAssigned");
+        ALL_PROPERTIES_LIST.add("sort");
+        ALL_PROPERTIES_LIST.add("start");
+        ALL_PROPERTIES_LIST.add("size");
+        ALL_PROPERTIES_LIST.add("order");
     }
 
+    protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request,
+                                                    Map<String, List<String>> queryParams,
+                                                    Map<String, String> requestParams) {
 
-    protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request, UriInfo uriInfo,  Map<String, String> requestParams) {
-
-        if(requestParams == null){
+        if (requestParams == null) {
             requestParams = new HashMap<>();
 
-            for (String property:allPropertiesList){
-                String value= uriInfo.getQueryParameters().getFirst(property);
+            for (String property : ALL_PROPERTIES_LIST) {
+                String value = queryParams.get(property).get(0);
 
-                if(value != null){
+                if (value != null) {
                     requestParams.put(property, value);
                 }
             }
         }
-
 
         TaskService taskService = BPMNOSGIService.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // Populate filter-parameters
 
-        if(request.getName() != null){
+        if (request.getName() != null) {
             taskQuery.taskName(request.getName());
         }
         if (request.getNameLike() != null) {
@@ -277,11 +281,11 @@ public class BaseTaskService {
             taskQuery.processDefinitionNameLike(request.getProcessDefinitionNameLike());
         }
 
-        if(request.getTaskVariables() != null) {
+        if (request.getTaskVariables() != null) {
             addTaskvariables(taskQuery, request.getTaskVariables());
         }
 
-        if(request.getProcessInstanceVariables() != null) {
+        if (request.getProcessInstanceVariables() != null) {
             addProcessvariables(taskQuery, request.getProcessInstanceVariables());
         }
 
@@ -301,14 +305,12 @@ public class BaseTaskService {
             taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
         }
 
-        DataResponse dataResponse = new TaskPaginateList(new RestResponseFactory(), uriInfo).paginateList(
-                requestParams, request, taskQuery, "id", properties);
+        DataResponse dataResponse = new TaskPaginateList(new RestResponseFactory())
+                .paginateList(requestParams, request, taskQuery, "id", properties);
 
         return dataResponse;
         //return Response.ok().entity(dataResponse).build();
     }
-
-
 
     protected void addTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
 
@@ -316,10 +318,12 @@ public class BaseTaskService {
 
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -327,11 +331,14 @@ public class BaseTaskService {
             Object actualValue = restResponseFactory.getVariableValue(variable);
 
             // A value-only query is only possible using equals-operator
-            if (nameLess && variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
-                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+            if (nameLess &&
+                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                throw new ActivitiIllegalArgumentException(
+                        "Value-only query (without a variable-name) is only supported when using " +
+                        "'equals' operation.");
             }
 
-            switch(variable.getVariableOperation()) {
+            switch (variable.getVariableOperation()) {
 
                 case EQUALS:
                     if (nameLess) {
@@ -343,9 +350,13 @@ public class BaseTaskService {
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        taskQuery.taskVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+                        taskQuery.taskVariableValueEqualsIgnoreCase(variable.getName(),
+                                                                    (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing, " +
+                                "but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -355,9 +366,13 @@ public class BaseTaskService {
 
                 case NOT_EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+                        taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(),
+                                                                       (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing," +
+                                " but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -381,11 +396,15 @@ public class BaseTaskService {
                     if (actualValue instanceof String) {
                         taskQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported using like, but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
                 default:
-                    throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                    throw new ActivitiIllegalArgumentException(
+                            "Unsupported variable query operation: " +
+                            variable.getVariableOperation());
             }
         }
     }
@@ -395,10 +414,12 @@ public class BaseTaskService {
         RestResponseFactory restResponseFactory = new RestResponseFactory();
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -406,11 +427,14 @@ public class BaseTaskService {
             Object actualValue = restResponseFactory.getVariableValue(variable);
 
             // A value-only query is only possible using equals-operator
-            if (nameLess && variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
-                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+            if (nameLess &&
+                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                throw new ActivitiIllegalArgumentException(
+                        "Value-only query (without a variable-name) is only supported when using" +
+                        " 'equals' operation.");
             }
 
-            switch(variable.getVariableOperation()) {
+            switch (variable.getVariableOperation()) {
 
                 case EQUALS:
                     if (nameLess) {
@@ -422,9 +446,12 @@ public class BaseTaskService {
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+                        taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(),
+                                                                       (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing," +
+                                " but was: " + actualValue.getClass().getName());
                     }
                     break;
 
@@ -434,9 +461,12 @@ public class BaseTaskService {
 
                 case NOT_EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+                        taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(),
+                                                                          (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing," +
+                                " but was: " + actualValue.getClass().getName());
                     }
                     break;
 
@@ -445,7 +475,8 @@ public class BaseTaskService {
                     break;
 
                 case GREATER_THAN_OR_EQUALS:
-                    taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+                    taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(),
+                                                                     actualValue);
                     break;
 
                 case LESS_THAN:
@@ -458,25 +489,29 @@ public class BaseTaskService {
 
                 case LIKE:
                     if (actualValue instanceof String) {
-                        taskQuery.processVariableValueLike(variable.getName(), (String) actualValue);
+                        taskQuery
+                                .processVariableValueLike(variable.getName(), (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported using like, but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
                 default:
-                    throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                    throw new ActivitiIllegalArgumentException(
+                            "Unsupported variable query operation: " +
+                            variable.getVariableOperation());
             }
         }
     }
-
-
 
     protected Task getTaskFromRequest(String taskId) {
         TaskService taskService = BPMNOSGIService.getTaskService();
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a task with id '" + taskId + "'.", Task.class);
         }
         return task;
     }
@@ -488,35 +523,39 @@ public class BaseTaskService {
             } else if (DelegationState.PENDING.name().toLowerCase().equals(delegationState)) {
                 return DelegationState.PENDING;
             } else {
-                throw new ActivitiIllegalArgumentException("Illegal value for delegationState: " + delegationState);
+                throw new ActivitiIllegalArgumentException(
+                        "Illegal value for delegationState: " + delegationState);
             }
         }
         return null;
     }
 
-    protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap, String baseUri) {
+    protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap) {
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Map<String, Object> rawVariables = taskService.getVariablesLocal(task.getId());
-        List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawVariables,
-                task.getId(), RestResponseFactory.VARIABLE_TASK, RestVariable.RestVariableScope.LOCAL, baseUri);
+        List<RestVariable> localVariables = new RestResponseFactory()
+                .createRestVariables(rawVariables, task.getId(), RestResponseFactory.VARIABLE_TASK,
+                                     RestVariable.RestVariableScope.LOCAL);
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
         }
     }
 
-    protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap, String baseUri) {
+    protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap) {
         if (task.getExecutionId() != null) {
             RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
             Map<String, Object> rawVariables = runtimeService.getVariables(task.getExecutionId());
-            List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables, task
-                            .getId(),
-                    RestResponseFactory.VARIABLE_TASK, RestVariable.RestVariableScope.GLOBAL, baseUri);
+            List<RestVariable> globalVariables = new RestResponseFactory()
+                    .createRestVariables(rawVariables, task.getId(),
+                                         RestResponseFactory.VARIABLE_TASK,
+                                         RestVariable.RestVariableScope.GLOBAL);
 
-            // Overlay global variables over local ones. In case they are present the values are not overridden,
-            // since local variables get precedence over global ones at all times.
+            // Overlay global variables over local ones. In case they are present the
+            // values are not overridden, since local variables get precedence over
+            // global ones at all times.
             for (RestVariable var : globalVariables) {
                 if (!variableMap.containsKey(var.getName())) {
                     variableMap.put(var.getName(), var);
@@ -525,8 +564,8 @@ public class BaseTaskService {
         }
     }
 
-    public RestVariable getVariableFromRequest(String taskId, String variableName,
-                                               String scope, boolean includeBinary, String baseUri) {
+    public RestVariable getVariableFromRequest(String taskId, String variableName, String scope,
+                                               boolean includeBinary) {
 
         boolean variableFound = false;
         Object value = null;
@@ -543,16 +582,18 @@ public class BaseTaskService {
             } else {
                 // Revert to execution-variable when not present local on the task
                 Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-                if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+                if (task.getExecutionId() != null &&
+                    runtimeService.hasVariable(task.getExecutionId(), variableName)) {
                     value = runtimeService.getVariable(task.getExecutionId(), variableName);
                     variableScope = RestVariable.RestVariableScope.GLOBAL;
                     variableFound = true;
                 }
             }
 
-        } else if(variableScope == RestVariable.RestVariableScope.GLOBAL) {
+        } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
             Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-            if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+            if (task.getExecutionId() != null &&
+                runtimeService.hasVariable(task.getExecutionId(), variableName)) {
                 value = runtimeService.getVariable(task.getExecutionId(), variableName);
                 variableFound = true;
             }
@@ -565,13 +606,16 @@ public class BaseTaskService {
         }
 
         if (!variableFound) {
-            throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Task '" + taskId + "' doesn't have a variable with name: '" + variableName +
+                    "'.", VariableInstanceEntity.class);
         } else {
-            return new RestResponseFactory().createRestVariable(variableName, value, variableScope,
-                    taskId, RestResponseFactory.VARIABLE_TASK, includeBinary, baseUri);
+            return new RestResponseFactory()
+                    .createRestVariable(variableName, value, variableScope, taskId,
+                                        RestResponseFactory.VARIABLE_TASK, includeBinary);
         }
     }
-	//todo
+    //todo
 /*
     protected RestVariable setBinaryVariable(MultipartBody multipartBody, Task
             task, boolean isNew, UriInfo uriInfo) throws IOException {
@@ -584,7 +628,8 @@ public class BaseTaskService {
 
         Object result = null;
 
-        List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments = multipartBody.getAllAttachments();
+        List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments = multipartBody
+        .getAllAttachments();
 
         int attachmentSize = attachments.size();
 
@@ -607,7 +652,8 @@ public class BaseTaskService {
             if (contentDispositionHeaderValue != null) {
                 contentDispositionHeaderValue = contentDispositionHeaderValue.trim();
 
-                Map<String, String> contentDispositionHeaderValueMap = Utils.processContentDispositionHeader
+                Map<String, String> contentDispositionHeaderValueMap = Utils
+                .processContentDispositionHeader
                         (contentDispositionHeaderValue);
                 String dispositionName = contentDispositionHeaderValueMap.get("name");
                 DataHandler dataHandler = attachment.getDataHandler();
@@ -618,7 +664,8 @@ public class BaseTaskService {
                     try {
                         outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
                     } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("Binary Variable Name Reading error occured", e);
+                        throw new ActivitiIllegalArgumentException("Binary Variable Name
+                         Reading error occured", e);
                     }
 
                     if (outputStream != null) {
@@ -631,7 +678,8 @@ public class BaseTaskService {
                     try {
                         outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
                     } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("\"Binary Variable Type Reading error occured", e);
+                        throw new ActivitiIllegalArgumentException("\"Binary Variable Type
+                         Reading error occured", e);
                     }
 
                     if (outputStream != null) {
@@ -644,7 +692,8 @@ public class BaseTaskService {
                     try {
                         outputStream = Utils.getAttachmentStream(dataHandler.getInputStream());
                     } catch (IOException e) {
-                        throw new ActivitiIllegalArgumentException("Binary Variable scopeDescription Reading error " +
+                        throw new ActivitiIllegalArgumentException("Binary Variable
+                         scopeDescription Reading error " +
                                 "occured", e);
                     }
 
@@ -661,7 +710,8 @@ public class BaseTaskService {
                         try {
                             inputStream = dataHandler.getInputStream();
                         } catch (IOException e) {
-                            throw new ActivitiIllegalArgumentException("Error Occured During processing empty body.",
+                            throw new ActivitiIllegalArgumentException("Error Occured
+                            During processing empty body.",
                                     e);
                         }
 
@@ -671,7 +721,8 @@ public class BaseTaskService {
                             try {
                                 attachmentArray = IOUtils.toByteArray(inputStream);
                             } catch (IOException e) {
-                                throw new ActivitiIllegalArgumentException("Processing BinaryV variable Body Failed.",
+                                throw new ActivitiIllegalArgumentException("Processing
+                                BinaryV variable Body Failed.",
                                         e);
                             }
                             attachmentDataHolder.setAttachmentArray(attachmentArray);
@@ -691,18 +742,22 @@ public class BaseTaskService {
 
         try {
             if (variableName == null) {
-                throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
+                throw new ActivitiIllegalArgumentException("No variable name was found
+                in request body.");
             }
 
             if (attachmentArray == null) {
-                throw new ActivitiIllegalArgumentException("Empty attachment body was found in request body after " +
+                throw new ActivitiIllegalArgumentException("Empty attachment body was found
+                 in request body after " +
                         "decoding the request" +
                         ".");
             }
 
             if (variableType != null) {
-                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
-                    throw new ActivitiIllegalArgumentException("Only 'binary' and 'serializable' are supported as variable type.");
+                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) &&
+                 !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
+                    throw new ActivitiIllegalArgumentException("Only 'binary' and
+                    'serializable' are supported as variable type.");
                 }
             } else {
                 attachmentDataHolder.setType(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE);
@@ -730,19 +785,21 @@ public class BaseTaskService {
                 stream.close();
             }
 
-            return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType, task.getId(),
+            return new RestResponseFactory().createBinaryRestVariable(variableName,
+            scope, variableType, task.getId(),
                     null, null, uriInfo.getBaseUri().toString());
 
         } catch (IOException ioe) {
             throw new ActivitiIllegalArgumentException("Error getting binary variable", ioe);
         } catch (ClassNotFoundException ioe) {
-            throw new BPMNContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe
+            throw new BPMNContentNotSupportedException("The provided body contains a
+            serialized object for which the class is nog found: " + ioe
                     .getMessage());
         }
     }
 
 */
-	/* TODO
+    /* TODO
  protected RestVariable setBinaryVariable(HttpServletRequest httpServletRequest, Task task,
                                              boolean isNew, UriInfo uriInfo) throws IOException {
 
@@ -755,7 +812,8 @@ public class BaseTaskService {
 
         byte[] byteArray = Utils.processMultiPartFile(httpServletRequest, "file content");
         if(byteArray == null){
-            throw new ActivitiIllegalArgumentException("Empty file body was found in request body after " +
+            throw new ActivitiIllegalArgumentException("Empty file body was found in
+            request body after " +
                     "decoding the request" +
                     ".");
         }
@@ -764,19 +822,23 @@ public class BaseTaskService {
         String variableType =  uriInfo.getQueryParameters().getFirst("type");
 
         if(debugEnabled) {
-            log.debug("variableScope:" + variableScope + " variableName:" + variableName + " variableType:" +
+            log.debug("variableScope:" + variableScope + " variableName:" + variableName +
+             " variableType:" +
                     variableType);
         }
 
         try {
 
             if (variableName == null) {
-                throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
+                throw new ActivitiIllegalArgumentException("No variable name was found
+                in request body.");
             }
 
             if (variableType != null) {
-                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
-                    throw new ActivitiIllegalArgumentException("Only 'binary' and 'serializable' are supported as variable type.");
+                if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) &&
+                 !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
+                    throw new ActivitiIllegalArgumentException("Only 'binary' and
+                    'serializable' are supported as variable type.");
                 }
             } else {
                 variableType = RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE;
@@ -800,13 +862,15 @@ public class BaseTaskService {
                 stream.close();
             }
 
-            return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType, task.getId(),
+            return new RestResponseFactory().createBinaryRestVariable(variableName,
+             scope, variableType, task.getId(),
                     null, null, uriInfo.getBaseUri().toString());
 
         } catch (IOException ioe) {
             throw new ActivitiIllegalArgumentException("Error getting binary variable", ioe);
         } catch (ClassNotFoundException ioe) {
-            throw new BPMNContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe
+            throw new BPMNContentNotSupportedException("The provided body contains
+             a serialized object for which the class is nog found: " + ioe
                     .getMessage());
         }
 
@@ -814,15 +878,19 @@ public class BaseTaskService {
 
 */
 
-    protected void setVariable(Task task, String name, Object value, RestVariable.RestVariableScope scope, boolean isNew) {
+    protected void setVariable(Task task, String name, Object value,
+                               RestVariable.RestVariableScope scope, boolean isNew) {
         // Create can only be done on new variables. Existing variables should be updated using PUT
         boolean hasVariable = hasVariableOnScope(task, name, scope);
         if (isNew && hasVariable) {
-            throw new ActivitiException("Variable '" + name + "' is already present on task '" + task.getId() + "'.");
+            throw new ActivitiException(
+                    "Variable '" + name + "' is already present on task '" + task.getId() + "'.");
         }
 
         if (!isNew && !hasVariable) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable with name: '"+ name + "'.", null);
+            throw new ActivitiObjectNotFoundException(
+                    "Task '" + task.getId() + "' doesn't have a variable with name: '" + name +
+                    "'.", null);
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -832,23 +900,27 @@ public class BaseTaskService {
             taskService.setVariableLocal(task.getId(), name, value);
         } else {
             if (task.getExecutionId() != null) {
-                // Explicitly set on execution, setting non-local variable on task will override local-variable if exists
+                // Explicitly set on execution, setting non-local variable on task
+                // will override local-variable if exists
                 runtimeService.setVariable(task.getExecutionId(), name, value);
             } else {
                 // Standalone task, no global variables possible
-                throw new ActivitiIllegalArgumentException("Cannot set global variable '" + name + "' on task '" +
-                        task.getId() +"', task is not part of process.");
+                throw new ActivitiIllegalArgumentException(
+                        "Cannot set global variable '" + name + "' on task '" +
+                        task.getId() + "', task is not part of process.");
             }
         }
     }
 
-    protected boolean hasVariableOnScope(Task task, String variableName, RestVariable.RestVariableScope scope) {
+    protected boolean hasVariableOnScope(Task task, String variableName,
+                                         RestVariable.RestVariableScope scope) {
         boolean variableFound = false;
 
         TaskService taskService = BPMNOSGIService.getTaskService();
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
-            if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+            if (task.getExecutionId() != null &&
+                runtimeService.hasVariable(task.getExecutionId(), variableName)) {
                 variableFound = true;
             }
 

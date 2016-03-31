@@ -14,16 +14,21 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 
-import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "EventResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EventResponse {
@@ -32,7 +37,7 @@ public class EventResponse {
     protected String id;
     protected String action;
     protected String userId;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date time;
     protected String taskUrl;
     protected String processInstanceUrl;
@@ -79,7 +84,7 @@ public class EventResponse {
         this.taskUrl = taskUrl;
     }
 
-    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public String getProcessInstanceUrl() {
         return processInstanceUrl;
     }

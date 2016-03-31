@@ -14,9 +14,11 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.common.exception;
 
+/**
+ *
+ */
 public class BPMNContentNotSupportedException extends BPMNRestException {
 
     private static final long serialVersionUID = 1L;

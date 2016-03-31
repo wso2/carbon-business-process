@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
@@ -24,20 +26,22 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
+import org.wso2.carbon.bpmn.rest.common.RestUrlBuilder;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponseCollection;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.HistoricTaskInstanceResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.wso2.msf4j.Microservice;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -45,21 +49,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+
+/**
+ *
+ */
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricTaskInstanceService",
+        service = Microservice.class,
+        immediate = true)
 @Path("/historic-task-instances")
-public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService {
+public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
+        implements Microservice {
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getHistoricProcessInstances() {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getHistoricProcessInstances(@Context HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+        for (String property : ALL_PROPERTIES_LIST) {
+            String value = decoder.parameters().get(property).get(0);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
@@ -152,7 +184,8 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
         }
 
         if (allRequestParams.get("processFinished") != null) {
-            queryRequest.setProcessFinished(Boolean.valueOf(allRequestParams.get("processFinished")));
+            queryRequest
+                    .setProcessFinished(Boolean.valueOf(allRequestParams.get("processFinished")));
         }
 
         if (allRequestParams.get("parentTaskId") != null) {
@@ -176,31 +209,38 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
         }
 
         if (allRequestParams.get("taskCreatedBefore") != null) {
-            queryRequest.setTaskCreatedBefore(RequestUtil.getDate(allRequestParams, "taskCreatedBefore"));
+            queryRequest.setTaskCreatedBefore(
+                    RequestUtil.getDate(allRequestParams, "taskCreatedBefore"));
         }
 
         if (allRequestParams.get("taskCreatedAfter") != null) {
-            queryRequest.setTaskCreatedAfter(RequestUtil.getDate(allRequestParams, "taskCreatedAfter"));
+            queryRequest
+                    .setTaskCreatedAfter(RequestUtil.getDate(allRequestParams, "taskCreatedAfter"));
         }
 
         if (allRequestParams.get("taskCompletedOn") != null) {
-            queryRequest.setTaskCompletedOn(RequestUtil.getDate(allRequestParams, "taskCompletedOn"));
+            queryRequest
+                    .setTaskCompletedOn(RequestUtil.getDate(allRequestParams, "taskCompletedOn"));
         }
 
         if (allRequestParams.get("taskCompletedBefore") != null) {
-            queryRequest.setTaskCompletedBefore(RequestUtil.getDate(allRequestParams, "taskCompletedBefore"));
+            queryRequest.setTaskCompletedBefore(
+                    RequestUtil.getDate(allRequestParams, "taskCompletedBefore"));
         }
 
         if (allRequestParams.get("taskCompletedAfter") != null) {
-            queryRequest.setTaskCompletedAfter(RequestUtil.getDate(allRequestParams, "taskCompletedAfter"));
+            queryRequest.setTaskCompletedAfter(
+                    RequestUtil.getDate(allRequestParams, "taskCompletedAfter"));
         }
 
         if (allRequestParams.get("includeTaskLocalVariables") != null) {
-            queryRequest.setIncludeTaskLocalVariables(Boolean.valueOf(allRequestParams.get("includeTaskLocalVariables")));
+            queryRequest.setIncludeTaskLocalVariables(
+                    Boolean.valueOf(allRequestParams.get("includeTaskLocalVariables")));
         }
 
         if (allRequestParams.get("includeProcessVariables") != null) {
-            queryRequest.setIncludeProcessVariables(Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
+            queryRequest.setIncludeProcessVariables(
+                    Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
         }
 
         if (allRequestParams.get("tenantId") != null) {
@@ -212,27 +252,26 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
         }
 
         if (allRequestParams.get("withoutTenantId") != null) {
-            queryRequest.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
+            queryRequest
+                    .setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
         }
 
         if (allRequestParams.get("taskCandidateGroup") != null) {
             queryRequest.setTaskCandidateGroup(allRequestParams.get("taskCandidateGroup"));
         }
 
-        String serverRootUrl = uriInfo.getBaseUri().toString().replace("/history/historic-task-instances", "");
+        String serverRootUrl = new RestUrlBuilder().getBaseUrl();
 
         DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams, serverRootUrl);
         return Response.ok().entity(dataResponse).build();
     }
 
-
     @GET
     @Path("/{task-id}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getTaskInstance(@PathParam("task-id") String taskId) {
         HistoricTaskInstanceResponse historicTaskInstanceResponse = new RestResponseFactory()
-                .createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId), uriInfo.getBaseUri()
-                        .toString());
+                .createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId));
         return Response.ok().entity(historicTaskInstanceResponse).build();
     }
 
@@ -246,32 +285,33 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
 
     @GET
     @Path("/{task-id}/identitylinks")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getTaskIdentityLinks(@PathParam("task-id") String taskId) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
-        List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForTask(taskId);
+        List<HistoricIdentityLink> identityLinks =
+                historyService.getHistoricIdentityLinksForTask(taskId);
 
         List<HistoricIdentityLinkResponse> historicIdentityLinkResponseList = new ArrayList<>();
         if (identityLinks != null) {
 
-            historicIdentityLinkResponseList =  new RestResponseFactory().createHistoricIdentityLinkResponseList
-                    (identityLinks, uriInfo.getBaseUri
-                    ().toString());
+            historicIdentityLinkResponseList =
+                    new RestResponseFactory().createHistoricIdentityLinkResponseList(identityLinks);
         }
 
-        HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection = new
-                HistoricIdentityLinkResponseCollection();
-        historicIdentityLinkResponseCollection.setHistoricIdentityLinkResponses(historicIdentityLinkResponseList);
+        HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection =
+                new HistoricIdentityLinkResponseCollection();
+        historicIdentityLinkResponseCollection
+                .setHistoricIdentityLinkResponses(historicIdentityLinkResponseList);
 
         return Response.ok().entity(historicIdentityLinkResponseCollection).build();
     }
 
     @GET
     @Path("/{task-id}/variables/{variable-name}/data")
-    public  byte[] getVariableData(@PathParam("task-id") String taskId,
-                                                @PathParam("variable-name") String variableName) {
+    public byte[] getVariableData(@PathParam("task-id") String taskId,
+                                  @PathParam("variable-name") String variableName,
+                                  @QueryParam("scope") String scope) {
 
-        String scope = uriInfo.getQueryParameters().getFirst("scope");
         Response.ResponseBuilder response = Response.ok();
         try {
             byte[] result = null;
@@ -280,7 +320,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
                 result = (byte[]) variable.getValue();
                 response.type("application/octet-stream");
 
-            } else if(RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
                 outputStream.writeObject(variable.getValue());
@@ -289,20 +329,23 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
                 response.type("application/x-java-serialized-object");
 
             } else {
-                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+                throw new ActivitiObjectNotFoundException(
+                        "The variable does not have a binary data stream.", null);
             }
             return result;
 
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             // Re-throw IOException
             throw new ActivitiException("Unexpected exception getting variable data", ioe);
         }
     }
 
-    protected RestVariable getVariableFromRequest(boolean includeBinary, String taskId, String variableName, String scope) {
+    protected RestVariable getVariableFromRequest(boolean includeBinary, String taskId,
+                                                  String variableName, String scope) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
-        HistoricTaskInstanceQuery taskQuery = historyService.createHistoricTaskInstanceQuery().taskId(taskId);
+        HistoricTaskInstanceQuery taskQuery =
+                historyService.createHistoricTaskInstanceQuery().taskId(taskId);
 
         if (variableScope != null) {
             if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
@@ -317,7 +360,9 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
         HistoricTaskInstance taskObject = taskQuery.singleResult();
 
         if (taskObject == null) {
-            throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' couldn't be found.", HistoricTaskInstanceEntity.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Historic task instance '" + taskId + "' couldn't be found.",
+                    HistoricTaskInstanceEntity.class);
         }
 
         Object value = null;
@@ -337,10 +382,13 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
         }
 
         if (value == null) {
-            throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Historic task instance '" + taskId + "' variable value for " + variableName +
+                    " couldn't be found.", VariableInstanceEntity.class);
         } else {
             return new RestResponseFactory().createRestVariable(variableName, value, null, taskId,
-                    RestResponseFactory.VARIABLE_HISTORY_TASK, includeBinary, uriInfo.getBaseUri().toString());
+                                                                RestResponseFactory.VARIABLE_HISTORY_TASK,
+                                                                includeBinary);
         }
     }
 

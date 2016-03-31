@@ -28,13 +28,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
+/**
+ *
+ */
 public class DateToStringSerializer extends JsonSerializer<Date> {
 
     protected DateTimeFormatter isoFormatter = ISODateTimeFormat.dateTime();
 
 
     @Override
-    public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+    public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+            throws IOException, JsonProcessingException {
         if (date != null) {
             jsonGenerator.writeString(new DateTime(date).toString(isoFormatter));
         } else {

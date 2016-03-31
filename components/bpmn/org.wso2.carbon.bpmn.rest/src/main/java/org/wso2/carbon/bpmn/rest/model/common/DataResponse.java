@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.common;
 
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceResponse;
@@ -29,39 +28,41 @@ import org.wso2.carbon.bpmn.rest.model.runtime.HistoricTaskInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
 
-import javax.xml.bind.annotation.*;
-import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "DataResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DataResponse {
 
     //
     @XmlElementWrapper(name = "Responses")
-    @XmlElements(value = {
-            @XmlElement(name = "ProcessInstanceResponse",
-                    type = ProcessInstanceResponse.class),
-            @XmlElement(name = "DeploymentResponse",
-                    type = DeploymentResponse.class),
-            @XmlElement(name = "HistoricActivityInstanceResponse",
-                    type = HistoricActivityInstanceResponse.class),
-            @XmlElement(name = "HistoricDetailResponse",
-                    type = HistoricDetailResponse.class),
-            @XmlElement(name = "HistoricTaskInstanceResponse",
-                    type = HistoricTaskInstanceResponse.class),
-            @XmlElement(name = "TaskResponse",
-                    type = TaskResponse.class),
-            @XmlElement(name = "ProcessDefinitionResponse",
-                    type = ProcessDefinitionResponse.class),
-            @XmlElement(name = "ModelResponse",
-                    type = ModelResponse.class),
-            @XmlElement(name = "HistoricVariableInstanceResponse",
-                    type = HistoricVariableInstanceResponse.class),
-            @XmlElement(name = "HistoricProcessInstanceResponse",
-                    type = HistoricProcessInstanceResponse.class),
-            @XmlElement(name = "ExecutionResponse",
-                    type = ExecutionResponse.class)
-    })
+    @XmlElements(value = { @XmlElement(name = "ProcessInstanceResponse",
+            type = ProcessInstanceResponse.class), @XmlElement(name = "DeploymentResponse",
+            type = DeploymentResponse.class), @XmlElement(name = "HistoricActivityInstanceResponse",
+            type = HistoricActivityInstanceResponse.class), @XmlElement(name = "HistoricDetailResponse",
+                                   type = HistoricDetailResponse.class),
+                           @XmlElement(name = "HistoricTaskInstanceResponse",
+                                   type = HistoricTaskInstanceResponse.class),
+                           @XmlElement(name = "TaskResponse",
+                                   type = TaskResponse.class),
+                           @XmlElement(name = "ProcessDefinitionResponse",
+                                   type = ProcessDefinitionResponse.class),
+                           @XmlElement(name = "ModelResponse",
+                                   type = ModelResponse.class),
+                           @XmlElement(name = "HistoricVariableInstanceResponse",
+                                   type = HistoricVariableInstanceResponse.class),
+                           @XmlElement(name = "HistoricProcessInstanceResponse",
+                                   type = HistoricProcessInstanceResponse.class),
+                           @XmlElement(name = "ExecutionResponse",
+                                   type = ExecutionResponse.class) })
     Object data;
     long total;
     int start;

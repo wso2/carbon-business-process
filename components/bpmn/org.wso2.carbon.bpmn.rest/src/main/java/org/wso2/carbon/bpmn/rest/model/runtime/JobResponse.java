@@ -22,6 +22,9 @@ import org.wso2.carbon.bpmn.rest.common.utils.DateToStringSerializer;
 
 import java.util.Date;
 
+/**
+ *
+ */
 public class JobResponse {
 
     protected String id;
@@ -34,7 +37,7 @@ public class JobResponse {
     protected String executionUrl;
     protected Integer retries;
     protected String exceptionMessage;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date dueDate;
     protected String tenantId;
 

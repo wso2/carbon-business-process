@@ -17,6 +17,9 @@
 
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
+/**
+ *
+ */
 public class TableResponse {
     protected String name;
     protected String url;

@@ -16,15 +16,21 @@
 
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-
-import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+
+/**
+ *
+ */
 
 @XmlRootElement(name = "TaskQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -166,6 +172,7 @@ public class TaskQueryRequest extends PaginateRequest {
     public String getOwnerLike() {
         return ownerLike;
     }
+
     public void setOwnerLike(String ownerLike) {
         this.ownerLike = ownerLike;
     }
@@ -346,7 +353,7 @@ public class TaskQueryRequest extends PaginateRequest {
         this.includeProcessVariables = includeProcessVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getTaskVariables() {
         return taskVariables;
     }
@@ -355,7 +362,7 @@ public class TaskQueryRequest extends PaginateRequest {
         this.taskVariables = taskVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getProcessInstanceVariables() {
         return processInstanceVariables;
     }
@@ -375,6 +382,7 @@ public class TaskQueryRequest extends PaginateRequest {
     public String getProcessDefinitionKeyLike() {
         return processDefinitionKeyLike;
     }
+
     public void setProcessDefinitionKeyLike(String processDefinitionKeyLike) {
         this.processDefinitionKeyLike = processDefinitionKeyLike;
     }

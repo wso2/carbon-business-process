@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.common;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "RestIdentityLink")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RestIdentityLink {
@@ -33,24 +35,31 @@ public class RestIdentityLink {
     public String getUrl() {
         return url;
     }
+
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getUser() {
         return user;
     }
+
     public void setUser(String user) {
         this.user = user;
     }
+
     public String getGroup() {
         return group;
     }
+
     public void setGroup(String group) {
         this.group = group;
     }
+
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
