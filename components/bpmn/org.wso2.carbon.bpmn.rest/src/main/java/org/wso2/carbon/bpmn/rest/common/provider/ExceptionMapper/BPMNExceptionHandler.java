@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-import org.wso2.carbon.user.api.UserStoreException;
+//import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
@@ -76,11 +76,11 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             log.error("Web application exception thrown ", e);
             return createRestErrorResponse(Response.Status.SERVICE_UNAVAILABLE,
                                            "Web application exception thrown");
-        } else if (e instanceof UserStoreException) {
+        }/* else if (e instanceof UserStoreException) {
             log.error("User store exception thrown ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
                                            "User store exception thrown");
-        } else {
+        }*/ else {
             log.error("Unknown Exception occurred ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }

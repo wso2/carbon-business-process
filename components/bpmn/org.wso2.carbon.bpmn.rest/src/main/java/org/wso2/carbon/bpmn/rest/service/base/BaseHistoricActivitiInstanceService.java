@@ -25,8 +25,6 @@ import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
-
-//import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,7 +137,7 @@ public class BaseHistoricActivitiInstanceService {
     }
 
     protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
@@ -197,7 +195,7 @@ public class BaseHistoricActivitiInstanceService {
             query.activityWithoutTenantId();
         }
 
-        return new HistoricActivityInstancePaginateList(new RestResponseFactory())
+        return new HistoricActivityInstancePaginateList(new RestResponseFactory(), baseName)
                 .paginateList(allRequestParams, queryRequest, query, "startTime",
                               allowedSortProperties);
     }

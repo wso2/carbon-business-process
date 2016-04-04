@@ -67,8 +67,6 @@ public class BaseExecutionService {
 
     @Context //TODO:
             HttpStreamHandler multiPartBody;
-    //@Context
-    //protected UriInfo uriInfo;
 
     protected static Map<String, QueryProperty> allowedSortProperties =
             new HashMap<String, QueryProperty>();
@@ -102,7 +100,7 @@ public class BaseExecutionService {
     }
 
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
-                                            Map<String, String> requestParams) {
+                                            Map<String, String> requestParams, String baseName) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
@@ -170,7 +168,7 @@ public class BaseExecutionService {
             requestParams.put("withoutTenantId", queryRequest.getWithoutTenantId().toString());
         }
 
-        DataResponse dataResponse = new ExecutionPaginateList(new RestResponseFactory())
+        DataResponse dataResponse = new ExecutionPaginateList(new RestResponseFactory(), baseName)
                 .paginateList(requestParams, queryRequest, query, "processInstanceId",
                               allowedSortProperties);
         return dataResponse;
@@ -243,7 +241,8 @@ public class BaseExecutionService {
                         processInstanceQuery
                                 .processVariableValueNotEquals(variable.getName(), actualValue);
                     } else {
-                        processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
+                        processInstanceQuery
+                                .variableValueNotEquals(variable.getName(), actualValue);
                     }
                     break;
 
@@ -314,7 +313,7 @@ public class BaseExecutionService {
     }
 
     protected List<RestVariable> processVariables(Execution execution, String scope,
-                                                  int variableType) {
+                                                  int variableType, String baseName) {
         List<RestVariable> result = new ArrayList<RestVariable>();
         Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
 
@@ -323,14 +322,14 @@ public class BaseExecutionService {
 
         if (variableScope == null) {
             // Use both local and global variables
-            addLocalVariables(execution, variableType, variableMap);
-            addGlobalVariables(execution, variableType, variableMap);
+            addLocalVariables(execution, variableType, variableMap, baseName);
+            addGlobalVariables(execution, variableType, variableMap, baseName);
 
         } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
-            addGlobalVariables(execution, variableType, variableMap);
+            addGlobalVariables(execution, variableType, variableMap, baseName);
 
         } else if (variableScope == RestVariable.RestVariableScope.LOCAL) {
-            addLocalVariables(execution, variableType, variableMap);
+            addLocalVariables(execution, variableType, variableMap, baseName);
         }
 
         // Get unique variables from map
@@ -339,12 +338,12 @@ public class BaseExecutionService {
     }
 
     protected void addLocalVariables(Execution execution, int variableType,
-                                     Map<String, RestVariable> variableMap) {
+                                     Map<String, RestVariable> variableMap, String baseName) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
                 .createRestVariables(rawLocalvariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.LOCAL);
+                                     RestVariable.RestVariableScope.LOCAL, baseName);
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
@@ -352,12 +351,12 @@ public class BaseExecutionService {
     }
 
     protected void addGlobalVariables(Execution execution, int variableType,
-                                      Map<String, RestVariable> variableMap) {
+                                      Map<String, RestVariable> variableMap, String baseName) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory()
                 .createRestVariables(rawVariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.GLOBAL);
+                                     RestVariable.RestVariableScope.GLOBAL, baseName);
 
         // Overlay global variables over local ones. In case they are present the values are not
         // overridden,
@@ -569,7 +568,8 @@ public class BaseExecutionService {
 
     protected Response createExecutionVariable(Execution execution, boolean override,
                                                int variableType,
-                                               HttpServletRequest httpServletRequest) {
+                                               HttpServletRequest httpServletRequest,
+                                               String baseName) {
 
         Object result = null;
         Response.ResponseBuilder responseBuilder = Response.ok();
@@ -662,7 +662,7 @@ public class BaseExecutionService {
             resultVariables.add(new RestResponseFactory()
                                         .createRestVariable(var.getName(), actualVariableValue,
                                                             varScope, execution.getId(),
-                                                            variableType, false));
+                                                            variableType, false, baseName));
         }
 
         if (!variablesToSet.isEmpty()) {
@@ -819,7 +819,8 @@ public class BaseExecutionService {
     }
 
     public RestVariable getVariableFromRequest(Execution execution, String variableName,
-                                               String scope, boolean includeBinary) {
+                                               String scope, boolean includeBinary,
+                                               String baseName) {
 
         boolean variableFound = false;
         Object value = null;
@@ -864,21 +865,23 @@ public class BaseExecutionService {
                                                       VariableInstanceEntity.class);
         } else {
             return constructRestVariable(variableName, value, variableScope, execution.getId(),
-                                         includeBinary);
+                                         includeBinary, baseName);
         }
     }
 
     protected RestVariable constructRestVariable(String variableName, Object value,
                                                  RestVariable.RestVariableScope variableScope,
-                                                 String executionId, boolean includeBinary) {
+                                                 String executionId, boolean includeBinary,
+                                                 String baseName) {
 
         return new RestResponseFactory()
                 .createRestVariable(variableName, value, variableScope, executionId,
-                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
+                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary,
+                                    baseName);
     }
 
     protected RestVariable setSimpleVariable(RestVariable restVariable, Execution execution,
-                                             boolean isNew) {
+                                             boolean isNew, String baseName) {
         if (restVariable.getName() == null) {
             throw new ActivitiIllegalArgumentException("Variable name is required");
         }
@@ -893,6 +896,6 @@ public class BaseExecutionService {
         setVariable(execution, restVariable.getName(), actualVariableValue, scope, isNew);
 
         return constructRestVariable(restVariable.getName(), restVariable.getValue(), scope,
-                                     execution.getId(), false);
+                                     execution.getId(), false, baseName);
     }
 }

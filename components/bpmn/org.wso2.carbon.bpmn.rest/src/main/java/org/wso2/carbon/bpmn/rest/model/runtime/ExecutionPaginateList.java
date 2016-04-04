@@ -25,12 +25,12 @@ import java.util.List;
  *
  */
 public class ExecutionPaginateList extends AbstractPaginateList {
-    public ExecutionPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public ExecutionPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createExecutionResponseList(list);
+        return restResponseFactory.createExecutionResponseList(list, baseContext);
     }
 }

@@ -146,7 +146,8 @@ public class IdentityService extends BaseIdentityService implements Microservice
 
         allRequestParams = Utils.prepareCommonParameters(allRequestParams, decoder.parameters());
 
-        GroupPaginateList groupPaginateList = new GroupPaginateList(new RestResponseFactory());
+        GroupPaginateList groupPaginateList =
+                new GroupPaginateList(new RestResponseFactory(), request.getUri());
         return groupPaginateList.paginateList(allRequestParams, query, "id", groupProperties);
     }
 
@@ -159,8 +160,10 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/groups/{group-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public GroupResponse getGroup(@PathParam("group-id") String groupId) {
-        return new RestResponseFactory().createGroupResponse(getGroupFromRequest(groupId));
+    public GroupResponse getGroup(@PathParam("group-id") String groupId,
+                                  @Context HttpRequest request) {
+        return new RestResponseFactory()
+                .createGroupResponse(getGroupFromRequest(groupId), request.getUri());
     }
 
     /**
@@ -243,7 +246,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
 
         allRequestParams = Utils.prepareCommonParameters(allRequestParams, decoder.parameters());
 
-        return new UserPaginateList(new RestResponseFactory())
+        return new UserPaginateList(new RestResponseFactory(), request.getUri())
                 .paginateList(allRequestParams, query, "id", userProperties);
     }
 
@@ -256,12 +259,13 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/users/{user-id}/info")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId) {
+    public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId,
+                                              @Context HttpRequest request) {
         User user = getUserFromRequest(userId);
 
         return new RestResponseFactory()
                 .createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()),
-                                            user.getId());
+                                            user.getId(), request.getUri());
     }
 
     /**
@@ -273,7 +277,8 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/users/{user-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public UserResponse getUser(@PathParam("user-id") String userId) {
-        return new RestResponseFactory().createUserResponse(getUserFromRequest(userId), false);
+    public UserResponse getUser(@PathParam("user-id") String userId, @Context HttpRequest request) {
+        return new RestResponseFactory()
+                .createUserResponse(getUserFromRequest(userId), false, request.getUri());
     }
 }

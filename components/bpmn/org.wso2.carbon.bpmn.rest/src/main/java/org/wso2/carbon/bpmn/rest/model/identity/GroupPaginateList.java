@@ -29,12 +29,12 @@ public class GroupPaginateList extends AbstractPaginateList {
 
     protected RestResponseFactory restResponseFactory;
 
-    public GroupPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public GroupPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected List processList(List list) {
-        return restResponseFactory.createGroupResponseList(list);
+        return restResponseFactory.createGroupResponseList(list, baseContext);
     }
 }

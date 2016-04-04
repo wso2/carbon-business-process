@@ -125,7 +125,7 @@ public class BaseHistoricTaskInstanceService {
 
     protected DataResponse getQueryResponse(HistoricTaskInstanceQueryRequest queryRequest,
                                             Map<String, String> allRequestParams,
-                                            String serverRootUrl) {
+                                            String serverRootUrl, String baseName) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
@@ -303,13 +303,13 @@ public class BaseHistoricTaskInstanceService {
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
 
-             return new HistoricTaskInstancePaginateList(restResponseFactory, serverRootUrl).
-        paginateList(allRequestParams, queryRequest, query, "taskInstanceId",
-        allowedSortProperties);
-            }
+        return new HistoricTaskInstancePaginateList(restResponseFactory, serverRootUrl, baseName)
+                .paginateList(allRequestParams, queryRequest, query, "taskInstanceId",
+                              allowedSortProperties);
+    }
 
     protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
@@ -369,7 +369,7 @@ public class BaseHistoricTaskInstanceService {
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
 
-        return new HistoricActivityInstancePaginateList(restResponseFactory)
+        return new HistoricActivityInstancePaginateList(restResponseFactory, baseName)
                 .paginateList(allRequestParams, queryRequest, query, "startTime",
                               allowedSortProperties);
     }

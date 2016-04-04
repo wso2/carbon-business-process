@@ -125,7 +125,8 @@ public class BaseTaskService {
 
     protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request,
                                                     Map<String, List<String>> queryParams,
-                                                    Map<String, String> requestParams) {
+                                                    Map<String, String> requestParams,
+                                                    String baseName) {
 
         if (requestParams == null) {
             requestParams = new HashMap<>();
@@ -305,7 +306,7 @@ public class BaseTaskService {
             taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
         }
 
-        DataResponse dataResponse = new TaskPaginateList(new RestResponseFactory())
+        DataResponse dataResponse = new TaskPaginateList(new RestResponseFactory(), baseName)
                 .paginateList(requestParams, request, taskQuery, "id", properties);
 
         return dataResponse;
@@ -530,20 +531,22 @@ public class BaseTaskService {
         return null;
     }
 
-    protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap) {
+    protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap,
+                                     String baseName) {
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Map<String, Object> rawVariables = taskService.getVariablesLocal(task.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
                 .createRestVariables(rawVariables, task.getId(), RestResponseFactory.VARIABLE_TASK,
-                                     RestVariable.RestVariableScope.LOCAL);
+                                     RestVariable.RestVariableScope.LOCAL, baseName);
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
         }
     }
 
-    protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap) {
+    protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap,
+                                      String baseName) {
         if (task.getExecutionId() != null) {
             RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
@@ -551,7 +554,7 @@ public class BaseTaskService {
             List<RestVariable> globalVariables = new RestResponseFactory()
                     .createRestVariables(rawVariables, task.getId(),
                                          RestResponseFactory.VARIABLE_TASK,
-                                         RestVariable.RestVariableScope.GLOBAL);
+                                         RestVariable.RestVariableScope.GLOBAL, baseName);
 
             // Overlay global variables over local ones. In case they are present the
             // values are not overridden, since local variables get precedence over
@@ -565,7 +568,7 @@ public class BaseTaskService {
     }
 
     public RestVariable getVariableFromRequest(String taskId, String variableName, String scope,
-                                               boolean includeBinary) {
+                                               boolean includeBinary, String baseName) {
 
         boolean variableFound = false;
         Object value = null;
@@ -612,7 +615,7 @@ public class BaseTaskService {
         } else {
             return new RestResponseFactory()
                     .createRestVariable(variableName, value, variableScope, taskId,
-                                        RestResponseFactory.VARIABLE_TASK, includeBinary);
+                                        RestResponseFactory.VARIABLE_TASK, includeBinary, baseName);
         }
     }
     //todo

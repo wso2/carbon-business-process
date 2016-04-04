@@ -221,17 +221,20 @@ public class HistoricProcessInstanceService implements Microservice {
                     .setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
         }
 
-        return Response.ok().entity(getQueryResponse(queryRequest, allRequestParams)).build();
+        return Response.ok()
+                       .entity(getQueryResponse(queryRequest, allRequestParams, request.getUri()))
+                       .build();
     }
 
     @GET
     @Path("/{process-instance-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
+    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId,
+                                       @Context HttpRequest request) {
         HistoricProcessInstanceResponse historicProcessInstanceResponse = new RestResponseFactory()
                 .createHistoricProcessInstanceResponse(
-                        getHistoricProcessInstanceFromRequest(processInstanceId));
+                        getHistoricProcessInstanceFromRequest(processInstanceId), request.getUri());
         return Response.ok().entity(historicProcessInstanceResponse).build();
     }
 
@@ -249,14 +252,16 @@ public class HistoricProcessInstanceService implements Microservice {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getProcessIdentityLinks(
-            @PathParam("process-instance-id") String processInstanceId) {
+            @PathParam("process-instance-id") String processInstanceId,
+            @Context HttpRequest request) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         List<HistoricIdentityLink> identityLinks =
                 historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
         if (identityLinks != null) {
             List<HistoricIdentityLinkResponse> historicIdentityLinkResponses =
-                    new RestResponseFactory().createHistoricIdentityLinkResponseList(identityLinks);
+                    new RestResponseFactory().createHistoricIdentityLinkResponseList(identityLinks,
+                                                                                     request.getUri());
             HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection =
                     new HistoricIdentityLinkResponseCollection();
             historicIdentityLinkResponseCollection
@@ -270,13 +275,15 @@ public class HistoricProcessInstanceService implements Microservice {
     @GET
     @Path("/{process-instance-id}/variables/{variable-name}/data")
     public Response getVariableData(@PathParam("process-instance-id") String processInstanceId,
-                                    @PathParam("variable-name") String variableName) {
+                                    @PathParam("variable-name") String variableName,
+                                    @Context HttpRequest request) {
 
         try {
 
             Response.ResponseBuilder responseBuilder = Response.ok();
             byte[] result = null;
-            RestVariable variable = getVariableFromRequest(true, processInstanceId, variableName);
+            RestVariable variable =
+                    getVariableFromRequest(true, processInstanceId, variableName, request.getUri());
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
                 responseBuilder.type("application/octet-stream");
@@ -304,11 +311,13 @@ public class HistoricProcessInstanceService implements Microservice {
     @GET
     @Path("/{process-instance-id}/comments")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getComments(@PathParam("process-instance-id") String processInstanceId) {
+    public Response getComments(@PathParam("process-instance-id") String processInstanceId,
+                                @Context HttpRequest request) {
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         List<CommentResponse> commentResponseList = new RestResponseFactory()
-                .createRestCommentList(taskService.getProcessInstanceComments(instance.getId()));
+                .createRestCommentList(taskService.getProcessInstanceComments(instance.getId()),
+                                       request.getUri());
         CommentResponseCollection commentResponseCollection = new CommentResponseCollection();
         commentResponseCollection.setCommentResponseList(commentResponseList);
         return Response.ok().entity(commentResponseCollection).build();
@@ -319,7 +328,7 @@ public class HistoricProcessInstanceService implements Microservice {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createComment(@PathParam("process-instance-id") String processInstanceId,
-                                  CommentResponse comment) {
+                                  CommentResponse comment, @Context HttpRequest request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
@@ -332,7 +341,7 @@ public class HistoricProcessInstanceService implements Microservice {
                 taskService.addComment(null, instance.getId(), comment.getMessage());
 
         CommentResponse commentResponse =
-                new RestResponseFactory().createRestComment(createdComment);
+                new RestResponseFactory().createRestComment(createdComment, request.getUri());
 
         return Response.ok().status(Response.Status.CREATED).entity(commentResponse).build();
     }
@@ -341,7 +350,8 @@ public class HistoricProcessInstanceService implements Microservice {
     @Path("/{process-instance-id}/comments/{comment-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getComment(@PathParam("process-instance-id") String processInstanceId,
-                               @PathParam("comment-id") String commentId) {
+                               @PathParam("comment-id") String commentId,
+                               @Context HttpRequest request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -353,7 +363,8 @@ public class HistoricProcessInstanceService implements Microservice {
                     "Process instance '" + instance.getId() + "' doesn't have a comment with id '" +
                     commentId + "'.", Comment.class);
         }
-        CommentResponse commentResponse = new RestResponseFactory().createRestComment(comment);
+        CommentResponse commentResponse =
+                new RestResponseFactory().createRestComment(comment, request.getUri());
         return Response.ok().entity(commentResponse).build();
     }
 
@@ -378,7 +389,7 @@ public class HistoricProcessInstanceService implements Microservice {
     }
 
     public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId,
-                                               String variableName) {
+                                               String variableName, String baseContext) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricProcessInstance processObject = historyService.createHistoricProcessInstanceQuery()
@@ -401,13 +412,14 @@ public class HistoricProcessInstanceService implements Microservice {
         } else {
             return new RestResponseFactory()
                     .createRestVariable(variableName, value, null, processInstanceId,
-                                        RestResponseFactory.VARIABLE_HISTORY_PROCESS,
-                                        includeBinary);
+                                        RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary,
+                                        baseContext);
         }
     }
 
     protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams,
+                                            String baseContext) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
@@ -482,9 +494,10 @@ public class HistoricProcessInstanceService implements Microservice {
         }
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
-        DataResponse dataResponse = new HistoricProcessInstancePaginateList(restResponseFactory)
-                .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
-                              allowedSortProperties);
+        DataResponse dataResponse =
+                new HistoricProcessInstancePaginateList(restResponseFactory, baseContext)
+                        .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
+                                      allowedSortProperties);
 
         return dataResponse;
     }

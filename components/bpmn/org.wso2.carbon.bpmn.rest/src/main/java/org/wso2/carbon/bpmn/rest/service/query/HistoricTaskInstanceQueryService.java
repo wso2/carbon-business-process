@@ -53,9 +53,9 @@ public class HistoricTaskInstanceQueryService extends BaseHistoricTaskInstanceSe
                 allRequestParams.put(property, value);
             }
         }
-        RestUrlBuilder builder = new RestUrlBuilder();
+        RestUrlBuilder builder = new RestUrlBuilder(request.getUri());
         String serverRootUrl = builder.getBaseUrl();
-        return getQueryResponse(queryRequest, allRequestParams, serverRootUrl);
+        return getQueryResponse(queryRequest, allRequestParams, serverRootUrl, request.getUri());
     }
 }
 

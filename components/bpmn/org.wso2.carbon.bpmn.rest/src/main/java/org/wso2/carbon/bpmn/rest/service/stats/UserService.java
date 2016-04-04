@@ -17,7 +17,7 @@ package org.wso2.carbon.bpmn.rest.service.stats;
 
 //import org.activiti.engine.ActivitiException;
 
-import org.activiti.engine.ActivitiObjectNotFoundException;
+//import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
@@ -31,10 +31,11 @@ import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
 import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
 import org.wso2.carbon.bpmn.rest.model.stats.UserTaskCount;
 import org.wso2.carbon.bpmn.rest.model.stats.UserTaskDuration;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.user.api.UserStoreException;
+//import org.wso2.carbon.context.PrivilegedCarbonContext;
+//import org.wso2.carbon.user.api.UserStoreException;
 
 import org.wso2.msf4j.Microservice;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
 
 /**
  * Service class which includes functionality related to users
@@ -57,9 +57,9 @@ import javax.ws.rs.core.MediaType;
 @Path("/user-services/")
 public class UserService implements Microservice {
     private static final Log log = LogFactory.getLog(UserService.class);
-    int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-    String str = String.valueOf(tenantId);
-    String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+    // int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+    //String str = String.valueOf(tenantId);
+    // String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 
     private static final String DOMAIN_OF_SUPER_TENANT = "carbon.super";
     private static final String ADDRESS_SIGN = "@";
@@ -80,17 +80,17 @@ public class UserService implements Microservice {
     @GET
     @Path("/all-users/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ResponseHolder getUserList() throws UserStoreException {
+    public ResponseHolder getUserList() {
         Object[] users = null;
-
+        //TODO:
         ResponseHolder response = new ResponseHolder();
-        try {
-            users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager()
-                                              .listUsers("*", -1);
-            response.setData(Arrays.asList(users));
-        } catch (UserStoreException e) {
+        //try {
+        //  users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager()
+        //                                    .listUsers("*", -1);
+        response.setData(Arrays.asList(users));
+        /*} catch (UserStoreException e) {
             throw new UserStoreException(e.getMessage(), e);
-        }
+        }*/
         return response;
     }
 
@@ -105,37 +105,37 @@ public class UserService implements Microservice {
     @GET
     @Path("/user-vs-task-count/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ResponseHolder getNoOfTasksCompletedByUser() throws UserStoreException {
+    public ResponseHolder getNoOfTasksCompletedByUser() {
 
         List listOfUsers = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
 
-        try {
-            String[] users = (String[]) getUserList().getData().toArray();
+        // try {
+        String[] users =
+                getUserList().getData().toArray(new String[getUserList().getData().size()]);
 
-            for (String u : users) {
-                UserTaskCount userInfo = new UserTaskCount();
-                userInfo.setUserName(u);
-                String assignee;
-                if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
-                    assignee = u;
-                } else {
-                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
-                }
-                long count = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
-                                            .taskTenantId(str).taskAssignee(assignee).finished()
-                                            .count();
-                if (count == 0) {
-                    userInfo.setTaskCount(0);
-                } else {
-                    userInfo.setTaskCount(count);
-                }
-                listOfUsers.add(userInfo);
+        for (String u : users) {
+            UserTaskCount userInfo = new UserTaskCount();
+            userInfo.setUserName(u);
+            String assignee = u;
+            //                if (tenantDomain.equals(DOMAIN_OF_SUPER_TENANT)) {
+            //                    assignee = u;
+            //                } else {
+            //                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
+            //                }
+            long count = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+                                        .taskAssignee(assignee).finished().count();
+            if (count == 0) {
+                userInfo.setTaskCount(0);
+            } else {
+                userInfo.setTaskCount(count);
             }
-            response.setData(listOfUsers);
-        } catch (UserStoreException e) {
-            throw new UserStoreException(e.getMessage(), e);
+            listOfUsers.add(userInfo);
         }
+        response.setData(listOfUsers);
+       /* }  catch (UserStoreException e) {
+            throw new UserStoreException(e.getMessage(), e);
+        }*/
         return response;
     }
 
@@ -147,50 +147,49 @@ public class UserService implements Microservice {
     @GET
     @Path("/user-vs-avg-time-duration/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ResponseHolder getAvgDurationForTasksCompletedByUser() throws UserStoreException {
+    public ResponseHolder getAvgDurationForTasksCompletedByUser() {
 
         List listOfUsers = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
-        try {
-            String[] users = (String[]) getUserList().getData().toArray();
-            for (String u : users) {
+        // try {
+        String[] users =
+                getUserList().getData().toArray(new String[getUserList().getData().size()]);
+        for (String u : users) {
 
-                UserTaskDuration userInfo = new UserTaskDuration();
-                userInfo.setUserName(u);
+            UserTaskDuration userInfo = new UserTaskDuration();
+            userInfo.setUserName(u);
 
-                String assignee;
-                if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
-                    assignee = u;
-                } else {
-                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
+            String assignee = u;
+            //                if (tenantDomain.equals(DOMAIN_OF_SUPER_TENANT)) {
+            //                    assignee = u;
+            //                } else {
+            //                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
+            //                }
+
+            long count = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+                                        .taskAssignee(assignee).finished().count();
+            if (count == 0) {
+                double avgTime = 0;
+                userInfo.setAvgTimeDuration(avgTime);
+            } else {
+                List<HistoricTaskInstance> taskList =
+                        BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+                                       .taskAssignee(assignee).finished().list();
+                double totalTime = 0;
+                double avgTime = 0;
+                for (HistoricTaskInstance instance : taskList) {
+                    double taskDuration = instance.getDurationInMillis();
+                    totalTime = totalTime + taskDuration;
                 }
-
-                long count = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
-                                            .taskTenantId(str).taskAssignee(assignee).finished()
-                                            .count();
-                if (count == 0) {
-                    double avgTime = 0;
-                    userInfo.setAvgTimeDuration(avgTime);
-                } else {
-                    List<HistoricTaskInstance> taskList =
-                            BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
-                                           .taskTenantId(str).taskAssignee(assignee).finished()
-                                           .list();
-                    double totalTime = 0;
-                    double avgTime = 0;
-                    for (HistoricTaskInstance instance : taskList) {
-                        double taskDuration = instance.getDurationInMillis();
-                        totalTime = totalTime + taskDuration;
-                    }
-                    avgTime = (totalTime / count) / 1000;
-                    userInfo.setAvgTimeDuration(avgTime);
-                }
-                listOfUsers.add(userInfo);
+                avgTime = (totalTime / count) / 1000;
+                userInfo.setAvgTimeDuration(avgTime);
             }
-            response.setData(listOfUsers);
-        } catch (UserStoreException e) {
-            throw new UserStoreException(e.getMessage(), e);
+            listOfUsers.add(userInfo);
         }
+        response.setData(listOfUsers);
+       /* } catch (UserStoreException e) {
+            throw new UserStoreException(e.getMessage(), e);
+        }*/
         return response;
     }
 
@@ -205,20 +204,19 @@ public class UserService implements Microservice {
     @GET
     @Path("/user-task-variation/{assignee}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee)
-            throws UserStoreException {
-
-        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
+    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) {
+        //TODO:
+        /*if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
             throw new ActivitiObjectNotFoundException("Could not find user with id '" +
                                                       assignee + "'.");
-        }
+        }*/
 
-        String taskAssignee;
-        if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
-            taskAssignee = assignee;
-        } else {
-            taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
-        }
+        String taskAssignee = assignee;
+        //        if (tenantDomain.equals(DOMAIN_OF_SUPER_TENANT)) {
+        //            taskAssignee = assignee;
+        //        } else {
+        //            taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
+        //        }
 
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
@@ -237,7 +235,7 @@ public class UserService implements Microservice {
         // Get completed tasks
         List<HistoricTaskInstance> taskList =
                 BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
-                               .taskTenantId(str).taskAssignee(taskAssignee).finished().list();
+                               .taskAssignee(taskAssignee).finished().list();
         for (HistoricTaskInstance instance : taskList) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
@@ -248,8 +246,9 @@ public class UserService implements Microservice {
 
         }
         // Get active/started tasks
-        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str)
-                                               .taskAssignee(taskAssignee).active().list();
+        List<Task> taskActive =
+                BPMNOSGIService.getTaskService().createTaskQuery().taskAssignee(taskAssignee)
+                               .active().list();
         for (Task instance : taskActive) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             taskStatPerMonths[startTime - 1].setStartedInstances(
@@ -258,8 +257,8 @@ public class UserService implements Microservice {
 
         // Get suspended tasks
         List<Task> taskSuspended =
-                BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str)
-                               .taskAssignee(taskAssignee).suspended().list();
+                BPMNOSGIService.getTaskService().createTaskQuery().taskAssignee(taskAssignee)
+                               .suspended().list();
         for (Task instance : taskSuspended) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             taskStatPerMonths[startTime - 1].setStartedInstances(

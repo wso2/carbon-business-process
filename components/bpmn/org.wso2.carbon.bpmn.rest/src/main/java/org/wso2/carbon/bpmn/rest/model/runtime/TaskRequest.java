@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 package org.wso2.carbon.bpmn.rest.model.runtime;
+
 import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -43,7 +44,7 @@ public class TaskRequest {
     private boolean delegationStateSet = false;
     private boolean nameSet = false;
     private boolean descriptionSet = false;
-    private boolean duedateSet = false;
+    private boolean dueDateSet = false;
     private boolean prioritySet = false;
     private boolean parentTaskIdSet = false;
     private boolean categorySet = false;
@@ -53,76 +54,97 @@ public class TaskRequest {
     public String getOwner() {
         return owner;
     }
+
     public void setOwner(String owner) {
         this.owner = owner;
         ownerSet = true;
     }
+
     public String getAssignee() {
         return assignee;
     }
+
     public void setAssignee(String assignee) {
         this.assignee = assignee;
         assigneeSet = true;
     }
+
     public String getDelegationState() {
         return delegationState;
     }
+
     public void setDelegationState(String delegationState) {
         this.delegationState = delegationState;
         delegationStateSet = true;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
         nameSet = true;
     }
+
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
         descriptionSet = true;
     }
+
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
+
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-        duedateSet = true;
+        this.dueDate = dueDate == null ? null : (Date) this.dueDate.clone();
+        dueDateSet = true;
     }
+
     public int getPriority() {
         return priority;
     }
+
     public void setPriority(int priority) {
         this.priority = priority;
         prioritySet = true;
     }
+
     public String getParentTaskId() {
         return parentTaskId;
     }
+
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
         parentTaskIdSet = true;
     }
+
     public void setCategory(String category) {
         this.category = category;
         categorySet = true;
     }
+
     public String getCategory() {
         return category;
     }
+
     public String getTenantId() {
         return tenantId;
     }
+
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
         tenantIdSet = true;
     }
+
     public String getFormKey() {
         return formKey;
     }
+
     public void setFormKey(String formKey) {
         this.formKey = formKey;
         formKeySet = true;
@@ -131,33 +153,43 @@ public class TaskRequest {
     public boolean isOwnerSet() {
         return ownerSet;
     }
+
     public boolean isAssigneeSet() {
         return assigneeSet;
     }
+
     public boolean isDelegationStateSet() {
         return delegationStateSet;
     }
+
     public boolean isNameSet() {
         return nameSet;
     }
+
     public boolean isDescriptionSet() {
         return descriptionSet;
     }
-    public boolean isDuedateSet() {
-        return duedateSet;
+
+    public boolean isDueDateSet() {
+        return dueDateSet;
     }
+
     public boolean isPrioritySet() {
         return prioritySet;
     }
+
     public boolean isParentTaskIdSet() {
         return parentTaskIdSet;
     }
+
     public boolean isCategorySet() {
         return categorySet;
     }
+
     public boolean isTenantIdSet() {
         return tenantIdSet;
     }
+
     public boolean isFormKeySet() {
         return formKeySet;
     }

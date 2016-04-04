@@ -34,7 +34,8 @@ public class CorrelationProcess {
     public CorrelationProcess() {
     }
 
-    public Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {
+    public Response getQueryResponse(CorrelationActionRequest correlationActionRequest,
+                                     String name) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
@@ -143,7 +144,8 @@ public class CorrelationProcess {
             return responseBuilder.build();
         } else {
             return responseBuilder
-                    .entity(new RestResponseFactory().createExecutionResponse(execution)).build();
+                    .entity(new RestResponseFactory().createExecutionResponse(execution, name))
+                    .build();
         }
     }
 

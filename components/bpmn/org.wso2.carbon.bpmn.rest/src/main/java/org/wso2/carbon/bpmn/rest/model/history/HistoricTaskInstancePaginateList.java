@@ -18,6 +18,7 @@ package org.wso2.carbon.bpmn.rest.model.history;
 
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
+
 import java.util.List;
 
 /**
@@ -28,13 +29,13 @@ public class HistoricTaskInstancePaginateList extends AbstractPaginateList {
     protected String serverRootURL;
 
     public HistoricTaskInstancePaginateList(RestResponseFactory restResponseFactory,
-                                            String serverRootURL) {
-        super(restResponseFactory);
+                                            String serverRootURL, String baseContext) {
+        super(restResponseFactory, baseContext);
         this.serverRootURL = serverRootURL;
     }
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createHistoricTaskInstanceResponseList(list);
+        return restResponseFactory.createHistoricTaskInstanceResponseList(list, baseContext);
     }
 }
