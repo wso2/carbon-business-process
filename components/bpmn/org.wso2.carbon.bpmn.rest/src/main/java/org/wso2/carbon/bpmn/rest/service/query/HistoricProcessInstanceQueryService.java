@@ -177,7 +177,7 @@ public class HistoricProcessInstanceQueryService {
         }
 
         DataResponse dataResponse =
-                new HistoricProcessInstancePaginateList(new RestResponseFactory())
+                new HistoricProcessInstancePaginateList(new RestResponseFactory(), request.getUri())
                         .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
                                       allowedSortProperties);
         return Response.ok().entity(dataResponse).build();
@@ -237,7 +237,8 @@ public class HistoricProcessInstanceQueryService {
 
                 case LIKE:
                     if (actualValue instanceof String) {
-                        processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
+                        processInstanceQuery
+                                .variableValueLike(variable.getName(), (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported for like, but was: " +
@@ -250,7 +251,8 @@ public class HistoricProcessInstanceQueryService {
                     break;
 
                 case GREATER_THAN_OR_EQUALS:
-                    processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
+                    processInstanceQuery
+                            .variableValueGreaterThanOrEqual(variable.getName(), actualValue);
                     break;
 
                 case LESS_THAN:
@@ -258,7 +260,8 @@ public class HistoricProcessInstanceQueryService {
                     break;
 
                 case LESS_THAN_OR_EQUALS:
-                    processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
+                    processInstanceQuery
+                            .variableValueLessThanOrEqual(variable.getName(), actualValue);
                     break;
 
                 default:

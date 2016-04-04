@@ -23,21 +23,21 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
+//import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricVariableInstance;
 //import org.activiti.engine.identity.Group;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+//import org.activiti.engine.impl.ProcessEngineImpl;
+//import org.activiti.engine.impl.interceptor.Command;
+//import org.activiti.engine.impl.interceptor.CommandContext;
+//import org.activiti.engine.impl.interceptor.CommandExecutor;
+//import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+//import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
+//import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -70,7 +70,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
+//import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.msf4j.Microservice;
 
 import java.io.ByteArrayOutputStream;
@@ -111,7 +111,7 @@ import javax.xml.bind.Unmarshaller;
         name = "org.wso2.carbon.bpmn.rest.service.runtime.ProcessInstanceService",
         service = Microservice.class,
         immediate = true)
-@Path("/process-instances")
+@Path("/bps/bpmn/{version}/{context}/process-instances")
 public class ProcessInstanceService extends BaseProcessInstanceService implements Microservice {
 
     private static final Log log = LogFactory.getLog(ProcessInstanceService.class);
@@ -136,7 +136,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         // Populate query based on request
         ProcessInstanceQueryRequest queryRequest = getQueryRequest(allRequestParams);
 
-        return Response.ok().entity(getQueryResponse(queryRequest, allRequestParams)).build();
+        return Response.ok()
+                       .entity(getQueryResponse(queryRequest, allRequestParams, request.getUri()))
+                       .build();
     }
 
     @POST
@@ -195,7 +197,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                     processInstanceCreateRequest.cloneInstanceCreationRequest();
             Map<String, String> allRequestParams = allRequestParams(request);
             DataResponse dataResponse =
-                    getQueryResponse(processInstanceQueryRequest, allRequestParams);
+                    getQueryResponse(processInstanceQueryRequest, allRequestParams,
+                                     request.getUri());
 
             if (log.isDebugEnabled()) {
                 log.debug("ProcessInstanceCreation check:" + dataResponse.getSize());
@@ -224,7 +227,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                         throw new ActivitiIllegalArgumentException(responseMessage);
                     }
 
-                    return performCorrelation(processInstanceCreateRequest);
+                    return performCorrelation(processInstanceCreateRequest, request.getUri());
                 } else {
                     dataResponse.setMessage("Returned the existing instances");
                     return Response.ok().entity(dataResponse).build();
@@ -242,7 +245,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                 if (variable.getName() == null) {
                     throw new ActivitiIllegalArgumentException("Variable name is required.");
                 }
-                startVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
+                startVariables
+                        .put(variable.getName(), restResponseFactory.getVariableValue(variable));
             }
         }
 
@@ -256,7 +260,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                     throw new ActivitiIllegalArgumentException(
                             "Additional Variable name is required.");
                 }
-                startVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
+                startVariables
+                        .put(variable.getName(), restResponseFactory.getVariableValue(variable));
             }
         }
 
@@ -301,17 +306,18 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                 List<HistoricVariableInstance> historicVariableList = null;
                 if (instance.isEnded()) {
                     historicVariableList = historyService.createHistoricVariableInstanceQuery()
-                                                         .processInstanceId(instance.getId()).list();
+                                                         .processInstanceId(instance.getId())
+                                                         .list();
                 } else {
                     runtimeVariableMap = runtimeService.getVariables(instance.getId());
                 }
                 processInstanceResponse = restResponseFactory
                         .createProcessInstanceResponse(instance, true, runtimeVariableMap,
-                                                       historicVariableList);
+                                                       historicVariableList, request.getUri());
 
             } else {
-                processInstanceResponse =
-                        restResponseFactory.createProcessInstanceResponse(instance);
+                processInstanceResponse = restResponseFactory
+                        .createProcessInstanceResponse(instance, request.getUri());
             }
 
         } catch (ActivitiObjectNotFoundException aonfe) {
@@ -344,8 +350,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService
                                                                             .getActiveActivityIds(
                                                                                     processInstance
-                                                                                            .getId()
-                                                                            ),
+                                                                                            .getId()),
                                                                     Collections.<String>emptyList(),
                                                                     processEngineConfiguration
                                                                             .getActivityFontName(),
@@ -371,12 +376,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @GET
     @Path("/{process-instance-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId) {
+    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId,
+                                       @Context HttpRequest request) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         RestResponseFactory restResponseFactory = new RestResponseFactory();
-        ProcessInstanceResponse processInstanceResponse =
-                restResponseFactory.createProcessInstanceResponse(processInstance);
+        ProcessInstanceResponse processInstanceResponse = restResponseFactory
+                .createProcessInstanceResponse(processInstance, request.getUri());
 
         return Response.ok().entity(processInstanceResponse).build();
     }
@@ -400,18 +406,19 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response performProcessInstanceAction(
             @PathParam("process-instance-id") String processInstanceId,
-            ProcessInstanceActionRequest actionRequest) {
+            ProcessInstanceActionRequest actionRequest, @Context HttpRequest request) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
 
         if (ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
-            return Response.ok().entity(activateProcessInstance(processInstance)).build();
+            return Response.ok().entity(activateProcessInstance(processInstance, request.getUri()))
+                           .build();
 
         } else if (ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
-            return Response.ok().entity(suspendProcessInstance(processInstance, restResponseFactory))
-                           .build();
+            return Response.ok().entity(suspendProcessInstance(processInstance, restResponseFactory,
+                                                               request.getUri())).build();
         }
         throw new ActivitiIllegalArgumentException(
                 "Invalid action: '" + actionRequest.getAction() + "'.");
@@ -421,18 +428,21 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Path("/{process-instance-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public List<RestIdentityLink> getIdentityLinks(
-            @PathParam("process-instance-id") String processInstanceId) {
+            @PathParam("process-instance-id") String processInstanceId,
+            @Context HttpRequest request) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         return new RestResponseFactory().createRestIdentityLinks(
-                runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()));
+                runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()),
+                request.getUri());
     }
 
     @POST
     @Path("/{process-instance-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createIdentityLink(@PathParam("process-instance-id") String processInstanceId,
-                                       RestIdentityLink identityLink) {
+                                       RestIdentityLink identityLink,
+                                       @Context HttpRequest request) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
@@ -455,7 +465,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
         RestIdentityLink restIdentityLink = new RestResponseFactory()
                 .createRestIdentityLink(identityLink.getType(), identityLink.getUser(),
-                                        identityLink.getGroup(), null, null, processInstance.getId());
+                                        identityLink.getGroup(), null, null,
+                                        processInstance.getId(), request.getUri());
         return Response.ok().status(Response.Status.CREATED).entity(restIdentityLink).build();
     }
 
@@ -464,7 +475,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getIdentityLinK(@PathParam("process-instance-id") String processInstanceId,
                                     @PathParam("identity-id") String identityId,
-                                    @PathParam("type") String type) {
+                                    @PathParam("type") String type, @Context HttpRequest request) {
 
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
@@ -472,7 +483,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
         IdentityLink link = getIdentityLink(identityId, type, processInstance.getId());
 
-        return Response.ok().entity(new RestResponseFactory().createRestIdentityLink(link)).build();
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createRestIdentityLink(link, request.getUri()))
+                       .build();
     }
 
     @DELETE
@@ -496,11 +509,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Path("/{process-instance-id}/variables")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariables(@PathParam("process-instance-id") String processInstanceId,
-                                 @QueryParam("scope") String scope) {
+                                 @QueryParam("scope") String scope, @Context HttpRequest request) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
         List<RestVariable> restVariableList =
-                processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS);
+                processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS,
+                                 request.getUri());
         RestVariableCollection restVariableCollection = new RestVariableCollection();
         restVariableCollection.setRestVariables(restVariableList);
         return Response.ok().entity(restVariableCollection).build();
@@ -512,10 +526,11 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariable(@PathParam("process-instance-id") String processInstanceId,
                                 @PathParam("variable-name") String variableName,
-                                @QueryParam("scope") String scope) {
+                                @QueryParam("scope") String scope, @Context HttpRequest request) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
-        RestVariable restVariable = getVariableFromRequest(execution, variableName, scope, false);
+        RestVariable restVariable =
+                getVariableFromRequest(execution, variableName, scope, false, request.getUri());
         return Response.ok().entity(restVariable).build();
     }
 
@@ -549,7 +564,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RestVariable updateVariable(@PathParam("process-instance-id") String processInstanceId,
                                        @PathParam("variable-name") String variableName,
-                                       @Context HttpServletRequest httpServletRequest) {
+                                       @Context HttpServletRequest httpServletRequest,
+                                       @Context HttpRequest request) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
 
@@ -571,7 +587,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(httpServletRequest.getInputStream());
+                restVariable = (RestVariable) jaxbUnmarshaller
+                        .unmarshal(httpServletRequest.getInputStream());
 
             } catch (JAXBException | IOException e) {
                 throw new ActivitiIllegalArgumentException(
@@ -590,7 +607,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         }
         // }
 
-        return setSimpleVariable(restVariable, execution, false);
+        return setSimpleVariable(restVariable, execution, false, request.getUri());
     }
 
     /* TODO
@@ -621,14 +638,14 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createExecutionVariable(
             @PathParam("process-instance-id") String processInstanceId,
-            @Context HttpServletRequest httpServletRequest) {
+            @Context HttpServletRequest httpServletRequest, @Context HttpRequest request) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
         Response response;
         try {
             response =
                     createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS,
-                                            httpServletRequest);
+                                            httpServletRequest, request);
         } catch (IOException | ServletException e) {
             throw new BPMNRestException("Exception occured during creating execution variable", e);
         }
@@ -662,13 +679,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createOrUpdateExecutionVariable(
             @PathParam("process-instance-id") String processInstanceId,
-            @Context HttpServletRequest httpServletRequest) {
+            @Context HttpServletRequest httpServletRequest, @Context HttpRequest request) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
         Object result;
         try {
             result = createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS,
-                                             httpServletRequest);
+                                             httpServletRequest, request);
         } catch (IOException | ServletException e) {
             throw new BPMNRestException("Exception occured during creating execution variable", e);
         }
@@ -680,20 +697,22 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     public Response getVariableData(@PathParam("process-instance-id") String processInstanceId,
                                     @PathParam("variable-name") String variableName,
                                     @Context HttpServletRequest request,
-                                    @QueryParam("scope") String scope) {
+                                    @QueryParam("scope") String scope,
+                                    @Context HttpRequest request1) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
         Response.ResponseBuilder responseBuilder = Response.ok();
         return responseBuilder
-                .entity(getVariableDataByteArray(execution, variableName, scope, responseBuilder))
-                .build();
+                .entity(getVariableDataByteArray(execution, variableName, scope, responseBuilder,
+                                                 request1.getUri())).build();
     }
 
     @DELETE
     @Path("/{process-instance-id}/variables/{variable-name}")
     public Response deleteVariable(@PathParam("process-instance-id") String processInstanceId,
                                    @PathParam("variable-name") String variableName,
-                                   @QueryParam("scope") String scope) {
+                                   @QueryParam("scope") String scope,
+                                   @Context HttpRequest request) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
         // Determine scope
@@ -724,12 +743,14 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
     protected byte[] getVariableDataByteArray(Execution execution, String variableName,
                                               String scope,
-                                              Response.ResponseBuilder responseBuilder) {
+                                              Response.ResponseBuilder responseBuilder,
+                                              String baseName) {
 
         try {
             byte[] result;
 
-            RestVariable variable = getVariableFromRequest(execution, variableName, scope, true);
+            RestVariable variable =
+                    getVariableFromRequest(execution, variableName, scope, true, baseName);
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
                 responseBuilder.type(MediaType.APPLICATION_OCTET_STREAM);
@@ -752,7 +773,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     }
 
     protected RestVariable setSimpleVariable(RestVariable restVariable, Execution execution,
-                                             boolean isNew) {
+                                             boolean isNew, String baseContext) {
         if (restVariable.getName() == null) {
             throw new ActivitiIllegalArgumentException("Variable name is required");
         }
@@ -767,7 +788,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         setVariable(execution, restVariable.getName(), actualVariableValue, scope, isNew);
 
         return constructRestVariable(restVariable.getName(), actualVariableValue, scope,
-                                     execution.getId(), false);
+                                     execution.getId(), false, baseContext);
     }
 
     /*TODO
@@ -784,7 +805,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     *////TODO:
     protected Response createExecutionVariable(Execution execution, boolean override,
                                                int variableType,
-                                               HttpServletRequest httpServletRequest)
+                                               HttpServletRequest httpServletRequest,
+                                               @Context HttpRequest request)
             throws IOException, ServletException {
 
         boolean debugEnabled = log.isDebugEnabled();
@@ -802,50 +824,51 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
         String contentType = httpServletRequest.getContentType();
 
-        try {
-            if (MediaType.APPLICATION_JSON.equals(contentType)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                @SuppressWarnings("unchecked") List<Object> variableObjects =
-                        (List<Object>) objectMapper.readValue(httpServletRequest.getInputStream(),
-                                                              List.class);
-                for (Object restObject : variableObjects) {
-                    RestVariable restVariable =
-                            objectMapper.convertValue(restObject, RestVariable.class);
-                    inputVariables.add(restVariable);
-                }
-            } else if (MediaType.APPLICATION_XML.equals(contentType)) {
-                JAXBContext jaxbContext;
-                try {
-                    jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
-                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    RestVariableCollection restVariableCollection =
-                            (RestVariableCollection) jaxbUnmarshaller.unmarshal(httpServletRequest.getInputStream());
-                    if (restVariableCollection == null) {
-                        throw new ActivitiIllegalArgumentException(
-                                "xml request body could not be transformed to a " +
-                                "RestVariable Collection instance.");
-                    }
-                    List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
-
-                    if (restVariableList.size() == 0) {
-                        throw new ActivitiIllegalArgumentException(
-                                "xml request body could not identify any rest " +
-                                "variables to be updated");
-                    }
-                    for (RestVariable restVariable : restVariableList) {
-                        inputVariables.add(restVariable);
-                    }
-
-                } catch (JAXBException | IOException e) {
+        // try {
+        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            @SuppressWarnings("unchecked") List<Object> variableObjects =
+                    (List<Object>) objectMapper
+                            .readValue(httpServletRequest.getInputStream(), List.class);
+            for (Object restObject : variableObjects) {
+                RestVariable restVariable =
+                        objectMapper.convertValue(restObject, RestVariable.class);
+                inputVariables.add(restVariable);
+            }
+        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+            JAXBContext jaxbContext;
+            try {
+                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                RestVariableCollection restVariableCollection =
+                        (RestVariableCollection) jaxbUnmarshaller
+                                .unmarshal(httpServletRequest.getInputStream());
+                if (restVariableCollection == null) {
                     throw new ActivitiIllegalArgumentException(
                             "xml request body could not be transformed to a " +
-                            "RestVariable instance.", e);
+                            "RestVariable Collection instance.");
                 }
+                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
+
+                if (restVariableList.size() == 0) {
+                    throw new ActivitiIllegalArgumentException(
+                            "xml request body could not identify any rest " +
+                            "variables to be updated");
+                }
+                for (RestVariable restVariable : restVariableList) {
+                    inputVariables.add(restVariable);
+                }
+
+            } catch (JAXBException | IOException e) {
+                throw new ActivitiIllegalArgumentException(
+                        "xml request body could not be transformed to a " +
+                        "RestVariable instance.", e);
             }
-        } catch (Exception e) {
+        }
+       /* } catch (Exception e) {
             throw new ActivitiIllegalArgumentException(
                     "Failed to serialize to a RestVariable instance", e);
-        }
+        }*/
 
         if (inputVariables.size() == 0) {
             throw new ActivitiIllegalArgumentException(
@@ -886,7 +909,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             resultVariables.add(restResponseFactory
                                         .createRestVariable(var.getName(), actualVariableValue,
                                                             varScope, execution.getId(),
-                                                            variableType, false));
+                                                            variableType, false, request.getUri()));
         }
 
         if (!variablesToSet.isEmpty()) {
@@ -1175,7 +1198,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     }
 
     public RestVariable getVariableFromRequest(Execution execution, String variableName,
-                                               String scope, boolean includeBinary) {
+                                               String scope, boolean includeBinary,
+                                               String baseContext) {
 
         boolean variableFound = false;
         Object value = null;
@@ -1222,12 +1246,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                                                       VariableInstanceEntity.class);
         } else {
             return constructRestVariable(variableName, value, variableScope, execution.getId(),
-                                         includeBinary);
+                                         includeBinary, baseContext);
         }
     }
 
     protected List<RestVariable> processVariables(Execution execution, String scope,
-                                                  int variableType) {
+                                                  int variableType, String baseContext) {
         List<RestVariable> result = new ArrayList<RestVariable>();
         Map<String, RestVariable> variableMap = new HashMap<>();
 
@@ -1236,14 +1260,14 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
         if (variableScope == null) {
             // Use both local and global variables
-            addLocalVariables(execution, variableType, variableMap);
-            addGlobalVariables(execution, variableType, variableMap);
+            addLocalVariables(execution, variableType, variableMap, baseContext);
+            addGlobalVariables(execution, variableType, variableMap, baseContext);
 
         } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
-            addGlobalVariables(execution, variableType, variableMap);
+            addGlobalVariables(execution, variableType, variableMap, baseContext);
 
         } else if (variableScope == RestVariable.RestVariableScope.LOCAL) {
-            addLocalVariables(execution, variableType, variableMap);
+            addLocalVariables(execution, variableType, variableMap, baseContext);
         }
 
         // Get unique variables from map
@@ -1252,12 +1276,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     }
 
     protected void addLocalVariables(Execution execution, int variableType,
-                                     Map<String, RestVariable> variableMap) {
+                                     Map<String, RestVariable> variableMap, String baseContext) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
                 .createRestVariables(rawLocalvariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.LOCAL);
+                                     RestVariable.RestVariableScope.LOCAL, baseContext);
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
@@ -1265,12 +1289,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     }
 
     protected void addGlobalVariables(Execution execution, int variableType,
-                                      Map<String, RestVariable> variableMap) {
+                                      Map<String, RestVariable> variableMap, String baseContext) {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory()
                 .createRestVariables(rawVariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.GLOBAL);
+                                     RestVariable.RestVariableScope.GLOBAL, baseContext);
 
         // Overlay global variables over local ones. In case they are present the values are
         // not overridden,
@@ -1284,146 +1308,149 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
     protected RestVariable constructRestVariable(String variableName, Object value,
                                                  RestVariable.RestVariableScope variableScope,
-                                                 String executionId, boolean includeBinary) {
+                                                 String executionId, boolean includeBinary,
+                                                 String baseContext) {
 
         return new RestResponseFactory()
                 .createRestVariable(variableName, value, variableScope, executionId,
-                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
+                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary,
+                                    baseContext);
     }
 
     private boolean isValidUserToStartProcess(
             ProcessInstanceCreateRequest processInstanceCreateRequest) {
 
-        //check whether the users/groups exist
-        String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-
-        if (processDefinitionId == null) {
-
-            final String processDefinitionKey =
-                    processInstanceCreateRequest.getProcessDefinitionKey();
-            final String tenantId = processInstanceCreateRequest.getTenantId();
-
-            ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
-
-            if (processEngine != null) {
-
-                if (processDefinitionKey != null) {
-
-                    if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() !=
-                        null) {
-                        CommandExecutor commandExecutor =
-                                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration()
-                                                                   .getCommandExecutor();
-                        if (commandExecutor != null) {
-
-                            processDefinitionId =
-                                    (String) commandExecutor.execute(new Command<Object>() {
-                                        public Object execute(CommandContext commandContext) {
-                                            ProcessDefinitionEntityManager
-                                                    processDefinitionEntityManager =
-                                                    commandContext.getSession
-                                                            (ProcessDefinitionEntityManager.class);
-                                            ProcessDefinitionEntity processDefinitionEntity =
-                                                    processDefinitionEntityManager
-                                                    .findLatestProcessDefinitionByKeyAndTenantId
-                                                            (processDefinitionKey, tenantId);
-                                            if (processDefinitionEntity != null &&
-                                                processDefinitionEntity.getProcessDefinition() !=
-                                                null) {
-                                                return processDefinitionEntity
-                                                        .getProcessDefinition().getId();
-                                            }
-                                            return null;
-                                        }
-                                    });
-                        }
-                    }
-                    if (processDefinitionId == null) {
-                        return false;
-                    }
-                }
-
-                String messageName = processInstanceCreateRequest.getMessage();
-                if (messageName != null && !messageName.isEmpty()) {
-
-                    ProcessDefinitionQuery processDefinitionQuery =
-                            repositoryService.createProcessDefinitionQuery()
-                                             .messageEventSubscriptionName(messageName);
-                    if (processDefinitionQuery != null) {
-                        processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId(
-                                processInstanceCreateRequest.getTenantId());
-                        if (processDefinitionQuery != null && processDefinitionQuery.count() > 1) {
-                            processDefinitionQuery = processDefinitionQuery.latestVersion();
-                        }
-                    }
-
-                    if (processDefinitionQuery != null) {
-                        ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
-                        if (processDefinition != null) {
-                            processDefinitionId = processDefinition.getId();
-                        }
-                    }
-
-                    if (processDefinitionId == null) {
-                        return false;
-                    }
-                }
-
-            }
-
-        }
-
-        PrivilegedCarbonContext carbonContext =
-                PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        String userName = carbonContext.getUsername();
-        String tenantDomain = carbonContext.getTenantDomain();
-        String userNameWithTenantDomain = userName + "@" + tenantDomain;
-
-        //TODO
-        //BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
-        // List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
-        List<IdentityLink> identityLinkList =
-                repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
-
-        boolean valueExistsForUserId = false;
-        boolean valueExistsForGroupId = false;
-        for (IdentityLink identityLink : identityLinkList) {
-
-            String userId = identityLink.getUserId();
-            if (userId != null) {
-                valueExistsForUserId = true;
-                if (userId.contains("$")) {
-                    userId = resolveVariable(processInstanceCreateRequest, userId);
-                }
-                if (!userId.isEmpty() &&
-                    (userId.equals(userName) || userId.equals(userNameWithTenantDomain))) {
-                    return true;
-                }
-                continue;
-            }
-
-            String groupId = identityLink.getGroupId();
-
-            if (groupId != null) {
-                valueExistsForGroupId = true;
-                if (groupId.contains("$")) {
-                    groupId = resolveVariable(processInstanceCreateRequest, groupId);
-                }
-                //TODO
-               /* for (Group identityGroup:groupList){
-                    if(!groupId.isEmpty() && identityGroup.getId() != null &&
-                     identityGroup.getId().equals(groupId)){
-                        return true;
-                    }
-                }*/
-            }
-        }
-        //TODO
-        //if (!valueExistsForGroupId && !valueExistsForUserId) {
-        // return true;
-        //}//
-
+//        //check whether the users/groups exist
+//        String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
+//        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+//
+//        if (processDefinitionId == null) {
+//
+//            final String processDefinitionKey =
+//                    processInstanceCreateRequest.getProcessDefinitionKey();
+//            final String tenantId = processInstanceCreateRequest.getTenantId();
+//
+//            ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
+//
+//            if (processEngine != null) {
+//
+//                if (processDefinitionKey != null) {
+//
+//                    if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() !=
+//                        null) {
+//                        CommandExecutor commandExecutor =
+//                                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration()
+//                                                                   .getCommandExecutor();
+//                        if (commandExecutor != null) {
+//
+//                            processDefinitionId =
+//                                    (String) commandExecutor.execute(new Command<Object>() {
+//                                        public Object execute(CommandContext commandContext) {
+//                                            ProcessDefinitionEntityManager
+//                                                    processDefinitionEntityManager = commandContext
+//                                                    .getSession(
+//                                                            ProcessDefinitionEntityManager.class);
+//                                            ProcessDefinitionEntity processDefinitionEntity =
+//                                                    processDefinitionEntityManager
+//                                                            .findLatestProcessDefinitionByKeyAndTenantId(
+//                                                                    processDefinitionKey, tenantId);
+//                                            if (processDefinitionEntity != null &&
+//                                                processDefinitionEntity.getProcessDefinition() !=
+//                                                null) {
+//                                                return processDefinitionEntity
+//                                                        .getProcessDefinition().getId();
+//                                            }
+//                                            return null;
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                    if (processDefinitionId == null) {
+//                        return false;
+//                    }
+//                }
+//
+//                String messageName = processInstanceCreateRequest.getMessage();
+//                if (messageName != null && !messageName.isEmpty()) {
+//
+//                    ProcessDefinitionQuery processDefinitionQuery =
+//                            repositoryService.createProcessDefinitionQuery()
+//                                             .messageEventSubscriptionName(messageName);
+//                    if (processDefinitionQuery != null) {
+//                        processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId(
+//                                processInstanceCreateRequest.getTenantId());
+//                        if (processDefinitionQuery != null && processDefinitionQuery.count() > 1) {
+//                            processDefinitionQuery = processDefinitionQuery.latestVersion();
+//                        }
+//                    }
+//
+//                    if (processDefinitionQuery != null) {
+//                        ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+//                        if (processDefinition != null) {
+//                            processDefinitionId = processDefinition.getId();
+//                        }
+//                    }
+//
+//                    if (processDefinitionId == null) {
+//                        return false;
+//                    }
+//                }
+//
+//            }
+//
+//        }
+//
+//       /*PrivilegedCarbonContext carbonContext =
+//                PrivilegedCarbonContext.getThreadLocalCarbonContext();
+//        String userName = carbonContext.getUsername();
+//        String tenantDomain = carbonContext.getTenantDomain();
+//        String userNameWithTenantDomain = userName + "@" + tenantDomain;*/
+//
+//        //TODO
+//        //BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
+//        // List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
+//        List<IdentityLink> identityLinkList =
+//                repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
+//
+//        boolean valueExistsForUserId = false;
+//        boolean valueExistsForGroupId = false;
+//        for (IdentityLink identityLink : identityLinkList) {
+//
+//            String userId = identityLink.getUserId();
+//            if (userId != null) {
+//                valueExistsForUserId = true;
+//                if (userId.contains("$")) {
+//                    userId = resolveVariable(processInstanceCreateRequest, userId);
+//                }
+//                if (!userId.isEmpty() &&
+//                    (userId.equals(userName) || userId.equals(userNameWithTenantDomain))) {
+//                    return true;
+//                }
+//                continue;
+//            }*/
+//
+//            //    String groupId = identityLink.getGroupId();
+//
+//            //            if (groupId != null) {
+//            //                valueExistsForGroupId = true;
+//            //                if (groupId.contains("$")) {
+//            //                    groupId = resolveVariable(processInstanceCreateRequest, groupId);
+//            //                }
+//            //                //TODO
+//            //               /* for (Group identityGroup:groupList){
+//            //                    if(!groupId.isEmpty() && identityGroup.getId() != null &&
+//            //                     identityGroup.getId().equals(groupId)){
+//            //                        return true;
+//            //                    }
+//            //                }*/
+//            //            }
+//        }
+//        //TODO
+//        //if (!valueExistsForGroupId && !valueExistsForUserId) {
+//        // return true;
+//        //}//
+//
+//        return false;
         return false;
     }
 
@@ -1458,14 +1485,15 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         return "";
     }
 
-    private Response performCorrelation(ProcessInstanceCreateRequest processInstanceCreateRequest) {
+    private Response performCorrelation(ProcessInstanceCreateRequest processInstanceCreateRequest,
+                                        String baseName) {
 
         CorrelationActionRequest correlationActionRequest = new CorrelationActionRequest();
 
         String requestValue = processInstanceCreateRequest.getProcessDefinitionId();
         if (requestValue != null) {
-            correlationActionRequest.setProcessDefinitionId(processInstanceCreateRequest
-                                                                    .getProcessDefinitionId());
+            correlationActionRequest
+                    .setProcessDefinitionId(processInstanceCreateRequest.getProcessDefinitionId());
         }
 
         requestValue = processInstanceCreateRequest.getProcessDefinitionKey();
@@ -1503,6 +1531,6 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         }
 
         correlationActionRequest.setAction(CorrelationActionRequest.ACTION_MESSAGE_EVENT_RECEIVED);
-        return new CorrelationProcess().getQueryResponse(correlationActionRequest);
+        return new CorrelationProcess().getQueryResponse(correlationActionRequest, baseName);
     }
 }

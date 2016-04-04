@@ -27,7 +27,6 @@ import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +60,7 @@ public class BaseHistoricVariableInstanceService {
     }
 
     protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
@@ -96,7 +95,7 @@ public class BaseHistoricVariableInstanceService {
             addVariables(query, queryRequest.getVariables());
         }
 
-        return new HistoricVariableInstancePaginateList(new RestResponseFactory())
+        return new HistoricVariableInstancePaginateList(new RestResponseFactory(), baseName)
                 .paginateList(allRequestParams, query, "variableName", allowedSortProperties);
     }
 

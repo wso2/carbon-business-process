@@ -26,12 +26,13 @@ import java.util.List;
  */
 public class HistoricVariableInstancePaginateList extends AbstractPaginateList {
 
-    public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory,
+                                                String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createHistoricVariableInstanceResponseList(list);
+        return restResponseFactory.createHistoricVariableInstanceResponseList(list, baseContext);
     }
 }

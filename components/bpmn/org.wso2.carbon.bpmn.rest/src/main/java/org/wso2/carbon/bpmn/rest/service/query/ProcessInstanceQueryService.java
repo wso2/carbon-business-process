@@ -44,8 +44,8 @@ public class ProcessInstanceQueryService extends BaseProcessInstanceService {
         Map<String, String> allRequestParams = allRequestParams(request);
         // Populate query based on request
         //ProcessInstanceQueryRequest queryRequest = getQueryRequest(allRequestParams);
-        return Response.ok().entity(getQueryResponse(processInstanceQueryRequest, allRequestParams))
-                       .build();
+        return Response.ok().entity(getQueryResponse(processInstanceQueryRequest, allRequestParams,
+                                                     request.getUri())).build();
     }
 
 }

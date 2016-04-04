@@ -157,19 +157,19 @@ public class HistoricTaskInstanceResponse {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return startTime == null ? null : (Date) this.startTime.clone();
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = startTime == null ? null : (Date) this.startTime.clone();
     }
 
     public Date getEndTime() {
-        return endTime;
+        return endTime == null ? null : (Date) this.endTime.clone();
     }
 
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = endTime == null ? null : (Date) this.endTime.clone();
     }
 
     public Long getDurationInMillis() {
@@ -189,11 +189,11 @@ public class HistoricTaskInstanceResponse {
     }
 
     public Date getClaimTime() {
-        return claimTime;
+        return claimTime == null ? null : (Date) this.claimTime.clone();
     }
 
     public void setClaimTime(Date claimTime) {
-        this.claimTime = claimTime;
+        this.claimTime = claimTime == null ? null : (Date) this.claimTime.clone();
     }
 
     public String getTaskDefinitionKey() {
@@ -221,11 +221,11 @@ public class HistoricTaskInstanceResponse {
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = dueDate  == null ? null : (Date) this.dueDate.clone();
     }
 
     public String getParentTaskId() {

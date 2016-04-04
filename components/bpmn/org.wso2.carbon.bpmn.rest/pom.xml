@@ -187,9 +187,14 @@
     <artifactId>jackson-databind</artifactId>
     <version>${jackson.databind.version}</version>
 </dependency>
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.3</version>
+    </dependency>
 
 
-<dependency>
+    <dependency>
     <groupId>commons-httpclient</groupId>
     <artifactId>commons-httpclient</artifactId>
     <version>3.1</version>

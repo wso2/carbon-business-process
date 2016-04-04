@@ -102,7 +102,7 @@ import javax.xml.bind.Unmarshaller;
         name = "org.wso2.carbon.bpmn.rest.service.runtime.WorkflowTaskService",
         service = Microservice.class,
         immediate = true)
-@Path("/tasks")
+@Path("/bps/bpmn/{version}/{context}/tasks")
 public class WorkflowTaskService extends BaseTaskService implements Microservice {
 
     private static final Log log = LogFactory.getLog(WorkflowTaskService.class);
@@ -297,7 +297,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
             request.setCandidateOrAssigned(requestParams.get("candidateOrAssigned"));
         }
 
-        DataResponse dataResponse = getTasksFromQueryRequest(request, queryParams, requestParams);
+        DataResponse dataResponse = getTasksFromQueryRequest(request, queryParams, requestParams,
+                                                             currentRequest.getUri());
         return Response.ok().entity(dataResponse).build();
         //return getTasksFromQueryRequest(request, requestParams);
     }
@@ -305,9 +306,9 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @GET
     @Path("/{task-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getTask(@PathParam("task-id") String taskId) {
-        TaskResponse taskResponse =
-                new RestResponseFactory().createTaskResponse(getTaskFromRequest(taskId));
+    public Response getTask(@PathParam("task-id") String taskId, @Context HttpRequest request) {
+        TaskResponse taskResponse = new RestResponseFactory()
+                .createTaskResponse(getTaskFromRequest(taskId), request.getUri());
 
         return Response.ok().entity(taskResponse).build();
     }
@@ -316,7 +317,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response updateTask(@PathParam("task-id") String taskId, TaskRequest taskRequest) {
+    public Response updateTask(@PathParam("task-id") String taskId, TaskRequest taskRequest,
+                               @Context HttpRequest request) {
 
         if (taskRequest == null) {
             throw new ActivitiException("A request body was expected when updating the task.");
@@ -334,7 +336,9 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
         taskService.saveTask(task);
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
 
-        return Response.ok().entity(new RestResponseFactory().createTaskResponse(task)).build();
+        return Response.ok()
+                       .entity(new RestResponseFactory().createTaskResponse(task, request.getUri()))
+                       .build();
     }
 
     @POST
@@ -374,8 +378,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @DELETE
     @Path("/{task-id}")
     public Response deleteTask(@PathParam("task-id") String taskId,
-                               @DefaultValue("false") @QueryParam("cascadeHistory")
-                               Boolean cascadeHistory,
+                               @DefaultValue("false") @QueryParam("cascadeHistory") Boolean cascadeHistory,
                                @DefaultValue("false") @QueryParam("deleteReason") String deleteReason) {
         Task taskToDelete = getTaskFromRequest(taskId);
         if (taskToDelete.getExecutionId() != null) {
@@ -402,7 +405,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariables(@PathParam("task-id") String taskId,
-                                 @DefaultValue("false") @QueryParam("scope") String scope) {
+                                 @DefaultValue("false") @QueryParam("scope") String scope,
+                                 @Context HttpRequest req) {
 
         List<RestVariable> result = new ArrayList<>();
         Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
@@ -413,14 +417,14 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
             // Use both local and global variables
-            addLocalVariables(task, variableMap);
-            addGlobalVariables(task, variableMap);
+            addLocalVariables(task, variableMap, req.getUri());
+            addGlobalVariables(task, variableMap, req.getUri());
 
         } else if (variableScope == RestVariable.RestVariableScope.GLOBAL) {
-            addGlobalVariables(task, variableMap);
+            addGlobalVariables(task, variableMap, req.getUri());
 
         } else if (variableScope == RestVariable.RestVariableScope.LOCAL) {
-            addLocalVariables(task, variableMap);
+            addLocalVariables(task, variableMap, req.getUri());
         }
 
         // Get unique variables from map
@@ -437,9 +441,10 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RestVariable getVariable(@PathParam("task-id") String taskId,
                                     @PathParam("variable-name") String variableName,
-                                    @DefaultValue("false") @QueryParam("scope") String scope) {
+                                    @DefaultValue("false") @QueryParam("scope") String scope,
+                                    @Context HttpRequest request) {
 
-        return getVariableFromRequest(taskId, variableName, scope, false);
+        return getVariableFromRequest(taskId, variableName, scope, false, request.getUri());
     }
 
     @GET
@@ -447,13 +452,15 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariableData(@PathParam("task-id") String taskId,
                                     @PathParam("variable-name") String variableName,
-                                    @DefaultValue("false") @QueryParam("scope") String scope) {
+                                    @DefaultValue("false") @QueryParam("scope") String scope,
+                                    @Context HttpRequest request) {
 
         Response.ResponseBuilder responseBuilder = Response.ok();
         try {
             byte[] result = null;
 
-            RestVariable variable = getVariableFromRequest(taskId, variableName, scope, true);
+            RestVariable variable =
+                    getVariableFromRequest(taskId, variableName, scope, true, request.getUri());
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
                 responseBuilder.type(MediaType.APPLICATION_OCTET_STREAM);
@@ -507,69 +514,70 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createTaskVariable(@PathParam("task-id") String taskId,
-                                       @Context HttpServletRequest httpServletRequest) {
+                                       @Context HttpServletRequest httpServletRequest,
+                                       @Context HttpRequest request) {
 
         Task task = getTaskFromRequest(taskId);
 
         Object result = null;
         List<RestVariable> inputVariables = new ArrayList<>();
         List<RestVariable> resultVariables = new ArrayList<>();
-        result = resultVariables;
+        //result = resultVariables;
 
-        try {
-            String contentType = httpServletRequest.getContentType();
-            if (contentType.equals(MediaType.APPLICATION_JSON)) {
-                try {
-                    @SuppressWarnings("unchecked") List<Object> variableObjects =
-                            (List<Object>) new ObjectMapper()
-                                    .readValue(httpServletRequest.getInputStream(), List.class);
-                    for (Object restObject : variableObjects) {
-                        RestVariable restVariable =
-                                new ObjectMapper().convertValue(restObject, RestVariable.class);
-                        inputVariables.add(restVariable);
-                    }
-                } catch (IOException e) {
-                    throw new ActivitiIllegalArgumentException(
-                            "request body could not be transformed to a RestVariable " +
-                            "instance.", e);
+        //  try {
+        String contentType = httpServletRequest.getContentType();
+        if (contentType.equals(MediaType.APPLICATION_JSON)) {
+            try {
+                @SuppressWarnings("unchecked") List<Object> variableObjects =
+                        (List<Object>) new ObjectMapper()
+                                .readValue(httpServletRequest.getInputStream(), List.class);
+                for (Object restObject : variableObjects) {
+                    RestVariable restVariable =
+                            new ObjectMapper().convertValue(restObject, RestVariable.class);
+                    inputVariables.add(restVariable);
                 }
-
-            } else if (contentType.equals(MediaType.APPLICATION_XML)) {
-
-                JAXBContext jaxbContext = null;
-                try {
-                    jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
-                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    RestVariableCollection restVariableCollection =
-                            (RestVariableCollection) jaxbUnmarshaller.unmarshal
-                                    (httpServletRequest.getInputStream());
-                    if (restVariableCollection == null) {
-                        throw new ActivitiIllegalArgumentException(
-                                "xml request body could not be transformed to a " +
-                                "RestVariable Collection instance.");
-                    }
-                    List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
-
-                    if (restVariableList.size() == 0) {
-                        throw new ActivitiIllegalArgumentException(
-                                "xml request body could not identify any rest " +
-                                "variables to be updated");
-                    }
-                    for (RestVariable restVariable : restVariableList) {
-                        inputVariables.add(restVariable);
-                    }
-
-                } catch (JAXBException | IOException e) {
-                    throw new ActivitiIllegalArgumentException(
-                            "xml request body could not be transformed to a " +
-                            "RestVariable instance.", e);
-                }
+            } catch (IOException e) {
+                throw new ActivitiIllegalArgumentException(
+                        "request body could not be transformed to a RestVariable " + "instance.",
+                        e);
             }
 
-        } catch (Exception e) {
+        } else if (contentType.equals(MediaType.APPLICATION_XML)) {
+
+            JAXBContext jaxbContext = null;
+            try {
+                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                RestVariableCollection restVariableCollection =
+                        (RestVariableCollection) jaxbUnmarshaller
+                                .unmarshal(httpServletRequest.getInputStream());
+                if (restVariableCollection == null) {
+                    throw new ActivitiIllegalArgumentException(
+                            "xml request body could not be transformed to a " +
+                            "RestVariable Collection instance.");
+                }
+                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
+
+                if (restVariableList.size() == 0) {
+                    throw new ActivitiIllegalArgumentException(
+                            "xml request body could not identify any rest " +
+                            "variables to be updated");
+                }
+                for (RestVariable restVariable : restVariableList) {
+                    inputVariables.add(restVariable);
+                }
+
+            } catch (JAXBException | IOException e) {
+                throw new ActivitiIllegalArgumentException(
+                        "xml request body could not be transformed to a " +
+                        "RestVariable instance.", e);
+            }
+        }
+
+        /*} catch (Exception e) {
             throw new ActivitiIllegalArgumentException(
                     "Failed to serialize to a RestVariable instance", e);
-        }
+        }*/
 
         if (inputVariables.size() == 0) {
             throw new ActivitiIllegalArgumentException(
@@ -613,7 +621,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                                         .createRestVariable(var.getName(), actualVariableValue,
                                                             varScope, task.getId(),
                                                             RestResponseFactory.VARIABLE_TASK,
-                                                            false));
+                                                            false, request.getUri()));
         }
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
@@ -671,7 +679,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateTaskVariable(@PathParam("task-id") String taskId,
                                        @PathParam("variable-name") String variableName,
-                                       @Context HttpServletRequest httpServletRequest) {
+                                       @Context HttpServletRequest httpServletRequest,
+                                       @Context HttpRequest request) {
         Task task = getTaskFromRequest(taskId);
 
         RestVariable restVariable = null;
@@ -679,8 +688,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
 
         if (MediaType.APPLICATION_JSON.equals(contentType)) {
             try {
-                restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(),
-                                                            RestVariable.class);
+                restVariable = new ObjectMapper()
+                        .readValue(httpServletRequest.getInputStream(), RestVariable.class);
             } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException(
                         "Error converting request body to RestVariable instance", e);
@@ -690,8 +699,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal
-                        (httpServletRequest.getInputStream());
+                restVariable = (RestVariable) jaxbUnmarshaller
+                        .unmarshal(httpServletRequest.getInputStream());
 
             } catch (JAXBException | IOException e) {
                 throw new ActivitiIllegalArgumentException(
@@ -708,7 +717,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                     " URL.");
         }
 
-        RestVariable result = setSimpleVariable(restVariable, task, false);
+        RestVariable result = setSimpleVariable(restVariable, task, false, request.getUri());
         return Response.ok().entity(result).build();
     }
 
@@ -764,12 +773,14 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @GET
     @Path("/{task-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIdentityLinks(@PathParam("task-id") String taskId) {
+    public Response getIdentityLinks(@PathParam("task-id") String taskId,
+                                     @Context HttpRequest request) {
         Task task = getTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
 
-        List<RestIdentityLink> restIdentityLinks = new RestResponseFactory().createRestIdentityLinks(
-                taskService.getIdentityLinksForTask(task.getId()));
+        List<RestIdentityLink> restIdentityLinks = new RestResponseFactory()
+                .createRestIdentityLinks(taskService.getIdentityLinksForTask(task.getId()),
+                                         request.getUri());
         RestIdentityLinkCollection restIdentityLinkCollection = new RestIdentityLinkCollection();
         restIdentityLinkCollection.setRestIdentityLinks(restIdentityLinks);
         return Response.ok().entity(restIdentityLinkCollection).build();
@@ -779,7 +790,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}/identity-links/{family}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getIdentityLinksForFamily(@PathParam("task-id") String taskId,
-                                              @PathParam("family") String family) {
+                                              @PathParam("family") String family,
+                                              @Context HttpRequest request) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -804,7 +816,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
             }
 
             if (match) {
-                results.add(new RestResponseFactory().createRestIdentityLink(link));
+                results.add(
+                        new RestResponseFactory().createRestIdentityLink(link, request.getUri()));
             }
         }
         RestIdentityLinkCollection restIdentityLinkCollection = new RestIdentityLinkCollection();
@@ -820,14 +833,16 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                                     @PathParam("family") String family,
                                     @PathParam("identity-id") String identityId,
                                     @PathParam("type") String type,
-                                    @Context HttpServletRequest httpServletRequest) {
+                                    @Context HttpServletRequest httpServletRequest,
+                                    @Context HttpRequest request) {
 
         Task task = getTaskFromRequest(taskId);
         validateIdentityLinkArguments(family, identityId, type);
 
         IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
 
-        return Response.ok().entity(new RestResponseFactory().createRestIdentityLink(link)).build();
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createRestIdentityLink(link, request.getUri())).build();
     }
 
     @DELETE
@@ -859,7 +874,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createIdentityLink(@PathParam("task-id") String taskId,
-                                       RestIdentityLink identityLink) {
+                                       RestIdentityLink identityLink,
+                                       @Context HttpRequest request) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -888,7 +904,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
 
         RestIdentityLink restIdentityLink = new RestResponseFactory()
                 .createRestIdentityLink(identityLink.getType(), identityLink.getUser(),
-                                        identityLink.getGroup(), task.getId(), null, null);
+                                        identityLink.getGroup(), task.getId(), null, null,
+                                        request.getUri());
 
         return Response.ok().status(Response.Status.CREATED).entity(restIdentityLink).build();
     }
@@ -1053,7 +1070,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createAttachmentForNonBinary(@PathParam("task-id") String taskId,
                                                  @Context HttpServletRequest httpServletRequest,
-                                                 AttachmentRequest attachmentRequest) {
+                                                 AttachmentRequest attachmentRequest,
+                                                 @Context HttpRequest request) {
 
         AttachmentResponse result = null;
         Task task = getTaskFromRequest(taskId);
@@ -1063,14 +1081,15 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                     "AttachmentRequest properties not found in request");
         }
 
-        result = createSimpleAttachment(attachmentRequest, task);
+        result = createSimpleAttachment(attachmentRequest, task, request);
         return responseBuilder.status(Response.Status.CREATED).entity(result).build();
     }
 
     @GET
     @Path("/{task-id}/attachments")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getAttachments(@PathParam("task-id") String taskId) {
+    public Response getAttachments(@PathParam("task-id") String taskId,
+                                   @Context HttpRequest request) {
         List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
@@ -1080,7 +1099,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
 
         for (Attachment attachment : taskService
                 .getProcessInstanceAttachments(task.getProcessInstanceId())) {
-            result.add(restResponseFactory.createAttachmentResponse(attachment));
+            result.add(restResponseFactory.createAttachmentResponse(attachment, request.getUri()));
         }
 
         AttachmentResponseCollection attachmentResponseCollection =
@@ -1094,7 +1113,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}/attachments/{attachment-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getAttachment(@PathParam("task-id") String taskId,
-                                  @PathParam("attachment-id") String attachmentId) {
+                                  @PathParam("attachment-id") String attachmentId,
+                                  @Context HttpRequest request) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1106,7 +1126,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                     attachmentId + "'.", Comment.class);
         }
 
-        return Response.ok().entity(new RestResponseFactory().createAttachmentResponse(attachment))
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createAttachmentResponse(attachment, request.getUri()))
                        .build();
     }
 
@@ -1175,11 +1196,11 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @GET
     @Path("/{task-id}/comments")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getComments(@PathParam("task-id") String taskId) {
+    public Response getComments(@PathParam("task-id") String taskId, @Context HttpRequest request) {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
-        List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList(
-                taskService.getTaskComments(task.getId()));
+        List<CommentResponse> commentResponseList = new RestResponseFactory()
+                .createRestCommentList(taskService.getTaskComments(task.getId()), request.getUri());
         CommentResponseCollection commentResponseCollection = new CommentResponseCollection();
         commentResponseCollection.setCommentResponseList(commentResponseList);
 
@@ -1190,7 +1211,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}/comments")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response createComment(@PathParam("task-id") String taskId, CommentRequest comment) {
+    public Response createComment(@PathParam("task-id") String taskId, CommentRequest comment,
+                                  @Context HttpRequest request) {
 
         Task task = getTaskFromRequest(taskId);
 
@@ -1208,7 +1230,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                 taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
 
         CommentResponse commentResponse =
-                new RestResponseFactory().createRestComment(createdComment);
+                new RestResponseFactory().createRestComment(createdComment, request.getUri());
         return Response.ok().status(Response.Status.CREATED).entity(commentResponse).build();
     }
 
@@ -1216,7 +1238,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}/comments/{comment-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getComment(@PathParam("task-id") String taskId,
-                               @PathParam("comment-id") String commentId) {
+                               @PathParam("comment-id") String commentId,
+                               @Context HttpRequest request) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1227,7 +1250,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                     "'.", Comment.class);
         }
 
-        return Response.ok().entity(new RestResponseFactory().createRestComment(comment)).build();
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createRestComment(comment, request.getUri())).build();
     }
 
     @DELETE
@@ -1255,11 +1279,11 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @GET
     @Path("/{task-id}/events")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getEvents(@PathParam("task-id") String taskId) {
+    public Response getEvents(@PathParam("task-id") String taskId, @Context HttpRequest request) {
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
-        List<EventResponse> eventResponseList = new RestResponseFactory().createEventResponseList
-                (taskService.getTaskEvents(task.getId()));
+        List<EventResponse> eventResponseList = new RestResponseFactory()
+                .createEventResponseList(taskService.getTaskEvents(task.getId()), request.getUri());
 
         EventResponseCollection eventResponseCollection = new EventResponseCollection();
         eventResponseCollection.setEventResponseList(eventResponseList);
@@ -1271,7 +1295,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     @Path("/{task-id}/events/{event-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getEvent(@PathParam("task-id") String taskId,
-                             @PathParam("event-id") String eventId) {
+                             @PathParam("event-id") String eventId, @Context HttpRequest request) {
 
         HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
         TaskService taskService = BPMNOSGIService.getTaskService();
@@ -1283,7 +1307,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                     Event.class);
         }
 
-        EventResponse eventResponse = new RestResponseFactory().createEventResponse(event);
+        EventResponse eventResponse =
+                new RestResponseFactory().createEventResponse(event, request.getUri());
         return Response.ok().entity(eventResponse).build();
     }
 
@@ -1319,7 +1344,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     }
 
     protected AttachmentResponse createSimpleAttachment(AttachmentRequest attachmentRequest,
-                                                        Task task) {
+                                                        Task task, @Context HttpRequest request) {
 
         if (attachmentRequest.getName() == null) {
             throw new ActivitiIllegalArgumentException("Attachment name is required.");
@@ -1333,7 +1358,8 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                                   attachmentRequest.getDescription(),
                                   attachmentRequest.getExternalUrl());
 
-        return new RestResponseFactory().createAttachmentResponse(createdAttachment);
+        return new RestResponseFactory()
+                .createAttachmentResponse(createdAttachment, request.getUri());
     }
     //TODO:
 /*    protected AttachmentResponse createBinaryAttachment(HttpServletRequest httpServletRequest,
@@ -1412,7 +1438,8 @@ Task task, Response.ResponseBuilder responseBuilder) throws
         }
     }
 
-    protected RestVariable setSimpleVariable(RestVariable restVariable, Task task, boolean isNew) {
+    protected RestVariable setSimpleVariable(RestVariable restVariable, Task task, boolean isNew,
+                                             String baseContext) {
         if (restVariable.getName() == null) {
             throw new ActivitiIllegalArgumentException("Variable name is required");
         }
@@ -1429,7 +1456,8 @@ Task task, Response.ResponseBuilder responseBuilder) throws
 
         return restResponseFactory
                 .createRestVariable(restVariable.getName(), actualVariableValue, scope,
-                                    task.getId(), RestResponseFactory.VARIABLE_TASK, false);
+                                    task.getId(), RestResponseFactory.VARIABLE_TASK, false,
+                                    baseContext);
     }
 
     protected void completeTask(Task task, TaskActionRequest actionRequest,
@@ -1486,7 +1514,7 @@ Task task, Response.ResponseBuilder responseBuilder) throws
         if (taskRequest.isDescriptionSet()) {
             task.setDescription(taskRequest.getDescription());
         }
-        if (taskRequest.isDuedateSet()) {
+        if (taskRequest.isDueDateSet()) {
             task.setDueDate(taskRequest.getDueDate());
         }
         if (taskRequest.isOwnerSet()) {

@@ -18,6 +18,7 @@
 package org.wso2.carbon.bpmn.rest.service.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -54,7 +55,8 @@ public class BaseRuntimeService {
 
     @Context
     protected UriInfo uriInfo;
-
+    @Context
+    protected HttpRequest req;
     @Context
     protected Request request;
 
@@ -146,7 +148,7 @@ public class BaseRuntimeService {
             requestParams.put("withoutTenantId", queryRequest.getWithoutTenantId().toString());
         }
 
-        return new ExecutionPaginateList(new RestResponseFactory())
+        return new ExecutionPaginateList(new RestResponseFactory(), req.getUri())
                 .paginateList(requestParams, queryRequest, query, "processInstanceId",
                               allowedSortProperties);
     }
@@ -303,7 +305,7 @@ public class BaseRuntimeService {
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
                 .createRestVariables(rawLocalvariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.LOCAL);
+                                     RestVariable.RestVariableScope.LOCAL, req.getUri());
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
@@ -315,7 +317,7 @@ public class BaseRuntimeService {
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory()
                 .createRestVariables(rawVariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.GLOBAL);
+                                     RestVariable.RestVariableScope.GLOBAL, req.getUri());
 
         // Overlay global variables over local ones. In case they are present the values are
         // not overridden,
@@ -614,7 +616,8 @@ int variableType) {
 
         return new RestResponseFactory()
                 .createRestVariable(variableName, value, variableScope, executionId,
-                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
+                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary,
+                                    req.getUri());
     }
 
 }

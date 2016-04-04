@@ -64,7 +64,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.repository.DeploymentService",
         service = Microservice.class,
         immediate = true)
-@Path("/deployments")
+@Path("/bps/bpmn/{version}/{context}/deployments")
 public class DeploymentService implements Microservice {
 
     private static final Log log = LogFactory.getLog(DeploymentService.class);
@@ -174,7 +174,7 @@ public class DeploymentService implements Microservice {
         }
 
         DeploymentsPaginateList deploymentsPaginateList =
-                new DeploymentsPaginateList(new RestResponseFactory());
+                new DeploymentsPaginateList(new RestResponseFactory(), request.getUri());
         DataResponse dataResponse = deploymentsPaginateList
                 .paginateList(allRequestParams, deploymentQuery, "id", allowedSortProperties);
 
@@ -184,7 +184,8 @@ public class DeploymentService implements Microservice {
     @GET
     @Path("/{deployment-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getDeployment(@PathParam("deployment-id") String deploymentId) {
+    public Response getDeployment(@PathParam("deployment-id") String deploymentId,
+                                  @Context HttpRequest request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Deployment deployment =
@@ -197,7 +198,7 @@ public class DeploymentService implements Microservice {
         }
 
         DeploymentResponse deploymentResponse =
-                new RestResponseFactory().createDeploymentResponse(deployment);
+                new RestResponseFactory().createDeploymentResponse(deployment, request.getUri());
         return Response.ok().entity(deploymentResponse).build();
     }
 
@@ -206,7 +207,7 @@ public class DeploymentService implements Microservice {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getDeploymentResourceForDifferentUrl(
             @PathParam("deployment-id") String deploymentId,
-            @PathParam("resource-path") String resourcePath) {
+            @PathParam("resource-path") String resourcePath, @Context HttpRequest request) {
 
         if (log.isDebugEnabled()) {
             log.debug("deployment-id:" + deploymentId + " resource-path:" + resourcePath);
@@ -227,7 +228,8 @@ public class DeploymentService implements Microservice {
             // Build resource representation
             DeploymentResourceResponse deploymentResourceResponse = new RestResponseFactory()
                     .createDeploymentResourceResponse(deploymentId, resourcePath,
-                                                      Utils.resolveContentType(resourcePath));
+                                                      Utils.resolveContentType(resourcePath),
+                                                      request.getUri());
             return Response.ok().entity(deploymentResourceResponse).build();
 
         } else {
@@ -242,7 +244,8 @@ public class DeploymentService implements Microservice {
     @GET
     @Path("/{deployment-id}/resources")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId) {
+    public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId,
+                                           @Context HttpRequest request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         // Check if deployment exists
@@ -257,7 +260,8 @@ public class DeploymentService implements Microservice {
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
         DeploymentResourceResponseCollection deploymentResourceResponseCollection =
                 new RestResponseFactory()
-                        .createDeploymentResourceResponseList(deploymentId, resourceList);
+                        .createDeploymentResourceResponseList(deploymentId, resourceList,
+                                                              request.getUri());
 
         return Response.ok().entity(deploymentResourceResponseCollection).build();
     }

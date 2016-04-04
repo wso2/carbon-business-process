@@ -26,13 +26,14 @@ import java.util.List;
  */
 public class HistoricProcessInstancePaginateList extends AbstractPaginateList {
 
-    public HistoricProcessInstancePaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public HistoricProcessInstancePaginateList(RestResponseFactory restResponseFactory,
+                                               String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createHistoricProcessInstanceResponseList(list);
+        return restResponseFactory.createHistoricProcessInstanceResponseList(list, baseContext);
     }
 }

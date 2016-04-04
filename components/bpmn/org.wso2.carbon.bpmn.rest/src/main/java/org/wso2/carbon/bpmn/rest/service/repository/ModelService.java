@@ -54,7 +54,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.repository.ModelService",
         service = Microservice.class,
         immediate = true)
-@Path("/models")
+@Path("/bps/bpmn/{version}/{context}/models")
 public class ModelService implements Microservice {
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
@@ -225,7 +225,7 @@ public class ModelService implements Microservice {
             }
         }
 
-        DataResponse response = new ModelsPaginateList(new RestResponseFactory())
+        DataResponse response = new ModelsPaginateList(new RestResponseFactory(), request.getUri())
                 .paginateList(allRequestParams, modelQuery, "id", allowedSortProperties);
 
         List<ModelResponse> modelResponseList = (List<ModelResponse>) response.getData();

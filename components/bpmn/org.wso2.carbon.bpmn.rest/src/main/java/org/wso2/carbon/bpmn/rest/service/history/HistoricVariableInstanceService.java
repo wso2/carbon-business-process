@@ -97,7 +97,7 @@ public class HistoricVariableInstanceService extends BaseHistoricVariableInstanc
             query.setVariableNameLike(allRequestParams.get("variableNameLike"));
         }
 
-        DataResponse dataResponse = getQueryResponse(query, allRequestParams);
+        DataResponse dataResponse = getQueryResponse(query, allRequestParams, request.getUri());
         return Response.ok().entity(dataResponse).build();
     }
 

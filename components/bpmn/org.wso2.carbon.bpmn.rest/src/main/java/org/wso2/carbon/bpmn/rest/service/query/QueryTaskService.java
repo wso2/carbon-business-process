@@ -43,7 +43,8 @@ public class QueryTaskService extends BaseTaskService {
     public Response getTasks(TaskQueryRequest request, @Context HttpRequest currentRequest) {
         QueryStringDecoder decoder = new QueryStringDecoder(currentRequest.getUri());
         Map<String, List<String>> queryParams = decoder.parameters();
-        DataResponse dataResponse = getTasksFromQueryRequest(request, queryParams, null);
+        DataResponse dataResponse =
+                getTasksFromQueryRequest(request, queryParams, null, currentRequest.getUri());
         return Response.ok().entity(dataResponse).build();
     }
 }

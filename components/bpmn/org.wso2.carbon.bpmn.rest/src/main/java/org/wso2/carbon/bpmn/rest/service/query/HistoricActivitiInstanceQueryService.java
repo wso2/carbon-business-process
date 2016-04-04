@@ -52,7 +52,8 @@ public class HistoricActivitiInstanceQueryService extends BaseHistoricActivitiIn
             }
         }
 
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
+        DataResponse dataResponse =
+                getQueryResponse(queryRequest, allRequestParams, request.getUri());
         return Response.ok().entity(dataResponse).build();
     }
 

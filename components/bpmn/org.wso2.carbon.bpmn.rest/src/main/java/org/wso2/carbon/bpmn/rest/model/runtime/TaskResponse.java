@@ -157,19 +157,19 @@ public class TaskResponse {
     }
 
     public Date getCreateTime() {
-        return createTime;
+        return createTime == null ? null : (Date) this.createTime.clone();
     }
 
     public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+        this.createTime = createTime == null ? null : (Date) this.createTime.clone();
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public int getPriority() {

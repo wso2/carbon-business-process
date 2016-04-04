@@ -25,7 +25,6 @@ import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailPaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +62,7 @@ public class BaseHistoricDetailService {
     }
 
     protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
@@ -91,7 +90,7 @@ public class BaseHistoricDetailService {
             }
         }
 
-        return new HistoricDetailPaginateList(new RestResponseFactory())
+        return new HistoricDetailPaginateList(new RestResponseFactory(), baseName)
                 .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
                               allowedSortProperties);
     }

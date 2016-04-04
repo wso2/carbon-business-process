@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.bpmn.rest.service.form;
 
+import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -41,6 +42,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -67,7 +69,7 @@ public class FormDataService implements Microservice {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getFormData(@QueryParam("taskId") String taskId,
+    public Response getFormData(@Context HttpRequest request, @QueryParam("taskId") String taskId,
                                 @QueryParam("processDefinitionId") String processDefinitionId) {
 
         if (taskId == null && processDefinitionId == null) {
@@ -96,14 +98,15 @@ public class FormDataService implements Microservice {
                     "Could not find a form data with id '" + id + "'.", FormData.class);
         }
 
-        return Response.ok().entity(new RestResponseFactory().createFormDataResponse(formData))
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createFormDataResponse(formData, request.getUri()))
                        .build();
     }
 
     @POST
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response submitForm(SubmitFormRequest submitRequest) {
+    public Response submitForm(SubmitFormRequest submitRequest, @Context HttpRequest request) {
 
         if (submitRequest == null) {
             throw new ActivitiException(
@@ -138,8 +141,8 @@ public class FormDataService implements Microservice {
                 processInstance = formService
                         .submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
             }
-            ProcessInstanceResponse processInstanceResponse =
-                    new RestResponseFactory().createProcessInstanceResponse(processInstance);
+            ProcessInstanceResponse processInstanceResponse = new RestResponseFactory()
+                    .createProcessInstanceResponse(processInstance, request.getUri());
             return response.entity(processInstanceResponse).build();
         }
     }

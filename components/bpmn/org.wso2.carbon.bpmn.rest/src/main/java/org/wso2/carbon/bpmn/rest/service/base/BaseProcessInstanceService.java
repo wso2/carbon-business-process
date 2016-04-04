@@ -119,7 +119,8 @@ public class BaseProcessInstanceService {
         return execution;
     }
 
-    protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
+    protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance,
+                                                              String baseContext) {
         if (!processInstance.isSuspended()) {
             throw new BPMNConflictException("Process instance with id '" +
                                             processInstance.getId() + "' is already active.");
@@ -128,8 +129,8 @@ public class BaseProcessInstanceService {
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
-        ProcessInstanceResponse response =
-                new RestResponseFactory().createProcessInstanceResponse(processInstance);
+        ProcessInstanceResponse response = new RestResponseFactory()
+                .createProcessInstanceResponse(processInstance, baseContext);
 
         // No need to re-fetch the instance, just alter the suspended state of the result-object
         response.setSuspended(false);
@@ -137,7 +138,8 @@ public class BaseProcessInstanceService {
     }
 
     protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance,
-                                                             RestResponseFactory restResponseFactory) {
+                                                             RestResponseFactory restResponseFactory,
+                                                             String baseContext) {
         if (processInstance.isSuspended()) {
             throw new BPMNConflictException("Process instance with id '" +
                                             processInstance.getId() + "' is already suspended.");
@@ -147,7 +149,7 @@ public class BaseProcessInstanceService {
         runtimeService.suspendProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response =
-                restResponseFactory.createProcessInstanceResponse(processInstance);
+                restResponseFactory.createProcessInstanceResponse(processInstance, baseContext);
 
         // No need to re-fetch the instance, just alter the suspended state of the result-object
         response.setSuspended(true);
@@ -155,7 +157,7 @@ public class BaseProcessInstanceService {
     }
 
     protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest,
-                                            Map<String, String> requestParams) {
+                                            Map<String, String> requestParams, String baseName) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
@@ -213,7 +215,7 @@ public class BaseProcessInstanceService {
             query.processInstanceWithoutTenantId();
         }
 
-        return new ProcessInstancePaginateList(new RestResponseFactory())
+        return new ProcessInstancePaginateList(new RestResponseFactory(), baseName)
                 .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
     }
 
@@ -283,7 +285,8 @@ public class BaseProcessInstanceService {
 
                 case LIKE:
                     if (actualValue instanceof String) {
-                        processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
+                        processInstanceQuery
+                                .variableValueLike(variable.getName(), (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported for like, but was: " +
@@ -296,7 +299,8 @@ public class BaseProcessInstanceService {
                     break;
 
                 case GREATER_THAN_OR_EQUALS:
-                    processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
+                    processInstanceQuery
+                            .variableValueGreaterThanOrEqual(variable.getName(), actualValue);
                     break;
 
                 case LESS_THAN:
@@ -304,7 +308,8 @@ public class BaseProcessInstanceService {
                     break;
 
                 case LESS_THAN_OR_EQUALS:
-                    processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
+                    processInstanceQuery
+                            .variableValueLessThanOrEqual(variable.getName(), actualValue);
                     break;
 
                 default:

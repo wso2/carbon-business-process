@@ -18,30 +18,30 @@
 
 package org.wso2.carbon.bpmn.rest.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.IdentityService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import org.activiti.engine.IdentityService;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 //import org.apache.cxf.configuration.security.AuthorizationPolicy;
 //import org.apache.cxf.jaxrs.ext.RequestHandler;
 //import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 //import org.apache.cxf.message.Message;
-import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
-import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
-import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.registry.core.config.RegistryContext;
-import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.user.core.tenant.TenantManager;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+//import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
+//import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
+//import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
+//import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+//import org.wso2.carbon.context.PrivilegedCarbonContext;
+//import org.wso2.carbon.registry.core.config.RegistryContext;
+//import org.wso2.carbon.user.api.UserStoreException;
+//import org.wso2.carbon.user.core.service.RealmService;
+//import org.wso2.carbon.user.core.tenant.TenantManager;
+//import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
+//import javax.ws.rs.core.MediaType;
+//import javax.ws.rs.core.Response;
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.Map;
 
 public class AuthenticationHandler implements RequestHandler {
 

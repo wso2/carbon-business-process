@@ -122,11 +122,11 @@ public class JobResponse {
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = dueDate  == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setTenantId(String tenantId) {
