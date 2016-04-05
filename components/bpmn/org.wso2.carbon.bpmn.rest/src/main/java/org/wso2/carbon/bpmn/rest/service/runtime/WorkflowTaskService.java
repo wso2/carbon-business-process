@@ -34,6 +34,7 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
+//import org.apache.commons.lang.CharSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
@@ -76,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -738,7 +740,7 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
         if (!hasVariableOnScope(task, variableName, scope)) {
             throw new ActivitiObjectNotFoundException(
                     "Task '" + task.getId() + "' doesn't have a variable '" +
-                    variableName + "' in scope " + scope.name().toLowerCase(),
+                    variableName + "' in scope " + scope.name().toLowerCase(Locale.getDefault()),
                     VariableInstanceEntity.class);
         }
 

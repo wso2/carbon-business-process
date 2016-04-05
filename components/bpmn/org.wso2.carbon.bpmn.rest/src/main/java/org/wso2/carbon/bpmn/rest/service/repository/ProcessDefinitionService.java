@@ -227,10 +227,10 @@ public class ProcessDefinitionService {
     @GET
     @Path("/{process-definition-id}/identity-links/{family}/{identity-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIdentityLink(@PathParam("process-definition-id") String processDefinitionId,
-                                    @PathParam("family") String family,
-                                    @PathParam("identity-id") String identityId,
-                                    @Context HttpRequest request) {
+    public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
+                                     @PathParam("family") String family,
+                                     @PathParam("identity-id") String identityId,
+                                     @Context HttpRequest request) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);

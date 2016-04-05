@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 
 /**
- *
+ * Rest component lookup for bpmnEngineService
  */
 @Component(
         name = "org.wso2.carbon.bpmn.rest.common.utils.RestServiceLookupComponent",
@@ -32,7 +32,16 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 
 public class RestServiceLookUpComponent {
     private static final Logger log = LoggerFactory.getLogger(RestServiceLookUpComponent.class);
-    private static BPMNEngineService engineService;
+    private static RestServiceLookUpComponent instance = new RestServiceLookUpComponent();
+    private BPMNEngineService engineService;
+
+    private RestServiceLookUpComponent() {
+        engineService = null;
+    }
+
+    public static RestServiceLookUpComponent getInstance() {
+        return instance;
+    }
 
     @Reference(
             name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
@@ -40,13 +49,12 @@ public class RestServiceLookUpComponent {
             cardinality = ReferenceCardinality.MANDATORY,
             policy = ReferencePolicy.DYNAMIC,
             unbind = "unRegisterBPMNEngineService")
-
-    protected void setBpmnEngineService(BPMNEngineService engineService) {
-        RestServiceLookUpComponent.engineService = engineService;
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        this.engineService = engineService;
     }
 
-    public static BPMNEngineService getBpmnEngineService() {
-        return engineService;
+    public BPMNEngineService getBpmnEngineService() {
+        return this.engineService;
     }
 
     protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {

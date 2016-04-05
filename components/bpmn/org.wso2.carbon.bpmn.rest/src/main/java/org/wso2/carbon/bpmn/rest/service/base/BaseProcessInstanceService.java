@@ -37,7 +37,8 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,8 @@ import java.util.Map;
 public class BaseProcessInstanceService {
 
     protected static final String DEFAULT_ENCODING = "UTF-8";
-    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
 
     static {
         ALL_PROPERTIES_LIST.add("id");
@@ -72,12 +73,12 @@ public class BaseProcessInstanceService {
     }
 
     static {
-        allowedSortProperties
-                .put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
-        allowedSortProperties
-                .put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
-        allowedSortProperties.put("id", ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
+        HashMap<String, QueryProperty> sortMap = new HashMap<>();
+        sortMap.put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+        sortMap.put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
+        sortMap.put("id", ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID);
+        sortMap.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
+        ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
     protected Map<String, String> allRequestParams(HttpRequest request) {
@@ -216,7 +217,7 @@ public class BaseProcessInstanceService {
         }
 
         return new ProcessInstancePaginateList(new RestResponseFactory(), baseName)
-                .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
+                .paginateList(requestParams, queryRequest, query, "id", ALLOWED_SORT_PROPERTIES);
     }
 
     protected void addVariables(ProcessInstanceQuery processInstanceQuery,

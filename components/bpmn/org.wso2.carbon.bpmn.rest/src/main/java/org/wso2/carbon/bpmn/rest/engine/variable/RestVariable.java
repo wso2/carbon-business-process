@@ -19,13 +19,14 @@ package org.wso2.carbon.bpmn.rest.engine.variable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-
+import java.util.Locale;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 
 /**
  *
@@ -90,7 +91,7 @@ public class RestVariable {
     public String getScope() {
         String scope = null;
         if (variableScope != null) {
-            scope = variableScope.name().toLowerCase();
+            scope = variableScope.name().toLowerCase(Locale.getDefault());
         }
         return scope;
     }

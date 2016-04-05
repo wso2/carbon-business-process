@@ -47,7 +47,8 @@ public class BPMNOSGIService {
     }
 
     public static BPMNEngineService getBPMNEngineService() {
-        BPMNEngineService bpmnEngineService = RestServiceLookUpComponent.getBpmnEngineService();
+        BPMNEngineService bpmnEngineService =
+                RestServiceLookUpComponent.getInstance().getBpmnEngineService();
 
         if (bpmnEngineService == null) {
             throw new BPMNOSGIServiceException("BPMNEngineService service couldn't be identified");

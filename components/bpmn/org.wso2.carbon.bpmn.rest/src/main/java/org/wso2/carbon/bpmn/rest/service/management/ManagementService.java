@@ -75,7 +75,7 @@ public class ManagementService implements Microservice {
 
     private static final String EXECUTE_ACTION = "execute";
     protected static final Integer DEFAULT_RESULT_SIZE = 10;
-    protected static Map<String, QueryProperty> properties;
+    private static Map<String, QueryProperty> properties;
     private static final List<String> jobPropertiesList = new ArrayList<>();
 
     static {

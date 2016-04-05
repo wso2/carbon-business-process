@@ -29,6 +29,7 @@ public class ExecutionPaginateList extends AbstractPaginateList {
         super(restResponseFactory, baseContext);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
         return restResponseFactory.createExecutionResponseList(list, baseContext);

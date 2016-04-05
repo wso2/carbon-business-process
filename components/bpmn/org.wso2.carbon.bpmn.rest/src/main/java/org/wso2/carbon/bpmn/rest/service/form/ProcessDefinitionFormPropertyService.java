@@ -97,11 +97,11 @@ public class ProcessDefinitionFormPropertyService implements Microservice {
                         if (valuesMap != null) {
                             List<FormPropertyEnumDataHolder> formPropertyEnumDataHoldersList =
                                     new ArrayList<>();
-                            for (String key : valuesMap.keySet()) {
+                            for (Map.Entry<String, String> entry : valuesMap.entrySet()) {
                                 FormPropertyEnumDataHolder formPropertyEnumDataHolder =
                                         new FormPropertyEnumDataHolder();
-                                formPropertyEnumDataHolder.setId(key);
-                                formPropertyEnumDataHolder.setName(valuesMap.get(key));
+                                formPropertyEnumDataHolder.setId(entry.getKey());
+                                formPropertyEnumDataHolder.setName(entry.getValue());
                                 formPropertyEnumDataHoldersList.add(formPropertyEnumDataHolder);
                             }
                         }

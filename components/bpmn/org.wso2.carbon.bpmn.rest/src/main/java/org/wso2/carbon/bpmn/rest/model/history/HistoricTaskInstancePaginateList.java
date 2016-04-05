@@ -26,14 +26,15 @@ import java.util.List;
  */
 public class HistoricTaskInstancePaginateList extends AbstractPaginateList {
 
-    protected String serverRootURL;
+    //protected String serverRootURL;
 
     public HistoricTaskInstancePaginateList(RestResponseFactory restResponseFactory,
-                                            String serverRootURL, String baseContext) {
+                                             String baseContext) {
         super(restResponseFactory, baseContext);
-        this.serverRootURL = serverRootURL;
+        //this.serverRootURL = serverRootURL;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
         return restResponseFactory.createHistoricTaskInstanceResponseList(list, baseContext);

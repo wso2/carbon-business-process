@@ -17,7 +17,7 @@
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -76,8 +76,8 @@ public class BaseRuntimeService {
     }
 
     protected RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    //TODO:
+   // protected ObjectMapper objectMapper = new ObjectMapper();
 
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
                                             Map<String, String> requestParams,

@@ -35,7 +35,7 @@
     <properties>
         <jackson.version>1.8.6</jackson.version>
         <jackson.databind.version>2.3.5</jackson.databind.version>
-        <checkstyle.skip>true</checkstyle.skip>
+        <checkstyle.skip>false</checkstyle.skip>
     </properties>
 
 
@@ -93,7 +93,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-        <skip>true</skip>
+        <skip>false</skip>
         </configuration>
         </plugin>
         </plugins>

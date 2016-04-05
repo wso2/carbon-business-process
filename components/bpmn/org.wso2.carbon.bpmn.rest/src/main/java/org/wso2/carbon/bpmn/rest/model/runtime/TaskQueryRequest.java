@@ -262,7 +262,7 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn == null ? null : (Date) this.createdOn.clone();
+        this.createdOn = (Date) createdOn.clone();
     }
 
     public Date getCreatedBefore() {
@@ -270,7 +270,7 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public void setCreatedBefore(Date createdBefore) {
-        this.createdBefore = createdBefore == null ? null : (Date) this.createdBefore.clone();
+        this.createdBefore = (Date) createdBefore.clone();
     }
 
     public Date getCreatedAfter() {
@@ -278,7 +278,7 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public void setCreatedAfter(Date createdAfter) {
-        this.createdAfter = createdAfter == null ? null : (Date) this.createdAfter.clone();
+        this.createdAfter = (Date) createdAfter.clone();
     }
 
     public Boolean getExcludeSubTasks() {
@@ -310,7 +310,7 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate == null ? null : (Date) this.dueDate.clone();
+        this.dueDate = (Date) dueDate.clone();
     }
 
     public Date getDueBefore() {
@@ -318,7 +318,7 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public void setDueBefore(Date dueBefore) {
-        this.dueBefore = dueBefore == null ? null : (Date) this.dueBefore.clone();
+        this.dueBefore = (Date) dueBefore.clone();
     }
 
     public Date getDueAfter() {
@@ -326,7 +326,7 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public void setDueAfter(Date dueAfter) {
-        this.dueAfter = dueAfter == null ? null : (Date) this.dueAfter.clone();
+        this.dueAfter = (Date) dueAfter.clone();
     }
 
     public Boolean getActive() {
