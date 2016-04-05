@@ -32,8 +32,7 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstancePaginateL
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ import java.util.Map;
  */
 public class BaseHistoricTaskInstanceService {
 
-    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
 
     static {
@@ -302,8 +301,8 @@ public class BaseHistoricTaskInstanceService {
         }
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
-
-        return new HistoricTaskInstancePaginateList(restResponseFactory, serverRootUrl, baseName)
+        //serverRootUrl was passed before
+        return new HistoricTaskInstancePaginateList(restResponseFactory, baseName)
                 .paginateList(allRequestParams, queryRequest, query, "taskInstanceId",
                               allowedSortProperties);
     }
@@ -399,11 +398,11 @@ public class BaseHistoricTaskInstanceService {
             switch (variable.getVariableOperation()) {
 
                 case EQUALS:
-                    if (nameLess) {
-                        taskInstanceQuery.taskVariableValueEquals(actualValue);
-                    } else {
+//                    if (nameLess) {
+//                        taskInstanceQuery.taskVariableValueEquals(actualValue);
+//                    } else {
                         taskInstanceQuery.taskVariableValueEquals(variable.getName(), actualValue);
-                    }
+                   // }
                     break;
 
                 case EQUALS_IGNORE_CASE:

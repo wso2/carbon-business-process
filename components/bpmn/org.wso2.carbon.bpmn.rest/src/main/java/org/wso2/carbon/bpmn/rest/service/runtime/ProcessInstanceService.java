@@ -81,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 //import javax.activation.DataHandler;
@@ -603,7 +604,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         }
         if (!restVariable.getName().equals(variableName)) {
             throw new ActivitiIllegalArgumentException(
-                    "Variable name in the body should be equal to the name used in the requested URL.");
+                    "Variable name in the body should be equal to the name used in the requested URL"
+                    + ".");
         }
         // }
 
@@ -724,7 +726,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         if (!hasVariableOnScope(execution, variableName, variableScope)) {
             throw new ActivitiObjectNotFoundException(
                     "Execution '" + execution.getId() + "' doesn't have a variable '" +
-                    variableName + "' in scope " + variableScope.name().toLowerCase(),
+                    variableName + "' in scope " +
+                    variableScope.name().toLowerCase(Locale.getDefault()),
                     VariableInstanceEntity.class);
         }
 
@@ -1320,170 +1323,188 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     private boolean isValidUserToStartProcess(
             ProcessInstanceCreateRequest processInstanceCreateRequest) {
 
-//        //check whether the users/groups exist
-//        String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
-//        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-//
-//        if (processDefinitionId == null) {
-//
-//            final String processDefinitionKey =
-//                    processInstanceCreateRequest.getProcessDefinitionKey();
-//            final String tenantId = processInstanceCreateRequest.getTenantId();
-//
-//            ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
-//
-//            if (processEngine != null) {
-//
-//                if (processDefinitionKey != null) {
-//
-//                    if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() !=
-//                        null) {
-//                        CommandExecutor commandExecutor =
-//                                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration()
-//                                                                   .getCommandExecutor();
-//                        if (commandExecutor != null) {
-//
-//                            processDefinitionId =
-//                                    (String) commandExecutor.execute(new Command<Object>() {
-//                                        public Object execute(CommandContext commandContext) {
-//                                            ProcessDefinitionEntityManager
-//                                                    processDefinitionEntityManager = commandContext
-//                                                    .getSession(
-//                                                            ProcessDefinitionEntityManager.class);
-//                                            ProcessDefinitionEntity processDefinitionEntity =
-//                                                    processDefinitionEntityManager
-//                                                            .findLatestProcessDefinitionByKeyAndTenantId(
-//                                                                    processDefinitionKey, tenantId);
-//                                            if (processDefinitionEntity != null &&
-//                                                processDefinitionEntity.getProcessDefinition() !=
-//                                                null) {
-//                                                return processDefinitionEntity
-//                                                        .getProcessDefinition().getId();
-//                                            }
-//                                            return null;
-//                                        }
-//                                    });
-//                        }
-//                    }
-//                    if (processDefinitionId == null) {
-//                        return false;
-//                    }
-//                }
-//
-//                String messageName = processInstanceCreateRequest.getMessage();
-//                if (messageName != null && !messageName.isEmpty()) {
-//
-//                    ProcessDefinitionQuery processDefinitionQuery =
-//                            repositoryService.createProcessDefinitionQuery()
-//                                             .messageEventSubscriptionName(messageName);
-//                    if (processDefinitionQuery != null) {
-//                        processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId(
-//                                processInstanceCreateRequest.getTenantId());
-//                        if (processDefinitionQuery != null && processDefinitionQuery.count() > 1) {
-//                            processDefinitionQuery = processDefinitionQuery.latestVersion();
-//                        }
-//                    }
-//
-//                    if (processDefinitionQuery != null) {
-//                        ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
-//                        if (processDefinition != null) {
-//                            processDefinitionId = processDefinition.getId();
-//                        }
-//                    }
-//
-//                    if (processDefinitionId == null) {
-//                        return false;
-//                    }
-//                }
-//
-//            }
-//
-//        }
-//
-//       /*PrivilegedCarbonContext carbonContext =
-//                PrivilegedCarbonContext.getThreadLocalCarbonContext();
-//        String userName = carbonContext.getUsername();
-//        String tenantDomain = carbonContext.getTenantDomain();
-//        String userNameWithTenantDomain = userName + "@" + tenantDomain;*/
-//
-//        //TODO
-//        //BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
-//        // List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
-//        List<IdentityLink> identityLinkList =
-//                repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
-//
-//        boolean valueExistsForUserId = false;
-//        boolean valueExistsForGroupId = false;
-//        for (IdentityLink identityLink : identityLinkList) {
-//
-//            String userId = identityLink.getUserId();
-//            if (userId != null) {
-//                valueExistsForUserId = true;
-//                if (userId.contains("$")) {
-//                    userId = resolveVariable(processInstanceCreateRequest, userId);
-//                }
-//                if (!userId.isEmpty() &&
-//                    (userId.equals(userName) || userId.equals(userNameWithTenantDomain))) {
-//                    return true;
-//                }
-//                continue;
-//            }*/
-//
-//            //    String groupId = identityLink.getGroupId();
-//
-//            //            if (groupId != null) {
-//            //                valueExistsForGroupId = true;
-//            //                if (groupId.contains("$")) {
-//            //                    groupId = resolveVariable(processInstanceCreateRequest, groupId);
-//            //                }
-//            //                //TODO
-//            //               /* for (Group identityGroup:groupList){
-//            //                    if(!groupId.isEmpty() && identityGroup.getId() != null &&
-//            //                     identityGroup.getId().equals(groupId)){
-//            //                        return true;
-//            //                    }
-//            //                }*/
-//            //            }
-//        }
-//        //TODO
-//        //if (!valueExistsForGroupId && !valueExistsForUserId) {
-//        // return true;
-//        //}//
-//
-//        return false;
+        //        //check whether the users/groups exist
+        //        String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
+        //        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        //
+        //        if (processDefinitionId == null) {
+        //
+        //            final String processDefinitionKey =
+        //                    processInstanceCreateRequest.getProcessDefinitionKey();
+        //            final String tenantId = processInstanceCreateRequest.getTenantId();
+        //
+        //            ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService()
+        // .getProcessEngine();
+        //
+        //            if (processEngine != null) {
+        //
+        //                if (processDefinitionKey != null) {
+        //
+        //                    if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration()
+        // !=
+        //                        null) {
+        //                        CommandExecutor commandExecutor =
+        //                                ((ProcessEngineImpl) processEngine).
+        // getProcessEngineConfiguration()
+        //                                                                  .getCommandExecutor();
+        //                        if (commandExecutor != null) {
+        //
+        //                            processDefinitionId =
+        //                                    (String) commandExecutor.execute(new Command<Object>()
+        // {
+        //                                        public Object execute(CommandContext commandContext)
+        // {
+        //                                            ProcessDefinitionEntityManager
+        //                                                    processDefinitionEntityManager =
+        // commandContext
+        //                                                    .getSession(
+        //                                                            ProcessDefinitionEntityManager.
+        // class);
+        //                                            ProcessDefinitionEntity processDefinitionEntity
+        // =
+        //                                                    processDefinitionEntityManager
+        //                                                            .findLatestProcessDefinition
+        // ByKeyAndTenantId(
+        //                                                                    processDefinitionKey,
+        // tenantId);
+        //                                            if (processDefinitionEntity != null &&
+        //                                                processDefinitionEntity.getProcessDe
+        // finition() !=
+        //                                                null) {
+        //                                                return processDefinitionEntity
+        //                                                        .getProcessDefinition().getId();
+        //                                            }
+        //                                            return null;
+        //                                        }
+        //                                    });
+        //                        }
+        //                    }
+        //                    if (processDefinitionId == null) {
+        //                        return false;
+        //                    }
+        //                }
+        //
+        //                String messageName = processInstanceCreateRequest.getMessage();
+        //                if (messageName != null && !messageName.isEmpty()) {
+        //
+        //                    ProcessDefinitionQuery processDefinitionQuery =
+        //                            repositoryService.createProcessDefinitionQuery()
+        //                                             .messageEventSubscriptionName(messageName);
+        //                    if (processDefinitionQuery != null) {
+        //                        processDefinitionQuery = processDefinitionQuery.
+        // processDefinitionTenantId(
+        //                                processInstanceCreateRequest.getTenantId());
+        //                        if (processDefinitionQuery != null && processDefinitionQuery
+        // .count() > 1) {
+        //                            processDefinitionQuery = processDefinitionQuery.latestVersion();
+        //                        }
+        //                    }
+        //
+        //                    if (processDefinitionQuery != null) {
+        //                        ProcessDefinition processDefinition = processDefinitionQuery
+        // .singleResult();
+        //                        if (processDefinition != null) {
+        //                            processDefinitionId = processDefinition.getId();
+        //                        }
+        //                    }
+        //
+        //                    if (processDefinitionId == null) {
+        //                        return false;
+        //                    }
+        //                }
+        //
+        //            }
+        //
+        //        }
+        //
+        //       /*PrivilegedCarbonContext carbonContext =
+        //                PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        //        String userName = carbonContext.getUsername();
+        //        String tenantDomain = carbonContext.getTenantDomain();
+        //        String userNameWithTenantDomain = userName + "@" + tenantDomain;*/
+        //
+        //        //TODO
+        //        //BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.
+        // getGroupIdentityManager();
+        //        // List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
+        //        List<IdentityLink> identityLinkList =
+        //                repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
+        //
+        //        boolean valueExistsForUserId = false;
+        //        boolean valueExistsForGroupId = false;
+        //        for (IdentityLink identityLink : identityLinkList) {
+        //
+        //            String userId = identityLink.getUserId();
+        //            if (userId != null) {
+        //                valueExistsForUserId = true;
+        //                if (userId.contains("$")) {
+        //                    userId = resolveVariable(processInstanceCreateRequest, userId);
+        //                }
+        //                if (!userId.isEmpty() &&
+        //                    (userId.equals(userName) || userId.equals(userNameWithTenantDomain)))
+        // {
+        //                    return true;
+        //                }
+        //                continue;
+        //            }*/
+        //
+        //            //    String groupId = identityLink.getGroupId();
+        //
+        //            //            if (groupId != null) {
+        //            //                valueExistsForGroupId = true;
+        //            //                if (groupId.contains("$")) {
+        //            //                    groupId = resolveVariable
+        // (processInstanceCreateRequest, groupId);
+        //            //                }
+        //            //                //TODO
+        //            //               /* for (Group identityGroup:groupList){
+        //            //                    if(!groupId.isEmpty() && identityGroup.getId() != null
+        // &&
+        //            //                     identityGroup.getId().equals(groupId)){
+        //            //                        return true;
+        //            //                    }
+        //            //                }*/
+        //            //            }
+        //        }
+        //        //TODO
+        //        //if (!valueExistsForGroupId && !valueExistsForUserId) {
+        //        // return true;
+        //        //}//
+        //
+        //        return false;
         return false;
     }
 
-    private String resolveVariable(ProcessInstanceCreateRequest processInstanceCreateRequest,
-                                   String resolvingName) {
-
-        int initialIndex = resolvingName.indexOf("{");
-        int lastIndex = resolvingName.indexOf("}");
-
-        String variableName = null;
-        if (initialIndex != -1 && lastIndex != -1 && initialIndex < lastIndex) {
-            variableName = resolvingName.substring(initialIndex + 1, lastIndex);
-        }
-
-        List<RestVariable> variableList = processInstanceCreateRequest.getVariables();
-        if (variableList != null && variableName != null) {
-            for (RestVariable restVariable : variableList) {
-                if (restVariable.getName().equals(variableName)) {
-                    return restVariable.getValue().toString();
-                }
-            }
-        }
-
-        variableList = processInstanceCreateRequest.getAdditionalVariables();
-        if (variableList != null && variableName != null) {
-            for (RestVariable restVariable : variableList) {
-                if (restVariable.getName().equals(variableName)) {
-                    return restVariable.getValue().toString();
-                }
-            }
-        }
-        return "";
-    }
+    //    private String resolveVariable(ProcessInstanceCreateRequest processInstanceCreateRequest,
+    //                                   String resolvingName) {
+    //
+    //        int initialIndex = resolvingName.indexOf("{");
+    //        int lastIndex = resolvingName.indexOf("}");
+    //
+    //        String variableName = null;
+    //        if (initialIndex != -1 && lastIndex != -1 && initialIndex < lastIndex) {
+    //            variableName = resolvingName.substring(initialIndex + 1, lastIndex);
+    //        }
+    //
+    //        List<RestVariable> variableList = processInstanceCreateRequest.getVariables();
+    //        if (variableList != null && variableName != null) {
+    //            for (RestVariable restVariable : variableList) {
+    //                if (restVariable.getName().equals(variableName)) {
+    //                    return restVariable.getValue().toString();
+    //                }
+    //            }
+    //        }
+    //
+    //        variableList = processInstanceCreateRequest.getAdditionalVariables();
+    //        if (variableList != null && variableName != null) {
+    //            for (RestVariable restVariable : variableList) {
+    //                if (restVariable.getName().equals(variableName)) {
+    //                    return restVariable.getValue().toString();
+    //                }
+    //            }
+    //        }
+    //        return "";
+    //    }
 
     private Response performCorrelation(ProcessInstanceCreateRequest processInstanceCreateRequest,
                                         String baseName) {

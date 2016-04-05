@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -460,7 +461,9 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         }
         if (!restVariable.getName().equals(variableName)) {
             throw new ActivitiIllegalArgumentException(
-                    "Variable name in the body should be equal to the name used in the requested URL.");
+                    "Variable name in the body should be equal to the name used in the requested URL"
+                    +
+                    ".");
         }
 
         result = setSimpleVariable(restVariable, execution, false, req.getUri());
@@ -484,7 +487,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         if (!hasVariableOnScope(execution, variableName, variableScope)) {
             throw new ActivitiObjectNotFoundException(
                     "Execution '" + execution.getId() + "' doesn't have a variable '" +
-                    variableName + "' in scope " + variableScope.name().toLowerCase(),
+                    variableName + "' in scope " +
+                    variableScope.name().toLowerCase(Locale.getDefault()),
                     VariableInstanceEntity.class);
         }
 

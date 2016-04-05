@@ -15,6 +15,8 @@
  */
 
 package org.wso2.carbon.bpmn.rest.common.utils;
+
+import org.apache.commons.io.Charsets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 //import java.util.HashMap;
 //import java.util.List;
@@ -47,7 +50,7 @@ public class Utils {
     public static String resolveContentType(String resourceName) {
         String contentType = null;
         if (resourceName != null && !resourceName.isEmpty()) {
-            String lowerResourceName = resourceName.toLowerCase();
+            String lowerResourceName = resourceName.toLowerCase(Locale.getDefault());
 
             if (lowerResourceName.endsWith("png")) {
                 contentType = "image/png";
@@ -175,7 +178,7 @@ public class Utils {
         }
 
         byte[] headerValueByteArray =
-                headerValue.trim().substring("form_data".length() + 1).getBytes();
+                headerValue.trim().substring("form_data".length() + 1).getBytes(Charsets.UTF_8);
 
         int beginIndex = 0;
         int length = 0;
@@ -195,7 +198,8 @@ public class Utils {
                 if (byte1 == '=') {
 
                     keyFound = true;
-                    key = new String(headerValueByteArray, beginIndex, length - 1).trim();
+                    key = new String(headerValueByteArray, beginIndex, length - 1, Charsets.UTF_8)
+                            .trim();
                     beginIndex += length;
                     length = 0;
                     if (debugEnabled) {
@@ -204,8 +208,8 @@ public class Utils {
                 }
             } else {
                 if (byte1 == '\n' || byte1 == '\r' || byte1 == ';') {
-
-                    value = new String(headerValueByteArray, beginIndex, length - 1);
+                    value = new String(headerValueByteArray, beginIndex, length - 1,
+                                       com.google.common.base.Charsets.UTF_8);
                     value = value.replaceAll("\"", "").trim();
                     keyFound = false;
                     beginIndex += length;
@@ -242,7 +246,7 @@ public class Utils {
 
         boolean debugEnabled = log.isDebugEnabled();
 
-        byte[] headerArrayByte = header.getBytes();
+        byte[] headerArrayByte = header.getBytes(Charsets.UTF_8);
 
         if (debugEnabled) {
             log.debug("==============Headers:==========================");
@@ -255,7 +259,7 @@ public class Utils {
         String headerString = null;
         String headerValue = null;
         boolean headerFound = false;
-        Map<String, String> headerMap = new HashMap<String, String>();
+      //  Map<String, String> headerMap = new HashMap<>();
         for (byte headerByte : headerArrayByte) {
 
             ++length;
@@ -264,7 +268,8 @@ public class Utils {
 
                 if (headerByte == ':') {
                     headerFound = true;
-                    headerString = new String(headerArrayByte, beginIndex, length - 1);
+                    headerString =
+                            new String(headerArrayByte, beginIndex, length - 1, Charsets.UTF_8);
                     beginIndex += length;
                     length = 0;
                     if (log.isDebugEnabled()) {
@@ -274,7 +279,8 @@ public class Utils {
             } else {
 
                 if (headerByte == '\n' || headerByte == '\r') {
-                    headerValue = new String(headerArrayByte, beginIndex, length - 1);
+                    headerValue =
+                            new String(headerArrayByte, beginIndex, length - 1, Charsets.UTF_8);
                     if (log.isDebugEnabled()) {
                         log.debug("header value:" + headerValue);
                     }
@@ -282,7 +288,7 @@ public class Utils {
                     beginIndex += length;
                     length = 0;
 
-                    headerMap.put(headerString, headerValue);
+                  //  headerMap.put(headerString, headerValue);
                     headerString = null;
                     headerValue = null;
                 }

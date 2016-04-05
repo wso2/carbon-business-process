@@ -113,11 +113,11 @@ public class HistoricDetailResponse {
     }
 
     public Date getTime() {
-        return time;
+        return time == null ? null : (Date) this.time.clone();
     }
 
     public void setTime(Date time) {
-        this.time = time;
+        this.time = (Date) time.clone();
     }
 
     public String getDetailType() {

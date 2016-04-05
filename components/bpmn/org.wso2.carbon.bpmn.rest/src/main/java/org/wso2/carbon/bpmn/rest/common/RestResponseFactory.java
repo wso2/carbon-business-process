@@ -317,7 +317,8 @@ public class RestResponseFactory {
             value = converter.getVariableValue(restVariable);
 
         } else {
-            // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+            // Revert to type determined by REST-to-Java mapping when no explicit type has been
+            // provided
             value = restVariable.getValue();
         }
         return value;
@@ -332,14 +333,17 @@ public class RestResponseFactory {
         return responseList;
     }
 
-/*    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance, String baseUri) {
+/*    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance,
+ String baseUri) {
         return createProcessInstanceResponse(processInstance,baseUri);
     }*/
 
     public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance,
                                                                  boolean returnVariables,
-                                                                 Map<String, Object> runtimeVariableMap,
-                                                                 List<HistoricVariableInstance> historicVariableList,
+                                                                 Map<String, Object>
+                                                                         runtimeVariableMap,
+                                                                 List<HistoricVariableInstance>
+                                                                         historicVariableList,
                                                                  String baseContext) {
 
         RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
@@ -381,8 +385,8 @@ public class RestResponseFactory {
 
             } else {
                 if (runtimeVariableMap != null) {
-                    for (String name : runtimeVariableMap.keySet()) {
-                        result.addVariable(createRestVariable(name, runtimeVariableMap.get(name),
+                    for (Map.Entry<String, Object> entry : runtimeVariableMap.entrySet()) {
+                        result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                               RestVariable.RestVariableScope.LOCAL,
                                                               processInstance.getId(),
                                                               VARIABLE_PROCESS, false,
@@ -396,12 +400,14 @@ public class RestResponseFactory {
         return result;
     }
 
-    /*public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariableScope
+    /*public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariable
+    Scope
      scope,
                                            String id, int variableType, boolean includeBinaryValue
                                            , String baseUri){
 
-        return createRestVariable(name, value, scope, id, variableType, includeBinaryValue, baseUri);
+        return createRestVariable(name, value, scope, id, variableType, includeBinaryValue, baseUri)
+        ;
     }*/
 
     public RestVariable createRestVariable(String name, Object value,
@@ -518,8 +524,8 @@ public class RestResponseFactory {
 
         if (processInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = processInstance.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                       RestVariable.RestVariableScope.LOCAL,
                                                       processInstance.getId(), VARIABLE_PROCESS,
                                                       false, baseContext));
@@ -554,7 +560,8 @@ public class RestResponseFactory {
             value = converter.getVariableValue(temp);
 
         } else {
-            // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+            // Revert to type determined by REST-to-Java mapping when no explicit type has been
+            // provided
             value = restVariable.getValue();
         }
         return value;
@@ -585,8 +592,8 @@ public class RestResponseFactory {
 
         if (task.getProcessVariables() != null) {
             Map<String, Object> variableMap = task.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                response.addVariable(createRestVariable(name, variableMap.get(name),
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                response.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                         RestVariable.RestVariableScope.GLOBAL,
                                                         task.getId(), VARIABLE_TASK, false,
                                                         baseContext));
@@ -594,8 +601,8 @@ public class RestResponseFactory {
         }
         if (task.getTaskLocalVariables() != null) {
             Map<String, Object> variableMap = task.getTaskLocalVariables();
-            for (String name : variableMap.keySet()) {
-                response.addVariable(createRestVariable(name, variableMap.get(name),
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                response.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                         RestVariable.RestVariableScope.LOCAL,
                                                         task.getId(), VARIABLE_TASK, false,
                                                         baseContext));
@@ -750,8 +757,8 @@ public class RestResponseFactory {
                                           processInstance.getId()));
         if (processInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = processInstance.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                       RestVariable.RestVariableScope.LOCAL,
                                                       processInstance.getId(),
                                                       VARIABLE_HISTORY_PROCESS, false,
@@ -838,8 +845,8 @@ public class RestResponseFactory {
                 urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, taskInstance.getId()));
         if (taskInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = taskInstance.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                       RestVariable.RestVariableScope.GLOBAL,
                                                       taskInstance.getId(), VARIABLE_HISTORY_TASK,
                                                       false, baseContext));
@@ -847,8 +854,8 @@ public class RestResponseFactory {
         }
         if (taskInstance.getTaskLocalVariables() != null) {
             Map<String, Object> variableMap = taskInstance.getTaskLocalVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
                                                       RestVariable.RestVariableScope.LOCAL,
                                                       taskInstance.getId(), VARIABLE_HISTORY_TASK,
                                                       false, baseContext));
@@ -987,10 +994,10 @@ public class RestResponseFactory {
                     if (values != null) {
                         @SuppressWarnings("unchecked") Map<String, String> enumValues =
                                 (Map<String, String>) values;
-                        for (String enumId : enumValues.keySet()) {
+                        for (Map.Entry<String, String> entry : enumValues.entrySet()) {
                             RestEnumFormProperty enumProperty = new RestEnumFormProperty();
-                            enumProperty.setId(enumId);
-                            enumProperty.setName(enumValues.get(enumId));
+                            enumProperty.setId(entry.getKey());
+                            enumProperty.setName(entry.getValue());
                             restFormProp.addEnumValue(enumProperty);
                         }
                     }
@@ -1136,7 +1143,7 @@ public class RestResponseFactory {
     }
 
     public List<JobResponse> createJobResponseList(List<Job> jobs, String baseContext) {
-        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
+        //RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         List<JobResponse> responseList = new ArrayList<JobResponse>();
         for (Job instance : jobs) {
             responseList.add(createJobResponse(instance, baseContext));

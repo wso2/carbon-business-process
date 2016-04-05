@@ -1,4 +1,4 @@
-package org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper;
+package org.wso2.carbon.bpmn.rest.common.provider.exception.mapper;
 
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 

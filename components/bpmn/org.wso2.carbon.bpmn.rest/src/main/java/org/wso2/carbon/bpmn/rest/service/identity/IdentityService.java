@@ -41,6 +41,7 @@ import org.wso2.carbon.bpmn.rest.model.identity.UserResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseIdentityService;
 import org.wso2.msf4j.Microservice;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,23 +59,27 @@ import javax.ws.rs.core.MediaType;
         name = "org.wso2.carbon.bpmn.rest.service.identity.IdentityService",
         service = Microservice.class,
         immediate = true)
+//TODO: @PATH
 public class IdentityService extends BaseIdentityService implements Microservice {
 
-    protected static HashMap<String, QueryProperty> groupProperties =
-            new HashMap<String, QueryProperty>();
-    protected static HashMap<String, QueryProperty> userProperties = new HashMap<>();
+    protected static final Map<String, QueryProperty> GROUP_PROPERTIES;
+    protected static final Map<String, QueryProperty> USER_PROPERTIES;
 
     static {
-        groupProperties.put("id", GroupQueryProperty.GROUP_ID);
-        groupProperties.put("name", GroupQueryProperty.NAME);
-        groupProperties.put("type", GroupQueryProperty.TYPE);
+        HashMap<String, QueryProperty> groupMap = new HashMap<>();
+        groupMap.put("id", GroupQueryProperty.GROUP_ID);
+        groupMap.put("name", GroupQueryProperty.NAME);
+        groupMap.put("type", GroupQueryProperty.TYPE);
+        GROUP_PROPERTIES = Collections.unmodifiableMap(groupMap);
     }
 
     static {
-        userProperties.put("id", UserQueryProperty.USER_ID);
-        userProperties.put("firstName", UserQueryProperty.FIRST_NAME);
-        userProperties.put("lastName", UserQueryProperty.LAST_NAME);
-        userProperties.put("email", UserQueryProperty.EMAIL);
+        HashMap<String, QueryProperty> userMap = new HashMap<>();
+        userMap.put("id", UserQueryProperty.USER_ID);
+        userMap.put("firstName", UserQueryProperty.FIRST_NAME);
+        userMap.put("lastName", UserQueryProperty.LAST_NAME);
+        userMap.put("email", UserQueryProperty.EMAIL);
+        USER_PROPERTIES = Collections.unmodifiableMap(userMap);
     }
 
     @Activate
@@ -148,7 +153,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
 
         GroupPaginateList groupPaginateList =
                 new GroupPaginateList(new RestResponseFactory(), request.getUri());
-        return groupPaginateList.paginateList(allRequestParams, query, "id", groupProperties);
+        return groupPaginateList.paginateList(allRequestParams, query, "id", GROUP_PROPERTIES);
     }
 
     /**
@@ -247,7 +252,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
         allRequestParams = Utils.prepareCommonParameters(allRequestParams, decoder.parameters());
 
         return new UserPaginateList(new RestResponseFactory(), request.getUri())
-                .paginateList(allRequestParams, query, "id", userProperties);
+                .paginateList(allRequestParams, query, "id", USER_PROPERTIES);
     }
 
     /**

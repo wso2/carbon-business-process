@@ -31,6 +31,7 @@ public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
         super(restResponseFactory, baseContext);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
         return restResponseFactory.createProcessDefinitionResponseList(list, baseContext);

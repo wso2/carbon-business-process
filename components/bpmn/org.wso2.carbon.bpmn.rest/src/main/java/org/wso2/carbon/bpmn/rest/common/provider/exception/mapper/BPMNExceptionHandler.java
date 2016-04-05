@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper;
+package org.wso2.carbon.bpmn.rest.common.provider.exception.mapper;
 
 //import org.activiti.engine.ActivitiException;
 //import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -76,11 +76,12 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             log.error("Web application exception thrown ", e);
             return createRestErrorResponse(Response.Status.SERVICE_UNAVAILABLE,
                                            "Web application exception thrown");
-        }/* else if (e instanceof UserStoreException) {
+        /* else if (e instanceof UserStoreException) {
             log.error("User store exception thrown ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
                                            "User store exception thrown");
-        }*/ else {
+        }*/
+        } else {
             log.error("Unknown Exception occurred ", e);
             return createRestErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }

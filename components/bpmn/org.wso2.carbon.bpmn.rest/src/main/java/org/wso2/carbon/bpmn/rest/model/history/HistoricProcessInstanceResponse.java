@@ -97,19 +97,19 @@ public class HistoricProcessInstanceResponse {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return startTime == null ? null : (Date) startTime.clone();
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = (Date) startTime.clone();
     }
 
     public Date getEndTime() {
-        return endTime;
+        return endTime == null ? null : (Date) this.endTime.clone();
     }
 
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = (Date) endTime.clone();
     }
 
     public Long getDurationInMillis() {

@@ -150,7 +150,7 @@ public class CorrelationService implements Microservice {
             query.executionTenantId(value);
         }
 
-        QueryProperty qp = allowedSortProperties.get("processInstanceId");
+        QueryProperty qp = ALLOWED_SORT_PROPERTIES.get("processInstanceId");
         ((AbstractQuery) query).orderBy(qp);
         query.asc();
 

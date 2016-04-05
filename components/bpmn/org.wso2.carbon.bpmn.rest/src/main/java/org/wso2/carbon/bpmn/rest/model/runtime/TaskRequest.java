@@ -101,7 +101,7 @@ public class TaskRequest {
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate == null ? null : (Date) this.dueDate.clone();
+        this.dueDate = (Date) dueDate.clone();
         dueDateSet = true;
     }
 

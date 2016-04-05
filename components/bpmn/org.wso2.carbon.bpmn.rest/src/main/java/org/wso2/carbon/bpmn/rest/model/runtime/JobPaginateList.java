@@ -26,7 +26,7 @@ import java.util.List;
  *
  */
 public class JobPaginateList extends AbstractPaginateList {
-    protected RestResponseFactory restResponseFactory = new RestResponseFactory();
+   // protected RestResponseFactory restResponseFactory = new RestResponseFactory();
 
     public JobPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
         super(restResponseFactory, baseContext);

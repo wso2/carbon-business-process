@@ -59,19 +59,19 @@ public class ModelResponse extends ModelRequest {
     }
 
     public Date getCreateTime() {
-        return createTime;
+        return createTime == null ? null : (Date) this.createTime.clone();
     }
 
     public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+        this.createTime = (Date) createTime.clone();
     }
 
     public Date getLastUpdateTime() {
-        return lastUpdateTime;
+        return lastUpdateTime == null ? null : (Date) this.lastUpdateTime.clone();
     }
 
     public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+        this.lastUpdateTime = (Date) lastUpdateTime.clone();
     }
 
     public String getDeploymentUrl() {

@@ -27,13 +27,14 @@ import java.util.List;
  */
 public class GroupPaginateList extends AbstractPaginateList {
 
-    protected RestResponseFactory restResponseFactory;
+   // protected RestResponseFactory restResponseFactory;
 
     public GroupPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
         super(restResponseFactory, baseContext);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
     protected List processList(List list) {
         return restResponseFactory.createGroupResponseList(list, baseContext);
     }

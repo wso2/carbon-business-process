@@ -129,6 +129,6 @@ public class AttachmentResponse {
     }
 
     public void setTime(Date time) {
-        this.time = time == null ? null : (Date) this.time.clone();
+        this.time = (Date) time.clone();
     }
 }

@@ -40,7 +40,7 @@ import javax.ws.rs.core.Response;
 @Path("/historic-variable-instances")
 public class HistoricVariableInstanceQueryService extends BaseHistoricVariableInstanceService {
 
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
+    private static final Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
     private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {

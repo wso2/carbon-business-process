@@ -45,7 +45,9 @@ import org.wso2.msf4j.HttpStreamHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,17 +70,16 @@ public class BaseExecutionService {
     @Context //TODO:
             HttpStreamHandler multiPartBody;
 
-    protected static Map<String, QueryProperty> allowedSortProperties =
-            new HashMap<String, QueryProperty>();
-    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
+    protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
 
     static {
-        allowedSortProperties
-                .put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
-        allowedSortProperties
-                .put("processDefinitionKey", ExecutionQueryProperty.PROCESS_DEFINITION_KEY);
-        allowedSortProperties.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
+        HashMap<String, QueryProperty> sortMap = new HashMap<>();
+        sortMap.put("processDefinitionId", ExecutionQueryProperty.PROCESS_DEFINITION_ID);
+        sortMap.put("processDefinitionKey", ExecutionQueryProperty.PROCESS_DEFINITION_KEY);
+        sortMap.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
+        sortMap.put("tenantId", ExecutionQueryProperty.TENANT_ID);
+        ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
     static {
@@ -170,7 +171,7 @@ public class BaseExecutionService {
 
         DataResponse dataResponse = new ExecutionPaginateList(new RestResponseFactory(), baseName)
                 .paginateList(requestParams, queryRequest, query, "processInstanceId",
-                              allowedSortProperties);
+                              ALLOWED_SORT_PROPERTIES);
         return dataResponse;
     }
 
@@ -589,7 +590,7 @@ public class BaseExecutionService {
                             objectMapper.convertValue(restObject, RestVariable.class);
                     inputVariables.add(restVariable);
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw new ActivitiIllegalArgumentException(
                         "Failed to serialize to a RestVariable instance", e);
             }

@@ -45,9 +45,11 @@ import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 //import javax.activation.DataHandler;
 //import javax.servlet.http.HttpServletRequest;
 //import java.io.*;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -55,23 +57,24 @@ import java.util.Map;
  */
 public class BaseTaskService {
 
-    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
-    protected static HashMap<String, QueryProperty> properties =
-            new HashMap<String, QueryProperty>();
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final Map<String, QueryProperty> PROPERTIES;
     protected static final String DEFAULT_ENCODING = "UTF-8";
 
     private static final Log log = LogFactory.getLog(BaseTaskService.class);
 
     static {
-        properties.put("id", TaskQueryProperty.TASK_ID);
-        properties.put("name", TaskQueryProperty.NAME);
-        properties.put("description", TaskQueryProperty.DESCRIPTION);
-        properties.put("dueDate", TaskQueryProperty.DUE_DATE);
-        properties.put("createTime", TaskQueryProperty.CREATE_TIME);
-        properties.put("priority", TaskQueryProperty.PRIORITY);
-        properties.put("executionId", TaskQueryProperty.EXECUTION_ID);
-        properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
-        properties.put("tenantId", TaskQueryProperty.TENANT_ID);
+        HashMap<String, QueryProperty> propMap = new HashMap<>();
+        propMap.put("id", TaskQueryProperty.TASK_ID);
+        propMap.put("name", TaskQueryProperty.NAME);
+        propMap.put("description", TaskQueryProperty.DESCRIPTION);
+        propMap.put("dueDate", TaskQueryProperty.DUE_DATE);
+        propMap.put("createTime", TaskQueryProperty.CREATE_TIME);
+        propMap.put("priority", TaskQueryProperty.PRIORITY);
+        propMap.put("executionId", TaskQueryProperty.EXECUTION_ID);
+        propMap.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
+        propMap.put("tenantId", TaskQueryProperty.TENANT_ID);
+        PROPERTIES = Collections.unmodifiableMap(propMap);
 
     }
 
@@ -307,7 +310,7 @@ public class BaseTaskService {
         }
 
         DataResponse dataResponse = new TaskPaginateList(new RestResponseFactory(), baseName)
-                .paginateList(requestParams, request, taskQuery, "id", properties);
+                .paginateList(requestParams, request, taskQuery, "id", PROPERTIES);
 
         return dataResponse;
         //return Response.ok().entity(dataResponse).build();
@@ -519,9 +522,11 @@ public class BaseTaskService {
 
     protected DelegationState getDelegationState(String delegationState) {
         if (delegationState != null) {
-            if (DelegationState.RESOLVED.name().toLowerCase().equals(delegationState)) {
+            if (DelegationState.RESOLVED.name().toLowerCase(Locale.getDefault())
+                                        .equals(delegationState)) {
                 return DelegationState.RESOLVED;
-            } else if (DelegationState.PENDING.name().toLowerCase().equals(delegationState)) {
+            } else if (DelegationState.PENDING.name().toLowerCase(Locale.getDefault())
+                                              .equals(delegationState)) {
                 return DelegationState.PENDING;
             } else {
                 throw new ActivitiIllegalArgumentException(
@@ -637,7 +642,8 @@ public class BaseTaskService {
         int attachmentSize = attachments.size();
 
         if (attachmentSize <= 0) {
-            throw new ActivitiIllegalArgumentException("No Attachments found with the request body");
+            throw new ActivitiIllegalArgumentException("No Attachments found with the request
+            body");
         }
         AttachmentDataHolder attachmentDataHolder = new AttachmentDataHolder();
 
