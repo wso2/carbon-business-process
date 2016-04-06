@@ -26,7 +26,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,9 +67,6 @@ import java.util.zip.ZipInputStream;
  * identify the deployment of a new package.
  */
 
-@Component(
-        name = "org.wso2.carbon.bpmn.core.deployment.BPMNDeployer",
-        immediate = true)
 
 public class BPMNDeployer implements Deployer {
 
