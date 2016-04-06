@@ -390,13 +390,12 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response createBinaryExecutionVariable(@PathParam("executionId") String executionId,
-    MultipartBody
-            multipartBody) {
+    @Context HttpStreamer httpStreamer,@Context HttpRequest request) {
 
         Execution execution = getExecutionFromRequest(executionId);
         RestVariable restVariable = createBinaryExecutionVariable(execution,RestResponseFactory.
         VARIABLE_EXECUTION,
-                uriInfo, true, multipartBody);
+                uriInfo, true, httpStreamer);
         return Response.ok().status(Response.Status.CREATED).entity(restVariable).build();
     }
 */

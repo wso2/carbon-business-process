@@ -30,6 +30,10 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.io.IOUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
 //import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
@@ -38,6 +42,7 @@ import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
+import org.wso2.msf4j.Microservice;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,8 +60,12 @@ import javax.ws.rs.core.Response;
 /**
  *
  */
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.service.repository.ProcessDefinitionService",
+        service = Microservice.class,
+        immediate = true)
 @Path("/bps/bpmn/{version}/{context}/process-definitions")
-public class ProcessDefinitionService {
+public class ProcessDefinitionService implements Microservice {
 
     private static final Map<String, QueryProperty> properties = new HashMap<>();
     private static final List<String> allPropertiesList = new ArrayList<>();
@@ -91,6 +100,16 @@ public class ProcessDefinitionService {
         allPropertiesList.add("size");
         allPropertiesList.add("order");
         allPropertiesList.add("sort");
+    }
+
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
     }
 
     @GET
