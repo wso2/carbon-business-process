@@ -19,21 +19,16 @@ package org.wso2.carbon.bpmn.core.utils;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.exception.BPMNException;
-import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
@@ -108,8 +103,8 @@ public class BPMNActivitiConfiguration {
 
     private void initializeBPMNConfigBeans() throws BPMNException {
 
-        String activitiConfigPath = CarbonUtils.getCarbonConfigDirPath() +
-                                    File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+        String activitiConfigPath = org.wso2.carbon.kernel.utils.Utils.getCarbonConfigHome()
+                .resolve(BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME).toString();
         // String activitiConfigPath =
         //   "/Users/himasha/Desktop/351R/wso2bps-3.5.1/repository/conf" + File.separator +
         //  BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;

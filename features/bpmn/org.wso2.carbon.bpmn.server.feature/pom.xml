@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
@@ -13,7 +28,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.bpmn.server.feature</artifactId>
-    <packaging>pom</packaging>
+    <packaging>carbon-feature</packaging>
     <name>WSO2 Carbon - BPMN Server - Core Feature</name>
     <url>http://wso2.org</url>
     <description>This feature contains the core bundles required for Back-end BPMN Server
@@ -26,27 +41,86 @@
             <artifactId>org.wso2.carbon.bpmn</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database.wso2</groupId>
-            <artifactId>h2-database-engine</artifactId>
+            <groupId>org.wso2.orbit.org.activiti</groupId>
+            <artifactId>activiti-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.springframework.ws</groupId>
+            <artifactId>spring.framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jpa_2.0_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.tinyjee.jgraphx</groupId>
+            <artifactId>jgraphx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath.wso2</groupId>
+            <artifactId>json-path</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-log4j12</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.wso2.orbit.org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io.wso2</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.h2database.wso2</groupId>
+            <artifactId>h2-database-engine</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.191</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.core.server.feature</artifactId>
+            <type>zip</type>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -61,6 +135,8 @@
                         <configuration>
                             <tasks>
                                 <delete file="resources/conf/activiti.h2.db"/>
+                                <delete file="resources/conf/activiti.mv.db"/>
+                                <delete file="resources/conf/activiti.trace.db"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -144,179 +220,108 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.wso2.maven</groupId>
-                <artifactId>carbon-p2-plugin</artifactId>
-                <version>${carbon.p2.plugin.version}</version>
+                <groupId>org.wso2.carbon.maven</groupId>
+                <artifactId>carbon-feature-plugin</artifactId>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
-                        <id>3-p2-feature-generation</id>
-                        <phase>package</phase>
+                        <id>1-p2-feature-generation</id>
                         <goals>
-                            <goal>p2-feature-gen</goal>
+                            <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <id>org.wso2.carbon.bpmn.server</id>
-                            <propertiesFile>../../etc/feature.properties</propertiesFile>
-                            <adviceFile>
-                                <properties>
-                                    <propertyDef>org.wso2.carbon.p2.category.type:server
-                                    </propertyDef>
-                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
-                                    </propertyDef>
-                                </properties>
-                            </adviceFile>
+                            <propertyFile>../../etc/feature.properties</propertyFile>
+                            <adviceFileContents>
+                                <advice>
+                                    <name>org.wso2.carbon.p2.category.type</name>
+                                    <value>server</value>
+                                </advice>
+                                <advice>
+                                    <name>org.eclipse.equinox.p2.type.group</name>
+                                    <value>true</value>
+                                </advice>
+                            </adviceFileContents>
                             <bundles>
-                                <!--<bundleDef>org.slf4j:slf4j-log4j12</bundleDef>-->
-                                <bundleDef>org.apache.commons:commons-lang3</bundleDef>
-                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn</bundleDef>
-                                <!-- <bundleDef>
-                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.rest
-                                 </bundleDef>-->
+                                <bundle>
+                                    <symbolicName>org.wso2.carbon.bpmn</symbolicName>
+                                    <version>${project.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>activiti-all</symbolicName>
+                                    <version>${org.activiti.wso2.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>org.mybatis.mybatis</symbolicName>
+                                    <version>${mybatis.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>spring.framework</symbolicName>
+                                    <version>${spring.framework.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>org.apache.geronimo.specs.geronimo-jpa_2.0_spec</symbolicName>
+                                    <version>${geronimo-jpa.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>jackson-core</symbolicName>
+                                    <version>${jackson.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>jackson-annotations</symbolicName>
+                                    <version>${jackson.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>jackson-databind</symbolicName>
+                                    <version>${jackson.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>jackson-module-jaxb-annotations</symbolicName>
+                                    <version>${jackson.jaxbi.wso2.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>jgraphx</symbolicName>
+                                    <version>${org.tinyjee.wso2.osgi.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>joda-time</symbolicName>
+                                    <version>${joda.time.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>json-path</symbolicName>
+                                    <version>${jsonpath.wso2.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>net.minidev.json-smart</symbolicName>
+                                    <version>${minidev.json-smart.version}</version>
+                                </bundle>
+                                <!-- SLF4J ??-->
+                                <bundle>
+                                    <symbolicName>snakeyaml</symbolicName>
+                                    <version>${snakeyaml.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>commons-io</symbolicName>
+                                    <version>${commons-io.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>org.apache.commons.lang3</symbolicName>
+                                    <version>${commons.lang3.version}</version>
+                                </bundle>
+                                <bundle>
+                                    <symbolicName>org.h2</symbolicName>
+                                    <version>${h2.version}</version>
+                                </bundle>
                             </bundles>
-                            <importBundles>
-                                <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:5.19.0.wso2v3</importBundleDef>
-                                <importBundleDef>org.apache.commons:commons-lang3:3.3.2</importBundleDef>
-                                <importBundleDef>com.fasterxml.jackson.core:jackson-core:2.2.3</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:2.2.3.wso2v1</importBundleDef>
-                                <importBundleDef>com.fasterxml.jackson.core:jackson-annotations:2.2.3</importBundleDef>
-                                <importBundleDef>joda-time:joda-time:2.1</importBundleDef>
-                                <!-- importBundleDef>org.wso2.orbit.javax.mail:mail:1.4.1.wso2v1</importBundleDef -->
-                                <importBundleDef>org.mybatis:mybatis:3.2.5</importBundleDef>
-                                <!-- importBundleDef>commons-logging:commons-logging:1.1.3</importBundleDef -->
-
-                                <!--<importBundleDef>org.wso2.orbit.org.restlet.jee:restlet:2.2.1.wso2v1</importBundleDef>-->
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.dataformat:jackson-dataformat:2.2.3.wso2v1</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.2.3.wso2v1</importBundleDef>
-                                <importBundleDef>org.codehaus.woodstox:woodstox-core-asl:4.2.0</importBundleDef>
-                                <importBundleDef>org.yaml:snakeyaml:1.13</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.org.tinyjee.jgraphx:jgraphx:1.10.4.1.wso2v1</importBundleDef>
-                                <importBundleDef>commons-io:commons-io:2.0.1</importBundleDef>
-                                <!--<importBundleDef>commons-fileupload:commons-fileupload:1.2.2</importBundleDef>-->
-                                <importBundleDef>org.codehaus.woodstox:stax2-api:3.1.1</importBundleDef>
-
-                                <importBundleDef>com.jayway.jsonpath.wso2:json-path:1.2.0.wso2v1</importBundleDef>
-                                <importBundleDef>net.minidev:json-smart:2.2</importBundleDef>
-                                <importBundleDef>org.apache.geronimo.specs:geronimo-jpa_2.0_spec</importBundleDef>
-                                <importBundleDef>org.codehaus.woodstox:stax2-api</importBundleDef>
-                                <importBundleDef>com.h2database:h2</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.org.springframework.ws:spring.framework:4.1.6.wso2v1</importBundleDef>
-                            </importBundles>
-
-
                             <importFeatures>
-                                <importFeatureDef>
-                                    org.wso2.carbon.core.server:${carbon.kernel.version}
-                                </importFeatureDef>
+                                <feature>
+                                    <id>org.wso2.carbon.core.server</id>
+                                    <version>${carbon.kernel.version}</version>
+                                </feature>
                             </importFeatures>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.wso2.carbon.maven</groupId>-->
-                <!--<artifactId>carbon-feature-plugin</artifactId>-->
-                <!--<extensions>true</extensions>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>1-p2-feature-generation</id>-->
-                        <!--<goals>-->
-                            <!--<goal>generate</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<propertyFile>../../etc/feature.properties</propertyFile>-->
-                            <!--<adviceFileContents>-->
-                                <!--<advice>-->
-                                    <!--<name>org.wso2.carbon.p2.category.type</name>-->
-                                    <!--<value>server</value>-->
-                                <!--</advice>-->
-                                <!--<advice>-->
-                                    <!--<name>org.eclipse.equinox.p2.type.group</name>-->
-                                    <!--<value>false</value>-->
-                                <!--</advice>-->
-                            <!--</adviceFileContents>-->
-                            <!--<bundles>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>org.wso2.carbon.bpmn</symbolicName>-->
-                                    <!--<version>${project.version}</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>activiti-all</symbolicName>-->
-                                    <!--<version>5.19.0.wso2v3</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>org.apache.commons.lang3</symbolicName>-->
-                                    <!--<version>3.3.2</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>com.fasterxml.jackson.core.jackson-core</symbolicName>-->
-                                    <!--<version>2.2.3</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>com.fasterxml.jackson.core.jackson-annotations</symbolicName>-->
-                                    <!--<version>2.2.3</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>joda-time</symbolicName>-->
-                                    <!--<version>2.1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>mail</symbolicName>-->
-                                    <!--<version>1.4.1.wso2v1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>mybatis</symbolicName>-->
-                                    <!--<version>3.2.5</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>commons-logging</symbolicName>-->
-                                    <!--<version>1.1.3</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>restlet</symbolicName>-->
-                                    <!--<version>2.2.1.wso2v1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>jackson-dataformat</symbolicName>-->
-                                    <!--<version>2.2.3.wso2v1</version>-->
-                                <!--</bundle>-->
-
-                                <!--<bundle>-->
-                                    <!--<symbolicName>jackson-module-jaxb-annotations</symbolicName>-->
-                                    <!--<version>2.2.3.wso2v1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>woodstox-core-asl</symbolicName>-->
-                                    <!--<version>4.2.0</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>snakeyaml</symbolicName>-->
-                                    <!--<version>1.13</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>jgraphx</symbolicName>-->
-                                    <!--<version>1.10.4.1.wso2v1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>commons-io</symbolicName>-->
-                                    <!--<version>2.0.1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>stax2-api</symbolicName>-->
-                                    <!--<version>3.1.1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>json-path</symbolicName>-->
-                                    <!--<version>1.2.0.wso2v1</version>-->
-                                <!--</bundle>-->
-                                <!--<bundle>-->
-                                    <!--<symbolicName>json-smart</symbolicName>-->
-                                    <!--<version>2.2</version>-->
-                                <!--</bundle>-->
-                            <!--</bundles>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 </project>
