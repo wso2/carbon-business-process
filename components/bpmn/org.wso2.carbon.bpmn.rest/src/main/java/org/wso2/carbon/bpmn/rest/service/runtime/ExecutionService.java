@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -343,18 +343,18 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         restVariableCollection.setRestVariables(restVariableList);
         return Response.ok().entity(restVariableCollection).build();
     }
-
-    @PUT
-    @Path("/{execution-id}/variables")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response createOrUpdateExecutionVariable(@PathParam("execution-id") String executionId,
-                                                    @Context HttpServletRequest httpServletRequest,
-                                                    @Context HttpRequest req) {
-        Execution execution = getExecutionFromRequest(executionId);
-        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION,
-                                       httpServletRequest, req.getUri());
-    }
+//todo:
+//    @PUT
+//    @Path("/{execution-id}/variables")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response createOrUpdateExecutionVariable(@PathParam("execution-id") String executionId,
+//                                                    @Context HttpServletRequest httpServletRequest,
+//                                                    @Context HttpRequest req) {
+//        Execution execution = getExecutionFromRequest(executionId);
+//        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION,
+//                                       httpServletRequest, req.getUri());
+//    }
     //TODO
    /* @PUT
     @Path("/{executionId}/variables")
@@ -369,19 +369,19 @@ public class ExecutionService extends BaseExecutionService implements Microservi
                 uriInfo, true, multipartBody);
         return Response.ok().status(Response.Status.CREATED).entity(restVariable).build();
     }*/
-
-    @POST
-    @Path("/{execution-id}/variables")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response createExecutionVariable(@PathParam("execution-id") String executionId,
-                                            @Context HttpServletRequest httpServletRequest,
-                                            @Context HttpRequest req) {
-
-        Execution execution = getExecutionFromRequest(executionId);
-        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION,
-                                       httpServletRequest, req.getUri());
-    }
+//TODO:
+//    @POST
+//    @Path("/{execution-id}/variables")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response createExecutionVariable(@PathParam("execution-id") String executionId,
+//                                            @Context HttpServletRequest httpServletRequest,
+//                                            @Context HttpRequest req) {
+//
+//        Execution execution = getExecutionFromRequest(executionId);
+//        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION,
+//                                       httpServletRequest, req.getUri());
+//    }
 
     //TODO
 /*
@@ -434,41 +434,42 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         return Response.ok().status(Response.Status.CREATED).entity(result).build();
     }
 */
-    @PUT
-    @Path("/{execution-id}/variables/{variable-name}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response updateVariable(@PathParam("execution-id") String executionId,
-                                   @PathParam("variable-name") String variableName,
-                                   @Context HttpServletRequest httpServletRequest,
-                                   @Context HttpRequest req) {
-        Execution execution = getExecutionFromRequest(executionId);
-        RestVariable result = null;
-
-        RestVariable restVariable = null;
-
-        try {
-            restVariable = new ObjectMapper()
-                    .readValue(httpServletRequest.getInputStream(), RestVariable.class);
-        } catch (Exception e) {
-            throw new ActivitiIllegalArgumentException(
-                    "Error converting request body to RestVariable instance", e);
-        }
-
-        if (restVariable == null) {
-            throw new ActivitiException("Invalid body was supplied");
-        }
-        if (!restVariable.getName().equals(variableName)) {
-            throw new ActivitiIllegalArgumentException(
-                    "Variable name in the body should be equal to the name used in the requested URL"
-                    +
-                    ".");
-        }
-
-        result = setSimpleVariable(restVariable, execution, false, req.getUri());
-
-        return Response.ok().status(Response.Status.CREATED).entity(result).build();
-    }
+	//TODO:
+//    @PUT
+//    @Path("/{execution-id}/variables/{variable-name}")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response updateVariable(@PathParam("execution-id") String executionId,
+//                                   @PathParam("variable-name") String variableName,
+//                                   @Context HttpServletRequest httpServletRequest,
+//                                   @Context HttpRequest req) {
+//        Execution execution = getExecutionFromRequest(executionId);
+//        RestVariable result = null;
+//
+//        RestVariable restVariable = null;
+//
+//        try {
+//            restVariable = new ObjectMapper()
+//                    .readValue(httpServletRequest.getInputStream(), RestVariable.class);
+//        } catch (Exception e) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "Error converting request body to RestVariable instance", e);
+//        }
+//
+//        if (restVariable == null) {
+//            throw new ActivitiException("Invalid body was supplied");
+//        }
+//        if (!restVariable.getName().equals(variableName)) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "Variable name in the body should be equal to the name used in the requested URL"
+//                    +
+//                    ".");
+//        }
+//
+//        result = setSimpleVariable(restVariable, execution, false, req.getUri());
+//
+//        return Response.ok().status(Response.Status.CREATED).entity(result).build();
+//    }
 
     @DELETE
     @Path("/{execution-id}/variables/{variable-name}")
