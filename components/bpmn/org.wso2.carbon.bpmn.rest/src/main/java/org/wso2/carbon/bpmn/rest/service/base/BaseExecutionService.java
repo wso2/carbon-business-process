@@ -569,129 +569,129 @@ public class BaseExecutionService {
         }
 
     }*/
-
-    protected Response createExecutionVariable(Execution execution, boolean override,
-                                               int variableType,
-                                               HttpServletRequest httpServletRequest,
-                                               String baseName) {
-
-        Object result = null;
-        Response.ResponseBuilder responseBuilder = Response.ok();
-
-        List<RestVariable> inputVariables = new ArrayList<>();
-        List<RestVariable> resultVariables = new ArrayList<>();
-        String contentType = httpServletRequest.getContentType();
-
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                @SuppressWarnings("unchecked") List<Object> variableObjects =
-                        (List<Object>) objectMapper
-                                .readValue(httpServletRequest.getInputStream(), List.class);
-                for (Object restObject : variableObjects) {
-                    RestVariable restVariable =
-                            objectMapper.convertValue(restObject, RestVariable.class);
-                    inputVariables.add(restVariable);
-                }
-            } catch (IOException e) {
-                throw new ActivitiIllegalArgumentException(
-                        "Failed to serialize to a RestVariable instance", e);
-            }
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
-            JAXBContext jaxbContext = null;
-            try {
-                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
-                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                RestVariableCollection restVariableCollection =
-                        (RestVariableCollection) jaxbUnmarshaller
-                                .unmarshal(httpServletRequest.getInputStream());
-                if (restVariableCollection == null) {
-                    throw new ActivitiIllegalArgumentException(
-                            "xml request body could not be transformed to a " +
-                            "RestVariable Collection instance.");
-                }
-                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
-
-                if (restVariableList.size() == 0) {
-                    throw new ActivitiIllegalArgumentException(
-                            "xml request body could not identify any rest " +
-                            "variables to be updated");
-                }
-                for (RestVariable restVariable : restVariableList) {
-                    inputVariables.add(restVariable);
-                }
-
-            } catch (JAXBException | IOException e) {
-                throw new ActivitiIllegalArgumentException(
-                        "xml request body could not be transformed to a " +
-                        "RestVariable instance.", e);
-            }
-        }
-
-        if (inputVariables.size() == 0) {
-            throw new ActivitiIllegalArgumentException(
-                    "Request didn't contain a list of variables to create.");
-        }
-
-        RestVariable.RestVariableScope sharedScope = null;
-        RestVariable.RestVariableScope varScope = null;
-        Map<String, Object> variablesToSet = new HashMap<String, Object>();
-
-        for (RestVariable var : inputVariables) {
-            // Validate if scopes match
-            varScope = var.getVariableScope();
-            if (var.getName() == null) {
-                throw new ActivitiIllegalArgumentException("Variable name is required");
-            }
-
-            if (varScope == null) {
-                varScope = RestVariable.RestVariableScope.LOCAL;
-            }
-            if (sharedScope == null) {
-                sharedScope = varScope;
-            }
-            if (varScope != sharedScope) {
-                throw new ActivitiIllegalArgumentException(
-                        "Only allowed to update multiple variables in the same scope.");
-            }
-
-            if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
-                throw new BPMNConflictException(
-                        "Variable '" + var.getName() + "' is already present on execution '" +
-                        execution.getId() + "'.");
-            }
-
-            Object actualVariableValue = new RestResponseFactory().getVariableValue(var);
-            variablesToSet.put(var.getName(), actualVariableValue);
-            resultVariables.add(new RestResponseFactory()
-                                        .createRestVariable(var.getName(), actualVariableValue,
-                                                            varScope, execution.getId(),
-                                                            variableType, false, baseName));
-        }
-
-        if (!variablesToSet.isEmpty()) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
-                runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
-            } else {
-                if (execution.getParentId() != null) {
-                    // Explicitly set on parent, setting non-local variables on execution
-                    // itself will override local-variables if exists
-                    runtimeService.setVariables(execution.getParentId(), variablesToSet);
-                } else {
-                    // Standalone task, no global variables possible
-                    throw new ActivitiIllegalArgumentException(
-                            "Cannot set global variables on execution '" + execution.getId() +
-                            "', task is not part of process.");
-                }
-            }
-        }
-
-        RestVariableCollection restVariableCollection = new RestVariableCollection();
-        restVariableCollection.setRestVariables(resultVariables);
-        responseBuilder.entity(restVariableCollection);
-        return responseBuilder.status(Response.Status.CREATED).build();
-    }
+//todo:
+//    protected Response createExecutionVariable(Execution execution, boolean override,
+//                                               int variableType,
+//                                           Request httpServletRequest,
+//                                               String baseName) {
+//
+//        Object result = null;
+//        Response.ResponseBuilder responseBuilder = Response.ok();
+//
+//        List<RestVariable> inputVariables = new ArrayList<>();
+//        List<RestVariable> resultVariables = new ArrayList<>();
+//        String contentType = httpServletRequest.getContentType();
+//
+//        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+//            try {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                @SuppressWarnings("unchecked") List<Object> variableObjects =
+//                        (List<Object>) objectMapper
+//                                .readValue(httpServletRequest.getInputStream(), List.class);
+//                for (Object restObject : variableObjects) {
+//                    RestVariable restVariable =
+//                            objectMapper.convertValue(restObject, RestVariable.class);
+//                    inputVariables.add(restVariable);
+//                }
+//            } catch (IOException e) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "Failed to serialize to a RestVariable instance", e);
+//            }
+//        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+//            JAXBContext jaxbContext = null;
+//            try {
+//                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
+//                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+//                RestVariableCollection restVariableCollection =
+//                        (RestVariableCollection) jaxbUnmarshaller
+//                                .unmarshal(httpServletRequest.getInputStream());
+//                if (restVariableCollection == null) {
+//                    throw new ActivitiIllegalArgumentException(
+//                            "xml request body could not be transformed to a " +
+//                            "RestVariable Collection instance.");
+//                }
+//                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
+//
+//                if (restVariableList.size() == 0) {
+//                    throw new ActivitiIllegalArgumentException(
+//                            "xml request body could not identify any rest " +
+//                            "variables to be updated");
+//                }
+//                for (RestVariable restVariable : restVariableList) {
+//                    inputVariables.add(restVariable);
+//                }
+//
+//            } catch (JAXBException | IOException e) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "xml request body could not be transformed to a " +
+//                        "RestVariable instance.", e);
+//            }
+//        }
+//
+//        if (inputVariables.size() == 0) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "Request didn't contain a list of variables to create.");
+//        }
+//
+//        RestVariable.RestVariableScope sharedScope = null;
+//        RestVariable.RestVariableScope varScope = null;
+//        Map<String, Object> variablesToSet = new HashMap<String, Object>();
+//
+//        for (RestVariable var : inputVariables) {
+//            // Validate if scopes match
+//            varScope = var.getVariableScope();
+//            if (var.getName() == null) {
+//                throw new ActivitiIllegalArgumentException("Variable name is required");
+//            }
+//
+//            if (varScope == null) {
+//                varScope = RestVariable.RestVariableScope.LOCAL;
+//            }
+//            if (sharedScope == null) {
+//                sharedScope = varScope;
+//            }
+//            if (varScope != sharedScope) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "Only allowed to update multiple variables in the same scope.");
+//            }
+//
+//            if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
+//                throw new BPMNConflictException(
+//                        "Variable '" + var.getName() + "' is already present on execution '" +
+//                        execution.getId() + "'.");
+//            }
+//
+//            Object actualVariableValue = new RestResponseFactory().getVariableValue(var);
+//            variablesToSet.put(var.getName(), actualVariableValue);
+//            resultVariables.add(new RestResponseFactory()
+//                                        .createRestVariable(var.getName(), actualVariableValue,
+//                                                            varScope, execution.getId(),
+//                                                            variableType, false, baseName));
+//        }
+//
+//        if (!variablesToSet.isEmpty()) {
+//            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+//            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
+//                runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
+//            } else {
+//                if (execution.getParentId() != null) {
+//                    // Explicitly set on parent, setting non-local variables on execution
+//                    // itself will override local-variables if exists
+//                    runtimeService.setVariables(execution.getParentId(), variablesToSet);
+//                } else {
+//                    // Standalone task, no global variables possible
+//                    throw new ActivitiIllegalArgumentException(
+//                            "Cannot set global variables on execution '" + execution.getId() +
+//                            "', task is not part of process.");
+//                }
+//            }
+//        }
+//
+//        RestVariableCollection restVariableCollection = new RestVariableCollection();
+//        restVariableCollection.setRestVariables(resultVariables);
+//        responseBuilder.entity(restVariableCollection);
+//        return responseBuilder.status(Response.Status.CREATED).build();
+//    }
 
 /*    protected RestVariable setBinaryVariable(@Context HttpServletRequest httpServletRequest,
                                              Execution execution, int responseVariableType,
