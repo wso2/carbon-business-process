@@ -136,6 +136,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
+                <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
+                <version>${carbon.business-process.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpmn.server.feature</artifactId>
                 <version>${carbon.business-process.version}</version>
                 <type>zip</type>
