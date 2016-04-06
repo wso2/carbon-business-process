@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.common;
 
 import org.activiti.engine.query.QueryProperty;
@@ -22,11 +21,15 @@ import org.activiti.engine.query.QueryProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CorrelationQueryProperty  implements QueryProperty {
+/**
+ *
+ */
+public class CorrelationQueryProperty implements QueryProperty {
 
     private static final long serialVersionUID = 1L;
     private static final Map<String, CorrelationQueryProperty> properties = new HashMap();
-    public static final CorrelationQueryProperty PROCESS_INSTANCE_ID_ = new CorrelationQueryProperty("RES.ID_");
+    public static final CorrelationQueryProperty PROCESS_INSTANCE_ID =
+            new CorrelationQueryProperty("RES.ID_");
 
     private String name;
 
@@ -40,6 +43,6 @@ public class CorrelationQueryProperty  implements QueryProperty {
     }
 
     public static CorrelationQueryProperty findByName(String propertyName) {
-        return (CorrelationQueryProperty)properties.get(propertyName);
+        return (CorrelationQueryProperty) properties.get(propertyName);
     }
 }

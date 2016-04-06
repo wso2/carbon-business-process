@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,13 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
-import org.activiti.engine.*;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -25,12 +31,16 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.Comment;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.HistoricProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponseCollection;
@@ -38,27 +48,40 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstancePaginateLi
 import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponseCollection;
+import org.wso2.msf4j.Microservice;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+/**
+ *
+ */
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricProcessInstanceService",
+        service = Microservice.class,
+        immediate = true)
 @Path("/historic-process-instances")
-public class HistoricProcessInstanceService {
+public class HistoricProcessInstanceService implements Microservice {
 
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
-    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
-
-
-
-    @Context
-    UriInfo uriInfo;
+    private static final List<String> allPropertiesList = new ArrayList<>();
+    private static Map<String, QueryProperty> allowedSortProperties =
+            new HashMap<String, QueryProperty>();
 
     static {
         allPropertiesList.add("processInstanceId");
@@ -86,8 +109,10 @@ public class HistoricProcessInstanceService {
     }
 
     static {
-        allowedSortProperties.put("processInstanceId", HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
-        allowedSortProperties.put("processDefinitionId", HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+        allowedSortProperties.put("processInstanceId",
+                                  HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
+        allowedSortProperties.put("processDefinitionId",
+                                  HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
         allowedSortProperties.put("businessKey", HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
         allowedSortProperties.put("startTime", HistoricProcessInstanceQueryProperty.START_TIME);
         allowedSortProperties.put("endTime", HistoricProcessInstanceQueryProperty.END_TIME);
@@ -95,24 +120,35 @@ public class HistoricProcessInstanceService {
         allowedSortProperties.put("tenantId", HistoricProcessInstanceQueryProperty.TENANT_ID);
     }
 
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getHistoricProcessInstances() {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getHistoricProcessInstances(@Context HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        for (String property : allPropertiesList) {
+            String value = decoder.parameters().get(property).get(0);
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
-
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
 
         // Populate query based on request
-        HistoricProcessInstanceQueryRequest queryRequest = new HistoricProcessInstanceQueryRequest();
+        HistoricProcessInstanceQueryRequest queryRequest =
+                new HistoricProcessInstanceQueryRequest();
 
         if (allRequestParams.get("processInstanceId") != null) {
             queryRequest.setProcessInstanceId(allRequestParams.get("processInstanceId"));
@@ -143,7 +179,8 @@ public class HistoricProcessInstanceService {
         }
 
         if (allRequestParams.get("excludeSubprocesses") != null) {
-            queryRequest.setExcludeSubprocesses(Boolean.valueOf(allRequestParams.get("excludeSubprocesses")));
+            queryRequest.setExcludeSubprocesses(
+                    Boolean.valueOf(allRequestParams.get("excludeSubprocesses")));
         }
 
         if (allRequestParams.get("finishedAfter") != null) {
@@ -167,7 +204,8 @@ public class HistoricProcessInstanceService {
         }
 
         if (allRequestParams.get("includeProcessVariables") != null) {
-            queryRequest.setIncludeProcessVariables(Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
+            queryRequest.setIncludeProcessVariables(
+                    Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
         }
 
         if (allRequestParams.get("tenantId") != null) {
@@ -179,63 +217,73 @@ public class HistoricProcessInstanceService {
         }
 
         if (allRequestParams.get("withoutTenantId") != null) {
-            queryRequest.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
+            queryRequest
+                    .setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
         }
 
-        return Response.ok().entity(getQueryResponse(queryRequest, allRequestParams)).build();
+        return Response.ok()
+                       .entity(getQueryResponse(queryRequest, allRequestParams, request.getUri()))
+                       .build();
     }
 
     @GET
-    @Path("/{processInstanceId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
+    @Path("/{process-instance-id}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId,
+                                       @Context HttpRequest request) {
         HistoricProcessInstanceResponse historicProcessInstanceResponse = new RestResponseFactory()
-                .createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId),
-                        uriInfo.getBaseUri().toString());
+                .createHistoricProcessInstanceResponse(
+                        getHistoricProcessInstanceFromRequest(processInstanceId), request.getUri());
         return Response.ok().entity(historicProcessInstanceResponse).build();
     }
 
     @DELETE
-    @Path("/{processInstanceId}")
-    public Response deleteProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
+    @Path("/{process-instance-id}")
+    public Response deleteProcessInstance(
+            @PathParam("process-instance-id") String processInstanceId) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         historyService.deleteHistoricProcessInstance(processInstanceId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
     @GET
-    @Path("/{processInstanceId}/identitylinks")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getProcessIdentityLinks(@PathParam("processInstanceId")  String processInstanceId) {
+    @Path("/{process-instance-id}/identity-links")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getProcessIdentityLinks(
+            @PathParam("process-instance-id") String processInstanceId,
+            @Context HttpRequest request) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
-        List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
+        List<HistoricIdentityLink> identityLinks =
+                historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
         if (identityLinks != null) {
-            List<HistoricIdentityLinkResponse> historicIdentityLinkResponses = new RestResponseFactory()
-                    .createHistoricIdentityLinkResponseList(identityLinks, uriInfo.getBaseUri
-                    ().toString());
-            HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection = new
-                    HistoricIdentityLinkResponseCollection();
-            historicIdentityLinkResponseCollection.setHistoricIdentityLinkResponses(historicIdentityLinkResponses);
+            List<HistoricIdentityLinkResponse> historicIdentityLinkResponses =
+                    new RestResponseFactory().createHistoricIdentityLinkResponseList(identityLinks,
+                                                                                     request.getUri());
+            HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection =
+                    new HistoricIdentityLinkResponseCollection();
+            historicIdentityLinkResponseCollection
+                    .setHistoricIdentityLinkResponses(historicIdentityLinkResponses);
             return Response.ok().entity(historicIdentityLinkResponseCollection).build();
         }
 
         return Response.ok().build();
     }
 
-
     @GET
-    @Path("/{processInstanceId}/variables/{variableName}/data")
-    public Response getVariableData(@PathParam("processInstanceId") String processInstanceId,
-                                    @PathParam("variableName") String variableName) {
+    @Path("/{process-instance-id}/variables/{variable-name}/data")
+    public Response getVariableData(@PathParam("process-instance-id") String processInstanceId,
+                                    @PathParam("variable-name") String variableName,
+                                    @Context HttpRequest request) {
 
         try {
 
             Response.ResponseBuilder responseBuilder = Response.ok();
             byte[] result = null;
-            RestVariable variable = getVariableFromRequest(true, processInstanceId, variableName);
+            RestVariable variable =
+                    getVariableFromRequest(true, processInstanceId, variableName, request.getUri());
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
                 responseBuilder.type("application/octet-stream");
@@ -249,34 +297,38 @@ public class HistoricProcessInstanceService {
                 responseBuilder.type("application/x-java-serialized-object");
 
             } else {
-                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+                throw new ActivitiObjectNotFoundException(
+                        "The variable does not have a binary data stream.", null);
             }
             return responseBuilder.entity(result).build();
 
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             // Re-throw IOException
             throw new ActivitiException("Unexpected exception getting variable data", ioe);
         }
     }
 
     @GET
-    @Path("/{processInstanceId}/comments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getComments(@PathParam("processInstanceId") String processInstanceId) {
+    @Path("/{process-instance-id}/comments")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getComments(@PathParam("process-instance-id") String processInstanceId,
+                                @Context HttpRequest request) {
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
-        List<CommentResponse> commentResponseList = new RestResponseFactory().createRestCommentList(taskService
-                .getProcessInstanceComments(instance.getId()), uriInfo.getBaseUri().toString());
+        List<CommentResponse> commentResponseList = new RestResponseFactory()
+                .createRestCommentList(taskService.getProcessInstanceComments(instance.getId()),
+                                       request.getUri());
         CommentResponseCollection commentResponseCollection = new CommentResponseCollection();
         commentResponseCollection.setCommentResponseList(commentResponseList);
         return Response.ok().entity(commentResponseCollection).build();
     }
 
     @POST
-    @Path("/{processInstanceId}/comments")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response createComment(@PathParam("processInstanceId") String processInstanceId, CommentResponse comment) {
+    @Path("/{process-instance-id}/comments")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response createComment(@PathParam("process-instance-id") String processInstanceId,
+                                  CommentResponse comment, @Context HttpRequest request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
@@ -285,71 +337,89 @@ public class HistoricProcessInstanceService {
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        Comment createdComment = taskService.addComment(null, instance.getId(), comment.getMessage());
+        Comment createdComment =
+                taskService.addComment(null, instance.getId(), comment.getMessage());
 
-        CommentResponse commentResponse = new RestResponseFactory().createRestComment(createdComment, uriInfo
-                .getBaseUri().toString());
+        CommentResponse commentResponse =
+                new RestResponseFactory().createRestComment(createdComment, request.getUri());
 
         return Response.ok().status(Response.Status.CREATED).entity(commentResponse).build();
     }
 
     @GET
-    @Path("/{processInstanceId}/comments/{commentId}")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getComment(@PathParam("processInstanceId") String processInstanceId,
-                                      @PathParam("commentId") String commentId) {
+    @Path("/{process-instance-id}/comments/{comment-id}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getComment(@PathParam("process-instance-id") String processInstanceId,
+                               @PathParam("comment-id") String commentId,
+                               @Context HttpRequest request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         TaskService taskService = BPMNOSGIService.getTaskService();
 
         Comment comment = taskService.getComment(commentId);
-        if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
-            throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+        if (comment == null || comment.getProcessInstanceId() == null ||
+            !comment.getProcessInstanceId().equals(instance.getId())) {
+            throw new ActivitiObjectNotFoundException(
+                    "Process instance '" + instance.getId() + "' doesn't have a comment with id '" +
+                    commentId + "'.", Comment.class);
         }
-        CommentResponse commentResponse = new RestResponseFactory().createRestComment(comment, uriInfo.getBaseUri().toString());
+        CommentResponse commentResponse =
+                new RestResponseFactory().createRestComment(comment, request.getUri());
         return Response.ok().entity(commentResponse).build();
     }
 
     @DELETE
-    @Path("/{processInstanceId}/comments/{commentId}")
-    public Response deleteComment(@PathParam("processInstanceId") String processInstanceId,
-                              @PathParam("commentId") String commentId) {
+    @Path("/{process-instance-id}/comments/{comment-id}")
+    public Response deleteComment(@PathParam("process-instance-id") String processInstanceId,
+                                  @PathParam("comment-id") String commentId) {
 
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
         Comment comment = taskService.getComment(commentId);
-        if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
-            throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+        if (comment == null || comment.getProcessInstanceId() == null ||
+            !comment.getProcessInstanceId().equals(instance.getId())) {
+            throw new ActivitiObjectNotFoundException(
+                    "Process instance '" + instance.getId() + "' doesn't have a comment with id '" +
+                    commentId + "'.", Comment.class);
         }
 
         taskService.deleteComment(commentId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
-    public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId, String variableName) {
+    public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId,
+                                               String variableName, String baseContext) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricProcessInstance processObject = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceId(processInstanceId).includeProcessVariables().singleResult();
+                                                              .processInstanceId(processInstanceId)
+                                                              .includeProcessVariables()
+                                                              .singleResult();
 
         if (processObject == null) {
-            throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' couldn't be found.", HistoricProcessInstanceEntity.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Historic process instance '" + processInstanceId + "' couldn't be found.",
+                    HistoricProcessInstanceEntity.class);
         }
 
         Object value = processObject.getProcessVariables().get(variableName);
 
         if (value == null) {
-            throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Historic process instance '" + processInstanceId + "' variable value for " +
+                    variableName + " couldn't be found.", VariableInstanceEntity.class);
         } else {
-            return new RestResponseFactory().createRestVariable(variableName, value, null, processInstanceId,
-                    RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary, uriInfo.getBaseUri().toString());
+            return new RestResponseFactory()
+                    .createRestVariable(variableName, value, null, processInstanceId,
+                                        RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary,
+                                        baseContext);
         }
     }
 
-
-    protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Map<String, String>
-            allRequestParams) {
+    protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest,
+                                            Map<String, String> allRequestParams,
+                                            String baseContext) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
@@ -358,7 +428,8 @@ public class HistoricProcessInstanceService {
         if (queryRequest.getProcessInstanceId() != null) {
             query.processInstanceId(queryRequest.getProcessInstanceId());
         }
-        if (queryRequest.getProcessInstanceIds() != null && !queryRequest.getProcessInstanceIds().isEmpty()) {
+        if (queryRequest.getProcessInstanceIds() != null &&
+            !queryRequest.getProcessInstanceIds().isEmpty()) {
             query.processInstanceIds(new HashSet<String>(queryRequest.getProcessInstanceIds()));
         }
         if (queryRequest.getProcessDefinitionKey() != null) {
@@ -423,19 +494,24 @@ public class HistoricProcessInstanceService {
         }
 
         RestResponseFactory restResponseFactory = new RestResponseFactory();
-        DataResponse dataResponse = new HistoricProcessInstancePaginateList(restResponseFactory, uriInfo).paginateList(
-                allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
+        DataResponse dataResponse =
+                new HistoricProcessInstancePaginateList(restResponseFactory, baseContext)
+                        .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
+                                      allowedSortProperties);
 
         return dataResponse;
     }
 
-    protected void addVariables(HistoricProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
+    protected void addVariables(HistoricProcessInstanceQuery processInstanceQuery,
+                                List<QueryVariable> variables) {
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -445,8 +521,11 @@ public class HistoricProcessInstanceService {
             Object actualValue = restResponseFactory.getVariableValue(variable);
 
             // A value-only query is only possible using equals-operator
-            if (nameLess && variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
-                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+            if (nameLess &&
+                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                throw new ActivitiIllegalArgumentException(
+                        "Value-only query (without a variable-name) is only supported when using " +
+                        "'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
@@ -461,10 +540,13 @@ public class HistoricProcessInstanceService {
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
-                        processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                        processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
+                                                                           (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                                + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported when ignoring casing, " +
+                                "but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -474,10 +556,12 @@ public class HistoricProcessInstanceService {
 
                 case LIKE:
                     if (actualValue instanceof String) {
-                        processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
+                        processInstanceQuery
+                                .variableValueLike(variable.getName(), (String) actualValue);
                     } else {
-                        throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: "
-                                + actualValue.getClass().getName());
+                        throw new ActivitiIllegalArgumentException(
+                                "Only string variable values are supported for like, but was: " +
+                                actualValue.getClass().getName());
                     }
                     break;
 
@@ -486,7 +570,8 @@ public class HistoricProcessInstanceService {
                     break;
 
                 case GREATER_THAN_OR_EQUALS:
-                    processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
+                    processInstanceQuery
+                            .variableValueGreaterThanOrEqual(variable.getName(), actualValue);
                     break;
 
                 case LESS_THAN:
@@ -494,21 +579,28 @@ public class HistoricProcessInstanceService {
                     break;
 
                 case LESS_THAN_OR_EQUALS:
-                    processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
+                    processInstanceQuery
+                            .variableValueLessThanOrEqual(variable.getName(), actualValue);
                     break;
 
                 default:
-                    throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                    throw new ActivitiIllegalArgumentException(
+                            "Unsupported variable query operation: " +
+                            variable.getVariableOperation());
             }
         }
     }
 
-    protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
+    protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(
+            String processInstanceId) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
-        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceId(processInstanceId).singleResult();
+        HistoricProcessInstance processInstance =
+                historyService.createHistoricProcessInstanceQuery()
+                              .processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a process instance with id '" + processInstanceId + "'.",
+                    HistoricProcessInstance.class);
         }
         return processInstance;
     }

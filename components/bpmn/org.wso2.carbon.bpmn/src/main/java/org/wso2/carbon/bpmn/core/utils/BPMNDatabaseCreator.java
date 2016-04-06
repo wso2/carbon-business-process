@@ -14,44 +14,44 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.core.utils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
-
-import java.io.File;
-import javax.sql.DataSource;
-
-
-/**
- * This class overrides the DatabaseCreator class to provide the db script location for
- * activiti checksum table BPS_BPMN_DEPLOYMENT_METADATA and tables which might be added for BPMN
- * internal tasks
- */
-public class BPMNDatabaseCreator extends DatabaseCreator {
-
-    private static final Logger log = LoggerFactory.getLogger(DatabaseCreator.class);
-
-    public BPMNDatabaseCreator(DataSource dataSource) {
-        super(dataSource);
-    }
-
-    /**
-     * This points the following path <CARBON_HOME>/dbscripts/bps/bpmn/checksum/create
-     *
-     * @param databaseType based on the database type, the script to be called will differ ( Ex. mysql.s
-     * @return The db script location
-     */
-
-    protected String getDbScriptLocation(String databaseType) {
-        String scriptName = databaseType + ".sql";
-        if (log.isDebugEnabled()) {
-            log.debug("Loading database script from :" + scriptName);
-        }
-        String carbonHome = System.getProperty("carbon.home");
-        return carbonHome + File.separator + "dbscripts" + File.separator + "bps" + File.separator +
-               "bpmn" + File.separator + "metadata" + File.separator + "create" + File.separator +
-               scriptName;
-    }
-}
+//package org.wso2.carbon.bpmn.core.utils;
+//
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.wso2.carbon.bpmn.core.db.DatabaseCreator;
+//
+//import java.io.File;
+//import javax.sql.DataSource;
+//
+//
+///**
+// * This class overrides the DatabaseCreator class to provide the db script location for
+// * activiti checksum table BPS_BPMN_DEPLOYMENT_METADATA and tables which might be added for BPMN
+// * internal tasks
+// */
+//public class BPMNDatabaseCreator extends DatabaseCreator {
+//
+//    private static final Logger log = LoggerFactory.getLogger(DatabaseCreator.class);
+//
+//    public BPMNDatabaseCreator(DataSource dataSource) {
+//        super(dataSource);
+//    }
+//
+//    /**
+//     * This points the following path <CARBON_HOME>/dbscripts/bps/bpmn/checksum/create
+//     *
+//     * @param databaseType based on the database type, the script to be called will differ ( Ex. mysql.s
+//     * @return The db script location
+//     */
+//
+//    protected String getDbScriptLocation(String databaseType) {
+//        String scriptName = databaseType + ".sql";
+//        if (log.isDebugEnabled()) {
+//            log.debug("Loading database script from :" + scriptName);
+//        }
+//        String carbonHome = System.getProperty("carbon.home");
+//        return carbonHome + File.separator + "dbscripts" + File.separator + "bps" + File.separator +
+//               "bpmn" + File.separator + "metadata" + File.separator + "create" + File.separator +
+//               scriptName;
+//    }
+//}

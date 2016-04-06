@@ -18,9 +18,16 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "TaskActionRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TaskActionRequest extends RestActionRequest {
@@ -39,13 +46,16 @@ public class TaskActionRequest extends RestActionRequest {
     public void setAssignee(String assignee) {
         this.assignee = assignee;
     }
+
     public String getAssignee() {
         return assignee;
     }
+
     public void setVariables(List<RestVariable> variables) {
         this.variables = variables;
     }
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=RestVariable.class)
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = RestVariable.class)
     public List<RestVariable> getVariables() {
         return variables;
     }

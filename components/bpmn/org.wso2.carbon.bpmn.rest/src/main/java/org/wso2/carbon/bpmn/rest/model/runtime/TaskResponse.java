@@ -12,22 +12,29 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
-
+ */
 
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.camunda.bpm.engine.task.DelegationState;
-import org.camunda.bpm.engine.task.Task;
+import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.Task;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "TaskResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TaskResponse {
@@ -38,9 +45,9 @@ public class TaskResponse {
     protected String delegationState;
     protected String name;
     protected String description;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date createTime;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date dueDate;
     protected int priority;
     protected boolean suspended;
@@ -62,7 +69,9 @@ public class TaskResponse {
     @XmlElement(name = "RestVariable", type = RestVariable.class)
     protected List<RestVariable> variables = new ArrayList<RestVariable>();
 
-    public TaskResponse(){}
+    public TaskResponse() {
+    }
+
     public TaskResponse(Task task) {
         setId(task.getId());
         setOwner(task.getOwner());
@@ -86,8 +95,8 @@ public class TaskResponse {
 
     protected String getDelegationStateString(DelegationState state) {
         String result = null;
-        if(state != null) {
-            result = state.toString().toLowerCase();
+        if (state != null) {
+            result = state.toString().toLowerCase(Locale.getDefault());
         }
         return result;
     }
@@ -95,72 +104,95 @@ public class TaskResponse {
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public String getUrl() {
         return url;
     }
+
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getOwner() {
         return owner;
     }
+
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
     public String getAssignee() {
         return assignee;
     }
+
     public void setAssignee(String assignee) {
         this.assignee = assignee;
     }
+
     public String getDelegationState() {
         return delegationState;
     }
+
     public void setDelegationState(String delegationState) {
         this.delegationState = delegationState;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public Date getCreateTime() {
-        return createTime;
+        return createTime == null ? null : (Date) this.createTime.clone();
     }
+
     public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+        this.createTime = (Date) createTime.clone();
     }
+
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
+
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = (Date) dueDate.clone();
     }
+
     public int getPriority() {
         return priority;
     }
+
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
     public boolean isSuspended() {
         return suspended;
     }
+
     public void setSuspended(boolean suspended) {
         this.suspended = suspended;
     }
+
     public String getTaskDefinitionKey() {
         return taskDefinitionKey;
     }
+
     public void setTaskDefinitionKey(String taskDefinitionKey) {
         this.taskDefinitionKey = taskDefinitionKey;
     }
@@ -265,4 +297,3 @@ public class TaskResponse {
         this.formKey = formKey;
     }
 }
-*/

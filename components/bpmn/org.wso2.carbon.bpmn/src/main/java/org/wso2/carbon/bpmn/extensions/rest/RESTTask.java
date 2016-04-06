@@ -21,17 +21,11 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.el.JuelExpression;
-//import org.apache.axiom.om.OMElement;
-//import org.apache.axiom.om.util.AXIOMUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.RegistryType;
-import org.wso2.carbon.registry.api.Registry;
-import org.wso2.carbon.registry.api.Resource;
 
 import java.net.URI;
 
@@ -146,6 +140,13 @@ public class RESTTask implements JavaDelegate {
             log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " +
                       serviceURL.getValue(execution).toString());
         }
+        if (restInvoker == null) {
+            String errorMessage = "RestInvoker is not initialized. Failed to execute "
+                    + method.getValue(execution).toString() + " " + serviceURL.getValue(execution).toString() +
+                    " within task " + getTaskDetails(execution);
+            log.error(errorMessage);
+            throw new BpmnError(REST_INVOKE_ERROR, errorMessage);
+        }
 
         String output = "";
         String url = null;
@@ -174,30 +175,30 @@ public class RESTTask implements JavaDelegate {
                                  "conf:/ to indicate the registry type.";
                     throw new BPMNRESTException(msg);
                 }
-                Registry registry = CarbonContext.getThreadLocalCarbonContext()
-                                                 .getRegistry(RegistryType.SYSTEM_CONFIGURATION);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Reading endpoint from registry location: " + registryPath +
-                              " for task " + getTaskDetails(execution));
-                }
-                Resource urlResource = registry.get(registryPath);
-                if (urlResource != null) {
-                    //String uepContent = new String((byte[]) urlResource.getContent());
-
-                    //UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
-                  //  OMElement uepElement = AXIOMUtil.stringToOM(uepContent);
-                    //UnifiedEndpoint uep = uepFactory.createEndpoint(uepElement);
-                    //url = uep.getAddress();
-                    //bUsername = uep.getAuthorizationUserName();
-                    //bPassword = uep.getAuthorizationPassword();
-                } else {
-                    String resourceNotFoundMeg = "Endpoint resource " + registryPath +
-                                                 " is not found. Failed to execute REST" +
-                                                 " invocation in task " +
-                                                 getTaskDetails(execution);
-                    throw new BPMNRESTException(resourceNotFoundMeg);
-                }
+//                Registry registry = CarbonContext.getThreadLocalCarbonContext()
+//                                                 .getRegistry(RegistryType.SYSTEM_CONFIGURATION);
+//
+//                if (log.isDebugEnabled()) {
+//                    log.debug("Reading endpoint from registry location: " + registryPath +
+//                              " for task " + getTaskDetails(execution));
+//                }
+//                Resource urlResource = registry.get(registryPath);
+//                if (urlResource != null) {
+//                    //String uepContent = new String((byte[]) urlResource.getContent());
+//
+//                    //UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
+//                  //  OMElement uepElement = AXIOMUtil.stringToOM(uepContent);
+//                    //UnifiedEndpoint uep = uepFactory.createEndpoint(uepElement);
+//                    //url = uep.getAddress();
+//                    //bUsername = uep.getAuthorizationUserName();
+//                    //bPassword = uep.getAuthorizationPassword();
+//                } else {
+//                    String resourceNotFoundMeg = "Endpoint resource " + registryPath +
+//                                                 " is not found. Failed to execute REST" +
+//                                                 " invocation in task " +
+//                                                 getTaskDetails(execution);
+//                    throw new BPMNRESTException(resourceNotFoundMeg);
+//                }
 
             } else {
                 String urlNotFoundErrorMsg = "Service URL is not provided for " +

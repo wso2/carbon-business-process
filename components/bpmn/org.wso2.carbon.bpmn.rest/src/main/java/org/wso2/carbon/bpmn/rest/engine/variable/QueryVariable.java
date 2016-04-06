@@ -12,28 +12,31 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
-
-
+ */
 
 package org.wso2.carbon.bpmn.rest.engine.variable;
 
-//import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "QueryVariable")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class QueryVariable {
+ public class QueryVariable {
 
     private String name;
     private String operation;
     private Object value;
     private String type;
 
-    public QueryVariable(){}
+    public QueryVariable() {
+    }
+
     public String getName() {
         return name;
     }
@@ -43,7 +46,7 @@ public class QueryVariable {
     }
 
     public QueryVariableOperation getVariableOperation() {
-        if(operation == null) {
+        if (operation == null) {
             return null;
         }
         return QueryVariableOperation.forFriendlyName(operation);
@@ -69,6 +72,9 @@ public class QueryVariable {
         this.type = type;
     }
 
+    /**
+     *
+     */
     public enum QueryVariableOperation {
         EQUALS("equals"),
         NOT_EQUALS("notEquals"),
@@ -91,15 +97,14 @@ public class QueryVariable {
         }
 
         public static QueryVariableOperation forFriendlyName(String friendlyName) {
-            for(QueryVariableOperation type : values()) {
-                if(type.friendlyName.equals(friendlyName)) {
+            for (QueryVariableOperation type : values()) {
+                if (type.friendlyName.equals(friendlyName)) {
                     return type;
                 }
             }
-
-          //  throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + friendlyName);
+            throw new ActivitiIllegalArgumentException(
+                    "Unsupported variable query operation: " + friendlyName);
         }
     }
 
 }
-*/

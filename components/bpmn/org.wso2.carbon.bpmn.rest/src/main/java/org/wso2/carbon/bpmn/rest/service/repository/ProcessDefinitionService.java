@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.bpmn.rest.service.repository;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -28,15 +30,25 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.io.IOUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
+import org.wso2.msf4j.Microservice;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -44,18 +56,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-@Path("/process-definitions")
-public class ProcessDefinitionService {
-
-    @Context
-    UriInfo uriInfo;
+/**
+ *
+ */
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.service.repository.ProcessDefinitionService",
+        service = Microservice.class,
+        immediate = true)
+@Path("/bps/bpmn/{version}/{context}/process-definitions")
+public class ProcessDefinitionService implements Microservice {
 
     private static final Map<String, QueryProperty> properties = new HashMap<>();
     private static final List<String> allPropertiesList = new ArrayList<>();
@@ -92,31 +102,45 @@ public class ProcessDefinitionService {
         allPropertiesList.add("sort");
     }
 
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessDefinitions() {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getProcessDefinitions(@Context HttpRequest request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Map<String, String> allRequestParams = new HashMap<>();
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
         for (String property : allPropertiesList) {
-            String value = uriInfo.getQueryParameters().getFirst(property);
+            String value = decoder.parameters().get(property).get(0);
 
             if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        ProcessDefinitionQuery processDefinitionQuery =
+                repositoryService.createProcessDefinitionQuery();
 
         // Populate filter-parameters
         if (allRequestParams.containsKey("category")) {
             processDefinitionQuery.processDefinitionCategory(allRequestParams.get("category"));
         }
         if (allRequestParams.containsKey("categoryLike")) {
-            processDefinitionQuery.processDefinitionCategoryLike(allRequestParams.get("categoryLike"));
+            processDefinitionQuery
+                    .processDefinitionCategoryLike(allRequestParams.get("categoryLike"));
         }
         if (allRequestParams.containsKey("categoryNotEquals")) {
-            processDefinitionQuery.processDefinitionCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
+            processDefinitionQuery
+                    .processDefinitionCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
         }
         if (allRequestParams.containsKey("key")) {
             processDefinitionQuery.processDefinitionKey(allRequestParams.get("key"));
@@ -131,13 +155,16 @@ public class ProcessDefinitionService {
             processDefinitionQuery.processDefinitionNameLike(allRequestParams.get("nameLike"));
         }
         if (allRequestParams.containsKey("resourceName")) {
-            processDefinitionQuery.processDefinitionResourceName(allRequestParams.get("resourceName"));
+            processDefinitionQuery
+                    .processDefinitionResourceName(allRequestParams.get("resourceName"));
         }
         if (allRequestParams.containsKey("resourceNameLike")) {
-            processDefinitionQuery.processDefinitionResourceNameLike(allRequestParams.get("resourceNameLike"));
+            processDefinitionQuery
+                    .processDefinitionResourceNameLike(allRequestParams.get("resourceNameLike"));
         }
         if (allRequestParams.containsKey("version")) {
-            processDefinitionQuery.processDefinitionVersion(Integer.valueOf(allRequestParams.get("version")));
+            processDefinitionQuery
+                    .processDefinitionVersion(Integer.valueOf(allRequestParams.get("version")));
         }
         if (allRequestParams.containsKey("suspended")) {
             Boolean suspended = Boolean.valueOf(allRequestParams.get("suspended"));
@@ -165,54 +192,64 @@ public class ProcessDefinitionService {
             processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
         }
         if (allRequestParams.containsKey("tenantIdLike")) {
-            processDefinitionQuery.processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
+            processDefinitionQuery
+                    .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
         }
 
-        DataResponse response = new ProcessDefinitionsPaginateList(new RestResponseFactory(), uriInfo)
-                .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
+        DataResponse response =
+                new ProcessDefinitionsPaginateList(new RestResponseFactory(), request.getUri())
+                        .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
 
         return Response.ok().entity(response).build();
     }
 
     @GET
-    @Path("/{processDefinitionId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ProcessDefinitionResponse getProcessDefinition(@PathParam("processDefinitionId") String processDefinitionId) {
+    @Path("/{process-definition-id}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public ProcessDefinitionResponse getProcessDefinition(
+            @PathParam("process-definition-id") String processDefinitionId,
+            @Context HttpRequest request) {
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-        return new RestResponseFactory().createProcessDefinitionResponse(processDefinition, uriInfo.getBaseUri().toString());
+        return new RestResponseFactory()
+                .createProcessDefinitionResponse(processDefinition, request.getUri());
     }
 
-
     @GET
-    @Path("/{processDefinitionId}/resourcedata")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessDefinitionResource(@PathParam("processDefinitionId") String processDefinitionId) {
+    @Path("/{process-definition-id}/resource-data")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getProcessDefinitionResource(
+            @PathParam("process-definition-id") String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         String resourceID = processDefinition.getResourceName();
         String contentType = Utils.resolveContentType(processDefinition.getResourceName());
-        return Response.ok().type(contentType).entity(getDeploymentResourceData(processDefinition.getDeploymentId(),
-                resourceID, repositoryService)).build();
+        return Response.ok().type(contentType)
+                       .entity(getDeploymentResourceData(processDefinition.getDeploymentId(),
+                                                         resourceID, repositoryService)).build();
     }
 
     @GET
-    @Path("/{processDefinitionId}/identitylinks")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLinks(@PathParam("processDefinitionId") String processDefinitionId) {
+    @Path("/{process-definition-id}/identity-links")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
+                                     @Context HttpRequest request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
-        return Response.ok().entity(new RestResponseFactory().createRestIdentityLinks(repositoryService
-                .getIdentityLinksForProcessDefinition(processDefinition.getId()), uriInfo.getBaseUri().toString())).build();
+        return Response.ok().entity(new RestResponseFactory().createRestIdentityLinks(
+                repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId()),
+                request.getUri())).build();
     }
 
     @GET
-    @Path("/{processDefinitionId}/identitylinks/{family}/{identityId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getIdentityLink(@PathParam("processDefinitionId") String processDefinitionId, @PathParam("family") String family,
-                                    @PathParam("identityId") String identityId) {
+    @Path("/{process-definition-id}/identity-links/{family}/{identity-id}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
+                                     @PathParam("family") String family,
+                                     @PathParam("identity-id") String identityId,
+                                     @Context HttpRequest request) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);
@@ -220,25 +257,28 @@ public class ProcessDefinitionService {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
 
         // Check if identitylink to get exists
-        IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId(), repositoryService);
-        return Response.ok().entity(new RestResponseFactory().createRestIdentityLink(link, uriInfo.getBaseUri().toString()))
-                .build();
+        IdentityLink link =
+                getIdentityLink(family, identityId, processDefinition.getId(), repositoryService);
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createRestIdentityLink(link, request.getUri())).build();
     }
-
 
     private ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        ProcessDefinition processDefinition =
+                repositoryService.getProcessDefinition(processDefinitionId);
 
         if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a process definition with id '" + processDefinitionId + "'.",
+                    ProcessDefinition.class);
         }
         return processDefinition;
     }
 
-    private byte[] getDeploymentResourceData(String deploymentId, String resourceId, RepositoryService
-            repositoryService) {
+    private byte[] getDeploymentResourceData(String deploymentId, String resourceId,
+                                             RepositoryService repositoryService) {
 
         if (deploymentId == null) {
             throw new ActivitiIllegalArgumentException("No deployment id provided");
@@ -248,15 +288,19 @@ public class ProcessDefinitionService {
         }
 
         // Check if deployment exists
-        Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+        Deployment deployment =
+                repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
         if (deployment == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a deployment with id '" + deploymentId + "'.",
+                    Deployment.class);
         }
 
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceList.contains(resourceId)) {
-            final InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, resourceId);
+            final InputStream resourceStream =
+                    repositoryService.getResourceAsStream(deploymentId, resourceId);
 
             try {
                 return IOUtils.toByteArray(resourceStream);
@@ -265,26 +309,32 @@ public class ProcessDefinitionService {
             }
         } else {
             // Resource not found in deployment
-            throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceId + "' in deployment '" + deploymentId + "'.", String.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a resource with id '" + resourceId + "' in deployment '" +
+                    deploymentId + "'.", String.class);
         }
     }
 
     protected void validateIdentityLinkArguments(String family, String identityId) {
-        if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
-            throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
+        if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) &&
+                               !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
+            throw new ActivitiIllegalArgumentException(
+                    "Identity link family should be 'users' or 'groups'.");
         }
         if (identityId == null) {
             throw new ActivitiIllegalArgumentException("IdentityId is required.");
         }
     }
 
-    protected IdentityLink getIdentityLink(String family, String identityId, String processDefinitionId,
+    protected IdentityLink getIdentityLink(String family, String identityId,
+                                           String processDefinitionId,
                                            RepositoryService repositoryService) {
         boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
 
         // Perhaps it would be better to offer getting a single identitylink from
         // the API
-        List<IdentityLink> allLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
+        List<IdentityLink> allLinks =
+                repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
         for (IdentityLink link : allLinks) {
             boolean rightIdentity;
             if (isUser) {
@@ -297,6 +347,7 @@ public class ProcessDefinitionService {
                 return link;
             }
         }
-        throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
+        throw new ActivitiObjectNotFoundException("Could not find the requested identity link.",
+                                                  IdentityLink.class);
     }
 }

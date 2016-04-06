@@ -14,126 +14,128 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.runtime;
 
-
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+/**
+ *
+ */
 @XmlRootElement(name = "ProcessInstanceResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProcessInstanceResponse {
-  protected String id;
-  protected String url;
-  protected String businessKey;
-  protected boolean suspended;
-  protected boolean ended;
-  protected String processDefinitionId;
-  protected String processDefinitionUrl;
-  protected String activityId;
-  @XmlElementWrapper(name = "RestVariables")
-  @XmlElement(name = "RestVariable", type = RestVariable.class)
-  protected List<RestVariable> variables = new ArrayList<RestVariable>();
-  protected String tenantId;
-  
-  //Added by Ryan Johnston
-  protected boolean completed;
+    protected String id;
+    protected String url;
+    protected String businessKey;
+    protected boolean suspended;
+    protected boolean ended;
+    protected String processDefinitionId;
+    protected String processDefinitionUrl;
+    protected String activityId;
+    @XmlElementWrapper(name = "RestVariables")
+    @XmlElement(name = "RestVariable", type = RestVariable.class)
+    protected List<RestVariable> variables = new ArrayList<RestVariable>();
+    protected String tenantId;
 
-  public String getId() {
-    return id;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public String getUrl() {
-    return url;
-  }
-  
-  public void setUrl(String url) {
-    this.url = url;
-  }
-  
-  public String getBusinessKey() {
-    return businessKey;
-  }
-  
-  public void setBusinessKey(String businessKey) {
-    this.businessKey = businessKey;
-  }
-  
-  public boolean isSuspended() {
-    return suspended;
-  }
-  
-  public void setSuspended(boolean suspended) {
-    this.suspended = suspended;
-  }
-  
-  public boolean isEnded() {
-    return ended;
-  }
+    protected boolean completed;
 
-  public void setEnded(boolean ended) {
-    this.ended = ended;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public String getUrl() {
+        return url;
+    }
 
-  public String getProcessDefinitionUrl() {
-    return processDefinitionUrl;
-  }
-  
-  public void setProcessDefinitionUrl(String processDefinitionUrl) {
-    this.processDefinitionUrl = processDefinitionUrl;
-  }
-  
-  public String getActivityId() {
-    return activityId;
-  }
-  
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-  public List<RestVariable> getVariables() {
-    return variables;
-  }
-  
-  public void setVariables(List<RestVariable> variables) {
-    this.variables = variables;
-  }
-  
-  public void addVariable(RestVariable variable) {
-    variables.add(variable);
-  }
-  
-  public void setTenantId(String tenantId) {
-	  this.tenantId = tenantId;
-  }
-  
-  public String getTenantId() {
-	  return tenantId;
-  }
-  
-  //Added by Ryan Johnston
-  public boolean isCompleted() {
-	  return completed;
-  }
-  
-  //Added by Ryan Johnston
-  public void setCompleted(boolean completed) {
-	  this.completed = completed;
-  }
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public boolean isSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
+    }
+
+    public boolean isEnded() {
+        return ended;
+    }
+
+    public void setEnded(boolean ended) {
+        this.ended = ended;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public String getProcessDefinitionUrl() {
+        return processDefinitionUrl;
+    }
+
+    public void setProcessDefinitionUrl(String processDefinitionUrl) {
+        this.processDefinitionUrl = processDefinitionUrl;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public List<RestVariable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<RestVariable> variables) {
+        this.variables = variables;
+    }
+
+    public void addVariable(RestVariable variable) {
+        variables.add(variable);
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    //Added by Ryan Johnston
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    //Added by Ryan Johnston
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
 }

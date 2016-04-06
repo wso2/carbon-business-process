@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-~ Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
 ~ Licensed under the Apache License, Version 2.0 (the "License");
 ~ you may not use this file except in compliance with the License.
@@ -31,178 +31,99 @@
 
 
     <dependencies>
+
+        <!-- Activiti Dependencies -->
         <dependency>
             <groupId>org.wso2.orbit.org.activiti</groupId>
             <artifactId>activiti-all</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
 
+        <!-- Kernel, Platform & OSGi Dependencies -->
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.osgi</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.wso2.carbon.datasources</groupId>
+            <artifactId>org.wso2.carbon.datasource.core</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.wso2.carbon.jndi</groupId>
             <artifactId>org.wso2.carbon.jndi</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-
+        <!-- Extension Dependencies -->
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.core</artifactId>
-            <!--version>5.0.0</version-->
+            <groupId>com.jayway.jsonpath.wso2</groupId>
+            <artifactId>json-path</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.axis2.wso2</groupId>
-            <artifactId>axis2</artifactId>
+            <groupId>org.json.wso2</groupId>
+            <artifactId>json</artifactId>
         </dependency>
-
         <dependency>
-            <!--groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.registry.core</artifactId>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
         </dependency>
-
-        <dependency-->
-            <groupId>org.wso2.carbon.multitenancy</groupId>
-            <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+            <artifactId>axiom</artifactId>
         </dependency>
-
-	    <dependency>
-             <groupId>org.mybatis</groupId>
-             <artifactId>mybatis</artifactId>
-         </dependency>
-
+        <dependency>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents.wso2</groupId>
             <artifactId>httpcore</artifactId>
         </dependency>
 
+
+        <!-- Other Dependencies -->
         <dependency>
-            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>com.jayway.jsonpath.wso2</groupId>
-            <artifactId>json-path</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
-
-        <!--dependency>
-            <groupId>org.wso2.carbon.business-process</groupId>
-            <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
-        </dependency-->
-
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-                <version>1.7.2</version>
-                <executions>
-                    <execution>
-                        <id>generate-scr-scrdescriptor</id>
-                        <goals>
-                            <goal>scr</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <sourceExcludes>
-                        **/package-info.java
-                    </sourceExcludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-Vendor>WSO2</Bundle-Vendor>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <!--<Bundle-Activator>-->
-                        <!--org.wso2.carbon.bpmn.core.deployment.Activator-->
-                        <!--</Bundle-Activator>-->
-                        <Private-Package>
-                            org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.extensions
-                        </Private-Package>
-                        <Export-Package>
-                            !org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.core.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.mgt.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.mgt.model.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.deployment.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.extensions.rest.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                        </Export-Package>
-                        <Import-Package>
-                            !org.wso2.carbon.bpel.deployer,
-                            !org.wso2.carbon.bpmn.extensions,
-                            org.wso2.carbon.ndatasource.*,
-                            *;resolution:=optional
-                        </Import-Package>
-                        <!--<Import-Package>-->
-                        <!--org.activiti.*,org.osgi.*,org.apache.axis2.*-->
-                        <!--</Import-Package>-->
-                        <DynamicImport-Package>*</DynamicImport-Package>
-                        <Axis2Deployer>BPMDeployer</Axis2Deployer>
-                    </instructions>
-                </configuration>
-            </plugin>
-
-            <!--<plugin>-->
-            <!--<groupId>org.apache.axis2</groupId>-->
-            <!--<artifactId>axis2-java2wsdl-maven-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<className>org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService</className>-->
-            <!--<outputFileName>/home/chathura/temp/BPMNDeploymentService.wsdl</outputFileName>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<goals>-->
-            <!--<goal>java2wsdl</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
-
-        </plugins>
-    </build>
-
-    <repositories>
-        <repository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-
-    </repositories>
-
-
+    <properties>
+        <private.package>org.wso2.carbon.bpmn.core.internal</private.package>
+        <export.package>
+            !org.wso2.carbon.bpmn.core.internal,
+            org.wso2.carbon.bpmn.core.*;
+            version=${carbon.business-process.exp.pkg.version},
+            org.wso2.carbon.bpmn.extensions.rest.*;
+            version=${carbon.business-process.exp.pkg.version},
+        </export.package>
+        <import.package>
+            org.osgi.framework; version="[1.8.0, 2.0.0)",
+            org.wso2.carbon.kernel.deployment; version="[5.0.0, 6.0.0)",
+            org.slf4j; version="[1.7.7, 2.0.0)"
+        </import.package>
+        <dynamic.import.package>*</dynamic.import.package>
+    </properties>
 </project>

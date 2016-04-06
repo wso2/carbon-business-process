@@ -18,10 +18,13 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.io.CachedOutputStream;
+//import org.apache.cxf.io.CachedOutputStream;
 
-import java.io.IOException;
+//import java.io.IOException;
 
+/**
+ *
+ */
 public class AttachmentDataHolder {
 
     private static final Log log = LogFactory.getLog(AttachmentDataHolder.class);
@@ -30,7 +33,7 @@ public class AttachmentDataHolder {
     private String description = null;
     private String type = null;
     private String contentType = null;
-    private String scope= null;
+    private String scope = null;
     private byte[] attachmentArray = null;
 
     public String getName() {
@@ -66,11 +69,11 @@ public class AttachmentDataHolder {
     }
 
     public byte[] getAttachmentArray() {
-        return attachmentArray;
+        return attachmentArray == null ? null : this.attachmentArray.clone();
     }
 
     public void setAttachmentArray(byte[] attachmentArray) {
-        this.attachmentArray = attachmentArray;
+        this.attachmentArray = attachmentArray == null ? null : this.attachmentArray.clone();
     }
 
     public String getScope() {
@@ -80,7 +83,7 @@ public class AttachmentDataHolder {
     public void setScope(String scope) {
         this.scope = scope;
     }
-
+/* TODO
     public void printDebug(){
         boolean debugLogEnabled = log.isDebugEnabled();
 
@@ -101,5 +104,5 @@ public class AttachmentDataHolder {
             }
             log.debug("Stream String:" + new String(attachmentArray));
         }
-    }
+    }*/
 }

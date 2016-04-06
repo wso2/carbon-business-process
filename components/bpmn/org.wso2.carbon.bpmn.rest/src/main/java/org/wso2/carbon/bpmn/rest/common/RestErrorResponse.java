@@ -16,11 +16,13 @@
 
 package org.wso2.carbon.bpmn.rest.common;
 
+/**
+ *
+ */
 public class RestErrorResponse {
 
     private String errorMessage;
     private int statusCode;
-
 
     public String getErrorMessage() {
         return errorMessage;

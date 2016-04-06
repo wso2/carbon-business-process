@@ -22,15 +22,20 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 
+/**
+ *
+ */
 public class BaseIdentityService {
 
-    protected org.activiti.engine.IdentityService identityService = BPMNOSGIService.getIdentityService();
+    protected org.activiti.engine.IdentityService identityService =
+            BPMNOSGIService.getIdentityService();
 
     protected Group getGroupFromRequest(String groupId) {
         Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
 
         if (group == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a group with id '" + groupId + "'.", User.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a group with id '" + groupId + "'.", User.class);
         }
         return group;
     }
@@ -39,7 +44,8 @@ public class BaseIdentityService {
         User user = identityService.createUserQuery().userId(userId).singleResult();
 
         if (user == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a user with id '" + userId + "'.", User.class);
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find a user with id '" + userId + "'.", User.class);
         }
         return user;
     }

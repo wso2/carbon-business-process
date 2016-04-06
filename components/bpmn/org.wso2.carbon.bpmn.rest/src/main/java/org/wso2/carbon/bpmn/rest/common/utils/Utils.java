@@ -14,38 +14,43 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.common.utils;
 
-import javax.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.apache.commons.fileupload.MultipartStream;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.io.CachedOutputStream;
+//import org.activiti.engine.ActivitiIllegalArgumentException;
+//import org.apache.commons.fileupload.MultipartStream;
+//import org.apache.commons.io.IOUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriInfo;
-import java.io.*;
+//import org.apache.cxf.io.CachedOutputStream;
+
+//import javax.servlet.http.HttpServletRequest;
+//import javax.ws.rs.core.UriInfo;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
 
+/**
+ *
+ */
 public class Utils {
 
     protected static final String DEFAULT_ENCODING = "UTF-8";
 
     private static final Log log = LogFactory.getLog(Utils.class);
 
-
     public static String resolveContentType(String resourceName) {
         String contentType = null;
         if (resourceName != null && !resourceName.isEmpty()) {
-            String lowerResourceName = resourceName.toLowerCase();
+            String lowerResourceName = resourceName.toLowerCase(Locale.getDefault());
 
             if (lowerResourceName.endsWith("png")) {
                 contentType = "image/png";
@@ -57,103 +62,114 @@ public class Utils {
     }
 
     public static String getClassResource(Class<?> klass) {
-        return klass.getClassLoader().getResource(
-                klass.getName().replace('.', '/') + ".class").toString();
+        return klass.getClassLoader().getResource(klass.getName().replace('.', '/') + ".class")
+                    .toString();
     }
 
     public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[0xFFFF];
 
-            for (int len; (len = is.read(buffer)) != -1; )
+            for (int len; (len = is.read(buffer)) != -1; ) {
                 os.write(buffer, 0, len);
 
-            os.flush();
+                os.flush();
+            }
 
             return os.toByteArray();
         }
     }
 
-    public static byte[] processMultiPartFile(HttpServletRequest httpServletRequest, String contentMessage) throws
-            IOException {
-        //Content-Type: multipart/form-data; boundary="----=_Part_2_1843361794.1448198281814"
+    /* TODO
+        public static byte[] processMultiPartFile(HttpServletRequest httpServletRequest,
+        String contentMessage) throws
+                IOException {
+            //Content-Type: multipart/form-data; boundary="----=_Part_2_1843361794.1448198281814"
 
-        String encoding = httpServletRequest.getCharacterEncoding();
+            String encoding = httpServletRequest.getCharacterEncoding();
 
-        if (encoding == null) {
-            encoding = DEFAULT_ENCODING;
-            httpServletRequest.setCharacterEncoding(encoding);
-        }
-
-        byte[] requestBodyArray = IOUtils.toByteArray(httpServletRequest.getInputStream());
-        if (requestBodyArray == null || requestBodyArray.length == 0) {
-            throw new ActivitiIllegalArgumentException("No :" + contentMessage + "was found in request body.");
-        }
-
-        String requestContentType = httpServletRequest.getContentType();
-
-        StringBuilder contentTypeString = new StringBuilder();
-        contentTypeString.append("Content-Type: " + requestContentType);
-        contentTypeString.append("\r");
-        contentTypeString.append(System.getProperty("line.separator"));
-
-        byte[] contentTypeArray = contentTypeString.toString().getBytes(encoding);
-
-        byte[] aggregatedRequestBodyByteArray = new byte[contentTypeArray.length + requestBodyArray.length];
-
-        System.arraycopy(contentTypeArray, 0, aggregatedRequestBodyByteArray, 0, contentTypeArray.length);
-        System.arraycopy(requestBodyArray, 0, aggregatedRequestBodyByteArray, contentTypeArray
-                .length, requestBodyArray.length);
-
-        boolean debugEnabled = log.isDebugEnabled();
-
-
-        int index = requestContentType.indexOf("boundary");
-
-        if (index <= 0) {
-            throw new ActivitiIllegalArgumentException("boundary tag not found in the request header.");
-        }
-        String boundaryString = requestContentType.substring(index + "boundary=".length());
-        boundaryString = boundaryString.replaceAll("\"", "").trim();
-
-        if (debugEnabled) {
-            log.debug("----------Content-Type:-----------\n" + httpServletRequest.getContentType());
-            log.debug("\n\n\n\n");
-            log.debug("\n\n\n\n----------Aggregated Request Body:-----------\n" + new String(aggregatedRequestBodyByteArray));
-            log.debug("boundaryString:" + boundaryString);
-        }
-
-        byte[] boundary = boundaryString.getBytes(encoding);
-        ByteArrayInputStream content = new ByteArrayInputStream(aggregatedRequestBodyByteArray);
-        MultipartStream multipartStream = new MultipartStream(content, boundary, aggregatedRequestBodyByteArray.length,
-                null);
-
-        boolean nextPart = multipartStream.skipPreamble();
-        if (debugEnabled) {
-            log.debug(nextPart);
-        }
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] byteArray = null;
-        // Get first file in the map, ignore possible other files
-        while (nextPart) {
-            //
-            if (debugEnabled) {
-
-                String header = multipartStream.readHeaders();
-                printHeaders(header);
+            if (encoding == null) {
+                encoding = DEFAULT_ENCODING;
+                httpServletRequest.setCharacterEncoding(encoding);
             }
 
+            byte[] requestBodyArray = IOUtils.toByteArray(httpServletRequest.getInputStream());
+            if (requestBodyArray == null || requestBodyArray.length == 0) {
+                throw new ActivitiIllegalArgumentException("No :" + contentMessage +
+                 "was found in request body.");
+            }
 
-            multipartStream.readBodyData(byteArrayOutputStream);
-            byteArray = byteArrayOutputStream.toByteArray();
+            String requestContentType = httpServletRequest.getContentType();
 
-            nextPart = multipartStream.readBoundary();
+            StringBuilder contentTypeString = new StringBuilder();
+            contentTypeString.append("Content-Type: " + requestContentType);
+            contentTypeString.append("\r");
+            contentTypeString.append(System.getProperty("line.separator"));
+
+            byte[] contentTypeArray = contentTypeString.toString().getBytes(encoding);
+
+            byte[] aggregatedRequestBodyByteArray = new byte[contentTypeArray.length +
+             requestBodyArray.length];
+
+            System.arraycopy(contentTypeArray, 0, aggregatedRequestBodyByteArray, 0,
+             contentTypeArray.length);
+            System.arraycopy(requestBodyArray, 0, aggregatedRequestBodyByteArray, contentTypeArray
+                    .length, requestBodyArray.length);
+
+            boolean debugEnabled = log.isDebugEnabled();
+
+
+            int index = requestContentType.indexOf("boundary");
+
+            if (index <= 0) {
+                throw new ActivitiIllegalArgumentException("boundary tag not
+                found in the request header.");
+            }
+            String boundaryString = requestContentType.substring(index + "boundary=".length());
+            boundaryString = boundaryString.replaceAll("\"", "").trim();
+
+            if (debugEnabled) {
+                log.debug("----------Content-Type:-----------\n" +
+                httpServletRequest.getContentType());
+                log.debug("\n\n\n\n");
+                log.debug("\n\n\n\n----------Aggregated Request Body:-----------\n" +
+                new String(aggregatedRequestBodyByteArray));
+                log.debug("boundaryString:" + boundaryString);
+            }
+
+            byte[] boundary = boundaryString.getBytes(encoding);
+            ByteArrayInputStream content = new ByteArrayInputStream(aggregatedRequestBodyByteArray);
+
+            MultipartStream multipartStream = new MultipartStream(content, boundary,
+            aggregatedRequestBodyByteArray.length,
+                    null);
+
+            boolean nextPart = multipartStream.skipPreamble();
+            if (debugEnabled) {
+                log.debug(nextPart);
+            }
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] byteArray = null;
+            // Get first file in the map, ignore possible other files
+            while (nextPart) {
+                //
+                if (debugEnabled) {
+
+                    String header = multipartStream.readHeaders();
+                    printHeaders(header);
+                }
+
+
+                multipartStream.readBodyData(byteArrayOutputStream);
+                byteArray = byteArrayOutputStream.toByteArray();
+
+                nextPart = multipartStream.readBoundary();
+            }
+
+            return byteArray;
         }
 
-        return byteArray;
-    }
-
-
+    */
     public static Map<String, String> processContentDispositionHeader(String headerValue) {
 
         boolean debugEnabled = log.isDebugEnabled();
@@ -161,7 +177,8 @@ public class Utils {
             headerValue += ";";
         }
 
-        byte[] headerValueByteArray = headerValue.trim().substring("form_data".length() + 1).getBytes();
+        byte[] headerValueByteArray =
+                headerValue.trim().substring("form_data".length() + 1).getBytes(Charsets.UTF_8);
 
         int beginIndex = 0;
         int length = 0;
@@ -181,7 +198,8 @@ public class Utils {
                 if (byte1 == '=') {
 
                     keyFound = true;
-                    key = new String(headerValueByteArray, beginIndex, length - 1).trim();
+                    key = new String(headerValueByteArray, beginIndex, length - 1, Charsets.UTF_8)
+                            .trim();
                     beginIndex += length;
                     length = 0;
                     if (debugEnabled) {
@@ -190,8 +208,8 @@ public class Utils {
                 }
             } else {
                 if (byte1 == '\n' || byte1 == '\r' || byte1 == ';') {
-
-                    value = new String(headerValueByteArray, beginIndex, length - 1);
+                    value = new String(headerValueByteArray, beginIndex, length - 1,
+                                       com.google.common.base.Charsets.UTF_8);
                     value = value.replaceAll("\"", "").trim();
                     keyFound = false;
                     beginIndex += length;
@@ -209,7 +227,7 @@ public class Utils {
         return contentDispositionHeaderMap;
     }
 
-
+/* TODO
     public static OutputStream getAttachmentStream(InputStream inputStream) throws IOException {
 
         if (inputStream != null) {
@@ -222,14 +240,15 @@ public class Utils {
 
         return null;
     }
+    */
 
     public static void printHeaders(String header) {
 
         boolean debugEnabled = log.isDebugEnabled();
 
-        byte[] headerArrayByte = header.getBytes();
+        byte[] headerArrayByte = header.getBytes(Charsets.UTF_8);
 
-        if(debugEnabled){
+        if (debugEnabled) {
             log.debug("==============Headers:==========================");
             log.debug(header);
         }
@@ -240,7 +259,7 @@ public class Utils {
         String headerString = null;
         String headerValue = null;
         boolean headerFound = false;
-        Map<String, String> headerMap = new HashMap<String, String>();
+      //  Map<String, String> headerMap = new HashMap<>();
         for (byte headerByte : headerArrayByte) {
 
             ++length;
@@ -249,25 +268,27 @@ public class Utils {
 
                 if (headerByte == ':') {
                     headerFound = true;
-                    headerString = new String(headerArrayByte, beginIndex, length - 1);
+                    headerString =
+                            new String(headerArrayByte, beginIndex, length - 1, Charsets.UTF_8);
                     beginIndex += length;
                     length = 0;
-                    if(log.isDebugEnabled()){
+                    if (log.isDebugEnabled()) {
                         log.debug("Header:" + headerString);
                     }
                 }
             } else {
 
                 if (headerByte == '\n' || headerByte == '\r') {
-                    headerValue = new String(headerArrayByte, beginIndex, length - 1);
-                    if(log.isDebugEnabled()){
+                    headerValue =
+                            new String(headerArrayByte, beginIndex, length - 1, Charsets.UTF_8);
+                    if (log.isDebugEnabled()) {
                         log.debug("header value:" + headerValue);
                     }
                     headerFound = false;
                     beginIndex += length;
                     length = 0;
 
-                    headerMap.put(headerString, headerValue);
+                  //  headerMap.put(headerString, headerValue);
                     headerString = null;
                     headerValue = null;
                 }
@@ -276,10 +297,11 @@ public class Utils {
         }
     }
 
-    public static Map<String, String> populateRequestParams(List<String> propertiesList, UriInfo uriInfo) {
+    public static Map<String, String> populateRequestParams(List<String> propertiesList,
+                                                            Map<String, List<String>> queryParams) {
         Map<String, String> requestParams = new HashMap<>();
         for (String property : propertiesList) {
-            String value = uriInfo.getQueryParameters().getFirst(property);
+            String value = queryParams.get(property).get(0);
 
             if (value != null) {
                 requestParams.put(property, value);
@@ -288,28 +310,35 @@ public class Utils {
         return requestParams;
     }
 
-    public static Map<String, String> prepareCommonParameters(Map<String, String> requestParams, UriInfo uriInfo) {
-        String start = uriInfo.getQueryParameters().getFirst("start");
-        if (start != null) {
-            requestParams.put("start", start);
+    public static Map<String, String> prepareCommonParameters(Map<String, String> requestParams,
+                                                              Map<String, List<String>> queryParams) {
+        if (queryParams.containsKey("start")) {
+            String start = queryParams.get("start").get(0);
+            if (start != null) {
+                requestParams.put("start", start);
+            }
         }
-
-        String size = uriInfo.getQueryParameters().getFirst("size");
-        if (size != null) {
-            requestParams.put("size", size);
+        if (queryParams.containsKey("size")) {
+            String size = queryParams.get("size").get(0);
+            if (size != null) {
+                requestParams.put("size", size);
+            }
         }
-
-        String order = uriInfo.getQueryParameters().getFirst("order");
-        if (order != null) {
-            requestParams.put("order", order);
+        if (queryParams.containsKey("order")) {
+            String order = queryParams.get("start").get(0);
+            if (order != null) {
+                requestParams.put("order", order);
+            }
         }
-
-        String sort = uriInfo.getQueryParameters().getFirst("sort");
-        if (sort != null) {
-            requestParams.put("sort", sort);
+        if (queryParams.containsKey("sort")) {
+            String sort = queryParams.get("sort").get(0);
+            if (sort != null) {
+                requestParams.put("sort", sort);
+            }
         }
 
         return requestParams;
+
     }
 
     public static String getValues(String fullString, String key) {
@@ -321,12 +350,10 @@ public class Utils {
         return newValue2.substring(firstOccurance + 1, secondOccurnace);
     }
 
-
     public void processHeaders(String header, List<String> keyList) {
 
        /* Content-Disposition: form-data; name="file"; filename="buffer_pool"
         Content-Type: application/octet-stream*/
-
 
     }
 

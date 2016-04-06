@@ -14,18 +14,24 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "HistoricProcessInstanceResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class HistoricProcessInstanceResponse {
@@ -35,9 +41,9 @@ public class HistoricProcessInstanceResponse {
     protected String businessKey;
     protected String processDefinitionId;
     protected String processDefinitionUrl;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date startTime;
-    @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
     protected Date endTime;
     protected Long durationInMillis;
     protected String startUserId;
@@ -53,93 +59,123 @@ public class HistoricProcessInstanceResponse {
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public String getUrl() {
         return url;
     }
+
     public void setUrl(String url) {
         this.url = url;
     }
+
     public String getBusinessKey() {
         return businessKey;
     }
+
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
+
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
+
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
+
     public String getProcessDefinitionUrl() {
         return processDefinitionUrl;
     }
+
     public void setProcessDefinitionUrl(String processDefinitionUrl) {
         this.processDefinitionUrl = processDefinitionUrl;
     }
+
     public Date getStartTime() {
-        return startTime;
+        return startTime == null ? null : (Date) startTime.clone();
     }
+
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = (Date) startTime.clone();
     }
+
     public Date getEndTime() {
-        return endTime;
+        return endTime == null ? null : (Date) this.endTime.clone();
     }
+
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = (Date) endTime.clone();
     }
+
     public Long getDurationInMillis() {
         return durationInMillis;
     }
+
     public void setDurationInMillis(Long durationInMillis) {
         this.durationInMillis = durationInMillis;
     }
+
     public String getStartUserId() {
         return startUserId;
     }
+
     public void setStartUserId(String startUserId) {
         this.startUserId = startUserId;
     }
+
     public String getStartActivityId() {
         return startActivityId;
     }
+
     public void setStartActivityId(String startActivityId) {
         this.startActivityId = startActivityId;
     }
+
     public String getEndActivityId() {
         return endActivityId;
     }
+
     public void setEndActivityId(String endActivityId) {
         this.endActivityId = endActivityId;
     }
+
     public String getDeleteReason() {
         return deleteReason;
     }
+
     public void setDeleteReason(String deleteReason) {
         this.deleteReason = deleteReason;
     }
+
     public String getSuperProcessInstanceId() {
         return superProcessInstanceId;
     }
+
     public void setSuperProcessInstanceId(String superProcessInstanceId) {
         this.superProcessInstanceId = superProcessInstanceId;
     }
+
     public List<RestVariable> getVariables() {
         return variables;
     }
+
     public void setVariables(List<RestVariable> variables) {
         this.variables = variables;
     }
+
     public void addVariable(RestVariable variable) {
         variables.add(variable);
     }
+
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
+
     public String getTenantId() {
         return tenantId;
     }

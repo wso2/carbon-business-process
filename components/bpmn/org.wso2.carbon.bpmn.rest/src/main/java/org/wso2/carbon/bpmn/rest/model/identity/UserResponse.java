@@ -19,6 +19,9 @@ package org.wso2.carbon.bpmn.rest.model.identity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ *
+ */
 public class UserResponse {
 
     protected String id;

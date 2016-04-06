@@ -17,6 +17,9 @@
 
 package org.wso2.carbon.bpmn.rest.common.exception;
 
+/**
+ *
+ */
 public class BPMNForbiddenException extends BPMNRestException {
 
     private static final long serialVersionUID = 1L;

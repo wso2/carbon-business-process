@@ -24,6 +24,8 @@ import org.activiti.engine.repository.DeploymentBuilder;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +66,8 @@ import java.util.zip.ZipInputStream;
  * we are using an additional table which will keep track of the deployed package's md5sum in-order to
  * identify the deployment of a new package.
  */
+
+
 public class BPMNDeployer implements Deployer {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
@@ -78,17 +82,21 @@ public class BPMNDeployer implements Deployer {
     ;
     private ActivitiDAO activitiDAO;
 
+    @Activate
+    protected void start(BundleContext bundleContext) {
+    }
+
     /**
      * Initializes the deployment per tenant
      */
     @Override
     public void init() {
+        log.info("Initializing BPMNDeployer");
         artifactType = new ArtifactType<>("bar");
         try {
             deploymentLocation = new URL(DEPLOYMENT_PATH);
             home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
-            deploymentDir = home + File.separator + "repository" + File.separator + "deployment" +
-                            File.separator + "server" + File.separator + deploymentLocation;
+            deploymentDir = home + File.separator + "deployment" + File.separator + "bpmn";
             this.activitiDAO = new ActivitiDAO();
         } catch (MalformedURLException | ExceptionInInitializerError e) {
             String msg = "Failed to initialize BPMNDeployer: ";
@@ -103,7 +111,7 @@ public class BPMNDeployer implements Deployer {
      * @param
      * @throws CarbonDeploymentException On failure , deployment exception is thrown
      */
-
+    @Override
     public Object deploy(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
         String artifactPath = artifactFile.getAbsolutePath();
@@ -156,7 +164,6 @@ public class BPMNDeployer implements Deployer {
                 //call for insertion
                 activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
 
-                //TODO:add to file repo
                 try {
                     FileUtils.copyFileToDirectory(artifactFile, destinationFolder);
                 } catch (IOException e) {
@@ -178,6 +185,7 @@ public class BPMNDeployer implements Deployer {
 
     }
 
+    @Override
     public void undeploy(Object key) throws CarbonDeploymentException {
         String deploymentName = "";
         try {
@@ -223,6 +231,7 @@ public class BPMNDeployer implements Deployer {
     }
 
     //Perform version support : update activiti deployment and file repo /registry done
+    @Override
     public Object update(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
         String artifactPath = artifactFile.getAbsolutePath();
@@ -243,7 +252,6 @@ public class BPMNDeployer implements Deployer {
             throw new CarbonDeploymentException(errMsg, e);
         }
 
-        //TODO: update file repo
         File fileToUpdate = new File(deploymentDir + File.separator + deploymentName);
         try {
             FileUtils.copyFile(artifactFile, fileToUpdate);
@@ -344,10 +352,12 @@ public class BPMNDeployer implements Deployer {
         }
     }
 
+    @Override
     public URL getLocation() {
         return deploymentLocation;
     }
 
+    @Override
     public ArtifactType getArtifactType() {
         return artifactType;
     }

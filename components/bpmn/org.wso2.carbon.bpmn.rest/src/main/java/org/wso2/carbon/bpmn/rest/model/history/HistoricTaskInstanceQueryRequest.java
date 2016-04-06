@@ -14,20 +14,26 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "HistoricTaskInstanceQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
+public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
 
     private String taskId;
     private String processInstanceId;
@@ -314,27 +320,27 @@ public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = (Date) dueDate.clone();
     }
 
     public Date getDueDateAfter() {
-        return dueDateAfter;
+        return dueDateAfter == null ? null : (Date) this.dueDateAfter.clone();
     }
 
     public void setDueDateAfter(Date dueDateAfter) {
-        this.dueDateAfter = dueDateAfter;
+        this.dueDateAfter = (Date) dueDateAfter.clone();
     }
 
     public Date getDueDateBefore() {
-        return dueDateBefore;
+        return dueDateBefore == null ? null : (Date) this.dueDateBefore.clone();
     }
 
     public void setDueDateBefore(Date dueDateBefore) {
-        this.dueDateBefore = dueDateBefore;
+        this.dueDateBefore = (Date) dueDateBefore.clone();
     }
 
     public Boolean getWithoutDueDate() {
@@ -346,51 +352,51 @@ public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
     }
 
     public Date getTaskCreatedOn() {
-        return taskCreatedOn;
+        return taskCreatedOn == null ? null : (Date) this.taskCreatedOn.clone();
     }
 
     public void setTaskCreatedOn(Date taskCreatedOn) {
-        this.taskCreatedOn = taskCreatedOn;
+        this.taskCreatedOn = (Date) taskCreatedOn.clone();
     }
 
     public void setTaskCreatedAfter(Date taskCreatedAfter) {
-        this.taskCreatedAfter = taskCreatedAfter;
+        this.taskCreatedAfter = (Date) taskCreatedAfter.clone();
     }
 
     public Date getTaskCompletedAfter() {
-        return taskCompletedAfter;
+        return taskCompletedAfter == null ? null : (Date) this.taskCompletedAfter.clone();
     }
 
     public void setTaskCompletedAfter(Date taskCompletedAfter) {
-        this.taskCompletedAfter = taskCompletedAfter;
+        this.taskCompletedAfter = (Date) taskCompletedAfter.clone();
     }
 
     public Date getTaskCompletedBefore() {
-        return taskCompletedBefore;
+        return taskCompletedBefore == null ? null : (Date) this.taskCompletedBefore.clone();
     }
 
     public void setTaskCompletedBefore(Date taskCompletedBefore) {
-        this.taskCompletedBefore = taskCompletedBefore;
+        this.taskCompletedBefore = (Date) taskCompletedBefore.clone();
     }
 
     public Date getTaskCompletedOn() {
-        return taskCompletedOn;
+        return taskCompletedOn == null ? null : (Date) this.taskCompletedOn.clone();
     }
 
     public void setTaskCompletedOn(Date taskCompletedOn) {
-        this.taskCompletedOn = taskCompletedOn;
+        this.taskCompletedOn = (Date) taskCompletedOn.clone();
     }
 
     public Date getTaskCreatedAfter() {
-        return taskCreatedAfter;
+        return taskCreatedAfter == null ? null : (Date) this.taskCreatedAfter.clone();
     }
 
     public void setTaskCreatedBefore(Date taskCreatedBefore) {
-        this.taskCreatedBefore = taskCreatedBefore;
+        this.taskCreatedBefore = (Date) taskCreatedBefore.clone();
     }
 
     public Date getTaskCreatedBefore() {
-        return taskCreatedBefore;
+        return taskCreatedBefore == null ? null : (Date) this.taskCreatedBefore.clone();
     }
 
     public Boolean getIncludeTaskLocalVariables() {
@@ -409,7 +415,7 @@ public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
         this.includeProcessVariables = includeProcessVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getTaskVariables() {
         return taskVariables;
     }
@@ -418,7 +424,7 @@ public class HistoricTaskInstanceQueryRequest  extends PaginateRequest {
         this.taskVariables = taskVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getProcessVariables() {
         return processVariables;
     }

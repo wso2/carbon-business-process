@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,46 +16,67 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricActivitiInstanceService;
+import org.wso2.msf4j.Microservice;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ *
+ */
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricActivitiInstanceService",
+        service = Microservice.class,
+        immediate = true)
 @Path("/historic-activity-instances")
-public class HistoricActivitiInstanceService extends BaseHistoricActivitiInstanceService {
+public class HistoricActivitiInstanceService extends BaseHistoricActivitiInstanceService
+        implements Microservice {
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
-
-
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
     @GET
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getHistoricActivityInstances(@Context UriInfo uriInfo) {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getHistoricActivityInstances(@Context HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
+        for (String property : ALL_PROPERTIES_LIST) {
+            String value = decoder.parameters().get(property).get(0);
 
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
 
-        HistoricActivityInstanceQueryRequest query = getHistoricActivityInstanceQueryRequest(uriInfo, allRequestParams);
+        HistoricActivityInstanceQueryRequest query =
+                getHistoricActivityInstanceQueryRequest(allRequestParams);
 
-        DataResponse dataResponse = getQueryResponse(query, allRequestParams, uriInfo);
+        DataResponse dataResponse = getQueryResponse(query, allRequestParams, request.getUri());
         return Response.ok().entity(dataResponse).build();
     }
-
 
 }

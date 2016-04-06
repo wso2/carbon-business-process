@@ -15,37 +15,47 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import org.wso2.carbon.bpmn.rest.common.RestUrlBuilder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
+
+/**
+ *
+ */
 
 @Path("/historic-task-instances")
 public class HistoricTaskInstanceQueryService extends BaseHistoricTaskInstanceService {
 
     @POST
     @Path("/")
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest) {
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest,
+                                              @Context HttpRequest request) {
         Map<String, String> allRequestParams = new HashMap<>();
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        for (String property : ALL_PROPERTIES_LIST) {
+            String value = decoder.parameters().get(property).get(0);
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
-
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
-        String serverRootUrl = uriInfo.getBaseUri().toString().replace("/history/historic-task-instances", "");
-        return getQueryResponse(queryRequest, allRequestParams, serverRootUrl);
+        RestUrlBuilder builder = new RestUrlBuilder(request.getUri());
+        String serverRootUrl = builder.getBaseUrl();
+        return getQueryResponse(queryRequest, allRequestParams, serverRootUrl, request.getUri());
     }
 }
 

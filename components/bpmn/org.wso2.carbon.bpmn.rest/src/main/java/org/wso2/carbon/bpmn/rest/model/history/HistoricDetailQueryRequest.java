@@ -14,13 +14,14 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
-
 
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 
-public class HistoricDetailQueryRequest  extends PaginateRequest {
+/**
+ *
+ */
+public class HistoricDetailQueryRequest extends PaginateRequest {
 
     private String id;
     private String processInstanceId;

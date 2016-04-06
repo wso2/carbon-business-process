@@ -12,29 +12,37 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
-
-
-
+ */
 
 package org.wso2.carbon.bpmn.rest.common;
 
-//import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.camunda.bpm.engine.form.FormData;
-import org.camunda.bpm.engine.form.FormProperty;
-import org.camunda.bpm.engine.form.StartFormData;
-import org.camunda.bpm.engine.form.TaskFormData;
-import org.camunda.bpm.engine.history.*;
-import org.camunda.bpm.engine.identity.Group;
-import org.camunda.bpm.engine.identity.User;
-import org.camunda.bpm.engine.impl.bpmn.deployer.BpmnDeployer;
-import org.camunda.bpm.engine.repository.Deployment;
-import org.camunda.bpm.engine.repository.Model;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.runtime.Execution;
-import org.camunda.bpm.engine.runtime.Job;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.task.*;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.form.FormData;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricIdentityLink;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Event;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
@@ -43,18 +51,44 @@ import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
 import org.wso2.carbon.bpmn.rest.model.form.FormDataResponse;
 import org.wso2.carbon.bpmn.rest.model.form.RestEnumFormProperty;
 import org.wso2.carbon.bpmn.rest.model.form.RestFormProperty;
-import org.wso2.carbon.bpmn.rest.model.history.*;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.identity.GroupResponse;
 import org.wso2.carbon.bpmn.rest.model.identity.UserInfoResponse;
 import org.wso2.carbon.bpmn.rest.model.identity.UserResponse;
-import org.wso2.carbon.bpmn.rest.model.repository.*;
-import org.wso2.carbon.bpmn.rest.model.runtime.*;
-import org.wso2.carbon.bpmn.rest.model.runtime.variable.*;
+import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponse;
+import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponseCollection;
+import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
+import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
+import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.EventResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.HistoricTaskInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.JobResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.TableResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.BooleanRestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.DateRestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.DoubleRestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.IntegerRestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.LongRestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.RestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.ShortRestVariableConverter;
+import org.wso2.carbon.bpmn.rest.model.runtime.variable.StringRestVariableConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class RestResponseFactory {
 
     public static final int VARIABLE_TASK = 1;
@@ -70,14 +104,15 @@ public class RestResponseFactory {
 
     protected List<RestVariableConverter> variableConverters = new ArrayList<>();
 
-    public RestResponseFactory(){
+    public RestResponseFactory() {
         initializeVariableConverters();
     }
 
-    public List<DeploymentResponse> createDeploymentResponseList(List<Deployment> deployments, String baseUri) {
+    public List<DeploymentResponse> createDeploymentResponseList(List<Deployment> deployments,
+                                                                 String baseContext) {
         List<DeploymentResponse> responseList = new ArrayList<>();
         for (Deployment instance : deployments) {
-            responseList.add(createDeploymentResponse(instance, baseUri));
+            responseList.add(createDeploymentResponse(instance, baseContext));
         }
         return responseList;
     }
@@ -86,31 +121,37 @@ public class RestResponseFactory {
         return RestUrlBuilder.fromCurrentRequest(baseUri);
     }
 
-    public DeploymentResponse createDeploymentResponse(Deployment deployment,  String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
-        return new DeploymentResponse(deployment, urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT, deployment.getId()));
+    public DeploymentResponse createDeploymentResponse(Deployment deployment, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
+        return new DeploymentResponse(deployment, urlBuilder
+                .buildUrl(RestUrls.URL_DEPLOYMENT, deployment.getId()));
     }
 
-    public DeploymentResourceResponseCollection createDeploymentResourceResponseList(String deploymentId,
-                                                                                     List<String> resourceList, String baseUri
-                                                                                     ) {
+    public DeploymentResourceResponseCollection createDeploymentResourceResponseList(
+            String deploymentId, List<String> resourceList, String baseContext) {
         // Add additional metadata to the artifact-strings before returning
         List<DeploymentResourceResponse> responseList = new ArrayList<>();
         for (String resourceId : resourceList) {
-            responseList.add(createDeploymentResourceResponse(deploymentId, resourceId, Utils.resolveContentType
-                    (resourceId), baseUri));
+            responseList.add(createDeploymentResourceResponse(deploymentId, resourceId,
+                                                              Utils.resolveContentType(resourceId),
+                                                              baseContext));
         }
-        DeploymentResourceResponseCollection deploymentResourceResponseCollection = new
-                DeploymentResourceResponseCollection();
+        DeploymentResourceResponseCollection deploymentResourceResponseCollection =
+                new DeploymentResourceResponseCollection();
         deploymentResourceResponseCollection.setDeploymentResourceResponseList(responseList);
         return deploymentResourceResponseCollection;
     }
 
-    public DeploymentResourceResponse createDeploymentResourceResponse(String deploymentId, String resourceId, String contentType, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public DeploymentResourceResponse createDeploymentResourceResponse(String deploymentId,
+                                                                       String resourceId,
+                                                                       String contentType,
+                                                                       String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         // Create URL's
-        String resourceUrl = urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deploymentId, resourceId);
-        String resourceContentUrl = urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deploymentId, resourceId);
+        String resourceUrl =
+                urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deploymentId, resourceId);
+        String resourceContentUrl = urlBuilder
+                .buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deploymentId, resourceId);
 
         // Determine type
         String type = "resource";
@@ -120,31 +161,30 @@ public class RestResponseFactory {
                 break;
             }
         }
-        return new DeploymentResourceResponse(resourceId, resourceUrl, resourceContentUrl, contentType, type);
+        return new DeploymentResourceResponse(resourceId, resourceUrl, resourceContentUrl,
+                                              contentType, type);
     }
 
-    public List<ModelResponse> createModelResponseList(List<Model> models, String baseUri) {
-       // RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public List<ModelResponse> createModelResponseList(List<Model> models, String baseContext) {
+        // RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
         List<ModelResponse> responseList = new ArrayList<>();
         for (Model instance : models) {
-            responseList.add(createModelResponse(instance, baseUri));
+            responseList.add(createModelResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public List<ProcessDefinitionResponse> createProcessDefinitionResponseList(List<ProcessDefinition>
-                                                                                       processDefinitions, String
-            baseUri) {
+    public List<ProcessDefinitionResponse> createProcessDefinitionResponseList(
+            List<ProcessDefinition> processDefinitions, String baseContext) {
         List<ProcessDefinitionResponse> responseList = new ArrayList<>();
         for (ProcessDefinition instance : processDefinitions) {
-            responseList.add(createProcessDefinitionResponse(instance, baseUri));
+            responseList.add(createProcessDefinitionResponse(instance, baseContext));
         }
         return responseList;
     }
 
-
-    public ModelResponse createModelResponse(Model model, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public ModelResponse createModelResponse(Model model, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         ModelResponse modelResponse = new ModelResponse();
 
         modelResponse.setCategory(model.getCategory());
@@ -159,27 +199,31 @@ public class RestResponseFactory {
         modelResponse.setTenantId(model.getTenantId());
 
         modelResponse.setUrl(urlBuilder.buildUrl(RestUrls.URL_MODEL, model.getId()));
-        if(model.getDeploymentId() != null) {
-            modelResponse.setDeploymentUrl(urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT, model.getDeploymentId()));
+        if (model.getDeploymentId() != null) {
+            modelResponse.setDeploymentUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT, model.getDeploymentId()));
         }
 
-        if(model.hasEditorSource()) {
-            modelResponse.setSourceUrl(urlBuilder.buildUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+        if (model.hasEditorSource()) {
+            modelResponse
+                    .setSourceUrl(urlBuilder.buildUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
         }
 
-        if(model.hasEditorSourceExtra()) {
-            modelResponse.setSourceExtraUrl(urlBuilder.buildUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+        if (model.hasEditorSourceExtra()) {
+            modelResponse.setSourceExtraUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
         }
 
         return modelResponse;
     }
 
-    public ProcessDefinitionResponse createProcessDefinitionResponse(ProcessDefinition processDefinition, String
-            baseUri) {
+    public ProcessDefinitionResponse createProcessDefinitionResponse(
+            ProcessDefinition processDefinition, String baseContext) {
         ProcessDefinitionResponse response = new ProcessDefinitionResponse();
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
 
-        response.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+        response.setUrl(
+                urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
         response.setId(processDefinition.getId());
         response.setKey(processDefinition.getKey());
         response.setVersion(processDefinition.getVersion());
@@ -193,32 +237,40 @@ public class RestResponseFactory {
 
         // Links to other resources
         response.setDeploymentId(processDefinition.getDeploymentId());
-        response.setDeploymentUrl(urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId()));
-        response.setResource(urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName()));
-        if(processDefinition.getDiagramResourceName() != null) {
+        response.setDeploymentUrl(
+                urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId()));
+        response.setResource(urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE,
+                                                 processDefinition.getDeploymentId(),
+                                                 processDefinition.getResourceName()));
+        if (processDefinition.getDiagramResourceName() != null) {
             response.setDiagramResource(urlBuilder.buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE,
-                    processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName()));
+                                                            processDefinition.getDeploymentId(),
+                                                            processDefinition
+                                                                    .getDiagramResourceName()));
         }
         return response;
     }
 
-    public List<RestIdentityLink> createRestIdentityLinks(List<IdentityLink> links, String baseUri) {
+    public List<RestIdentityLink> createRestIdentityLinks(List<IdentityLink> links,
+                                                          String baseContext) {
         List<RestIdentityLink> responseList = new ArrayList<>();
         for (IdentityLink instance : links) {
-            responseList.add(createRestIdentityLink(instance, baseUri));
+            responseList.add(createRestIdentityLink(instance, baseContext));
         }
         return responseList;
     }
 
-    public RestIdentityLink createRestIdentityLink(IdentityLink link, String baseUri) {
+    public RestIdentityLink createRestIdentityLink(IdentityLink link, String baseContext) {
 
-        return createRestIdentityLink(link.getType(), link.getUserId(), link.getGroupId(), link.getTaskId(),
-                link.getProcessDefinitionId(), link.getProcessInstanceId(), baseUri);
+        return createRestIdentityLink(link.getType(), link.getUserId(), link.getGroupId(),
+                                      link.getTaskId(), link.getProcessDefinitionId(),
+                                      link.getProcessInstanceId(), baseContext);
     }
 
-    public RestIdentityLink createRestIdentityLink(String type, String userId, String groupId, String taskId, String
-            processDefinitionId, String processInstanceId, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public RestIdentityLink createRestIdentityLink(String type, String userId, String groupId,
+                                                   String taskId, String processDefinitionId,
+                                                   String processInstanceId, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         RestIdentityLink result = new RestIdentityLink();
         result.setUser(userId);
         result.setGroup(groupId);
@@ -231,11 +283,16 @@ public class RestResponseFactory {
             family = RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS;
         }
         if (processDefinitionId != null) {
-            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinitionId, family, (userId != null ? userId : groupId)));
-        } else if(taskId != null){
-            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family, (userId != null ? userId : groupId), type));
+            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK,
+                                              processDefinitionId, family,
+                                              (userId != null ? userId : groupId)));
+        } else if (taskId != null) {
+            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_IDENTITYLINK, taskId, family,
+                                              (userId != null ? userId : groupId), type));
         } else {
-            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstanceId, (userId != null ? userId : groupId), type));
+            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK,
+                                              processInstanceId,
+                                              (userId != null ? userId : groupId), type));
         }
         return result;
     }
@@ -243,54 +300,61 @@ public class RestResponseFactory {
     public Object getVariableValue(RestVariable restVariable) {
         Object value;
 
-        if(restVariable.getType() != null) {
+        if (restVariable.getType() != null) {
             // Try locating a converter if the type has been specified
             RestVariableConverter converter = null;
-            for(RestVariableConverter conv : variableConverters) {
-                if(conv.getRestTypeName().equals(restVariable.getType())) {
+            for (RestVariableConverter conv : variableConverters) {
+                if (conv.getRestTypeName().equals(restVariable.getType())) {
                     converter = conv;
                     break;
                 }
             }
-            if(converter == null) {
-                throw new ActivitiIllegalArgumentException("Variable '" + restVariable.getName() + "' has unsupported type: '" + restVariable.getType() + "'.");
+            if (converter == null) {
+                throw new ActivitiIllegalArgumentException(
+                        "Variable '" + restVariable.getName() + "' has unsupported type: '" +
+                        restVariable.getType() + "'.");
             }
             value = converter.getVariableValue(restVariable);
 
         } else {
-            // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+            // Revert to type determined by REST-to-Java mapping when no explicit type has been
+            // provided
             value = restVariable.getValue();
         }
         return value;
     }
 
-    public List<ProcessInstanceResponse> createProcessInstanceResponseList(List<ProcessInstance> processInstances,
-                                                                           String baseUri) {
+    public List<ProcessInstanceResponse> createProcessInstanceResponseList(
+            List<ProcessInstance> processInstances, String baseContext) {
         List<ProcessInstanceResponse> responseList = new ArrayList<>();
         for (ProcessInstance instance : processInstances) {
-            responseList.add(createProcessInstanceResponse(instance, baseUri));
+            responseList.add(createProcessInstanceResponse(instance, baseContext));
         }
         return responseList;
     }
 
-*/
-/*    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance, String baseUri) {
+/*    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance,
+ String baseUri) {
         return createProcessInstanceResponse(processInstance,baseUri);
-    }*//*
+    }*/
 
+    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance,
+                                                                 boolean returnVariables,
+                                                                 Map<String, Object>
+                                                                         runtimeVariableMap,
+                                                                 List<HistoricVariableInstance>
+                                                                         historicVariableList,
+                                                                 String baseContext) {
 
-    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance, boolean returnVariables,
-                                                                 Map<String, Object> runtimeVariableMap,
-                                                                 List<HistoricVariableInstance> historicVariableList,
-                                                                 String baseUri) {
-
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         ProcessInstanceResponse result = new ProcessInstanceResponse();
         result.setActivityId(processInstance.getActivityId());
         result.setBusinessKey(processInstance.getBusinessKey());
         result.setId(processInstance.getId());
         result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
-        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
+        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                           processInstance
+                                                                   .getProcessDefinitionId()));
         result.setEnded(processInstance.isEnded());
         result.setSuspended(processInstance.isSuspended());
         result.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
@@ -310,18 +374,23 @@ public class RestResponseFactory {
             if (processInstance.isEnded()) {
                 if (historicVariableList != null) {
                     for (HistoricVariableInstance historicVariable : historicVariableList) {
-                        result.addVariable(createRestVariable(historicVariable.getVariableName(), historicVariable.getValue(),
-                                RestVariable.RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS,
-                                false, baseUri));
+                        result.addVariable(createRestVariable(historicVariable.getVariableName(),
+                                                              historicVariable.getValue(),
+                                                              RestVariable.RestVariableScope.LOCAL,
+                                                              processInstance.getId(),
+                                                              VARIABLE_PROCESS, false,
+                                                              baseContext));
                     }
                 }
 
             } else {
                 if (runtimeVariableMap != null) {
-                    for (String name : runtimeVariableMap.keySet()) {
-                        result.addVariable(createRestVariable(name, runtimeVariableMap.get(name),
-                                RestVariable.RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS,
-                                false, baseUri));
+                    for (Map.Entry<String, Object> entry : runtimeVariableMap.entrySet()) {
+                        result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                              RestVariable.RestVariableScope.LOCAL,
+                                                              processInstance.getId(),
+                                                              VARIABLE_PROCESS, false,
+                                                              baseContext));
                     }
                 }
             }
@@ -331,17 +400,21 @@ public class RestResponseFactory {
         return result;
     }
 
-    */
-/*public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariableScope scope,
-                                           String id, int variableType, boolean includeBinaryValue, String baseUri){
+    /*public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariable
+    Scope
+     scope,
+                                           String id, int variableType, boolean includeBinaryValue
+                                           , String baseUri){
 
-        return createRestVariable(name, value, scope, id, variableType, includeBinaryValue, baseUri);
-    }*//*
+        return createRestVariable(name, value, scope, id, variableType, includeBinaryValue, baseUri)
+        ;
+    }*/
 
-
-    public RestVariable createRestVariable(String name, Object value, RestVariable.RestVariableScope scope,
-                                           String id, int variableType, boolean includeBinaryValue, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public RestVariable createRestVariable(String name, Object value,
+                                           RestVariable.RestVariableScope scope, String id,
+                                           int variableType, boolean includeBinaryValue,
+                                           String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         RestVariableConverter converter = null;
         RestVariable restVar = new RestVariable();
         restVar.setVariableScope(scope);
@@ -372,27 +445,35 @@ public class RestResponseFactory {
                 }
 
                 if (variableType == VARIABLE_TASK) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_VARIABLE_DATA, id, name));
+                    restVar.setValueUrl(
+                            urlBuilder.buildUrl(RestUrls.URL_TASK_VARIABLE_DATA, id, name));
                 } else if (variableType == VARIABLE_EXECUTION) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, id, name));
+                    restVar.setValueUrl(
+                            urlBuilder.buildUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, id, name));
                 } else if (variableType == VARIABLE_PROCESS) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, id, name));
+                    restVar.setValueUrl(urlBuilder.buildUrl(
+                            RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, id, name));
                 } else if (variableType == VARIABLE_HISTORY_TASK) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE_VARIABLE_DATA, id, name));
+                    restVar.setValueUrl(urlBuilder.buildUrl(
+                            RestUrls.URL_HISTORIC_TASK_INSTANCE_VARIABLE_DATA, id, name));
                 } else if (variableType == VARIABLE_HISTORY_PROCESS) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_VARIABLE_DATA, id, name));
+                    restVar.setValueUrl(urlBuilder.buildUrl(
+                            RestUrls.URL_HISTORIC_PROCESS_INSTANCE_VARIABLE_DATA, id, name));
                 } else if (variableType == VARIABLE_HISTORY_VARINSTANCE) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_VARIABLE_INSTANCE_DATA, id));
+                    restVar.setValueUrl(
+                            urlBuilder.buildUrl(RestUrls.URL_HISTORIC_VARIABLE_INSTANCE_DATA, id));
                 } else if (variableType == VARIABLE_HISTORY_DETAIL) {
-                    restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_DETAIL_VARIABLE_DATA, id));
+                    restVar.setValueUrl(
+                            urlBuilder.buildUrl(RestUrls.URL_HISTORIC_DETAIL_VARIABLE_DATA, id));
                 }
             }
         }
         return restVar;
     }
 
-    public RestVariable createBinaryRestVariable(String name, RestVariable.RestVariableScope scope, String type, String taskId,
-                                                 String executionId, String processInstanceId, String baseUri) {
+    public RestVariable createBinaryRestVariable(String name, RestVariable.RestVariableScope scope,
+                                                 String type, String taskId, String executionId,
+                                                 String processInstanceId, String baseUri) {
 
         RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
         RestVariable restVar = new RestVariable();
@@ -404,24 +485,29 @@ public class RestResponseFactory {
             restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
         }
         if (executionId != null) {
-            restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, executionId, name));
+            restVar.setValueUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, executionId, name));
         }
         if (processInstanceId != null) {
-            restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, processInstanceId, name));
+            restVar.setValueUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA,
+                                                    processInstanceId, name));
         }
 
         return restVar;
     }
 
-    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance, String baseUri) {
+    public ProcessInstanceResponse createProcessInstanceResponse(ProcessInstance processInstance,
+                                                                 String baseContext) {
 
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         ProcessInstanceResponse result = new ProcessInstanceResponse();
         result.setActivityId(processInstance.getActivityId());
         result.setBusinessKey(processInstance.getBusinessKey());
         result.setId(processInstance.getId());
         result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
-        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
+        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                           processInstance
+                                                                   .getProcessDefinitionId()));
         result.setEnded(processInstance.isEnded());
         result.setSuspended(processInstance.isSuspended());
         result.setUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
@@ -438,9 +524,11 @@ public class RestResponseFactory {
 
         if (processInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = processInstance.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
-                        RestVariable.RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_PROCESS, false, baseUri));
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                      RestVariable.RestVariableScope.LOCAL,
+                                                      processInstance.getId(), VARIABLE_PROCESS,
+                                                      false, baseContext));
             }
         }
 
@@ -450,17 +538,19 @@ public class RestResponseFactory {
     public Object getVariableValue(QueryVariable restVariable) {
         Object value;
 
-        if(restVariable.getType() != null) {
+        if (restVariable.getType() != null) {
             // Try locating a converter if the type has been specified
             RestVariableConverter converter = null;
-            for(RestVariableConverter conv : variableConverters) {
-                if(conv.getRestTypeName().equals(restVariable.getType())) {
+            for (RestVariableConverter conv : variableConverters) {
+                if (conv.getRestTypeName().equals(restVariable.getType())) {
                     converter = conv;
                     break;
                 }
             }
-            if(converter == null) {
-                throw new ActivitiIllegalArgumentException("Variable '" + restVariable.getName() + "' has unsupported type: '" + restVariable.getType() + "'.");
+            if (converter == null) {
+                throw new ActivitiIllegalArgumentException(
+                        "Variable '" + restVariable.getName() + "' has unsupported type: '" +
+                        restVariable.getType() + "'.");
             }
 
             RestVariable temp = new RestVariable();
@@ -470,72 +560,82 @@ public class RestResponseFactory {
             value = converter.getVariableValue(temp);
 
         } else {
-            // Revert to type determined by REST-to-Java mapping when no explicit type has been provided
+            // Revert to type determined by REST-to-Java mapping when no explicit type has been
+            // provided
             value = restVariable.getValue();
         }
         return value;
     }
 
-    public TaskResponse createTaskResponse(Task task, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public TaskResponse createTaskResponse(Task task, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         TaskResponse response = new TaskResponse(task);
         response.setUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, task.getId()));
 
         // Add references to other resources, if needed
         if (response.getParentTaskId() != null) {
-            response.setParentTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, response.getParentTaskId()));
+            response.setParentTaskUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_TASK, response.getParentTaskId()));
         }
         if (response.getProcessDefinitionId() != null) {
-            String repositoryUrl = baseUri.replace("/runtime","/repository");
-            RestUrlBuilder repositoryUrlBuilder = createUrlBuilder(repositoryUrl);
-            response.setProcessDefinitionUrl(repositoryUrlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, response.getProcessDefinitionId()));
+            response.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                                 response.getProcessDefinitionId()));
         }
         if (response.getExecutionId() != null) {
-            response.setExecutionUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, response.getExecutionId()));
+            response.setExecutionUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_EXECUTION, response.getExecutionId()));
         }
         if (response.getProcessInstanceId() != null) {
-            response.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, response.getProcessInstanceId()));
+            response.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE,
+                                                               response.getProcessInstanceId()));
         }
 
         if (task.getProcessVariables() != null) {
             Map<String, Object> variableMap = task.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                response.addVariable(createRestVariable(name, variableMap.get(name),
-                        RestVariable.RestVariableScope.GLOBAL, task.getId(), VARIABLE_TASK, false, baseUri));
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                response.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                        RestVariable.RestVariableScope.GLOBAL,
+                                                        task.getId(), VARIABLE_TASK, false,
+                                                        baseContext));
             }
         }
         if (task.getTaskLocalVariables() != null) {
             Map<String, Object> variableMap = task.getTaskLocalVariables();
-            for (String name : variableMap.keySet()) {
-                response.addVariable(createRestVariable(name, variableMap.get(name),
-                        RestVariable.RestVariableScope.LOCAL, task.getId(), VARIABLE_TASK, false, baseUri));
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                response.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                        RestVariable.RestVariableScope.LOCAL,
+                                                        task.getId(), VARIABLE_TASK, false,
+                                                        baseContext));
             }
         }
 
         return response;
     }
 
-    public List<TaskResponse> createTaskResponseList(List<Task> tasks, String baseUri) {
+    public List<TaskResponse> createTaskResponseList(List<Task> tasks, String baseContext) {
         List<TaskResponse> responseList = new ArrayList<>();
         for (Task instance : tasks) {
-            responseList.add(createTaskResponse(instance, baseUri));
+            responseList.add(createTaskResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public List<RestVariable> createRestVariables(Map<String, Object> variables, String id, int variableType,
-                                                  RestVariable.RestVariableScope scope, String baseUri) {
+    public List<RestVariable> createRestVariables(Map<String, Object> variables, String id,
+                                                  int variableType,
+                                                  RestVariable.RestVariableScope scope,
+                                                  String baseContext) {
         List<RestVariable> result = new ArrayList<>();
 
         for (Map.Entry<String, Object> pair : variables.entrySet()) {
-            result.add(createRestVariable(pair.getKey(), pair.getValue(), scope, id, variableType, false, baseUri));
+            result.add(createRestVariable(pair.getKey(), pair.getValue(), scope, id, variableType,
+                                          false, baseContext));
         }
 
         return result;
     }
 
-    public AttachmentResponse createAttachmentResponse(Attachment attachment,  String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public AttachmentResponse createAttachmentResponse(Attachment attachment, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         AttachmentResponse result = new AttachmentResponse();
         result.setId(attachment.getId());
         result.setName(attachment.getName());
@@ -546,23 +646,26 @@ public class RestResponseFactory {
 
         if (attachment.getUrl() == null && attachment.getTaskId() != null) {
             // Attachment content can be streamed
-            result.setContentUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, attachment.getTaskId(), attachment.getId()));
+            result.setContentUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_ATTACHMENT_DATA,
+                                                     attachment.getTaskId(), attachment.getId()));
         } else {
             result.setExternalUrl(attachment.getUrl());
         }
 
         if (attachment.getTaskId() != null) {
-            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_ATTACHMENT, attachment.getTaskId(), attachment.getId()));
+            result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_ATTACHMENT, attachment.getTaskId(),
+                                              attachment.getId()));
             result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, attachment.getTaskId()));
         }
         if (attachment.getProcessInstanceId() != null) {
-            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, attachment.getProcessInstanceId()));
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE,
+                                                             attachment.getProcessInstanceId()));
         }
-        return result ;
+        return result;
     }
 
-    public CommentResponse createRestComment(Comment comment, String baseUri ) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public CommentResponse createRestComment(Comment comment, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         CommentResponse result = new CommentResponse();
         result.setAuthor(comment.getUserId());
         result.setMessage(comment.getFullMessage());
@@ -572,36 +675,37 @@ public class RestResponseFactory {
         result.setProcessInstanceId(comment.getProcessInstanceId());
 
         if (comment.getTaskId() != null) {
-            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_COMMENT, comment.getTaskId(), comment.getId()));
+            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_COMMENT, comment.getTaskId(),
+                                                  comment.getId()));
         }
 
         if (comment.getProcessInstanceId() != null) {
-            String historyUri = baseUri.replace("/runtime", "");
-            RestUrlBuilder historyuUrlBuilder = createUrlBuilder(historyUri);
-            result.setProcessInstanceUrl(historyuUrlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, comment.getProcessInstanceId(), comment.getId()));
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(
+                    RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, comment.getProcessInstanceId(),
+                    comment.getId()));
         }
 
         return result;
     }
 
-    public List<CommentResponse> createRestCommentList(List<Comment> comments, String baseUri) {
+    public List<CommentResponse> createRestCommentList(List<Comment> comments, String baseContext) {
         List<CommentResponse> responseList = new ArrayList<>();
         for (Comment instance : comments) {
-            responseList.add(createRestComment(instance, baseUri));
+            responseList.add(createRestComment(instance, baseContext));
         }
         return responseList;
     }
 
-    public List<EventResponse> createEventResponseList(List<Event> events, String baseUri) {
+    public List<EventResponse> createEventResponseList(List<Event> events, String baseContext) {
         List<EventResponse> responseList = new ArrayList<>();
         for (Event instance : events) {
-            responseList.add(createEventResponse(instance, baseUri));
+            responseList.add(createEventResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public EventResponse createEventResponse(Event event, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public EventResponse createEventResponse(Event event, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         EventResponse result = new EventResponse();
         result.setAction(event.getAction());
         result.setId(event.getId());
@@ -609,30 +713,31 @@ public class RestResponseFactory {
         result.setTime(event.getTime());
         result.setUserId(event.getUserId());
 
-        result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TASK_EVENT, event.getTaskId(), event.getId()));
+        result.setUrl(
+                urlBuilder.buildUrl(RestUrls.URL_TASK_EVENT, event.getTaskId(), event.getId()));
         result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, event.getTaskId()));
 
-        if(event.getProcessInstanceId() != null) {
-            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, event.getProcessInstanceId()));
+        if (event.getProcessInstanceId() != null) {
+            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE,
+                                                  event.getProcessInstanceId()));
         }
-        return result ;
+        return result;
     }
 
-    public List<HistoricProcessInstanceResponse> createHistoricProcessInstanceResponseList
-            (List<HistoricProcessInstance> processInstances, String baseUri) {
+    public List<HistoricProcessInstanceResponse> createHistoricProcessInstanceResponseList(
+            List<HistoricProcessInstance> processInstances, String baseContext) {
         List<HistoricProcessInstanceResponse> responseList = new ArrayList<>();
         for (HistoricProcessInstance instance : processInstances) {
-            responseList.add(createHistoricProcessInstanceResponse(instance, baseUri));
+            responseList.add(createHistoricProcessInstanceResponse(instance, baseContext));
         }
         return responseList;
     }
 
-
     @SuppressWarnings("deprecation")
-    public HistoricProcessInstanceResponse createHistoricProcessInstanceResponse(HistoricProcessInstance
-                                                                                             processInstance, String baseUri) {
+    public HistoricProcessInstanceResponse createHistoricProcessInstanceResponse(
+            HistoricProcessInstance processInstance, String baseContext) {
 
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         HistoricProcessInstanceResponse result = new HistoricProcessInstanceResponse();
         result.setBusinessKey(processInstance.getBusinessKey());
         result.setDeleteReason(processInstance.getDeleteReason());
@@ -641,67 +746,70 @@ public class RestResponseFactory {
         result.setEndTime(processInstance.getEndTime());
         result.setId(processInstance.getId());
         result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
-        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
+        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                           processInstance
+                                                                   .getProcessDefinitionId()));
         result.setStartActivityId(processInstance.getStartActivityId());
         result.setStartTime(processInstance.getStartTime());
         result.setStartUserId(processInstance.getStartUserId());
         result.setSuperProcessInstanceId(processInstance.getSuperProcessInstanceId());
-        result.setUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, processInstance.getId()));
+        result.setUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE,
+                                          processInstance.getId()));
         if (processInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = processInstance.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
-                        RestVariable.RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS,
-                        false, baseUri));
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                      RestVariable.RestVariableScope.LOCAL,
+                                                      processInstance.getId(),
+                                                      VARIABLE_HISTORY_PROCESS, false,
+                                                      baseContext));
             }
         }
         result.setTenantId(processInstance.getTenantId());
         return result;
     }
 
-    public List<HistoricIdentityLinkResponse> createHistoricIdentityLinkResponseList(List<HistoricIdentityLink>
-                                                                                             identityLinks, String
-            baseUri) {
+    public List<HistoricIdentityLinkResponse> createHistoricIdentityLinkResponseList(
+            List<HistoricIdentityLink> identityLinks, String baseContext) {
         List<HistoricIdentityLinkResponse> responseList = new ArrayList<>();
         for (HistoricIdentityLink instance : identityLinks) {
-            responseList.add(createHistoricIdentityLinkResponse(instance, baseUri));
+            responseList.add(createHistoricIdentityLinkResponse(instance, baseContext));
         }
         return responseList;
     }
 
-
-    public HistoricIdentityLinkResponse createHistoricIdentityLinkResponse(HistoricIdentityLink identityLink, String
-            baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public HistoricIdentityLinkResponse createHistoricIdentityLinkResponse(
+            HistoricIdentityLink identityLink, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         HistoricIdentityLinkResponse result = new HistoricIdentityLinkResponse();
         result.setType(identityLink.getType());
         result.setUserId(identityLink.getUserId());
         result.setGroupId(identityLink.getGroupId());
         result.setTaskId(identityLink.getTaskId());
         if (StringUtils.isNotEmpty(identityLink.getTaskId())) {
-            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, identityLink.getTaskId()));
+            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE,
+                                                  identityLink.getTaskId()));
         }
         result.setProcessInstanceId(identityLink.getProcessInstanceId());
         if (StringUtils.isNotEmpty(identityLink.getProcessInstanceId())) {
-            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, identityLink.getProcessInstanceId()));
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE,
+                                                             identityLink.getProcessInstanceId()));
         }
         return result;
     }
 
-    public List<HistoricTaskInstanceResponse> createHistoricTaskInstanceResponseList(List<HistoricTaskInstance>
-                                                                                             taskInstances, String
-            baseUri) {
+    public List<HistoricTaskInstanceResponse> createHistoricTaskInstanceResponseList(
+            List<HistoricTaskInstance> taskInstances, String baseContext) {
         List<HistoricTaskInstanceResponse> responseList = new ArrayList<>();
         for (HistoricTaskInstance instance : taskInstances) {
-            responseList.add(createHistoricTaskInstanceResponse(instance, baseUri));
+            responseList.add(createHistoricTaskInstanceResponse(instance, baseContext));
         }
         return responseList;
     }
 
-
-    public HistoricTaskInstanceResponse createHistoricTaskInstanceResponse(HistoricTaskInstance taskInstance, String
-            baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public HistoricTaskInstanceResponse createHistoricTaskInstanceResponse(
+            HistoricTaskInstance taskInstance, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         HistoricTaskInstanceResponse result = new HistoricTaskInstanceResponse();
         result.setAssignee(taskInstance.getAssignee());
         result.setClaimTime(taskInstance.getClaimTime());
@@ -721,44 +829,53 @@ public class RestResponseFactory {
         result.setTenantId(taskInstance.getTenantId());
         result.setCategory(taskInstance.getCategory());
         if (taskInstance.getProcessDefinitionId() != null) {
-            result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, taskInstance.getProcessDefinitionId()));
+            result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                               taskInstance
+                                                                       .getProcessDefinitionId()));
         }
         result.setProcessInstanceId(taskInstance.getProcessInstanceId());
         if (taskInstance.getProcessInstanceId() != null) {
-            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, taskInstance.getProcessInstanceId()));
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE,
+                                                             taskInstance.getProcessInstanceId()));
         }
         result.setStartTime(taskInstance.getStartTime());
         result.setTaskDefinitionKey(taskInstance.getTaskDefinitionKey());
         result.setWorkTimeInMillis(taskInstance.getWorkTimeInMillis());
-        result.setUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, taskInstance.getId()));
+        result.setUrl(
+                urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, taskInstance.getId()));
         if (taskInstance.getProcessVariables() != null) {
             Map<String, Object> variableMap = taskInstance.getProcessVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
-                        RestVariable.RestVariableScope.GLOBAL, taskInstance.getId(), VARIABLE_HISTORY_TASK, false, baseUri));
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                      RestVariable.RestVariableScope.GLOBAL,
+                                                      taskInstance.getId(), VARIABLE_HISTORY_TASK,
+                                                      false, baseContext));
             }
         }
         if (taskInstance.getTaskLocalVariables() != null) {
             Map<String, Object> variableMap = taskInstance.getTaskLocalVariables();
-            for (String name : variableMap.keySet()) {
-                result.addVariable(createRestVariable(name, variableMap.get(name),
-                        RestVariable.RestVariableScope.LOCAL, taskInstance.getId(), VARIABLE_HISTORY_TASK, false, baseUri));
+            for (Map.Entry<String, Object> entry : variableMap.entrySet()) {
+                result.addVariable(createRestVariable(entry.getKey(), entry.getValue(),
+                                                      RestVariable.RestVariableScope.LOCAL,
+                                                      taskInstance.getId(), VARIABLE_HISTORY_TASK,
+                                                      false, baseContext));
             }
         }
         return result;
     }
 
-    public List<HistoricActivityInstanceResponse> createHistoricActivityInstanceResponseList
-            (List<HistoricActivityInstance> activityInstances, String baseUri) {
+    public List<HistoricActivityInstanceResponse> createHistoricActivityInstanceResponseList(
+            List<HistoricActivityInstance> activityInstances, String baseContext) {
         List<HistoricActivityInstanceResponse> responseList = new ArrayList<>();
         for (HistoricActivityInstance instance : activityInstances) {
-            responseList.add(createHistoricActivityInstanceResponse(instance, baseUri));
+            responseList.add(createHistoricActivityInstanceResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public HistoricActivityInstanceResponse createHistoricActivityInstanceResponse(HistoricActivityInstance activityInstance, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public HistoricActivityInstanceResponse createHistoricActivityInstanceResponse(
+            HistoricActivityInstance activityInstance, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         HistoricActivityInstanceResponse result = new HistoricActivityInstanceResponse();
         result.setActivityId(activityInstance.getActivityId());
         result.setActivityName(activityInstance.getActivityName());
@@ -770,62 +887,73 @@ public class RestResponseFactory {
         result.setExecutionId(activityInstance.getExecutionId());
         result.setId(activityInstance.getId());
         result.setProcessDefinitionId(activityInstance.getProcessDefinitionId());
-        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, activityInstance.getProcessDefinitionId()));
+        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                           activityInstance
+                                                                   .getProcessDefinitionId()));
         result.setProcessInstanceId(activityInstance.getProcessInstanceId());
-        result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, activityInstance.getId()));
+        result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE,
+                                                         activityInstance.getId()));
         result.setStartTime(activityInstance.getStartTime());
         result.setTaskId(activityInstance.getTaskId());
         result.setTenantId(activityInstance.getTenantId());
         return result;
     }
 
-    public List<HistoricVariableInstanceResponse> createHistoricVariableInstanceResponseList
-            (List<HistoricVariableInstance> variableInstances, String baseUri) {
+    public List<HistoricVariableInstanceResponse> createHistoricVariableInstanceResponseList(
+            List<HistoricVariableInstance> variableInstances, String baseContext) {
 
         List<HistoricVariableInstanceResponse> responseList = new ArrayList<>();
         for (HistoricVariableInstance instance : variableInstances) {
-            responseList.add(createHistoricVariableInstanceResponse(instance, baseUri));
+            responseList.add(createHistoricVariableInstanceResponse(instance, baseContext));
         }
         return responseList;
     }
 
-
-    public HistoricVariableInstanceResponse createHistoricVariableInstanceResponse(HistoricVariableInstance variableInstance, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public HistoricVariableInstanceResponse createHistoricVariableInstanceResponse(
+            HistoricVariableInstance variableInstance, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         HistoricVariableInstanceResponse result = new HistoricVariableInstanceResponse();
         result.setId(variableInstance.getId());
         result.setProcessInstanceId(variableInstance.getProcessInstanceId());
         if (variableInstance.getProcessInstanceId() != null) {
-            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, variableInstance.getProcessInstanceId()));
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE,
+                                                             variableInstance
+                                                                     .getProcessInstanceId()));
         }
         result.setTaskId(variableInstance.getTaskId());
-        result.setVariable(createRestVariable(variableInstance.getVariableName(), variableInstance.getValue(),
-                null, variableInstance.getId(), VARIABLE_HISTORY_VARINSTANCE, false, baseUri));
+        result.setVariable(
+                createRestVariable(variableInstance.getVariableName(), variableInstance.getValue(),
+                                   null, variableInstance.getId(), VARIABLE_HISTORY_VARINSTANCE,
+                                   false, baseContext));
         return result;
     }
 
-    public List<HistoricDetailResponse> createHistoricDetailResponse(List<HistoricDetail> detailList, String baseUri) {
+    public List<HistoricDetailResponse> createHistoricDetailResponse(
+            List<HistoricDetail> detailList, String baseContext) {
 
         List<HistoricDetailResponse> responseList = new ArrayList<>();
         for (HistoricDetail instance : detailList) {
-            responseList.add(createHistoricDetailResponse(instance, baseUri));
+            responseList.add(createHistoricDetailResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public HistoricDetailResponse createHistoricDetailResponse(HistoricDetail detail, String baseUri) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+    public HistoricDetailResponse createHistoricDetailResponse(HistoricDetail detail,
+                                                               String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         HistoricDetailResponse result = new HistoricDetailResponse();
         result.setId(detail.getId());
         result.setProcessInstanceId(detail.getProcessInstanceId());
         if (StringUtils.isNotEmpty(detail.getProcessInstanceId())) {
-            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, detail.getProcessInstanceId()));
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE,
+                                                             detail.getProcessInstanceId()));
         }
         result.setExecutionId(detail.getExecutionId());
         result.setActivityInstanceId(detail.getActivityInstanceId());
         result.setTaskId(detail.getTaskId());
         if (StringUtils.isNotEmpty(detail.getTaskId())) {
-            result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, detail.getTaskId()));
+            result.setTaskUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, detail.getTaskId()));
         }
         result.setTime(detail.getTime());
         if (detail instanceof HistoricFormProperty) {
@@ -837,13 +965,15 @@ public class RestResponseFactory {
             HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) detail;
             result.setDetailType(HistoricDetailResponse.VARIABLE_UPDATE);
             result.setRevision(variableUpdate.getRevision());
-            result.setVariable(createRestVariable(variableUpdate.getVariableName(), variableUpdate.getValue(),
-                    null, detail.getId(), VARIABLE_HISTORY_DETAIL, false, baseUri));
+            result.setVariable(
+                    createRestVariable(variableUpdate.getVariableName(), variableUpdate.getValue(),
+                                       null, detail.getId(), VARIABLE_HISTORY_DETAIL, false,
+                                       baseContext));
         }
         return result;
     }
 
-    public FormDataResponse createFormDataResponse(FormData formData, String baseUri) {
+    public FormDataResponse createFormDataResponse(FormData formData, String baseContext) {
         FormDataResponse result = new FormDataResponse();
         result.setDeploymentId(formData.getDeploymentId());
         result.setFormKey(formData.getFormKey());
@@ -862,33 +992,38 @@ public class RestResponseFactory {
                 if ("enum".equals(restFormProp.getType())) {
                     Object values = formProp.getType().getInformation("values");
                     if (values != null) {
-                        @SuppressWarnings("unchecked")
-                        Map<String, String> enumValues = (Map<String, String>) values;
-                        for (String enumId : enumValues.keySet()) {
+                        @SuppressWarnings("unchecked") Map<String, String> enumValues =
+                                (Map<String, String>) values;
+                        for (Map.Entry<String, String> entry : enumValues.entrySet()) {
                             RestEnumFormProperty enumProperty = new RestEnumFormProperty();
-                            enumProperty.setId(enumId);
-                            enumProperty.setName(enumValues.get(enumId));
+                            enumProperty.setId(entry.getKey());
+                            enumProperty.setName(entry.getValue());
                             restFormProp.addEnumValue(enumProperty);
                         }
                     }
                 } else if ("date".equals(restFormProp.getType())) {
-                    restFormProp.setDatePattern((String) formProp.getType().getInformation("datePattern"));
+                    restFormProp.setDatePattern(
+                            (String) formProp.getType().getInformation("datePattern"));
                 }
                 result.addFormProperty(restFormProp);
             }
         }
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUri);
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         if (formData instanceof StartFormData) {
             StartFormData startFormData = (StartFormData) formData;
             if (startFormData.getProcessDefinition() != null) {
                 result.setProcessDefinitionId(startFormData.getProcessDefinition().getId());
-                result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, startFormData.getProcessDefinition().getId()));
+                result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                                   startFormData
+                                                                           .getProcessDefinition()
+                                                                           .getId()));
             }
         } else if (formData instanceof TaskFormData) {
             TaskFormData taskFormData = (TaskFormData) formData;
             if (taskFormData.getTask() != null) {
                 result.setTaskId(taskFormData.getTask().getId());
-                result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, taskFormData.getTask().getId()));
+                result.setTaskUrl(
+                        urlBuilder.buildUrl(RestUrls.URL_TASK, taskFormData.getTask().getId()));
             }
         }
         return result;
@@ -904,38 +1039,37 @@ public class RestResponseFactory {
         variableConverters.add(new DateRestVariableConverter());
     }
 
-    public List<GroupResponse> createGroupResponseList(List<Group> groups, String baseUrl) {
+    public List<GroupResponse> createGroupResponseList(List<Group> groups, String baseContext) {
         List<GroupResponse> responseList = new ArrayList<>();
         for (Group instance : groups) {
-            responseList.add(createGroupResponse(instance, baseUrl));
+            responseList.add(createGroupResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public GroupResponse createGroupResponse(Group group, String baseUrl) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+    public GroupResponse createGroupResponse(Group group, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         GroupResponse response = new GroupResponse();
         response.setId(group.getId());
         response.setName(group.getName());
         response.setType(group.getType());
-        response.setUrl(urlBuilder.buildUrl(org.wso2.carbon.bpmn.rest.common.RestUrls.URL_GROUP, group.getId()));
+        response.setUrl(urlBuilder.buildUrl(org.wso2.carbon.bpmn.rest.common.RestUrls.URL_GROUP,
+                                            group.getId()));
 
         return response;
     }
 
-    public List<UserResponse> createUserResponseList(List<User> users, boolean includePassword, String baseUrl) {
+    public List<UserResponse> createUserResponseList(List<User> users, boolean includePassword,
+                                                     String baseContext) {
         List<UserResponse> responseList = new ArrayList<>();
         for (User instance : users) {
-            responseList.add(createUserResponse(instance, includePassword, baseUrl));
+            responseList.add(createUserResponse(instance, includePassword, baseContext));
         }
         return responseList;
     }
 
-    public UserResponse createUserResponse(User user, boolean includePassword, String baseUrl) {
-        return createUserResponse(user, includePassword, createUrlBuilder(baseUrl));
-    }
-
-    public UserResponse createUserResponse(User user, boolean includePassword, RestUrlBuilder urlBuilder) {
+    public UserResponse createUserResponse(User user, boolean includePassword, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         UserResponse response = new UserResponse();
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
@@ -953,8 +1087,9 @@ public class RestResponseFactory {
         return response;
     }
 
-    public List<UserInfoResponse> createUserInfoKeysResponse(List<String> keys, String userId, String baseUrl) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+    public List<UserInfoResponse> createUserInfoKeysResponse(List<String> keys, String userId,
+                                                             String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         List<UserInfoResponse> responseList = new ArrayList<>();
         for (String instance : keys) {
             responseList.add(createUserInfoResponse(instance, null, userId, urlBuilder));
@@ -962,11 +1097,13 @@ public class RestResponseFactory {
         return responseList;
     }
 
-    public UserInfoResponse createUserInfoResponse(String key, String value, String userId, String baseUrl) {
+    public UserInfoResponse createUserInfoResponse(String key, String value, String userId,
+                                                   String baseUrl) {
         return createUserInfoResponse(key, value, userId, createUrlBuilder(baseUrl));
     }
 
-    public UserInfoResponse createUserInfoResponse(String key, String value, String userId, RestUrlBuilder urlBuilder) {
+    public UserInfoResponse createUserInfoResponse(String key, String value, String userId,
+                                                   RestUrlBuilder urlBuilder) {
         UserInfoResponse response = new UserInfoResponse();
         response.setKey(key);
         response.setValue(value);
@@ -974,16 +1111,16 @@ public class RestResponseFactory {
         return response;
     }
 
-    public List createExecutionResponseList(List<Execution> executions, String baseUrl) {
+    public List createExecutionResponseList(List<Execution> executions, String baseContext) {
         List<ExecutionResponse> responseList = new ArrayList<>();
         for (Execution instance : executions) {
-            responseList.add(createExecutionResponse(instance, baseUrl));
+            responseList.add(createExecutionResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public ExecutionResponse createExecutionResponse(Execution execution,String baseUrl ) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+    public ExecutionResponse createExecutionResponse(Execution execution, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         ExecutionResponse result = new ExecutionResponse();
         result.setActivityId(execution.getActivityId());
         result.setId(execution.getId());
@@ -992,31 +1129,30 @@ public class RestResponseFactory {
         result.setTenantId(execution.getTenantId());
 
         result.setParentId(execution.getParentId());
-        if(execution.getParentId() != null) {
-            result.setParentUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, execution.getParentId()));
+        if (execution.getParentId() != null) {
+            result.setParentUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_EXECUTION, execution.getParentId()));
         }
 
         result.setProcessInstanceId(execution.getProcessInstanceId());
-        if(execution.getProcessInstanceId() != null) {
-            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, execution.getProcessInstanceId()));
+        if (execution.getProcessInstanceId() != null) {
+            result.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE,
+                                                             execution.getProcessInstanceId()));
         }
         return result;
     }
 
-    public List<JobResponse> createJobResponseList(List<Job> jobs, String baseUrl) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
+    public List<JobResponse> createJobResponseList(List<Job> jobs, String baseContext) {
+        //RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         List<JobResponse> responseList = new ArrayList<JobResponse>();
         for (Job instance : jobs) {
-            responseList.add(createJobResponse(instance, urlBuilder));
+            responseList.add(createJobResponse(instance, baseContext));
         }
         return responseList;
     }
 
-    public JobResponse createJobResponse(Job job, String baseUrl) {
-        return createJobResponse(job, createUrlBuilder(baseUrl));
-    }
-
-    public JobResponse createJobResponse(Job job, RestUrlBuilder urlBuilder) {
+    public JobResponse createJobResponse(Job job, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
         JobResponse response = new JobResponse();
         response.setId(job.getId());
         response.setDueDate(job.getDuedate());
@@ -1030,23 +1166,28 @@ public class RestResponseFactory {
         response.setUrl(urlBuilder.buildUrl(RestUrls.URL_JOB, job.getId()));
 
         if (job.getProcessDefinitionId() != null) {
-            response.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, job.getProcessDefinitionId()));
+            response.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION,
+                                                                 job.getProcessDefinitionId()));
         }
 
         if (job.getProcessInstanceId() != null) {
-            response.setProcessInstanceUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, job.getProcessInstanceId()));
+            response.setProcessInstanceUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_PROCESS_INSTANCE, job.getProcessInstanceId()));
         }
 
         if (job.getExecutionId() != null) {
-            response.setExecutionUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, job.getExecutionId()));
+            response.setExecutionUrl(
+                    urlBuilder.buildUrl(RestUrls.URL_EXECUTION, job.getExecutionId()));
         }
 
         return response;
     }
 
-    public List<TableResponse> createTableResponseList(Map<String, Long> tableCounts, String baseUrl) {
-        RestUrlBuilder urlBuilder = createUrlBuilder(baseUrl);
-        List<org.wso2.carbon.bpmn.rest.model.runtime.TableResponse> tables = new ArrayList<org.wso2.carbon.bpmn.rest.model.runtime.TableResponse>();
+    public List<TableResponse> createTableResponseList(Map<String, Long> tableCounts,
+                                                       String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
+        List<org.wso2.carbon.bpmn.rest.model.runtime.TableResponse> tables =
+                new ArrayList<org.wso2.carbon.bpmn.rest.model.runtime.TableResponse>();
         for (Map.Entry<String, Long> entry : tableCounts.entrySet()) {
             tables.add(createTableResponse(entry.getKey(), entry.getValue(), urlBuilder));
         }
@@ -1054,15 +1195,16 @@ public class RestResponseFactory {
     }
 
     public TableResponse createTableResponse(String name, Long count, RestUrlBuilder urlBuilder) {
-        org.wso2.carbon.bpmn.rest.model.runtime.TableResponse result = new org.wso2.carbon.bpmn.rest.model.runtime.TableResponse();
+        org.wso2.carbon.bpmn.rest.model.runtime.TableResponse result =
+                new org.wso2.carbon.bpmn.rest.model.runtime.TableResponse();
         result.setName(name);
         result.setCount(count);
         result.setUrl(urlBuilder.buildUrl(RestUrls.URL_TABLE, name));
         return result;
     }
 
-    public TableResponse createTableResponse(String name, Long count, String baseUrl) {
-        return createTableResponse(name, count, createUrlBuilder(baseUrl));
+    public TableResponse createTableResponse(String name, Long count, String baseContext) {
+        RestUrlBuilder urlBuilder = new RestUrlBuilder(baseContext);
+        return createTableResponse(name, count, urlBuilder);
     }
 }
-*/

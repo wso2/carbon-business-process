@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,30 +24,55 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.bpmn.rest.model.stats.*;
+import org.wso2.carbon.bpmn.rest.model.stats.BPMNTaskInstance;
+import org.wso2.carbon.bpmn.rest.model.stats.CompletedProcesses;
+import org.wso2.carbon.bpmn.rest.model.stats.DeployedProcesses;
+import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
+import org.wso2.carbon.bpmn.rest.model.stats.ProcessTaskCount;
+import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
+//import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.msf4j.Microservice;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Service class which includes functionalities related to processes and tasks
  */
 
-@Path("/processTaskServices/")
-public class ProcessAndTaskService {
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService",
+        service = Microservice.class,
+        immediate = true)
+
+@Path("/process-task-services/")
+public class ProcessAndTaskService implements Microservice {
     private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
-    int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-    String str = String.valueOf(tenantId);
+    //int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+   // String str = String.valueOf(tenantId);
+
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
 
     /**
      * Get the deployed processes count
@@ -55,11 +80,11 @@ public class ProcessAndTaskService {
      * @return a list of deployed processes with their instance count
      */
     @GET
-    @Path("/deployedProcessCount/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/deployed-process-count/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder getDeployedProcesses() {
         List<ProcessDefinition> deployments = BPMNOSGIService.getRepositoryService().
-                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
+                createProcessDefinitionQuery().list();
         List bpmnProcessInstancesList = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
         for (ProcessDefinition instance : deployments) {
@@ -86,8 +111,9 @@ public class ProcessAndTaskService {
      */
     private long getCountOfHistoricProcessInstances(String processDefinitionName) {
 
-        long countOfFinishedInstances = BPMNOSGIService.getHistoryService().createHistoricProcessInstanceQuery()
-                .processDefinitionId(processDefinitionName).finished().count();
+        long countOfFinishedInstances =
+                BPMNOSGIService.getHistoryService().createHistoricProcessInstanceQuery()
+                               .processDefinitionId(processDefinitionName).finished().count();
 
         return countOfFinishedInstances;
     }
@@ -100,8 +126,9 @@ public class ProcessAndTaskService {
      */
     private long getCountOfRunningProcessInstances(String processDefinitionName) {
 
-        long countOfRunningInstances = BPMNOSGIService.getRumtimeService()
-                .createProcessInstanceQuery().processDefinitionId(processDefinitionName).count();
+        long countOfRunningInstances =
+                BPMNOSGIService.getRumtimeService().createProcessInstanceQuery()
+                               .processDefinitionId(processDefinitionName).count();
 
         return countOfRunningInstances;
     }
@@ -113,30 +140,31 @@ public class ProcessAndTaskService {
      * @return list with the states and the count of process instances in each state
      */
     @GET
-    @Path("/processStatusCount/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/process-status-count/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder getCountOfProcessInstanceStatus() {
         List processCountList = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
-        ProcessTaskCount completedProcessInstances, activeProcessInstances, suspendedProcessInstances,
+        ProcessTaskCount completedProcessInstances, activeProcessInstances,
+                suspendedProcessInstances,
                 failedProcessInstances;
         long countOfCompletedProcessInstances = BPMNOSGIService.getHistoryService().
-                createHistoricProcessInstanceQuery().processInstanceTenantId(str).finished().count();
+                createHistoricProcessInstanceQuery().finished().count();
 
-        long countOfActiveProcessInstances = BPMNOSGIService.getRumtimeService()
-                .createProcessInstanceQuery().processInstanceTenantId(str).active().count();
+        long countOfActiveProcessInstances = BPMNOSGIService.getRumtimeService().
+                createProcessInstanceQuery().active().count();
 
-        long countOfSuspendedProcessInstances = BPMNOSGIService.getRumtimeService()
-                .createProcessInstanceQuery().processInstanceTenantId(str).suspended().count();
+        long countOfSuspendedProcessInstances = BPMNOSGIService.getRumtimeService().
+                createProcessInstanceQuery().suspended().count();
 
-        long countOfFailedProcessInstances = BPMNOSGIService.getManagementService()
-                .createJobQuery().jobTenantId(str).withException().count();
+        long countOfFailedProcessInstances =
+                BPMNOSGIService.getManagementService().createJobQuery()
+                               .withException().count();
 
-        if(countOfCompletedProcessInstances == 0 && countOfActiveProcessInstances == 0 &&
-                countOfSuspendedProcessInstances == 0 && countOfFailedProcessInstances == 0){
+        if (countOfCompletedProcessInstances == 0 && countOfActiveProcessInstances == 0 &&
+            countOfSuspendedProcessInstances == 0 && countOfFailedProcessInstances == 0) {
             response.setData(processCountList);
-        }
-        else {
+        } else {
             completedProcessInstances = new ProcessTaskCount();
             completedProcessInstances.setStatusOfProcessOrTask("Completed");
             completedProcessInstances.setCount(countOfCompletedProcessInstances);
@@ -169,8 +197,8 @@ public class ProcessAndTaskService {
      * @return list with the states and the count of task instances in each state
      */
     @GET
-    @Path("/taskStatusCount/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/task-status-count/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder getCountOfTaskInstanceStatus() {
 
         List taskCountList = new ArrayList<>();
@@ -180,20 +208,20 @@ public class ProcessAndTaskService {
 
         TaskQuery taskQuery = BPMNOSGIService.getTaskService().createTaskQuery();
         long countOfCompletedTaskInstances = BPMNOSGIService.getHistoryService().
-                createHistoricTaskInstanceQuery().taskTenantId(str).finished().count();
+                createHistoricTaskInstanceQuery().finished().count();
 
-        long countOfActiveTaskInstances = taskQuery.taskTenantId(str).active().count();
+        long countOfActiveTaskInstances = taskQuery.active().count();
 
-        long countOfSuspendedTaskInstances = taskQuery.taskTenantId(str).suspended().count();
+        long countOfSuspendedTaskInstances = taskQuery.suspended().count();
         //Check on this
-        long countOfFailedTaskInstances = BPMNOSGIService.getManagementService()
-                .createJobQuery().jobTenantId(str).withException().count();
+        long countOfFailedTaskInstances =
+                BPMNOSGIService.getManagementService().createJobQuery()
+                               .withException().count();
 
-        if(countOfCompletedTaskInstances == 0 && countOfActiveTaskInstances == 0 &&
-                countOfSuspendedTaskInstances == 0 && countOfFailedTaskInstances == 0){
+        if (countOfCompletedTaskInstances == 0 && countOfActiveTaskInstances == 0 &&
+            countOfSuspendedTaskInstances == 0 && countOfFailedTaskInstances == 0) {
             response.setData(taskCountList);
-        }
-        else {
+        } else {
             completedTaskInstances = new ProcessTaskCount();
             completedTaskInstances.setStatusOfProcessOrTask("Completed");
             completedTaskInstances.setCount(countOfCompletedTaskInstances);
@@ -225,11 +253,11 @@ public class ProcessAndTaskService {
      * @return list with the completed processes and the average time duration taken for each process
      */
     @GET
-    @Path("/avgDurationToCompleteProcess/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/avg-duration-to-complete-process/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder getAvgTimeDurationForCompletedProcesses() {
         List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
-                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
+                createProcessDefinitionQuery().list();
 
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList<>();
@@ -242,11 +270,9 @@ public class ProcessAndTaskService {
             double averageTime = 0;
             String processDefinitionID = instance.getId();
 
-
-            HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOSGIService.
-                    getHistoryService().createHistoricProcessInstanceQuery().
-                    processInstanceTenantId(str).
-                    processDefinitionId(processDefinitionID).finished();
+            HistoricProcessInstanceQuery historicProcessInstanceQuery =
+                    BPMNOSGIService.getHistoryService().createHistoricProcessInstanceQuery()
+                                   .processDefinitionId(processDefinitionID).finished();
 
             long noOfHistoricInstances = historicProcessInstanceQuery.count();
 
@@ -272,17 +298,19 @@ public class ProcessAndTaskService {
     /**
      * Average task duration for completed processes
      *
-     * @param pId processDefintionId of the process selected to view the average time duration for each task
+     * @param pId processDefintionId of the process selected to view the average time duration
+     *            for each task
      * @return list of completed tasks with the average time duration for the selected process
      */
     @GET
-    @Path("/avgTaskDurationForCompletedProcess/{pId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("pId") String pId) {
+    @Path("/avg-task-duration-for-completed-process/{p-id}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("p-id") String pId) {
         long countOfProcesses = BPMNOSGIService.getRepositoryService().
-                createProcessDefinitionQuery().processDefinitionTenantId(str).processDefinitionId(pId).count();
-        if(countOfProcesses == 0){
-            throw new ActivitiObjectNotFoundException("Could not find process with process definition id '" +
+                createProcessDefinitionQuery().processDefinitionId(pId).count();
+        if (countOfProcesses == 0) {
+            throw new ActivitiObjectNotFoundException(
+                    "Could not find process with process definition id '" +
                     pId + "'.");
         }
 
@@ -290,25 +318,25 @@ public class ProcessAndTaskService {
         List taskListForProcess = new ArrayList<>();
         HashMap<String, Long> map = new HashMap<String, Long>();
         //Get the number of completed/finished process instance for each process definition
-        HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOSGIService.getHistoryService()
-                .createHistoricProcessInstanceQuery().processInstanceTenantId(str)
-                .processDefinitionId(pId).finished();
+        HistoricProcessInstanceQuery historicProcessInstanceQuery =
+                BPMNOSGIService.getHistoryService().createHistoricProcessInstanceQuery()
+                               .processDefinitionId(pId).finished();
         //Get the count of the complete process instances
         long noOfHistoricInstances = historicProcessInstanceQuery.count();
 
         //If the deployed process doesnot have any completed process instances --> Ignore
         if (noOfHistoricInstances == 0) {
             response.setData(taskListForProcess);
-        }
-        //If the deployed process has completed process instances --> then
-        else {
+            //If the deployed process has completed process instances --> then
+        } else {
 
-            BPMNTaskInstance tInstance = new BPMNTaskInstance();
-            //Get the list of completed tasks/activities in the completed process instance by passing the
+            BPMNTaskInstance tInstance;
+            //Get the list of completed tasks/activities in the completed process instance
+            // by passing the
             //process definition id of the process
             List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService().
-                    createHistoricTaskInstanceQuery().taskTenantId(str).processDefinitionId(pId)
-                    .processFinished().list();
+                    createHistoricTaskInstanceQuery().processDefinitionId(pId)
+                                                                 .processFinished().list();
             //Iterate through each completed task/activity and get the task name and duration
             for (HistoricTaskInstance taskInstance : taskList) {
                 //Get the task name
@@ -327,7 +355,7 @@ public class ProcessAndTaskService {
             Iterator iterator = map.keySet().iterator();
             while (iterator.hasNext()) {
                 String key = iterator.next().toString();
-                double value = map.get(key) / noOfHistoricInstances;
+                double value = map.get(key) / (double) noOfHistoricInstances;
                 tInstance = new BPMNTaskInstance();
                 tInstance.setTaskDefinitionKey(key);
                 tInstance.setAverageTimeForCompletion(value);
@@ -345,47 +373,57 @@ public class ProcessAndTaskService {
      * @return array with the no. of tasks started and completed over the months
      */
     @GET
-    @Path("/taskVariation/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/task-variation/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder taskVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] months =
+                { "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov",
+                  "Dec" };
         SimpleDateFormat ft = new SimpleDateFormat("M");
 
         InstanceStatPerMonth[] taskStatPerMonths = new InstanceStatPerMonth[12];
         for (int i = 0; i < taskStatPerMonths.length; i++) {
             taskStatPerMonths[i] = new InstanceStatPerMonth();
-            taskStatPerMonths[i].setMonth(MONTHS[i]);
+            taskStatPerMonths[i].setMonth(months[i]);
             taskStatPerMonths[i].setCompletedInstances(0);
             taskStatPerMonths[i].setStartedInstances(0);
         }
         // Get completed tasks
-        List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery().
-                taskTenantId(str).finished().list();
+        List<HistoricTaskInstance> taskList =
+                BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery().
+                        finished().list();
 
         for (HistoricTaskInstance instance : taskList) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
-            taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
-            taskStatPerMonths[endTime - 1].setCompletedInstances(taskStatPerMonths[endTime - 1].getCompletedInstances() + 1);
+            taskStatPerMonths[startTime - 1].setStartedInstances(
+                    taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
+            taskStatPerMonths[endTime - 1].setCompletedInstances(
+                    taskStatPerMonths[endTime - 1].getCompletedInstances() + 1);
 
         }
         // Get active/started tasks
-        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str).active().list();
+        List<Task> taskActive =
+                BPMNOSGIService.getTaskService().createTaskQuery().active()
+                               .list();
         for (Task instance : taskActive) {
 
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
-            taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
+            taskStatPerMonths[startTime - 1].setStartedInstances(
+                    taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
         }
 
         // Get suspended tasks
-        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str).suspended()
-                .list();
+        List<Task> taskSuspended =
+                BPMNOSGIService.getTaskService().createTaskQuery().suspended()
+                               .list();
         for (Task instance : taskSuspended) {
 
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
-            taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
+            taskStatPerMonths[startTime - 1].setStartedInstances(
+                    taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
 
         }
         for (int i = 0; i < taskStatPerMonths.length; i++) {
@@ -401,37 +439,42 @@ public class ProcessAndTaskService {
      * @return array with the no. of processes started and completed over the months
      */
     @GET
-    @Path("/processVariation/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/process-variation/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder processVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] months =
+                { "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov",
+                  "Dec" };
         SimpleDateFormat ft = new SimpleDateFormat("M");
         InstanceStatPerMonth[] processStatPerMonths = new InstanceStatPerMonth[12];
         for (int i = 0; i < processStatPerMonths.length; i++) {
             processStatPerMonths[i] = new InstanceStatPerMonth();
-            processStatPerMonths[i].setMonth(MONTHS[i]);
+            processStatPerMonths[i].setMonth(months[i]);
             processStatPerMonths[i].setCompletedInstances(0);
             processStatPerMonths[i].setStartedInstances(0);
         }
 
         //Get completed process instances
         List<HistoricProcessInstance> completedProcesses = BPMNOSGIService.getHistoryService().
-                createHistoricProcessInstanceQuery().processInstanceTenantId(str).finished().list();
+                createHistoricProcessInstanceQuery().finished().list();
         for (HistoricProcessInstance instance : completedProcesses) {
             int startTime = Integer.parseInt(ft.format(instance.getStartTime()));
             int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
-            processStatPerMonths[startTime - 1].setStartedInstances(processStatPerMonths[startTime - 1].getStartedInstances() + 1);
-            processStatPerMonths[endTime - 1].setCompletedInstances(processStatPerMonths[endTime - 1].getCompletedInstances() + 1);
+            processStatPerMonths[startTime - 1].setStartedInstances(
+                    processStatPerMonths[startTime - 1].getStartedInstances() + 1);
+            processStatPerMonths[endTime - 1].setCompletedInstances(
+                    processStatPerMonths[endTime - 1].getCompletedInstances() + 1);
 
         }
         // Get active process instances
         List<HistoricProcessInstance> activeProcesses = BPMNOSGIService.getHistoryService().
-                createHistoricProcessInstanceQuery().processInstanceTenantId(str).unfinished().list();
+                createHistoricProcessInstanceQuery().unfinished().list();
         for (HistoricProcessInstance instance : activeProcesses) {
             int startTime = Integer.parseInt(ft.format(instance.getStartTime()));
-            processStatPerMonths[startTime - 1].setStartedInstances(processStatPerMonths[startTime - 1].getStartedInstances() + 1);
+            processStatPerMonths[startTime - 1].setStartedInstances(
+                    processStatPerMonths[startTime - 1].getStartedInstances() + 1);
 
         }
 
@@ -448,12 +491,12 @@ public class ProcessAndTaskService {
      * @return list with the processDefinitions of all deployed processes
      */
     @GET
-    @Path("/allProcesses/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("/all-processes/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ResponseHolder getAllProcesses() {
         //Get a list of the deployed processes
         List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
-                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
+                createProcessDefinitionQuery().list();
         List listOfProcesses = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
         for (ProcessDefinition processDefinition : deployements) {
@@ -470,12 +513,12 @@ public class ProcessAndTaskService {
      * @return list with the processDefinitions of all deployed processes
      */
     @GET
-    @Path("/countOfProcesses/")
+    @Path("/count-of-processes/")
     @Produces(MediaType.APPLICATION_JSON)
     public long getProcessCount() {
         //Get a list of the deployed processes
         long processCount = BPMNOSGIService.getRepositoryService().
-                createProcessDefinitionQuery().processDefinitionTenantId(str).count();
+                createProcessDefinitionQuery().count();
         return processCount;
     }
 }

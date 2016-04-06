@@ -12,76 +12,72 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *//*
-
+ */
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import org.camunda.bpm.engine.BadUserRequestException;
-import org.camunda.bpm.engine.HistoryService;
-import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
-import org.camunda.bpm.engine.impl.HistoricVariableInstanceQueryProperty;
-import org.camunda.bpm.engine.query.QueryProperty;
-import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.history.HistoricVariableInstanceQuery;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
+import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
-
-import javax.management.Query;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class BaseHistoricVariableInstanceService {
 
-    protected static Map<String,QueryProperty> allowedSortProperties = new HashMap<>();
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
-
-
+    protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
 
     static {
-        allowedSortProperties.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+        HashMap<String, QueryProperty> sortMap = new HashMap<>();
+        sortMap.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
+        sortMap.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+        ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
     static {
-        allPropertiesList.add("processInstanceId");
-        allPropertiesList.add("taskId");
-        allPropertiesList.add("excludeTaskVariables");
-        allPropertiesList.add("variableName");
-        allPropertiesList.add("variableNameLike");
-        allPropertiesList.add("start");
-        allPropertiesList.add("size");
-        allPropertiesList.add("order");
-        allPropertiesList.add("sort");
+        ALL_PROPERTIES_LIST.add("processInstanceId");
+        ALL_PROPERTIES_LIST.add("taskId");
+        ALL_PROPERTIES_LIST.add("excludeTaskVariables");
+        ALL_PROPERTIES_LIST.add("variableName");
+        ALL_PROPERTIES_LIST.add("variableNameLike");
+        ALL_PROPERTIES_LIST.add("start");
+        ALL_PROPERTIES_LIST.add("size");
+        ALL_PROPERTIES_LIST.add("order");
+        ALL_PROPERTIES_LIST.add("sort");
     }
 
-    @Context
-    protected UriInfo uriInfo;
-
-    protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String>
-            allRequestParams) {
+    protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest,
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
         // Populate query based on request
-        if(queryRequest.getExcludeTaskVariables() != null) {
+        if (queryRequest.getExcludeTaskVariables() != null) {
             if (queryRequest.getExcludeTaskVariables()) {
-              //  query.excludeTaskVariables();
+                query.excludeTaskVariables();
             }
         }
 
         if (queryRequest.getTaskId() != null) {
-            query.taskIdIn(queryRequest.getTaskId());
+            query.taskId(queryRequest.getTaskId());
         }
 
-        if(queryRequest.getExecutionId() != null) {
-            query.executionIdIn(queryRequest.getExecutionId());
+        if (queryRequest.getExecutionId() != null) {
+            query.executionId(queryRequest.getExecutionId());
         }
 
         if (queryRequest.getProcessInstanceId() != null) {
@@ -93,27 +89,27 @@ public class BaseHistoricVariableInstanceService {
         }
 
         if (queryRequest.getVariableNameLike() != null) {
-            query.variableNameLike(queryRequest.getVariableNameLike() );
+            query.variableNameLike(queryRequest.getVariableNameLike());
         }
 
         if (queryRequest.getVariables() != null) {
             addVariables(query, queryRequest.getVariables());
         }
 
-        //return new HistoricVariableInstancePaginateList(new RestResponseFactory(),uriInfo).p
-
-        return new HistoricVariableInstancePaginateList(new RestResponseFactory(), uriInfo).paginateList(
-               allRequestParams, (Query)query, "variableName", allowedSortProperties);
+        return new HistoricVariableInstancePaginateList(new RestResponseFactory(), baseName)
+                .paginateList(allRequestParams, query, "variableName", ALLOWED_SORT_PROPERTIES);
     }
 
-
-    protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery, List<QueryVariable> variables) {
+    protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery,
+                                List<QueryVariable> variables) {
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
-              //  throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable operation is missing for variable: " + variable.getName());
             }
             if (variable.getValue() == null) {
-               // throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+                throw new ActivitiIllegalArgumentException(
+                        "Variable value is missing for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -122,7 +118,8 @@ public class BaseHistoricVariableInstanceService {
 
             // A value-only query is only possible using equals-operator
             if (nameLess) {
-              //  throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is not supported");
+                throw new ActivitiIllegalArgumentException(
+                        "Value-only query (without a variable-name) is not supported");
             }
 
             switch (variable.getVariableOperation()) {
@@ -132,10 +129,11 @@ public class BaseHistoricVariableInstanceService {
                     break;
 
                 default:
-                 //   throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+                    throw new ActivitiIllegalArgumentException(
+                            "Unsupported variable query operation: " +
+                            variable.getVariableOperation());
             }
         }
     }
 
 }
-*/

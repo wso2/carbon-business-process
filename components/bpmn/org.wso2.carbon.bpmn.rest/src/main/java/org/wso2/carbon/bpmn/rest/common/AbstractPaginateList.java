@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,31 +14,34 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.common;
 
 //import org.activiti.engine.ActivitiIllegalArgumentException;
+
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
-
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 
-import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
 
-public abstract  class AbstractPaginateList {
+/**
+ *
+ */
+public abstract class AbstractPaginateList {
 
     protected RestResponseFactory restResponseFactory;
-    protected UriInfo uriInfo;
+    protected String baseContext;
 
-    public AbstractPaginateList(RestResponseFactory restResponseFactory, UriInfo uriInfo){
+    public AbstractPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
         this.restResponseFactory = restResponseFactory;
-        this.uriInfo = uriInfo;
+        this.baseContext = baseContext;
     }
 
-    public DataResponse paginateList(Map<String, String> requestParams, PaginateRequest paginateRequest, Query query,
+    public DataResponse paginateList(Map<String, String> requestParams,
+                                     PaginateRequest paginateRequest, Query query,
                                      String defaultSort, Map<String, QueryProperty> properties) {
 
         if (paginateRequest == null) {
@@ -64,21 +67,21 @@ public abstract  class AbstractPaginateList {
 
         // Use defaults for paging, if not set in the PaginationRequest, nor in the URL
         Integer start = paginateRequest.getStart();
-        if(start == null || start < 0) {
+        if (start == null || start < 0) {
             start = 0;
         }
 
         Integer size = paginateRequest.getSize();
-        if(size == null || size < 0) {
+        if (size == null || size < 0) {
             size = 10;
         }
 
         String sort = paginateRequest.getSort();
-        if(sort == null) {
-            sort = defaultSort;//id
+        if (sort == null) {
+            sort = defaultSort; //id
         }
         String order = paginateRequest.getOrder();
-        if(order == null) {
+        if (order == null) {
             order = "asc";
         }
 
@@ -86,17 +89,19 @@ public abstract  class AbstractPaginateList {
         if (sort != null && !properties.isEmpty()) {
             QueryProperty qp = properties.get(sort);
             if (qp == null) {
-               // throw new ActivitiIllegalArgumentException("Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
+                throw new ActivitiIllegalArgumentException(
+                        "Value for param 'sort' is not valid, '" + sort +
+                        "' is not a valid property");
             }
             ((AbstractQuery) query).orderBy(qp);
             if (order.equals("asc")) {
                 query.asc();
-            }
-            else if (order.equals("desc")) {
+            } else if (order.equals("desc")) {
                 query.desc();
-            }
-            else {
-               // throw new ActivitiIllegalArgumentException("Value for param 'order' is not valid : '" + order + "', must be 'asc' or 'desc'");
+            } else {
+                throw new ActivitiIllegalArgumentException(
+                        "Value for param 'order' is not valid : '" + order +
+                        "', must be 'asc' or 'desc'");
             }
         }
 
@@ -112,15 +117,16 @@ public abstract  class AbstractPaginateList {
         return response;
     }
 
-
     /**
-     * uses the pagination parameters from the request and makes sure to order the result and set all pagination
+     * uses the pagination parameters from the request and makes sure to order the result and set
+     * all pagination
      * attributes for the response to render
      *
      * @param requestParams The request containing the pagination parameters
-     * @param query The query to get the paged list from
-     * @param properties The model to put the list and the pagination attributes in
-     * @param defaultSort THe default sort column (the rest attribute) that later will be mapped to an internal engine name
+     * @param query         The query to get the paged list from
+     * @param properties    The model to put the list and the pagination attributes in
+     * @param defaultSort   THe default sort column (the rest attribute) that
+     *                      later will be mapped to an internal engine name
      */
     @SuppressWarnings("rawtypes")
     public DataResponse paginateList(Map<String, String> requestParams, Query query,

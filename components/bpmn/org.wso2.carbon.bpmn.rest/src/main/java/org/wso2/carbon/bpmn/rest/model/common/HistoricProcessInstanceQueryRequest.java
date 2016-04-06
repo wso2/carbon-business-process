@@ -14,17 +14,23 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.common;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 
-import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ *
+ */
 @XmlRootElement(name = "HistoricProcessInstanceQueryRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
@@ -126,35 +132,35 @@ public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
     }
 
     public Date getFinishedAfter() {
-        return finishedAfter;
+        return finishedAfter == null ? null : (Date) this.finishedAfter.clone();
     }
 
     public void setFinishedAfter(Date finishedAfter) {
-        this.finishedAfter = finishedAfter;
+        this.finishedAfter = (Date) finishedAfter.clone();
     }
 
     public Date getFinishedBefore() {
-        return finishedBefore;
+        return finishedBefore == null ? null : (Date) this.finishedBefore.clone();
     }
 
     public void setFinishedBefore(Date finishedBefore) {
-        this.finishedBefore = finishedBefore;
+        this.finishedBefore = (Date) finishedBefore.clone();
     }
 
     public Date getStartedAfter() {
-        return startedAfter;
+        return startedAfter == null ? null : (Date) this.startedAfter.clone();
     }
 
     public void setStartedAfter(Date startedAfter) {
-        this.startedAfter = startedAfter;
+        this.startedAfter = (Date) startedAfter.clone();
     }
 
     public Date getStartedBefore() {
-        return startedBefore;
+        return startedBefore == null ? null : (Date) this.startedBefore.clone();
     }
 
     public void setStartedBefore(Date startedBefore) {
-        this.startedBefore = startedBefore;
+        this.startedBefore = (Date) startedBefore.clone();
     }
 
     public String getStartedBy() {
@@ -173,7 +179,7 @@ public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
         this.includeProcessVariables = includeProcessVariables;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=QueryVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = QueryVariable.class)
     public List<QueryVariable> getVariables() {
         return variables;
     }

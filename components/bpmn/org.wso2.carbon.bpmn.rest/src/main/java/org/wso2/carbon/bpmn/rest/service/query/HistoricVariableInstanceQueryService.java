@@ -15,33 +15,39 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricVariableInstanceService;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+/**
+ *
+ */
 @Path("/historic-variable-instances")
 public class HistoricVariableInstanceQueryService extends BaseHistoricVariableInstanceService {
 
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
-    protected static final List<String> allPropertiesList  = new ArrayList<>();
-
-
+    private static final Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
+    private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
-        allowedSortProperties.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+        allowedSortProperties.put("processInstanceId",
+                                  HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
+        allowedSortProperties
+                .put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
     }
 
     static {
@@ -55,21 +61,24 @@ public class HistoricVariableInstanceQueryService extends BaseHistoricVariableIn
         allPropertiesList.add("order");
         allPropertiesList.add("sort");
     }
+
     @POST
     @Path("/")
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response queryVariableInstances(HistoricVariableInstanceQueryRequest queryRequest) {
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response queryVariableInstances(HistoricVariableInstanceQueryRequest queryRequest,
+                                           @Context HttpRequest request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
+        QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        for (String property : allPropertiesList) {
+            String value = decoder.parameters().get(property).get(0);
 
-        for (String property:allPropertiesList){
-            String value= uriInfo.getQueryParameters().getFirst(property);
-
-            if(value != null){
+            if (value != null) {
                 allRequestParams.put(property, value);
             }
         }
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
+        DataResponse dataResponse =
+                getQueryResponse(queryRequest, allRequestParams, request.getUri());
         return Response.ok().entity(dataResponse).build();
     }
 }

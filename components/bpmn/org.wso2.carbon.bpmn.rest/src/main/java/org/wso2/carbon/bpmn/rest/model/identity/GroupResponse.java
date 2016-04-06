@@ -17,6 +17,9 @@
 
 package org.wso2.carbon.bpmn.rest.model.identity;
 
+/**
+ *
+ */
 public class GroupResponse {
 
     protected String id;

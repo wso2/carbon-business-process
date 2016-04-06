@@ -22,11 +22,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+
+/**
+ *
+ */
 @XmlRootElement(name = "ProcessInstanceCreateRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProcessInstanceCreateRequest {
@@ -46,7 +53,8 @@ public class ProcessInstanceCreateRequest {
     private Boolean skipInstanceCreationIfExist = false;
     private Boolean correlate = false;
 
-    public ProcessInstanceCreateRequest(){}
+    public ProcessInstanceCreateRequest() {
+    }
 
     public boolean isArrayIterated() {
         return arrayIterated;
@@ -83,9 +91,11 @@ public class ProcessInstanceCreateRequest {
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
+
     public String getMessage() {
         return message;
     }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -98,7 +108,7 @@ public class ProcessInstanceCreateRequest {
         return tenantId;
     }
 
-    @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, defaultImpl=RestVariable.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = RestVariable.class)
     public List<RestVariable> getVariables() {
         return variables;
     }
@@ -156,32 +166,32 @@ public class ProcessInstanceCreateRequest {
         this.messageName = messageName;
     }
 
-    public ProcessInstanceQueryRequest cloneInstanceCreationRequest(){
+    public ProcessInstanceQueryRequest cloneInstanceCreationRequest() {
 
         ProcessInstanceQueryRequest processInstanceQueryRequest = new ProcessInstanceQueryRequest();
 
-        if(processDefinitionId != null){
+        if (processDefinitionId != null) {
             processInstanceQueryRequest.setProcessDefinitionId(processDefinitionId);
         }
 
-        if(businessKey != null){
+        if (businessKey != null) {
             processInstanceQueryRequest.setProcessBusinessKey(businessKey);
         }
 
-        if(tenantId != null){
+        if (tenantId != null) {
             processInstanceQueryRequest.setTenantId(tenantId);
         }
 
-        if(variables != null) {
+        if (variables != null) {
             RestResponseFactory restResponseFactory = new RestResponseFactory();
             List<QueryVariable> queryVariableList = new ArrayList<>();
             for (RestVariable restVariable : variables) {
-                    QueryVariable queryVariable = new QueryVariable();
-                    queryVariable.setName(restVariable.getName());
-                    queryVariable.setOperation("equals");
-                    queryVariable.setType(restVariable.getType());
-                    queryVariable.setValue(restResponseFactory.getVariableValue(restVariable));
-                    queryVariableList.add(queryVariable);
+                QueryVariable queryVariable = new QueryVariable();
+                queryVariable.setName(restVariable.getName());
+                queryVariable.setOperation("equals");
+                queryVariable.setType(restVariable.getType());
+                queryVariable.setValue(restResponseFactory.getVariableValue(restVariable));
+                queryVariableList.add(queryVariable);
             }
             processInstanceQueryRequest.setVariables(queryVariableList);
         }

@@ -14,30 +14,33 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.history;
-
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
+/**
+ *
+ */
 @XmlRootElement(name = "HistoricIdentityLinkResponseCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class HistoricIdentityLinkResponseCollection {
 
-
     @XmlElement(name = "HistoricIdentityLinkResponse", type = HistoricIdentityLinkResponse.class)
     private List<HistoricIdentityLinkResponse> historicIdentityLinkResponses;
 
-    public HistoricIdentityLinkResponseCollection(){}
+    public HistoricIdentityLinkResponseCollection() {
+    }
 
     public List<HistoricIdentityLinkResponse> getHistoricIdentityLinkResponses() {
         return historicIdentityLinkResponses;
     }
 
-    public void setHistoricIdentityLinkResponses(List<HistoricIdentityLinkResponse> historicIdentityLinkResponses) {
+    public void setHistoricIdentityLinkResponses(
+            List<HistoricIdentityLinkResponse> historicIdentityLinkResponses) {
         this.historicIdentityLinkResponses = historicIdentityLinkResponses;
     }
 }
+

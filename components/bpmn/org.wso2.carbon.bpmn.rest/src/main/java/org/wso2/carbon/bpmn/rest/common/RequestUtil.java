@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.common;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -23,12 +22,17 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ *
+ */
 public class RequestUtil {
 
     private static final FastDateFormat shortDateFormat = FastDateFormat.getInstance("yyyy-MM-dd");
-    private static final FastDateFormat longDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssz");
+    private static final FastDateFormat longDateFormat =
+            FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssz");
 
-    public static boolean getBoolean(Map<String, String> requestParams, String name, boolean defaultValue) {
+    public static boolean getBoolean(Map<String, String> requestParams, String name,
+                                     boolean defaultValue) {
         boolean value = defaultValue;
         if (requestParams.get(name) != null) {
             value = Boolean.valueOf(requestParams.get(name));
@@ -39,7 +43,7 @@ public class RequestUtil {
     public static int getInteger(Map<String, String> requestParams, String name, int defaultValue) {
         int value = defaultValue;
         if (requestParams.get(name) != null) {
-            value = Integer.valueOf(requestParams.get(name));
+            value = Integer.parseInt(requestParams.get(name));
         }
         return value;
     }
@@ -64,7 +68,7 @@ public class RequestUtil {
 
             try {
                 value = longDateFormat.parse(input);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException("Failed to parse date " + input);
             }
         }
@@ -73,7 +77,7 @@ public class RequestUtil {
 
     public static String dateToString(Date date) {
         String dateString = null;
-        if(date != null) {
+        if (date != null) {
             dateString = longDateFormat.format(date);
         }
 
@@ -84,7 +88,8 @@ public class RequestUtil {
         Integer parsedInteger = null;
         try {
             parsedInteger = Integer.parseInt(integer);
-        } catch(Exception e) {}
+        } catch (Exception e) {
+        }
         return parsedInteger;
     }
 
@@ -92,7 +97,8 @@ public class RequestUtil {
         Date parsedDate = null;
         try {
             parsedDate = shortDateFormat.parse(date);
-        } catch(Exception e) {}
+        } catch (Exception e) {
+        }
         return parsedDate;
     }
 }

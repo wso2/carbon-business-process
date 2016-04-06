@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2011-2012 WSO2, Inc. (http://wso2.com)
+  ~ Copyright 2016 WSO2, Inc. (http://wso2.com)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
@@ -27,189 +28,214 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
     <description>bpmn rest api</description>
-    <packaging>war</packaging>
-    <name>WSO2 Carbon - BPMN Rest Web Application</name>
+    <packaging>bundle</packaging>
+    <name>WSO2 Carbon - BPMN Rest Component</name>
     <url>http://wso2.org</url>
 
-
-    <properties>
-        <jackson.version>1.8.6</jackson.version>
-    </properties>
-
-
-    <repositories>
-        <repository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>wso2.snapshots</id>
-            <name>Apache Snapshot Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
     <build>
-        <!--  <finalName>bpmn</finalName>-->
-        <!--<pluginManagement>-->
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <!-- this is relative to the pom.xml directory -->
-                            <directory>src/main/webapp</directory>
-                        </resource>
-                    </webResources>
-                    <warName>bpmn</warName>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
-
-        <!--</pluginManagement>-->
-
     </build>
 
 
     <dependencies>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.3.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.osgi</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-            <version>3.9.1.v20130814-1242</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- Carbon Business Process Dependencies -->
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn</artifactId>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-fileupload</groupId>
-                    <artifactId>commons-fileupload</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-fileupload.wso2</groupId>
-                    <artifactId>commons-fileupload</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+
+        <!-- Activiti Dependencies -->
+        <dependency>
+            <groupId>org.wso2.orbit.org.activiti</groupId>
+            <artifactId>activiti-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-fileupload.wso2</groupId>
-                    <artifactId>commons-fileupload</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>2.7.6</version>
-            <scope>provided</scope>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
+        <!-- Kernel, Platform & OSGi Dependencies -->
+        <dependency>
+            <groupId>org.wso2.msf4j</groupId>
+            <artifactId>msf4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>2.7.6</version>
-             <scope>provided</scope>
+            <groupId>org.eclipse.osgi</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
+
+
+        <!-- Other Dependencies -->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
             <scope>provided</scope>
         </dependency>
-  <!--      <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>provided</scope>
-        </dependency>
-         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>javax.servlet</artifactId>
+        </dependency>
     </dependencies>
+
+
+    <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+    </properties>
+    <!--&lt;!&ndash;</pluginManagement>&ndash;&gt;-->
+
+    <!--</build>-->
+
+
+    <!--<dependencies>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.wso2.orbit.org.activiti</groupId>-->
+    <!--<artifactId>activiti-all</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.wso2.msf4j</groupId>-->
+    <!--<artifactId>msf4j-core</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+
+
+    <!--&lt;!&ndash;dependency>-->
+    <!--<groupId>commons-fileupload</groupId>-->
+    <!--<artifactId>commons-fileupload</artifactId>-->
+    <!--<version>1.3.1</version>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>javax.servlet</groupId>-->
+    <!--<artifactId>javax.servlet-api</artifactId>-->
+    <!--<version>3.1.0</version>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency&ndash;&gt;-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.eclipse.osgi</groupId>-->
+    <!--<artifactId>org.eclipse.osgi</artifactId>-->
+    <!--<version>3.9.1.v20130814-1242</version>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.wso2.carbon.business-process</groupId>-->
+    <!--<artifactId>org.wso2.carbon.bpmn</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--<exclusions>-->
+    <!--<exclusion>-->
+    <!--<groupId>javax.servlet</groupId>-->
+    <!--<artifactId>servlet-api</artifactId>-->
+    <!--</exclusion>-->
+    <!--<exclusion>-->
+    <!--<groupId>commons-fileupload</groupId>-->
+    <!--<artifactId>commons-fileupload</artifactId>-->
+    <!--</exclusion>-->
+    <!--<exclusion>-->
+    <!--<groupId>commons-fileupload.wso2</groupId>-->
+    <!--<artifactId>commons-fileupload</artifactId>-->
+    <!--</exclusion>-->
+    <!--</exclusions>-->
+    <!--</dependency>-->
+    <!--&lt;!&ndash;dependency>-->
+    <!--<groupId>org.wso2.carbon</groupId>-->
+    <!--<artifactId>org.wso2.carbon.utils</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--<exclusions>-->
+    <!--<exclusion>-->
+    <!--<groupId>commons-fileupload.wso2</groupId>-->
+    <!--<artifactId>commons-fileupload</artifactId>-->
+    <!--</exclusion>-->
+    <!--</exclusions>-->
+    <!--</dependency&ndash;&gt;-->
+    <!--<dependency>-->
+    <!--<groupId>org.codehaus.jackson</groupId>-->
+    <!--<artifactId>jackson-core-asl</artifactId>-->
+    <!--<version>${jackson.version}</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.codehaus.jackson</groupId>-->
+    <!--<artifactId>jackson-mapper-asl</artifactId>-->
+    <!--<version>${jackson.version}</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.codehaus.jackson</groupId>-->
+    <!--<artifactId>jackson-jaxrs</artifactId>-->
+    <!--<version>${jackson.version}</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+    <!--<artifactId>jackson-databind</artifactId>-->
+    <!--<version>${jackson.databind.version}</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>joda-time</groupId>-->
+    <!--<artifactId>joda-time</artifactId>-->
+    <!--<version>2.3</version>-->
+    <!--</dependency>-->
+
+
+    <!--<dependency>-->
+    <!--<groupId>commons-httpclient</groupId>-->
+    <!--<artifactId>commons-httpclient</artifactId>-->
+    <!--<version>3.1</version>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>commons-logging</groupId>-->
+    <!--<artifactId>commons-logging</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>log4j</groupId>-->
+    <!--<artifactId>log4j</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.apache.commons</groupId>-->
+    <!--<artifactId>commons-lang3</artifactId>-->
+    <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+
+    <!--</dependencies>-->
+    <!--&gt;>>>>>> f9743c5268fb708b2b753d0bc2453ac880c90e11-->
+
 
 </project>

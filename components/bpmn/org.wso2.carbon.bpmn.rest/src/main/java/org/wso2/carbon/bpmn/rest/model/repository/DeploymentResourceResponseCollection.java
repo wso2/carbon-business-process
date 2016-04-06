@@ -14,15 +14,17 @@
  *  limitations under the License.
  */
 
-
 package org.wso2.carbon.bpmn.rest.model.repository;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
+/**
+ *
+ */
 @XmlRootElement(name = "resourceCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeploymentResourceResponseCollection {
@@ -30,14 +32,16 @@ public class DeploymentResourceResponseCollection {
     @XmlElement(name = "DeploymentResourceResponse", type = DeploymentResourceResponse.class)
     private List<DeploymentResourceResponse> deploymentResourceResponseList;
 
-    public DeploymentResourceResponseCollection(){
+    public DeploymentResourceResponseCollection() {
 
     }
+
     public List<DeploymentResourceResponse> getDeploymentResourceResponseList() {
         return deploymentResourceResponseList;
     }
 
-    public void setDeploymentResourceResponseList(List<DeploymentResourceResponse> deploymentResourceResponseList) {
+    public void setDeploymentResourceResponseList(
+            List<DeploymentResourceResponse> deploymentResourceResponseList) {
         this.deploymentResourceResponseList = deploymentResourceResponseList;
     }
 }
