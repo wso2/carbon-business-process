@@ -112,9 +112,24 @@
         </dependency>
     </dependencies>
 
-
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
+        <private.package>org.wso2.carbon.bpmn.rest.utils</private.package>
+        <export.package>
+            !org.wso2.carbon.bpmn.rest.utils,
+            org.wso2.carbon.bpmn.rest.*,
+            version=${carbon.business-process.exp.pkg.version},
+        </export.package>
+        <import.package>
+            org.osgi.framework; version="[1.8.0, 2.0.0)",
+            org.wso2.msf4j.*;version="${carbon.msf4j.version}",
+            org.slf4j; version="[1.7.7, 2.0.0)",
+            javax.ws.rs.*,
+            javax.management.*,
+            javax.naming.*,
+            javax.xml.stream.*
+        </import.package>
+        <dynamic.import.package>*</dynamic.import.package>
     </properties>
 
 </project>
