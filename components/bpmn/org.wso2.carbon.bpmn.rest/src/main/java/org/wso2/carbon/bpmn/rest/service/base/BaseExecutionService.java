@@ -42,6 +42,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.msf4j.HttpStreamHandler;
+//import org.wso2.msf4j.HttpStreamer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -381,7 +382,9 @@ public class BaseExecutionService {
 /*
     protected RestVariable createBinaryExecutionVariable(Execution execution, int
     responseVariableType, UriInfo
-            uriInfo, boolean isNew, MultipartBody multipartBody) {
+            uriInfo, boolean isNew, HttpStreamHandler httpStreamer) {
+            //TEST
+            httpStreamer.callback(new HttpStreamHandlerImpl());
 
         boolean debugEnabled = log.isDebugEnabled();
         Response.ResponseBuilder responseBuilder = Response.ok();
