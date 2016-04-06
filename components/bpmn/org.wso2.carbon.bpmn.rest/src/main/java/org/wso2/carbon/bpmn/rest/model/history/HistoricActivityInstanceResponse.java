@@ -18,11 +18,11 @@ package org.wso2.carbon.bpmn.rest.model.history;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
+
 import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  *
@@ -148,19 +148,19 @@ public class HistoricActivityInstanceResponse {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return startTime == null ? null : (Date) this.startTime.clone();
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = (Date) startTime.clone();
     }
 
     public Date getEndTime() {
-        return endTime;
+        return endTime == null ? null : (Date) endTime.clone();
     }
 
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = (Date) endTime.clone();
     }
 
     public Long getDurationInMillis() {

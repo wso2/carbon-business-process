@@ -226,6 +226,11 @@
             </dependency>
 
             <!-- 3.3 BPMN Rest Dependencies -->
+            <dependency>
+                <groupId>org.eclipse.equinox</groupId>
+                <artifactId>javax.servlet</artifactId>
+                <version>${version.javax.servlet}</version>
+            </dependency>
 
 
             <!-- End of Dependency section 3 -->
@@ -340,7 +345,7 @@
         <!-- 2 - Hamming Platform components and their Dependencies  -->
         <carbon.datasources.version>1.0.0-SNAPSHOT</carbon.datasources.version>
         <carbon.jndi.version>1.0.0-SNAPSHOT</carbon.jndi.version>
-        <carbon.msf4j.version>1.0.0-SNAPSHOT</carbon.msf4j.version>
+        <carbon.msf4j.version>1.0.0</carbon.msf4j.version>
 
         <!-- 3 - Carbon Business Process Dependencies -->
         <!-- 3.1 Activiti and its dependencies  -->

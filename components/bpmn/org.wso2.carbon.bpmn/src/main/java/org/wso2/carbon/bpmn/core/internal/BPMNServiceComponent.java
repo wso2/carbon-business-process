@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-
 import org.activiti.engine.ProcessEngines;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
@@ -47,8 +46,7 @@ import javax.naming.NamingException;
 
 @Component(
         name = "org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent",
-        immediate = true
-)
+        immediate = true)
 
 public class BPMNServiceComponent {
 
@@ -63,8 +61,7 @@ public class BPMNServiceComponent {
             service = JNDIContextManager.class,
             cardinality = ReferenceCardinality.MANDATORY,
             policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterJNDIContext"
-    )
+            unbind = "unRegisterJNDIContext")
 
     public void registerJNDIContext(JNDIContextManager contextManager) {
         log.info("register JNDI Context");
@@ -80,8 +77,7 @@ public class BPMNServiceComponent {
             service = DataSourceService.class,
             cardinality = ReferenceCardinality.MANDATORY,
             policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterDataSourceService"
-    )
+            unbind = "unRegisterDataSourceService")
     public void registerDataSourceService(DataSourceService datasource) {
         log.info("register Datasource service");
         this.datasourceService = datasource;
@@ -96,10 +92,10 @@ public class BPMNServiceComponent {
             service = DataSourceManagementService.class,
             cardinality = ReferenceCardinality.MANDATORY,
             policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterDataSourceManagementService"
-    )
+            unbind = "unRegisterDataSourceManagementService")
 
-    public void registerDataSourceManagementService(DataSourceManagementService datasourceMgtService) {
+    public void registerDataSourceManagementService(
+            DataSourceManagementService datasourceMgtService) {
         log.info("register Datasource Management service");
         this.datasourceManagementService = datasourceMgtService;
     }
@@ -118,11 +114,14 @@ public class BPMNServiceComponent {
             ActivitiEngineBuilder.getInstance();
             holder.setEngine(ActivitiEngineBuilder.getInstance().buildEngine());
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
-            bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getInstance().getProcessEngine());
-            bundleContext.registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
+            bpmnEngineService
+                    .setProcessEngine(ActivitiEngineBuilder.getInstance().getProcessEngine());
+            bundleContext
+                    .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
             // Create metadata table for deployments
             DataSourceHandler dataSourceHandler = new DataSourceHandler();
-            dataSourceHandler.initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
+            dataSourceHandler
+                    .initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
             dataSourceHandler.closeDataSource();
 
         } catch (Throwable t) {
@@ -142,8 +141,8 @@ public class BPMNServiceComponent {
         Context context = jndiContextManager.newInitialContext();
 
         Context subcontext = context.createSubcontext("java:comp/jdbc");
-        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME, datasourceService.getDataSource(BPMNConstants
-                .BPMN_DB_NAME));
+        subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME,
+                        datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
     }
 
 }

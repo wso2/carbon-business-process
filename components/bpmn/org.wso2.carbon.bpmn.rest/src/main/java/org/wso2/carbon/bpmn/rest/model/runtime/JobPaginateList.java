@@ -19,22 +19,23 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 
 import org.wso2.carbon.bpmn.rest.common.AbstractPaginateList;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
+
 import java.util.List;
+
 /**
  *
  */
 public class JobPaginateList extends AbstractPaginateList {
-    protected RestResponseFactory restResponseFactory = new RestResponseFactory();
+   // protected RestResponseFactory restResponseFactory = new RestResponseFactory();
 
-    public JobPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public JobPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createJobResponseList(list);
+        return restResponseFactory.createJobResponseList(list, baseContext);
     }
-
 
 }

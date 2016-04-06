@@ -35,8 +35,7 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 //import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 //import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.user.api.UserRealm;
+//import org.wso2.carbon.user.api.UserRealm;
 
 /**
  *
@@ -49,9 +48,7 @@ public class BPMNOSGIService {
 
     public static BPMNEngineService getBPMNEngineService() {
         BPMNEngineService bpmnEngineService =
-                (BPMNEngineService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                                                           .getOSGiService(BPMNEngineService.class,
-                                                                           null);
+                RestServiceLookUpComponent.getInstance().getBpmnEngineService();
 
         if (bpmnEngineService == null) {
             throw new BPMNOSGIServiceException("BPMNEngineService service couldn't be identified");
@@ -140,10 +137,10 @@ public class BPMNOSGIService {
 
         return identityService;
     }
-
-    public static UserRealm getUserRealm() {
+    //TODO:
+   /* public static UserRealm getUserRealm() {
         return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
-    }
+    }*/
 
     public static ManagementService getManagementService() {
         return getBPMNEngineService().getProcessEngine().getManagementService();

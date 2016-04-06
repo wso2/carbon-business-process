@@ -75,7 +75,7 @@ public class ManagementService implements Microservice {
 
     private static final String EXECUTE_ACTION = "execute";
     protected static final Integer DEFAULT_RESULT_SIZE = 10;
-    protected static Map<String, QueryProperty> properties;
+    private static Map<String, QueryProperty> properties;
     private static final List<String> jobPropertiesList = new ArrayList<>();
 
     static {
@@ -194,7 +194,7 @@ public class ManagementService implements Microservice {
             }
         }
 
-        return new JobPaginateList(restResponseFactory)
+        return new JobPaginateList(restResponseFactory, request.getUri())
                 .paginateList(allRequestParams, query, "id", properties);
     }
 
@@ -229,10 +229,10 @@ public class ManagementService implements Microservice {
     @GET
     @Path("/jobs/{job-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public JobResponse getJob(@PathParam("job-id") String jobId) {
+    public JobResponse getJob(@PathParam("job-id") String jobId, @Context HttpRequest request) {
         Job job = getJobFromResponse(jobId);
 
-        return restResponseFactory.createJobResponse(job);
+        return restResponseFactory.createJobResponse(job, request.getUri());
     }
 
     @DELETE
@@ -306,8 +306,9 @@ public class ManagementService implements Microservice {
     @GET
     @Path("/tables")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public List<TableResponse> getTables() {
-        return restResponseFactory.createTableResponseList(managementService.getTableCount());
+    public List<TableResponse> getTables(@Context HttpRequest request) {
+        return restResponseFactory
+                .createTableResponseList(managementService.getTableCount(), request.getUri());
     }
 
     @GET
@@ -395,14 +396,15 @@ public class ManagementService implements Microservice {
     @GET
     @Path("/tables/{table-name}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public TableResponse getTable(@PathParam("table-name") String tableName) {
+    public TableResponse getTable(@PathParam("table-name") String tableName,
+                                  @Context HttpRequest request) {
         Map<String, Long> tableCounts = managementService.getTableCount();
 
         TableResponse response = null;
         for (Map.Entry<String, Long> entry : tableCounts.entrySet()) {
             if (entry.getKey().equals(tableName)) {
-                response =
-                        restResponseFactory.createTableResponse(entry.getKey(), entry.getValue());
+                response = restResponseFactory
+                        .createTableResponse(entry.getKey(), entry.getValue(), request.getUri());
                 break;
             }
         }

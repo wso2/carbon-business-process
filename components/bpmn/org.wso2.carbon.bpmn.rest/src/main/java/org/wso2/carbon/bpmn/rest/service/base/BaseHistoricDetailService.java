@@ -25,8 +25,8 @@ import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailPaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
-
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +36,8 @@ import java.util.Map;
  */
 public class BaseHistoricDetailService {
 
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
-    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
+    protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
 
     static {
         ALL_PROPERTIES_LIST.add("id");
@@ -54,16 +54,17 @@ public class BaseHistoricDetailService {
     }
 
     static {
-        allowedSortProperties
-                .put("processInstanceId", HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("time", HistoricDetailQueryProperty.TIME);
-        allowedSortProperties.put("name", HistoricDetailQueryProperty.VARIABLE_NAME);
-        allowedSortProperties.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
-        allowedSortProperties.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
+        HashMap<String, QueryProperty> sortMap = new HashMap<>();
+        sortMap.put("processInstanceId", HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
+        sortMap.put("time", HistoricDetailQueryProperty.TIME);
+        sortMap.put("name", HistoricDetailQueryProperty.VARIABLE_NAME);
+        sortMap.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
+        sortMap.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
+        ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
     protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
@@ -91,8 +92,8 @@ public class BaseHistoricDetailService {
             }
         }
 
-        return new HistoricDetailPaginateList(new RestResponseFactory())
+        return new HistoricDetailPaginateList(new RestResponseFactory(), baseName)
                 .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
-                              allowedSortProperties);
+                              ALLOWED_SORT_PROPERTIES);
     }
 }

@@ -55,7 +55,7 @@ import javax.ws.rs.core.Response;
 /**
  *
  */
-@Path("/bps/bpmn/v.4.0/process-definitions")
+@Path("/bps/bpmn/{version}/{context}/process-definitions")
 public class ProcessDefinitionService {
 
     private static final Map<String, QueryProperty> properties = new HashMap<>();
@@ -177,8 +177,9 @@ public class ProcessDefinitionService {
                     .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
         }
 
-        DataResponse response = new ProcessDefinitionsPaginateList(new RestResponseFactory())
-                .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
+        DataResponse response =
+                new ProcessDefinitionsPaginateList(new RestResponseFactory(), request.getUri())
+                        .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
 
         return Response.ok().entity(response).build();
     }
@@ -187,9 +188,11 @@ public class ProcessDefinitionService {
     @Path("/{process-definition-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ProcessDefinitionResponse getProcessDefinition(
-            @PathParam("process-definition-id") String processDefinitionId) {
+            @PathParam("process-definition-id") String processDefinitionId,
+            @Context HttpRequest request) {
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-        return new RestResponseFactory().createProcessDefinitionResponse(processDefinition);
+        return new RestResponseFactory()
+                .createProcessDefinitionResponse(processDefinition, request.getUri());
     }
 
     @GET
@@ -210,23 +213,24 @@ public class ProcessDefinitionService {
     @GET
     @Path("/{process-definition-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIdentityLinks(
-            @PathParam("process-definition-id") String processDefinitionId) {
+    public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
+                                     @Context HttpRequest request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
         return Response.ok().entity(new RestResponseFactory().createRestIdentityLinks(
-                repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId())))
-                       .build();
+                repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId()),
+                request.getUri())).build();
     }
 
     @GET
     @Path("/{process-definition-id}/identity-links/{family}/{identity-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIdentityLink(@PathParam("process-definition-id") String processDefinitionId,
-                                    @PathParam("family") String family,
-                                    @PathParam("identity-id") String identityId) {
+    public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
+                                     @PathParam("family") String family,
+                                     @PathParam("identity-id") String identityId,
+                                     @Context HttpRequest request) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);
@@ -236,7 +240,8 @@ public class ProcessDefinitionService {
         // Check if identitylink to get exists
         IdentityLink link =
                 getIdentityLink(family, identityId, processDefinition.getId(), repositoryService);
-        return Response.ok().entity(new RestResponseFactory().createRestIdentityLink(link)).build();
+        return Response.ok().entity(new RestResponseFactory()
+                                            .createRestIdentityLink(link, request.getUri())).build();
     }
 
     private ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {

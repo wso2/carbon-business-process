@@ -27,8 +27,8 @@ import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
-
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +38,14 @@ import java.util.Map;
  */
 public class BaseHistoricVariableInstanceService {
 
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
-    protected static final List<String> ALL_PROPERTIES_LIST = new ArrayList<>();
+    protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
+    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
 
     static {
-        allowedSortProperties.put("processInstanceId",
-                                  HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties
-                .put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+        HashMap<String, QueryProperty> sortMap = new HashMap<>();
+        sortMap.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
+        sortMap.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+        ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
     static {
@@ -61,7 +61,7 @@ public class BaseHistoricVariableInstanceService {
     }
 
     protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest,
-                                            Map<String, String> allRequestParams) {
+                                            Map<String, String> allRequestParams, String baseName) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
@@ -96,8 +96,8 @@ public class BaseHistoricVariableInstanceService {
             addVariables(query, queryRequest.getVariables());
         }
 
-        return new HistoricVariableInstancePaginateList(new RestResponseFactory())
-                .paginateList(allRequestParams, query, "variableName", allowedSortProperties);
+        return new HistoricVariableInstancePaginateList(new RestResponseFactory(), baseName)
+                .paginateList(allRequestParams, query, "variableName", ALLOWED_SORT_PROPERTIES);
     }
 
     protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery,

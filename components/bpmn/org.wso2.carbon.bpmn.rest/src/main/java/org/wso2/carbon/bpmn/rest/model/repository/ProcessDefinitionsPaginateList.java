@@ -26,12 +26,14 @@ import java.util.List;
  */
 public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
 
-    public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory,
+                                          String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createProcessDefinitionResponseList(list);
+        return restResponseFactory.createProcessDefinitionResponseList(list, baseContext);
     }
 }

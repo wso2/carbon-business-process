@@ -40,7 +40,7 @@ import javax.ws.rs.core.Response;
 @Path("/historic-variable-instances")
 public class HistoricVariableInstanceQueryService extends BaseHistoricVariableInstanceService {
 
-    protected static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
+    private static final Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
     private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
@@ -77,7 +77,8 @@ public class HistoricVariableInstanceQueryService extends BaseHistoricVariableIn
                 allRequestParams.put(property, value);
             }
         }
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
+        DataResponse dataResponse =
+                getQueryResponse(queryRequest, allRequestParams, request.getUri());
         return Response.ok().entity(dataResponse).build();
     }
 }

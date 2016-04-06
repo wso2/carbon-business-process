@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -70,7 +71,7 @@ import javax.ws.rs.core.Response;
         service = Microservice.class,
         immediate = true)
 
-@Path("/executions")
+@Path("/bps/bpmn/{version}/{context}/executions")
 public class ExecutionService extends BaseExecutionService implements Microservice {
 
     @Activate
@@ -92,10 +93,11 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @GET
     @Path("/{execution-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getExecution(@PathParam("execution-id") String executionId) {
+    public Response getExecution(@PathParam("execution-id") String executionId,
+                                 @Context HttpRequest request) {
 
         ExecutionResponse executionResponse = new RestResponseFactory()
-                .createExecutionResponse(getExecutionFromRequest(executionId));
+                .createExecutionResponse(getExecutionFromRequest(executionId), request.getUri());
         return Response.ok().entity(executionResponse).build();
     }
 
@@ -111,7 +113,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response performExecutionAction(@PathParam("execution-id") String executionId,
-                                           ExecutionActionRequest actionRequest) {
+                                           ExecutionActionRequest actionRequest,
+                                           @Context HttpRequest request) {
 
         Execution execution = getExecutionFromRequest(executionId);
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
@@ -160,7 +163,9 @@ public class ExecutionService extends BaseExecutionService implements Microservi
             // Execution is finished, return empty body to inform user
             response.status(Response.Status.NO_CONTENT);
         } else {
-            response.entity(new RestResponseFactory().createExecutionResponse(execution)).build();
+            response.entity(
+                    new RestResponseFactory().createExecutionResponse(execution, request.getUri()))
+                    .build();
         }
 
         return response.build();
@@ -295,7 +300,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         //add common parameters such as sort,order,start etc.
         //allRequestParams = Utils.prepareCommonParameters(allRequestParams, uriInfo);
 
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
+        DataResponse dataResponse =
+                getQueryResponse(queryRequest, allRequestParams, request.getUri());
 
         return Response.ok().entity(dataResponse).build();
     }
@@ -327,11 +333,12 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Path("/{execution-id}/variables")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariables(@PathParam("execution-id") String executionId,
-                                 @QueryParam("scope") String scope) {
+                                 @QueryParam("scope") String scope, @Context HttpRequest req) {
 
         Execution execution = getExecutionFromRequest(executionId);
         List<RestVariable> restVariableList =
-                processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION);
+                processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION,
+                                 req.getUri());
         RestVariableCollection restVariableCollection = new RestVariableCollection();
         restVariableCollection.setRestVariables(restVariableList);
         return Response.ok().entity(restVariableCollection).build();
@@ -342,10 +349,11 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createOrUpdateExecutionVariable(@PathParam("execution-id") String executionId,
-                                                    @Context HttpServletRequest httpServletRequest) {
+                                                    @Context HttpServletRequest httpServletRequest,
+                                                    @Context HttpRequest req) {
         Execution execution = getExecutionFromRequest(executionId);
         return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION,
-                                       httpServletRequest);
+                                       httpServletRequest, req.getUri());
     }
     //TODO
    /* @PUT
@@ -367,11 +375,12 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response createExecutionVariable(@PathParam("execution-id") String executionId,
-                                            @Context HttpServletRequest httpServletRequest) {
+                                            @Context HttpServletRequest httpServletRequest,
+                                            @Context HttpRequest req) {
 
         Execution execution = getExecutionFromRequest(executionId);
         return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION,
-                                       httpServletRequest);
+                                       httpServletRequest, req.getUri());
     }
 
     //TODO
@@ -404,9 +413,9 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RestVariable getVariable(@PathParam("execution-id") String executionId,
                                     @PathParam("variable-name") String variableName,
-                                    @QueryParam("scope") String scope) {
+                                    @QueryParam("scope") String scope, @Context HttpRequest req) {
         Execution execution = getExecutionFromRequest(executionId);
-        return getVariableFromRequest(execution, variableName, scope, false);
+        return getVariableFromRequest(execution, variableName, scope, false, req.getUri());
     }
 
     //TODO
@@ -432,7 +441,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateVariable(@PathParam("execution-id") String executionId,
                                    @PathParam("variable-name") String variableName,
-                                   @Context HttpServletRequest httpServletRequest) {
+                                   @Context HttpServletRequest httpServletRequest,
+                                   @Context HttpRequest req) {
         Execution execution = getExecutionFromRequest(executionId);
         RestVariable result = null;
 
@@ -451,10 +461,12 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         }
         if (!restVariable.getName().equals(variableName)) {
             throw new ActivitiIllegalArgumentException(
-                    "Variable name in the body should be equal to the name used in the requested URL.");
+                    "Variable name in the body should be equal to the name used in the requested URL"
+                    +
+                    ".");
         }
 
-        result = setSimpleVariable(restVariable, execution, false);
+        result = setSimpleVariable(restVariable, execution, false, req.getUri());
 
         return Response.ok().status(Response.Status.CREATED).entity(result).build();
     }
@@ -475,7 +487,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         if (!hasVariableOnScope(execution, variableName, variableScope)) {
             throw new ActivitiObjectNotFoundException(
                     "Execution '" + execution.getId() + "' doesn't have a variable '" +
-                    variableName + "' in scope " + variableScope.name().toLowerCase(),
+                    variableName + "' in scope " +
+                    variableScope.name().toLowerCase(Locale.getDefault()),
                     VariableInstanceEntity.class);
         }
 
@@ -495,13 +508,14 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Path("/{execution-id}/variables/{variable-name}/data")
     public Response getVariableData(@PathParam("execution-id") String executionId,
                                     @PathParam("variable-name") String variableName,
-                                    @QueryParam("scope") String scope) {
+                                    @QueryParam("scope") String scope, @Context HttpRequest req) {
 
         try {
             byte[] result = null;
             Response.ResponseBuilder response = Response.ok();
             Execution execution = getExecutionFromRequest(executionId);
-            RestVariable variable = getVariableFromRequest(execution, variableName, scope, true);
+            RestVariable variable =
+                    getVariableFromRequest(execution, variableName, scope, true, req.getUri());
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
                 response.type("application/octet-stream");

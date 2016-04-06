@@ -43,7 +43,7 @@ public class RequestUtil {
     public static int getInteger(Map<String, String> requestParams, String name, int defaultValue) {
         int value = defaultValue;
         if (requestParams.get(name) != null) {
-            value = Integer.valueOf(requestParams.get(name));
+            value = Integer.parseInt(requestParams.get(name));
         }
         return value;
     }

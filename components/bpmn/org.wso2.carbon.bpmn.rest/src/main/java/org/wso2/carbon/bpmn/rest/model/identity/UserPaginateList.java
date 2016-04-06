@@ -27,14 +27,14 @@ import java.util.List;
  */
 public class UserPaginateList extends AbstractPaginateList {
 
-    public UserPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public UserPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createUserResponseList(list, false);
+        return restResponseFactory.createUserResponseList(list, false, baseContext);
     }
 
 }

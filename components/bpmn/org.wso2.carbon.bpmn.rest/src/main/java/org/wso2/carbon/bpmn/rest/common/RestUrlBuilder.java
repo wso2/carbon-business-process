@@ -23,7 +23,8 @@ import org.wso2.carbon.transport.http.netty.internal.config.ListenerConfiguratio
 import org.wso2.carbon.transport.http.netty.internal.config.TransportsConfiguration;
 import org.wso2.carbon.transport.http.netty.internal.config.YAMLTransportConfigurationBuilder;
 
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Set;
 
@@ -33,20 +34,34 @@ import java.util.Set;
 public class RestUrlBuilder {
 
     protected String baseUrl = "";
-    protected String createdUrl = "";
+    protected String urlContext = "";
+    String hostname = "";
+    int port;
 
-    public RestUrlBuilder() {
+    public RestUrlBuilder(String baseContext) {
         //TEST - get netty-transports config file and read host:port
+        if (baseContext.endsWith("/")) {
+            urlContext = baseContext;
+        } else {
+            int index = baseContext.lastIndexOf("/");
+            urlContext = baseContext.substring(0, index);
+        }
         TransportsConfiguration trpConfig = YAMLTransportConfigurationBuilder.build();
         Set<ListenerConfiguration> configs = trpConfig.getListenerConfigurations();
         for (ListenerConfiguration config : configs) {
-            String hostname = config.getHost();
-            String port = Integer.toString(config.getPort());
-            // TODO: http://host:port
-            String createdUrl =
-                    URI.create(String.format("http://%s:%d", hostname, port)).toASCIIString();
-            setBaseUrl(createdUrl);
+            hostname = config.getHost();
+            port = config.getPort();
         }
+        try {
+            //todo: protocol custom
+            String createdUrl = new URL("http", hostname, port, urlContext).toString();
+            setBaseUrl(createdUrl);
+        } catch (MalformedURLException e) {
+
+        }
+        // String createdUrl =
+        //   URI.create(String.format("http://%s:%d%c", hostname, port, urlContext))
+        // .toASCIIString();
 
     }
 
@@ -54,9 +69,9 @@ public class RestUrlBuilder {
         this.baseUrl = createdUrl;
     }
 
-    protected RestUrlBuilder(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
+    //    protected RestUrlBuilder(String baseUrl) {
+    //        this.baseUrl = baseUrl;
+    //    }
 
     /**
      * Extracts the base URL from current request
@@ -88,7 +103,10 @@ public class RestUrlBuilder {
         if (baseUrl == null) {
             throw new ActivitiIllegalArgumentException("baseUrl can not be null");
         }
-        return new StringBuilder(getBaseUrl()).append("/").append(MessageFormat.format
-                (StringUtils.join(fragments, '/'), arguments)).toString();
+        return new StringBuilder(getBaseUrl()).append("/").append(MessageFormat.format(StringUtils
+                                                                                               .join(fragments,
+                                                                                                     '/'),
+                                                                                       arguments))
+                                              .toString();
     }
 }

@@ -26,13 +26,13 @@ import java.util.List;
  */
 public class TaskPaginateList extends AbstractPaginateList {
 
-    public TaskPaginateList(RestResponseFactory restResponseFactory) {
-        super(restResponseFactory);
+    public TaskPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
+        super(restResponseFactory, baseContext);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected List processList(List list) {
-        return restResponseFactory.createTaskResponseList(list);
+        return restResponseFactory.createTaskResponseList(list, baseContext);
     }
 }

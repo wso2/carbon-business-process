@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.bpmn.rest.service.correlate;
 
+import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.QueryProperty;
 import org.osgi.framework.BundleContext;
@@ -32,7 +33,7 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-//import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -66,7 +67,8 @@ public class CorrelationService implements Microservice {
     @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response recieveMessage(CorrelationActionRequest correlationActionRequest) {
+    public Response recieveMessage(CorrelationActionRequest correlationActionRequest,
+                                   @Context HttpRequest request) {
 
         if (correlationActionRequest.getProcessDefinitionId() == null &&
             correlationActionRequest.getProcessDefinitionKey() == null &&
@@ -94,7 +96,7 @@ public class CorrelationService implements Microservice {
         }
 
         CorrelationProcess correlationProcess = new CorrelationProcess();
-        return correlationProcess.getQueryResponse(correlationActionRequest);
+        return correlationProcess.getQueryResponse(correlationActionRequest, request.getUri());
 
     }
 
@@ -148,7 +150,7 @@ public class CorrelationService implements Microservice {
             query.executionTenantId(value);
         }
 
-        QueryProperty qp = allowedSortProperties.get("processInstanceId");
+        QueryProperty qp = ALLOWED_SORT_PROPERTIES.get("processInstanceId");
         ((AbstractQuery) query).orderBy(qp);
         query.asc();
 

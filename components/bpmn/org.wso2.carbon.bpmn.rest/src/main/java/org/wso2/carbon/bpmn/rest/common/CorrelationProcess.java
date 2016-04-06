@@ -2,7 +2,8 @@ package org.wso2.carbon.bpmn.rest.common;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.AbstractQuery;
+//import org.activiti.engine.impl.AbstractQuery;
+//import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
@@ -34,7 +35,8 @@ public class CorrelationProcess {
     public CorrelationProcess() {
     }
 
-    public Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {
+    public Response getQueryResponse(CorrelationActionRequest correlationActionRequest,
+                                     String name) {
 
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
@@ -78,8 +80,9 @@ public class CorrelationProcess {
             query.executionTenantId(value);
         }
 
-        QueryProperty qp = allowedSortProperties.get("processInstanceId");
-        ((AbstractQuery) query).orderBy(qp);
+        //QueryProperty qp = allowedSortProperties.get("processInstanceId");
+       // ((AbstractQuery) query).orderBy(qp);
+        query.orderByProcessInstanceId();
         query.asc();
 
         List<Execution> executionList = query.listPage(0, 10);
@@ -143,7 +146,8 @@ public class CorrelationProcess {
             return responseBuilder.build();
         } else {
             return responseBuilder
-                    .entity(new RestResponseFactory().createExecutionResponse(execution)).build();
+                    .entity(new RestResponseFactory().createExecutionResponse(execution, name))
+                    .build();
         }
     }
 

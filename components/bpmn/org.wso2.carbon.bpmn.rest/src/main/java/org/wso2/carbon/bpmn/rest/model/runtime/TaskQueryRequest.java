@@ -19,6 +19,7 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.wso2.carbon.bpmn.rest.common.PaginateRequest;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,7 +27,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  *
@@ -258,27 +258,27 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public Date getCreatedOn() {
-        return createdOn;
+        return createdOn == null ? null : (Date) this.createdOn.clone();
     }
 
     public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
+        this.createdOn = (Date) createdOn.clone();
     }
 
     public Date getCreatedBefore() {
-        return createdBefore;
+        return createdBefore == null ? null : (Date) this.createdBefore.clone();
     }
 
     public void setCreatedBefore(Date createdBefore) {
-        this.createdBefore = createdBefore;
+        this.createdBefore = (Date) createdBefore.clone();
     }
 
     public Date getCreatedAfter() {
-        return createdAfter;
+        return createdAfter == null ? null : (Date) this.createdAfter.clone();
     }
 
     public void setCreatedAfter(Date createdAfter) {
-        this.createdAfter = createdAfter;
+        this.createdAfter = (Date) createdAfter.clone();
     }
 
     public Boolean getExcludeSubTasks() {
@@ -306,27 +306,27 @@ public class TaskQueryRequest extends PaginateRequest {
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = (Date) dueDate.clone();
     }
 
     public Date getDueBefore() {
-        return dueBefore;
+        return dueBefore == null ? null : (Date) this.dueBefore.clone();
     }
 
     public void setDueBefore(Date dueBefore) {
-        this.dueBefore = dueBefore;
+        this.dueBefore = (Date) dueBefore.clone();
     }
 
     public Date getDueAfter() {
-        return dueAfter;
+        return dueAfter == null ? null : (Date) this.dueAfter.clone();
     }
 
     public void setDueAfter(Date dueAfter) {
-        this.dueAfter = dueAfter;
+        this.dueAfter = (Date) dueAfter.clone();
     }
 
     public Boolean getActive() {

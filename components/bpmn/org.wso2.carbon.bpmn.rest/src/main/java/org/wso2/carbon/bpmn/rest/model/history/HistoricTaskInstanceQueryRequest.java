@@ -320,27 +320,27 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = (Date) dueDate.clone();
     }
 
     public Date getDueDateAfter() {
-        return dueDateAfter;
+        return dueDateAfter == null ? null : (Date) this.dueDateAfter.clone();
     }
 
     public void setDueDateAfter(Date dueDateAfter) {
-        this.dueDateAfter = dueDateAfter;
+        this.dueDateAfter = (Date) dueDateAfter.clone();
     }
 
     public Date getDueDateBefore() {
-        return dueDateBefore;
+        return dueDateBefore == null ? null : (Date) this.dueDateBefore.clone();
     }
 
     public void setDueDateBefore(Date dueDateBefore) {
-        this.dueDateBefore = dueDateBefore;
+        this.dueDateBefore = (Date) dueDateBefore.clone();
     }
 
     public Boolean getWithoutDueDate() {
@@ -352,51 +352,51 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
     }
 
     public Date getTaskCreatedOn() {
-        return taskCreatedOn;
+        return taskCreatedOn == null ? null : (Date) this.taskCreatedOn.clone();
     }
 
     public void setTaskCreatedOn(Date taskCreatedOn) {
-        this.taskCreatedOn = taskCreatedOn;
+        this.taskCreatedOn = (Date) taskCreatedOn.clone();
     }
 
     public void setTaskCreatedAfter(Date taskCreatedAfter) {
-        this.taskCreatedAfter = taskCreatedAfter;
+        this.taskCreatedAfter = (Date) taskCreatedAfter.clone();
     }
 
     public Date getTaskCompletedAfter() {
-        return taskCompletedAfter;
+        return taskCompletedAfter == null ? null : (Date) this.taskCompletedAfter.clone();
     }
 
     public void setTaskCompletedAfter(Date taskCompletedAfter) {
-        this.taskCompletedAfter = taskCompletedAfter;
+        this.taskCompletedAfter = (Date) taskCompletedAfter.clone();
     }
 
     public Date getTaskCompletedBefore() {
-        return taskCompletedBefore;
+        return taskCompletedBefore == null ? null : (Date) this.taskCompletedBefore.clone();
     }
 
     public void setTaskCompletedBefore(Date taskCompletedBefore) {
-        this.taskCompletedBefore = taskCompletedBefore;
+        this.taskCompletedBefore = (Date) taskCompletedBefore.clone();
     }
 
     public Date getTaskCompletedOn() {
-        return taskCompletedOn;
+        return taskCompletedOn == null ? null : (Date) this.taskCompletedOn.clone();
     }
 
     public void setTaskCompletedOn(Date taskCompletedOn) {
-        this.taskCompletedOn = taskCompletedOn;
+        this.taskCompletedOn = (Date) taskCompletedOn.clone();
     }
 
     public Date getTaskCreatedAfter() {
-        return taskCreatedAfter;
+        return taskCreatedAfter == null ? null : (Date) this.taskCreatedAfter.clone();
     }
 
     public void setTaskCreatedBefore(Date taskCreatedBefore) {
-        this.taskCreatedBefore = taskCreatedBefore;
+        this.taskCreatedBefore = (Date) taskCreatedBefore.clone();
     }
 
     public Date getTaskCreatedBefore() {
-        return taskCreatedBefore;
+        return taskCreatedBefore == null ? null : (Date) this.taskCreatedBefore.clone();
     }
 
     public Boolean getIncludeTaskLocalVariables() {

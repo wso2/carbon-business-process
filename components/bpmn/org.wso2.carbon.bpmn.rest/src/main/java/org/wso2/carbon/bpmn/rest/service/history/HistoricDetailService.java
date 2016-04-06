@@ -117,17 +117,19 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
             queryRequest.setSelectOnlyVariableUpdates(
                     Boolean.valueOf(allRequestParams.get("selectOnlyVariableUpdates")));
         }
-        DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
+        DataResponse dataResponse =
+                getQueryResponse(queryRequest, allRequestParams, request.getUri());
         return Response.ok().entity(dataResponse).build();
     }
 
     @GET
     @Path("/{detail-id}/data")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getVariableData(@PathParam("detail-id") String detailId) {
+    public Response getVariableData(@PathParam("detail-id") String detailId,
+                                    @Context HttpRequest request) {
         try {
             byte[] result = null;
-            RestVariable variable = getVariableFromRequest(true, detailId);
+            RestVariable variable = getVariableFromRequest(true, detailId, request.getUri());
             Response.ResponseBuilder response = Response.ok();
             if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
                 result = (byte[]) variable.getValue();
@@ -153,7 +155,8 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
         }
     }
 
-    public RestVariable getVariableFromRequest(boolean includeBinary, String detailId) {
+    public RestVariable getVariableFromRequest(boolean includeBinary, String detailId,
+                                               String baseContext) {
         Object value = null;
         HistoricVariableUpdate variableUpdate = null;
         HistoryService historyService = BPMNOSGIService.getHistoryService();
@@ -171,7 +174,8 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
         } else {
             return new RestResponseFactory()
                     .createRestVariable(variableUpdate.getVariableName(), value, null, detailId,
-                                        RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary);
+                                        RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary,
+                                        baseContext);
         }
     }
 }

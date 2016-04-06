@@ -150,8 +150,8 @@
 
     <bean id="authenticationBean" class="org.wso2.carbon.bpmn.rest.security.AuthenticationHandler"/>
     <bean id="exceptionHandlerBean"
-          class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler"/>
+          class="org.wso2.carbon.bpmn.rest.common.provider.exception.mapper.BPMNExceptionHandler"/>
     <bean id="errorHandlerBean"
-          class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNErrorHandler"/>
+          class="org.wso2.carbon.bpmn.rest.common.provider.exception.mapper.BPMNErrorHandler"/>
     <bean id="jacksonBean" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
 </beans>

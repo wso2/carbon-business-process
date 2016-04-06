@@ -25,6 +25,7 @@ import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -95,7 +96,7 @@ public class TaskResponse {
     protected String getDelegationStateString(DelegationState state) {
         String result = null;
         if (state != null) {
-            result = state.toString().toLowerCase();
+            result = state.toString().toLowerCase(Locale.getDefault());
         }
         return result;
     }
@@ -157,19 +158,19 @@ public class TaskResponse {
     }
 
     public Date getCreateTime() {
-        return createTime;
+        return createTime == null ? null : (Date) this.createTime.clone();
     }
 
     public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+        this.createTime = (Date) createTime.clone();
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return dueDate == null ? null : (Date) this.dueDate.clone();
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = (Date) dueDate.clone();
     }
 
     public int getPriority() {

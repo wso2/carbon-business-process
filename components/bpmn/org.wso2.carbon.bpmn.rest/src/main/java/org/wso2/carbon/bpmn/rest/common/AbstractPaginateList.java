@@ -33,11 +33,11 @@ import java.util.Map;
 public abstract class AbstractPaginateList {
 
     protected RestResponseFactory restResponseFactory;
-    // protected UriInfo uriInfo;
+    protected String baseContext;
 
-    public AbstractPaginateList(RestResponseFactory restResponseFactory) {
+    public AbstractPaginateList(RestResponseFactory restResponseFactory, String baseContext) {
         this.restResponseFactory = restResponseFactory;
-        //this.uriInfo = uriInfo;
+        this.baseContext = baseContext;
     }
 
     public DataResponse paginateList(Map<String, String> requestParams,
@@ -118,7 +118,8 @@ public abstract class AbstractPaginateList {
     }
 
     /**
-     * uses the pagination parameters from the request and makes sure to order the result and set all pagination
+     * uses the pagination parameters from the request and makes sure to order the result and set
+     * all pagination
      * attributes for the response to render
      *
      * @param requestParams The request containing the pagination parameters

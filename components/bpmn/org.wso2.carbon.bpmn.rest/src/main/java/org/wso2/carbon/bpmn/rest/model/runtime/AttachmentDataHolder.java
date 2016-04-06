@@ -69,11 +69,11 @@ public class AttachmentDataHolder {
     }
 
     public byte[] getAttachmentArray() {
-        return attachmentArray;
+        return attachmentArray == null ? null : this.attachmentArray.clone();
     }
 
     public void setAttachmentArray(byte[] attachmentArray) {
-        this.attachmentArray = attachmentArray;
+        this.attachmentArray = attachmentArray == null ? null : this.attachmentArray.clone();
     }
 
     public String getScope() {
