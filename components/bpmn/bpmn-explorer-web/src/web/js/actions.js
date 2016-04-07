@@ -1,5 +1,5 @@
 /*
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -583,8 +583,8 @@ function selectUserForPerformance(){
 // Average duration of Processes Instances
 
 function selectProcessForAvgTimeDuration(){
-    var x = document.getElementById("selectOption").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=avgprocessduration&id=" + x ;
+    var selectedValue = document.getElementById("selectOption").value;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=avgprocessduration&id=" + selectedValue ;
 
     $.ajax({
         type: 'GET',
