@@ -24,6 +24,8 @@ var carbon = require('carbon');
 var i18n = require("i18n");
 var localeResourcesBasePath ="../config/locales/";
 i18n.init(request,localeResourcesBasePath);
+// Encoder to handle xss attacks
+var Encode = Packages.org.owasp.encoder.Encode;
 
 
 var data = application.get('appConfig');
