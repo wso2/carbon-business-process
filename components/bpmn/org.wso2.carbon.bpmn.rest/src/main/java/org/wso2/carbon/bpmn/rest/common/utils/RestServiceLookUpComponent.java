@@ -15,7 +15,10 @@
  */
 package org.wso2.carbon.bpmn.rest.common.utils;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -28,6 +31,7 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
  */
 @Component(
         name = "org.wso2.carbon.bpmn.rest.common.utils.RestServiceLookupComponent",
+        service = RestServiceLookUpComponent.class,
         immediate = true)
 
 public class RestServiceLookUpComponent {
@@ -35,7 +39,7 @@ public class RestServiceLookUpComponent {
     private static RestServiceLookUpComponent instance = new RestServiceLookUpComponent();
     private BPMNEngineService engineService;
 
-    private RestServiceLookUpComponent() {
+    public RestServiceLookUpComponent() {
         engineService = null;
     }
 
@@ -50,6 +54,7 @@ public class RestServiceLookUpComponent {
             policy = ReferencePolicy.DYNAMIC,
             unbind = "unRegisterBPMNEngineService")
     public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
         this.engineService = engineService;
     }
 
@@ -59,6 +64,16 @@ public class RestServiceLookUpComponent {
 
     protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
         log.info("Unregister BPMNEngineService..");
+    }
+
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        log.info("Activated RestServiceLookUpComponent");
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
     }
 
 }
