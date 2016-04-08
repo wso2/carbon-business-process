@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Created by natasha on 12/15/15.
+ *  Model that keeps details about tasks i.e. the task name, type of the task and the task definition key
  */
 @XmlRootElement(name = "TaskInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
