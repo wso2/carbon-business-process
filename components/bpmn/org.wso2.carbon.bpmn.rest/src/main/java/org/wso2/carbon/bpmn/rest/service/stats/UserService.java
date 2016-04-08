@@ -44,7 +44,7 @@ import java.util.List;
 public class UserService {
     private static final Log log = LogFactory.getLog(UserService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-    String str = String.valueOf(tenantId);
+    String strValOfTenantId = String.valueOf(tenantId);
     String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 
     private static final String DOMAIN_OF_SUPER_TENANT = "carbon.super";
@@ -98,7 +98,7 @@ public class UserService {
                     assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
                 long count = BPMNOSGIService.getHistoryService()
-                        .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().count();
+                        .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().count();
                 if (count == 0) {
                     userInfo.setTaskCount(0);
                 } else {
@@ -140,13 +140,13 @@ public class UserService {
                 }
 
                 long count = BPMNOSGIService.getHistoryService()
-                        .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().count();
+                        .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().count();
                 if (count == 0) {
                     double avgTime = 0;
                     userInfo.setAvgTimeDuration(avgTime);
                 } else {
                     List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
-                            .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().list();
+                            .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().list();
                     double totalTime = 0;
                     double avgTime = 0;
                     for (HistoricTaskInstance instance : taskList) {
@@ -202,7 +202,7 @@ public class UserService {
         }
         // Get completed tasks
         List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
-                .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(taskAssignee).finished().list();
+                .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).finished().list();
         for (HistoricTaskInstance instance : taskList) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
@@ -211,14 +211,14 @@ public class UserService {
 
         }
         // Get active/started tasks
-        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str).taskAssignee(taskAssignee).active().list();
+        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).active().list();
         for (Task instance : taskActive) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
         }
 
         // Get suspended tasks
-        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str).taskAssignee(taskAssignee).suspended().list();
+        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).suspended().list();
         for (Task instance : taskSuspended) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
