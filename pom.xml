@@ -125,6 +125,11 @@
                 <artifactId>msf4j-core</artifactId>
                 <version>${carbon.msf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.transport</groupId>
+                <artifactId>org.wso2.carbon.transport.http.netty</artifactId>
+                <version>${carbon.http.netty.version}</version>
+            </dependency>
             <!-- End of Dependency section 2 -->
 
             <!-- 3 - Carbon Business Process Dependencies -->
@@ -341,7 +346,7 @@
         </carbon.business-process.exp.pkg.version>
 
         <!-- 1 - Carbon Kernel and OSGi Dependencies -->
-        <carbon.kernel.version>5.0.0</carbon.kernel.version>
+        <carbon.kernel.version>5.1.0-SNAPSHOT</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[5.0.0,6.0.0)</carbon.kernel.imp.pkg.version>
         <org.eclipse.osgi.version>3.9.1.v20130814-1242</org.eclipse.osgi.version>
         <org.osgi.version>6.0.0</org.osgi.version>
@@ -350,7 +355,9 @@
         <!-- 2 - Hamming Platform components and their Dependencies  -->
         <carbon.datasources.version>1.0.0-SNAPSHOT</carbon.datasources.version>
         <carbon.jndi.version>1.0.0-SNAPSHOT</carbon.jndi.version>
-        <carbon.msf4j.version>1.0.0</carbon.msf4j.version>
+        <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
+        <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
+        <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
 
         <!-- 3 - Carbon Business Process Dependencies -->
         <!-- 3.1 Activiti and its dependencies  -->
@@ -391,7 +398,7 @@
 
         <!-- Maven Plugin versions -->
         <!-- TODO: Move to released version. BPS-996 -->
-        <carbon.feature.plugin.version>2.1.0-SNAPSHOT</carbon.feature.plugin.version>
+        <carbon.feature.plugin.version>2.0.1</carbon.feature.plugin.version>
 
     </properties>
 

@@ -24,11 +24,16 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-//import org.apache.tools.ant.taskdefs.condition.Http;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
@@ -50,6 +55,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+//import org.apache.tools.ant.taskdefs.condition.Http;
+
 /**
  *
  */
@@ -59,6 +66,23 @@ import javax.ws.rs.core.Response;
         immediate = true)
 @Path("/historic-detail")
 public class HistoricDetailService extends BaseHistoricDetailService implements Microservice {
+
+    private static final Logger log = LoggerFactory.getLogger(HistoricDetailService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
 
     @Activate
     protected void activate(BundleContext bundleContext) {
