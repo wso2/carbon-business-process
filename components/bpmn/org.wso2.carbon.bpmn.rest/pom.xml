@@ -92,10 +92,8 @@
 
         <!-- Other Dependencies -->
         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <scope>provided</scope>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -110,19 +108,21 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>javax.servlet</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.transport</groupId>
+            <artifactId>org.wso2.carbon.transport.http.netty</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
-        <private.package>org.wso2.carbon.bpmn.rest.utils</private.package>
+        <private.package>org.wso2.carbon.bpmn.rest.common.utils</private.package>
         <export.package>
-            !org.wso2.carbon.bpmn.rest.utils,
-            org.wso2.carbon.bpmn.rest.*,
-            version=${carbon.business-process.exp.pkg.version},
+            org.wso2.carbon.bpmn.rest.*;version=${carbon.business-process.exp.pkg.version},
         </export.package>
         <import.package>
             org.osgi.framework; version="[1.8.0, 2.0.0)",
-            org.wso2.msf4j.*;version="${carbon.msf4j.version}",
+            org.wso2.msf4j.*;version="${carbon.msf4j.impl.version.range}",
             org.slf4j; version="[1.7.7, 2.0.0)",
             javax.ws.rs.*,
             javax.management.*,

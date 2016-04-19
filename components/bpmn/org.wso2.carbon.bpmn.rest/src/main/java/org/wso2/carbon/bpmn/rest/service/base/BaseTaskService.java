@@ -27,37 +27,38 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-//import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
-//import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentDataHolder;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 
-//import javax.activation.DataHandler;
-//import javax.servlet.http.HttpServletRequest;
-//import java.io.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+//import org.apache.commons.io.IOUtils;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+//import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentDataHolder;
+//import javax.activation.DataHandler;
+//import javax.servlet.http.HttpServletRequest;
+//import java.io.*;
+
 /**
  *
  */
 public class BaseTaskService {
 
-    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final List<String> ALL_PROPERTIES_LIST;
     protected static final Map<String, QueryProperty> PROPERTIES;
     protected static final String DEFAULT_ENCODING = "UTF-8";
 
@@ -79,51 +80,53 @@ public class BaseTaskService {
     }
 
     static {
-        ALL_PROPERTIES_LIST.add("name");
-        ALL_PROPERTIES_LIST.add("nameLike");
-        ALL_PROPERTIES_LIST.add("description");
-        ALL_PROPERTIES_LIST.add("priority");
-        ALL_PROPERTIES_LIST.add("minimumPriority");
-        ALL_PROPERTIES_LIST.add("maximumPriority");
-        ALL_PROPERTIES_LIST.add("assignee");
-        ALL_PROPERTIES_LIST.add("assigneeLike");
-        ALL_PROPERTIES_LIST.add("owner");
-        ALL_PROPERTIES_LIST.add("ownerLike");
-        ALL_PROPERTIES_LIST.add("unassigned");
-        ALL_PROPERTIES_LIST.add("delegationState");
-        ALL_PROPERTIES_LIST.add("candidateUser");
-        ALL_PROPERTIES_LIST.add("candidateGroup");
-        ALL_PROPERTIES_LIST.add("candidateGroups");
-        ALL_PROPERTIES_LIST.add("involvedUser");
-        ALL_PROPERTIES_LIST.add("taskDefinitionKey");
-        ALL_PROPERTIES_LIST.add("taskDefinitionKeyLike");
-        ALL_PROPERTIES_LIST.add("processInstanceId");
-        ALL_PROPERTIES_LIST.add("processInstanceBusinessKey");
-        ALL_PROPERTIES_LIST.add("processInstanceBusinessKeyLike");
-        ALL_PROPERTIES_LIST.add("processDefinitionKey");
-        ALL_PROPERTIES_LIST.add("processDefinitionKeyLike");
-        ALL_PROPERTIES_LIST.add("processDefinitionName");
-        ALL_PROPERTIES_LIST.add("processDefinitionNameLike");
-        ALL_PROPERTIES_LIST.add("executionId");
-        ALL_PROPERTIES_LIST.add("createdOn");
-        ALL_PROPERTIES_LIST.add("createdBefore");
-        ALL_PROPERTIES_LIST.add("createdAfter");
-        ALL_PROPERTIES_LIST.add("dueOn");
-        ALL_PROPERTIES_LIST.add("dueBefore");
-        ALL_PROPERTIES_LIST.add("dueAfter");
-        ALL_PROPERTIES_LIST.add("withoutDueDate");
-        ALL_PROPERTIES_LIST.add("excludeSubTasks");
-        ALL_PROPERTIES_LIST.add("active");
-        ALL_PROPERTIES_LIST.add("includeTaskLocalVariables");
-        ALL_PROPERTIES_LIST.add("includeProcessVariables");
-        ALL_PROPERTIES_LIST.add("tenantId");
-        ALL_PROPERTIES_LIST.add("tenantIdLike");
-        ALL_PROPERTIES_LIST.add("withoutTenantId");
-        ALL_PROPERTIES_LIST.add("candidateOrAssigned");
-        ALL_PROPERTIES_LIST.add("sort");
-        ALL_PROPERTIES_LIST.add("start");
-        ALL_PROPERTIES_LIST.add("size");
-        ALL_PROPERTIES_LIST.add("order");
+        List<String> properties = new ArrayList<>();
+        properties.add("name");
+        properties.add("nameLike");
+        properties.add("description");
+        properties.add("priority");
+        properties.add("minimumPriority");
+        properties.add("maximumPriority");
+        properties.add("assignee");
+        properties.add("assigneeLike");
+        properties.add("owner");
+        properties.add("ownerLike");
+        properties.add("unassigned");
+        properties.add("delegationState");
+        properties.add("candidateUser");
+        properties.add("candidateGroup");
+        properties.add("candidateGroups");
+        properties.add("involvedUser");
+        properties.add("taskDefinitionKey");
+        properties.add("taskDefinitionKeyLike");
+        properties.add("processInstanceId");
+        properties.add("processInstanceBusinessKey");
+        properties.add("processInstanceBusinessKeyLike");
+        properties.add("processDefinitionKey");
+        properties.add("processDefinitionKeyLike");
+        properties.add("processDefinitionName");
+        properties.add("processDefinitionNameLike");
+        properties.add("executionId");
+        properties.add("createdOn");
+        properties.add("createdBefore");
+        properties.add("createdAfter");
+        properties.add("dueOn");
+        properties.add("dueBefore");
+        properties.add("dueAfter");
+        properties.add("withoutDueDate");
+        properties.add("excludeSubTasks");
+        properties.add("active");
+        properties.add("includeTaskLocalVariables");
+        properties.add("includeProcessVariables");
+        properties.add("tenantId");
+        properties.add("tenantIdLike");
+        properties.add("withoutTenantId");
+        properties.add("candidateOrAssigned");
+        properties.add("sort");
+        properties.add("start");
+        properties.add("size");
+        properties.add("order");
+        ALL_PROPERTIES_LIST = Collections.unmodifiableList(properties);
     }
 
     protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request,

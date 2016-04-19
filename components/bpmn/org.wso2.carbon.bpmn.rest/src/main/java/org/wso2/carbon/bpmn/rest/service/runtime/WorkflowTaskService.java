@@ -16,17 +16,14 @@
 
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.DelegationState;
@@ -34,21 +31,21 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
-//import org.apache.commons.lang.CharSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
@@ -68,7 +65,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.TaskRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 import org.wso2.msf4j.Microservice;
-//import javax.activation.DataHandler;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,9 +74,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-//import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -93,9 +88,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+
+//import org.apache.commons.lang.CharSet;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+//import javax.activation.DataHandler;
+//import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -107,7 +105,23 @@ import javax.xml.bind.Unmarshaller;
 @Path("/bps/bpmn/{version}/{context}/tasks")
 public class WorkflowTaskService extends BaseTaskService implements Microservice {
 
-    private static final Log log = LogFactory.getLog(WorkflowTaskService.class);
+    private static final Logger log = LoggerFactory.getLogger(WorkflowTaskService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
+
 
     @Activate
     protected void activate(BundleContext bundleContext) {
