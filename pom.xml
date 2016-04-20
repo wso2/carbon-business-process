@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>3</version>
+        <version>4</version>
     </parent>
 
     <prerequisites>
@@ -129,6 +129,16 @@
                 <groupId>org.wso2.carbon.transport</groupId>
                 <artifactId>org.wso2.carbon.transport.http.netty</artifactId>
                 <version>${carbon.http.netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.deployment</groupId>
+                <artifactId>org.wso2.carbon.deployment.engine</artifactId>
+                <version>${carbon.deployment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.deployment</groupId>
+                <artifactId>org.wso2.carbon.deployment.notifier</artifactId>
+                <version>${carbon.deployment.version}</version>
             </dependency>
             <!-- End of Dependency section 2 -->
 
@@ -358,7 +368,7 @@
         <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
         <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
-
+        <carbon.deployment.version>5.0.0-SNAPSHOT</carbon.deployment.version>
         <!-- 3 - Carbon Business Process Dependencies -->
         <!-- 3.1 Activiti and its dependencies  -->
         <org.activiti.wso2.version>5.19.0.wso2v3</org.activiti.wso2.version>
