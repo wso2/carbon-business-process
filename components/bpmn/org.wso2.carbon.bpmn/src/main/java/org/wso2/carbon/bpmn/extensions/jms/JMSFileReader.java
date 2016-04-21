@@ -128,9 +128,13 @@ public class JMSFileReader {
                 log.error("<Server-Home>/repository/conf/jms.xml does not exist");
             }
         }catch (IOException e){
-            log.error(e.getMessage(), e);
+            String msg = "An error occurred while reading the jms.xml file";
+            if(log.isDebugEnabled())
+                log.debug(msg, e);
         } catch (XMLStreamException e) {
-            log.error(e.getMessage(), e);
+            String msg = "An error occurred while reading the jms.xml file";
+            if(log.isDebugEnabled())
+                log.debug(msg, e);
         }
         return jmsProperties;
     }

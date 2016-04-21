@@ -559,11 +559,17 @@ public class TenantRepository {
                         }
 
                     } catch (IOException e) {
-                        log.error(e.getMessage());
+                        String msg = "An error occurred while reading the BPMN archive" + names;
+                        if(log.isDebugEnabled())
+                            log.debug(msg, e);
                     } catch (BPMNJMSException e) {
-                        log.error(e.getMessage());
+                        String msg = "An error occurred while reading the BPMN archive" + names;
+                        if(log.isDebugEnabled())
+                            log.debug(msg, e);
                     } catch (XMLStreamException e) {
-                        log.error(e.getMessage());
+                        String msg = "An error occurred while reading the BPMN archive" + names;
+                        if(log.isDebugEnabled())
+                            log.debug(msg, e);
                     }
                 }
             }

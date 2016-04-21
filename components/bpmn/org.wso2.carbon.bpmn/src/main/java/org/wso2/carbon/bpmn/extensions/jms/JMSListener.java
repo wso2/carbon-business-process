@@ -109,7 +109,9 @@ public class JMSListener implements MessageListener{
                 log.info("JMS MessageListener for destination: " + destinationName + " started to listen");
 
             }catch (JMSException e) {
-                log.error(e.getMessage(), e);
+                String message = "An error occurred while creating the JMSListener using: " + parameters;
+                if(log.isDebugEnabled())
+                    log.debug(message, e);
             }
         }
 
@@ -179,9 +181,13 @@ public class JMSListener implements MessageListener{
                 runtimeService.startProcessInstanceByMessageAndTenantId(variableMap.get("messageName").toString(), variableMap, "-1234");
             }
         }catch (JMSException e){
-            log.error(e.getMessage(), e);
+            String msg = "An error occurred while creating while getting the message from the destination";
+            if(log.isDebugEnabled())
+                log.debug(msg, e);
         } catch (XPathExpressionException e) {
-            log.error(e.getMessage(), e);
+            String msg = "An error occurred while executing the XPath expression";
+            if(log.isDebugEnabled())
+                log.debug(msg, e);
         }
     }
 }
