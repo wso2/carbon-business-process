@@ -25,7 +25,8 @@ import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailPaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
-import java.util.Arrays;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,20 +38,22 @@ import java.util.Map;
 public class BaseHistoricDetailService {
 
     protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
-    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final List<String> ALL_PROPERTIES_LIST;
 
     static {
-        ALL_PROPERTIES_LIST.add("id");
-        ALL_PROPERTIES_LIST.add("processInstanceId");
-        ALL_PROPERTIES_LIST.add("executionId");
-        ALL_PROPERTIES_LIST.add("activityInstanceId");
-        ALL_PROPERTIES_LIST.add("taskId");
-        ALL_PROPERTIES_LIST.add("selectOnlyFormProperties");
-        ALL_PROPERTIES_LIST.add("selectOnlyVariableUpdates");
-        ALL_PROPERTIES_LIST.add("start");
-        ALL_PROPERTIES_LIST.add("size");
-        ALL_PROPERTIES_LIST.add("order");
-        ALL_PROPERTIES_LIST.add("sort");
+        List<String> properties = new ArrayList<>();
+        properties.add("id");
+        properties.add("processInstanceId");
+        properties.add("executionId");
+        properties.add("activityInstanceId");
+        properties.add("taskId");
+        properties.add("selectOnlyFormProperties");
+        properties.add("selectOnlyVariableUpdates");
+        properties.add("start");
+        properties.add("size");
+        properties.add("order");
+        properties.add("sort");
+        ALL_PROPERTIES_LIST = Collections.unmodifiableList(properties);
     }
 
     static {

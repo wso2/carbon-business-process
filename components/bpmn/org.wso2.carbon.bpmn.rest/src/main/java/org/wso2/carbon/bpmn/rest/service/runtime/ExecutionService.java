@@ -15,7 +15,6 @@
  */
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
@@ -24,16 +23,20 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
-//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
-//import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.model.runtime.ActiveActivityCollection;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
@@ -49,11 +52,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-//import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -62,6 +63,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.wso2.carbon.bpmn.rest.model.runtime.*;
+//import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -73,6 +78,24 @@ import javax.ws.rs.core.Response;
 
 @Path("/bps/bpmn/{version}/{context}/executions")
 public class ExecutionService extends BaseExecutionService implements Microservice {
+
+    private static final Logger log = LoggerFactory.getLogger(ExecutionService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
+
 
     @Activate
     protected void activate(BundleContext bundleContext) {

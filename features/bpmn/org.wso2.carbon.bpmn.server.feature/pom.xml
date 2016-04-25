@@ -44,6 +44,7 @@
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
         </dependency>
+        <!-- Activiti Dependencies -->
         <dependency>
             <groupId>org.wso2.orbit.org.activiti</groupId>
             <artifactId>activiti-all</artifactId>
@@ -92,6 +93,14 @@
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>javax.servlet</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-api</artifactId>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>org.slf4j</groupId>-->
             <!--<artifactId>slf4j-log4j12</artifactId>-->
@@ -302,7 +311,10 @@
                                     <symbolicName>net.minidev.json-smart</symbolicName>
                                     <version>${minidev.json-smart.version}</version>
                                 </bundle>
-                                <!-- SLF4J ??-->
+                                <bundle>
+                                    <symbolicName>javax.servlet</symbolicName>
+                                    <version>${version.javax.servlet}</version>
+                                </bundle>
                                 <bundle>
                                     <symbolicName>snakeyaml</symbolicName>
                                     <version>${snakeyaml.version}</version>

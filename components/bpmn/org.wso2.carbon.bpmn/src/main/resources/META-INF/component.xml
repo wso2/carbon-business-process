@@ -15,37 +15,37 @@
  ~ specific language governing permissions and limitations
  ~ under the License.
  -->
-<component xmlns="http://products.wso2.org/carbon">
-    <deployers>
-        <deployer>
-            <directory>bpmn</directory>
-            <extension>bar</extension>
-            <class>org.wso2.carbon.bpmn.core.deployment.BPMNDeployer</class>
-        </deployer>
-    </deployers>
-    <ManagementPermissions>
-        <ManagementPermission>
-            <DisplayName>BPMN</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn</ResourceId>
-        </ManagementPermission>
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Processes</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/process</ResourceId>
-        </ManagementPermission>
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Process Instances</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/instance</ResourceId>
-        </ManagementPermission>
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Packages</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/uploader</ResourceId>
-        </ManagementPermission>
-        <!--
-        This permission removed since it affect permissions to unused BPMNHumanTasksService admin service
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Humantasks</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/humantask</ResourceId>
-        </ManagementPermission>
-        -->
-    </ManagementPermissions>
-</component>
+<!--<component xmlns="http://products.wso2.org/carbon">-->
+    <!--<deployers>-->
+        <!--<deployer>-->
+            <!--<directory>bpmn</directory>-->
+            <!--<extension>bar</extension>-->
+            <!--<class>org.wso2.carbon.bpmn.core.deployment.BPMNDeployer</class>-->
+        <!--</deployer>-->
+    <!--</deployers>-->
+    <!--<ManagementPermissions>-->
+        <!--<ManagementPermission>-->
+            <!--<DisplayName>BPMN</DisplayName>-->
+            <!--<ResourceId>/permission/admin/manage/bpmn</ResourceId>-->
+        <!--</ManagementPermission>-->
+        <!--<ManagementPermission>-->
+            <!--<DisplayName>Manage BPMN Processes</DisplayName>-->
+            <!--<ResourceId>/permission/admin/manage/bpmn/process</ResourceId>-->
+        <!--</ManagementPermission>-->
+        <!--<ManagementPermission>-->
+            <!--<DisplayName>Manage BPMN Process Instances</DisplayName>-->
+            <!--<ResourceId>/permission/admin/manage/bpmn/instance</ResourceId>-->
+        <!--</ManagementPermission>-->
+        <!--<ManagementPermission>-->
+            <!--<DisplayName>Manage BPMN Packages</DisplayName>-->
+            <!--<ResourceId>/permission/admin/manage/bpmn/uploader</ResourceId>-->
+        <!--</ManagementPermission>-->
+        <!--&lt;!&ndash;-->
+        <!--This permission removed since it affect permissions to unused BPMNHumanTasksService admin service-->
+        <!--<ManagementPermission>-->
+            <!--<DisplayName>Manage BPMN Humantasks</DisplayName>-->
+            <!--<ResourceId>/permission/admin/manage/bpmn/humantask</ResourceId>-->
+        <!--</ManagementPermission>-->
+        <!--&ndash;&gt;-->
+    <!--</ManagementPermissions>-->
+<!--</component>-->

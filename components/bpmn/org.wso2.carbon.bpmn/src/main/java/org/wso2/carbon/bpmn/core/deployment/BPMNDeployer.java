@@ -34,10 +34,10 @@ import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 
-import org.wso2.carbon.kernel.deployment.Artifact;
-import org.wso2.carbon.kernel.deployment.ArtifactType;
-import org.wso2.carbon.kernel.deployment.Deployer;
-import org.wso2.carbon.kernel.deployment.exception.CarbonDeploymentException;
+import org.wso2.carbon.deployment.engine.Artifact;
+import org.wso2.carbon.deployment.engine.ArtifactType;
+import org.wso2.carbon.deployment.engine.Deployer;
+import org.wso2.carbon.deployment.engine.exception.CarbonDeploymentException;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -27,11 +27,9 @@ import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
  */
 public class BaseIdentityService {
 
-    protected org.activiti.engine.IdentityService identityService =
-            BPMNOSGIService.getIdentityService();
 
     protected Group getGroupFromRequest(String groupId) {
-        Group group = identityService.createGroupQuery().groupId(groupId).singleResult();
+        Group group = BPMNOSGIService.getIdentityService().createGroupQuery().groupId(groupId).singleResult();
 
         if (group == null) {
             throw new ActivitiObjectNotFoundException(
@@ -41,7 +39,7 @@ public class BaseIdentityService {
     }
 
     protected User getUserFromRequest(String userId) {
-        User user = identityService.createUserQuery().userId(userId).singleResult();
+        User user = BPMNOSGIService.getIdentityService().createUserQuery().userId(userId).singleResult();
 
         if (user == null) {
             throw new ActivitiObjectNotFoundException(

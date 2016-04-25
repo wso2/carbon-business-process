@@ -16,49 +16,37 @@
 
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
-//import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricVariableInstance;
-//import org.activiti.engine.identity.Group;
-//import org.activiti.engine.impl.ProcessEngineImpl;
-//import org.activiti.engine.impl.interceptor.Command;
-//import org.activiti.engine.impl.interceptor.CommandContext;
-//import org.activiti.engine.impl.interceptor.CommandExecutor;
-//import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-//import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-//import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
-//import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
-//import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNRestException;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
@@ -70,7 +58,6 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
-//import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.msf4j.Microservice;
 
 import java.io.ByteArrayOutputStream;
@@ -83,10 +70,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-//import javax.activation.DataHandler;
-//import javax.servlet.ServletException;
-//import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -101,9 +84,24 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+
+//import org.activiti.engine.ProcessEngine;
+//import org.activiti.engine.identity.Group;
+//import org.activiti.engine.impl.ProcessEngineImpl;
+//import org.activiti.engine.impl.interceptor.Command;
+//import org.activiti.engine.impl.interceptor.CommandContext;
+//import org.activiti.engine.impl.interceptor.CommandExecutor;
+//import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+//import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+//import org.activiti.engine.repository.ProcessDefinitionQuery;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
+//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+//import org.wso2.carbon.context.PrivilegedCarbonContext;
+//import javax.activation.DataHandler;
+//import javax.servlet.ServletException;
+//import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -115,7 +113,22 @@ import javax.xml.bind.Unmarshaller;
 @Path("/bps/bpmn/{version}/{context}/process-instances")
 public class ProcessInstanceService extends BaseProcessInstanceService implements Microservice {
 
-    private static final Log log = LogFactory.getLog(ProcessInstanceService.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcessInstanceService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
 
     @Activate
     protected void activate(BundleContext bundleContext) {
