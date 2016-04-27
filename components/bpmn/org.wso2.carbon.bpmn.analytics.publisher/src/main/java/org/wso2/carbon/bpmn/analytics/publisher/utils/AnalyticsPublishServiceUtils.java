@@ -326,9 +326,8 @@ public class AnalyticsPublishServiceUtils {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
-        Registry configRegistry = null;
         try {
-            configRegistry = registryService.getConfigSystemRegistry(tenantId);
+            Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
             Resource deploymentEntryorProcesses=configRegistry.newCollection();
 
             //create a resource registry collection "/bpmn/processes/" for processes if not available
@@ -342,7 +341,7 @@ public class AnalyticsPublishServiceUtils {
                 configRegistry.put("/bpmn/processes/"+processId+"/",deploymentEntryForProcess);
             }
 
-            //create a new resource text file to keep process variables
+            //create a new resource (text file) to keep process variables
             Resource procVariableJsonResource=configRegistry.newResource();
             //processVariablesJSONString= "[ { \"type\": \"home\", \"number\": \"212 555-1234\" }, { \"type\": \"fax\", \"number\": \"646 555-4567\" } ]";
 
@@ -350,7 +349,7 @@ public class AnalyticsPublishServiceUtils {
 
             procVariableJsonResource.setContent(processVariablesJSONString);
             procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
-            configRegistry.put("/bpmn/processes/"+processId+"/processs_variables.json", procVariableJsonResource);
+            configRegistry.put("/bpmn/processes/"+processId+"/das_analytics_config_details.json", procVariableJsonResource);
         } catch (RegistryException e) {
             log.error(e.getMessage());
         }
