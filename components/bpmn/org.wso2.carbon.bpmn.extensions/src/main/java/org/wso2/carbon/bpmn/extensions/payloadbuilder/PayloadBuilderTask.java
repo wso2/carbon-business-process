@@ -22,24 +22,26 @@ import org.activiti.engine.impl.el.JuelExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PayloadBuilderTask implements JavaDelegate{
+/**
+ * Service Task for payload which are in JSON/XML format
+ */
+public class PayloadBuilderTask implements JavaDelegate {
 
     private static final Logger log = LoggerFactory.getLogger(PayloadBuilderTask.class);
 
     private JuelExpression input;
+    private String output;
     private FixedValue outputVariable;
-    private String inputContent;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         if (input != null) {
-            inputContent = input.getValue(delegateExecution).toString();
+            output = input.getValue(delegateExecution).toString();
         }
 
         if (outputVariable != null) {
             String outVarName = outputVariable.getValue(delegateExecution).toString();
-            delegateExecution.setVariable(outVarName, inputContent);
+            delegateExecution.setVariable(outVarName, output);
         }
-
     }
 }
