@@ -29,13 +29,16 @@ import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.registry.core.service.RegistryService;
+
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -50,18 +53,15 @@ public class AnalyticsPublishServiceUtils {
      * @return BPMNProcessInstance array if the historic process instance list is not null
      */
     public BPMNProcessInstance[] getCompletedProcessInstances() {
-        HistoryService historyService =
-                BPMNServerHolder.getInstance().getEngine().getHistoryService();
-        HistoricProcessInstanceQuery instanceQuery =
-                historyService.createHistoricProcessInstanceQuery();
+        HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
+        HistoricProcessInstanceQuery instanceQuery = historyService.createHistoricProcessInstanceQuery();
         List<HistoricProcessInstance> historicProcessInstanceList = null;
         String time = readPublishTimeFromRegistry(AnalyticsPublisherConstants.PROCESS_RESOURCE_PATH,
                 AnalyticsPublisherConstants.LAST_PROCESS_INSTANCE_PUBLISH_TIME);
         if (time == null) {
             if (instanceQuery.finished().list().size() != 0) {
                 // if the stored time is null in the registry file then send all completed process instances.
-                historicProcessInstanceList =
-                        instanceQuery.finished().orderByProcessInstanceStartTime().asc().list();
+                historicProcessInstanceList = instanceQuery.finished().orderByProcessInstanceStartTime().asc().list();
             }
         } else {
             Date timeInDateFormat = DateConverter.convertStringToDate(time);
@@ -75,14 +75,14 @@ public class AnalyticsPublishServiceUtils {
                     return null;
                 }
                 //send the process instances which were finished after the given date/time in registry
-                historicProcessInstanceList =
-                        instanceQuery.finished().startedAfter(timeInDateFormat)
-                                .orderByProcessInstanceStartTime().asc().listPage(1, listSize);
+                historicProcessInstanceList = instanceQuery.finished().startedAfter(timeInDateFormat)
+                        .orderByProcessInstanceStartTime().asc().listPage(1, listSize);
             }
         }
         if (historicProcessInstanceList != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Write the published time of the last BPMN process instance to the carbon registry..." + historicProcessInstanceList.toString());
+                log.debug("Write the published time of the last BPMN process instance to the carbon registry..."
+                        + historicProcessInstanceList.toString());
             }
             /*write the last published time to the registry because lets say as an example when a new process is completed,
               then the attributes belong to that process instance should be published to the DAS and if we are not stored
@@ -101,16 +101,14 @@ public class AnalyticsPublishServiceUtils {
      * @return BPMNTaskInstance array if the historic task instance list is not null
      */
     public BPMNTaskInstance[] getCompletedTaskInstances() {
-        HistoryService historyService =
-                BPMNServerHolder.getInstance().getEngine().getHistoryService();
+        HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
         HistoricTaskInstanceQuery instanceQuery = historyService.createHistoricTaskInstanceQuery();
         List<HistoricTaskInstance> historicTaskInstanceList = null;
         String time = readPublishTimeFromRegistry(AnalyticsPublisherConstants.TASK_RESOURCE_PATH,
                 AnalyticsPublisherConstants.LAST_TASK_INSTANCE_END_TIME);
         if (time == null) {
             if (instanceQuery.finished().list().size() != 0) {
-                historicTaskInstanceList =
-                        instanceQuery.finished().orderByHistoricTaskInstanceEndTime().asc().list();
+                historicTaskInstanceList = instanceQuery.finished().orderByHistoricTaskInstanceEndTime().asc().list();
             }
         } else {
             Date dateFormat = DateConverter.convertStringToDate(time);
@@ -124,8 +122,7 @@ public class AnalyticsPublishServiceUtils {
                     return null;
                 }
                 historicTaskInstanceList = instanceQuery.finished().taskCompletedAfter(dateFormat)
-                        .orderByHistoricTaskInstanceEndTime().asc()
-                        .listPage(1, listSize);
+                        .orderByHistoricTaskInstanceEndTime().asc().listPage(1, listSize);
             }
         }
         if (historicTaskInstanceList != null) {
@@ -144,8 +141,7 @@ public class AnalyticsPublishServiceUtils {
      * @param historicProcessInstanceList List of historic process instances
      * @return BPMNProcessInstance array
      */
-    private BPMNProcessInstance[] getBPMNProcessInstances(
-            List<HistoricProcessInstance> historicProcessInstanceList) {
+    private BPMNProcessInstance[] getBPMNProcessInstances(List<HistoricProcessInstance> historicProcessInstanceList) {
         BPMNProcessInstance bpmnProcessInstance;
         List<BPMNProcessInstance> bpmnProcessInstances = new ArrayList<>();
         for (HistoricProcessInstance instance : historicProcessInstanceList) {
@@ -172,8 +168,7 @@ public class AnalyticsPublishServiceUtils {
      * @param historicTaskInstanceList List of historic task instances
      * @return BPMNTaskInstance array
      */
-    private BPMNTaskInstance[] getBPMNTaskInstances(
-            List<HistoricTaskInstance> historicTaskInstanceList) {
+    private BPMNTaskInstance[] getBPMNTaskInstances(List<HistoricTaskInstance> historicTaskInstanceList) {
         BPMNTaskInstance bpmnTaskInstance;
         List<BPMNTaskInstance> bpmnTaskInstances = new ArrayList<>();
         for (HistoricTaskInstance taskInstance : historicTaskInstanceList) {
@@ -207,8 +202,7 @@ public class AnalyticsPublishServiceUtils {
         int currentVar = 0;
         for (Map.Entry entry : processVariables.entrySet()) {
             vars[currentVar] = new BPMNVariable(entry.getKey().toString(),
-                    processVariables.get(entry.getKey().toString())
-                            .toString());
+                    processVariables.get(entry.getKey().toString()).toString());
             currentVar++;
         }
         return vars;
@@ -219,14 +213,12 @@ public class AnalyticsPublishServiceUtils {
      *
      * @param historicProcessInstanceList List of historic process instances
      */
-    private void writePublishTimeToRegistry(
-            List<HistoricProcessInstance> historicProcessInstanceList) {
+    private void writePublishTimeToRegistry(List<HistoricProcessInstance> historicProcessInstanceList) {
         if (log.isDebugEnabled()) {
             log.debug("Start writing last completed process instance publish time...");
         }
-        Date lastProcessInstancePublishTime =
-                historicProcessInstanceList.get(historicProcessInstanceList.size() - 1)
-                        .getStartTime();
+        Date lastProcessInstancePublishTime = historicProcessInstanceList.get(historicProcessInstanceList.size() - 1)
+                .getStartTime();
         try {
             PrivilegedCarbonContext context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
             Registry registry = context.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
@@ -260,11 +252,9 @@ public class AnalyticsPublishServiceUtils {
         if (log.isDebugEnabled()) {
             log.debug("Start writing last completed task instance end time...");
         }
-        Date lastTaskInstanceDate =
-                historicTaskInstanceList.get(historicTaskInstanceList.size() - 1).getEndTime();
+        Date lastTaskInstanceDate = historicTaskInstanceList.get(historicTaskInstanceList.size() - 1).getEndTime();
         try {
-            PrivilegedCarbonContext privilegedContext =
-                    PrivilegedCarbonContext.getThreadLocalCarbonContext();
+            PrivilegedCarbonContext privilegedContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
             Registry registry = privilegedContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
             Resource resource;
             if (!registry.resourceExists(AnalyticsPublisherConstants.TASK_RESOURCE_PATH)) {
@@ -298,8 +288,7 @@ public class AnalyticsPublishServiceUtils {
     private String readPublishTimeFromRegistry(String resourcePath, String propertyPath) {
         String time = null;
         try {
-            PrivilegedCarbonContext carbonContext =
-                    PrivilegedCarbonContext.getThreadLocalCarbonContext();
+            PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
             Registry registry = carbonContext.getRegistry(RegistryType.SYSTEM_GOVERNANCE);
             if (registry != null) {
                 if (registry.resourceExists(resourcePath)) {
@@ -322,35 +311,37 @@ public class AnalyticsPublishServiceUtils {
         return time;
     }
 
-    public static void saveDASconfiguredProcessVariablesinRegistry(String processId, String processVariablesJSONString ){
+    public static void saveDASconfigInfoInConfigRegistry(String processId,
+            String processVariablesJSONString) {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
         try {
             Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
-            Resource deploymentEntryorProcesses=configRegistry.newCollection();
+            Resource deploymentEntryorProcesses = configRegistry.newCollection();
 
             //create a resource registry collection "/bpmn/processes/" for processes if not available
-            if (!configRegistry.resourceExists("/bpmn/processes")) {
-                configRegistry.put("/bpmn/processes/",deploymentEntryorProcesses);
+            if (!configRegistry.resourceExists(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES)) {
+                configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES, deploymentEntryorProcesses);
             }
 
             //create a resource registry collection "/bpmn/processes/<processID>/" for the specific process if not available
-            Resource deploymentEntryForProcess=configRegistry.newCollection();
-            if (!configRegistry.resourceExists("/bpmn/processes/"+processId+"/")) {   //"/bpmn/processes/fff"
-                configRegistry.put("/bpmn/processes/"+processId+"/",deploymentEntryForProcess);
+            Resource deploymentEntryForProcess = configRegistry.newCollection();
+            if (!configRegistry.resourceExists(
+                    AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES + processId + "/")) {
+                configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES + processId + "/",
+                        deploymentEntryForProcess);
             }
 
             //create a new resource (text file) to keep process variables
-            Resource procVariableJsonResource=configRegistry.newResource();
-            //processVariablesJSONString= "[ { \"type\": \"home\", \"number\": \"212 555-1234\" }, { \"type\": \"fax\", \"number\": \"646 555-4567\" } ]";
-
-            //JSONArray jsonArray=new JSONArray(processVariablesJSONString);
-
+            Resource procVariableJsonResource = configRegistry.newResource();
             procVariableJsonResource.setContent(processVariablesJSONString);
             procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
-            configRegistry.put("/bpmn/processes/"+processId+"/das_analytics_config_details.json", procVariableJsonResource);
+            configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES + processId
+                            + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME,
+                    procVariableJsonResource); //"/das_analytics_config_details.json"
         } catch (RegistryException e) {
+            String errMsg="Error in saving ";
             log.error(e.getMessage());
         }
     }
