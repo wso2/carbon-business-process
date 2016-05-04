@@ -15,9 +15,9 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import io.netty.handler.codec.http.HttpRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
+import org.wso2.msf4j.Request;
 
 import java.util.Map;
 import javax.ws.rs.Consumes;
@@ -39,7 +39,7 @@ public class ProcessInstanceQueryService extends BaseProcessInstanceService {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getProcessInstances(ProcessInstanceQueryRequest processInstanceQueryRequest,
-                                        @Context HttpRequest request) {
+                                        @Context Request request) {
 
         Map<String, String> allRequestParams = allRequestParams(request);
         // Populate query based on request

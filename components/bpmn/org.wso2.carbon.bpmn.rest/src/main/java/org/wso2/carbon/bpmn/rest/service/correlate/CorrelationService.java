@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.correlate;
 
-import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.QueryProperty;
 import org.osgi.framework.BundleContext;
@@ -33,6 +32,7 @@ import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +93,7 @@ public class CorrelationService implements Microservice {
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response recieveMessage(CorrelationActionRequest correlationActionRequest,
-                                   @Context HttpRequest request) {
+                                   @Context Request request) {
 
         if (correlationActionRequest.getProcessDefinitionId() == null &&
             correlationActionRequest.getProcessDefinitionKey() == null &&

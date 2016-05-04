@@ -17,7 +17,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.identity;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
@@ -46,6 +45,7 @@ import org.wso2.carbon.bpmn.rest.model.identity.UserPaginateList;
 import org.wso2.carbon.bpmn.rest.model.identity.UserResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseIdentityService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,7 +125,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/groups")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DataResponse getGroups(@Context HttpRequest request) {
+    public DataResponse getGroups(@Context Request request) {
         GroupQuery query = BPMNOSGIService.getIdentityService().createGroupQuery();
 
         Map<String, String> allRequestParams = new HashMap<>();
@@ -191,7 +191,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @Path("/groups/{group-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public GroupResponse getGroup(@PathParam("group-id") String groupId,
-                                  @Context HttpRequest request) {
+                                  @Context Request request) {
         return new RestResponseFactory()
                 .createGroupResponse(getGroupFromRequest(groupId), request.getUri());
     }
@@ -204,7 +204,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/users")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DataResponse getUsers(@Context HttpRequest request) {
+    public DataResponse getUsers(@Context Request request) {
         UserQuery query = BPMNOSGIService.getIdentityService().createUserQuery();
 
         Map<String, String> allRequestParams = new HashMap<>();
@@ -290,7 +290,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @Path("/users/{user-id}/info")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId,
-                                              @Context HttpRequest request) {
+                                              @Context Request request) {
         User user = getUserFromRequest(userId);
 
         return new RestResponseFactory()
@@ -307,7 +307,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/users/{user-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public UserResponse getUser(@PathParam("user-id") String userId, @Context HttpRequest request) {
+    public UserResponse getUser(@PathParam("user-id") String userId, @Context Request request) {
         return new RestResponseFactory()
                 .createUserResponse(getUserFromRequest(userId), false, request.getUri());
     }

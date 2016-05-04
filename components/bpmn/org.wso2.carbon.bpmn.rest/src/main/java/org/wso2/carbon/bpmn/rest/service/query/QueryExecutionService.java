@@ -16,12 +16,11 @@
 
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
-//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
+import org.wso2.msf4j.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +30,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 
 /**
  *
@@ -42,7 +43,7 @@ public class QueryExecutionService extends BaseExecutionService {
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response queryProcessInstances(ExecutionQueryRequest queryRequest,
-                                          @Context HttpRequest request) {
+                                          @Context Request request) {
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 

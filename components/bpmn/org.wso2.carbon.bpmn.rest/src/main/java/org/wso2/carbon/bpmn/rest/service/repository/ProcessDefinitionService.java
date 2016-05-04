@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.repository;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -48,6 +47,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -139,7 +139,7 @@ public class ProcessDefinitionService implements Microservice {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getProcessDefinitions(@Context HttpRequest request) {
+    public Response getProcessDefinitions(@Context Request request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -232,7 +232,7 @@ public class ProcessDefinitionService implements Microservice {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ProcessDefinitionResponse getProcessDefinition(
             @PathParam("process-definition-id") String processDefinitionId,
-            @Context HttpRequest request) {
+            @Context Request request) {
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         return new RestResponseFactory()
                 .createProcessDefinitionResponse(processDefinition, request.getUri());
@@ -257,7 +257,7 @@ public class ProcessDefinitionService implements Microservice {
     @Path("/{process-definition-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
-                                     @Context HttpRequest request) {
+                                     @Context Request request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
@@ -273,7 +273,7 @@ public class ProcessDefinitionService implements Microservice {
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                      @PathParam("family") String family,
                                      @PathParam("identity-id") String identityId,
-                                     @Context HttpRequest request) {
+                                     @Context Request request) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);

@@ -15,12 +15,12 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.wso2.carbon.bpmn.rest.common.RestUrlBuilder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
+import org.wso2.msf4j.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class HistoricTaskInstanceQueryService extends BaseHistoricTaskInstanceSe
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DataResponse queryProcessInstances(HistoricTaskInstanceQueryRequest queryRequest,
-                                              @Context HttpRequest request) {
+                                              @Context Request request) {
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property : ALL_PROPERTIES_LIST) {

@@ -15,7 +15,6 @@
  */
 package org.wso2.carbon.bpmn.rest.service.history;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -31,6 +30,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricVariableInstanceService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +82,7 @@ public class HistoricVariableInstanceService extends BaseHistoricVariableInstanc
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getHistoricActivityInstances(@Context HttpRequest request) {
+    public Response getHistoricActivityInstances(@Context Request request) {
         HistoricVariableInstanceQueryRequest query = new HistoricVariableInstanceQueryRequest();
 
         // Populate query based on request
