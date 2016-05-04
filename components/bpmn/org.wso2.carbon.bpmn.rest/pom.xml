@@ -116,7 +116,7 @@
 
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
-        <private.package>org.wso2.carbon.bpmn.rest.common.utils</private.package>
+        <private.package>org.wso2.carbon.bpmn.rest.internal</private.package>
         <export.package>
             org.wso2.carbon.bpmn.rest.*;version=${carbon.business-process.exp.pkg.version},
         </export.package>

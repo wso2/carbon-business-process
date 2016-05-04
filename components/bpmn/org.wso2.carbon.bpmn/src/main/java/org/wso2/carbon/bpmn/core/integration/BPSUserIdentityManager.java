@@ -97,7 +97,8 @@
 //    @Override
 //    public UserEntity findUserById(String userId) {
 //        try {
-//            UserStoreManager userStoreManager = registryService.getUserRealm(getTenantIdFromUserId(userId)).getUserStoreManager();
+//            UserStoreManager userStoreManager = registryService.getUserRealm(getTenantIdFromUserId(userId))
+// .getUserStoreManager();
 //
 //            if (userStoreManager.isExistingUser(userId)) {
 //                UserEntity userEntity = new UserEntity(userId);
@@ -296,7 +297,8 @@
 //                if (tenantInfoBean != null) {
 //                    tenantId = tenantInfoBean.getTenantId();
 //                } else {
-//                    log.error("Could not retrieve tenant ID for tenant domain : " + userNameTokens[userNameTokens.length
+//                    log.error("Could not retrieve tenant ID for tenant domain : "
+// + userNameTokens[userNameTokens.length
 //                            - 1]);
 //                    return new ArrayList<Group>();
 //                }
@@ -319,7 +321,8 @@
 //
 //    @Override
 //    public UserQuery createNewUserQuery() {
-//        return new UserQueryImpl(((ProcessEngineConfigurationImpl)BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration()).getCommandExecutor());
+//        return new UserQueryImpl(((ProcessEngineConfigurationImpl)BPMNServerHolder.getInstance()
+// .getEngine().getProcessEngineConfiguration()).getCommandExecutor());
 //    }
 //
 //    @Override
@@ -344,7 +347,7 @@
 //        Callback[] callbacks = {usernameCallback, passwordCallback};
 //        try {
 //            //Authentication
-//            AuthenticationContext authenticationContext = CarbonSecurityDataHolder.getInstance().getCarbonRealmService()
+//          AuthenticationContext authenticationContext = CarbonSecurityDataHolder.getInstance().getCarbonRealmService()
 //                    .getCredentialStore().authenticate(callbacks);
 //           org.wso2.carbon.security.caas.user.core.bean.User user = authenticationContext.getUser();
 //            //Authorization
@@ -379,23 +382,23 @@
 //
 //    }
 //    todo: get matching username for userid
-//	private String getUserNameForGivenUserId(String userId){
-//		String userName = "";
-//		List<org.wso2.carbon.security.caas.user.core.bean.User> Users = identityStore.listUsers("*",-1,-1);
-//		for(org.wso2.carbon.security.caas.user.core.bean.User u : Users){
-//			if(u.getUserId().equals(userId)){
-//				userName = u.getUserName();
-//				return userName;
-//			}
-//		}
+//  private String getUserNameForGivenUserId(String userId){
+//      String userName = "";
+//      List<org.wso2.carbon.security.caas.user.core.bean.User> Users = identityStore.listUsers("*",-1,-1);
+//      for(org.wso2.carbon.security.caas.user.core.bean.User u : Users){
+//          if(u.getUserId().equals(userId)){
+//              userName = u.getUserName();
+//              return userName;
+//          }
+//      }
 //
-//	}
+//  }
 //
 ////    private int getTenantIdFromUserId(String userId) throws Exception {
 ////        String[] userNameTokens = userId.split("@");
 ////        int tenantId = BPMNConstants.SUPER_TENANT_ID;
 ////        if (userNameTokens.length > 1) {
-////            TenantInfoBean tenantInfoBean = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]);
+////        TenantInfoBean tenantInfoBean = tenantMgtAdminService.getTenant(userNameTokens[userNameTokens.length - 1]);
 ////            if (tenantInfoBean != null) {
 ////                tenantId = tenantInfoBean.getTenantId();
 ////            } else {
