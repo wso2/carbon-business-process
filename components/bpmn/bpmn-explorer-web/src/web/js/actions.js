@@ -23,19 +23,20 @@ if (BPSTenant != undefined && BPSTenant.length > 0) {
     CONTEXT = appName;
 }
 
-$( document ).ready(function() {
+$(document).ready(function () {
 
-    function getFileType(){
+    function getFileType() {
         var fileName = document.getElementById('files').value;
-        if(fileName!== null) {
+        if (fileName !== null) {
             var extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
             return extension;
         }
     }
+
     // Send attachment info the server
     $('#attachForm').ajaxForm({
-        beforeSubmit: function(arr, formData, options) {
-            for (var i=0; i < arr.length; i++) {
+        beforeSubmit: function (arr, formData, options) {
+            for (var i = 0; i < arr.length; i++) {
                 if (!arr[i].value) {
 
                     var errorMessage = "Form incomplete"
@@ -43,13 +44,16 @@ $( document ).ready(function() {
                     if (arr[i].name == "name") {
                         errorMessage = "Please enter file name";
                     } else if (arr[i].name == "file") {
-                        errorMessage = "Please select file";;
+                        errorMessage = "Please select file";
+                        ;
                     }
 
-                    $('#submit-attachment-div').popover({ content: errorMessage,
-                                                            placement: "bottom",
-                                                            trigger:"manual",
-                                                            title:"Error"});
+                    $('#submit-attachment-div').popover({
+                        content: errorMessage,
+                        placement: "bottom",
+                        trigger: "manual",
+                        title: "Error"
+                    });
 
                     $('#submit-attachment-div').popover('show');
 
@@ -64,29 +68,29 @@ $( document ).ready(function() {
             }
 
             var fileType = getFileType();
-            if(fileType) {
+            if (fileType) {
                 arr.push({name: 'type', value: fileType})
             }
         },
 
-        success : function(res){
+        success: function (res) {
             var taskUrl = res.taskUrl;
             var taskId = taskUrl.substr(taskUrl.lastIndexOf('/') + 1);
-            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + taskId ;
+            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + taskId;
 
         },
-        error :  function(res){
-            document.getElementById("error_content").style.visibility='visible';
+        error: function (res) {
+            document.getElementById("error_content").style.visibility = 'visible';
         }
     });
 });
 
-function displayAttachmentData(id){
-   window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
+function displayAttachmentData(id) {
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
 }
 
 function completeTask(data, id) {
-    document.getElementById("completeButton").style.display='none';
+    document.getElementById("completeButton").style.display = 'none';
     document.getElementById("loadingCompleteButton").hidden = false;
     var url = "/" + CONTEXT + "/send?req=/bpmn/form/form-data%3FtaskId=" + id;
     $.ajax({
@@ -97,18 +101,18 @@ function completeTask(data, id) {
             var vData = JSON.parse(responseData).formProperties;
 
             var variables = [];
-            var emptyVar=true;
+            var emptyVar = true;
             for (var i = 0; i < data.length; i++) {
 
-                for(var j = 0; j < vData.length; j++){
-                    if(vData[j].name==data[i].name){
+                for (var j = 0; j < vData.length; j++) {
+                    if (vData[j].name == data[i].name) {
                         if (vData[j].required && vData[j].writable && data[i].value == "") {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
                             $(document.body).scrollTop($('#commonErrorSection').offset().top);
                             emptyVar = false;
                             document.getElementById("loadingCompleteButton").hidden = true;
-                            document.getElementById("completeButton").style.display='';
+                            document.getElementById("completeButton").style.display = '';
                             return;
                         }
                     }
@@ -132,12 +136,12 @@ function completeTask(data, id) {
                     data: JSON.stringify(body),
                     success: function (data) {
                         document.getElementById("loadingCompleteButton").hidden = true;
-                        document.getElementById("completeButton").style.display='';
+                        document.getElementById("completeButton").style.display = '';
                         window.location = httpUrl + "/" + CONTEXT + "/myTasks";
                     },
                     error: function (xhr, status, error) {
                         document.getElementById("loadingCompleteButton").hidden = true;
-                        document.getElementById("completeButton").style.display='';
+                        document.getElementById("completeButton").style.display = '';
                         document.getElementById("commonErrorSection").hidden = false;
                         document.getElementById("errorMsg").innerHTML = "Task completion failed: " + xhr.responseText;
                         $(document.body).scrollTop($('#commonErrorSection').offset().top);
@@ -150,7 +154,7 @@ function completeTask(data, id) {
         },
         error: function (xhr, status, error) {
             document.getElementById("loadingCompleteButton").hidden = true;
-            document.getElementById("completeButton").style.display='';
+            document.getElementById("completeButton").style.display = '';
             document.getElementById("commonErrorSection").hidden = false;
             document.getElementById("errorMsg").innerHTML = "Task completion failed: " + xhr.responseText;
             $(document.body).scrollTop($('#commonErrorSection').offset().top);
@@ -190,7 +194,7 @@ function reassign(username, id) {
                     $('#reassignErrorMessageArea').show();
                     //set callback to remove error message when hiding the modal
                     $('#reassign').on('hide.bs.modal', function (e) {
-                            $('#reassignErrorMessageArea').hide();
+                        $('#reassignErrorMessageArea').hide();
                     });
                 }
             }
@@ -200,15 +204,15 @@ function reassign(username, id) {
         $('#reassignErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#reassign').on('hide.bs.modal', function (e) {
-                $('#reassignErrorMessageArea').hide();
-            });
+            $('#reassignErrorMessageArea').hide();
+        });
     }
 }
 
-function claim(username, id){
+function claim(username, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
-        "assignee" : username
+        "assignee": username
     };
 
     $.ajax({
@@ -216,7 +220,7 @@ function claim(username, id){
         contentType: "application/json",
         url: httpUrl + url,
         data: JSON.stringify(body),
-        success: function(data){
+        success: function (data) {
             window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
         }
     });
@@ -253,7 +257,7 @@ function transfer(username, id) {
                     $('#transferErrorMessageArea').show();
                     //set callback to remove error message when hiding the modal
                     $('#transfer').on('hide.bs.modal', function (e) {
-                            $('#transferErrorMessageArea').hide();
+                        $('#transferErrorMessageArea').hide();
                     });
                 }
             }
@@ -263,8 +267,8 @@ function transfer(username, id) {
         $('#transferErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#transfer').on('hide.bs.modal', function (e) {
-                $('#transferErrorMessageArea').hide();
-            });
+            $('#transferErrorMessageArea').hide();
+        });
     }
 }
 
@@ -284,14 +288,14 @@ function startProcess(processDefId) {
             window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + processDefId;
         },
         error: function (xhr, status, error) {
-           var errorJson = eval("(" + xhr.responseText + ")");
-           window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+            var errorJson = eval("(" + xhr.responseText + ")");
+            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
         }
     });
 }
 
 function startProcessWithData(data, id) {
-    document.getElementById("startProcessButton").style.display='none';
+    document.getElementById("startProcessButton").style.display = 'none';
     document.getElementById("loadingStartProcessButton").hidden = false;
     var url = "/" + CONTEXT + "/send?req=/bpmn/process-definition/" + id + "/properties";
     $.ajax({
@@ -302,17 +306,17 @@ function startProcessWithData(data, id) {
             var vData = JSON.parse(responseData).data;
 
             var variables = [];
-            var emptyVar=true;
+            var emptyVar = true;
             for (var i = 0; i < data.length; i++) {
 
-                for(var j = 0; j < vData.length; j++){
-                    if(vData[j].name==data[i].name){
+                for (var j = 0; j < vData.length; j++) {
+                    if (vData[j].name == data[i].name) {
                         if (vData[j].required && vData[j].writable && data[i].value == "") {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
                             $(document.body).scrollTop($('#commonErrorSection').offset().top);
                             emptyVar = false;
-                            document.getElementById("startProcessButton").style.display='';
+                            document.getElementById("startProcessButton").style.display = '';
                             document.getElementById("loadingStartProcessButton").hidden = true;
                             return;
                         }
@@ -334,12 +338,12 @@ function startProcessWithData(data, id) {
                 url: httpUrl + url,
                 data: JSON.stringify(body),
                 success: function (data) {
-                    document.getElementById("startProcessButton").style.display='';
+                    document.getElementById("startProcessButton").style.display = '';
                     document.getElementById("loadingStartProcessButton").hidden = true;
                     window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
                 },
                 error: function (xhr, status, error) {
-                    document.getElementById("startProcessButton").style.display='';
+                    document.getElementById("startProcessButton").style.display = '';
                     document.getElementById("loadingStartProcessButton").hidden = true;
                     var errorJson = eval("(" + xhr.responseText + ")");
                     var errorJson = eval("(" + xhr.responseText + ")");
@@ -349,23 +353,21 @@ function startProcessWithData(data, id) {
         },
         error: function (xhr, status, error) {
             document.getElementById("loadingCompleteButton").hidden = true;
-            document.getElementById("completeButton").style.display='';
+            document.getElementById("completeButton").style.display = '';
             document.getElementById("commonErrorSection").hidden = false;
             document.getElementById("errorMsg").innerHTML = "Task completion failed: " + xhr.responseText;
             $(document.body).scrollTop($('#commonErrorSection').offset().top);
             emptyVar = false;
             return;
         }
-    });    
+    });
 }
-
-
 
 
 /**
  * Function to process search inputs before submission
  */
-function processSearch(){
+function processSearch() {
     //disable startDate input to avoid adding it to the query parameters
     document.getElementById("startDate").disabled = true;
     document.getElementById("endDate").disabled = true;
@@ -378,8 +380,8 @@ function processSearch(){
         document.getElementById("taskName").value = "%" + tempTaskName + "%";
     }
     /*if (document.getElementById("taskDescription").value.length == 0) {
-        document.getElementById("taskDescription").disabled = true;
-    }*/
+     document.getElementById("taskDescription").disabled = true;
+     }*/
     if (document.getElementById("taskCandidateUser").value.length == 0) {
         document.getElementById("taskCandidateUser").disabled = true;
     }
@@ -389,7 +391,7 @@ function processSearch(){
             document.getElementById("taskUnassigned").disabled = true;
         } else {
             document.getElementById("taskAssignee").disabled = true;
-        }      
+        }
     }
     if (document.getElementById("taskOwner").value.length == 0) {
         document.getElementById("taskOwner").disabled = true;
@@ -398,8 +400,8 @@ function processSearch(){
         document.getElementById("taskProcessDefName").disabled = true;
     } else {
         var tempTaskDefName = document.getElementById("taskProcessDefName").value;
-        var selectState=document.getElementById("taskStatus").value;
-        if(selectState == "COMPLETED"){
+        var selectState = document.getElementById("taskStatus").value;
+        if (selectState == "COMPLETED") {
             document.getElementById("taskProcessDefName").value = tempTaskDefName;
         } else {
             document.getElementById("taskProcessDefName").value = "%" + tempTaskDefName + "%";
@@ -457,7 +459,7 @@ function processSearch(){
 /**
  Function to set date picker to date input elements
  */
-function setDatePicker (dateElement) {
+function setDatePicker(dateElement) {
     var elementID = '#' + dateElement;
     $(elementID).daterangepicker({
         singleDatePicker: true,
@@ -470,9 +472,9 @@ function setDatePicker (dateElement) {
 
 //Average Task duration for each process
 
-function selectProcessForChart(){
+function selectProcessForChart() {
     var x = document.getElementById("selectProcess").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=taskduration&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=taskduration&id=" + x;
 
     $.ajax({
         type: 'GET',
@@ -480,21 +482,21 @@ function selectProcessForChart(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
                 var dataArr = [['Task Key', 'Avg Duration']];
-                for(var i = 0;i < data.length;i++){
-                    dataArr.push([data[i][0] , data[i][1]]);
+                for (var i = 0; i < data.length; i++) {
+                    dataArr.push([data[i][0], data[i][1]]);
 
                 }
 
                 var data = google.visualization.arrayToDataTable(dataArr);
 
                 var options = {
-                    title:x,
+                    title: x,
                     pieHole: 0.6,
                     pieSliceTextStyle: {
                         color: 'black'
@@ -510,51 +512,51 @@ function selectProcessForChart(){
 
 //User Performance of Tasks Completed and Tasks Started Over time i.e. months
 
-function selectUserForPerformance(){
+function selectUserForPerformance() {
     var x = document.getElementById("selectUser").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + x;
 
     $.ajax({
         type: 'GET',
         contentType: "application/json",
         url: url,
         success: function (data) {
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
 
                 var dataArr = [['Month', 'Started Tasks', 'Completed Tasks']];
-                for(var i = 0;i < data.length;i++){
-                    dataArr.push([data[i][0] , data[i][1], data[i][2]]);
+                for (var i = 0; i < data.length; i++) {
+                    dataArr.push([data[i][0], data[i][1], data[i][2]]);
 
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                var max=0;
+                var max = 0;
                 var count = 0;
 
-                for(var i=0; i<dataArr.length;i++){
+                for (var i = 0; i < dataArr.length; i++) {
                     if (dataArr[i][1] > max) {
                         max = dataArr[i][1];
                     }
-                    if(dataArr[i][2] > max){
+                    if (dataArr[i][2] > max) {
                         max = dataArr[i][2];
                     }
-                    if(dataArr[i][1] > 0 ){
+                    if (dataArr[i][1] > 0) {
                         count++;
                     }
-                    if(dataArr[i][2] > 0 ){
+                    if (dataArr[i][2] > 0) {
                         count++;
                     }
                 }
 
-                if(max >= 100 && count > 1){
-                    var vTitle='Number of Tasks Completed/Started(log scale)';
+                if (max >= 100 && count > 1) {
+                    var vTitle = 'Number of Tasks Completed/Started(log scale)';
                     var logScaleEnabled = true;
                 }
-                else{
-                    var vTitle='Number of Tasks Completed/Started';
+                else {
+                    var vTitle = 'Number of Tasks Completed/Started';
                     var logScaleEnabled = false;
                 }
 
@@ -562,15 +564,15 @@ function selectUserForPerformance(){
                 var chartHeight = chartAreaHeight + 30;
 
                 var options = {
-                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
+                    vAxis: {title: vTitle, titleTextStyle: {color: 'grey'}, logScale: logScaleEnabled},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
-                    colors:['#be2d28','#afaeae'],
+                    colors: ['#be2d28', '#afaeae'],
                     height: chartHeight,
                     bar: {groupWidth: "70%"},
                     chartArea: {
                         width: '75%'
                     },
-                    legend: { position: "top"}
+                    legend: {position: "top"}
 
                 };
                 var chart = new google.visualization.ColumnChart(document.getElementById('taskOfUserVariation'));
@@ -582,9 +584,9 @@ function selectUserForPerformance(){
 
 // Average duration of Processes Instances
 
-function selectProcessForAvgTimeDuration(){
+function selectProcessForAvgTimeDuration() {
     var selectedValue = document.getElementById("selectOption").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=avgprocessduration&id=" + selectedValue ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=avgprocessduration&id=" + selectedValue;
 
     $.ajax({
         type: 'GET',
@@ -592,12 +594,12 @@ function selectProcessForAvgTimeDuration(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             if (array.length == 0) {
-                var chartDiv=document.getElementById('barChartAvgTime');
+                var chartDiv = document.getElementById('barChartAvgTime');
                 chartDiv.style.fontSize = "20px";
                 chartDiv.innerHTML = "<br> No data";
                 chartDiv.style.textAlign = "center";
@@ -609,7 +611,7 @@ function selectProcessForAvgTimeDuration(){
                     }
                     var data = google.visualization.arrayToDataTable(dataArr);
 
-                    var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
+                    var chartAreaHeight = ((data.getNumberOfRows() + 2) * 100);
                     var options = {
                         vAxis: {
                             title: 'Process Name',
@@ -619,8 +621,8 @@ function selectProcessForAvgTimeDuration(){
                             title: 'Average Time Time Duration in Minutes',
                             titleTextStyle: {color: 'grey'}
                         },
-                        height: ((data.getNumberOfRows()+2) * 100) + 200,
-                        chartArea:{top:10,height:chartAreaHeight},
+                        height: ((data.getNumberOfRows() + 2) * 100) + 200,
+                        chartArea: {top: 10, height: chartAreaHeight},
                         bar: {groupWidth: "30%"},
                         colors: ['#be2d28']
                     };
@@ -634,11 +636,10 @@ function selectProcessForAvgTimeDuration(){
 }
 
 
-
 //Process Instance Count : Filters the 10 processes with the maximum and the minimum instance counts
-function selectProcessForInstanceCount(){
+function selectProcessForInstanceCount() {
     var x = document.getElementById("processInstanceCount").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processinstancecount&id=" + x ;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processinstancecount&id=" + x;
 
     $.ajax({
         type: 'GET',
@@ -646,44 +647,44 @@ function selectProcessForInstanceCount(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
 
             function drawChart(data) {
                 var dataArr = [['Process Name', 'Instance Count']];
-                for(var i = 0;i < data.length;i++){
-                    dataArr.push([data[i][0] , data[i][1]]);
+                for (var i = 0; i < data.length; i++) {
+                    dataArr.push([data[i][0], data[i][1]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                var max=0;
-                var count=0;
+                var max = 0;
+                var count = 0;
 
-                for(var i=0; i<dataArr.length;i++){
+                for (var i = 0; i < dataArr.length; i++) {
                     if (dataArr[i][1] > max) {
                         max = dataArr[i][1];
                     }
-                    if(dataArr[i][1]>0){
+                    if (dataArr[i][1] > 0) {
                         count++;
                     }
                 }
 
-                if(max >= 100 && count > 1){
-                    var hTitle='Process instance count (log scale)';
+                if (max >= 100 && count > 1) {
+                    var hTitle = 'Process instance count (log scale)';
                     var logScaleEnabled = true;
                 }
-                else{
-                    var hTitle='Process instance count';
+                else {
+                    var hTitle = 'Process instance count';
                     var logScaleEnabled = false;
                 }
-                var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
+                var chartAreaHeight = ((data.getNumberOfRows() + 2) * 100);
                 var options = {
-                    vAxis: {title: 'Process Name',  titleTextStyle: { color: 'grey' }},
-                    hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
-                    colors:['#be2d28'],
-                    height: ((data.getNumberOfRows()+2) * 100) + 200,
-                    chartArea:{top:10,height:chartAreaHeight},
+                    vAxis: {title: 'Process Name', titleTextStyle: {color: 'grey'}},
+                    hAxis: {title: hTitle, titleTextStyle: {color: 'grey'}, logScale: logScaleEnabled},
+                    colors: ['#be2d28'],
+                    height: ((data.getNumberOfRows() + 2) * 100) + 200,
+                    chartArea: {top: 10, height: chartAreaHeight},
                     bar: {groupWidth: "35%"}
                 };
 
@@ -695,7 +696,7 @@ function selectProcessForInstanceCount(){
 }
 
 //User Vs Number of tasks completed uptodate
-function userVsTasksCompleted(){
+function userVsTasksCompleted() {
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=uservstaskscompleted";
 
     $.ajax({
@@ -704,16 +705,16 @@ function userVsTasksCompleted(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             if (array.length == 0) {
-                var chartDiv=document.getElementById('colChartUserVsTasks');
+                var chartDiv = document.getElementById('colChartUserVsTasks');
                 chartDiv.style.fontSize = "20px";
                 chartDiv.innerHTML = " <br> No data";
                 chartDiv.style.textAlign = "center";
-                chartDiv.style.height="50px";
+                chartDiv.style.height = "50px";
             } else {
 
                 function drawChart(data) {
@@ -742,7 +743,7 @@ function userVsTasksCompleted(){
                         var hTitle = 'Number of tasks completed todate';
                         var logScaleEnabled = false;
                     }
-                    var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
+                    var chartAreaHeight = ((data.getNumberOfRows() + 2) * 100);
                     var options = {
                         hAxis: {
                             title: hTitle,
@@ -751,8 +752,8 @@ function userVsTasksCompleted(){
                         },
                         vAxis: {title: 'User', titleTextStyle: {color: 'grey'}},
                         colors: ['#be2d28'],
-                        height: ((data.getNumberOfRows()+2) * 100) + 200,
-                        chartArea:{top:10,height:chartAreaHeight},
+                        height: ((data.getNumberOfRows() + 2) * 100) + 200,
+                        chartArea: {top: 10, height: chartAreaHeight},
                         bar: {groupWidth: "35%"}
                     };
 
@@ -766,7 +767,7 @@ function userVsTasksCompleted(){
 }
 
 // Average time taken by user to complete tasks
-function avgTimeForUserForTasks(){
+function avgTimeForUserForTasks() {
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=uservsavgtime";
 
     $.ajax({
@@ -775,16 +776,16 @@ function avgTimeForUserForTasks(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             if (array.length == 0) {
-                var chartDiv=document.getElementById('userVsAvgTaskDuration');
+                var chartDiv = document.getElementById('userVsAvgTaskDuration');
                 chartDiv.style.fontSize = "20px";
                 chartDiv.innerHTML = " <br> No data";
                 chartDiv.style.textAlign = "center";
-                chartDiv.style.height="50px";
+                chartDiv.style.height = "50px";
             } else {
                 function drawChart(data) {
                     var dataArr = [['User', 'Average Time Taken to Complete Tasks in Seconds']];
@@ -811,7 +812,7 @@ function avgTimeForUserForTasks(){
                         var hTitle = 'Average Time Taken to Complete Tasks in Seconds';
                         var logScaleEnabled = false;
                     }
-                    var chartAreaHeight=((data.getNumberOfRows()+2) * 100);
+                    var chartAreaHeight = ((data.getNumberOfRows() + 2) * 100);
                     var options = {
                         hAxis: {
                             title: hTitle,
@@ -822,8 +823,8 @@ function avgTimeForUserForTasks(){
                             titleTextStyle: {color: 'grey'}
                         },
                         colors: ['#be2d28'],
-                        height: ((data.getNumberOfRows()+2) * 100) + 200,
-                        chartArea:{top:10,height:chartAreaHeight},
+                        height: ((data.getNumberOfRows() + 2) * 100) + 200,
+                        chartArea: {top: 10, height: chartAreaHeight},
                         bar: {groupWidth: "35%"}
                     };
 
@@ -837,7 +838,7 @@ function avgTimeForUserForTasks(){
 }
 
 // No.of tasks started and completed overtime
-function taskVariationOverTime(){
+function taskVariationOverTime() {
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=taskvariation";
 
     $.ajax({
@@ -846,42 +847,42 @@ function taskVariationOverTime(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
 
             function drawChart(data) {
-                var dataArr = [['Months', 'Tasks Started','Tasks Completed']];
-                for(var i = 0;i < data.length;i++){
-                    dataArr.push([data[i][0] , data[i][1],data[i][2]]);
+                var dataArr = [['Months', 'Tasks Started', 'Tasks Completed']];
+                for (var i = 0; i < data.length; i++) {
+                    dataArr.push([data[i][0], data[i][1], data[i][2]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
 
-                var max=0;
+                var max = 0;
                 var count = 0;
 
-                for(var i=0; i<dataArr.length;i++){
+                for (var i = 0; i < dataArr.length; i++) {
                     if (dataArr[i][1] > max) {
                         max = dataArr[i][1];
                     }
-                    if(dataArr[i][2] > max){
+                    if (dataArr[i][2] > max) {
                         max = dataArr[i][2];
                     }
-                    if(dataArr[i][1] > 0 ){
+                    if (dataArr[i][1] > 0) {
                         count++;
                     }
-                    if(dataArr[i][2] > 0 ){
+                    if (dataArr[i][2] > 0) {
                         count++;
                     }
                 }
 
-                if(max >= 100 && count > 1){
-                    var vTitle='Number of Tasks Completed/Started(log scale)';
+                if (max >= 100 && count > 1) {
+                    var vTitle = 'Number of Tasks Completed/Started(log scale)';
                     var logScaleEnabled = true;
                 }
-                else{
-                    var vTitle='Number of Tasks Completed/Started';
+                else {
+                    var vTitle = 'Number of Tasks Completed/Started';
                     var logScaleEnabled = false;
                 }
 
@@ -889,15 +890,15 @@ function taskVariationOverTime(){
                 var chartHeight = chartAreaHeight + 32;
 
                 var options = {
-                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
+                    vAxis: {title: vTitle, titleTextStyle: {color: 'grey'}, logScale: logScaleEnabled},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
-                    colors:['#be2d28','#afaeae'],
+                    colors: ['#be2d28', '#afaeae'],
                     height: chartHeight,
                     bar: {groupWidth: "70%"},
                     chartArea: {
                         width: '75%'
                     },
-                    legend: { position: "top"},
+                    legend: {position: "top"},
                     format: 'decimal'
                 };
 
@@ -911,7 +912,7 @@ function taskVariationOverTime(){
 }
 
 // No.of processes started and completed overtime
-function processVariationOverTime(){
+function processVariationOverTime() {
     var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=processvariation";
 
     $.ajax({
@@ -920,40 +921,40 @@ function processVariationOverTime(){
         url: url,
         success: function (data) {
 
-            var array = eval('('+data+')');
-            google.load("visualization", "1", {packages:["corechart"]});
+            var array = eval('(' + data + ')');
+            google.load("visualization", "1", {packages: ["corechart"]});
             google.setOnLoadCallback(drawChart(array));
 
             function drawChart(data) {
-                var dataArr = [['Months', 'Started Processes','Completed Processes']];
-                for(var i = 0;i < data.length;i++){
-                    dataArr.push([data[i][0] , data[i][1],data[i][2]]);
+                var dataArr = [['Months', 'Started Processes', 'Completed Processes']];
+                for (var i = 0; i < data.length; i++) {
+                    dataArr.push([data[i][0], data[i][1], data[i][2]]);
                 }
                 var data = google.visualization.arrayToDataTable(dataArr);
-                var max=0;
+                var max = 0;
                 var count = 0;
 
-                for(var i=0; i<dataArr.length;i++){
+                for (var i = 0; i < dataArr.length; i++) {
                     if (dataArr[i][1] > max) {
                         max = dataArr[i][1];
                     }
-                    if(dataArr[i][2] > max){
+                    if (dataArr[i][2] > max) {
                         max = dataArr[i][2];
                     }
-                    if(dataArr[i][1] > 0 ){
+                    if (dataArr[i][1] > 0) {
                         count++;
                     }
-                    if(dataArr[i][2] > 0 ){
+                    if (dataArr[i][2] > 0) {
                         count++;
                     }
                 }
 
-                if(max >= 100 && count > 1){
-                    var vTitle='Number of Processes Completed/Started(log scale)';
+                if (max >= 100 && count > 1) {
+                    var vTitle = 'Number of Processes Completed/Started(log scale)';
                     var logScaleEnabled = true;
                 }
-                else{
-                    var vTitle='Number of Processes Completed/Started';
+                else {
+                    var vTitle = 'Number of Processes Completed/Started';
                     var logScaleEnabled = false;
                 }
 
@@ -961,15 +962,15 @@ function processVariationOverTime(){
                 var chartHeight = chartAreaHeight + 32;
 
                 var options = {
-                    vAxis: {title: vTitle,  titleTextStyle: { color: 'grey' },logScale:logScaleEnabled},
+                    vAxis: {title: vTitle, titleTextStyle: {color: 'grey'}, logScale: logScaleEnabled},
                     hAxis: {title: 'Months', titleTextStyle: {color: 'grey'}},
-                    colors:['#be2d28','#afaeae'],
+                    colors: ['#be2d28', '#afaeae'],
                     height: chartHeight,
                     bar: {groupWidth: "70%"},
                     chartArea: {
                         width: '75%'
                     },
-                    legend: { position: "top"},
+                    legend: {position: "top"},
                     format: 'decimal'
                 };
 
@@ -983,7 +984,7 @@ function processVariationOverTime(){
 }
 
 // Generate the report view by displaying the graphs
-function generateReport(){
+function generateReport() {
 
     selectProcessForInstanceCount();
     selectProcessForAvgTimeDuration();
@@ -992,16 +993,16 @@ function generateReport(){
     taskVariationOverTime();
     processVariationOverTime();
 
-    var barChartDisplay= document.getElementById("barChartDisplay");
-    barChartDisplay.hidden= false;
+    var barChartDisplay = document.getElementById("barChartDisplay");
+    barChartDisplay.hidden = false;
 
-    var pieChartDisplay= document.getElementById("pieChartDisplay");
-    pieChartDisplay.hidden= false;
+    var pieChartDisplay = document.getElementById("pieChartDisplay");
+    pieChartDisplay.hidden = false;
 
-    var genButton= document.getElementById("generate")
-    genButton.hidden= true;
+    var genButton = document.getElementById("generate")
+    genButton.hidden = true;
 
-    var h3= document.getElementById("h3")
-    h3.hidden= true;
+    var h3 = document.getElementById("h3")
+    h3.hidden = true;
 
 }

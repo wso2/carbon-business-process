@@ -91,9 +91,9 @@ public class UserService {
             for (String u : users) {
                 UserTaskCount userInfo = new UserTaskCount();
                 userInfo.setUserName(u);
-                String assignee ;
-                if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
-                    assignee = u ;
+                String assignee;
+                if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+                    assignee = u;
                 } else {
                     assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
@@ -125,16 +125,16 @@ public class UserService {
 
         List listOfUsers = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
-        try{
+        try {
             String[] users = (String[]) getUserList().getData().toArray();
             for (String u : users) {
 
                 UserTaskDuration userInfo = new UserTaskDuration();
                 userInfo.setUserName(u);
 
-                String assignee ;
-                if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
-                    assignee = u ;
+                String assignee;
+                if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+                    assignee = u;
                 } else {
                     assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
@@ -176,14 +176,14 @@ public class UserService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) throws UserStoreException {
 
-        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))){
+        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
             throw new ActivitiObjectNotFoundException("Could not find user with id '" +
                     assignee + "'.");
         }
 
-        String taskAssignee ;
-        if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
-            taskAssignee = assignee ;
+        String taskAssignee;
+        if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+            taskAssignee = assignee;
         } else {
             taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
         }
