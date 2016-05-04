@@ -135,64 +135,64 @@ public class DeploymentService implements Microservice {
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        if(decoder.parameters().size() > 0) {
+            for (String property : allPropertiesList) {
+                String value = decoder.parameters().get(property).get(0);
 
-        for (String property : allPropertiesList) {
-            String value = decoder.parameters().get(property).get(0);
+                if (value != null) {
+                    allRequestParams.put(property, value);
+                }
+            }
+            Map<String, List<String>> parameters = decoder.parameters();
 
-            if (value != null) {
-                allRequestParams.put(property, value);
+            if (parameters.containsKey("name")) {
+                String name = decoder.parameters().get("name").get(0);
+                if (name != null) {
+                    deploymentQuery.deploymentName(name);
+                }
             }
-        }
-        Map<String, List<String>> parameters = decoder.parameters();
+            if (parameters.containsKey("nameLike")) {
+                String nameLike = decoder.parameters().get("nameLike").get(0);
+                if (nameLike != null) {
+                    deploymentQuery.deploymentNameLike(nameLike);
+                }
+            }
+            if (parameters.containsKey("category")) {
+                String category = decoder.parameters().get("category").get(0);
+                if (category != null) {
+                    deploymentQuery.deploymentCategory(category);
+                }
+            }
 
-        if (parameters.containsKey("name")) {
-            String name = decoder.parameters().get("name").get(0);
-            if (name != null) {
-                deploymentQuery.deploymentName(name);
+            if (parameters.containsKey("categoryNotEquals")) {
+                String categoryNotEquals = decoder.parameters().get("categoryNotEquals").get(0);
+                if (categoryNotEquals != null) {
+                    deploymentQuery.deploymentCategoryNotEquals(categoryNotEquals);
+                }
             }
-        }
-        if (parameters.containsKey("nameLike")) {
-            String nameLike = decoder.parameters().get("nameLike").get(0);
-            if (nameLike != null) {
-                deploymentQuery.deploymentNameLike(nameLike);
+            if (parameters.containsKey("tenantId")) {
+                String tenantId = decoder.parameters().get("tenantId").get(0);
+                if (tenantId != null) {
+                    deploymentQuery.deploymentTenantId(tenantId);
+                }
             }
-        }
-        if (parameters.containsKey("category")) {
-            String category = decoder.parameters().get("category").get(0);
-            if (category != null) {
-                deploymentQuery.deploymentCategory(category);
+            if (parameters.containsKey("tenantIdLike")) {
+                String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
+                if (tenantIdLike != null) {
+                    deploymentQuery.deploymentTenantIdLike(tenantIdLike);
+                }
             }
-        }
 
-        if (parameters.containsKey("categoryNotEquals")) {
-            String categoryNotEquals = decoder.parameters().get("categoryNotEquals").get(0);
-            if (categoryNotEquals != null) {
-                deploymentQuery.deploymentCategoryNotEquals(categoryNotEquals);
-            }
-        }
-        if (parameters.containsKey("tenantId")) {
-            String tenantId = decoder.parameters().get("tenantId").get(0);
-            if (tenantId != null) {
-                deploymentQuery.deploymentTenantId(tenantId);
-            }
-        }
-        if (parameters.containsKey("tenantIdLike")) {
-            String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
-            if (tenantIdLike != null) {
-                deploymentQuery.deploymentTenantIdLike(tenantIdLike);
-            }
-        }
-
-        if (parameters.containsKey("withoutTenantId")) {
-            String sWithoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
-            if (sWithoutTenantId != null) {
-                Boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
-                if (withoutTenantId) {
-                    deploymentQuery.deploymentWithoutTenantId();
+            if (parameters.containsKey("withoutTenantId")) {
+                String sWithoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
+                if (sWithoutTenantId != null) {
+                    Boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
+                    if (withoutTenantId) {
+                        deploymentQuery.deploymentWithoutTenantId();
+                    }
                 }
             }
         }
-
         DeploymentsPaginateList deploymentsPaginateList =
                 new DeploymentsPaginateList(new RestResponseFactory(), request.getUri());
         DataResponse dataResponse = deploymentsPaginateList

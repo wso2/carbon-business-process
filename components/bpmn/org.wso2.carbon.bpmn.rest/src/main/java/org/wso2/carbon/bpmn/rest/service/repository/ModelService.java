@@ -136,117 +136,118 @@ public class ModelService implements Microservice {
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-
-        for (String property : allPropertiesList) {
-            String value = decoder.parameters().get(property).get(0);
-
-            if (value != null) {
-                allRequestParams.put(property, value);
-            }
-        }
-
         ModelQuery modelQuery = repositoryService.createModelQuery();
         Map<String, List<String>> parameters = decoder.parameters();
 
-        if (parameters.containsKey("id")) {
-            String id = decoder.parameters().get("id").get(0);
-            if (id != null) {
-                modelQuery.modelId(id);
-            }
-        }
-        if (parameters.containsKey("category")) {
-            String category = decoder.parameters().get("category").get(0);
-            if (category != null) {
-                modelQuery.modelCategory(category);
-            }
-        }
-        if (parameters.containsKey("categoryLike")) {
-            String categoryLike = decoder.parameters().get("categoryLike").get(0);
-            if (categoryLike != null) {
-                modelQuery.modelCategoryLike(categoryLike);
-            }
-        }
+        if(decoder.parameters().size() > 0) {
+            for (String property : allPropertiesList) {
+                String value = decoder.parameters().get(property).get(0);
 
-        if (parameters.containsKey("categoryNotEquals")) {
-            String categoryNotEquals = decoder.parameters().get("categoryNotEquals").get(0);
-            if (categoryNotEquals != null) {
-                modelQuery.modelCategoryNotEquals(categoryNotEquals);
+                if (value != null) {
+                    allRequestParams.put(property, value);
+                }
             }
-        }
 
-        if (parameters.containsKey("name")) {
-            String name = decoder.parameters().get("name").get(0);
-            if (name != null) {
-                modelQuery.modelName(name);
+
+            if (parameters.containsKey("id")) {
+                String id = decoder.parameters().get("id").get(0);
+                if (id != null) {
+                    modelQuery.modelId(id);
+                }
             }
-        }
-        if (parameters.containsKey("nameLike")) {
-            String nameLike = decoder.parameters().get("nameLike").get(0);
-            if (nameLike != null) {
-                modelQuery.modelNameLike(nameLike);
+            if (parameters.containsKey("category")) {
+                String category = decoder.parameters().get("category").get(0);
+                if (category != null) {
+                    modelQuery.modelCategory(category);
+                }
             }
-        }
-        if (parameters.containsKey("key")) {
-            String key = decoder.parameters().get("key").get(0);
-            if (key != null) {
-                modelQuery.modelKey(key);
+            if (parameters.containsKey("categoryLike")) {
+                String categoryLike = decoder.parameters().get("categoryLike").get(0);
+                if (categoryLike != null) {
+                    modelQuery.modelCategoryLike(categoryLike);
+                }
             }
-        }
-        if (parameters.containsKey("version")) {
-            String version = decoder.parameters().get("version").get(0);
-            if (version != null) {
-                modelQuery.modelVersion(Integer.valueOf(version));
+
+            if (parameters.containsKey("categoryNotEquals")) {
+                String categoryNotEquals = decoder.parameters().get("categoryNotEquals").get(0);
+                if (categoryNotEquals != null) {
+                    modelQuery.modelCategoryNotEquals(categoryNotEquals);
+                }
             }
-        }
-        if (parameters.containsKey("latestVersion")) {
-            String latestVersion = decoder.parameters().get("latestVersion").get(0);
-            if (latestVersion != null) {
-                boolean isLatestVersion = Boolean.valueOf(latestVersion);
-                if (isLatestVersion) {
-                    modelQuery.latestVersion();
+
+            if (parameters.containsKey("name")) {
+                String name = decoder.parameters().get("name").get(0);
+                if (name != null) {
+                    modelQuery.modelName(name);
+                }
+            }
+            if (parameters.containsKey("nameLike")) {
+                String nameLike = decoder.parameters().get("nameLike").get(0);
+                if (nameLike != null) {
+                    modelQuery.modelNameLike(nameLike);
+                }
+            }
+            if (parameters.containsKey("key")) {
+                String key = decoder.parameters().get("key").get(0);
+                if (key != null) {
+                    modelQuery.modelKey(key);
+                }
+            }
+            if (parameters.containsKey("version")) {
+                String version = decoder.parameters().get("version").get(0);
+                if (version != null) {
+                    modelQuery.modelVersion(Integer.valueOf(version));
+                }
+            }
+            if (parameters.containsKey("latestVersion")) {
+                String latestVersion = decoder.parameters().get("latestVersion").get(0);
+                if (latestVersion != null) {
+                    boolean isLatestVersion = Boolean.valueOf(latestVersion);
+                    if (isLatestVersion) {
+                        modelQuery.latestVersion();
+                    }
+                }
+            }
+
+            if (parameters.containsKey("deploymentId")) {
+                String deploymentId = decoder.parameters().get("deploymentId").get(0);
+                if (deploymentId != null) {
+                    modelQuery.deploymentId(deploymentId);
+                }
+            }
+            if (parameters.containsKey("deployed")) {
+                String deployed = decoder.parameters().get("deployed").get(0);
+                if (deployed != null) {
+                    boolean isDeployed = Boolean.valueOf(deployed);
+                    if (isDeployed) {
+                        modelQuery.deployed();
+                    } else {
+                        modelQuery.notDeployed();
+                    }
+                }
+            }
+            if (parameters.containsKey("tenantId")) {
+                String tenantId = decoder.parameters().get("tenantId").get(0);
+                if (tenantId != null) {
+                    modelQuery.modelTenantId(tenantId);
+                }
+            }
+            if (parameters.containsKey("tenantIdLike")) {
+                String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
+                if (tenantIdLike != null) {
+                    modelQuery.modelTenantIdLike(tenantIdLike);
+                }
+            }
+            if (parameters.containsKey("withoutTenantId")) {
+                String sWithoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
+                if (sWithoutTenantId != null) {
+                    boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
+                    if (withoutTenantId) {
+                        modelQuery.modelWithoutTenantId();
+                    }
                 }
             }
         }
-
-        if (parameters.containsKey("deploymentId")) {
-            String deploymentId = decoder.parameters().get("deploymentId").get(0);
-            if (deploymentId != null) {
-                modelQuery.deploymentId(deploymentId);
-            }
-        }
-        if (parameters.containsKey("deployed")) {
-            String deployed = decoder.parameters().get("deployed").get(0);
-            if (deployed != null) {
-                boolean isDeployed = Boolean.valueOf(deployed);
-                if (isDeployed) {
-                    modelQuery.deployed();
-                } else {
-                    modelQuery.notDeployed();
-                }
-            }
-        }
-        if (parameters.containsKey("tenantId")) {
-            String tenantId = decoder.parameters().get("tenantId").get(0);
-            if (tenantId != null) {
-                modelQuery.modelTenantId(tenantId);
-            }
-        }
-        if (parameters.containsKey("tenantIdLike")) {
-            String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
-            if (tenantIdLike != null) {
-                modelQuery.modelTenantIdLike(tenantIdLike);
-            }
-        }
-        if (parameters.containsKey("withoutTenantId")) {
-            String sWithoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
-            if (sWithoutTenantId != null) {
-                boolean withoutTenantId = Boolean.valueOf(sWithoutTenantId);
-                if (withoutTenantId) {
-                    modelQuery.modelWithoutTenantId();
-                }
-            }
-        }
-
         DataResponse response = new ModelsPaginateList(new RestResponseFactory(), request.getUri())
                 .paginateList(allRequestParams, modelQuery, "id", allowedSortProperties);
 

@@ -216,107 +216,108 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         Map<String, String> allRequestParams = new HashMap<>();
 
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        if(decoder.parameters().size() > 0) {
+            for (String property : ALL_PROPERTIES_LIST) {
+                String value = decoder.parameters().get(property).get(0);
 
-        for (String property : ALL_PROPERTIES_LIST) {
-            String value = decoder.parameters().get(property).get(0);
-
-            if (value != null) {
-                allRequestParams.put(property, value);
-            }
-        }
-
-        if (decoder.parameters().containsKey("id")) {
-            String id = decoder.parameters().get("id").get(0);
-
-            if (id != null) {
-                queryRequest.setId(id);
-            }
-        }
-
-        if (decoder.parameters().containsKey("processInstanceId")) {
-            String processInstanceId = decoder.parameters().get("processInstanceId").get(0);
-
-            if (processInstanceId != null) {
-                queryRequest.setProcessInstanceId(processInstanceId);
-            }
-        }
-
-        if (decoder.parameters().containsKey("processInstanceBusinessKey")) {
-            String processInstanceBusinessKey =
-                    decoder.parameters().get("processInstanceBusinessKey").get(0);
-
-            if (processInstanceBusinessKey != null) {
-                queryRequest.setProcessBusinessKey(processInstanceBusinessKey);
-            }
-        }
-
-        if (decoder.parameters().containsKey("processDefinitionKey")) {
-            String processDefinitionKey = decoder.parameters().get("processDefinitionKey").get(0);
-            if (processDefinitionKey != null) {
-                queryRequest.setProcessDefinitionKey(processDefinitionKey);
-            }
-        }
-
-        if (decoder.parameters().containsKey("processDefinitionId")) {
-            String processDefinitionId = decoder.parameters().get("processDefinitionId").get(0);
-
-            if (processDefinitionId != null) {
-                queryRequest.setProcessDefinitionId(processDefinitionId);
-            }
-        }
-
-        if (decoder.parameters().containsKey("messageEventSubscriptionName")) {
-            String messageEventSubscriptionName =
-                    decoder.parameters().get("messageEventSubscriptionName").get(0);
-
-            if (messageEventSubscriptionName != null) {
-                queryRequest.setMessageEventSubscriptionName(messageEventSubscriptionName);
-            }
-        }
-        if (decoder.parameters().containsKey("signalEventSubscriptionName")) {
-            String signalEventSubscriptionName =
-                    decoder.parameters().get("signalEventSubscriptionName").get(0);
-
-            if (signalEventSubscriptionName != null) {
-                queryRequest.setSignalEventSubscriptionName(signalEventSubscriptionName);
-            }
-        }
-        if (decoder.parameters().containsKey("activityId")) {
-            String activityId = decoder.parameters().get("activityId").get(0);
-
-            if (activityId != null) {
-                queryRequest.setActivityId(activityId);
-            }
-        }
-        if (decoder.parameters().containsKey("parentId")) {
-            String parentId = decoder.parameters().get("parentId").get(0);
-
-            if (parentId != null) {
-                queryRequest.setParentId(parentId);
-            }
-        }
-        if (decoder.parameters().containsKey("tenantId")) {
-            String tenantId = decoder.parameters().get("tenantId").get(0);
-
-            if (tenantId != null) {
-                queryRequest.setTenantId(tenantId);
-            }
-        }
-        if (decoder.parameters().containsKey("tenantIdLike")) {
-            String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
-
-            if (tenantIdLike != null) {
-                queryRequest.setTenantIdLike(tenantIdLike);
-            }
-        }
-        if (decoder.parameters().containsKey("withoutTenantId")) {
-            String withoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
-
-            if (withoutTenantId != null) {
-                if (Boolean.valueOf(withoutTenantId)) {
-                    queryRequest.setWithoutTenantId(Boolean.TRUE);
+                if (value != null) {
+                    allRequestParams.put(property, value);
                 }
+            }
 
+            if (decoder.parameters().containsKey("id")) {
+                String id = decoder.parameters().get("id").get(0);
+
+                if (id != null) {
+                    queryRequest.setId(id);
+                }
+            }
+
+            if (decoder.parameters().containsKey("processInstanceId")) {
+                String processInstanceId = decoder.parameters().get("processInstanceId").get(0);
+
+                if (processInstanceId != null) {
+                    queryRequest.setProcessInstanceId(processInstanceId);
+                }
+            }
+
+            if (decoder.parameters().containsKey("processInstanceBusinessKey")) {
+                String processInstanceBusinessKey =
+                        decoder.parameters().get("processInstanceBusinessKey").get(0);
+
+                if (processInstanceBusinessKey != null) {
+                    queryRequest.setProcessBusinessKey(processInstanceBusinessKey);
+                }
+            }
+
+            if (decoder.parameters().containsKey("processDefinitionKey")) {
+                String processDefinitionKey = decoder.parameters().get("processDefinitionKey").get(0);
+                if (processDefinitionKey != null) {
+                    queryRequest.setProcessDefinitionKey(processDefinitionKey);
+                }
+            }
+
+            if (decoder.parameters().containsKey("processDefinitionId")) {
+                String processDefinitionId = decoder.parameters().get("processDefinitionId").get(0);
+
+                if (processDefinitionId != null) {
+                    queryRequest.setProcessDefinitionId(processDefinitionId);
+                }
+            }
+
+            if (decoder.parameters().containsKey("messageEventSubscriptionName")) {
+                String messageEventSubscriptionName =
+                        decoder.parameters().get("messageEventSubscriptionName").get(0);
+
+                if (messageEventSubscriptionName != null) {
+                    queryRequest.setMessageEventSubscriptionName(messageEventSubscriptionName);
+                }
+            }
+            if (decoder.parameters().containsKey("signalEventSubscriptionName")) {
+                String signalEventSubscriptionName =
+                        decoder.parameters().get("signalEventSubscriptionName").get(0);
+
+                if (signalEventSubscriptionName != null) {
+                    queryRequest.setSignalEventSubscriptionName(signalEventSubscriptionName);
+                }
+            }
+            if (decoder.parameters().containsKey("activityId")) {
+                String activityId = decoder.parameters().get("activityId").get(0);
+
+                if (activityId != null) {
+                    queryRequest.setActivityId(activityId);
+                }
+            }
+            if (decoder.parameters().containsKey("parentId")) {
+                String parentId = decoder.parameters().get("parentId").get(0);
+
+                if (parentId != null) {
+                    queryRequest.setParentId(parentId);
+                }
+            }
+            if (decoder.parameters().containsKey("tenantId")) {
+                String tenantId = decoder.parameters().get("tenantId").get(0);
+
+                if (tenantId != null) {
+                    queryRequest.setTenantId(tenantId);
+                }
+            }
+            if (decoder.parameters().containsKey("tenantIdLike")) {
+                String tenantIdLike = decoder.parameters().get("tenantIdLike").get(0);
+
+                if (tenantIdLike != null) {
+                    queryRequest.setTenantIdLike(tenantIdLike);
+                }
+            }
+            if (decoder.parameters().containsKey("withoutTenantId")) {
+                String withoutTenantId = decoder.parameters().get("withoutTenantId").get(0);
+
+                if (withoutTenantId != null) {
+                    if (Boolean.valueOf(withoutTenantId)) {
+                        queryRequest.setWithoutTenantId(Boolean.TRUE);
+                    }
+
+                }
             }
         }
 
