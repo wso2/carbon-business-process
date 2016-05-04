@@ -102,7 +102,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.runtime.WorkflowTaskService",
         service = Microservice.class,
         immediate = true)
-@Path("/bps/bpmn/{version}/{context}/tasks")
+@Path("/tasks")
 public class WorkflowTaskService extends BaseTaskService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(WorkflowTaskService.class);

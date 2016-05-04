@@ -59,7 +59,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.repository.ModelService",
         service = Microservice.class,
         immediate = true)
-@Path("/bps/bpmn/{version}/{context}/models")
+@Path("/models")
 public class ModelService implements Microservice {
 
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();

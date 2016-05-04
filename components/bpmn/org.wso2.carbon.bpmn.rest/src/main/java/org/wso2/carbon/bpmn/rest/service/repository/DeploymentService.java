@@ -69,7 +69,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.repository.DeploymentService",
         service = Microservice.class,
         immediate = true)
-@Path("/bps/bpmn/{version}/{context}/deployments")
+@Path("/deployments")
 public class DeploymentService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(DeploymentService.class);
