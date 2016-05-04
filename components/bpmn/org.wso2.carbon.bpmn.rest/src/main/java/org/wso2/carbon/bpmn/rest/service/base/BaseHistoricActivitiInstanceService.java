@@ -25,7 +25,9 @@ import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
-import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,48 +37,50 @@ import java.util.Map;
  */
 public class BaseHistoricActivitiInstanceService {
 
-    private static Map<String, QueryProperty> allowedSortProperties =
-            new HashMap<>();
-    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final Map<String, QueryProperty> allowedSortProperties;
+    protected static final List<String> ALL_PROPERTIES_LIST ;
 
     static {
-        allowedSortProperties.put("activityId", HistoricActivityInstanceQueryProperty.ACTIVITY_ID);
-        allowedSortProperties
+        Map<String, QueryProperty> allowedPropertiesMap = new HashMap<>();
+        allowedPropertiesMap.put("activityId", HistoricActivityInstanceQueryProperty.ACTIVITY_ID);
+        allowedPropertiesMap
                 .put("activityName", HistoricActivityInstanceQueryProperty.ACTIVITY_NAME);
-        allowedSortProperties
+        allowedPropertiesMap
                 .put("activityType", HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
-        allowedSortProperties.put("duration", HistoricActivityInstanceQueryProperty.DURATION);
-        allowedSortProperties.put("endTime", HistoricActivityInstanceQueryProperty.END);
-        allowedSortProperties
+        allowedPropertiesMap.put("duration", HistoricActivityInstanceQueryProperty.DURATION);
+        allowedPropertiesMap.put("endTime", HistoricActivityInstanceQueryProperty.END);
+        allowedPropertiesMap
                 .put("executionId", HistoricActivityInstanceQueryProperty.EXECUTION_ID);
-        allowedSortProperties.put("activityInstanceId",
+        allowedPropertiesMap.put("activityInstanceId",
                                   HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
-        allowedSortProperties.put("processDefinitionId",
+        allowedPropertiesMap.put("processDefinitionId",
                                   HistoricActivityInstanceQueryProperty.PROCESS_DEFINITION_ID);
-        allowedSortProperties.put("processInstanceId",
+        allowedPropertiesMap.put("processInstanceId",
                                   HistoricActivityInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        allowedSortProperties.put("startTime", HistoricActivityInstanceQueryProperty.START);
-        allowedSortProperties.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
-
+        allowedPropertiesMap.put("startTime", HistoricActivityInstanceQueryProperty.START);
+        allowedPropertiesMap.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
+        allowedSortProperties = Collections.unmodifiableMap(allowedPropertiesMap);
     }
 
     static {
-        ALL_PROPERTIES_LIST.add("activityId");
-        ALL_PROPERTIES_LIST.add("activityInstanceId");
-        ALL_PROPERTIES_LIST.add("activityName");
-        ALL_PROPERTIES_LIST.add("activityType");
-        ALL_PROPERTIES_LIST.add("executionId");
-        ALL_PROPERTIES_LIST.add("finished");
-        ALL_PROPERTIES_LIST.add("taskAssignee");
-        ALL_PROPERTIES_LIST.add("processInstanceId");
-        ALL_PROPERTIES_LIST.add("processDefinitionId");
-        ALL_PROPERTIES_LIST.add("tenantId");
-        ALL_PROPERTIES_LIST.add("tenantIdLike");
-        ALL_PROPERTIES_LIST.add("withoutTenantId");
-        ALL_PROPERTIES_LIST.add("start");
-        ALL_PROPERTIES_LIST.add("size");
-        ALL_PROPERTIES_LIST.add("order");
-        ALL_PROPERTIES_LIST.add("sort");
+        List<String> properties = new ArrayList<>();
+        properties.add("activityId");
+        properties.add("activityInstanceId");
+        properties.add("activityName");
+        properties.add("activityType");
+        properties.add("executionId");
+        properties.add("finished");
+        properties.add("taskAssignee");
+        properties.add("processInstanceId");
+        properties.add("processDefinitionId");
+        properties.add("tenantId");
+        properties.add("tenantIdLike");
+        properties.add("withoutTenantId");
+        properties.add("start");
+        properties.add("size");
+        properties.add("order");
+        properties.add("sort");
+        ALL_PROPERTIES_LIST = Collections.unmodifiableList(properties);
     }
 
     protected HistoricActivityInstanceQueryRequest getHistoricActivityInstanceQueryRequest(

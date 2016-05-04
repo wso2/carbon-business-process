@@ -16,17 +16,14 @@
 
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.DelegationState;
@@ -34,21 +31,21 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.IOUtils;
-//import org.apache.commons.lang.CharSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
@@ -68,7 +65,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.TaskRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 import org.wso2.msf4j.Microservice;
-//import javax.activation.DataHandler;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,9 +74,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -93,9 +88,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+
+//import org.apache.commons.lang.CharSet;
+//import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+//import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+//import javax.activation.DataHandler;
+//import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -107,7 +105,23 @@ import javax.xml.bind.Unmarshaller;
 @Path("/bps/bpmn/{version}/{context}/tasks")
 public class WorkflowTaskService extends BaseTaskService implements Microservice {
 
-    private static final Log log = LogFactory.getLog(WorkflowTaskService.class);
+    private static final Logger log = LoggerFactory.getLogger(WorkflowTaskService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
+
 
     @Activate
     protected void activate(BundleContext bundleContext) {
@@ -511,144 +525,144 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
         }
     */
     //TODO: CHECK HTTPSERVLETRequest
-    @POST
-    @Path("/{task-id}/variables")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response createTaskVariable(@PathParam("task-id") String taskId,
-                                       @Context HttpServletRequest httpServletRequest,
-                                       @Context HttpRequest request) {
-
-        Task task = getTaskFromRequest(taskId);
-
-        Object result = null;
-        List<RestVariable> inputVariables = new ArrayList<>();
-        List<RestVariable> resultVariables = new ArrayList<>();
-        //result = resultVariables;
-
-        //  try {
-        String contentType = httpServletRequest.getContentType();
-        if (contentType.equals(MediaType.APPLICATION_JSON)) {
-            try {
-                @SuppressWarnings("unchecked") List<Object> variableObjects =
-                        (List<Object>) new ObjectMapper()
-                                .readValue(httpServletRequest.getInputStream(), List.class);
-                for (Object restObject : variableObjects) {
-                    RestVariable restVariable =
-                            new ObjectMapper().convertValue(restObject, RestVariable.class);
-                    inputVariables.add(restVariable);
-                }
-            } catch (IOException e) {
-                throw new ActivitiIllegalArgumentException(
-                        "request body could not be transformed to a RestVariable " + "instance.",
-                        e);
-            }
-
-        } else if (contentType.equals(MediaType.APPLICATION_XML)) {
-
-            JAXBContext jaxbContext = null;
-            try {
-                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
-                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                RestVariableCollection restVariableCollection =
-                        (RestVariableCollection) jaxbUnmarshaller
-                                .unmarshal(httpServletRequest.getInputStream());
-                if (restVariableCollection == null) {
-                    throw new ActivitiIllegalArgumentException(
-                            "xml request body could not be transformed to a " +
-                            "RestVariable Collection instance.");
-                }
-                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
-
-                if (restVariableList.size() == 0) {
-                    throw new ActivitiIllegalArgumentException(
-                            "xml request body could not identify any rest " +
-                            "variables to be updated");
-                }
-                for (RestVariable restVariable : restVariableList) {
-                    inputVariables.add(restVariable);
-                }
-
-            } catch (JAXBException | IOException e) {
-                throw new ActivitiIllegalArgumentException(
-                        "xml request body could not be transformed to a " +
-                        "RestVariable instance.", e);
-            }
-        }
-
-        /*} catch (Exception e) {
-            throw new ActivitiIllegalArgumentException(
-                    "Failed to serialize to a RestVariable instance", e);
-        }*/
-
-        if (inputVariables.size() == 0) {
-            throw new ActivitiIllegalArgumentException(
-                    "Request didn't contain a list of variables to create.");
-        }
-
-        RestVariable.RestVariableScope sharedScope = null;
-        RestVariable.RestVariableScope varScope = null;
-        Map<String, Object> variablesToSet = new HashMap<>();
-
-        RestResponseFactory restResponseFactory = new RestResponseFactory();
-
-        for (RestVariable var : inputVariables) {
-            // Validate if scopes match
-            varScope = var.getVariableScope();
-            if (var.getName() == null) {
-                throw new ActivitiIllegalArgumentException("Variable name is required");
-            }
-
-            if (varScope == null) {
-                varScope = RestVariable.RestVariableScope.LOCAL;
-            }
-            if (sharedScope == null) {
-                sharedScope = varScope;
-            }
-            if (varScope != sharedScope) {
-                throw new ActivitiIllegalArgumentException(
-                        "Only allowed to update multiple variables in the same scope.");
-            }
-
-            if (hasVariableOnScope(task, var.getName(), varScope)) {
-                throw new BPMNConflictException(
-                        "Variable '" + var.getName() + "' is already present on task '" +
-                        task.getId() +
-                        "'.");
-            }
-
-            Object actualVariableValue = restResponseFactory.getVariableValue(var);
-            variablesToSet.put(var.getName(), actualVariableValue);
-            resultVariables.add(restResponseFactory
-                                        .createRestVariable(var.getName(), actualVariableValue,
-                                                            varScope, task.getId(),
-                                                            RestResponseFactory.VARIABLE_TASK,
-                                                            false, request.getUri()));
-        }
-
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-
-        TaskService taskService = BPMNOSGIService.getTaskService();
-
-        if (!variablesToSet.isEmpty()) {
-            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
-                taskService.setVariablesLocal(task.getId(), variablesToSet);
-            } else {
-                if (task.getExecutionId() != null) {
-                    // Explicitly set on execution, setting non-local variables on task will
-                    // override local-variables if exists
-                    runtimeService.setVariables(task.getExecutionId(), variablesToSet);
-                } else {
-                    // Standalone task, no global variables possible
-                    throw new ActivitiIllegalArgumentException(
-                            "Cannot set global variables on task '" + task.getId() +
-                            "', task is not part of process.");
-                }
-            }
-        }
-
-        return Response.ok().status(Response.Status.CREATED).build();
-    }
+//    @POST
+//    @Path("/{task-id}/variables")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response createTaskVariable(@PathParam("task-id") String taskId,
+//                                       @Context HttpServletRequest httpServletRequest,
+//                                       @Context HttpRequest request) {
+//
+//        Task task = getTaskFromRequest(taskId);
+//
+//        Object result = null;
+//        List<RestVariable> inputVariables = new ArrayList<>();
+//        List<RestVariable> resultVariables = new ArrayList<>();
+//        //result = resultVariables;
+//
+//        //  try {
+//        String contentType = httpServletRequest.getContentType();
+//        if (contentType.equals(MediaType.APPLICATION_JSON)) {
+//            try {
+//                @SuppressWarnings("unchecked") List<Object> variableObjects =
+//                        (List<Object>) new ObjectMapper()
+//                                .readValue(httpServletRequest.getInputStream(), List.class);
+//                for (Object restObject : variableObjects) {
+//                    RestVariable restVariable =
+//                            new ObjectMapper().convertValue(restObject, RestVariable.class);
+//                    inputVariables.add(restVariable);
+//                }
+//            } catch (IOException e) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "request body could not be transformed to a RestVariable " + "instance.",
+//                        e);
+//            }
+//
+//        } else if (contentType.equals(MediaType.APPLICATION_XML)) {
+//
+//            JAXBContext jaxbContext = null;
+//            try {
+//                jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
+//                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+//                RestVariableCollection restVariableCollection =
+//                        (RestVariableCollection) jaxbUnmarshaller
+//                                .unmarshal(httpServletRequest.getInputStream());
+//                if (restVariableCollection == null) {
+//                    throw new ActivitiIllegalArgumentException(
+//                            "xml request body could not be transformed to a " +
+//                            "RestVariable Collection instance.");
+//                }
+//                List<RestVariable> restVariableList = restVariableCollection.getRestVariables();
+//
+//                if (restVariableList.size() == 0) {
+//                    throw new ActivitiIllegalArgumentException(
+//                            "xml request body could not identify any rest " +
+//                            "variables to be updated");
+//                }
+//                for (RestVariable restVariable : restVariableList) {
+//                    inputVariables.add(restVariable);
+//                }
+//
+//            } catch (JAXBException | IOException e) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "xml request body could not be transformed to a " +
+//                        "RestVariable instance.", e);
+//            }
+//        }
+//
+//        /*} catch (Exception e) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "Failed to serialize to a RestVariable instance", e);
+//        }*/
+//
+//        if (inputVariables.size() == 0) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "Request didn't contain a list of variables to create.");
+//        }
+//
+//        RestVariable.RestVariableScope sharedScope = null;
+//        RestVariable.RestVariableScope varScope = null;
+//        Map<String, Object> variablesToSet = new HashMap<>();
+//
+//        RestResponseFactory restResponseFactory = new RestResponseFactory();
+//
+//        for (RestVariable var : inputVariables) {
+//            // Validate if scopes match
+//            varScope = var.getVariableScope();
+//            if (var.getName() == null) {
+//                throw new ActivitiIllegalArgumentException("Variable name is required");
+//            }
+//
+//            if (varScope == null) {
+//                varScope = RestVariable.RestVariableScope.LOCAL;
+//            }
+//            if (sharedScope == null) {
+//                sharedScope = varScope;
+//            }
+//            if (varScope != sharedScope) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "Only allowed to update multiple variables in the same scope.");
+//            }
+//
+//            if (hasVariableOnScope(task, var.getName(), varScope)) {
+//                throw new BPMNConflictException(
+//                        "Variable '" + var.getName() + "' is already present on task '" +
+//                        task.getId() +
+//                        "'.");
+//            }
+//
+//            Object actualVariableValue = restResponseFactory.getVariableValue(var);
+//            variablesToSet.put(var.getName(), actualVariableValue);
+//            resultVariables.add(restResponseFactory
+//                                        .createRestVariable(var.getName(), actualVariableValue,
+//                                                            varScope, task.getId(),
+//                                                            RestResponseFactory.VARIABLE_TASK,
+//                                                            false, request.getUri()));
+//        }
+//
+//        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+//
+//        TaskService taskService = BPMNOSGIService.getTaskService();
+//
+//        if (!variablesToSet.isEmpty()) {
+//            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
+//                taskService.setVariablesLocal(task.getId(), variablesToSet);
+//            } else {
+//                if (task.getExecutionId() != null) {
+//                    // Explicitly set on execution, setting non-local variables on task will
+//                    // override local-variables if exists
+//                    runtimeService.setVariables(task.getExecutionId(), variablesToSet);
+//                } else {
+//                    // Standalone task, no global variables possible
+//                    throw new ActivitiIllegalArgumentException(
+//                            "Cannot set global variables on task '" + task.getId() +
+//                            "', task is not part of process.");
+//                }
+//            }
+//        }
+//
+//        return Response.ok().status(Response.Status.CREATED).build();
+//    }
 
     /* TODO
         @PUT
@@ -675,89 +689,89 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
             return Response.ok().entity(result).build();
         }
     *///todo:
-    @PUT
-    @Path("/{task-id}/variables/{variable-name}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response updateTaskVariable(@PathParam("task-id") String taskId,
-                                       @PathParam("variable-name") String variableName,
-                                       @Context HttpServletRequest httpServletRequest,
-                                       @Context HttpRequest request) {
-        Task task = getTaskFromRequest(taskId);
-
-        RestVariable restVariable = null;
-        String contentType = httpServletRequest.getContentType();
-
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
-            try {
-                restVariable = new ObjectMapper()
-                        .readValue(httpServletRequest.getInputStream(), RestVariable.class);
-            } catch (Exception e) {
-                throw new ActivitiIllegalArgumentException(
-                        "Error converting request body to RestVariable instance", e);
-            }
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
-            JAXBContext jaxbContext = null;
-            try {
-                jaxbContext = JAXBContext.newInstance(RestVariable.class);
-                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller
-                        .unmarshal(httpServletRequest.getInputStream());
-
-            } catch (JAXBException | IOException e) {
-                throw new ActivitiIllegalArgumentException(
-                        "xml request body could not be transformed to a " +
-                        "Rest Variable instance.", e);
-            }
-        }
-        if (restVariable == null) {
-            throw new ActivitiException("Invalid body was supplied");
-        }
-        if (!restVariable.getName().equals(variableName)) {
-            throw new ActivitiIllegalArgumentException(
-                    "Variable name in the body should be equal to the name used in the requested" +
-                    " URL.");
-        }
-
-        RestVariable result = setSimpleVariable(restVariable, task, false, request.getUri());
-        return Response.ok().entity(result).build();
-    }
-
-    @DELETE
-    @Path("/{task-id}/variables/{variable-name}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response deleteVariable(@PathParam("task-id") String taskId,
-                                   @PathParam("variable-name") String variableName,
-                                   @QueryParam("scope") String scopeString) {
-        Task task = getTaskFromRequest(taskId);
-
-        // Determine scope
-        RestVariable.RestVariableScope scope = RestVariable.RestVariableScope.LOCAL;
-        if (scopeString != null) {
-            scope = RestVariable.getScopeFromString(scopeString);
-        }
-
-        if (!hasVariableOnScope(task, variableName, scope)) {
-            throw new ActivitiObjectNotFoundException(
-                    "Task '" + task.getId() + "' doesn't have a variable '" +
-                    variableName + "' in scope " + scope.name().toLowerCase(Locale.getDefault()),
-                    VariableInstanceEntity.class);
-        }
-
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
-
-        TaskService taskService = BPMNOSGIService.getTaskService();
-
-        if (scope == RestVariable.RestVariableScope.LOCAL) {
-            taskService.removeVariableLocal(task.getId(), variableName);
-        } else {
-            // Safe to use executionId, as the hasVariableOnScope whould have stopped a
-            // global-var update on standalone task
-            runtimeService.removeVariable(task.getExecutionId(), variableName);
-        }
-
-        return Response.ok().status(Response.Status.NO_CONTENT).build();
-    }
+//    @PUT
+//    @Path("/{task-id}/variables/{variable-name}")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response updateTaskVariable(@PathParam("task-id") String taskId,
+//                                       @PathParam("variable-name") String variableName,
+//                                       @Context HttpServletRequest httpServletRequest,
+//                                       @Context HttpRequest request) {
+//        Task task = getTaskFromRequest(taskId);
+//
+//        RestVariable restVariable = null;
+//        String contentType = httpServletRequest.getContentType();
+//
+//        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+//            try {
+//                restVariable = new ObjectMapper()
+//                        .readValue(httpServletRequest.getInputStream(), RestVariable.class);
+//            } catch (Exception e) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "Error converting request body to RestVariable instance", e);
+//            }
+//        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+//            JAXBContext jaxbContext = null;
+//            try {
+//                jaxbContext = JAXBContext.newInstance(RestVariable.class);
+//                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+//                restVariable = (RestVariable) jaxbUnmarshaller
+//                        .unmarshal(httpServletRequest.getInputStream());
+//
+//            } catch (JAXBException | IOException e) {
+//                throw new ActivitiIllegalArgumentException(
+//                        "xml request body could not be transformed to a " +
+//                        "Rest Variable instance.", e);
+//            }
+//        }
+//        if (restVariable == null) {
+//            throw new ActivitiException("Invalid body was supplied");
+//        }
+//        if (!restVariable.getName().equals(variableName)) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "Variable name in the body should be equal to the name used in the requested" +
+//                    " URL.");
+//        }
+//
+//        RestVariable result = setSimpleVariable(restVariable, task, false, request.getUri());
+//        return Response.ok().entity(result).build();
+//    }
+//
+//    @DELETE
+//    @Path("/{task-id}/variables/{variable-name}")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response deleteVariable(@PathParam("task-id") String taskId,
+//                                   @PathParam("variable-name") String variableName,
+//                                   @QueryParam("scope") String scopeString) {
+//        Task task = getTaskFromRequest(taskId);
+//
+//        // Determine scope
+//        RestVariable.RestVariableScope scope = RestVariable.RestVariableScope.LOCAL;
+//        if (scopeString != null) {
+//            scope = RestVariable.getScopeFromString(scopeString);
+//        }
+//
+//        if (!hasVariableOnScope(task, variableName, scope)) {
+//            throw new ActivitiObjectNotFoundException(
+//                    "Task '" + task.getId() + "' doesn't have a variable '" +
+//                    variableName + "' in scope " + scope.name().toLowerCase(Locale.getDefault()),
+//                    VariableInstanceEntity.class);
+//        }
+//
+//        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+//
+//        TaskService taskService = BPMNOSGIService.getTaskService();
+//
+//        if (scope == RestVariable.RestVariableScope.LOCAL) {
+//            taskService.removeVariableLocal(task.getId(), variableName);
+//        } else {
+//            // Safe to use executionId, as the hasVariableOnScope whould have stopped a
+//            // global-var update on standalone task
+//            runtimeService.removeVariable(task.getExecutionId(), variableName);
+//        }
+//
+//        return Response.ok().status(Response.Status.NO_CONTENT).build();
+//    }
 
     @DELETE
     @Path("/{task-id}/variables")
@@ -828,24 +842,24 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
     }
 
     //TODO:
-    @GET
-    @Path("/{task-id}/identity-links/{family}/{identity-id}/{type}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getIdentityLink(@PathParam("task-id") String taskId,
-                                    @PathParam("family") String family,
-                                    @PathParam("identity-id") String identityId,
-                                    @PathParam("type") String type,
-                                    @Context HttpServletRequest httpServletRequest,
-                                    @Context HttpRequest request) {
-
-        Task task = getTaskFromRequest(taskId);
-        validateIdentityLinkArguments(family, identityId, type);
-
-        IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
-
-        return Response.ok().entity(new RestResponseFactory()
-                                            .createRestIdentityLink(link, request.getUri())).build();
-    }
+//    @GET
+//    @Path("/{task-id}/identity-links/{family}/{identity-id}/{type}")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response getIdentityLink(@PathParam("task-id") String taskId,
+//                                    @PathParam("family") String family,
+//                                    @PathParam("identity-id") String identityId,
+//                                    @PathParam("type") String type,
+//                                    @Context HttpServletRequest httpServletRequest,
+//                                    @Context HttpRequest request) {
+//
+//        Task task = getTaskFromRequest(taskId);
+//        validateIdentityLinkArguments(family, identityId, type);
+//
+//        IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
+//
+//        return Response.ok().entity(new RestResponseFactory()
+//                                            .createRestIdentityLink(link, request.getUri())).build();
+//    }
 
     @DELETE
     @Path("/{task-id}/identity-links/{family}/{identity-id}/{type}")
@@ -1066,26 +1080,26 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
             return responseBuilder.status(Response.Status.CREATED).entity(result).build();
         }
     *///todo:
-    @POST
-    @Path("/{task-id}/attachments")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response createAttachmentForNonBinary(@PathParam("task-id") String taskId,
-                                                 @Context HttpServletRequest httpServletRequest,
-                                                 AttachmentRequest attachmentRequest,
-                                                 @Context HttpRequest request) {
-
-        AttachmentResponse result = null;
-        Task task = getTaskFromRequest(taskId);
-        Response.ResponseBuilder responseBuilder = Response.ok();
-        if (attachmentRequest == null) {
-            throw new ActivitiIllegalArgumentException(
-                    "AttachmentRequest properties not found in request");
-        }
-
-        result = createSimpleAttachment(attachmentRequest, task, request);
-        return responseBuilder.status(Response.Status.CREATED).entity(result).build();
-    }
+//    @POST
+//    @Path("/{task-id}/attachments")
+//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//    public Response createAttachmentForNonBinary(@PathParam("task-id") String taskId,
+//                                                 @Context HttpServletRequest httpServletRequest,
+//                                                 AttachmentRequest attachmentRequest,
+//                                                 @Context HttpRequest request) {
+//
+//        AttachmentResponse result = null;
+//        Task task = getTaskFromRequest(taskId);
+//        Response.ResponseBuilder responseBuilder = Response.ok();
+//        if (attachmentRequest == null) {
+//            throw new ActivitiIllegalArgumentException(
+//                    "AttachmentRequest properties not found in request");
+//        }
+//
+//        result = createSimpleAttachment(attachmentRequest, task, request);
+//        return responseBuilder.status(Response.Status.CREATED).entity(result).build();
+//    }
 
     @GET
     @Path("/{task-id}/attachments")
