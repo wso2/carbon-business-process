@@ -96,8 +96,7 @@ public class FormDataService implements Microservice {
     public Response getFormData(@Context Request request, @QueryParam("taskId") String taskId,
                                 @QueryParam("processDefinitionId") String processDefinitionId) {
 
-        if (taskId == null && processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException(
+        if (taskId == null && processDefinitionId == null) {throw new ActivitiIllegalArgumentException(
                     "The taskId or processDefinitionId parameter has to be provided");
         }
 

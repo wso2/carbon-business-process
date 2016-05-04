@@ -144,81 +144,81 @@ public class ProcessDefinitionService implements Microservice {
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        for (String property : allPropertiesList) {
-            String value = decoder.parameters().get(property).get(0);
+            for (String property : allPropertiesList) {
+                String value = decoder.parameters().get(property).get(0);
 
-            if (value != null) {
-                allRequestParams.put(property, value);
-            }
-        }
-        ProcessDefinitionQuery processDefinitionQuery =
-                repositoryService.createProcessDefinitionQuery();
-
-        // Populate filter-parameters
-        if (allRequestParams.containsKey("category")) {
-            processDefinitionQuery.processDefinitionCategory(allRequestParams.get("category"));
-        }
-        if (allRequestParams.containsKey("categoryLike")) {
-            processDefinitionQuery
-                    .processDefinitionCategoryLike(allRequestParams.get("categoryLike"));
-        }
-        if (allRequestParams.containsKey("categoryNotEquals")) {
-            processDefinitionQuery
-                    .processDefinitionCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
-        }
-        if (allRequestParams.containsKey("key")) {
-            processDefinitionQuery.processDefinitionKey(allRequestParams.get("key"));
-        }
-        if (allRequestParams.containsKey("keyLike")) {
-            processDefinitionQuery.processDefinitionKeyLike(allRequestParams.get("keyLike"));
-        }
-        if (allRequestParams.containsKey("name")) {
-            processDefinitionQuery.processDefinitionName(allRequestParams.get("name"));
-        }
-        if (allRequestParams.containsKey("nameLike")) {
-            processDefinitionQuery.processDefinitionNameLike(allRequestParams.get("nameLike"));
-        }
-        if (allRequestParams.containsKey("resourceName")) {
-            processDefinitionQuery
-                    .processDefinitionResourceName(allRequestParams.get("resourceName"));
-        }
-        if (allRequestParams.containsKey("resourceNameLike")) {
-            processDefinitionQuery
-                    .processDefinitionResourceNameLike(allRequestParams.get("resourceNameLike"));
-        }
-        if (allRequestParams.containsKey("version")) {
-            processDefinitionQuery
-                    .processDefinitionVersion(Integer.valueOf(allRequestParams.get("version")));
-        }
-        if (allRequestParams.containsKey("suspended")) {
-            Boolean suspended = Boolean.valueOf(allRequestParams.get("suspended"));
-            if (suspended != null) {
-                if (suspended) {
-                    processDefinitionQuery.suspended();
-                } else {
-                    processDefinitionQuery.active();
+                if (value != null) {
+                    allRequestParams.put(property, value);
                 }
             }
-        }
-        if (allRequestParams.containsKey("latest")) {
-            Boolean latest = Boolean.valueOf(allRequestParams.get("latest"));
-            if (latest != null && latest) {
-                processDefinitionQuery.latestVersion();
+            ProcessDefinitionQuery processDefinitionQuery =
+                    repositoryService.createProcessDefinitionQuery();
+
+            // Populate filter-parameters
+            if (allRequestParams.containsKey("category")) {
+                processDefinitionQuery.processDefinitionCategory(allRequestParams.get("category"));
             }
-        }
-        if (allRequestParams.containsKey("deploymentId")) {
-            processDefinitionQuery.deploymentId(allRequestParams.get("deploymentId"));
-        }
-        if (allRequestParams.containsKey("startableByUser")) {
-            processDefinitionQuery.startableByUser(allRequestParams.get("startableByUser"));
-        }
-        if (allRequestParams.containsKey("tenantId")) {
-            processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
-        }
-        if (allRequestParams.containsKey("tenantIdLike")) {
-            processDefinitionQuery
-                    .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
-        }
+            if (allRequestParams.containsKey("categoryLike")) {
+                processDefinitionQuery
+                        .processDefinitionCategoryLike(allRequestParams.get("categoryLike"));
+            }
+            if (allRequestParams.containsKey("categoryNotEquals")) {
+                processDefinitionQuery
+                        .processDefinitionCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
+            }
+            if (allRequestParams.containsKey("key")) {
+                processDefinitionQuery.processDefinitionKey(allRequestParams.get("key"));
+            }
+            if (allRequestParams.containsKey("keyLike")) {
+                processDefinitionQuery.processDefinitionKeyLike(allRequestParams.get("keyLike"));
+            }
+            if (allRequestParams.containsKey("name")) {
+                processDefinitionQuery.processDefinitionName(allRequestParams.get("name"));
+            }
+            if (allRequestParams.containsKey("nameLike")) {
+                processDefinitionQuery.processDefinitionNameLike(allRequestParams.get("nameLike"));
+            }
+            if (allRequestParams.containsKey("resourceName")) {
+                processDefinitionQuery
+                        .processDefinitionResourceName(allRequestParams.get("resourceName"));
+            }
+            if (allRequestParams.containsKey("resourceNameLike")) {
+                processDefinitionQuery
+                        .processDefinitionResourceNameLike(allRequestParams.get("resourceNameLike"));
+            }
+            if (allRequestParams.containsKey("version")) {
+                processDefinitionQuery
+                        .processDefinitionVersion(Integer.valueOf(allRequestParams.get("version")));
+            }
+            if (allRequestParams.containsKey("suspended")) {
+                Boolean suspended = Boolean.valueOf(allRequestParams.get("suspended"));
+                if (suspended != null) {
+                    if (suspended) {
+                        processDefinitionQuery.suspended();
+                    } else {
+                        processDefinitionQuery.active();
+                    }
+                }
+            }
+            if (allRequestParams.containsKey("latest")) {
+                Boolean latest = Boolean.valueOf(allRequestParams.get("latest"));
+                if (latest != null && latest) {
+                    processDefinitionQuery.latestVersion();
+                }
+            }
+            if (allRequestParams.containsKey("deploymentId")) {
+                processDefinitionQuery.deploymentId(allRequestParams.get("deploymentId"));
+            }
+            if (allRequestParams.containsKey("startableByUser")) {
+                processDefinitionQuery.startableByUser(allRequestParams.get("startableByUser"));
+            }
+            if (allRequestParams.containsKey("tenantId")) {
+                processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
+            }
+            if (allRequestParams.containsKey("tenantIdLike")) {
+                processDefinitionQuery
+                        .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
+            }
 
         DataResponse response =
                 new ProcessDefinitionsPaginateList(new RestResponseFactory(), request.getUri())
