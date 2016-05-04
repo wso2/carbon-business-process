@@ -20,7 +20,7 @@ package org.wso2.carbon.bpmn.rest.service.base;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 
 /**
  *
