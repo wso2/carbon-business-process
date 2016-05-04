@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -35,6 +34,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
+import org.wso2.msf4j.Request;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +84,7 @@ public class BaseProcessInstanceService {
         ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
-    protected Map<String, String> allRequestParams(HttpRequest request) {
+    protected Map<String, String> allRequestParams(Request request) {
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property : ALL_PROPERTIES_LIST) {

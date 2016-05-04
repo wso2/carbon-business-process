@@ -15,13 +15,13 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricVariableInstanceService;
+import org.wso2.msf4j.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class HistoricVariableInstanceQueryService extends BaseHistoricVariableIn
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response queryVariableInstances(HistoricVariableInstanceQueryRequest queryRequest,
-                                           @Context HttpRequest request) {
+                                           @Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());

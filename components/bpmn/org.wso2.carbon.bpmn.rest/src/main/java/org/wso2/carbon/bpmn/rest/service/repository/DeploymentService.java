@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.repository;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -46,6 +45,7 @@ import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponseColl
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentsPaginateList;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -128,7 +128,7 @@ public class DeploymentService implements Microservice {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getDeployments(@Context HttpRequest request) {
+    public Response getDeployments(@Context Request request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
@@ -205,7 +205,7 @@ public class DeploymentService implements Microservice {
     @Path("/{deployment-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getDeployment(@PathParam("deployment-id") String deploymentId,
-                                  @Context HttpRequest request) {
+                                  @Context Request request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Deployment deployment =
@@ -227,7 +227,7 @@ public class DeploymentService implements Microservice {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getDeploymentResourceForDifferentUrl(
             @PathParam("deployment-id") String deploymentId,
-            @PathParam("resource-path") String resourcePath, @Context HttpRequest request) {
+            @PathParam("resource-path") String resourcePath, @Context Request request) {
 
         if (log.isDebugEnabled()) {
             log.debug("deployment-id:" + deploymentId + " resource-path:" + resourcePath);
@@ -265,7 +265,7 @@ public class DeploymentService implements Microservice {
     @Path("/{deployment-id}/resources")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId,
-                                           @Context HttpRequest request) {
+                                           @Context Request request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         // Check if deployment exists

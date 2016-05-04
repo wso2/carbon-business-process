@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -48,6 +47,7 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.HistoricTaskInstanceResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -107,7 +107,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getHistoricProcessInstances(@Context HttpRequest request) {
+    public Response getHistoricProcessInstances(@Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -295,7 +295,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     @Path("/{task-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getTaskInstance(@PathParam("task-id") String taskId,
-                                    @Context HttpRequest request) {
+                                    @Context Request request) {
         HistoricTaskInstanceResponse historicTaskInstanceResponse = new RestResponseFactory()
                 .createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId),
                                                     request.getUri());
@@ -314,7 +314,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     @Path("/{task-id}/identitylinks")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getTaskIdentityLinks(@PathParam("task-id") String taskId,
-                                         @Context HttpRequest request) {
+                                         @Context Request request) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         List<HistoricIdentityLink> identityLinks =
                 historyService.getHistoricIdentityLinksForTask(taskId);
@@ -338,7 +338,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     @Path("/{task-id}/variables/{variable-name}/data")
     public byte[] getVariableData(@PathParam("task-id") String taskId,
                                   @PathParam("variable-name") String variableName,
-                                  @QueryParam("scope") String scope, @Context HttpRequest request) {
+                                  @QueryParam("scope") String scope, @Context Request request) {
 
         Response.ResponseBuilder response = Response.ok();
         try {
