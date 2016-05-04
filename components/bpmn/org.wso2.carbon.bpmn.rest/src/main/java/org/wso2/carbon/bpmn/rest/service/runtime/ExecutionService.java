@@ -15,7 +15,6 @@
  */
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -44,6 +43,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -117,7 +117,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Path("/{execution-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getExecution(@PathParam("execution-id") String executionId,
-                                 @Context HttpRequest request) {
+                                 @Context Request request) {
 
         ExecutionResponse executionResponse = new RestResponseFactory()
                 .createExecutionResponse(getExecutionFromRequest(executionId), request.getUri());
@@ -137,7 +137,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response performExecutionAction(@PathParam("execution-id") String executionId,
                                            ExecutionActionRequest actionRequest,
-                                           @Context HttpRequest request) {
+                                           @Context Request request) {
 
         Execution execution = getExecutionFromRequest(executionId);
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
@@ -210,7 +210,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }) //TODO:
-    public Response getProcessInstances(@Context HttpRequest request) {
+    public Response getProcessInstances(@Context Request request) {
         // Populate query based on request
         ExecutionQueryRequest queryRequest = new ExecutionQueryRequest();
         Map<String, String> allRequestParams = new HashMap<>();
@@ -356,7 +356,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Path("/{execution-id}/variables")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariables(@PathParam("execution-id") String executionId,
-                                 @QueryParam("scope") String scope, @Context HttpRequest req) {
+                                 @QueryParam("scope") String scope, @Context Request req) {
 
         Execution execution = getExecutionFromRequest(executionId);
         List<RestVariable> restVariableList =
@@ -373,7 +373,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 //    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 //    public Response createOrUpdateExecutionVariable(@PathParam("execution-id") String executionId,
 //                                                    @Context HttpServletRequest httpServletRequest,
-//                                                    @Context HttpRequest req) {
+//                                                    @Context Request req) {
 //        Execution execution = getExecutionFromRequest(executionId);
 //        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION,
 //                                       httpServletRequest, req.getUri());
@@ -399,7 +399,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 //    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 //    public Response createExecutionVariable(@PathParam("execution-id") String executionId,
 //                                            @Context HttpServletRequest httpServletRequest,
-//                                            @Context HttpRequest req) {
+//                                            @Context Request req) {
 //
 //        Execution execution = getExecutionFromRequest(executionId);
 //        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION,
@@ -413,7 +413,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response createBinaryExecutionVariable(@PathParam("executionId") String executionId,
-    @Context HttpStreamer httpStreamer,@Context HttpRequest request) {
+    @Context HttpStreamer httpStreamer,@Context Request request) {
 
         Execution execution = getExecutionFromRequest(executionId);
         RestVariable restVariable = createBinaryExecutionVariable(execution,RestResponseFactory.
@@ -435,7 +435,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RestVariable getVariable(@PathParam("execution-id") String executionId,
                                     @PathParam("variable-name") String variableName,
-                                    @QueryParam("scope") String scope, @Context HttpRequest req) {
+                                    @QueryParam("scope") String scope, @Context Request req) {
         Execution execution = getExecutionFromRequest(executionId);
         return getVariableFromRequest(execution, variableName, scope, false, req.getUri());
     }
@@ -465,7 +465,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 //    public Response updateVariable(@PathParam("execution-id") String executionId,
 //                                   @PathParam("variable-name") String variableName,
 //                                   @Context HttpServletRequest httpServletRequest,
-//                                   @Context HttpRequest req) {
+//                                   @Context Request req) {
 //        Execution execution = getExecutionFromRequest(executionId);
 //        RestVariable result = null;
 //
@@ -531,7 +531,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Path("/{execution-id}/variables/{variable-name}/data")
     public Response getVariableData(@PathParam("execution-id") String executionId,
                                     @PathParam("variable-name") String variableName,
-                                    @QueryParam("scope") String scope, @Context HttpRequest req) {
+                                    @QueryParam("scope") String scope, @Context Request req) {
 
         try {
             byte[] result = null;

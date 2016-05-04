@@ -17,7 +17,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.management;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -53,6 +52,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessEngineInfoResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.TableResponse;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -145,7 +145,7 @@ public class ManagementService implements Microservice {
     @GET
     @Path("/jobs")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DataResponse getJobs(@Context HttpRequest request) {
+    public DataResponse getJobs(@Context Request request) {
         JobQuery query =  BPMNOSGIService.getManagementService().createJobQuery();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         Map<String, List<String>> queryParams = decoder.parameters();
@@ -250,7 +250,7 @@ public class ManagementService implements Microservice {
     @GET
     @Path("/jobs/{job-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public JobResponse getJob(@PathParam("job-id") String jobId, @Context HttpRequest request) {
+    public JobResponse getJob(@PathParam("job-id") String jobId, @Context Request request) {
         Job job = getJobFromResponse(jobId);
 
         return restResponseFactory.createJobResponse(job, request.getUri());
@@ -327,7 +327,7 @@ public class ManagementService implements Microservice {
     @GET
     @Path("/tables")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public List<TableResponse> getTables(@Context HttpRequest request) {
+    public List<TableResponse> getTables(@Context Request request) {
         return restResponseFactory
                 .createTableResponseList( BPMNOSGIService.getManagementService().getTableCount(), request.getUri());
     }
@@ -349,7 +349,7 @@ public class ManagementService implements Microservice {
     @Path("/tables/{table-name}/data")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DataResponse getTableData(@PathParam("table-name") String tableName,
-                                     @Context HttpRequest request,
+                                     @Context Request request,
                                      @QueryParam("orderAscendingColumn") String orderAsc,
                                      @QueryParam("orderDescendingColumn") String orderDesc) {
 
@@ -418,7 +418,7 @@ public class ManagementService implements Microservice {
     @Path("/tables/{table-name}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public TableResponse getTable(@PathParam("table-name") String tableName,
-                                  @Context HttpRequest request) {
+                                  @Context Request request) {
         Map<String, Long> tableCounts =  BPMNOSGIService.getManagementService().getTableCount();
 
         TableResponse response = null;

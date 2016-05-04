@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -41,6 +40,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricDetailService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -97,7 +97,7 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getHistoricDetailInfo(@Context HttpRequest request) {
+    public Response getHistoricDetailInfo(@Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -150,7 +150,7 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
     @Path("/{detail-id}/data")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariableData(@PathParam("detail-id") String detailId,
-                                    @Context HttpRequest request) {
+                                    @Context Request request) {
         try {
             byte[] result = null;
             RestVariable variable = getVariableFromRequest(true, detailId, request.getUri());

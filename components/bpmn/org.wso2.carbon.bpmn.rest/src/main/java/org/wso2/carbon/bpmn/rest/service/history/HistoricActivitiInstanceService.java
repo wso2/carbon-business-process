@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -32,6 +31,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricActivitiInstanceService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class HistoricActivitiInstanceService extends BaseHistoricActivitiInstanc
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getHistoricActivityInstances(@Context HttpRequest request) {
+    public Response getHistoricActivityInstances(@Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());

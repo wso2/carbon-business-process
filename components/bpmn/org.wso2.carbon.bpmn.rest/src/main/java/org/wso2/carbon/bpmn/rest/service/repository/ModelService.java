@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.repository;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ModelQueryProperty;
@@ -38,6 +37,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelsPaginateList;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,7 +129,7 @@ public class ModelService implements Microservice {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getModels(@Context HttpRequest request) {
+    public Response getModels(@Context Request request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
 
