@@ -110,7 +110,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.runtime.ProcessInstanceService",
         service = Microservice.class,
         immediate = true)
-@Path("/bps/bpmn/{version}/{context}/process-instances")
+@Path("/process-instances")
 public class ProcessInstanceService extends BaseProcessInstanceService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(ProcessInstanceService.class);

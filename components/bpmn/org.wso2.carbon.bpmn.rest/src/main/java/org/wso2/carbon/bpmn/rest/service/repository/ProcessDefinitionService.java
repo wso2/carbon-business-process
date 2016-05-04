@@ -71,7 +71,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.repository.ProcessDefinitionService",
         service = Microservice.class,
         immediate = true)
-@Path("/bps/bpmn/{version}/{context}/process-definitions")
+@Path("/process-definitions")
 public class ProcessDefinitionService implements Microservice {
 
     private static final Map<String, QueryProperty> properties = new HashMap<>();
