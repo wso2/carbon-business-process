@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponse;

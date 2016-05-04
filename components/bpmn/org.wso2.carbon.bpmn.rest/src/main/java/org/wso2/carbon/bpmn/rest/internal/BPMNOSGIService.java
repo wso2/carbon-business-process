@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.rest.common.utils;
+package org.wso2.carbon.bpmn.rest.internal;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -24,6 +24,9 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+
 //import org.activiti.engine.impl.ProcessEngineImpl;
 //import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 //import org.activiti.engine.impl.interceptor.Command;
@@ -31,10 +34,8 @@ import org.activiti.engine.TaskService;
 //import org.activiti.engine.impl.interceptor.CommandExecutor;
 //import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 //import org.camunda.bpm.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 //import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 //import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 //import org.wso2.carbon.user.api.UserRealm;
 
 /**
@@ -48,7 +49,7 @@ public class BPMNOSGIService {
 
     public static BPMNEngineService getBPMNEngineService() {
         BPMNEngineService bpmnEngineService =
-                RestServiceLookUpComponent.getInstance().getBpmnEngineService();
+                RestServiceContentHolder.getInstance().getBpmnEngineService();
 
         if (bpmnEngineService == null) {
             throw new BPMNOSGIServiceException("BPMNEngineService service couldn't be identified");
