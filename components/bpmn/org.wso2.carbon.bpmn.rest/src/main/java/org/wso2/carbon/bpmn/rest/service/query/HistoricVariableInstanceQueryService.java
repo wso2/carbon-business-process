@@ -71,10 +71,12 @@ public class HistoricVariableInstanceQueryService extends BaseHistoricVariableIn
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property : allPropertiesList) {
-            String value = decoder.parameters().get(property).get(0);
+            if(decoder.parameters().size() > 0) {
+                String value = decoder.parameters().get(property).get(0);
 
-            if (value != null) {
-                allRequestParams.put(property, value);
+                if (value != null) {
+                    allRequestParams.put(property, value);
+                }
             }
         }
         DataResponse dataResponse =
