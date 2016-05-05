@@ -30,7 +30,7 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
  * Source tag UI implementation
  */
 public class SourceImpl extends SourcesImpl implements SourceInterface {
-
+    public static final String SVG_NAMESPACE = "http://www.w3.org/2000/svg";
     //Making the height and the width of the start and end icons to zero
     protected int startIconHeight = 0;
     protected int endIconHeight = 0;
@@ -178,7 +178,7 @@ public class SourceImpl extends SourcesImpl implements SourceInterface {
                                           int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_NAMESPACE, "g");
         return group;
     }
 
@@ -190,7 +190,7 @@ public class SourceImpl extends SourcesImpl implements SourceInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVG_NAMESPACE, "g");
         return subGroup;
     }
 
@@ -206,7 +206,7 @@ public class SourceImpl extends SourcesImpl implements SourceInterface {
      *         In this case the Source activity doesn't contain any components, so no arrow definitions/paths from activities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_NAMESPACE, "path");
         return path;
     }
 
@@ -228,7 +228,7 @@ public class SourceImpl extends SourcesImpl implements SourceInterface {
      */
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         group.appendChild(getBoxDefinition(doc));
