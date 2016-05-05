@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Service Task for payload which are in JSON/XML format
+ * Service Task for payload which are in JSON/XML format.
  */
 public class PayloadBuilderTask implements JavaDelegate {
 
