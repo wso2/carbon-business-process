@@ -73,7 +73,7 @@ public class DeploymentResponse {
     }
 
     public void setDeploymentTime(Date deploymentTime) {
-        this.deploymentTime = deploymentTime == null ? null : (Date) this.deploymentTime.clone();
+        this.deploymentTime = deploymentTime == null ? null : (Date)deploymentTime.clone();
     }
 
     public String getCategory() {
