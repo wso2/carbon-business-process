@@ -16,11 +16,11 @@
 
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
+import org.wso2.msf4j.Request;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class QueryTaskService extends BaseTaskService {
     @POST
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getTasks(TaskQueryRequest request, @Context HttpRequest currentRequest) {
+    public Response getTasks(TaskQueryRequest request, @Context Request currentRequest) {
         QueryStringDecoder decoder = new QueryStringDecoder(currentRequest.getUri());
         Map<String, List<String>> queryParams = decoder.parameters();
         DataResponse dataResponse =

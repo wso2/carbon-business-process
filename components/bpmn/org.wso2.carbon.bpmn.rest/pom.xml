@@ -92,10 +92,8 @@
 
         <!-- Other Dependencies -->
         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <scope>provided</scope>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -110,132 +108,28 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>javax.servlet</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.transport</groupId>
+            <artifactId>org.wso2.carbon.transport.http.netty</artifactId>
+        </dependency>
     </dependencies>
-
 
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
+        <private.package>org.wso2.carbon.bpmn.rest.internal</private.package>
+        <export.package>
+            org.wso2.carbon.bpmn.rest.*;version=${carbon.business-process.exp.pkg.version},
+        </export.package>
+        <import.package>
+            org.osgi.framework; version="[1.8.0, 2.0.0)",
+            org.wso2.msf4j.*;version="${carbon.msf4j.impl.version.range}",
+            org.slf4j; version="[1.7.7, 2.0.0)",
+            javax.ws.rs.*,
+            javax.management.*,
+            javax.naming.*,
+            javax.xml.stream.*
+        </import.package>
+        <dynamic.import.package>*</dynamic.import.package>
     </properties>
-    <!--&lt;!&ndash;</pluginManagement>&ndash;&gt;-->
-
-    <!--</build>-->
-
-
-    <!--<dependencies>-->
-
-    <!--<dependency>-->
-    <!--<groupId>org.wso2.orbit.org.activiti</groupId>-->
-    <!--<artifactId>activiti-all</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.wso2.msf4j</groupId>-->
-    <!--<artifactId>msf4j-core</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-
-
-    <!--&lt;!&ndash;dependency>-->
-    <!--<groupId>commons-fileupload</groupId>-->
-    <!--<artifactId>commons-fileupload</artifactId>-->
-    <!--<version>1.3.1</version>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>javax.servlet</groupId>-->
-    <!--<artifactId>javax.servlet-api</artifactId>-->
-    <!--<version>3.1.0</version>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency&ndash;&gt;-->
-
-    <!--<dependency>-->
-    <!--<groupId>org.eclipse.osgi</groupId>-->
-    <!--<artifactId>org.eclipse.osgi</artifactId>-->
-    <!--<version>3.9.1.v20130814-1242</version>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.wso2.carbon.business-process</groupId>-->
-    <!--<artifactId>org.wso2.carbon.bpmn</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--<exclusions>-->
-    <!--<exclusion>-->
-    <!--<groupId>javax.servlet</groupId>-->
-    <!--<artifactId>servlet-api</artifactId>-->
-    <!--</exclusion>-->
-    <!--<exclusion>-->
-    <!--<groupId>commons-fileupload</groupId>-->
-    <!--<artifactId>commons-fileupload</artifactId>-->
-    <!--</exclusion>-->
-    <!--<exclusion>-->
-    <!--<groupId>commons-fileupload.wso2</groupId>-->
-    <!--<artifactId>commons-fileupload</artifactId>-->
-    <!--</exclusion>-->
-    <!--</exclusions>-->
-    <!--</dependency>-->
-    <!--&lt;!&ndash;dependency>-->
-    <!--<groupId>org.wso2.carbon</groupId>-->
-    <!--<artifactId>org.wso2.carbon.utils</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--<exclusions>-->
-    <!--<exclusion>-->
-    <!--<groupId>commons-fileupload.wso2</groupId>-->
-    <!--<artifactId>commons-fileupload</artifactId>-->
-    <!--</exclusion>-->
-    <!--</exclusions>-->
-    <!--</dependency&ndash;&gt;-->
-    <!--<dependency>-->
-    <!--<groupId>org.codehaus.jackson</groupId>-->
-    <!--<artifactId>jackson-core-asl</artifactId>-->
-    <!--<version>${jackson.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.codehaus.jackson</groupId>-->
-    <!--<artifactId>jackson-mapper-asl</artifactId>-->
-    <!--<version>${jackson.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.codehaus.jackson</groupId>-->
-    <!--<artifactId>jackson-jaxrs</artifactId>-->
-    <!--<version>${jackson.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-    <!--<artifactId>jackson-databind</artifactId>-->
-    <!--<version>${jackson.databind.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>joda-time</groupId>-->
-    <!--<artifactId>joda-time</artifactId>-->
-    <!--<version>2.3</version>-->
-    <!--</dependency>-->
-
-
-    <!--<dependency>-->
-    <!--<groupId>commons-httpclient</groupId>-->
-    <!--<artifactId>commons-httpclient</artifactId>-->
-    <!--<version>3.1</version>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-    <!--<groupId>commons-logging</groupId>-->
-    <!--<artifactId>commons-logging</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>log4j</groupId>-->
-    <!--<artifactId>log4j</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.apache.commons</groupId>-->
-    <!--<artifactId>commons-lang3</artifactId>-->
-    <!--<scope>provided</scope>-->
-    <!--</dependency>-->
-
-    <!--</dependencies>-->
-    <!--&gt;>>>>>> f9743c5268fb708b2b753d0bc2453ac880c90e11-->
-
 
 </project>

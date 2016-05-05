@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.history;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -24,18 +23,24 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-//import org.apache.tools.ant.taskdefs.condition.Http;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricDetailService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,6 +55,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+//import org.apache.tools.ant.taskdefs.condition.Http;
+
 /**
  *
  */
@@ -59,6 +66,23 @@ import javax.ws.rs.core.Response;
         immediate = true)
 @Path("/historic-detail")
 public class HistoricDetailService extends BaseHistoricDetailService implements Microservice {
+
+    private static final Logger log = LoggerFactory.getLogger(HistoricDetailService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
 
     @Activate
     protected void activate(BundleContext bundleContext) {
@@ -73,7 +97,7 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getHistoricDetailInfo(@Context HttpRequest request) {
+    public Response getHistoricDetailInfo(@Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -126,7 +150,7 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
     @Path("/{detail-id}/data")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getVariableData(@PathParam("detail-id") String detailId,
-                                    @Context HttpRequest request) {
+                                    @Context Request request) {
         try {
             byte[] result = null;
             RestVariable variable = getVariableFromRequest(true, detailId, request.getUri());

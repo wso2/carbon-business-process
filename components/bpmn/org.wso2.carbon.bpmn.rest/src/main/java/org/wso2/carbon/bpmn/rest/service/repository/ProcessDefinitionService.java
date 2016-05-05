@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.repository;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -34,15 +33,21 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
-//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -57,6 +62,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+
 /**
  *
  */
@@ -64,11 +71,28 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.repository.ProcessDefinitionService",
         service = Microservice.class,
         immediate = true)
-@Path("/bps/bpmn/{version}/{context}/process-definitions")
+@Path("/process-definitions")
 public class ProcessDefinitionService implements Microservice {
 
     private static final Map<String, QueryProperty> properties = new HashMap<>();
     private static final List<String> allPropertiesList = new ArrayList<>();
+
+    private static final Logger log = LoggerFactory.getLogger(ProcessDefinitionService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
 
     static {
         properties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
@@ -115,86 +139,86 @@ public class ProcessDefinitionService implements Microservice {
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getProcessDefinitions(@Context HttpRequest request) {
+    public Response getProcessDefinitions(@Context Request request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
-        for (String property : allPropertiesList) {
-            String value = decoder.parameters().get(property).get(0);
+            for (String property : allPropertiesList) {
+                String value = decoder.parameters().get(property).get(0);
 
-            if (value != null) {
-                allRequestParams.put(property, value);
-            }
-        }
-        ProcessDefinitionQuery processDefinitionQuery =
-                repositoryService.createProcessDefinitionQuery();
-
-        // Populate filter-parameters
-        if (allRequestParams.containsKey("category")) {
-            processDefinitionQuery.processDefinitionCategory(allRequestParams.get("category"));
-        }
-        if (allRequestParams.containsKey("categoryLike")) {
-            processDefinitionQuery
-                    .processDefinitionCategoryLike(allRequestParams.get("categoryLike"));
-        }
-        if (allRequestParams.containsKey("categoryNotEquals")) {
-            processDefinitionQuery
-                    .processDefinitionCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
-        }
-        if (allRequestParams.containsKey("key")) {
-            processDefinitionQuery.processDefinitionKey(allRequestParams.get("key"));
-        }
-        if (allRequestParams.containsKey("keyLike")) {
-            processDefinitionQuery.processDefinitionKeyLike(allRequestParams.get("keyLike"));
-        }
-        if (allRequestParams.containsKey("name")) {
-            processDefinitionQuery.processDefinitionName(allRequestParams.get("name"));
-        }
-        if (allRequestParams.containsKey("nameLike")) {
-            processDefinitionQuery.processDefinitionNameLike(allRequestParams.get("nameLike"));
-        }
-        if (allRequestParams.containsKey("resourceName")) {
-            processDefinitionQuery
-                    .processDefinitionResourceName(allRequestParams.get("resourceName"));
-        }
-        if (allRequestParams.containsKey("resourceNameLike")) {
-            processDefinitionQuery
-                    .processDefinitionResourceNameLike(allRequestParams.get("resourceNameLike"));
-        }
-        if (allRequestParams.containsKey("version")) {
-            processDefinitionQuery
-                    .processDefinitionVersion(Integer.valueOf(allRequestParams.get("version")));
-        }
-        if (allRequestParams.containsKey("suspended")) {
-            Boolean suspended = Boolean.valueOf(allRequestParams.get("suspended"));
-            if (suspended != null) {
-                if (suspended) {
-                    processDefinitionQuery.suspended();
-                } else {
-                    processDefinitionQuery.active();
+                if (value != null) {
+                    allRequestParams.put(property, value);
                 }
             }
-        }
-        if (allRequestParams.containsKey("latest")) {
-            Boolean latest = Boolean.valueOf(allRequestParams.get("latest"));
-            if (latest != null && latest) {
-                processDefinitionQuery.latestVersion();
+            ProcessDefinitionQuery processDefinitionQuery =
+                    repositoryService.createProcessDefinitionQuery();
+
+            // Populate filter-parameters
+            if (allRequestParams.containsKey("category")) {
+                processDefinitionQuery.processDefinitionCategory(allRequestParams.get("category"));
             }
-        }
-        if (allRequestParams.containsKey("deploymentId")) {
-            processDefinitionQuery.deploymentId(allRequestParams.get("deploymentId"));
-        }
-        if (allRequestParams.containsKey("startableByUser")) {
-            processDefinitionQuery.startableByUser(allRequestParams.get("startableByUser"));
-        }
-        if (allRequestParams.containsKey("tenantId")) {
-            processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
-        }
-        if (allRequestParams.containsKey("tenantIdLike")) {
-            processDefinitionQuery
-                    .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
-        }
+            if (allRequestParams.containsKey("categoryLike")) {
+                processDefinitionQuery
+                        .processDefinitionCategoryLike(allRequestParams.get("categoryLike"));
+            }
+            if (allRequestParams.containsKey("categoryNotEquals")) {
+                processDefinitionQuery
+                        .processDefinitionCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
+            }
+            if (allRequestParams.containsKey("key")) {
+                processDefinitionQuery.processDefinitionKey(allRequestParams.get("key"));
+            }
+            if (allRequestParams.containsKey("keyLike")) {
+                processDefinitionQuery.processDefinitionKeyLike(allRequestParams.get("keyLike"));
+            }
+            if (allRequestParams.containsKey("name")) {
+                processDefinitionQuery.processDefinitionName(allRequestParams.get("name"));
+            }
+            if (allRequestParams.containsKey("nameLike")) {
+                processDefinitionQuery.processDefinitionNameLike(allRequestParams.get("nameLike"));
+            }
+            if (allRequestParams.containsKey("resourceName")) {
+                processDefinitionQuery
+                        .processDefinitionResourceName(allRequestParams.get("resourceName"));
+            }
+            if (allRequestParams.containsKey("resourceNameLike")) {
+                processDefinitionQuery
+                        .processDefinitionResourceNameLike(allRequestParams.get("resourceNameLike"));
+            }
+            if (allRequestParams.containsKey("version")) {
+                processDefinitionQuery
+                        .processDefinitionVersion(Integer.valueOf(allRequestParams.get("version")));
+            }
+            if (allRequestParams.containsKey("suspended")) {
+                Boolean suspended = Boolean.valueOf(allRequestParams.get("suspended"));
+                if (suspended != null) {
+                    if (suspended) {
+                        processDefinitionQuery.suspended();
+                    } else {
+                        processDefinitionQuery.active();
+                    }
+                }
+            }
+            if (allRequestParams.containsKey("latest")) {
+                Boolean latest = Boolean.valueOf(allRequestParams.get("latest"));
+                if (latest != null && latest) {
+                    processDefinitionQuery.latestVersion();
+                }
+            }
+            if (allRequestParams.containsKey("deploymentId")) {
+                processDefinitionQuery.deploymentId(allRequestParams.get("deploymentId"));
+            }
+            if (allRequestParams.containsKey("startableByUser")) {
+                processDefinitionQuery.startableByUser(allRequestParams.get("startableByUser"));
+            }
+            if (allRequestParams.containsKey("tenantId")) {
+                processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
+            }
+            if (allRequestParams.containsKey("tenantIdLike")) {
+                processDefinitionQuery
+                        .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
+            }
 
         DataResponse response =
                 new ProcessDefinitionsPaginateList(new RestResponseFactory(), request.getUri())
@@ -208,7 +232,7 @@ public class ProcessDefinitionService implements Microservice {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ProcessDefinitionResponse getProcessDefinition(
             @PathParam("process-definition-id") String processDefinitionId,
-            @Context HttpRequest request) {
+            @Context Request request) {
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         return new RestResponseFactory()
                 .createProcessDefinitionResponse(processDefinition, request.getUri());
@@ -233,7 +257,7 @@ public class ProcessDefinitionService implements Microservice {
     @Path("/{process-definition-id}/identity-links")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
-                                     @Context HttpRequest request) {
+                                     @Context Request request) {
 
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
@@ -249,7 +273,7 @@ public class ProcessDefinitionService implements Microservice {
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                      @PathParam("family") String family,
                                      @PathParam("identity-id") String identityId,
-                                     @Context HttpRequest request) {
+                                     @Context Request request) {
 
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);

@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>3</version>
+        <version>4</version>
     </parent>
 
     <prerequisites>
@@ -125,6 +125,26 @@
                 <artifactId>msf4j-core</artifactId>
                 <version>${carbon.msf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.transport</groupId>
+                <artifactId>org.wso2.carbon.transport.http.netty</artifactId>
+                <version>${carbon.http.netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.deployment</groupId>
+                <artifactId>org.wso2.carbon.deployment.engine</artifactId>
+                <version>${carbon.deployment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.deployment</groupId>
+                <artifactId>org.wso2.carbon.deployment.notifier</artifactId>
+                <version>${carbon.deployment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.security.caas</groupId>
+                <artifactId>org.wso2.carbon.security.caas</artifactId>
+                <version>${carbon.security.caas.version}</version>
+            </dependency>
             <!-- End of Dependency section 2 -->
 
             <!-- 3 - Carbon Business Process Dependencies -->
@@ -132,6 +152,11 @@
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpmn</artifactId>
+                <version>${carbon.business-process.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.business-process</groupId>
+                <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
@@ -336,7 +361,7 @@
         </carbon.business-process.exp.pkg.version>
 
         <!-- 1 - Carbon Kernel and OSGi Dependencies -->
-        <carbon.kernel.version>5.0.0</carbon.kernel.version>
+        <carbon.kernel.version>5.1.0-SNAPSHOT</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[5.0.0,6.0.0)</carbon.kernel.imp.pkg.version>
         <org.eclipse.osgi.version>3.9.1.v20130814-1242</org.eclipse.osgi.version>
         <org.osgi.version>6.0.0</org.osgi.version>
@@ -345,8 +370,11 @@
         <!-- 2 - Hamming Platform components and their Dependencies  -->
         <carbon.datasources.version>1.0.0-SNAPSHOT</carbon.datasources.version>
         <carbon.jndi.version>1.0.0-SNAPSHOT</carbon.jndi.version>
-        <carbon.msf4j.version>1.0.0</carbon.msf4j.version>
-
+        <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
+        <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
+        <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
+        <carbon.deployment.version>5.0.0-SNAPSHOT</carbon.deployment.version>
+        <carbon.security.caas.version>1.0.0-m1</carbon.security.caas.version>
         <!-- 3 - Carbon Business Process Dependencies -->
         <!-- 3.1 Activiti and its dependencies  -->
         <org.activiti.wso2.version>5.19.0.wso2v3</org.activiti.wso2.version>
@@ -386,7 +414,7 @@
 
         <!-- Maven Plugin versions -->
         <!-- TODO: Move to released version. BPS-996 -->
-        <carbon.feature.plugin.version>2.1.0-SNAPSHOT</carbon.feature.plugin.version>
+        <carbon.feature.plugin.version>2.0.1</carbon.feature.plugin.version>
 
     </properties>
 

@@ -15,18 +15,18 @@
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.HistoricProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstancePaginateList;
+import org.wso2.msf4j.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +91,7 @@ public class HistoricProcessInstanceQueryService {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response queryProcessInstances(HistoricProcessInstanceQueryRequest queryRequest,
-                                          @Context HttpRequest request) {
+                                          @Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());

@@ -22,20 +22,23 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.stats.BPMNTaskInstance;
 import org.wso2.carbon.bpmn.rest.model.stats.CompletedProcesses;
 import org.wso2.carbon.bpmn.rest.model.stats.DeployedProcesses;
 import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
 import org.wso2.carbon.bpmn.rest.model.stats.ProcessTaskCount;
 import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
-//import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.msf4j.Microservice;
 
 import java.text.SimpleDateFormat;
@@ -49,6 +52,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+//import org.wso2.carbon.context.PrivilegedCarbonContext;
+
 /**
  * Service class which includes functionalities related to processes and tasks
  */
@@ -60,7 +65,24 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/process-task-services/")
 public class ProcessAndTaskService implements Microservice {
-    private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
+
+    private static final Logger log = LoggerFactory.getLogger(ProcessAndTaskService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
+
     //int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
    // String str = String.valueOf(tenantId);
 

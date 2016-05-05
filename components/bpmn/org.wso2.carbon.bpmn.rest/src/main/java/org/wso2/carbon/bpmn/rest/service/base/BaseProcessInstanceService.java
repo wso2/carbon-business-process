@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.base;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -29,19 +28,21 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
-//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
+import org.wso2.msf4j.Request;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 
 /**
  *
@@ -49,27 +50,29 @@ import java.util.Map;
 public class BaseProcessInstanceService {
 
     protected static final String DEFAULT_ENCODING = "UTF-8";
-    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final List<String> ALL_PROPERTIES_LIST;
     protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
 
     static {
-        ALL_PROPERTIES_LIST.add("id");
-        ALL_PROPERTIES_LIST.add("processDefinitionKey");
-        ALL_PROPERTIES_LIST.add("processDefinitionId");
-        ALL_PROPERTIES_LIST.add("businessKey");
-        ALL_PROPERTIES_LIST.add("involvedUser");
-        ALL_PROPERTIES_LIST.add("suspended");
-        ALL_PROPERTIES_LIST.add("superProcessInstanceId");
-        ALL_PROPERTIES_LIST.add("subProcessInstanceId");
-        ALL_PROPERTIES_LIST.add("excludeSubprocesses");
-        ALL_PROPERTIES_LIST.add("includeProcessVariables");
-        ALL_PROPERTIES_LIST.add("tenantId");
-        ALL_PROPERTIES_LIST.add("tenantIdLike");
-        ALL_PROPERTIES_LIST.add("withoutTenantId");
-        ALL_PROPERTIES_LIST.add("sort");
-        ALL_PROPERTIES_LIST.add("start");
-        ALL_PROPERTIES_LIST.add("size");
-        ALL_PROPERTIES_LIST.add("order");
+        List<String> properties = new ArrayList<>();
+        properties.add("id");
+        properties.add("processDefinitionKey");
+        properties.add("processDefinitionId");
+        properties.add("businessKey");
+        properties.add("involvedUser");
+        properties.add("suspended");
+        properties.add("superProcessInstanceId");
+        properties.add("subProcessInstanceId");
+        properties.add("excludeSubprocesses");
+        properties.add("includeProcessVariables");
+        properties.add("tenantId");
+        properties.add("tenantIdLike");
+        properties.add("withoutTenantId");
+        properties.add("sort");
+        properties.add("start");
+        properties.add("size");
+        properties.add("order");
+        ALL_PROPERTIES_LIST = Collections.unmodifiableList(properties);
     }
 
     static {
@@ -81,7 +84,7 @@ public class BaseProcessInstanceService {
         ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(sortMap);
     }
 
-    protected Map<String, String> allRequestParams(HttpRequest request) {
+    protected Map<String, String> allRequestParams(Request request) {
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         for (String property : ALL_PROPERTIES_LIST) {

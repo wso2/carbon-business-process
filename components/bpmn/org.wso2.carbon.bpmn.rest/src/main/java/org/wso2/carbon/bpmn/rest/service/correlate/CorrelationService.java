@@ -16,17 +16,23 @@
 
 package org.wso2.carbon.bpmn.rest.service.correlate;
 
-import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.QueryProperty;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +52,7 @@ import javax.ws.rs.core.Response;
         immediate = true)
 @Path("/receive")
 public class CorrelationService implements Microservice {
-
+    private static final Logger log = LoggerFactory.getLogger(CorrelationService.class);
     private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
 
     static {
@@ -54,9 +60,13 @@ public class CorrelationService implements Microservice {
                 .put("processInstanceId", CorrelationQueryProperty.PROCESS_INSTANCE_ID);
     }
 
+    public CorrelationService(){
+        log.info("Activated CorrelationService");
+    }
+
     @Activate
     protected void activate(BundleContext bundleContext) {
-        // Nothing to do
+        log.info("Activated CorrelationService");
     }
 
     @Deactivate
@@ -64,11 +74,26 @@ public class CorrelationService implements Microservice {
         // Nothing to do
     }
 
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
+
     @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response recieveMessage(CorrelationActionRequest correlationActionRequest,
-                                   @Context HttpRequest request) {
+                                   @Context Request request) {
 
         if (correlationActionRequest.getProcessDefinitionId() == null &&
             correlationActionRequest.getProcessDefinitionKey() == null &&

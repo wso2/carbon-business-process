@@ -17,7 +17,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.identity;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
@@ -25,12 +24,18 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.impl.UserQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-//import org.bouncycastle.ocsp.Req;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.identity.GroupPaginateList;
@@ -40,6 +45,7 @@ import org.wso2.carbon.bpmn.rest.model.identity.UserPaginateList;
 import org.wso2.carbon.bpmn.rest.model.identity.UserResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseIdentityService;
 import org.wso2.msf4j.Microservice;
+import org.wso2.msf4j.Request;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +58,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+//import org.bouncycastle.ocsp.Req;
+
 /**
  *
  */
@@ -61,6 +69,23 @@ import javax.ws.rs.core.MediaType;
         immediate = true)
 //TODO: @PATH
 public class IdentityService extends BaseIdentityService implements Microservice {
+
+    private static final Logger log = LoggerFactory.getLogger(IdentityService.class);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
 
     protected static final Map<String, QueryProperty> GROUP_PROPERTIES;
     protected static final Map<String, QueryProperty> USER_PROPERTIES;
@@ -100,55 +125,55 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/groups")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DataResponse getGroups(@Context HttpRequest request) {
-        GroupQuery query = identityService.createGroupQuery();
+    public DataResponse getGroups(@Context Request request) {
+        GroupQuery query = BPMNOSGIService.getIdentityService().createGroupQuery();
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-
-        if (decoder.parameters().containsKey("id")) {
-            String id = decoder.parameters().get("id").get(0);
-            if (id != null) {
-                query.groupId(id);
-                allRequestParams.put("id", id);
+        if (decoder.parameters().size() > 0) {
+            if (decoder.parameters().containsKey("id")) {
+                String id = decoder.parameters().get("id").get(0);
+                if (id != null) {
+                    query.groupId(id);
+                    allRequestParams.put("id", id);
+                }
+            }
+            if (decoder.parameters().containsKey("name")) {
+                String name = decoder.parameters().get("name").get(0);
+                if (name != null) {
+                    query.groupName(name);
+                    allRequestParams.put("name", name);
+                }
+            }
+            if (decoder.parameters().containsKey("nameLike")) {
+                String nameLike = decoder.parameters().get("nameLike").get(0);
+                if (nameLike != null) {
+                    query.groupNameLike(nameLike);
+                    allRequestParams.put("nameLike", nameLike);
+                }
+            }
+            if (decoder.parameters().containsKey("type")) {
+                String type = decoder.parameters().get("type").get(0);
+                if (type != null) {
+                    query.groupType(type);
+                    allRequestParams.put("type", type);
+                }
+            }
+            if (decoder.parameters().containsKey("name")) {
+                String member = decoder.parameters().get("name").get(0);
+                if (member != null) {
+                    query.groupMember(member);
+                    allRequestParams.put("member", member);
+                }
+            }
+            if (decoder.parameters().containsKey("potentialStarter")) {
+                String potentialStarter = decoder.parameters().get("potentialStarter").get(0);
+                if (potentialStarter != null) {
+                    query.potentialStarter(potentialStarter);
+                    allRequestParams.put("potentialStarter", potentialStarter);
+                }
             }
         }
-        if (decoder.parameters().containsKey("name")) {
-            String name = decoder.parameters().get("name").get(0);
-            if (name != null) {
-                query.groupName(name);
-                allRequestParams.put("name", name);
-            }
-        }
-        if (decoder.parameters().containsKey("nameLike")) {
-            String nameLike = decoder.parameters().get("nameLike").get(0);
-            if (nameLike != null) {
-                query.groupNameLike(nameLike);
-                allRequestParams.put("nameLike", nameLike);
-            }
-        }
-        if (decoder.parameters().containsKey("type")) {
-            String type = decoder.parameters().get("type").get(0);
-            if (type != null) {
-                query.groupType(type);
-                allRequestParams.put("type", type);
-            }
-        }
-        if (decoder.parameters().containsKey("name")) {
-            String member = decoder.parameters().get("name").get(0);
-            if (member != null) {
-                query.groupMember(member);
-                allRequestParams.put("member", member);
-            }
-        }
-        if (decoder.parameters().containsKey("potentialStarter")) {
-            String potentialStarter = decoder.parameters().get("potentialStarter").get(0);
-            if (potentialStarter != null) {
-                query.potentialStarter(potentialStarter);
-                allRequestParams.put("potentialStarter", potentialStarter);
-            }
-        }
-
         allRequestParams = Utils.prepareCommonParameters(allRequestParams, decoder.parameters());
 
         GroupPaginateList groupPaginateList =
@@ -166,7 +191,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @Path("/groups/{group-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public GroupResponse getGroup(@PathParam("group-id") String groupId,
-                                  @Context HttpRequest request) {
+                                  @Context Request request) {
         return new RestResponseFactory()
                 .createGroupResponse(getGroupFromRequest(groupId), request.getUri());
     }
@@ -179,8 +204,8 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/users")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DataResponse getUsers(@Context HttpRequest request) {
-        UserQuery query = identityService.createUserQuery();
+    public DataResponse getUsers(@Context Request request) {
+        UserQuery query = BPMNOSGIService.getIdentityService().createUserQuery();
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -265,11 +290,11 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @Path("/users/{user-id}/info")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId,
-                                              @Context HttpRequest request) {
+                                              @Context Request request) {
         User user = getUserFromRequest(userId);
 
         return new RestResponseFactory()
-                .createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()),
+                .createUserInfoKeysResponse(BPMNOSGIService.getIdentityService().getUserInfoKeys(user.getId()),
                                             user.getId(), request.getUri());
     }
 
@@ -282,7 +307,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
     @GET
     @Path("/users/{user-id}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public UserResponse getUser(@PathParam("user-id") String userId, @Context HttpRequest request) {
+    public UserResponse getUser(@PathParam("user-id") String userId, @Context Request request) {
         return new RestResponseFactory()
                 .createUserResponse(getUserFromRequest(userId), false, request.getUri());
     }

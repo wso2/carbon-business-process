@@ -22,12 +22,13 @@ import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
-import java.util.Arrays;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Map;
 public class BaseHistoricVariableInstanceService {
 
     protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
-    protected static final List<String> ALL_PROPERTIES_LIST = Arrays.asList();
+    protected static final List<String> ALL_PROPERTIES_LIST;
 
     static {
         HashMap<String, QueryProperty> sortMap = new HashMap<>();
@@ -49,15 +50,17 @@ public class BaseHistoricVariableInstanceService {
     }
 
     static {
-        ALL_PROPERTIES_LIST.add("processInstanceId");
-        ALL_PROPERTIES_LIST.add("taskId");
-        ALL_PROPERTIES_LIST.add("excludeTaskVariables");
-        ALL_PROPERTIES_LIST.add("variableName");
-        ALL_PROPERTIES_LIST.add("variableNameLike");
-        ALL_PROPERTIES_LIST.add("start");
-        ALL_PROPERTIES_LIST.add("size");
-        ALL_PROPERTIES_LIST.add("order");
-        ALL_PROPERTIES_LIST.add("sort");
+        List<String> properties = new ArrayList<>();
+        properties.add("processInstanceId");
+        properties.add("taskId");
+        properties.add("excludeTaskVariables");
+        properties.add("variableName");
+        properties.add("variableNameLike");
+        properties.add("start");
+        properties.add("size");
+        properties.add("order");
+        properties.add("sort");
+        ALL_PROPERTIES_LIST = Collections.unmodifiableList(properties);
     }
 
     protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest,
