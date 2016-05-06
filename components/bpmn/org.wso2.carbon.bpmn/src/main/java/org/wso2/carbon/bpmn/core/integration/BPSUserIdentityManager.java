@@ -345,8 +345,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
     // todo: get matching username for userid
     private String getUserNameForGivenUserId(String userId) {
         String userName = "";
-        try {
-            List<org.wso2.carbon.security.caas.user.core.bean.User> Users = identityStore.listUsers("*", -1, -1);
+        try { //todo: need to set length to -1
+            List<org.wso2.carbon.security.caas.user.core.bean.User> Users = identityStore.listUsers("%", 0, 10);
             //todo: check
             while (userName.isEmpty()) {
                 for (org.wso2.carbon.security.caas.user.core.bean.User u : Users) {
