@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -68,6 +70,7 @@ public class AnalyticsPublisher {
     private AnalyticsPublishServiceUtils analyticsPublishServiceUtils;
 
     private ExecutorService analyticsExecutorService;
+    private Map<String, JSONArray> mapOfProcessVariablesLists;
 
     /**
      * Initialize the objects for AnalyticsPublisher
@@ -83,6 +86,7 @@ public class AnalyticsPublisher {
                 processInstanceStreamId = getProcessStreamId();
                 taskInstanceStreamId = getTaskInstanceStreamId();
                 analyticsPublishServiceUtils = new AnalyticsPublishServiceUtils();
+                mapOfProcessVariablesLists = new HashMap<String, JSONArray>();
                 int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
                 String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
                 Registry registry = BPMNAnalyticsHolder.getInstance().getRegistryService()
@@ -155,6 +159,8 @@ public class AnalyticsPublisher {
                                 publishBPMNProcessInstanceProcVariablesEvent(instance);
                             }
                         }
+                        //        String processDefinitionId = instance.getProcessDefinitionId();
+
                         BPMNTaskInstance[] bpmnTaskInstances = analyticsPublishServiceUtils.getCompletedTaskInstances();
                         if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
                             for (BPMNTaskInstance instance : bpmnTaskInstances) {
@@ -208,9 +214,23 @@ public class AnalyticsPublisher {
     private void publishBPMNProcessInstanceProcVariablesEvent(BPMNProcessInstance bpmnProcessInstance) {
         String processDefinitionId = bpmnProcessInstance.getProcessDefinitionId();
         String processInstanceId = bpmnProcessInstance.getInstanceId();
+        String eventStreamId;
 
-        //get a list of names of variables which are configured for analytics from registry
-        JSONArray processVariablesListJsonArray = getProcessVariablesList(processDefinitionId);
+        //get a list of names of variables which are configured for analytics from registry for that process, if not already taken
+        JSONArray processVariablesListJsonArray;
+        if (mapOfProcessVariablesLists.get(processDefinitionId) == null) {
+            processVariablesListJsonArray = getProcessVariablesList(processDefinitionId);
+            mapOfProcessVariablesLists.put(processDefinitionId, processVariablesListJsonArray);
+        }
+
+        //call activity api to get process variable values
+        //ExecutionEntity executionEntity = (ExecutionEntity) runtimeService.createExecutionQuery().executionId(executionId).singleResu
+        /*RestVariable variable = getVariableFromRequest(true, processInstanceId, variableName);
+        if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+            result = (byte[]) variable.getValue();
+            responseBuilder.type("application/octet-stream");
+
+        }*/
 
         Object[] payload = new Object[] {
                 //bpmnProcessInstance.getProcessDefinitionId(),
@@ -411,14 +431,16 @@ public class AnalyticsPublisher {
                 AnalyticsPublisherConstants.STREAM_VERSION);
     }
 
-    public JSONArray getProcessVariablesList(String procesDefinitionId) {
+    public JSONArray getProcessVariablesList(String processDefinitionId) {
 
         try {
             Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
             RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
             Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
+
             Resource processRegistryResource = configRegistry
-                    .get("bpmn/processes/" + procesDefinitionId + "/" + "das_analytics_config_details.json");
+                    .get(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
+                            + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME);
             log.info("content:" + processRegistryResource.getContent().toString());
             String resourceContent = new String((byte[]) processRegistryResource.getContent());
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -427,10 +449,10 @@ public class AnalyticsPublisher {
             //JSONObject conObj = new JSONObject();
 
             //conObj.put("processVariables", variableArray);
-            Element processVariableElement = (Element) ((Element) document.getFirstChild()).getElementsByTagName("processVariables").item(0);
+            Element processVariableElement = (Element) ((Element) document.getFirstChild())
+                    .getElementsByTagName("processVariables").item(0);
             JSONArray variableArray = new JSONArray(processVariableElement.getTextContent());
             return variableArray;
-
 
         } catch (org.wso2.carbon.registry.core.exceptions.RegistryException e) {
             e.printStackTrace();

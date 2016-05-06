@@ -311,40 +311,36 @@ public class AnalyticsPublishServiceUtils {
         return time;
     }
 
-    public static void saveDASconfigInfoInConfigRegistry(String processId,
-            String processVariablesJSONString) {
+    /*public static void saveDASconfigInfoInConfigRegistry(String processId, String dasConfigDetailsJSONString)
+            throws RegistryException {
 
         Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
         try {
+            JSONObject dasConfigDetailsJOb = new JSONObject(dasConfigDetailsJSONString);
+            String processDefinitionId = dasConfigDetailsJOb.getString(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID);
+
             Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
-            Resource deploymentEntryorProcesses = configRegistry.newCollection();
-
-            //create a resource registry collection "/bpmn/processes/" for processes if not available
-            if (!configRegistry.resourceExists(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES)) {
-                configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES, deploymentEntryorProcesses);
-            }
-
-            //create a resource registry collection "/bpmn/processes/<processID>/" for the specific process if not available
-            Resource deploymentEntryForProcess = configRegistry.newCollection();
-            if (!configRegistry.resourceExists(
-                    AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES + processId + "/")) {
-                configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES + processId + "/",
-                        deploymentEntryForProcess);
-            }
 
             //create a new resource (text file) to keep process variables
-            Resource procVariableJsonResource = configRegistry.newResource();
-            procVariableJsonResource.setContent(processVariablesJSONString);
-            procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
-            configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_PROCESSES + processId
-                            + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME,
-                    procVariableJsonResource); //"/das_analytics_config_details.json"
+            String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
+                    + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
+            if(!configRegistry.resourceExists(resourcePath)) {
+                Resource procVariableJsonResource = configRegistry.newResource();
+                procVariableJsonResource.setContent(dasConfigDetailsJSONString);
+                procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
+                configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/" + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME,
+                        procVariableJsonResource);
+            }
         } catch (RegistryException e) {
-            String errMsg="Error in saving ";
-            log.error(e.getMessage());
+            String errMsg =
+                    "Error in saving DAS Analytics Configuratios in BPS Config Registry for process:" + processId
+                            + "\n Details tried to save:" + dasConfigDetailsJSONString;
+            throw new RegistryException(errMsg,e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
+    }*/
 
    /* public ResponseHolder getAllProcesses() {
         //Get a list of the deployed processes

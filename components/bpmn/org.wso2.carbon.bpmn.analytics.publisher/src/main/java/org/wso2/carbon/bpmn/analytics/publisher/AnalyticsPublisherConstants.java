@@ -77,6 +77,7 @@ public class AnalyticsPublisherConstants {
 
     // Process variables publisher related constants
     public static final String GREG_PATH = "/_system/governance/";
-    public static final String REG_PATH_BPMN_PROCESSES = "/bpmn/processes/";
-    public static final String ANALYTICS_CONFIG_FILE_NAME = "/das_analytics_config_details.json";
+    public static final String REG_PATH_BPMN_ANALYTICS = "/bpmn/analytics/";
+    public static final String ANALYTICS_CONFIG_FILE_NAME = "das_analytics_config_details.json";
+    public static final String PC_PROCESS_ID = "pcProcessId";
 }
