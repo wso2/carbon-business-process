@@ -24,8 +24,15 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
+import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
 //import org.activiti.engine.impl.ProcessEngineImpl;
 //import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -138,38 +145,39 @@ public class BPMNOSGIService {
 
         return identityService;
     }
+
     //TODO:
-   /* public static UserRealm getUserRealm() {
-        return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
-    }*/
+    public static RealmService getUserRealm() {
+        return getBPMNEngineService().getCarbonRealmService();
+    }
 
     public static ManagementService getManagementService() {
         return getBPMNEngineService().getProcessEngine().getManagementService();
     }
 
-    //    public static BPSGroupIdentityManager getGroupIdentityManager(){
-    //
-    //        ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().
-    // getProcessEngine();
-    //
-    //        ProcessEngineConfigurationImpl processEngineConfigurationImpl= null;
-    //
-    //        if(processEngine != null){
-    //            processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
-    //
-    //            if(processEngineConfigurationImpl != null){
-    //                BPSGroupIdentityManager bpsGroupIdentityManager = null;
-    //                if(processEngineConfigurationImpl.getSessionFactories() != null) {
-    //                    BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory)
-    // processEngineConfigurationImpl.getSessionFactories().get
-    //                            (GroupIdentityManager.class);
-    //                    return (BPSGroupIdentityManager)bpsGroupManagerFactory.openSession();
-    //                }
-    //            }
-    //        }
-    //
-    //        throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't
-    // be identified");
-    //
-    //    }
+    public static BPSGroupIdentityManager getGroupIdentityManager() {
+
+        ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().
+                getProcessEngine();
+
+        ProcessEngineConfigurationImpl processEngineConfigurationImpl = null;
+
+        if (processEngine != null) {
+            processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
+
+            if (processEngineConfigurationImpl != null) {
+                BPSGroupIdentityManager bpsGroupIdentityManager = null;
+                if (processEngineConfigurationImpl.getSessionFactories() != null) {
+                    BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory)
+                            processEngineConfigurationImpl.getSessionFactories().get
+                                    (GroupIdentityManager.class);
+                    return (BPSGroupIdentityManager) bpsGroupManagerFactory.openSession();
+                }
+            }
+        }
+
+        throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't" +
+                "be identified");
+
+    }
 }
