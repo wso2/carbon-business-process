@@ -19,8 +19,12 @@ package org.wso2.carbon.bpmn.core;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 import org.wso2.carbon.kernel.utils.Utils;
 
 import java.io.File;
@@ -65,10 +69,10 @@ public class ActivitiEngineBuilder {
                                     new FileInputStream(activitiConfigFile));
             // we have to build the process engine first to initialize session factories.
             processEngine = processEngineConfigurationImpl.buildProcessEngine();
-            //  processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-            //   new BPSUserManagerFactory());
-            //  processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-            //new BPSGroupManagerFactory());
+             processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
+               new BPSUserManagerFactory());
+              processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
+            new BPSGroupManagerFactory());
 
             dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
                     .getDataSourceJndiName();

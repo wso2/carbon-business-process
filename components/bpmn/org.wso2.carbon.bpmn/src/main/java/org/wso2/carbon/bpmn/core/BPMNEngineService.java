@@ -1,6 +1,7 @@
 package org.wso2.carbon.bpmn.core;
 
 import org.activiti.engine.ProcessEngine;
+import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
 /**
  *
@@ -8,4 +9,6 @@ import org.activiti.engine.ProcessEngine;
 public interface BPMNEngineService {
 
     public ProcessEngine getProcessEngine();
+
+    public RealmService getCarbonRealmService();
 }
