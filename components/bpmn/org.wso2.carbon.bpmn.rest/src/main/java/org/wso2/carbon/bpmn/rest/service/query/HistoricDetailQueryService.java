@@ -43,11 +43,13 @@ public class HistoricDetailQueryService extends BaseHistoricDetailService {
                                         @Context Request request) {
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-        for (String property : ALL_PROPERTIES_LIST) {
-            String value = decoder.parameters().get(property).get(0);
+        if(decoder.parameters().size() > 0) {
+            for (String property : ALL_PROPERTIES_LIST) {
+                String value = decoder.parameters().get(property).get(0);
 
-            if (value != null) {
-                allRequestParams.put(property, value);
+                if (value != null) {
+                    allRequestParams.put(property, value);
+                }
             }
         }
         DataResponse dataResponse =

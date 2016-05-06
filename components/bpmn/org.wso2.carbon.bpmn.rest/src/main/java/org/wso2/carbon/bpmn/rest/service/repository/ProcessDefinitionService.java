@@ -143,7 +143,10 @@ public class ProcessDefinitionService implements Microservice {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
+        ProcessDefinitionQuery processDefinitionQuery =
+                repositoryService.createProcessDefinitionQuery();
 
+        if(decoder.parameters().size() > 0) {
             for (String property : allPropertiesList) {
                 String value = decoder.parameters().get(property).get(0);
 
@@ -151,8 +154,6 @@ public class ProcessDefinitionService implements Microservice {
                     allRequestParams.put(property, value);
                 }
             }
-            ProcessDefinitionQuery processDefinitionQuery =
-                    repositoryService.createProcessDefinitionQuery();
 
             // Populate filter-parameters
             if (allRequestParams.containsKey("category")) {
@@ -219,6 +220,7 @@ public class ProcessDefinitionService implements Microservice {
                 processDefinitionQuery
                         .processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
             }
+        }
 
         DataResponse response =
                 new ProcessDefinitionsPaginateList(new RestResponseFactory(), request.getUri())
