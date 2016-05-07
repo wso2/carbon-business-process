@@ -379,8 +379,8 @@
         <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
         <carbon.deployment.version>5.0.0-SNAPSHOT</carbon.deployment.version>
-        <carbon.security.caas.version>1.0.0-m1</carbon.security.caas.version>
-        <carbon.security.userstore.jdbc.version>1.0.0-m1</carbon.security.userstore.jdbc.version>
+        <carbon.security.caas.version>1.0.0-SNAPSHOT</carbon.security.caas.version>
+        <carbon.security.userstore.jdbc.version>1.0.0-SNAPSHOT</carbon.security.userstore.jdbc.version>
         <!-- 3 - Carbon Business Process Dependencies -->
         <!-- 3.1 Activiti and its dependencies  -->
         <org.activiti.wso2.version>5.19.0.wso2v3</org.activiti.wso2.version>
