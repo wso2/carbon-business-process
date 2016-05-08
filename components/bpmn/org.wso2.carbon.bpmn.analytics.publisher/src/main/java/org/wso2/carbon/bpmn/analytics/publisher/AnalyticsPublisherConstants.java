@@ -80,4 +80,5 @@ public class AnalyticsPublisherConstants {
     public static final String REG_PATH_BPMN_ANALYTICS = "/bpmn/analytics/";
     public static final String ANALYTICS_CONFIG_FILE_NAME = "das_analytics_config_details.json";
     public static final String PC_PROCESS_ID = "pcProcessId";
+    public static final String PROCESS_VARIABLES_JSON_ENTRY_NAME = "processVariables";
 }
