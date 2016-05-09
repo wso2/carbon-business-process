@@ -43,6 +43,8 @@ import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
@@ -346,15 +348,22 @@ public class BPSUserIdentityManager extends UserEntityManager {
     private String getUserNameForGivenUserId(String userId) {
         String userName = "";
         try { //todo: need to set length to -1
-            List<org.wso2.carbon.security.caas.user.core.bean.User> Users = identityStore.listUsers("%", 0, 10);
+            List<org.wso2.carbon.security.caas.user.core.bean.User> users = identityStore.listUsers("%", 0, 10);
             //todo: check
-            while (userName.isEmpty()) {
-                for (org.wso2.carbon.security.caas.user.core.bean.User u : Users) {
-                    if (u.getUserId().equals(userId)) {
-                        userName = u.getUserName();
-                    }
+            if(!users.isEmpty()) {
+                Optional<org.wso2.carbon.security.caas.user.core.bean.User> matchingObjects = users.stream().
+                        filter(u ->u.getUserId().equals(userId)).
+                        findFirst();
+                if(matchingObjects.isPresent()) {
+                    org.wso2.carbon.security.caas.user.core.bean.User filteredUser = matchingObjects.get();
+                    userName = filteredUser.getUserName();
                 }
+                else{
+                    log.info("No matching user found for userId: " + userId);
+                }
+
             }
+
         }
         catch(IdentityStoreException e ){
             String msg = "Unable to get username for userId : " +userId ;
