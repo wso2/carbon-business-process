@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
 import org.wso2.carbon.security.caas.user.core.bean.Role;
+import org.wso2.carbon.security.caas.user.core.bean.User;
 import org.wso2.carbon.security.caas.user.core.exception.AuthorizationStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.store.AuthorizationStore;
@@ -39,6 +40,7 @@ import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -105,7 +107,6 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
                 List<Role> roles = authorizationStore.getRolesOfUser(userId, identityStore.getUser(userName).getIdentityStoreId());
 
-
                 for (Role role : roles) {
                     Group group = new GroupEntity(role.getRoleId());
                     groups.add(group);
@@ -125,16 +126,23 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     // todo: get matching username for userid
     private String getUserNameForGivenUserId(String userId) {
         String userName = "";
-        try {
-            List<org.wso2.carbon.security.caas.user.core.bean.User> Users = identityStore.listUsers("%", 0, 10);
+        try { //todo: need to set length to -1
+            List<org.wso2.carbon.security.caas.user.core.bean.User> users = identityStore.listUsers("%", 0, 10);
             //todo: check
-            while (userName.isEmpty()) {
-                for (org.wso2.carbon.security.caas.user.core.bean.User u : Users) {
-                    if (u.getUserId().equals(userId)) {
-                        userName = u.getUserName();
-                    }
+            if(!users.isEmpty()) {
+                Optional<User> matchingObjects = users.stream().
+                        filter(u ->u.getUserId().equals(userId)).
+                        findFirst();
+                if(matchingObjects.isPresent()) {
+                    org.wso2.carbon.security.caas.user.core.bean.User filteredUser = matchingObjects.get();
+                    userName = filteredUser.getUserName();
                 }
+                else{
+                    log.info("No matching user found for userId: " + userId);
+                }
+
             }
+
         }
         catch(IdentityStoreException e ){
             String msg = "Unable to get username for userId : " +userId ;
