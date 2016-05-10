@@ -569,7 +569,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
      */
     public Element getSVGString(SVGDocument doc) {
         Element group1 = null;
-        group1 = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group1.setAttributeNS(null, "id", getLayerId());
         //Checks for the icon opacity
@@ -616,7 +616,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             SVGCoordinates activityEntryCoords = null;
             SVGCoordinates activityExitCoords = null;
             Iterator<ActivityInterface> itr = subActivities.iterator();
-            Element subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            Element subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             //Iterates through all the subActivities
             while (itr.hasNext()) {
                 activity = itr.next();
@@ -797,7 +797,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
      * @return An element which contains the arrow flows/paths of the If activity and its subActivities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
          /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :

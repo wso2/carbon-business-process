@@ -32,7 +32,7 @@ import java.util.*;
  */
 public class ElseImpl extends ActivityImpl implements ElseInterface {
     private static final Log log = LogFactory.getLog(ElseImpl.class);
-    public static final String SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+    public static final String SVG_NAMESPACE = SVG_Namespace.SVG_NAMESPACE;
 
     //Variable to check whether a throw activity is inside Else
     public boolean throwOrNot;

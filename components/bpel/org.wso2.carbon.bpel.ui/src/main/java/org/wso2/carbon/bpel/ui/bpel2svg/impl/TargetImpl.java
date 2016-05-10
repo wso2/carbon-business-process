@@ -177,7 +177,7 @@ public class TargetImpl extends TargetsImpl implements TargetInterface {
                                           int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         return group;
     }
 
@@ -189,7 +189,7 @@ public class TargetImpl extends TargetsImpl implements TargetInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         return subGroup;
     }
 
@@ -205,7 +205,7 @@ public class TargetImpl extends TargetsImpl implements TargetInterface {
      *         In this case the Target activity doesn't contain any components, so no arrow definitions/paths from activities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         return path;
     }
 
@@ -227,7 +227,7 @@ public class TargetImpl extends TargetsImpl implements TargetInterface {
      */
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         group.appendChild(getBoxDefinition(doc));
