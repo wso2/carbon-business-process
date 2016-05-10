@@ -31,7 +31,7 @@ if (request.isSecure()) {//check whether the request is secure or not
         var process = require('process'),
     	encoder = require("/assets/encoder.js"),
     	auth = session.get('auth'),
-    	contentType = request.getContentType(),	
+    	contentType = request.getContentType(),
     	headers = {
     		"Content-Type": contentType,
     		"Authorization":"Basic " + auth,
