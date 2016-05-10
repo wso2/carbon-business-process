@@ -47,9 +47,9 @@ $( document ).ready(function() {
                     }
 
                     $('#submit-attachment-div').popover({ content: errorMessage,
-                                                            placement: "bottom",
-                                                            trigger:"manual",
-                                                            title:"Error"});
+                        placement: "bottom",
+                        trigger:"manual",
+                        title:"Error"});
 
                     $('#submit-attachment-div').popover('show');
 
@@ -82,7 +82,7 @@ $( document ).ready(function() {
 });
 
 function displayAttachmentData(id){
-   window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
 }
 
 function completeTask(data, id) {
@@ -200,8 +200,8 @@ function reassign(username, id) {
         $('#reassignErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#reassign').on('hide.bs.modal', function (e) {
-                $('#reassignErrorMessageArea').hide();
-            });
+            $('#reassignErrorMessageArea').hide();
+        });
     }
 }
 
@@ -263,8 +263,8 @@ function transfer(username, id) {
         $('#transferErrorMessageArea').show();
         //set callback to remove error message when hiding the modal
         $('#transfer').on('hide.bs.modal', function (e) {
-                $('#transferErrorMessageArea').hide();
-            });
+            $('#transferErrorMessageArea').hide();
+        });
     }
 }
 
@@ -284,8 +284,8 @@ function startProcess(processDefId) {
             window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + processDefId;
         },
         error: function (xhr, status, error) {
-           var errorJson = eval("(" + xhr.responseText + ")");
-           window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+            var errorJson = eval("(" + xhr.responseText + ")");
+            window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
         }
     });
 }
@@ -378,8 +378,8 @@ function processSearch(){
         document.getElementById("taskName").value = "%" + tempTaskName + "%";
     }
     /*if (document.getElementById("taskDescription").value.length == 0) {
-        document.getElementById("taskDescription").disabled = true;
-    }*/
+     document.getElementById("taskDescription").disabled = true;
+     }*/
     if (document.getElementById("taskCandidateUser").value.length == 0) {
         document.getElementById("taskCandidateUser").disabled = true;
     }
@@ -389,7 +389,7 @@ function processSearch(){
             document.getElementById("taskUnassigned").disabled = true;
         } else {
             document.getElementById("taskAssignee").disabled = true;
-        }      
+        }
     }
     if (document.getElementById("taskOwner").value.length == 0) {
         document.getElementById("taskOwner").disabled = true;
@@ -428,7 +428,6 @@ function processSearch(){
         var startDateISOTemp = document.getElementById("startDateISO");
         startDateISOTemp.value = startDateTemp.toISOString();
         startDateISOTemp.value = startDateTemp.toISOString().split('.')[0] + 'Z';
-
     } else {
         //disable startDateISO since it's not entered by the user
         document.getElementById("startDateISO").disabled = true;
@@ -1005,3 +1004,446 @@ function generateReport(){
     h3.hidden= true;
 
 }
+
+//Gets the details of the user-tasks in a completed process instance
+function getUserTasksOfCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-task-instances?processInstanceId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#userTasks").html("");
+            var completedTaskInstances = JSON.parse(data);
+            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
+            for (var k = 0; k < completedTaskInstances.data.length; k++) {
+
+                var state = "Completed";
+                var taskDefKey = completedTaskInstances.data[k].taskDefinitionKey;
+                var taskName = completedTaskInstances.data[k].name;
+                var startTime = completedTaskInstances.data[k].startTime;
+                var endTime = completedTaskInstances.data[k].endTime;
+                var assignee = completedTaskInstances.data[k].assignee;
+                var duration = completedTaskInstances.data[k].durationInMillis;
+                              
+                DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+taskDefKey+"</td><td style='word-wrap: break-word'>"+taskName+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+assignee+"</td><td>"+duration+"</td></tr>";
+
+            }
+            DIV = DIV+"</tbody></table></div>"
+            $("#userTasks").html(DIV);
+
+        }
+    });
+}
+
+//Gets the details of the variables in a completed process instance
+function getVariablesOfCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-variable-instances?processInstanceId=" + id;
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#variables").html("");
+            var variableInfo = JSON.parse(data);
+            if (variableInfo.data.length == 0) {
+                var DIV = "<h3> No variables for this process instance </h3>";
+                $("#variables").html(DIV);
+            } else {
+                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                for (var k = 0; k < variableInfo.data.length; k++) {
+                    var name = variableInfo.data[k].variable.name;
+                    var type =variableInfo.data[k].variable.type;
+                    var value = variableInfo.data[k].variable.value;
+                    var scope = variableInfo.data[k].variable.scope;
+                    
+                    DIV = DIV + "<tr><td style='word-wrap: break-word'>"+name+"</td><td>"+type+"</td><td style='word-wrap: break-word'>"+value+"</td><td>"+scope+"</td></tr>";
+
+                }
+                DIV = DIV+"</tbody></table></div>"
+                $("#variables").html(DIV);
+            }
+
+        }
+    });
+}
+
+//Gets the details of all the activities in a completed process instance
+function getAuditLogForCompletedProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;    
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#auditLog").html("");
+            var completedTaskInstances = JSON.parse(data);
+            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+            for (var k = 0; k < completedTaskInstances.data.length; k++) {
+
+                var state = "Completed";
+                var activityName  = completedTaskInstances.data[k].activityName;
+                var activityType  = completedTaskInstances.data[k].activityType;
+                var activityStartTime  = completedTaskInstances.data[k].startTime;
+                var activityEndTime  = completedTaskInstances.data[k].endTime;
+                var taskId  = completedTaskInstances.data[k].taskId;
+                var activityInstanceId  = completedTaskInstances.data[k].id;
+                if (taskId == null) {
+                    taskId = "N/A";
+                }
+               
+                DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td>"+activityType+"</td><td>"+activityStartTime+"</td><td>"+activityEndTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
+
+            }
+            DIV = DIV+"</tbody></table></div>"
+            $("#auditLog").html(DIV);
+
+        }
+    });
+}
+
+//Gets the details of any called process instances for a completed process instance
+function getCalledProcessInstancesOfCompleted(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + id;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function innerFunction(data){
+                var calledPId= JSON.parse(data).superProcessInstanceId;
+                $("#calledInstances").html("");
+                if (calledPId == null) {
+                    var result = "<h3> No Called Process Instances </h3>";
+                    $("#calledInstances").html(result);
+                } else {
+
+                    var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-process-instances/" + calledPId ;
+
+                    $.ajax({
+                        type: 'GET',
+                        contentType: "application/json",
+                        url: httpUrl + url1,
+
+                        success: function (data){
+
+                            var calledPInfo = JSON.parse(data);
+                            $("#calledInstances").html("");
+                            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
+
+                            var id  = calledPInfo.id;
+                            var processDefinitionId= calledPInfo.processDefinitionId;
+                            var startTime  = calledPInfo.startTime;
+                            var endTime  = calledPInfo.endTime;
+                            var durationInMillis  = calledPInfo.durationInMillis;
+                          
+                            DIV = DIV + "<tr><td>"+id+"</td><td style='word-wrap: break-word'>"+processDefinitionId+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+durationInMillis+"</td></tr>";
+                            DIV = DIV+"</tbody></table></div>"
+
+                            $("#calledInstances").html(DIV);
+
+                        }
+                    });
+                }
+
+            }
+    });
+}
+
+//Generates the details for a completed process instance
+function completedProcessInstances(id){
+   
+    getAuditLogForCompletedProcessInstances(id);
+    getUserTasksOfCompletedProcessInstances(id);
+    getVariablesOfCompletedProcessInstances(id);
+    getCalledProcessInstancesOfCompleted(id);
+
+}
+
+//Gets the details of all the activities in a running/active process instance
+function getAuditLogForRunningProcessInstances(pid,id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function innerFunction(data){
+
+                var taskList = JSON.parse(data);
+                
+                var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    url: httpUrl + url1,
+                    success: function (data){
+
+                        $("#auditLog").html("");
+                        var taskList2 = JSON.parse(data);
+                        
+                        var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+
+                        for (var k = 0; k < taskList.data.length; k++) {
+
+                            var activityName  = taskList.data[k].name;
+                            var taskDefKey  = taskList.data[k].taskDefinitionKey;
+                            var activityType  = taskList.data[k].type;
+
+                            for (var j = 0; j < taskList2.data.length; j++) {
+
+                                var activityId  = taskList2.data[j].activityId;
+                                var startTime = taskList2.data[j].startTime;
+                                var endTime = taskList2.data[j].endTime;
+                                var taskId = taskList2.data[j].taskId;
+                                var activityInstanceId = taskList2.data[j].id;
+                                if (taskId == null) {
+                                    taskId = "N/A";
+                                }
+                                if (taskDefKey == activityId && endTime !== null ) {
+                                    var state = "Completed";
+                                    break;
+                                } else if (taskDefKey == activityId && endTime == null ) {
+                                    var state = "Active";
+                                    var endTime = "N/A";
+                                    break;
+                                } else {
+                                    var state = "Not Started";
+                                    var startTime = "N/A";
+                                    var endTime = "N/A";
+                                    var activityInstanceId = "N/A";
+                                    var taskId = "N/A";
+                                }
+
+                            }
+                         
+                            DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td>"+activityType+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+taskId+"</td><td>"+activityInstanceId+"</td></tr>";
+
+                        }
+                        DIV = DIV+"</tbody></table></div>"
+                        $("#auditLog").html(DIV);
+
+                    }
+                });
+            }
+    });
+}
+
+//Gets the details of the variables in a running/active process instance
+function getVariablesOfRunningProcessInstances(id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances/"+id+"/variables";
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success: function (data) {
+
+            $("#variables").html("");
+            var variableInfo = JSON.parse(data);
+            if (variableInfo.restVariables.length == 0) {
+                var DIV = "<h3> No variables for this process instance </h3>";
+                $("#variables").html(DIV);
+            } else {
+                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                for (var k = 0; k < variableInfo.restVariables.length; k++) {
+                    var name = variableInfo.restVariables[k].name;
+                    var type =variableInfo.restVariables[k].type;
+                    var value = variableInfo.restVariables[k].value;                    
+                    var scope = variableInfo.restVariables[k].variableScope;
+
+                    DIV = DIV + "<tr><td style='word-wrap: break-word'>"+name+"</td><td>"+type+"</td><td style='word-wrap: break-word'>"+value+"</td><td>"+scope+"</td></tr>";
+                }
+                DIV = DIV+"</tbody></table></div>"
+                $("#variables").html(DIV);
+            }
+        }
+    });
+}
+
+//Gets the details of the user-tasks in a running/active process instance
+function getUserTasksOfRunningProcessInstances(pid,id){
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        url: httpUrl + url,
+        success:
+
+            function innerFunction(data){
+
+                var taskList = JSON.parse(data);
+                var url1 = "/" + CONTEXT + "/send?req=/bpmn/history/historic-activity-instances?processInstanceId=" + id;
+
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    url: httpUrl + url1,
+                    success: function (data){
+
+                        $("#userTasks").html("");
+                        var taskList2 = JSON.parse(data);
+
+                        var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
+
+                        for (var k = 0; k < taskList.data.length; k++) {
+
+                            var activityName  = taskList.data[k].name;
+                            var taskDefKey  = taskList.data[k].taskDefinitionKey;
+                            var activityType  = taskList.data[k].type;
+                            if (activityType == "userTask") {
+
+                                for (var j = 0; j < taskList2.data.length; j++) {
+
+                                    var activityId  = taskList2.data[j].activityId;
+                                    var startTime = taskList2.data[j].startTime;
+                                    var endTime = taskList2.data[j].endTime;
+                                    var assignee = taskList2.data[j].assignee;
+                                    var duration =  taskList2.data[j].durationInMillis;
+
+                                    if (taskDefKey == activityId && endTime !== null ) {
+                                        var state = "Completed";
+
+                                        break;
+                                    } else if (taskDefKey == activityId && endTime == null ) {
+                                        var state = "Active";
+                                        var endTime = "N/A";
+                                        var duration = "N/A";
+                                        if (assignee == null) {
+                                            assignee = "Unassigned";
+                                        }
+
+                                        break;
+                                    } else {
+                                        var state = "Not Started";
+                                        var startTime = "N/A";
+                                        var endTime = "N/A";
+                                        var duration = "N/A";
+                                        var assignee = "Unassigned";
+
+                                    }
+                                }                
+                               
+                                DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td style='word-wrap: break-word'>"+taskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
+                            } else {
+                            }
+                        }
+                        DIV = DIV+"</tbody></table></div>"
+                        $("#userTasks").html(DIV);
+
+                    }
+                });
+            }
+    });
+}
+
+//Gets the details of any called process instance in a running/active process instance
+function getCalledProcessInstancesOfRunning(id){
+
+
+    $.ajax({
+        type: 'GET',
+        contentType: "application/json",
+        success: function (data){
+            $("#calledInstances").html("");
+            var result = "<h3> Complete the process instance to view any called process-instances </h3>";
+            $("#calledInstances").html(result);
+
+        }
+    });
+}
+
+//Generates the details for a running/active process instance
+function runningProcessInstances(pid,id){
+
+    getAuditLogForRunningProcessInstances(pid,id);
+    getVariablesOfRunningProcessInstances(id);
+    getUserTasksOfRunningProcessInstances(pid,id);
+    getCalledProcessInstancesOfRunning(id);
+
+}
+
+//Styling for the tab click in process monitoring
+function tabClick(){
+    var tabs = $('input[name=tab-group-1]');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].checked) {
+            $(tabs[i]).siblings("div").attr("style", "");
+        } else {
+            $(tabs[i]).siblings("div").attr("style", "display: none");
+        }
+    }
+
+}
+/**
+ * Function to process search inputs before submission for advanced filtering
+ */
+function validateFilter(){
+
+     //disable startDate input to avoid adding it to the query parameters
+    document.getElementById("startDate").disabled = true;
+    document.getElementById("endDate").disabled = true;
+
+    if (document.getElementById("instanceId").value.length == 0) {
+        document.getElementById("instanceId").disabled = true;
+    }
+    if (document.getElementById("variableName").value.length == 0) {
+        document.getElementById("variableName").disabled = true;
+    }
+     if (document.getElementById("variableValue").value.length == 0) {
+        document.getElementById("variableValue").disabled = true;
+    }
+
+    //add start date in ISO Date format
+    var SDate = document.getElementById("startDate");
+    if (SDate.value.length > 0) {
+        var startDateTemp = new Date(SDate.value);
+        var startDateISOTemp = document.getElementById("startDateISO");
+        startDateISOTemp.value = startDateTemp.toISOString().split('.')[0] + 'Z';
+    } else {
+        //disable startDateISO since it's not entered by the user
+        document.getElementById("startDateISO").disabled = true;
+    }
+
+    //add end date in ISO Date format
+    var EDate = document.getElementById("endDate");
+    if (EDate.value.length > 0) {
+        var endDateTemp = new Date(EDate.value);
+        endDateTemp.setHours(23);
+        endDateTemp.setMinutes(59);
+        endDateTemp.setSeconds(59);
+        console.log(endDateTemp);
+        console.log(endDateTemp.toISOString());
+        var endDateISOTemp = document.getElementById("endDateISO");
+        endDateISOTemp.value = endDateTemp.toISOString().split('.')[0] + 'Z';
+    } else {
+        //disable startDateISO since it's not entered by the user
+        document.getElementById("endDateISO").disabled = true;
+    }
+
+}
+/**
+ * Function to filter the records for the instance id in advanced filtering
+ */
+function filterResults(id){
+   
+    window.location = httpUrl + "/" + CONTEXT + "/processMonitoring?instanceId=" + id ;   
+}
+
