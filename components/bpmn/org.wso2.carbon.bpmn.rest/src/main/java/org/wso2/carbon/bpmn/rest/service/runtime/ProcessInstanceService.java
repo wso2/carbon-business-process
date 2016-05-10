@@ -60,6 +60,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
+import org.wso2.carbon.kernel.context.CarbonContext;
 import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
@@ -67,6 +68,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1406,11 +1408,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             }
 
         }
-//todo: get proper userName
-        // PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        String userName = "admin";
-        // String tenantDomain = carbonContext.getTenantDomain();
+//todo: Uncomment once user core permissions set
+//        CarbonContext carbonContext = CarbonContext.getCurrentContext();
+//        Principal principal = carbonContext.getUserPrincipal();
+//         String userName = principal.getName();
 
+        //todo: remove test value
+        String userName = "admin";
 
         BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
         List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
