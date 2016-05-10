@@ -123,6 +123,8 @@ var completedTasksNavActive = ''; // Completed task view [updated at historicTas
 var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
 var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
 var reportNavActive = ''; //Report view [updated at reportModel and refered at navigation.jag]
+var processMonitoringNavActive = ''; //Process Monitoring view [updated at processMonitoringModel and refered at navigation.jag]
+var advancedFilterNavActive = ''; //Advanced Filtering view [updated at advancedFilteringModel and refered at navigation.jag]
 
 var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErrorSection section in each view
 // errorDisplayEnable = '' to display

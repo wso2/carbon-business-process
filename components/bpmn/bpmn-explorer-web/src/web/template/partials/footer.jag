@@ -26,6 +26,7 @@
 		<script src="js/jquery.form.min.js"></script>
 		<script src="js/moment.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-select.min.js"></script>
 		<script src="js/actions.js"></script>
 		<script src="js/daterangepicker.js"></script>
 		<script>
