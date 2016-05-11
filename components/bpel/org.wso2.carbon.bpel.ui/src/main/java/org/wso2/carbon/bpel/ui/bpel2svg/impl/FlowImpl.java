@@ -371,7 +371,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         // Check if Layer & Opacity required
@@ -402,7 +402,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Gets the coordinates of the Flow start icon
         SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
         //Gets the coordinates of the Flow end icon
@@ -437,7 +437,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
      * @return An element which contains the arrow flows/paths of the Flow activity and its subActivities
      */
     public Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id, boolean to) {         //here we have to find whether
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
 
          /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.

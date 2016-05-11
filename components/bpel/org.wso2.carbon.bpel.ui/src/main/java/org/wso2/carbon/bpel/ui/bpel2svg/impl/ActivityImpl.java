@@ -885,7 +885,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     public Element getSubActivitiesSVGString(SVGDocument doc) {
         Iterator<ActivityInterface> itr = subActivities.iterator();
         ActivityInterface activity = null;
-        Element subElement = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        Element subElement = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Iterates through the subActivities
         while (itr.hasNext()) {
             activity = itr.next();
@@ -912,16 +912,16 @@ public abstract class ActivityImpl implements ActivityInterface {
                                          int imgXLeft, int imgYTop, int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         group.setAttributeNS(null, "id", getLayerId());
         //Checks whether the start icon path is null
         if (getStartIconPath() != null) {
 
             Element x = null;
-            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             x.setAttributeNS(null, "id", id);
             //Rectangle/Image holder to place the image
-            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            Element rect = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "rect");
             //Attributes of the rectangle drawn
             rect.setAttributeNS(null, "x", String.valueOf(imgXLeft));
             rect.setAttributeNS(null, "y", String.valueOf(imgYTop));
@@ -938,7 +938,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             int embedImageHeight = 45;
             int embedImageWidth = 50;
             //Attributes of the image embedded inside the rectangle
-            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
+            Element embedImage = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
             embedImage.setAttributeNS(null, "x", String.valueOf(embedImageX));
             embedImage.setAttributeNS(null, "y", String.valueOf(embedImageY));
@@ -994,13 +994,13 @@ public abstract class ActivityImpl implements ActivityInterface {
         int txtXLeft = imgXLeft;
         int txtYTop = imgYTop;
         // SVG <a> element is used to create links in SVG images
-        Element a = doc.createElementNS("http://www.w3.org/2000/svg", "a");
+        Element a = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "a");
         if (imgDisplayName != null) {
             //Set the image/activity name
             a.setAttributeNS(null, "id", imgName);
             //Attributes of the <text> which is used to define a text
             Element text1 = doc
-                    .createElementNS("http://www.w3.org/2000/svg", "text");
+                    .createElementNS(SVG_Namespace.SVG_NAMESPACE, "text");
             text1.setAttributeNS(null, "x", String.valueOf(txtXLeft));
             text1.setAttributeNS(null, "y", String.valueOf(txtYTop));
             text1.setAttributeNS(null, "id", imgName + ".Text");
@@ -1017,7 +1017,7 @@ public abstract class ActivityImpl implements ActivityInterface {
                             "-inkscape-font-specification:Arial Narrow");
             //Creating an SVG <tspan> element which is used to draw multiple lines of text in SVG
             Element tspan = doc
-                    .createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    .createElementNS(SVG_Namespace.SVG_NAMESPACE, "tspan");
             //Attributes of the tspan element i.e. xLeft and yTop position and the name of the activity
             tspan.setAttributeNS(null, "x", String.valueOf(txtXLeft + 5));
             tspan.setAttributeNS(null, "y", String.valueOf(txtYTop + 5));
@@ -1134,7 +1134,7 @@ public abstract class ActivityImpl implements ActivityInterface {
      * @return An element which contains the arrow flows/paths of the activity
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :
@@ -1176,7 +1176,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected Element getArrowDefinition(SVGDocument doc, int startX,
                                          int startY, int midX, int midY, int endX, int endY, String id) {
         Element path = doc
-                .createElementNS("http://www.w3.org/2000/svg", "path");
+                .createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         path.setAttributeNS(null, "d",
                 "M " + startX + "," + startY + " L " + midX + "," + midY + "L "
                         + endX +
@@ -1213,13 +1213,13 @@ public abstract class ActivityImpl implements ActivityInterface {
      */
     protected Element getBoxDefinition(SVGDocument doc, int boxXLeft, int boxYTop, int boxWidth, int boxHeight, String id) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Set the id of the box
         group.setAttributeNS(null, "id", "Layer-" + id);
         //Check whether Sequence boxes can be shown/ is true
         if (layoutManager.isShowSequenceBoxes()) {
             //Rectangle/Box to hold the subActivities inside the Sequence
-            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            Element rect = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "rect");
             //Attributes of the box is defined
             rect.setAttributeNS(null, "width", String.valueOf(boxWidth));
             rect.setAttributeNS(null, "height", String.valueOf(boxHeight));

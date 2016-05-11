@@ -347,7 +347,7 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the opacity of the icons
@@ -374,7 +374,7 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
 		//Checks for the subActivities
         if (subActivities != null) {
             ActivityInterface prevActivity = null;
