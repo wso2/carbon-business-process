@@ -38,9 +38,11 @@ import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -107,10 +109,12 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
                 List<Role> roles = authorizationStore.getRolesOfUser(userId, identityStore.getUser(userName).getIdentityStoreId());
 
-                for (Role role : roles) {
-                    Group group = new GroupEntity(role.getRoleId());
-                    groups.add(group);
-                }
+                groups =roles.stream().map(role -> new GroupEntity(role.getRoleId())).collect(Collectors.toList());
+
+//                for (Role role : roles) {
+//                    Group group = new GroupEntity(role.getRoleId());
+//                    groups.add(group);
+//                }
 
             } catch (IdentityStoreException | AuthorizationStoreException e) {
                 String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
@@ -119,7 +123,7 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
 
         }
-            return groups;
+        return groups;
 
     }
 
@@ -128,7 +132,6 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
         String userName = "";
         try { //todo: need to set length to -1
             List<org.wso2.carbon.security.caas.user.core.bean.User> users = identityStore.listUsers("%", 0, 10);
-            //todo: check
             if(!users.isEmpty()) {
                 Optional<User> matchingObjects = users.stream().
                         filter(u ->u.getUserId().equals(userId)).
