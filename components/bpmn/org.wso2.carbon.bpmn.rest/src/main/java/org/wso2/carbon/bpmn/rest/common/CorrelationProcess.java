@@ -7,9 +7,9 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 //import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
@@ -80,7 +80,7 @@ public class CorrelationProcess {
             query.executionTenantId(value);
         }
 
-        //QueryProperty qp = allowedSortProperties.get("processInstanceId");
+        //QueryProperty qp = ALLOWED_SORT_PROPERTIES.get("processInstanceId");
        // ((AbstractQuery) query).orderBy(qp);
         query.orderByProcessInstanceId();
         query.asc();

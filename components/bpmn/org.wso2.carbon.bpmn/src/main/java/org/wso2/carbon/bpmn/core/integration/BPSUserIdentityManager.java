@@ -26,8 +26,8 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
-import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
@@ -44,12 +44,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.login.LoginException;
+
 
 /**
  *
@@ -279,7 +278,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
             if (!userName.isEmpty()) {
                 List<Role> roles = authorizationStore.getRolesOfUser(userId, identityStore.getUser(userName).
                         getIdentityStoreId());
-                groups = roles.stream().map(role->new GroupEntity(role.getRoleId())).collect(Collectors.toList());
+                groups = roles.stream().map(role -> new GroupEntity(role.getRoleId())).collect(Collectors.toList());
 //                for (Role role : roles) {
 //                    Group group = new GroupEntity(role.getRoleId());
 //                    groups.add(group);
@@ -332,7 +331,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
             }
         } catch (AuthenticationFailure authenticationFailure) {
             String msg = "Authentication failure while authenticating user :" + userName;
-            log.error(msg,authenticationFailure);
+            log.error(msg, authenticationFailure);
         }
 
         if (log.isDebugEnabled()) {
@@ -351,28 +350,25 @@ public class BPSUserIdentityManager extends UserEntityManager {
         String userName = "";
         try { //todo: need to set length to -1
             List<org.wso2.carbon.security.caas.user.core.bean.User> users = identityStore.listUsers("%", 0, 10);
-            if(!users.isEmpty()) {
+            if (!users.isEmpty()) {
                 Optional<org.wso2.carbon.security.caas.user.core.bean.User> matchingObjects = users.stream().
-                        filter(u ->u.getUserId().equals(userId)).
+                        filter(u -> u.getUserId().equals(userId)).
                         findFirst();
-                if(matchingObjects.isPresent()) {
+                if (matchingObjects.isPresent()) {
                     org.wso2.carbon.security.caas.user.core.bean.User filteredUser = matchingObjects.get();
                     userName = filteredUser.getUserName();
-                }
-                else{
+                } else {
                     log.info("No matching user found for userId: " + userId);
                 }
 
             }
 
-        }
-        catch(IdentityStoreException e ){
-            String msg = "Unable to get username for userId : " +userId ;
-            log.error( msg, e);
+        } catch (IdentityStoreException e) {
+            String msg = "Unable to get username for userId : " + userId;
+            log.error(msg, e);
         }
         return userName;
     }
-
 
 
     @Override

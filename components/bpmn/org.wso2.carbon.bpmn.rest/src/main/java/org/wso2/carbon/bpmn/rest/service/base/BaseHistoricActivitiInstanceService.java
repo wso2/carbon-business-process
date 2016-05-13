@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.base;
@@ -37,8 +37,8 @@ import java.util.Map;
  */
 public class BaseHistoricActivitiInstanceService {
 
-    protected static final Map<String, QueryProperty> allowedSortProperties;
-    protected static final List<String> ALL_PROPERTIES_LIST ;
+    protected static final Map<String, QueryProperty> ALLOWED_SORT_PROPERTIES;
+    protected static final List<String> ALL_PROPERTIES_LIST;
 
     static {
         Map<String, QueryProperty> allowedPropertiesMap = new HashMap<>();
@@ -52,14 +52,14 @@ public class BaseHistoricActivitiInstanceService {
         allowedPropertiesMap
                 .put("executionId", HistoricActivityInstanceQueryProperty.EXECUTION_ID);
         allowedPropertiesMap.put("activityInstanceId",
-                                  HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
+                HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
         allowedPropertiesMap.put("processDefinitionId",
-                                  HistoricActivityInstanceQueryProperty.PROCESS_DEFINITION_ID);
+                HistoricActivityInstanceQueryProperty.PROCESS_DEFINITION_ID);
         allowedPropertiesMap.put("processInstanceId",
-                                  HistoricActivityInstanceQueryProperty.PROCESS_INSTANCE_ID);
+                HistoricActivityInstanceQueryProperty.PROCESS_INSTANCE_ID);
         allowedPropertiesMap.put("startTime", HistoricActivityInstanceQueryProperty.START);
         allowedPropertiesMap.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
-        allowedSortProperties = Collections.unmodifiableMap(allowedPropertiesMap);
+        ALLOWED_SORT_PROPERTIES = Collections.unmodifiableMap(allowedPropertiesMap);
     }
 
     static {
@@ -201,6 +201,6 @@ public class BaseHistoricActivitiInstanceService {
 
         return new HistoricActivityInstancePaginateList(new RestResponseFactory(), baseName)
                 .paginateList(allRequestParams, queryRequest, query, "startTime",
-                              allowedSortProperties);
+                        ALLOWED_SORT_PROPERTIES);
     }
 }

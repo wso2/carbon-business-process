@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ActiveActivityCollection;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
@@ -115,7 +115,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
      */
     @GET
     @Path("/{execution-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getExecution(@PathParam("execution-id") String executionId,
                                  @Context Request request) {
 
@@ -133,8 +133,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
      */
     @PUT
     @Path("/{execution-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response performExecutionAction(@PathParam("execution-id") String executionId,
                                            ExecutionActionRequest actionRequest,
                                            @Context Request request) {
@@ -155,7 +155,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
             }
             if (actionRequest.getVariables() != null) {
                 runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId(),
-                                                   getVariablesToSet(actionRequest));
+                        getVariablesToSet(actionRequest));
             } else {
                 runtimeService
                         .signalEventReceived(actionRequest.getSignalName(), execution.getId());
@@ -168,7 +168,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
             if (actionRequest.getVariables() != null) {
                 runtimeService
                         .messageEventReceived(actionRequest.getMessageName(), execution.getId(),
-                                              getVariablesToSet(actionRequest));
+                                getVariablesToSet(actionRequest));
             } else {
                 runtimeService
                         .messageEventReceived(actionRequest.getMessageName(), execution.getId());
@@ -196,7 +196,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
     @GET
     @Path("/{execution-id}/activities")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getActiveActivities(@PathParam("execution-id") String executionId) {
         Execution execution = getExecutionFromRequest(executionId);
         RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
@@ -209,14 +209,14 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
     @GET
     @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }) //TODO:
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML}) //TODO:
     public Response getProcessInstances(@Context Request request) {
         // Populate query based on request
         ExecutionQueryRequest queryRequest = new ExecutionQueryRequest();
         Map<String, String> allRequestParams = new HashMap<>();
 
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-        if(decoder.parameters().size() > 0) {
+        if (decoder.parameters().size() > 0) {
             for (String property : ALL_PROPERTIES_LIST) {
                 String value = decoder.parameters().get(property).get(0);
 
@@ -346,7 +346,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
         if (actionRequest.getVariables() != null) {
             runtimeService.signalEventReceived(actionRequest.getSignalName(),
-                                               getVariablesToSet(actionRequest));
+                    getVariablesToSet(actionRequest));
         } else {
             runtimeService.signalEventReceived(actionRequest.getSignalName());
         }
@@ -355,14 +355,14 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
     @GET
     @Path("/{execution-id}/variables")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getVariables(@PathParam("execution-id") String executionId,
                                  @QueryParam("scope") String scope, @Context Request req) {
 
         Execution execution = getExecutionFromRequest(executionId);
         List<RestVariable> restVariableList =
                 processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION,
-                                 req.getUri());
+                        req.getUri());
         RestVariableCollection restVariableCollection = new RestVariableCollection();
         restVariableCollection.setRestVariables(restVariableList);
         return Response.ok().entity(restVariableCollection).build();
@@ -433,7 +433,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
     @GET
     @Path("/{execution-id}/variables/{variable-name}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RestVariable getVariable(@PathParam("execution-id") String executionId,
                                     @PathParam("variable-name") String variableName,
                                     @QueryParam("scope") String scope, @Context Request req) {
@@ -458,7 +458,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         return Response.ok().status(Response.Status.CREATED).entity(result).build();
     }
 */
-	//TODO:
+    //TODO:
 //    @PUT
 //    @Path("/{execution-id}/variables/{variable-name}")
 //    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -497,7 +497,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
     @DELETE
     @Path("/{execution-id}/variables/{variable-name}")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteVariable(@PathParam("execution-id") String executionId,
                                    @PathParam("variable-name") String variableName,
                                    @QueryParam("scope") String scope) {
@@ -511,8 +511,8 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         if (!hasVariableOnScope(execution, variableName, variableScope)) {
             throw new ActivitiObjectNotFoundException(
                     "Execution '" + execution.getId() + "' doesn't have a variable '" +
-                    variableName + "' in scope " +
-                    variableScope.name().toLowerCase(Locale.getDefault()),
+                            variableName + "' in scope " +
+                            variableScope.name().toLowerCase(Locale.getDefault()),
                     VariableInstanceEntity.class);
         }
 

@@ -139,7 +139,7 @@ public class ModelService implements Microservice {
         ModelQuery modelQuery = repositoryService.createModelQuery();
         Map<String, List<String>> parameters = decoder.parameters();
 
-        if(decoder.parameters().size() > 0) {
+        if (decoder.parameters().size() > 0) {
             for (String property : allPropertiesList) {
                 String value = decoder.parameters().get(property).get(0);
 

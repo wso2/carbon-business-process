@@ -115,7 +115,7 @@
     </dependencies>
 
     <properties>
-        <checkstyle.skip>true</checkstyle.skip>
+        <checkstyle.skip>false</checkstyle.skip>
         <private.package>org.wso2.carbon.bpmn.rest.internal</private.package>
         <export.package>
             org.wso2.carbon.bpmn.rest.*;version=${carbon.business-process.exp.pkg.version},

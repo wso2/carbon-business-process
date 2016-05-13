@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -92,11 +92,12 @@ public class FormDataService implements Microservice {
 
     @GET
     @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getFormData(@Context Request request, @QueryParam("taskId") String taskId,
                                 @QueryParam("processDefinitionId") String processDefinitionId) {
 
-        if (taskId == null && processDefinitionId == null) {throw new ActivitiIllegalArgumentException(
+        if (taskId == null && processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException(
                     "The taskId or processDefinitionId parameter has to be provided");
         }
 
@@ -122,8 +123,8 @@ public class FormDataService implements Microservice {
         }
 
         return Response.ok().entity(new RestResponseFactory()
-                                            .createFormDataResponse(formData, request.getUri()))
-                       .build();
+                .createFormDataResponse(formData, request.getUri()))
+                .build();
     }
 
     @POST

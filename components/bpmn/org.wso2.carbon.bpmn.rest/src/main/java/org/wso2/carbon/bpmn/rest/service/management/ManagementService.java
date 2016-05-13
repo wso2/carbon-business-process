@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.JobPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.JobResponse;
@@ -144,9 +144,9 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/jobs")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DataResponse getJobs(@Context Request request) {
-        JobQuery query =  BPMNOSGIService.getManagementService().createJobQuery();
+        JobQuery query = BPMNOSGIService.getManagementService().createJobQuery();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         Map<String, List<String>> queryParams = decoder.parameters();
         Map<String, String> allRequestParams =
@@ -221,11 +221,11 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/jobs/{job-id}/exception-stacktrace")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public String getJobStacktrace(@PathParam("job-id") String jobId) {
         Job job = getJobFromResponse(jobId);
 
-        String stackTrace =  BPMNOSGIService.getManagementService().getJobExceptionStacktrace(job.getId());
+        String stackTrace = BPMNOSGIService.getManagementService().getJobExceptionStacktrace(job.getId());
 
         if (stackTrace == null) {
             throw new ActivitiObjectNotFoundException(
@@ -238,7 +238,7 @@ public class ManagementService implements Microservice {
     }
 
     protected Job getJobFromResponse(String jobId) {
-        Job job =  BPMNOSGIService.getManagementService().createJobQuery().jobId(jobId).singleResult();
+        Job job = BPMNOSGIService.getManagementService().createJobQuery().jobId(jobId).singleResult();
 
         if (job == null) {
             throw new ActivitiObjectNotFoundException(
@@ -249,7 +249,7 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/jobs/{job-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JobResponse getJob(@PathParam("job-id") String jobId, @Context Request request) {
         Job job = getJobFromResponse(jobId);
 
@@ -271,8 +271,8 @@ public class ManagementService implements Microservice {
 
     @POST
     @Path("/jobs/{job-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void executeJobAction(@PathParam("job-id") String jobId,
                                  RestActionRequest actionRequest) {
 
@@ -294,7 +294,7 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/engine")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ProcessEngineInfoResponse getEngineInfo() {
         ProcessEngineInfoResponse response = new ProcessEngineInfoResponse();
         ProcessEngine engine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
@@ -319,24 +319,24 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/properties")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Map<String, String> getProperties() {
-        return  BPMNOSGIService.getManagementService().getProperties();
+        return BPMNOSGIService.getManagementService().getProperties();
     }
 
     @GET
     @Path("/tables")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<TableResponse> getTables(@Context Request request) {
         return restResponseFactory
-                .createTableResponseList( BPMNOSGIService.getManagementService().getTableCount(), request.getUri());
+                .createTableResponseList(BPMNOSGIService.getManagementService().getTableCount(), request.getUri());
     }
 
     @GET
     @Path("/tables/{table-name}/columns")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public TableMetaData getTableMetaData(@PathParam("table-name") String tableName) {
-        TableMetaData response =  BPMNOSGIService.getManagementService().getTableMetaData(tableName);
+        TableMetaData response = BPMNOSGIService.getManagementService().getTableMetaData(tableName);
 
         if (response == null) {
             throw new ActivitiObjectNotFoundException(
@@ -347,7 +347,7 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/tables/{table-name}/data")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DataResponse getTableData(@PathParam("table-name") String tableName,
                                      @Context Request request,
                                      @QueryParam("orderAscendingColumn") String orderAsc,
@@ -355,7 +355,7 @@ public class ManagementService implements Microservice {
 
         Map<String, String> allRequestParams = new HashMap<>();
         // Check if table exists before continuing
-        if ( BPMNOSGIService.getManagementService().getTableMetaData(tableName) == null) {
+        if (BPMNOSGIService.getManagementService().getTableMetaData(tableName) == null) {
             throw new ActivitiObjectNotFoundException(
                     "Could not find a table with name '" + tableName + "'.", String.class);
         }
@@ -416,10 +416,10 @@ public class ManagementService implements Microservice {
 
     @GET
     @Path("/tables/{table-name}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public TableResponse getTable(@PathParam("table-name") String tableName,
                                   @Context Request request) {
-        Map<String, Long> tableCounts =  BPMNOSGIService.getManagementService().getTableCount();
+        Map<String, Long> tableCounts = BPMNOSGIService.getManagementService().getTableCount();
 
         TableResponse response = null;
         for (Map.Entry<String, Long> entry : tableCounts.entrySet()) {

@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.wso2.carbon.bpmn.rest.service.query;
 
@@ -21,8 +21,8 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.HistoricProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstancePaginateList;
@@ -52,9 +52,9 @@ public class HistoricProcessInstanceQueryService {
 
     static {
         allowedSortProperties.put("processInstanceId",
-                                  HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
+                HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
         allowedSortProperties.put("processDefinitionId",
-                                  HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+                HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
         allowedSortProperties.put("businessKey", HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
         allowedSortProperties.put("startTime", HistoricProcessInstanceQueryProperty.START_TIME);
         allowedSortProperties.put("endTime", HistoricProcessInstanceQueryProperty.END_TIME);
@@ -88,8 +88,8 @@ public class HistoricProcessInstanceQueryService {
 
     @POST
     @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response queryProcessInstances(HistoricProcessInstanceQueryRequest queryRequest,
                                           @Context Request request) {
 
@@ -97,7 +97,7 @@ public class HistoricProcessInstanceQueryService {
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
 
         for (String property : allPropertiesList) {
-            if(decoder.parameters().size() > 0) {
+            if (decoder.parameters().size() > 0) {
                 String value = decoder.parameters().get(property).get(0);
 
                 if (value != null) {
@@ -115,7 +115,7 @@ public class HistoricProcessInstanceQueryService {
             query.processInstanceId(queryRequest.getProcessInstanceId());
         }
         if (queryRequest.getProcessInstanceIds() != null &&
-            !queryRequest.getProcessInstanceIds().isEmpty()) {
+                !queryRequest.getProcessInstanceIds().isEmpty()) {
             query.processInstanceIds(new HashSet<>(queryRequest.getProcessInstanceIds()));
         }
         if (queryRequest.getProcessDefinitionKey() != null) {
@@ -182,7 +182,7 @@ public class HistoricProcessInstanceQueryService {
         DataResponse dataResponse =
                 new HistoricProcessInstancePaginateList(new RestResponseFactory(), request.getUri())
                         .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
-                                      allowedSortProperties);
+                                allowedSortProperties);
         return Response.ok().entity(dataResponse).build();
 
     }
@@ -206,10 +206,10 @@ public class HistoricProcessInstanceQueryService {
 
             // A value-only query is only possible using equals-operator
             if (nameLess &&
-                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                    variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
                 throw new ActivitiIllegalArgumentException(
                         "Value-only query (without a variable-name) is only supported when using" +
-                        " 'equals' operation.");
+                                " 'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
@@ -225,12 +225,12 @@ public class HistoricProcessInstanceQueryService {
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
                         processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
-                                                                           (String) actualValue);
+                                (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing," +
-                                " but was: " +
-                                actualValue.getClass().getName());
+                                        " but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -245,7 +245,7 @@ public class HistoricProcessInstanceQueryService {
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported for like, but was: " +
-                                actualValue.getClass().getName());
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -270,7 +270,7 @@ public class HistoricProcessInstanceQueryService {
                 default:
                     throw new ActivitiIllegalArgumentException(
                             "Unsupported variable query operation: " +
-                            variable.getVariableOperation());
+                                    variable.getVariableOperation());
             }
         }
     }

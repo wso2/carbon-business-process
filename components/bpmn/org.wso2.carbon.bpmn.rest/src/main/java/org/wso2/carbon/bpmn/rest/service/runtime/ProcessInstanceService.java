@@ -17,7 +17,14 @@
 package org.wso2.carbon.bpmn.rest.service.runtime;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.*;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -48,9 +55,9 @@ import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
@@ -60,7 +67,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
-import org.wso2.carbon.kernel.context.CarbonContext;
+//import org.wso2.carbon.kernel.context.CarbonContext;
 import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
@@ -68,7 +75,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
-import java.security.Principal;
+//import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1356,19 +1363,25 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                 if (processDefinitionKey != null) {
 
                     if (((ProcessEngineImpl) processEngine).getProcessEngineConfiguration() != null) {
-                        CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+                        CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).
+                                getProcessEngineConfiguration().getCommandExecutor();
                         if (commandExecutor != null) {
 
                             processDefinitionId =
                                     (String) commandExecutor.execute(new Command<Object>() {
                                         public Object execute(CommandContext commandContext) {
-                                            ProcessDefinitionEntityManager processDefinitionEntityManager = commandContext.
+                                            ProcessDefinitionEntityManager
+                                                    processDefinitionEntityManager = commandContext.
                                                     getSession(ProcessDefinitionEntityManager.class);
-                                            ProcessDefinitionEntity processDefinitionEntity = processDefinitionEntityManager.
-                                                    findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-                                            if (processDefinitionEntity != null && processDefinitionEntity
-                                                    .getProcessDefinition() != null) {
-                                                return processDefinitionEntity.getProcessDefinition().getId();
+                                            ProcessDefinitionEntity processDefinitionEntity =
+                                                    processDefinitionEntityManager.
+                                                            findLatestProcessDefinitionByKeyAndTenantId
+                                                                    (processDefinitionKey, tenantId);
+                                            if (processDefinitionEntity != null &&
+                                                    processDefinitionEntity
+                                                            .getProcessDefinition() != null) {
+                                                return processDefinitionEntity.
+                                                        getProcessDefinition().getId();
                                             }
                                             return null;
                                         }
@@ -1383,8 +1396,9 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                 String messageName = processInstanceCreateRequest.getMessage();
                 if (messageName != null && !messageName.isEmpty()) {
 
-                    ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
-                            .messageEventSubscriptionName(messageName);
+                    ProcessDefinitionQuery processDefinitionQuery =
+                            repositoryService.createProcessDefinitionQuery()
+                                    .messageEventSubscriptionName(messageName);
                     if (processDefinitionQuery != null) {
                         processDefinitionQuery = processDefinitionQuery.processDefinitionTenantId
                                 (processInstanceCreateRequest.getTenantId());
@@ -1447,7 +1461,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                 }
 
                 for (Group identityGroup : groupList) {
-                    if (!groupId.isEmpty() && identityGroup.getId() != null && identityGroup.getId().equals(groupId)) {
+                    if (!groupId.isEmpty() && identityGroup.getId() != null &&
+                            identityGroup.getId().equals(groupId)) {
                         return true;
                     }
                 }
@@ -1461,7 +1476,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         return false;
     }
 
-    private String resolveVariable(ProcessInstanceCreateRequest processInstanceCreateRequest, String resolvingName) {
+    private String resolveVariable(ProcessInstanceCreateRequest processInstanceCreateRequest,
+                                   String resolvingName) {
 
         int initialIndex = resolvingName.indexOf("{");
         int lastIndex = resolvingName.indexOf("}");

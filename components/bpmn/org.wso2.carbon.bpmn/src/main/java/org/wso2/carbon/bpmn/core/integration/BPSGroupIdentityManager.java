@@ -38,7 +38,6 @@ import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -101,15 +100,16 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     public List<Group> findGroupsByUser(String userId) {
         String userName = getUserNameForGivenUserId(userId);
         List<Group> groups = new ArrayList<Group>();
-        if(userName.isEmpty()) {
+        if (userName.isEmpty()) {
 
-        }
-        else {
+        } else {
             try {
 
-                List<Role> roles = authorizationStore.getRolesOfUser(userId, identityStore.getUser(userName).getIdentityStoreId());
+                List<Role> roles = authorizationStore.getRolesOfUser
+                        (userId, identityStore.getUser(userName).getIdentityStoreId());
 
-                groups =roles.stream().map(role -> new GroupEntity(role.getRoleId())).collect(Collectors.toList());
+                groups = roles.stream().map(role -> new GroupEntity(role.getRoleId())).
+                        collect(Collectors.toList());
 
 //                for (Role role : roles) {
 //                    Group group = new GroupEntity(role.getRoleId());
@@ -117,7 +117,8 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 //                }
 
             } catch (IdentityStoreException | AuthorizationStoreException e) {
-                String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
+                String msg = "Failed to get roles of the user: " + userId + "." +
+                        " Returning an empty roles list.";
                 log.error(msg, e);
             }
 
@@ -131,25 +132,25 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     private String getUserNameForGivenUserId(String userId) {
         String userName = "";
         try { //todo: need to set length to -1
-            List<org.wso2.carbon.security.caas.user.core.bean.User> users = identityStore.listUsers("%", 0, 10);
-            if(!users.isEmpty()) {
+            List<org.wso2.carbon.security.caas.user.core.bean.User> users =
+                    identityStore.listUsers("%", 0, 10);
+            if (!users.isEmpty()) {
                 Optional<User> matchingObjects = users.stream().
-                        filter(u ->u.getUserId().equals(userId)).
+                        filter(u -> u.getUserId().equals(userId)).
                         findFirst();
-                if(matchingObjects.isPresent()) {
-                    org.wso2.carbon.security.caas.user.core.bean.User filteredUser = matchingObjects.get();
+                if (matchingObjects.isPresent()) {
+                    org.wso2.carbon.security.caas.user.core.bean.User filteredUser =
+                            matchingObjects.get();
                     userName = filteredUser.getUserName();
-                }
-                else{
+                } else {
                     log.info("No matching user found for userId: " + userId);
                 }
 
             }
 
-        }
-        catch(IdentityStoreException e ){
-            String msg = "Unable to get username for userId : " +userId ;
-            log.error( msg, e);
+        } catch (IdentityStoreException e) {
+            String msg = "Unable to get username for userId : " + userId;
+            log.error(msg, e);
         }
         return userName;
     }
@@ -157,13 +158,15 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
     @Override
     public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult,
                                                int maxResults) {
-        String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
+        String msg = "Invoked GroupIdentityManager method is not supported by" +
+                " BPSGroupIdentityManager.";
         throw new UnsupportedOperationException(msg);
     }
 
     @Override
     public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
-        String msg = "Invoked GroupIdentityManager method is not supported by BPSGroupIdentityManager.";
+        String msg = "Invoked GroupIdentityManager method is not supported by" +
+                " BPSGroupIdentityManager.";
         throw new UnsupportedOperationException(msg);
     }
 }

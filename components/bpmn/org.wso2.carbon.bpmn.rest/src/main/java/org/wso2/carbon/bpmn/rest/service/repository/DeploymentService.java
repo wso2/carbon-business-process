@@ -37,8 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponseCollection;
@@ -127,7 +127,7 @@ public class DeploymentService implements Microservice {
 
     @GET
     @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeployments(@Context Request request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
@@ -135,7 +135,7 @@ public class DeploymentService implements Microservice {
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
-        if(decoder.parameters().size() > 0) {
+        if (decoder.parameters().size() > 0) {
             for (String property : allPropertiesList) {
                 String value = decoder.parameters().get(property).get(0);
 
@@ -203,7 +203,7 @@ public class DeploymentService implements Microservice {
 
     @GET
     @Path("/{deployment-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeployment(@PathParam("deployment-id") String deploymentId,
                                   @Context Request request) {
 
@@ -224,7 +224,7 @@ public class DeploymentService implements Microservice {
 
     @GET
     @Path("/{deployment-id}/resources/{resource-path:.*}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeploymentResourceForDifferentUrl(
             @PathParam("deployment-id") String deploymentId,
             @PathParam("resource-path") String resourcePath, @Context Request request) {
@@ -248,22 +248,22 @@ public class DeploymentService implements Microservice {
             // Build resource representation
             DeploymentResourceResponse deploymentResourceResponse = new RestResponseFactory()
                     .createDeploymentResourceResponse(deploymentId, resourcePath,
-                                                      Utils.resolveContentType(resourcePath),
-                                                      request.getUri());
+                            Utils.resolveContentType(resourcePath),
+                            request.getUri());
             return Response.ok().entity(deploymentResourceResponse).build();
 
         } else {
             // Resource not found in deployment
             throw new ActivitiObjectNotFoundException(
                     "Could not find a resource with id '" + resourcePath + "' in deployment '" +
-                    deploymentId + "'.", Deployment.class);
+                            deploymentId + "'.", Deployment.class);
         }
 
     }
 
     @GET
     @Path("/{deployment-id}/resources")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId,
                                            @Context Request request) {
 
@@ -281,7 +281,7 @@ public class DeploymentService implements Microservice {
         DeploymentResourceResponseCollection deploymentResourceResponseCollection =
                 new RestResponseFactory()
                         .createDeploymentResourceResponseList(deploymentId, resourceList,
-                                                              request.getUri());
+                                request.getUri());
 
         return Response.ok().entity(deploymentResourceResponseCollection).build();
     }
@@ -292,7 +292,7 @@ public class DeploymentService implements Microservice {
                                           @PathParam("resource-id") String resourceId) {
         String contentType = Utils.resolveContentType(resourceId);
         return Response.ok().type(contentType)
-                       .entity(getDeploymentResourceData(deploymentId, resourceId)).build();
+                .entity(getDeploymentResourceData(deploymentId, resourceId)).build();
     }
 
     private byte[] getDeploymentResourceData(String deploymentId, String resourceId) {
@@ -328,7 +328,7 @@ public class DeploymentService implements Microservice {
             // Resource not found in deployment
             throw new ActivitiObjectNotFoundException(
                     "Could not find a resource with id '" + resourceId + "' in deployment '" +
-                    deploymentId + "'.", String.class);
+                            deploymentId + "'.", String.class);
         }
     }
 }
