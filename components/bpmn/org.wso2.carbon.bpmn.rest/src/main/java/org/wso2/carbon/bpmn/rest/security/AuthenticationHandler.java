@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -14,36 +14,52 @@
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
  *  under the License.
- *//*
+ **/
 
 package org.wso2.carbon.bpmn.rest.security;
 
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.activiti.engine.IdentityService;
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
-//import org.apache.cxf.configuration.security.AuthorizationPolicy;
-//import org.apache.cxf.jaxrs.ext.RequestHandler;
-//import org.apache.cxf.jaxrs.model.ClassResourceInfo;
-//import org.apache.cxf.message.Message;
-//import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
-//import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
-//import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-//import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-//import org.wso2.carbon.context.PrivilegedCarbonContext;
-//import org.wso2.carbon.registry.core.config.RegistryContext;
-//import org.wso2.carbon.user.api.UserStoreException;
-//import org.wso2.carbon.user.core.service.RealmService;
-//import org.wso2.carbon.user.core.tenant.TenantManager;
-//import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.IdentityService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-//import javax.ws.rs.core.MediaType;
-//import javax.ws.rs.core.Response;
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.Map;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
+import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
+import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 
-public class AuthenticationHandler implements RequestHandler {
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.kernel.context.PrivilegedCarbonContext;
+import org.wso2.carbon.security.caas.jaas.CarbonPrincipal;
+import org.wso2.carbon.security.caas.user.core.bean.User;
+import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
+import org.wso2.msf4j.Interceptor;
+import org.wso2.msf4j.Request;
+import org.wso2.msf4j.ServiceMethodInfo;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Base64;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+
+/**
+ * Handle  REST Request authentication
+ */
+@Component(
+        name = "org.wso2.carbon.bpmn.rest.security.AuthenticationHandler",
+        service = Interceptor.class,
+        immediate = true
+)
+public class AuthenticationHandler implements Interceptor {
 
     public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
@@ -54,121 +70,128 @@ public class AuthenticationHandler implements RequestHandler {
     private final static String AUTH_TYPE_OAuth = "Bearer";
 
 
-    /**
-     * Implementation of RequestHandler.handleRequest method.
-     * This method retrieves userName and password from Basic auth header,
-     * and tries to authenticate against carbon user store
-     * <p/>
-     * Upon successful authentication allows process to proceed to retrieve requested REST resource
-     * Upon invalid credentials returns a HTTP 401 UNAUTHORIZED response to client
-     * Upon receiving a userStoreExceptions or IdentityException returns HTTP 500 internal server error to client
-     *
-     * @param message
-     * @param classResourceInfo
-     * @return Response
-     */
-/*
-    public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
-        AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
+    @Override
+    public boolean preCall(Request request, org.wso2.msf4j.Response responder, ServiceMethodInfo serviceMethodInfo) throws Exception {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null) {
+            if (authHeader.startsWith(AUTH_TYPE_BASIC)) {
 
-        if (policy != null) {
-            if (AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
-                return handleBasicAuth(policy);
-            } else if (AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())) {
-                return handleOAuth(message);
+                String encodedCredentials = authHeader.substring("Basic ".length()).trim();
+                String credentials = new String(Base64.getDecoder().decode(encodedCredentials),
+                        Charset.forName("UTF-8"));
+                int seperatorIndex = credentials.indexOf(':');
+                String username = credentials.substring(0, seperatorIndex);
+                String password = credentials.substring(seperatorIndex + 1);
+                handleBasicAuth(username, password);
+
+            } else if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
+                //todo:
+            } else {
+                //todo:
             }
         }
-        return authenticationFail(AUTH_TYPE_BASIC);
+
+        return true;
     }
 
-    protected Response handleBasicAuth(AuthorizationPolicy policy) {
-        String username = policy.getUserName();
-        String password = policy.getPassword();
+    @Override
+    public void postCall(Request request, int status, ServiceMethodInfo serviceMethodInfo) throws Exception {
+
+    }
+//Authenticate Basic auth type request
+    protected Response handleBasicAuth(String userName, String password) {
 
         try {
-            if (authenticate(username, password)) {
+            if (authenticate(userName, password)) {
                 return null;
             }
         } catch (RestApiBasicAuthenticationException e) {
-            log.error("Could not authenticate user : " + username + "against carbon userStore", e);
+            log.error("Could not authenticate user : " + userName + "against carbon userStore", e);
         }
         return authenticationFail();
     }
 
-    protected Response handleOAuth(Message message) {
-        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS))
-        .get(AUTHORIZATION_HEADER_NAME);
-        if (headers != null) {
-            String authHeader = headers.get(0);
-            if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
-                return authenticationFail(AUTH_TYPE_OAuth);
-            }
-        }
-        return authenticationFail(AUTH_TYPE_OAuth);
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+        log.info("Setting BPMN engine " + engineService);
+
     }
 
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        log.info("Unregister BPMNEngineService..");
+    }
+
+    @Activate
+    protected void activate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+    @Deactivate
+    protected void deactivate(BundleContext bundleContext) {
+        // Nothing to do
+    }
+
+
+//todo:
+/*protected Response handleOAuth(Message message) {
+        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS)).get(AUTHORIZATION_HEADER_NAME);
+        if (headers != null) {
+        String authHeader = headers.get(0);
+        if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
+        return authenticationFail(AUTH_TYPE_OAuth);
+        }
+        }
+        return authenticationFail(AUTH_TYPE_OAuth);
+        }*/
+
     /**
-     * Checks whether a given userName:password combination authenticates correctly against carbon
-      * userStore
+     * Checks whether a given userName:password combination authenticates correctly against carbon userStore
      * Upon successful authentication returns true, false otherwise
      *
      * @param userName
      * @param password
      * @return
-     * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when trying to
-      * authenticate
+     * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when trying to authenticate
      *                                             the user
      */
-/*
-    private boolean authenticate(String userName, String password) throws
-     RestApiBasicAuthenticationException {
+    private boolean authenticate(String userName, String password) throws RestApiBasicAuthenticationException {
 
         boolean authStatus;
+
         try {
+            User user = BPMNOSGIService.getUserRealm().getIdentityStore().getUser(userName);
             IdentityService identityService = BPMNOSGIService.getIdentityService();
-            authStatus = identityService.checkPassword(userName, password);
+            authStatus = identityService.checkPassword(user.getUserId(), password);
 
             if (!authStatus) {
                 return false;
             }
-        } catch (BPMNAuthenticationException e) {
+        } catch (BPMNAuthenticationException | IdentityStoreException e) {
             throw new RestApiBasicAuthenticationException(e.getMessage(), e);
-        }
-
-        String tenantDomain = MultitenantUtils.getTenantDomain(userName);
-        String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userName);
-        String userNameWithTenantDomain = tenantAwareUserName + "@" + tenantDomain;
-
-        RealmService realmService = RegistryContext.getBaseInstance().getRealmService();
-        TenantManager mgr = realmService.getTenantManager();
-
-        int tenantId = 0;
-        try {
-            tenantId = mgr.getTenantId(tenantDomain);
-
-            // tenantId == -1, means an invalid tenant.
-            if (tenantId == -1) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Basic authentication request with an invalid tenant : " +
-                     userNameWithTenantDomain);
-                }
-                return false;
-            }
-
-        } catch (UserStoreException e) {
-            throw new RestApiBasicAuthenticationException(
-                    "Identity exception thrown while getting tenant ID for user : " +
-                     userNameWithTenantDomain, e);
         }
 
             /* Upon successful authentication existing thread local carbon context
              * is updated to mimic the authenticated user */
+        try {
+            PrivilegedCarbonContext privilegedCarbonContext =
+                    (PrivilegedCarbonContext) PrivilegedCarbonContext.getCurrentContext();
 
-     /*   PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.
-     getThreadLocalCarbonContext();
-        carbonContext.setUsername(tenantAwareUserName);
-        carbonContext.setTenantId(tenantId);
-        carbonContext.setTenantDomain(tenantDomain);
+            User authenticatedUser = BPMNOSGIService.getUserRealm().getIdentityStore().getUser(userName);
+
+            CarbonPrincipal principal = new CarbonPrincipal(authenticatedUser);
+            privilegedCarbonContext.setUserPrincipal(principal);
+        } catch (IdentityStoreException e) {
+            //todo:
+            String msg = "errorrrrr";
+            log.error(msg, e);
+        }
+
 
         return true;
     }
@@ -178,8 +201,7 @@ public class AuthenticationHandler implements RequestHandler {
     }
 
     private Response authenticationFail(String authType) {
-        //authentication failed, request the authetication, add the realm name if
-         n eeded to the value of WWW-Authenticate
+        //authentication failed, request the authentication, add the realm name if needed to the value of WWW-Authenticate
 
         RestErrorResponse restErrorResponse = new RestErrorResponse();
         restErrorResponse.setErrorMessage("Authentication required");
@@ -192,10 +214,9 @@ public class AuthenticationHandler implements RequestHandler {
         } catch (IOException e) { //log the error and continue. No need to specifically handle it
             log.error("Error Json String conversion failed", e);
         }
-        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).
-        header(WWW_AUTHENTICATE,
+        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
                 authType).entity(jsonString).build();
     }
 
 
-}*/
+}
