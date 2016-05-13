@@ -60,7 +60,7 @@ public class CorrelationService implements Microservice {
                 .put("processInstanceId", CorrelationQueryProperty.PROCESS_INSTANCE_ID);
     }
 
-    public CorrelationService(){
+    public CorrelationService() {
         log.info("Activated CorrelationService");
     }
 
@@ -91,21 +91,21 @@ public class CorrelationService implements Microservice {
 
     @POST
     @Path("/")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response recieveMessage(CorrelationActionRequest correlationActionRequest,
                                    @Context Request request) {
 
         if (correlationActionRequest.getProcessDefinitionId() == null &&
-            correlationActionRequest.getProcessDefinitionKey() == null &&
-            (correlationActionRequest.getMessageName() == null &&
-             correlationActionRequest.getSignalName() == null)) {
+                correlationActionRequest.getProcessDefinitionKey() == null &&
+                (correlationActionRequest.getMessageName() == null &&
+                        correlationActionRequest.getSignalName() == null)) {
             throw new ActivitiIllegalArgumentException(
                     "Either processDefinitionId, processDefinitionKey, signal or " +
-                    "message is required.");
+                            "message is required.");
         }
 
         int paramsSet = ((correlationActionRequest.getProcessDefinitionId() != null) ? 1 : 0) +
-                        ((correlationActionRequest.getProcessDefinitionKey() != null) ? 1 : 0);
+                ((correlationActionRequest.getProcessDefinitionKey() != null) ? 1 : 0);
 
         if (paramsSet > 1) {
             throw new ActivitiIllegalArgumentException(
@@ -113,7 +113,7 @@ public class CorrelationService implements Microservice {
         }
 
         paramsSet = ((correlationActionRequest.getMessageName() != null) ? 1 : 0) +
-                    ((correlationActionRequest.getSignalName() != null) ? 1 : 0);
+                ((correlationActionRequest.getSignalName() != null) ? 1 : 0);
 
         if (paramsSet > 1) {
             throw new ActivitiIllegalArgumentException(

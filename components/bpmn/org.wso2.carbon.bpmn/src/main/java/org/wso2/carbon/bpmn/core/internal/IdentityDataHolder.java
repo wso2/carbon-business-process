@@ -26,7 +26,7 @@ import org.wso2.carbon.security.caas.user.core.service.RealmService;
 public class IdentityDataHolder {
 
     private RealmService carbonRealmService;
-    private static IdentityDataHolder instance;
+    private static volatile IdentityDataHolder instance;
 
     /**
      * Get IdentityDataHolder instance.

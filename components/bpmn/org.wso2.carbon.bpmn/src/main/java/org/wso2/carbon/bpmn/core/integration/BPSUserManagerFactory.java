@@ -15,15 +15,13 @@
  */
 
 package org.wso2.carbon.bpmn.core.integration;
+
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.*;
-import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
-import org.wso2.carbon.security.caas.user.core.service.RealmService;
+
 
 /**
  *

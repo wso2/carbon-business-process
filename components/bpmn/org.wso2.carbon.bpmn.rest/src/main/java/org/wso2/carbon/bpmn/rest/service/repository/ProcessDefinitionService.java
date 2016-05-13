@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
@@ -138,7 +138,7 @@ public class ProcessDefinitionService implements Microservice {
 
     @GET
     @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefinitions(@Context Request request) {
         RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
         Map<String, String> allRequestParams = new HashMap<>();
@@ -146,7 +146,7 @@ public class ProcessDefinitionService implements Microservice {
         ProcessDefinitionQuery processDefinitionQuery =
                 repositoryService.createProcessDefinitionQuery();
 
-        if(decoder.parameters().size() > 0) {
+        if (decoder.parameters().size() > 0) {
             for (String property : allPropertiesList) {
                 String value = decoder.parameters().get(property).get(0);
 
@@ -231,7 +231,7 @@ public class ProcessDefinitionService implements Microservice {
 
     @GET
     @Path("/{process-definition-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ProcessDefinitionResponse getProcessDefinition(
             @PathParam("process-definition-id") String processDefinitionId,
             @Context Request request) {
@@ -242,7 +242,7 @@ public class ProcessDefinitionService implements Microservice {
 
     @GET
     @Path("/{process-definition-id}/resource-data")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefinitionResource(
             @PathParam("process-definition-id") String processDefinitionId) {
 
@@ -251,13 +251,13 @@ public class ProcessDefinitionService implements Microservice {
         String resourceID = processDefinition.getResourceName();
         String contentType = Utils.resolveContentType(processDefinition.getResourceName());
         return Response.ok().type(contentType)
-                       .entity(getDeploymentResourceData(processDefinition.getDeploymentId(),
-                                                         resourceID, repositoryService)).build();
+                .entity(getDeploymentResourceData(processDefinition.getDeploymentId(),
+                        resourceID, repositoryService)).build();
     }
 
     @GET
     @Path("/{process-definition-id}/identity-links")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                      @Context Request request) {
 
@@ -271,7 +271,7 @@ public class ProcessDefinitionService implements Microservice {
 
     @GET
     @Path("/{process-definition-id}/identity-links/{family}/{identity-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                      @PathParam("family") String family,
                                      @PathParam("identity-id") String identityId,
@@ -286,7 +286,7 @@ public class ProcessDefinitionService implements Microservice {
         IdentityLink link =
                 getIdentityLink(family, identityId, processDefinition.getId(), repositoryService);
         return Response.ok().entity(new RestResponseFactory()
-                                            .createRestIdentityLink(link, request.getUri())).build();
+                .createRestIdentityLink(link, request.getUri())).build();
     }
 
     private ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
@@ -337,13 +337,13 @@ public class ProcessDefinitionService implements Microservice {
             // Resource not found in deployment
             throw new ActivitiObjectNotFoundException(
                     "Could not find a resource with id '" + resourceId + "' in deployment '" +
-                    deploymentId + "'.", String.class);
+                            deploymentId + "'.", String.class);
         }
     }
 
     protected void validateIdentityLinkArguments(String family, String identityId) {
         if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) &&
-                               !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
+                !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
             throw new ActivitiIllegalArgumentException(
                     "Identity link family should be 'users' or 'groups'.");
         }
@@ -374,6 +374,6 @@ public class ProcessDefinitionService implements Microservice {
             }
         }
         throw new ActivitiObjectNotFoundException("Could not find the requested identity link.",
-                                                  IdentityLink.class);
+                IdentityLink.class);
     }
 }

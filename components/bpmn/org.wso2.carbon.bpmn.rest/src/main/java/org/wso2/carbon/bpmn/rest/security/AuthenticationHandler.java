@@ -43,6 +43,7 @@ import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.msf4j.Interceptor;
 import org.wso2.msf4j.Request;
 import org.wso2.msf4j.ServiceMethodInfo;
+//import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -65,13 +66,14 @@ public class AuthenticationHandler implements Interceptor {
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     protected Log log = LogFactory.getLog(AuthenticationHandler.class);
 
-    private final static String AUTH_TYPE_BASIC = "Basic";
-    private final static String AUTH_TYPE_NONE = "None";
-    private final static String AUTH_TYPE_OAuth = "Bearer";
+    private static final String AUTH_TYPE_BASIC = "Basic";
+    private static final String AUTH_TYPE_NONE = "None";
+    private static final String AUTH_TYPE_OAuth = "Bearer";
 
 
     @Override
-    public boolean preCall(Request request, org.wso2.msf4j.Response responder, ServiceMethodInfo serviceMethodInfo) throws Exception {
+    public boolean preCall(Request request, org.wso2.msf4j.Response responder,
+                           ServiceMethodInfo serviceMethodInfo) throws Exception {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null) {
             if (authHeader.startsWith(AUTH_TYPE_BASIC)) {
@@ -85,9 +87,12 @@ public class AuthenticationHandler implements Interceptor {
                 handleBasicAuth(username, password);
 
             } else if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
-                //todo:
+                //todo: set AUTH_URL
+                log.info("Authorization type used in OAuth");
+               // OAuth2SecurityInterceptor i = new OAuth2SecurityInterceptor();
             } else {
                 //todo:
+                log.info("No authorization type is specified.");
             }
         }
 
@@ -95,10 +100,12 @@ public class AuthenticationHandler implements Interceptor {
     }
 
     @Override
-    public void postCall(Request request, int status, ServiceMethodInfo serviceMethodInfo) throws Exception {
+    public void postCall(Request request, int status, ServiceMethodInfo serviceMethodInfo)
+            throws Exception {
 
     }
-//Authenticate Basic auth type request
+
+    //Authenticate Basic auth type request
     protected Response handleBasicAuth(String userName, String password) {
 
         try {
@@ -140,7 +147,8 @@ public class AuthenticationHandler implements Interceptor {
 
 //todo:
 /*protected Response handleOAuth(Message message) {
-        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS)).get(AUTHORIZATION_HEADER_NAME);
+        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS))
+        .get(AUTHORIZATION_HEADER_NAME);
         if (headers != null) {
         String authHeader = headers.get(0);
         if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
@@ -151,16 +159,19 @@ public class AuthenticationHandler implements Interceptor {
         }*/
 
     /**
-     * Checks whether a given userName:password combination authenticates correctly against carbon userStore
+     * Checks whether a given userName:password combination authenticates correctly against
+     * carbon userStore
      * Upon successful authentication returns true, false otherwise
      *
      * @param userName
      * @param password
      * @return
-     * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when trying to authenticate
+     * @throws RestApiBasicAuthenticationException wraps and throws exceptions occur when
+     *                                             trying to authenticate
      *                                             the user
      */
-    private boolean authenticate(String userName, String password) throws RestApiBasicAuthenticationException {
+    private boolean authenticate(String userName, String password)
+            throws RestApiBasicAuthenticationException {
 
         boolean authStatus;
 
@@ -182,13 +193,14 @@ public class AuthenticationHandler implements Interceptor {
             PrivilegedCarbonContext privilegedCarbonContext =
                     (PrivilegedCarbonContext) PrivilegedCarbonContext.getCurrentContext();
 
-            User authenticatedUser = BPMNOSGIService.getUserRealm().getIdentityStore().getUser(userName);
+            User authenticatedUser = BPMNOSGIService.getUserRealm().getIdentityStore().
+                    getUser(userName);
 
             CarbonPrincipal principal = new CarbonPrincipal(authenticatedUser);
             privilegedCarbonContext.setUserPrincipal(principal);
         } catch (IdentityStoreException e) {
             //todo:
-            String msg = "errorrrrr";
+            String msg = "Error occured while ";
             log.error(msg, e);
         }
 
@@ -201,7 +213,8 @@ public class AuthenticationHandler implements Interceptor {
     }
 
     private Response authenticationFail(String authType) {
-        //authentication failed, request the authentication, add the realm name if needed to the value of WWW-Authenticate
+        //authentication failed, request the authentication, add the realm name if needed to
+        // the value of WWW-Authenticate
 
         RestErrorResponse restErrorResponse = new RestErrorResponse();
         restErrorResponse.setErrorMessage("Authentication required");
@@ -214,9 +227,11 @@ public class AuthenticationHandler implements Interceptor {
         } catch (IOException e) { //log the error and continue. No need to specifically handle it
             log.error("Error Json String conversion failed", e);
         }
-        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
-                authType).entity(jsonString).build();
+        return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON)
+                .header(WWW_AUTHENTICATE,
+                        authType).entity(jsonString).build();
     }
 
 
 }
+

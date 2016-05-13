@@ -39,7 +39,7 @@ public class RestUrlBuilder {
     protected String baseUrl;
     protected String urlContext;
     String hostname;
-    private final static String HTTPS_SCHEMA = "https";
+    private static final String HTTPS_SCHEMA = "https";
     int port;
 
     private static final Logger log = LoggerFactory.getLogger(RestUrlBuilder.class);

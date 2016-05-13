@@ -22,7 +22,7 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
  */
 public class RestServiceContentHolder {
 
-    private static RestServiceContentHolder instance;
+    private static volatile RestServiceContentHolder instance;
     private BPMNEngineService engineService;
 
     private RestServiceContentHolder() {

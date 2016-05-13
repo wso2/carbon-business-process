@@ -30,20 +30,9 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
-//import org.activiti.engine.impl.ProcessEngineImpl;
-//import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-//import org.activiti.engine.impl.interceptor.Command;
-//import org.activiti.engine.impl.interceptor.CommandContext;
-//import org.activiti.engine.impl.interceptor.CommandExecutor;
-//import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-//import org.camunda.bpm.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
-//import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
-//import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-//import org.wso2.carbon.user.api.UserRealm;
 
 /**
  *
@@ -146,7 +135,7 @@ public class BPMNOSGIService {
         return identityService;
     }
 
-    //TODO:
+
     public static RealmService getUserRealm() {
         return getBPMNEngineService().getCarbonRealmService();
     }

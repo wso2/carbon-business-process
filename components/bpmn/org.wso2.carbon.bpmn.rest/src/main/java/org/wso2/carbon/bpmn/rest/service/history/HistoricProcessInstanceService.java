@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2015-2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.history;
@@ -42,9 +42,9 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
+import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.HistoricProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponse;
@@ -133,9 +133,9 @@ public class HistoricProcessInstanceService implements Microservice {
 
     static {
         allowedSortProperties.put("processInstanceId",
-                                  HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
+                HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
         allowedSortProperties.put("processDefinitionId",
-                                  HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+                HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
         allowedSortProperties.put("businessKey", HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
         allowedSortProperties.put("startTime", HistoricProcessInstanceQueryProperty.START_TIME);
         allowedSortProperties.put("endTime", HistoricProcessInstanceQueryProperty.END_TIME);
@@ -155,8 +155,8 @@ public class HistoricProcessInstanceService implements Microservice {
 
     @GET
     @Path("/")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricProcessInstances(@Context Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
@@ -245,14 +245,14 @@ public class HistoricProcessInstanceService implements Microservice {
         }
 
         return Response.ok()
-                       .entity(getQueryResponse(queryRequest, allRequestParams, request.getUri()))
-                       .build();
+                .entity(getQueryResponse(queryRequest, allRequestParams, request.getUri()))
+                .build();
     }
 
     @GET
     @Path("/{process-instance-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId,
                                        @Context Request request) {
         HistoricProcessInstanceResponse historicProcessInstanceResponse = new RestResponseFactory()
@@ -272,8 +272,8 @@ public class HistoricProcessInstanceService implements Microservice {
 
     @GET
     @Path("/{process-instance-id}/identity-links")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessIdentityLinks(
             @PathParam("process-instance-id") String processInstanceId,
             @Context Request request) {
@@ -284,7 +284,7 @@ public class HistoricProcessInstanceService implements Microservice {
         if (identityLinks != null) {
             List<HistoricIdentityLinkResponse> historicIdentityLinkResponses =
                     new RestResponseFactory().createHistoricIdentityLinkResponseList(identityLinks,
-                                                                                     request.getUri());
+                            request.getUri());
             HistoricIdentityLinkResponseCollection historicIdentityLinkResponseCollection =
                     new HistoricIdentityLinkResponseCollection();
             historicIdentityLinkResponseCollection
@@ -333,14 +333,14 @@ public class HistoricProcessInstanceService implements Microservice {
 
     @GET
     @Path("/{process-instance-id}/comments")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getComments(@PathParam("process-instance-id") String processInstanceId,
                                 @Context Request request) {
         TaskService taskService = BPMNOSGIService.getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         List<CommentResponse> commentResponseList = new RestResponseFactory()
                 .createRestCommentList(taskService.getProcessInstanceComments(instance.getId()),
-                                       request.getUri());
+                        request.getUri());
         CommentResponseCollection commentResponseCollection = new CommentResponseCollection();
         commentResponseCollection.setCommentResponseList(commentResponseList);
         return Response.ok().entity(commentResponseCollection).build();
@@ -348,8 +348,8 @@ public class HistoricProcessInstanceService implements Microservice {
 
     @POST
     @Path("/{process-instance-id}/comments")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createComment(@PathParam("process-instance-id") String processInstanceId,
                                   CommentResponse comment, @Context Request request) {
 
@@ -371,7 +371,7 @@ public class HistoricProcessInstanceService implements Microservice {
 
     @GET
     @Path("/{process-instance-id}/comments/{comment-id}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getComment(@PathParam("process-instance-id") String processInstanceId,
                                @PathParam("comment-id") String commentId,
                                @Context Request request) {
@@ -381,10 +381,10 @@ public class HistoricProcessInstanceService implements Microservice {
 
         Comment comment = taskService.getComment(commentId);
         if (comment == null || comment.getProcessInstanceId() == null ||
-            !comment.getProcessInstanceId().equals(instance.getId())) {
+                !comment.getProcessInstanceId().equals(instance.getId())) {
             throw new ActivitiObjectNotFoundException(
                     "Process instance '" + instance.getId() + "' doesn't have a comment with id '" +
-                    commentId + "'.", Comment.class);
+                            commentId + "'.", Comment.class);
         }
         CommentResponse commentResponse =
                 new RestResponseFactory().createRestComment(comment, request.getUri());
@@ -401,10 +401,10 @@ public class HistoricProcessInstanceService implements Microservice {
 
         Comment comment = taskService.getComment(commentId);
         if (comment == null || comment.getProcessInstanceId() == null ||
-            !comment.getProcessInstanceId().equals(instance.getId())) {
+                !comment.getProcessInstanceId().equals(instance.getId())) {
             throw new ActivitiObjectNotFoundException(
                     "Process instance '" + instance.getId() + "' doesn't have a comment with id '" +
-                    commentId + "'.", Comment.class);
+                            commentId + "'.", Comment.class);
         }
 
         taskService.deleteComment(commentId);
@@ -416,9 +416,9 @@ public class HistoricProcessInstanceService implements Microservice {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricProcessInstance processObject = historyService.createHistoricProcessInstanceQuery()
-                                                              .processInstanceId(processInstanceId)
-                                                              .includeProcessVariables()
-                                                              .singleResult();
+                .processInstanceId(processInstanceId)
+                .includeProcessVariables()
+                .singleResult();
 
         if (processObject == null) {
             throw new ActivitiObjectNotFoundException(
@@ -431,12 +431,12 @@ public class HistoricProcessInstanceService implements Microservice {
         if (value == null) {
             throw new ActivitiObjectNotFoundException(
                     "Historic process instance '" + processInstanceId + "' variable value for " +
-                    variableName + " couldn't be found.", VariableInstanceEntity.class);
+                            variableName + " couldn't be found.", VariableInstanceEntity.class);
         } else {
             return new RestResponseFactory()
                     .createRestVariable(variableName, value, null, processInstanceId,
-                                        RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary,
-                                        baseContext);
+                            RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary,
+                            baseContext);
         }
     }
 
@@ -452,7 +452,7 @@ public class HistoricProcessInstanceService implements Microservice {
             query.processInstanceId(queryRequest.getProcessInstanceId());
         }
         if (queryRequest.getProcessInstanceIds() != null &&
-            !queryRequest.getProcessInstanceIds().isEmpty()) {
+                !queryRequest.getProcessInstanceIds().isEmpty()) {
             query.processInstanceIds(new HashSet<String>(queryRequest.getProcessInstanceIds()));
         }
         if (queryRequest.getProcessDefinitionKey() != null) {
@@ -520,7 +520,7 @@ public class HistoricProcessInstanceService implements Microservice {
         DataResponse dataResponse =
                 new HistoricProcessInstancePaginateList(restResponseFactory, baseContext)
                         .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
-                                      allowedSortProperties);
+                                allowedSortProperties);
 
         return dataResponse;
     }
@@ -545,10 +545,10 @@ public class HistoricProcessInstanceService implements Microservice {
 
             // A value-only query is only possible using equals-operator
             if (nameLess &&
-                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                    variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
                 throw new ActivitiIllegalArgumentException(
                         "Value-only query (without a variable-name) is only supported when using " +
-                        "'equals' operation.");
+                                "'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
@@ -564,12 +564,12 @@ public class HistoricProcessInstanceService implements Microservice {
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
                         processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
-                                                                           (String) actualValue);
+                                (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing, " +
-                                "but was: " +
-                                actualValue.getClass().getName());
+                                        "but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -584,7 +584,7 @@ public class HistoricProcessInstanceService implements Microservice {
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported for like, but was: " +
-                                actualValue.getClass().getName());
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -609,7 +609,7 @@ public class HistoricProcessInstanceService implements Microservice {
                 default:
                     throw new ActivitiIllegalArgumentException(
                             "Unsupported variable query operation: " +
-                            variable.getVariableOperation());
+                                    variable.getVariableOperation());
             }
         }
     }
@@ -619,7 +619,7 @@ public class HistoricProcessInstanceService implements Microservice {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         HistoricProcessInstance processInstance =
                 historyService.createHistoricProcessInstanceQuery()
-                              .processInstanceId(processInstanceId).singleResult();
+                        .processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
             throw new ActivitiObjectNotFoundException(
                     "Could not find a process instance with id '" + processInstanceId + "'.",
