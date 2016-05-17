@@ -44,7 +44,7 @@ import java.util.List;
 public class UserService {
     private static final Log log = LogFactory.getLog(UserService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-    String str = String.valueOf(tenantId);
+    String strValOfTenantId = String.valueOf(tenantId);
     String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 
     private static final String DOMAIN_OF_SUPER_TENANT = "carbon.super";
@@ -91,14 +91,14 @@ public class UserService {
             for (String u : users) {
                 UserTaskCount userInfo = new UserTaskCount();
                 userInfo.setUserName(u);
-                String assignee ;
-                if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
-                    assignee = u ;
+                String assignee;
+                if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+                    assignee = u;
                 } else {
                     assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
                 long count = BPMNOSGIService.getHistoryService()
-                        .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().count();
+                        .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().count();
                 if (count == 0) {
                     userInfo.setTaskCount(0);
                 } else {
@@ -125,28 +125,28 @@ public class UserService {
 
         List listOfUsers = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
-        try{
+        try {
             String[] users = (String[]) getUserList().getData().toArray();
             for (String u : users) {
 
                 UserTaskDuration userInfo = new UserTaskDuration();
                 userInfo.setUserName(u);
 
-                String assignee ;
-                if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
-                    assignee = u ;
+                String assignee;
+                if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+                    assignee = u;
                 } else {
                     assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
                 }
 
                 long count = BPMNOSGIService.getHistoryService()
-                        .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().count();
+                        .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().count();
                 if (count == 0) {
                     double avgTime = 0;
                     userInfo.setAvgTimeDuration(avgTime);
                 } else {
                     List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
-                            .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(assignee).finished().list();
+                            .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().list();
                     double totalTime = 0;
                     double avgTime = 0;
                     for (HistoricTaskInstance instance : taskList) {
@@ -176,14 +176,14 @@ public class UserService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) throws UserStoreException {
 
-        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))){
+        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
             throw new ActivitiObjectNotFoundException("Could not find user with id '" +
                     assignee + "'.");
         }
 
-        String taskAssignee ;
-        if ( tenantDomain == DOMAIN_OF_SUPER_TENANT ) {
-            taskAssignee = assignee ;
+        String taskAssignee;
+        if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+            taskAssignee = assignee;
         } else {
             taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
         }
@@ -202,7 +202,7 @@ public class UserService {
         }
         // Get completed tasks
         List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
-                .createHistoricTaskInstanceQuery().taskTenantId(str).taskAssignee(taskAssignee).finished().list();
+                .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).finished().list();
         for (HistoricTaskInstance instance : taskList) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
@@ -211,14 +211,14 @@ public class UserService {
 
         }
         // Get active/started tasks
-        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str).taskAssignee(taskAssignee).active().list();
+        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).active().list();
         for (Task instance : taskActive) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
         }
 
         // Get suspended tasks
-        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(str).taskAssignee(taskAssignee).suspended().list();
+        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).suspended().list();
         for (Task instance : taskSuspended) {
             int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
             taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);

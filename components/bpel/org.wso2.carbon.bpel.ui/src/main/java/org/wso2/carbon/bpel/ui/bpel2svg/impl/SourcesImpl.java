@@ -183,7 +183,7 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
                                           int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         return group;
     }
 
@@ -195,7 +195,7 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         return subGroup;
     }
 
@@ -211,7 +211,7 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
      *         In this case the Sources activity doesn't contain any components, so no arrow definitions/paths from activities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         return path;
     }
 
@@ -233,7 +233,7 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
      */
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         group.appendChild(getBoxDefinition(doc));

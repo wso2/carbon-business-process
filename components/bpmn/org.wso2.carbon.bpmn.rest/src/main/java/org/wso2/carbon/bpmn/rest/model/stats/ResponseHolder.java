@@ -40,7 +40,9 @@ public class ResponseHolder {
             @XmlElement(name = "UserTaskCount",
                     type = UserTaskCount.class),
             @XmlElement(name = "UserTaskDuration",
-                    type = UserTaskDuration.class)
+                    type = UserTaskDuration.class),
+            @XmlElement(name = "TaskInfo",
+                    type = TaskInfo.class)
     })
     List<Object> data;
 

@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -33,9 +33,11 @@ var loggedUser = session.get("user");
 	<!-- Custom theme -->
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
+	<link rel="stylesheet" href="css/bootstrap-select.min.css">
+	<link rel="stylesheet" href="css/bootstrap-select.css">
     <script>
         var BPSTenant = "<%=bpsTenantDomain%>";
-    </script>
+    </script>    
 </head>
 <body>
 	<header>

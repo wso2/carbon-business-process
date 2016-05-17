@@ -31,7 +31,7 @@
               }
               if(dataArr[i][1]>0){
                 count++;
-              }                
+              }
             }
 
            if(max >= 100 && count > 1){
@@ -46,7 +46,7 @@
                vAxis: {title: "<%=i18n.localize("status.task", "Status of the Task")%>",  titleTextStyle: { color: 'grey' }},
                hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
                colors:['#be2d28'],
-               height: ((data.getNumberOfRows()+2) * 70),
+               height: ((data.getNumberOfRows() + 2) * 70),
                chartArea:{top:40}
              };
 
@@ -54,19 +54,19 @@
             chart.draw(data, options);
           }
         </script>
-    
+
 
       <div class="col-lg-12 float-left">
             <!-- Default panel contents -->
             <div class="table-title"  style="width:100%">  <%=i18n.localize("task.status.count", "Task Status Count")%> </div>
             <div id="taskStatusCountBar" style="height: 650px"></div>
-      
+
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
      function drawChart(){
         var data = google.visualization.arrayToDataTable([
           ['<%=i18n.localize("status.task", "Status Of the Task")%>', ' <%=i18n.localize("task.count", "Task Count")%>'],
-         
+
           <% for(var j = 0; j < statusArrayPie.length; j++){ %>
             <%=JSON.stringify(statusArrayPie[j]) %>
             <% if(j < statusArrayPie.length){ %> ,<% } %>
@@ -79,7 +79,7 @@
           pieSliceTextStyle: {
             color: 'black'
           },
-            tooltip: { 
+            tooltip: {
           	trigger: 'selection',
           	textStyle: { fontName: 'verdana', fontSize: 16 }
       	  },
@@ -115,7 +115,7 @@
             <div class="table-subtitle"  style="width:100%"> <%=i18n.localize("click.tooltips", "Click tooltips to view tasks")%> </div>
             <div id="taskStatusCountPie" style="height: 500px;"></div>
         </div>
-   
+
     <% }else{ %>
       <br/>
       &nbsp;&nbsp;<%=i18n.localize("stat.view.welcome", "Welcome to stats view")%>
