@@ -97,14 +97,6 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>javax.servlet</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-api</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-log4j12</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.wso2.orbit.org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
@@ -116,10 +108,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database.wso2</groupId>
-            <artifactId>h2-database-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -135,60 +123,49 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <url>
+                        jdbc:h2:${basedir}/target/database/activiti;create=true;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MV_STORE=FALSE
+                    </url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <driver>org.h2.Driver</driver>
+                </configuration>
+                <executions>
+                    <!--Create the database-->
+                    <execution>
+                        <id>create-database</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <autocommit>true</autocommit>
+                            <srcFiles>
+                                <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql</srcFile>
+                                <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql</srcFile>
+                                <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql</srcFile>
+                                <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.metadata.sql</srcFile>
+                            </srcFiles>
+                            <onError>abort</onError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
-                    <execution>
-                        <id>clean-bpmn-h2-database</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <delete file="resources/conf/activiti.h2.db"/>
-                                <delete file="resources/conf/activiti.mv.db"/>
-                                <delete file="resources/conf/activiti.trace.db"/>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>create-bpel-h2-database</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <path id="h2.classpath">
-                                    <path refid="maven.compile.classpath"/>
-                                </path>
-
-                                <echo message="########### Create Activiti Database ##############"/>
-
-                                <sql driver="org.h2.Driver"
-                                     url="jdbc:h2:${basedir}/resources/conf/activiti;create=true"
-                                     userid="wso2carbon" password="wso2carbon" autocommit="true"
-                                     onerror="continue">
-                                    <classpath>
-                                        <path refid="h2.classpath"/>
-                                    </classpath>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql"/>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql"/>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql"/>
-                                    <fileset
-                                            file="${basedir}/resources/dbscripts/create/activiti.h2.create.metadata.sql"/>
-                                </sql>
-                                <echo message="##################### END ############################"/>
-                                <echo message="********Version of H2: "/>
-                                <echo>${orbit.version.h2.engine}</echo>
-                            </tasks>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>clean_target</id>
                         <phase>install</phase>
@@ -222,9 +199,14 @@
                                     <includes>
                                         <include>conf/datasources/activiti-datasources.xml</include>
                                         <include>conf/activiti.xml</include>
-                                        <include>**/activiti.h2.db</include>
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>database/activiti.h2.db</include>
                                     </includes>
                                 </resource>
                             </resources>

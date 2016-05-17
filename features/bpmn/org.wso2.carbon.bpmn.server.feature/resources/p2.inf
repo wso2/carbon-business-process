@@ -2,7 +2,7 @@ instructions.configure = \
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../../features/org.wso2.carbon.bpmn.server_${feature.version}/conf/activiti.xml,target:${installFolder}/../../../conf/activiti.xml,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../../features/org.wso2.carbon.bpmn.server_${feature.version}/conf/datasources/activiti-datasources.xml,target:${installFolder}/../../../conf/datasources/activiti-datasources.xml,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../database); \
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../../features/org.wso2.carbon.bpmn.server_${feature.version}/conf/activiti.h2.db,target:${installFolder}/../../../database/activiti.h2.db,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../../features/org.wso2.carbon.bpmn.server_${feature.version}/database/activiti.h2.db,target:${installFolder}/../../../database/activiti.h2.db,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts/bps); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts/bps/bpmn); \
