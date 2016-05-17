@@ -56,9 +56,18 @@ if (request.isSecure()) {//check whether the request is secure or not
             var roles = authentication.getRoles(username,password,httpServiceUrl);
             var encoder = require("/assets/encoder.js");
             var auth = encoder.encode(username+':'+password);
+            var cookie = session.get('BPSSessionCookie');
+            			// renew session to prevent session hijacking
+                          if (typeof request.getSession == "function") {
+                              if (session && !session.isNew()) {
+                                  session.invalidate();
+                              }
+                            session = request.getSession(true);
+                          }
             session.put(AUTH_SUCCESS, authSuccess);
             session.put(AUTH, auth);
             session.put(USER, username);
+            session.put('BPSSessionCookie', cookie);
             session.put(ROLES ,roles);
             response.sendRedirect(requestUrl);
         }

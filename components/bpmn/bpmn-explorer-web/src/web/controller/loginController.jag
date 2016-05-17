@@ -30,15 +30,7 @@ if (request.isSecure()) {//check whether the request is secure or not
 		include("/template/loginView.jag");
 		include("/template/partials/footer.jag");
 	} else {
-         var username = session.get('user');
-        // renew session to prevent session hijacking
-         if (typeof request.getSession == "function") {
-                     if (session && !session.isNew()) {
-                            session.invalidate();
-                     }
-                     session = request.getSession(true);
-                 }
-                 session.put("user", username);
+
 	    //If already logged-in, redirect to the myTasks view
 	    response.sendRedirect("stats");
 	}
