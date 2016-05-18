@@ -37,6 +37,11 @@
     <dependencies>
         <!-- BPMN Dependencies -->
         <dependency>
+            <groupId>org.wso2.orbit.org.activiti</groupId>
+            <artifactId>activiti-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn</artifactId>
             <scope>test</scope>
@@ -106,9 +111,71 @@
             <artifactId>org.jacoco.ant</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Other Dependencies -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.springframework.ws</groupId>
+            <artifactId>spring.framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jpa_2.0_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.tinyjee.jgraphx</groupId>
+            <artifactId>jgraphx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath.wso2</groupId>
+            <artifactId>json-path</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>javax.servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
         <dependency>
             <groupId>commons-io.wso2</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -289,7 +356,7 @@
                                     </url>
                                     <username>wso2carbon</username>
                                     <password>wso2carbon</password>
-                                    <driver>org.h2.Driver</driver>b
+                                    <driver>org.h2.Driver</driver>
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>
@@ -305,7 +372,7 @@
                                             ${basedir}/../../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.metadata.sql
                                         </srcFile>
                                     </srcFiles>
-                                    <onError>abort</onError>
+                                    <onError>continue</onError>
                                 </configuration>
                             </execution>
                             <!--Create User store database-->
@@ -321,13 +388,13 @@
                                     </url>
                                     <username>wso2carbon</username>
                                     <password>wso2carbon</password>
-                                    <driver>org.h2.Driver</driver>b
+                                    <driver>org.h2.Driver</driver>
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>${basedir}/src/test/resources/sql/WSO2CARBON_DB.sql</srcFile>
                                         <srcFile>${basedir}/src/test/resources/sql/WSO2CARBON_DB_test_data.sql</srcFile>
                                     </srcFiles>
-                                    <onError>abort</onError>
+                                    <onError>continue</onError>
                                 </configuration>
                             </execution>
                         </executions>
@@ -337,5 +404,8 @@
         </profile>
     </profiles>
 
+    <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+    </properties>
 
 </project>

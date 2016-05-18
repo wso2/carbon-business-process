@@ -115,7 +115,7 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.core.server.feature</artifactId>
+            <artifactId>org.wso2.carbon.kernel.feature</artifactId>
             <type>zip</type>
         </dependency>
     </dependencies>
@@ -156,7 +156,7 @@
                                 <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql</srcFile>
                                 <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.metadata.sql</srcFile>
                             </srcFiles>
-                            <onError>abort</onError>
+                            <onError>continue</onError>
                         </configuration>
                     </execution>
                 </executions>
@@ -316,7 +316,7 @@
                             </bundles>
                             <importFeatures>
                                 <feature>
-                                    <id>org.wso2.carbon.core.server</id>
+                                    <id>org.wso2.carbon.kernel</id>
                                     <version>${carbon.kernel.version}</version>
                                 </feature>
                             </importFeatures>

@@ -92,9 +92,14 @@
                 <version>${carbon.kernel.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.osgi</groupId>
+                <groupId>org.wso2.eclipse.osgi</groupId>
                 <artifactId>org.eclipse.osgi</artifactId>
-                <version>${org.eclipse.osgi.version}</version>
+                <version>${equinox.osgi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.eclipse.osgi</groupId>
+                <artifactId>org.eclipse.osgi.services</artifactId>
+                <version>${equinox.osgi.services.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
@@ -103,7 +108,7 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.core.server.feature</artifactId>
+                <artifactId>org.wso2.carbon.kernel.feature</artifactId>
                 <version>${carbon.kernel.version}</version>
                 <type>zip</type>
             </dependency>
@@ -308,6 +313,11 @@
                 <version>${commons-codec.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${com.zaxxer.hikaricp.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
@@ -398,15 +408,15 @@
         </carbon.business-process.exp.pkg.version>
 
         <!-- 1 - Carbon Kernel and OSGi Dependencies -->
-        <carbon.kernel.version>5.1.0-SNAPSHOT</carbon.kernel.version>
+        <carbon.kernel.version>5.1.0-alpha2</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[5.0.0,6.0.0)</carbon.kernel.imp.pkg.version>
-        <org.eclipse.osgi.version>3.9.1.v20130814-1242</org.eclipse.osgi.version>
+        <equinox.osgi.version>3.10.2.v20150203-1939</equinox.osgi.version>
+        <equinox.osgi.services.version>3.4.0.v20140312-2051</equinox.osgi.services.version>
         <org.osgi.version>6.0.0</org.osgi.version>
-        <!--<carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>-->
 
         <!-- 2 - Hamming Platform components and their Dependencies  -->
         <carbon.datasources.version>1.0.0-SNAPSHOT</carbon.datasources.version>
-        <carbon.jndi.version>1.0.0-SNAPSHOT</carbon.jndi.version>
+        <carbon.jndi.version>1.0.0-alpha</carbon.jndi.version>
         <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
         <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
@@ -443,11 +453,8 @@
         <commons.lang3.version>3.3.2</commons.lang3.version>
         <version.commons.logging>1.2</version.commons.logging>
         <commons-codec.version>1.3</commons-codec.version>
+        <com.zaxxer.hikaricp.version>2.4.1</com.zaxxer.hikaricp.version>
         <h2.version>1.4.191</h2.version>
-
-        <!-- Other Properties -->
-        <project.scm.id>wso2-scm-server</project.scm.id>
-        <checkstyle.skip>false</checkstyle.skip>
 
         <!-- Maven Plugin versions -->
         <carbon.feature.plugin.version>2.0.1</carbon.feature.plugin.version>
@@ -464,6 +471,10 @@
         <org.jacoco.ant.version>0.7.5.201505241946</org.jacoco.ant.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <maven.paxexam.plugin.version>1.2.4</maven.paxexam.plugin.version>
+
+        <!-- Other Properties -->
+        <project.scm.id>wso2-scm-server</project.scm.id>
+        <checkstyle.skip>false</checkstyle.skip>
     </properties>
 
 
