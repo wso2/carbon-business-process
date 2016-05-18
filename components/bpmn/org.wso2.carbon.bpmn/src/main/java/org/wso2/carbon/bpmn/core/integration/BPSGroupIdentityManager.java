@@ -33,6 +33,7 @@ import org.wso2.carbon.security.caas.user.core.bean.Role;
 import org.wso2.carbon.security.caas.user.core.bean.User;
 import org.wso2.carbon.security.caas.user.core.exception.AuthorizationStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
+import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.carbon.security.caas.user.core.store.AuthorizationStore;
 import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
 
@@ -116,7 +117,7 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 //                    groups.add(group);
 //                }
 
-            } catch (IdentityStoreException | AuthorizationStoreException e) {
+            } catch (IdentityStoreException | UserNotFoundException | AuthorizationStoreException e) {
                 String msg = "Failed to get roles of the user: " + userId + "." +
                         " Returning an empty roles list.";
                 log.error(msg, e);
