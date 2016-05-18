@@ -40,6 +40,7 @@ import org.wso2.carbon.kernel.context.PrivilegedCarbonContext;
 import org.wso2.carbon.security.caas.jaas.CarbonPrincipal;
 import org.wso2.carbon.security.caas.user.core.bean.User;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
+import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.msf4j.Interceptor;
 import org.wso2.msf4j.Request;
 import org.wso2.msf4j.ServiceMethodInfo;
@@ -183,7 +184,7 @@ public class AuthenticationHandler implements Interceptor {
             if (!authStatus) {
                 return false;
             }
-        } catch (BPMNAuthenticationException | IdentityStoreException e) {
+        } catch (BPMNAuthenticationException | IdentityStoreException | UserNotFoundException e) {
             throw new RestApiBasicAuthenticationException(e.getMessage(), e);
         }
 
@@ -198,7 +199,7 @@ public class AuthenticationHandler implements Interceptor {
 
             CarbonPrincipal principal = new CarbonPrincipal(authenticatedUser);
             privilegedCarbonContext.setUserPrincipal(principal);
-        } catch (IdentityStoreException e) {
+        } catch (IdentityStoreException | UserNotFoundException e) {
             //todo:
             String msg = "Error occured while ";
             log.error(msg, e);
