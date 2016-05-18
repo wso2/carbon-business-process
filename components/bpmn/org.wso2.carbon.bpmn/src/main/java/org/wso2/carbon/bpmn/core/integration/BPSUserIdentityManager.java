@@ -36,6 +36,7 @@ import org.wso2.carbon.security.caas.user.core.bean.Role;
 import org.wso2.carbon.security.caas.user.core.context.AuthenticationContext;
 import org.wso2.carbon.security.caas.user.core.exception.AuthenticationFailure;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
+import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.carbon.security.caas.user.core.store.AuthorizationStore;
 import org.wso2.carbon.security.caas.user.core.store.CredentialStore;
 import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
@@ -123,7 +124,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 return null;
             }
 
-        } catch (Exception e) {
+        } catch (IdentityStoreException | UserNotFoundException e) {
             log.error("Error retrieving user info by id for: " + userId, e);
             return null;
         }
