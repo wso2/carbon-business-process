@@ -70,6 +70,21 @@ public class BasicServerConfigurationUtil {
                 .artifactId("org.wso2.carbon.security.userstore.jdbc")
                 .versionAsInProject());
         // Activiti Dependencies.
+        optionList.addAll(createActivitiDependenciesConfiguration());
+        // DataSource dependencies.
+        optionList.add(mavenBundle()
+                .groupId("com.zaxxer")
+                .artifactId("HikariCP")
+                .versionAsInProject());
+        optionList.add(mavenBundle()
+                .groupId("com.h2database")
+                .artifactId("h2")
+                .versionAsInProject());
+        return optionList;
+    }
+
+    public static List<Option> createActivitiDependenciesConfiguration() {
+        List<Option> optionList = new ArrayList<>();
         optionList.add(mavenBundle()
                 .groupId("org.mybatis")
                 .artifactId("mybatis")
@@ -129,15 +144,6 @@ public class BasicServerConfigurationUtil {
         optionList.add(mavenBundle()
                 .groupId("commons-io.wso2")
                 .artifactId("commons-io")
-                .versionAsInProject());
-        // DataSource dependencies.
-        optionList.add(mavenBundle()
-                .groupId("com.zaxxer")
-                .artifactId("HikariCP")
-                .versionAsInProject());
-        optionList.add(mavenBundle()
-                .groupId("com.h2database")
-                .artifactId("h2")
                 .versionAsInProject());
         return optionList;
     }

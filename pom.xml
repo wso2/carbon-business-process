@@ -79,6 +79,7 @@
             <modules>
                 <module>components/bpmn</module>
                 <module>features/bpmn</module>
+                <module>tests</module>
             </modules>
         </profile>
     </profiles>
@@ -365,6 +366,16 @@
                 <artifactId>org.jacoco.ant</artifactId>
                 <version>${org.jacoco.ant.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.logging</groupId>
+                <artifactId>pax-logging-api</artifactId>
+                <version>${pax.logging.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.logging</groupId>
+                <artifactId>pax-logging-log4j2</artifactId>
+                <version>${pax.logging.log4j2.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -459,6 +470,7 @@
         <!-- Maven Plugin versions -->
         <carbon.feature.plugin.version>2.0.1</carbon.feature.plugin.version>
         <maven.wagon.ssh.version>2.10</maven.wagon.ssh.version>
+        <maven.sql.plugin.version>1.5</maven.sql.plugin.version>
 
         <!-- OSGI Tests-->
         <testng.version>6.9.4</testng.version>
@@ -469,6 +481,8 @@
         <pax.url.aether.version>1.6.0</pax.url.aether.version>
         <ow2.jta.spec.version>1.0.12</ow2.jta.spec.version>
         <org.jacoco.ant.version>0.7.5.201505241946</org.jacoco.ant.version>
+        <pax.logging.api.version>1.8.5</pax.logging.api.version>
+        <pax.logging.log4j2.version>1.8.5</pax.logging.log4j2.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <maven.paxexam.plugin.version>1.2.4</maven.paxexam.plugin.version>
 

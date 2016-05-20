@@ -3,15 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>bpmn</artifactId>
+        <artifactId>carbon-business-process-tests</artifactId>
         <groupId>org.wso2.carbon.business-process</groupId>
         <version>5.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>bundle</packaging>
 
-    <artifactId>org.wso2.carbon.bpmn.tests.osgi</artifactId>
-    <name>WSO2 BPMN - OSGi Tests</name>
+    <artifactId>business-process-bpmn-osgi-tests</artifactId>
+    <name>WSO2 Carbon - BPMN OSGi Tests</name>
     <url>http://wso2.com</url>
 
     <build>
@@ -110,6 +111,15 @@
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.ant</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-log4j2</artifactId>
         </dependency>
 
         <!-- Other Dependencies -->
@@ -241,6 +251,8 @@
                                 <org.ops4j.pax.url.mvn.localRepository>${settings.localRepository}
                                 </org.ops4j.pax.url.mvn.localRepository>
                                 <jacoco-agent.destfile>${project.build.directory}/jacoco.exec</jacoco-agent.destfile>
+                                <org.ops4j.pax.logging.DefaultServiceLog.level>INFO
+                                </org.ops4j.pax.logging.DefaultServiceLog.level>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
                                 <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
@@ -282,6 +294,18 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>clean_target</id>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <tasks>
+                                        <delete dir="${project.build.directory}/carbon-home"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
                                 <phase>prepare-package</phase>
                                 <configuration>
                                     <target xmlns:jacoco="antlib:org.jacoco.ant">
@@ -296,10 +320,10 @@
                                             <structure name="Carbon BPMN OSGi Tests">
                                                 <classfiles>
                                                     <fileset
-                                                            dir="../org.wso2.carbon.bpmn/target/classes"/>
+                                                            dir="../../components/bpmn/org.wso2.carbon.bpmn/target/classes"/>
                                                 </classfiles>
                                                 <sourcefiles encoding="UTF-8">
-                                                    <fileset dir="../org.wso2.carbon.bpmn/src"/>
+                                                    <fileset dir="../../components/bpmn/org.wso2.carbon.bpmn/src"/>
                                                 </sourcefiles>
                                             </structure>
                                             <html destdir="${project.build.directory}/site/jacoco"/>
@@ -335,6 +359,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>sql-maven-plugin</artifactId>
+                        <version>${maven.sql.plugin.version}</version>
                         <dependencies>
                             <dependency>
                                 <groupId>com.h2database</groupId>
@@ -360,19 +385,19 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>
-                                            ${basedir}/../../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.engine.sql
+                                            ${basedir}/../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.engine.sql
                                         </srcFile>
                                         <srcFile>
-                                            ${basedir}/../../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.history.sql
+                                            ${basedir}/../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.history.sql
                                         </srcFile>
                                         <srcFile>
-                                            ${basedir}/../../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.identity.sql
+                                            ${basedir}/../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.identity.sql
                                         </srcFile>
                                         <srcFile>
-                                            ${basedir}/../../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.metadata.sql
+                                            ${basedir}/../../features/bpmn/org.wso2.carbon.bpmn.server.feature/resources/dbscripts/create/activiti.h2.create.metadata.sql
                                         </srcFile>
                                     </srcFiles>
-                                    <onError>continue</onError>
+                                    <onError>abort</onError>
                                 </configuration>
                             </execution>
                             <!--Create User store database-->
@@ -394,7 +419,7 @@
                                         <srcFile>${basedir}/src/test/resources/sql/WSO2CARBON_DB.sql</srcFile>
                                         <srcFile>${basedir}/src/test/resources/sql/WSO2CARBON_DB_test_data.sql</srcFile>
                                     </srcFiles>
-                                    <onError>continue</onError>
+                                    <onError>abort</onError>
                                 </configuration>
                             </execution>
                         </executions>

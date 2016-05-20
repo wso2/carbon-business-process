@@ -20,6 +20,8 @@
 package org.wso2.carbon.bpmn.tests.osgi;
 
 import org.activiti.engine.ProcessEngine;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -42,6 +44,8 @@ import javax.inject.Inject;
 @Listeners(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class BPMNServerCreationTest {
+
+    private static final Log log = LogFactory.getLog(BPMNServerCreationTest.class);
 
     @Inject
     private BundleContext bundleContext;
@@ -72,7 +76,7 @@ public class BPMNServerCreationTest {
 
     @Test
     public void testProcessEngineCreation() {
-
+        log.info("Starting Test case. ");
         ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
         Assert.assertNotNull(processEngine, "processEngine is not set");
         String name = processEngine.getName();
