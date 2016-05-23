@@ -37,7 +37,7 @@ import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationExce
 
 import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
 import org.wso2.carbon.kernel.context.PrivilegedCarbonContext;
-import org.wso2.carbon.security.caas.jaas.CarbonPrincipal;
+import org.wso2.carbon.security.caas.api.CarbonPrincipal;
 import org.wso2.carbon.security.caas.user.core.bean.User;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
