@@ -21,19 +21,14 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
-
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.deployment.engine.Deployer;
@@ -43,14 +38,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.nio.file.Path;
-
 import java.security.NoSuchAlgorithmException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,9 +73,9 @@ public class BPMNDeployer implements Deployer {
     ;
     private ActivitiDAO activitiDAO;
 
-    @Activate
-    protected void start(BundleContext bundleContext) {
-    }
+//    @Activate
+//    protected void start(BundleContext bundleContext) {
+//    }
 
     /**
      * Initializes the deployment per tenant
@@ -199,7 +190,7 @@ public class BPMNDeployer implements Deployer {
             if (undeployModel != null) {
                 activitiDAO.deleteDeploymentMetaDataModel(undeployModel);
             } else {
-                log.error("File" + deploymentName + "does not exist in camunda metadata registry");
+                log.error("File" + deploymentName + "does not exist in activiti metadata registry");
             }
             try {
                 File fileToUndeploy = new File(deploymentDir + File.separator + key);
@@ -220,7 +211,7 @@ public class BPMNDeployer implements Deployer {
                     repositoryService.deleteDeployment(deployment.getId(), true);
                 }
             } else {
-                log.error("Deployment" + deploymentName + "does not exist in camunda database");
+                log.error("Deployment" + deploymentName + "does not exist in activiti database");
             }
 
         } catch (ActivitiException e) {
@@ -263,7 +254,7 @@ public class BPMNDeployer implements Deployer {
 
     /**
      * Information about BPMN deployments are recorded in 3 places:
-     * Camunda database, camunda metadata registry and the file system (deployment folder).
+     * Activiti database, activiti metadata registry and the file system (deployment folder).
      * If information about a particular deployment is not recorded in all these 3 places, BPS may not work correctly.
      * Therefore, this method checks whether deployments are recorded in all these places and undeploys packages, if
      * they are missing in few places in an inconsistent way.
@@ -282,13 +273,13 @@ public class BPMNDeployer implements Deployer {
             log.error("File deployments returned null");
 
             // get all deployments in Activiti
-            List<String> camundaDeploymentNames = new ArrayList<String>();
+            List<String> activitiDeploymentNames = new ArrayList<String>();
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
-            List<Deployment> camundaDeployments = repositoryService.createDeploymentQuery().list();
-            for (Deployment deployment : camundaDeployments) {
+            List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
+            for (Deployment deployment : activitiDeployments) {
                 String deploymentName = deployment.getName();
-                camundaDeploymentNames.add(deploymentName);
+                activitiDeploymentNames.add(deploymentName);
             }
             // get all metadata in Activiti registry
             List<String> metaDataDeploymentNames = new ArrayList<String>();
@@ -312,7 +303,7 @@ public class BPMNDeployer implements Deployer {
             // construct the union of all deployments
             Set<String> allDeploymentNames = new HashSet<String>();
             allDeploymentNames.addAll(fileArchiveNames);
-            allDeploymentNames.addAll(camundaDeploymentNames);
+            allDeploymentNames.addAll(activitiDeploymentNames);
             allDeploymentNames.addAll(metaDataDeploymentNames);
 
             for (String deploymentName : allDeploymentNames) {
@@ -325,7 +316,7 @@ public class BPMNDeployer implements Deployer {
 
                         undeploy(deploymentName);
                     } else {
-                        if (camundaDeploymentNames.contains(deploymentName) &&
+                        if (activitiDeploymentNames.contains(deploymentName) &&
                             !metaDataDeploymentNames.contains(deploymentName)) {
                             if (log.isDebugEnabled()) {
                                 log.debug(deploymentName +
@@ -335,7 +326,7 @@ public class BPMNDeployer implements Deployer {
                             undeploy(deploymentName);
                         }
 
-                        if (!camundaDeploymentNames.contains(deploymentName) &&
+                        if (!activitiDeploymentNames.contains(deploymentName) &&
                             metaDataDeploymentNames.contains(deploymentName)) {
                             if (log.isDebugEnabled()) {
                                 log.debug(deploymentName +
