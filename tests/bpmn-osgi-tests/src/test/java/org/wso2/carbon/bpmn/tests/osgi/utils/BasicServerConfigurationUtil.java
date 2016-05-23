@@ -62,6 +62,10 @@ public class BasicServerConfigurationUtil {
                 .artifactId("org.wso2.carbon.messaging")
                 .versionAsInProject());
         optionList.add(mavenBundle()
+                .groupId("org.wso2.carbon.deployment")
+                .artifactId("org.wso2.carbon.deployment.engine")
+                .versionAsInProject());
+        optionList.add(mavenBundle()
                 .groupId("org.wso2.carbon.security.caas")
                 .artifactId("org.wso2.carbon.security.caas")
                 .versionAsInProject());

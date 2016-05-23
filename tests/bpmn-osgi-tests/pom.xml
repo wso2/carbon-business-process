@@ -54,21 +54,34 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.jndi</groupId>
-            <artifactId>org.wso2.carbon.jndi</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon.datasources</groupId>
             <artifactId>org.wso2.carbon.datasource.core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.wso2.carbon.jndi</groupId>
+            <artifactId>org.wso2.carbon.jndi</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.deployment</groupId>
+            <artifactId>org.wso2.carbon.deployment.engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.messaging</groupId>
+            <artifactId>org.wso2.carbon.messaging</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.wso2.carbon.security.caas</groupId>
             <artifactId>org.wso2.carbon.security.caas</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.security.userstore</groupId>
             <artifactId>org.wso2.carbon.security.userstore.jdbc</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Pax Exam Dependencies-->
@@ -263,17 +276,17 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>${jacoco.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/carbon/bpmn/**</include>
+                            </includes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>default-prepare-agent</id>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
-                                <configuration>
-                                    <includes>
-                                        <include>org.wso2.carbon.bpmn*</include>
-                                    </includes>
-                                </configuration>
                             </execution>
                             <execution>
                                 <id>default-check</id>

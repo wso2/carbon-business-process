@@ -148,9 +148,9 @@
                 <version>${carbon.deployment.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.deployment</groupId>
-                <artifactId>org.wso2.carbon.deployment.notifier</artifactId>
-                <version>${carbon.deployment.version}</version>
+                <groupId>org.wso2.carbon.messaging</groupId>
+                <artifactId>org.wso2.carbon.messaging</artifactId>
+                <version>${carbon.messaging.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.security.caas</groupId>
@@ -432,6 +432,7 @@
         <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
         <carbon.deployment.version>5.0.0-SNAPSHOT</carbon.deployment.version>
+        <carbon.messaging.version>1.0.2</carbon.messaging.version>
         <carbon.security.caas.version>1.0.0-SNAPSHOT</carbon.security.caas.version>
         <carbon.security.userstore.jdbc.version>1.0.0-SNAPSHOT</carbon.security.userstore.jdbc.version>
         <!-- 3 - Carbon Business Process Dependencies -->
