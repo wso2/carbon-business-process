@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2014-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2014-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.core.deployment;
@@ -23,8 +23,15 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
@@ -58,7 +65,11 @@ import java.util.zip.ZipInputStream;
  * identify the deployment of a new package.
  */
 
-
+@Component(
+        name = "org.wso2.carbon.bpmn.core.deployment.BPMNDeployer",
+        service = BPMNDeployer.class,
+        immediate = true
+)
 public class BPMNDeployer implements Deployer {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
@@ -73,9 +84,27 @@ public class BPMNDeployer implements Deployer {
     ;
     private ActivitiDAO activitiDAO;
 
-//    @Activate
-//    protected void start(BundleContext bundleContext) {
-//    }
+    public BPMNDeployer() {
+        this.activitiDAO = new ActivitiDAO();
+        init();
+    }
+
+    @Activate
+    protected void start(BundleContext bundleContext) {
+
+    }
+
+    @Reference(
+            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+            service = BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unRegisterBPMNEngineService")
+    public void setBpmnEngineService(BPMNEngineService engineService) {
+    }
+
+    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+    }
 
     /**
      * Initializes the deployment per tenant
@@ -88,7 +117,6 @@ public class BPMNDeployer implements Deployer {
             deploymentLocation = new URL(DEPLOYMENT_PATH);
             home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
             deploymentDir = home + File.separator + "deployment" + File.separator + "bpmn";
-            this.activitiDAO = new ActivitiDAO();
         } catch (MalformedURLException | ExceptionInInitializerError e) {
             String msg = "Failed to initialize BPMNDeployer: ";
             log.error(msg, e);
@@ -105,74 +133,80 @@ public class BPMNDeployer implements Deployer {
     @Override
     public Object deploy(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
-        String artifactPath = artifactFile.getAbsolutePath();
-        String checksum = "";
-        ZipInputStream archiveStream = null;
-        //check if extension is bar
-        if (isSupportedFile(artifactFile)) {
+        if (artifactFile.exists()) {
+            String artifactPath = artifactFile.getAbsolutePath();
+            String checksum = "";
+            ZipInputStream archiveStream = null;
+            //check if extension is bar
+            if (isSupportedFile(artifactFile)) {
 
-            String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
+                String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
 
-            //get checksum value of new file
-            try {
-                checksum = Utils.getMD5Checksum(artifactFile);
-            } catch (NoSuchAlgorithmException e) {
-                log.error("Checksum generation algorithm not found", e);
-            } catch (IOException e) {
-                log.error("Checksum generation failed for IO operation", e);
-            }
-
-            // get stored metadata model from activiti reg table if available
-            DeploymentMetaDataModel deploymentMetaDataModel =
-                    activitiDAO.selectDeploymentModel(deploymentName);
-
-            if (log.isDebugEnabled()) {
-                log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
-                log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
-            }
-
-            if (deploymentMetaDataModel == null) {
-                ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
-                RepositoryService repositoryService = engine.getRepositoryService();
-                DeploymentBuilder deploymentBuilder =
-                        repositoryService.createDeployment().name(deploymentName);
+                //get checksum value of new file
                 try {
-                    archiveStream = new ZipInputStream(new FileInputStream(artifact.getFile()));
-                } catch (FileNotFoundException e) {
-                    String errMsg = "Archive stream not found for BPMN repsoitory";
-                    throw new CarbonDeploymentException(errMsg, e);
-                }
-
-                deploymentBuilder.addZipInputStream(archiveStream);
-                Deployment deployment = deploymentBuilder.deploy();
-
-                //Store deployed metadata record in activiti
-                deploymentMetaDataModel = new DeploymentMetaDataModel();
-                deploymentMetaDataModel.setPackageName(deploymentName);
-                deploymentMetaDataModel.setCheckSum(checksum);
-                deploymentMetaDataModel.setId(deployment.getId());
-
-                //call for insertion
-                activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
-
-                try {
-                    FileUtils.copyFileToDirectory(artifactFile, destinationFolder);
+                    checksum = Utils.getMD5Checksum(artifactFile);
+                } catch (NoSuchAlgorithmException e) {
+                    log.error("Checksum generation algorithm not found", e);
                 } catch (IOException e) {
-                    log.error("Unable to add file " + artifactFile + "to directory" +
-                              destinationFolder);
-                }
-            } else { //deployment exists
-                // not the same version that is already deployed
-                if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
-                    // It is not a new deployment, but a version update
-                    update(artifact);
-                    deploymentMetaDataModel.setCheckSum(checksum);
-                    activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
+                    log.error("Checksum generation failed for IO operation", e);
                 }
 
+                // get stored metadata model from activiti reg table if available
+                DeploymentMetaDataModel deploymentMetaDataModel =
+                        activitiDAO.selectDeploymentModel(deploymentName);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("deploymentName=" + deploymentName + " checksum=" + checksum);
+                    log.debug("deploymentMetaDataModel=" + deploymentMetaDataModel.toString());
+                }
+
+                if (deploymentMetaDataModel == null) {
+                    ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+                    RepositoryService repositoryService = engine.getRepositoryService();
+                    DeploymentBuilder deploymentBuilder =
+                            repositoryService.createDeployment().name(deploymentName);
+                    try {
+                        archiveStream = new ZipInputStream(new FileInputStream(artifact.getFile()));
+                    } catch (FileNotFoundException e) {
+                        String errMsg = "Archive stream not found for BPMN repsoitory";
+                        throw new CarbonDeploymentException(errMsg, e);
+                    }
+
+                    deploymentBuilder.addZipInputStream(archiveStream);
+                    Deployment deployment = deploymentBuilder.deploy();
+
+                    //Store deployed metadata record in activiti
+                    deploymentMetaDataModel = new DeploymentMetaDataModel();
+                    deploymentMetaDataModel.setPackageName(deploymentName);
+                    deploymentMetaDataModel.setCheckSum(checksum);
+                    deploymentMetaDataModel.setId(deployment.getId());
+
+                    //call for insertion
+                    activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
+
+                    try {
+                        FileUtils.copyFileToDirectory(artifactFile, destinationFolder);
+                    } catch (IOException e) {
+                        log.error("Unable to add file " + artifactFile + "to directory" +
+                                destinationFolder);
+                    }
+                } else { //deployment exists
+                    // not the same version that is already deployed
+                    if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
+                        // It is not a new deployment, but a version update
+                        update(artifact);
+                        deploymentMetaDataModel.setCheckSum(checksum);
+                        activitiDAO.updateDeploymentMetaDataModel(deploymentMetaDataModel);
+                    }
+
+                }
+            } else {
+                throw new CarbonDeploymentException("Unsupported Artifact type. Support only .bar files.");
             }
+            return artifactPath;
+        } else {
+            throw new CarbonDeploymentException("Artifact " + artifactFile.getName() + "doesn't exists.");
         }
-        return artifactPath;
 
     }
 
@@ -199,7 +233,7 @@ public class BPMNDeployer implements Deployer {
 
             } catch (NullPointerException e) {
                 log.error("File does not exist in file repository" +
-                          deploymentDir + e);
+                        deploymentDir + e);
             }
             // Delete all versions of this package from the Activiti engine.
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
@@ -311,27 +345,27 @@ public class BPMNDeployer implements Deployer {
                     if (!(fileArchiveNames.contains(deploymentName))) {
                         if (log.isDebugEnabled()) {
                             log.debug(deploymentName +
-                                      " has been removed from the deployment folder. Undeploying the package...");
+                                    " has been removed from the deployment folder. Undeploying the package...");
                         }
 
                         undeploy(deploymentName);
                     } else {
                         if (activitiDeploymentNames.contains(deploymentName) &&
-                            !metaDataDeploymentNames.contains(deploymentName)) {
+                                !metaDataDeploymentNames.contains(deploymentName)) {
                             if (log.isDebugEnabled()) {
                                 log.debug(deploymentName +
-                                          " is missing in activiti metadata registry. Undeploying " +
-                                          "the package to avoid inconsistencies...");
+                                        " is missing in activiti metadata registry. Undeploying " +
+                                        "the package to avoid inconsistencies...");
                             }
                             undeploy(deploymentName);
                         }
 
                         if (!activitiDeploymentNames.contains(deploymentName) &&
-                            metaDataDeploymentNames.contains(deploymentName)) {
+                                metaDataDeploymentNames.contains(deploymentName)) {
                             if (log.isDebugEnabled()) {
                                 log.debug(deploymentName +
-                                          " is missing in the BPS database. Undeploying the package" +
-                                          " to avoid inconsistencies...");
+                                        " is missing in the BPS database. Undeploying the package" +
+                                        " to avoid inconsistencies...");
                             }
                             undeploy(deploymentName);
                         }

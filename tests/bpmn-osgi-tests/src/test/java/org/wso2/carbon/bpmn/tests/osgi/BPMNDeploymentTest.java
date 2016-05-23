@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.spi.reactors.PerSuite;
 import org.ops4j.pax.exam.testng.listener.PaxExam;
 import org.osgi.framework.BundleContext;
 import org.testng.Assert;
@@ -46,13 +46,13 @@ import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import javax.inject.Inject;
 
+
 @Listeners(PaxExam.class)
-@ExamReactorStrategy(PerClass.class)
-public class BPMNServerCreationTest {
+@ExamReactorStrategy(PerSuite.class)
+public class BPMNDeploymentTest {
 
     private static final Log log = LogFactory.getLog(BPMNServerCreationTest.class);
 
@@ -63,11 +63,7 @@ public class BPMNServerCreationTest {
     private BPMNEngineService bpmnEngineService;
 
     @Inject
-    private BPMNDeployer bpmnDeployer;
-
-    @Inject
     private CarbonServerInfo carbonServerInfo;
-
 
     @Configuration
     public Option[] createConfiguration() {
@@ -87,43 +83,38 @@ public class BPMNServerCreationTest {
     }
 
     @Test(priority = 0)
-    public void testProcessEngineCreation() {
-        log.trace("[Test] Process engine creation : Started");
-        ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
-        Assert.assertNotNull(processEngine, "processEngine is not set");
-        String name = processEngine.getName();
-        Assert.assertNotNull(name, "processEngine name is null.");
-        log.trace("[Test] Process engine creation : Completed..");
-    }
-
-    @Test(priority = 10)
     public void testHelloWorldBarDeployment() throws CarbonDeploymentException {
-        log.trace("[Test] Deployment test - HelloWorld.bar : Started");
-        File ab = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "HelloWorld.bar")
-                .toString());
+        log.info("[Test] Deployment test - HelloWorld.bar : Started");
+        BPMNDeployer customDeployer = new BPMNDeployer();
+        customDeployer.init();
+        File ab = new File("resources/artifacts/HelloWorld.bar");
+
         Artifact artifact = new Artifact(ab);
         ArtifactType artifactType = new ArtifactType<>("bar");
         artifact.setKey("HelloWorld.bar");
         artifact.setType(artifactType);
-        bpmnDeployer.deploy(artifact);
+        customDeployer.deploy(artifact);
 
         RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
         List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
         if (activitiDeployments != null) {
-            Assert.assertEquals(activitiDeployments.size(), 1, "Expected Deployment count");
+            Assert.assertEquals(1, activitiDeployments.size(), "Expected Deployment count 1, but found " +
+                    activitiDeployments.size());
             Deployment deployment = activitiDeployments.get(0);
-            Assert.assertTrue(artifact.getName().toString().startsWith(deployment.getName()), "Artifact Name " +
-                    "mismatched.");
+            Assert.assertEquals(artifact.getName(), deployment.getName(), "Artifact Name mismatched. Expected " +
+                    artifact.getName() + ", but found " + deployment.getName());
         } else {
             Assert.fail("There is no artifacts deployed.");
         }
-        log.trace("[Test] Deployment test - HelloWorld.bar : Completed");
+        log.info("[Test] Deployment test - HelloWorld.bar : Completed");
     }
 
-    @Test(priority = 11)
+    @Test(priority = 1)
     public void testStartHelloWorldBarProcess() {
         ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
         runtimeService.startProcessInstanceByKey("helloWorldProcess");
     }
+
+
 }

@@ -163,4 +163,15 @@ public class BasicServerConfigurationUtil {
         return carbonHome;
     }
 
+    /**
+     * Return Artifacts directory for Test Server.
+     *
+     * @return
+     */
+    public static Path getArtifactHome() {
+        String currentDir = Paths.get("").toAbsolutePath().toString();
+        Path artifactsHome = Paths.get(currentDir, "src", "test", "resources", "artifacts");
+        return artifactsHome;
+    }
+
 }
