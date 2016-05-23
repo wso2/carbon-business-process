@@ -72,7 +72,7 @@
             <artifactId>org.osgi.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.osgi</groupId>
+            <groupId>org.wso2.eclipse.osgi</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
 

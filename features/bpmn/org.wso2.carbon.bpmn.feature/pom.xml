@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.core.server.feature</artifactId>
+            <artifactId>org.wso2.carbon.kernel.feature</artifactId>
             <type>zip</type>
         </dependency>
     </dependencies>
@@ -63,7 +63,7 @@
                             <propertyFile>../../etc/feature.properties</propertyFile>
                             <importFeatures>
                                 <feature>
-                                    <id>org.wso2.carbon.core.server</id>
+                                    <id>org.wso2.carbon.kernel</id>
                                     <version>${carbon.kernel.version}</version>
                                 </feature>
                             </importFeatures>
