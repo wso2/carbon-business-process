@@ -27,10 +27,12 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -229,6 +231,12 @@ public class UserService {
         }
         response.setData(list);
         return response;
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
 }

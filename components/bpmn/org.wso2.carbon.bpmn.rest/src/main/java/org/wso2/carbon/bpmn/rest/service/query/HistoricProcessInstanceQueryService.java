@@ -27,6 +27,7 @@ import org.wso2.carbon.bpmn.rest.model.common.HistoricProcessInstanceQueryReques
 import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstancePaginateList;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -170,6 +171,12 @@ public class HistoricProcessInstanceQueryService  {
                 allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
         return Response.ok().entity(dataResponse).build();
 
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
     protected void addVariables(org.activiti.engine.history.HistoricProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {

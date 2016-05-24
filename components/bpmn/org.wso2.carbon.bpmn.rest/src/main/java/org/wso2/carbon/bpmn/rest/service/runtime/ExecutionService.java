@@ -419,4 +419,10 @@ public class ExecutionService  extends BaseExecutionService {
         }
     }
 
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
+
 }

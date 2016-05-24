@@ -31,6 +31,7 @@ import org.wso2.carbon.bpmn.rest.model.form.SubmitFormRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -120,5 +121,11 @@ public class FormDataService {
                     (processInstance, uriInfo.getBaseUri().toString());
             return response.entity(processInstanceResponse).build();
         }
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }

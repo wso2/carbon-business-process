@@ -30,6 +30,7 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricDetailService;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -129,6 +130,12 @@ public class HistoricDetailService extends BaseHistoricDetailService {
             // Re-throw IOException
             throw new ActivitiException("Unexpected exception getting variable data", ioe);
         }
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
     public RestVariable getVariableFromRequest(boolean includeBinary, String detailId) {

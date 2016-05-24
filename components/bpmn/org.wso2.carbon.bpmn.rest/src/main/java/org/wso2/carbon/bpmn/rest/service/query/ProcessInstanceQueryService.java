@@ -43,7 +43,11 @@ public class ProcessInstanceQueryService extends BaseProcessInstanceService {
         return Response.ok().entity(getQueryResponse(processInstanceQueryRequest, allRequestParams, uriInfo)).build();
     }
 
-
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
 
 
 

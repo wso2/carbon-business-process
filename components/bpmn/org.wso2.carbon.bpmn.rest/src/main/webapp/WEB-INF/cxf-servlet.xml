@@ -35,6 +35,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -50,6 +51,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -69,6 +71,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -85,6 +88,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -97,6 +101,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -109,6 +114,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -121,6 +127,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
     <jaxrs:server id="managementService" address="/management">
@@ -132,6 +139,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -145,6 +153,7 @@
             <ref bean="exceptionHandlerBean"/>
             <ref bean="errorHandlerBean"/>
             <ref bean="jacksonBean"/>
+            <ref bean="corsBean"/>
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -154,4 +163,5 @@
     <bean id="errorHandlerBean"
           class="org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNErrorHandler"/>
     <bean id="jacksonBean" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+    <bean id="corsBean" class="org.wso2.carbon.bpmn.rest.security.CrossDomainFilter"/>
 </beans>

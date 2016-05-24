@@ -30,6 +30,7 @@ import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelsPaginateList;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -195,5 +196,11 @@ public class ModelService {
         }
 
         return Response.ok().entity(response).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }

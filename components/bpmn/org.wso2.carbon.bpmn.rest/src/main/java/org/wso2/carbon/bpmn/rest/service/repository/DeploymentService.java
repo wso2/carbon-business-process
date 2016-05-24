@@ -38,6 +38,7 @@ import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentsPaginateList;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -225,6 +226,12 @@ public class DeploymentService {
                                           @PathParam("resourceId") String resourceId) {
         String contentType = Utils.resolveContentType(resourceId);
         return Response.ok().type(contentType).entity(getDeploymentResourceData(deploymentId, resourceId)).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
 

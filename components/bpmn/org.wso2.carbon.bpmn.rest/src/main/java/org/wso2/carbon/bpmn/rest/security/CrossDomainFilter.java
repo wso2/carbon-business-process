@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/*package org.wso2.carbon.bpmn.rest.security;
+package org.wso2.carbon.bpmn.rest.security;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -22,11 +22,10 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
-
 /**
  *
  */
-/*@Provider
+@Provider
 public class CrossDomainFilter implements ContainerResponseFilter {
     /**
      * Add the cross domain data to the output if needed
@@ -34,7 +33,7 @@ public class CrossDomainFilter implements ContainerResponseFilter {
      * @param cres The container request (output)
      * @return The output request with cross domain if needed
      */
-    /*public void filter(final ContainerRequestContext creq,
+    public void filter(final ContainerRequestContext creq,
                        final ContainerResponseContext cres) throws IOException {
         cres.getHeaders().add("Access-Control-Allow-Origin", "*");
         cres.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
@@ -42,5 +41,5 @@ public class CrossDomainFilter implements ContainerResponseFilter {
         cres.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
     }
-}*/
+}
 
