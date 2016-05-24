@@ -130,6 +130,9 @@
             javax.xml.stream.*
         </import.package>
         <dynamic.import.package>*</dynamic.import.package>
+        <carbon.component>osgi.service;objectClass="org.wso2.msf4j.Interceptor";serviceCount="1",
+            osgi.service;objectClass="org.wso2.msf4j.Microservice";serviceCount="17"
+        </carbon.component>
     </properties>
 
 </project>
