@@ -123,8 +123,27 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean_target</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${project.build.directory}/database"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
+                <version>${maven.sql.plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.h2database</groupId>
@@ -156,7 +175,7 @@
                                 <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql</srcFile>
                                 <srcFile>${basedir}/resources/dbscripts/create/activiti.h2.create.metadata.sql</srcFile>
                             </srcFiles>
-                            <onError>continue</onError>
+                            <onError>abort</onError>
                         </configuration>
                     </execution>
                 </executions>
@@ -164,7 +183,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.1</version>
                 <executions>
                     <execution>
                         <id>clean_target</id>
