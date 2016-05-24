@@ -70,6 +70,10 @@ public class AuthenticationHandler implements RequestHandler {
     public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
 
+        if(((String)message.get("org.apache.cxf.request.method")).equals("OPTIONS")) {
+            return null;
+        }
+
         if (policy != null) {
             if (AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
                 return handleBasicAuth(policy);
