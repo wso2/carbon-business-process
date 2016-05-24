@@ -46,6 +46,7 @@ import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -54,13 +55,16 @@ import javax.inject.Inject;
 @ExamReactorStrategy(PerSuite.class)
 public class BPMNDeploymentTest {
 
-    private static final Log log = LogFactory.getLog(BPMNServerCreationTest.class);
+    private static final Log log = LogFactory.getLog(BPMNDeploymentTest.class);
 
     @Inject
     private BundleContext bundleContext;
 
     @Inject
     private BPMNEngineService bpmnEngineService;
+
+    @Inject
+    private BPMNDeployer bpmnDeployer;
 
     @Inject
     private CarbonServerInfo carbonServerInfo;
@@ -82,38 +86,43 @@ public class BPMNDeploymentTest {
         return options;
     }
 
-    @Test(priority = 0)
+    @Test
     public void testHelloWorldBarDeployment() throws CarbonDeploymentException {
         log.info("[Test] Deployment test - HelloWorld.bar : Started");
-        BPMNDeployer customDeployer = new BPMNDeployer();
-        customDeployer.init();
-        File ab = new File("resources/artifacts/HelloWorld.bar");
+        try {
+            File ab = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "HelloWorld.bar")
+                    .toString());
+            Artifact artifact = new Artifact(ab);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("HelloWorld.bar");
+            artifact.setType(artifactType);
+            bpmnDeployer.deploy(artifact);
 
-        Artifact artifact = new Artifact(ab);
-        ArtifactType artifactType = new ArtifactType<>("bar");
-        artifact.setKey("HelloWorld.bar");
-        artifact.setType(artifactType);
-        customDeployer.deploy(artifact);
-
-        RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
-        List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
-        if (activitiDeployments != null) {
-            Assert.assertEquals(1, activitiDeployments.size(), "Expected Deployment count 1, but found " +
-                    activitiDeployments.size());
-            Deployment deployment = activitiDeployments.get(0);
-            Assert.assertEquals(artifact.getName(), deployment.getName(), "Artifact Name mismatched. Expected " +
-                    artifact.getName() + ", but found " + deployment.getName());
-        } else {
+            RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
+            List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
+            if (activitiDeployments != null) {
+                Assert.assertEquals(activitiDeployments.size(), 1, "Expected Deployment count");
+                Deployment deployment = activitiDeployments.get(0);
+                Assert.assertTrue(artifact.getName().toString().startsWith(deployment.getName()), "Artifact Name " +
+                        "mismatched.");
+            } else {
+                Assert.fail("There is no artifacts deployed.");
+            }
+        }catch (Exception e){
+            log.error("Erro while deploying HelloWorld Artifact." , e);
             Assert.fail("There is no artifacts deployed.");
+            throw  e;
         }
         log.info("[Test] Deployment test - HelloWorld.bar : Completed");
     }
 
-    @Test(priority = 1)
+    @Test(dependsOnMethods = "testHelloWorldBarDeployment")
     public void testStartHelloWorldBarProcess() {
+        log.info("[Test] Deployment test - HelloWorld.bar instance creating : Completed");
         ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
         runtimeService.startProcessInstanceByKey("helloWorldProcess");
+        log.info("[Test] Deployment test - HelloWorld.bar instance creating : Started");
     }
 
 
