@@ -62,6 +62,10 @@ public class BasicServerConfigurationUtil {
                 .artifactId("org.wso2.carbon.messaging")
                 .versionAsInProject());
         optionList.add(mavenBundle()
+                .groupId("org.wso2.carbon.deployment")
+                .artifactId("org.wso2.carbon.deployment.engine")
+                .versionAsInProject());
+        optionList.add(mavenBundle()
                 .groupId("org.wso2.carbon.security.caas")
                 .artifactId("org.wso2.carbon.security.caas")
                 .versionAsInProject());
@@ -70,6 +74,21 @@ public class BasicServerConfigurationUtil {
                 .artifactId("org.wso2.carbon.security.userstore.jdbc")
                 .versionAsInProject());
         // Activiti Dependencies.
+        optionList.addAll(createActivitiDependenciesConfiguration());
+        // DataSource dependencies.
+        optionList.add(mavenBundle()
+                .groupId("com.zaxxer")
+                .artifactId("HikariCP")
+                .versionAsInProject());
+        optionList.add(mavenBundle()
+                .groupId("com.h2database")
+                .artifactId("h2")
+                .versionAsInProject());
+        return optionList;
+    }
+
+    public static List<Option> createActivitiDependenciesConfiguration() {
+        List<Option> optionList = new ArrayList<>();
         optionList.add(mavenBundle()
                 .groupId("org.mybatis")
                 .artifactId("mybatis")
@@ -130,15 +149,6 @@ public class BasicServerConfigurationUtil {
                 .groupId("commons-io.wso2")
                 .artifactId("commons-io")
                 .versionAsInProject());
-        // DataSource dependencies.
-        optionList.add(mavenBundle()
-                .groupId("com.zaxxer")
-                .artifactId("HikariCP")
-                .versionAsInProject());
-        optionList.add(mavenBundle()
-                .groupId("com.h2database")
-                .artifactId("h2")
-                .versionAsInProject());
         return optionList;
     }
 
@@ -151,6 +161,17 @@ public class BasicServerConfigurationUtil {
         String currentDir = Paths.get("").toAbsolutePath().toString();
         Path carbonHome = Paths.get(currentDir, "target", "carbon-home");
         return carbonHome;
+    }
+
+    /**
+     * Return Artifacts directory for Test Server.
+     *
+     * @return
+     */
+    public static Path getArtifactHome() {
+        String currentDir = Paths.get("").toAbsolutePath().toString();
+        Path artifactsHome = Paths.get(currentDir, "src", "test", "resources", "artifacts");
+        return artifactsHome;
     }
 
 }

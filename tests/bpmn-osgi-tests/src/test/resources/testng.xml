@@ -19,6 +19,7 @@ limitations under the License.
 
         <classes>
             <class name="org.wso2.carbon.bpmn.tests.osgi.BPMNServerCreationTest" />
+            <class name="org.wso2.carbon.bpmn.tests.osgi.BPMNDeploymentTest" />
         </classes>
     </test>
 </suite>

@@ -84,10 +84,6 @@
             <artifactId>org.wso2.carbon.deployment.engine</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.deployment</groupId>
-            <artifactId>org.wso2.carbon.deployment.notifier</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon.security.caas</groupId>
             <artifactId>org.wso2.carbon.security.caas</artifactId>
         </dependency>
@@ -128,9 +124,14 @@
             version=${carbon.business-process.exp.pkg.version},
         </export.package>
         <import.package>
-            org.osgi.framework; version="[1.8.0, 2.0.0)",
-            org.wso2.carbon.security.caas.*;version="1.0.0",
-            org.slf4j; version="[1.7.7, 2.0.0)"
+            org.osgi.framework.*; version="${org.osgi.import.version}",
+            org.wso2.carbon.kernel.*; version="${carbon.kernel.imp.pkg.version}",
+            org.wso2.carbon.deployment.engine.*; version="${carbon.deployment.import.version}",
+            org.wso2.carbon.jndi.*; version="${carbon.jndi.import.version}",
+            org.wso2.carbon.messaging.*; version="${carbon.messaging.import.version}",
+            org.wso2.carbon.datasource.*; version="${carbon.datasources.import.version}",
+            org.wso2.carbon.security.caas.*; version="${carbon.security.caas.import.version}",
+            org.slf4j; version="${slf4j.import.version}"
         </import.package>
         <dynamic.import.package>*</dynamic.import.package>
     </properties>

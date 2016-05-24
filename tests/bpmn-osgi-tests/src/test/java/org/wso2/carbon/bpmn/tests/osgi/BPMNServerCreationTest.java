@@ -20,16 +20,19 @@
 package org.wso2.carbon.bpmn.tests.osgi;
 
 import org.activiti.engine.ProcessEngine;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.spi.reactors.PerSuite;
 import org.ops4j.pax.exam.testng.listener.PaxExam;
 import org.osgi.framework.BundleContext;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.kernel.utils.CarbonServerInfo;
 import org.wso2.carbon.osgi.test.util.CarbonSysPropConfiguration;
@@ -40,8 +43,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 @Listeners(PaxExam.class)
-@ExamReactorStrategy(PerClass.class)
+@ExamReactorStrategy(PerSuite.class)
 public class BPMNServerCreationTest {
+
+    private static final Log log = LogFactory.getLog(BPMNServerCreationTest.class);
 
     @Inject
     private BundleContext bundleContext;
@@ -70,13 +75,14 @@ public class BPMNServerCreationTest {
         return options;
     }
 
-    @Test
+    @Test(priority = 0)
     public void testProcessEngineCreation() {
-
+        log.info("[Test] Process engine creation : Started");
         ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
         Assert.assertNotNull(processEngine, "processEngine is not set");
         String name = processEngine.getName();
         Assert.assertNotNull(name, "processEngine name is null.");
-
+        log.info("[Test] Process engine creation : Completed..");
     }
+
 }

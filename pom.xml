@@ -79,6 +79,7 @@
             <modules>
                 <module>components/bpmn</module>
                 <module>features/bpmn</module>
+                <module>tests</module>
             </modules>
         </profile>
     </profiles>
@@ -104,7 +105,7 @@
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
-                <version>${org.osgi.version}</version>
+                <version>${org.osgi.core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
@@ -147,9 +148,9 @@
                 <version>${carbon.deployment.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.deployment</groupId>
-                <artifactId>org.wso2.carbon.deployment.notifier</artifactId>
-                <version>${carbon.deployment.version}</version>
+                <groupId>org.wso2.carbon.messaging</groupId>
+                <artifactId>org.wso2.carbon.messaging</artifactId>
+                <version>${carbon.messaging.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.security.caas</groupId>
@@ -365,6 +366,16 @@
                 <artifactId>org.jacoco.ant</artifactId>
                 <version>${org.jacoco.ant.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.logging</groupId>
+                <artifactId>pax-logging-api</artifactId>
+                <version>${pax.logging.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.logging</groupId>
+                <artifactId>pax-logging-log4j2</artifactId>
+                <version>${pax.logging.log4j2.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -412,17 +423,25 @@
         <carbon.kernel.imp.pkg.version>[5.0.0,6.0.0)</carbon.kernel.imp.pkg.version>
         <equinox.osgi.version>3.10.2.v20150203-1939</equinox.osgi.version>
         <equinox.osgi.services.version>3.4.0.v20140312-2051</equinox.osgi.services.version>
-        <org.osgi.version>6.0.0</org.osgi.version>
+        <org.osgi.core.version>6.0.0</org.osgi.core.version>
+        <org.osgi.import.version>[1.8.0, 2.0.0)</org.osgi.import.version>
 
         <!-- 2 - Hamming Platform components and their Dependencies  -->
         <carbon.datasources.version>1.0.0-SNAPSHOT</carbon.datasources.version>
+        <carbon.datasources.import.version>[1.0.0,2.0.0)</carbon.datasources.import.version>
         <carbon.jndi.version>1.0.0-alpha</carbon.jndi.version>
+        <carbon.jndi.import.version>[1.0.0,2.0.0)</carbon.jndi.import.version>
         <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
-        <carbon.msf4j.impl.version.range>[1.1.0,2)</carbon.msf4j.impl.version.range>
+        <carbon.msf4j.impl.version.range>[1.1.0,2.0.0)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
         <carbon.deployment.version>5.0.0-SNAPSHOT</carbon.deployment.version>
+        <carbon.deployment.import.version>[5.0.0,6.0.0)</carbon.deployment.import.version>
+        <carbon.messaging.version>1.0.2</carbon.messaging.version>
+        <carbon.messaging.import.version>[1.0.2,2.0.0)</carbon.messaging.import.version>
         <carbon.security.caas.version>1.0.0-SNAPSHOT</carbon.security.caas.version>
+        <carbon.security.caas.import.version>[1.0.0,2.0.0)</carbon.security.caas.import.version>
         <carbon.security.userstore.jdbc.version>1.0.0-SNAPSHOT</carbon.security.userstore.jdbc.version>
+        <carbon.security.userstore.jdbc.import.version>[1.0.0,2.0.0)</carbon.security.userstore.jdbc.import.version>
         <!-- 3 - Carbon Business Process Dependencies -->
         <!-- 3.1 Activiti and its dependencies  -->
         <org.activiti.wso2.version>5.19.0.wso2v3</org.activiti.wso2.version>
@@ -448,6 +467,7 @@
 
         <!-- 4 - Common dependencies  -->
         <slf4j.version>1.7.12</slf4j.version>
+        <slf4j.import.version>[1.7.7, 2.0.0)</slf4j.import.version>
         <snakeyaml.version>1.16.0.wso2v1</snakeyaml.version>
         <commons-io.version>2.4.0.wso2v1</commons-io.version>
         <commons.lang3.version>3.3.2</commons.lang3.version>
@@ -459,16 +479,19 @@
         <!-- Maven Plugin versions -->
         <carbon.feature.plugin.version>2.0.1</carbon.feature.plugin.version>
         <maven.wagon.ssh.version>2.10</maven.wagon.ssh.version>
+        <maven.sql.plugin.version>1.5</maven.sql.plugin.version>
 
         <!-- OSGI Tests-->
         <testng.version>6.9.4</testng.version>
-        <pax.exam.version>4.6.0</pax.exam.version>
-        <pax.exam.container.native.version>4.6.0</pax.exam.container.native.version>
-        <pax.exam.testng.version>4.6.0</pax.exam.testng.version>
-        <pax.exam.link.mvn.version>4.6.0</pax.exam.link.mvn.version>
+        <pax.exam.version>4.8.0</pax.exam.version>
+        <pax.exam.container.native.version>4.8.0</pax.exam.container.native.version>
+        <pax.exam.testng.version>4.8.0</pax.exam.testng.version>
+        <pax.exam.link.mvn.version>4.8.0</pax.exam.link.mvn.version>
         <pax.url.aether.version>1.6.0</pax.url.aether.version>
         <ow2.jta.spec.version>1.0.12</ow2.jta.spec.version>
         <org.jacoco.ant.version>0.7.5.201505241946</org.jacoco.ant.version>
+        <pax.logging.api.version>1.8.5</pax.logging.api.version>
+        <pax.logging.log4j2.version>1.8.5</pax.logging.log4j2.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <maven.paxexam.plugin.version>1.2.4</maven.paxexam.plugin.version>
 
