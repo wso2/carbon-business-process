@@ -130,17 +130,6 @@ public class BPMNUserTaskTest {
         try {
             User user = realmService.getIdentityStore().getUser("admin");
             Assert.assertEquals(user.getUserName().toString(), "admin", "No matching user called admin is found");
-//TEST
-            ProcessEngineImpl a = (ProcessEngineImpl)bpmnEngineService.getProcessEngine();
-            ProcessEngineConfigurationImpl i =  a.getProcessEngineConfiguration();
-            BPSGroupManagerFactory d = (BPSGroupManagerFactory)i.getSessionFactories().get(GroupIdentityManager.class);
-            BPSGroupIdentityManager r = (BPSGroupIdentityManager) d.openSession();
-            log.info("SIZE" + r.findGroupsByUser("41dadd2aea6e11e59ce95e5517507c66").size());
-            r.findGroupsByUser("41dadd2aea6e11e59ce95e5517507c66").forEach(g->log.info("HHHHHHHHHHHH" + g.getId()));
-            List<Group> gg =r.findGroupsByUser("41dadd2aea6e11e59ce95e5517507c66");
-           org.wso2.carbon.security.caas.user.core.bean.Group dd= realmService.getIdentityStore().getGroupFromId(gg.get(0).getId(),user.getIdentityStoreId());
-            log.info(dd.getName());
-////
             // start process instance
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("employeeName", "John");
