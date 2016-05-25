@@ -21,10 +21,9 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
+import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
@@ -39,16 +38,16 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+import org.wso2.carbon.bpmn.core.integration.BPSUserIdentityManager;
+import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.deployment.engine.exception.CarbonDeploymentException;
 import org.wso2.carbon.osgi.test.util.CarbonSysPropConfiguration;
 import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
+import org.wso2.carbon.security.caas.user.core.bean.Group;
 import org.wso2.carbon.security.caas.user.core.bean.User;
-import org.wso2.carbon.security.caas.user.core.exception.AuthorizationStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
@@ -62,19 +61,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Invoking a bpmn user task
+ * Invoking a bpmn user claim task with group management
  */
 @Listeners(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
-public class BPMNUserTaskTest {
+public class BPMNClaimUserTaskTest {
+    private static final Log log = LogFactory.getLog(BPMNClaimUserTaskTest.class);
 
-    private static final Log log = LogFactory.getLog(BPMNUserTaskTest.class);
-    @Inject
-    private RealmService realmService;
     @Inject
     private BPMNDeployer bpmnDeployer;
     @Inject
     private BPMNEngineService bpmnEngineService;
+    @Inject
+    private RealmService realmService;
 
     @Configuration
     public Option[] createConfiguration() {
@@ -94,14 +93,14 @@ public class BPMNUserTaskTest {
     }
 
     @Test
-    public void testDeployUserTask() throws CarbonDeploymentException {
-        log.info("[Test] Deploying user task - VacationRequest.bar: Started");
+    public void testDeployUserClaimTask() throws CarbonDeploymentException {
+        log.info("[Test] Deploying  claim user task - VacationClaimRequest.bar: Started");
         try {
-            File userArtifact = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "VacationRequest.bar")
+            File userArtifact = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "VacationClaimRequest.bar")
                     .toString());
             Artifact artifact = new Artifact(userArtifact);
             ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("VacationRequest.bar");
+            artifact.setKey("AcceptRequest.bar");
             artifact.setType(artifactType);
             bpmnDeployer.deploy(artifact);
 
@@ -116,31 +115,33 @@ public class BPMNUserTaskTest {
                 Assert.fail("There are no artifacts deployed.");
             }
         } catch (Exception e) {
-            log.error("Erro while deploying VacationRequest Artifact.", e);
+            log.error("Error while deploying VacationClaim Artifact.", e);
             Assert.fail("There are no artifacts deployed.");
             throw e;
         }
-        log.info("[Test] Deploying user task - VacationRequest.bar: Completed");
+        log.info("[Test] Deploying user task - VacationClaimRequest.bar: Completed");
+
     }
 
-    @Test(dependsOnMethods = "testDeployUserTask")
-    public void testInvokeUserTask() throws CarbonDeploymentException,IdentityStoreException,
-            UserNotFoundException,AuthorizationStoreException {
-        log.info("[Test] Invoking User task - VacationRequest.bar : Started");
+    @Test(dependsOnMethods = "testDeployUserClaimTask")
+    public void testInvokeClaimedUserTask() throws CarbonDeploymentException, IdentityStoreException,
+            UserNotFoundException {
+        log.info("[Test] Claiming User task - VacationClaimRequest.bar : Started");
         try {
+            // retrieve user admin and authenticate
+            ProcessEngineImpl engineImpl = (ProcessEngineImpl) bpmnEngineService.getProcessEngine();
+            ProcessEngineConfigurationImpl config = engineImpl.getProcessEngineConfiguration();
+            BPSUserManagerFactory factory = (BPSUserManagerFactory) config.getSessionFactories().
+                    get(UserIdentityManager.class);
+            BPSUserIdentityManager manager = (BPSUserIdentityManager) factory.openSession();
+
             User user = realmService.getIdentityStore().getUser("admin");
-            Assert.assertEquals(user.getUserName().toString(), "admin", "No matching user called admin is found");
-//TEST
-            ProcessEngineImpl a = (ProcessEngineImpl)bpmnEngineService.getProcessEngine();
-            ProcessEngineConfigurationImpl i =  a.getProcessEngineConfiguration();
-            BPSGroupManagerFactory d = (BPSGroupManagerFactory)i.getSessionFactories().get(GroupIdentityManager.class);
-            BPSGroupIdentityManager r = (BPSGroupIdentityManager) d.openSession();
-            log.info("SIZE" + r.findGroupsByUser("41dadd2aea6e11e59ce95e5517507c66").size());
-            r.findGroupsByUser("41dadd2aea6e11e59ce95e5517507c66").forEach(g->log.info("HHHHHHHHHHHH" + g.getId()));
-            List<Group> gg =r.findGroupsByUser("41dadd2aea6e11e59ce95e5517507c66");
-           org.wso2.carbon.security.caas.user.core.bean.Group dd= realmService.getIdentityStore().getGroupFromId(gg.get(0).getId(),user.getIdentityStoreId());
-            log.info(dd.getName());
-////
+            Assert.assertEquals(user.getUserName().toString(), "admin",
+                    "No matching user called admin is found");
+            Assert.assertTrue(manager.checkPassword(user.getUserId(), "admin"),
+                    "Unable to authenticate user" + user.getUserName());
+
+
             // start process instance
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("employeeName", "John");
@@ -149,38 +150,41 @@ public class BPMNUserTaskTest {
             ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
             RuntimeService runtimeService = processEngine.getRuntimeService();
             runtimeService.startProcessInstanceByKey("myProcess", variables);
-            log.info("Number of process instances started: " + runtimeService.createProcessInstanceQuery().count());
+            log.info("Number of process instances started: " + runtimeService.
+                    createProcessInstanceQuery().count());
 
-            //query tasks  assigned to user admin
+            // get task list belonging to given group : management
             TaskService taskService = processEngine.getTaskService();
-            List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getUserName().toString()).list();
-            if (tasks != null) {
-                Assert.assertEquals(tasks.size(), 1, "Expected task count for admin");
-                Task task = tasks.get(0);
+            List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
+            // get the groups of the user admin
+            List<org.activiti.engine.identity.Group> groupsOfUser = manager.
+                    findGroupsByUser(user.getUserId().toString());
+            Assert.assertEquals(groupsOfUser.size(), 1, "Expected group count for admin user");
+            // check if group management is in the list
+            Group group = realmService.getIdentityStore().getGroupFromId(groupsOfUser.get(0).getId(),
+                    user.getIdentityStoreId());
+            Assert.assertTrue(group.getName().startsWith("management"), "Admin user" +
+                    " does not belong to given group" + "management");
 
+            if (tasks != null) {
+                taskService.claim(tasks.get(0).getId(), "admin");
+                List<Task> claimedTasks = taskService.createTaskQuery().taskAssignee("admin").list();
+                Assert.assertEquals(claimedTasks.size(), 1, "User was unable to claim any task");
+                //complete claimed task
                 Map<String, Object> taskVariables = new HashMap<String, Object>();
                 taskVariables.put("vacationApproved", "true");
-
-                taskService.complete(task.getId(), taskVariables);
-                log.info("Task with id : " + task.getId() + " is completed.");
-                List<Task> newTasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getUserName().toString()).list();
-                Assert.assertEquals(newTasks.size(), 0, "New expected task count for admin");
+                taskService.complete(tasks.get(0).getId());
 
             } else {
                 Assert.fail("No tasks assigned for user admin");
             }
-
         } catch (Exception e) {
-            log.info("Error in invoking user task", e);
-            Assert.fail("Error in invoking user task.");
+            log.info("Error in invoking user claim task", e);
+            Assert.fail("Error in invoking user claim task.");
             throw e;
+        } finally {
+            bpmnDeployer.undeploy("VacationClaimRequest.bar");
         }
-        finally{
-            bpmnDeployer.undeploy("VacationRequest.bar");
-        }
-
-
-        log.info("[Test] Invoking User task - VacationRequest.bar : Completed");
-
+        log.info("[Test] Claiming User task - VacationClaimRequest.bar : Completed.");
     }
 }
