@@ -32,7 +32,7 @@ VALUES ('1', '1ff1188e-f1bf-11e5-9ce9-5e5517507c66', 'SHA-256'),
   ('3', '1ff1188e-f1bf-11e5-9ce9-5e5517507c66', 'SHA-256');
 
 INSERT INTO UM_GROUP (GROUP_NAME, GROUP_UNIQUE_ID, TENANT_ID)
-VALUES ('is', 'a422aa98ecf411e59ce95e5517507c66', '1'),
+VALUES ('management', 'a422aa98ecf411e59ce95e5517507c66', '1'),
   ('security','16231aee15a711e6a1483e1d05defe78','1'),
   ('kernel','16231f8a15a711e6a1483e1d05defe78','1'),
   ('governance','162321d815a711e6a1483e1d05defe78','1');

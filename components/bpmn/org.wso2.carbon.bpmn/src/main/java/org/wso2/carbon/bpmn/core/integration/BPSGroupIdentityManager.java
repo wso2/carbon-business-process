@@ -105,13 +105,15 @@ public class BPSGroupIdentityManager extends GroupEntityManager {
 
         } else {
             try {
-
+                // updated according to c5 user-core:set of roles belongs to a group
                 List<Role> roles = authorizationStore.getRolesOfUser
                         (userId, identityStore.getUser(userName).getIdentityStoreId());
-
-                groups = roles.stream().map(role -> new GroupEntity(role.getRoleId())).
-                        collect(Collectors.toList());
-
+                for (Role role : roles) {
+                    List<org.wso2.carbon.security.caas.user.core.bean.Group> groupList =
+                            authorizationStore.getGroupsOfRole(role.getRoleId(), role.getAuthorizationStoreId());
+                    groups = groupList.stream().
+                            map(group -> new GroupEntity(group.getGroupId())).collect(Collectors.toList());
+                }
 //                for (Role role : roles) {
 //                    Group group = new GroupEntity(role.getRoleId());
 //                    groups.add(group);
