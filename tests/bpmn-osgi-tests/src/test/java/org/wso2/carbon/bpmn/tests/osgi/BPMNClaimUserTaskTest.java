@@ -134,13 +134,12 @@ public class BPMNClaimUserTaskTest {
             BPSUserManagerFactory factory = (BPSUserManagerFactory) config.getSessionFactories().
                     get(UserIdentityManager.class);
             BPSUserIdentityManager manager = (BPSUserIdentityManager) factory.openSession();
-            
+
             User user = realmService.getIdentityStore().getUser("admin");
             Assert.assertEquals(user.getUserName().toString(), "admin",
                     "No matching user called admin is found");
             Assert.assertTrue(manager.checkPassword(user.getUserId(), "admin"),
                     "Unable to authenticate user" + user.getUserName());
-
 
             // start process instance
             Map<String, Object> variables = new HashMap<String, Object>();
