@@ -23,6 +23,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.task.Task;
@@ -121,6 +122,27 @@ public class BPMNClaimUserTaskTest {
         }
         log.info("[Test] Deploying user task - VacationClaimRequest.bar: Completed");
 
+    }
+   @Test
+    public void testRetrieveUserClaimValues(){
+       log.info("[Test] Retrieving user claim values for admin: Started");
+      try {
+          ProcessEngineImpl engineImpl = (ProcessEngineImpl) bpmnEngineService.getProcessEngine();
+          ProcessEngineConfigurationImpl config = engineImpl.getProcessEngineConfiguration();
+          BPSUserManagerFactory factory = (BPSUserManagerFactory) config.getSessionFactories().
+                  get(UserIdentityManager.class);
+          BPSUserIdentityManager manager = (BPSUserIdentityManager) factory.openSession();
+          String userId = "41dadd2aea6e11e59ce95e5517507c66";
+          UserEntity u = manager.findUserById(userId);
+          Assert.assertEquals(u.getFirstName(), "Jayanga");
+          Assert.assertEquals(u.getLastName(), "Kaushalya");
+      }
+      catch(Exception e){
+          log.info("Error in retrieving user claims for user.", e);
+          Assert.fail("Error in retrieving user claims for user.");
+          throw e;
+      }
+       log.info("[Test] Retrieving user claim values for admin: Completed");
     }
 
     @Test(dependsOnMethods = "testDeployUserClaimTask")

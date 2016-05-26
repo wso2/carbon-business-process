@@ -68,7 +68,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
     private static final String FIRST_NAME_CLAIM_URI = "http://wso2.org/claims/firstName";
     private static final String LAST_NAME_CLAIM_URI = "http://wso2.org/claims/lastName";
     private static final String FULL_NAME_CLAIM_URI = "http://wso2.org/claims/fullname";
-    private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/emailaddress";
+    private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/email";
     private static final String ROLE_CLAIM_URI = "http://wso2.org/claims/role";
 
     private List<String> claims = new ArrayList<String>();
@@ -105,7 +105,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 claims.add(FIRST_NAME_CLAIM_URI);
                 claims.add(LAST_NAME_CLAIM_URI);
                 //todo: Add when available in carbon-security
-               // claims.add(EMAIL_CLAIM_URI);
+                claims.add(EMAIL_CLAIM_URI);
 
                 UserEntity userEntity = new UserEntity(userId);
                 List<Claim> userClaimList = user.getClaims(claims);
@@ -119,10 +119,10 @@ public class BPSUserIdentityManager extends UserEntityManager {
                             String lastName = claim.getValue();
                             userEntity.setLastName(lastName);
                         }//todo: uncomment when c5 user core has this claim
-//                        if(claim.getClaimURI().equals(EMAIL_CLAIM_URI)){
-//                            String email = claim.getValue();
-//                            userEntity.setEmail(email);
-//                        }
+                        if (claim.getClaimURI().equals(EMAIL_CLAIM_URI)) {
+                            String email = claim.getValue();
+                            userEntity.setEmail(email);
+                        }
                     }
 
                 } else {
