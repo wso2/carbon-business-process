@@ -67,6 +67,7 @@ public class BPMNInvalidUndeploymentTest {
         Option[] options = optionList.toArray(new Option[optionList.size()]);
         return options;
     }
+
     @Test
     public void testNonExistentBarUndeployment() throws CarbonDeploymentException {
         log.info("[Test] Non existent undeployment test - sampleBPMN.bar : Started");
@@ -80,4 +81,16 @@ public class BPMNInvalidUndeploymentTest {
         log.info("[Test] Non existent undeployment test - sampleBPMN.bar : Completed");
     }
 
+    @Test(priority = 1)
+    public void testInvalidUndeployment() throws CarbonDeploymentException {
+        log.info("[Test] Undeploying an already undeployed artifact test - HelloWorld.bar : Started");
+        String exceptionMessage = "";
+        try {
+            bpmnDeployer.undeploy("HelloWorld.bar");
+        } catch (Exception e) {
+            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent undeployment.");
+        }
+        log.info("[Test]  Undeploying an already undeployed artifact test - sampleBPMN.bar : Completed");
+
+    }
 }
