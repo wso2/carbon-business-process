@@ -54,8 +54,17 @@ if (request.isSecure()) {//check whether the request is secure or not
         session.put("loginFailed" ,true);
         response.sendRedirect(requestUrl);
     } else {
+     var cookie = session.get('BPSSessionCookie');
+        // renew session to prevent session hijacking
+         if (typeof request.getSession == "function") {
+             if (session && !session.isNew()) {
+                 session.invalidate();
+             }
+            session = request.getSession(true);
+          }
         session.put('authSuccess', authSuccess);
         session.put('userName', username);
+        session.put('BPSSessionCookie', cookie);
         response.sendRedirect(requestUrl);
     }
 
