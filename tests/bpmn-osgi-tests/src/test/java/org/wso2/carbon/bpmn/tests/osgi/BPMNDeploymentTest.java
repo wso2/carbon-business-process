@@ -103,6 +103,7 @@ public class BPMNDeploymentTest {
             if (activitiDeployments != null) {
                 Assert.assertEquals(activitiDeployments.size(), 1, "Expected Deployment count");
                 Deployment deployment = activitiDeployments.get(0);
+                //log.info("USUAL DEP NAME" + deployment.getName());
                 Assert.assertTrue(artifact.getName().toString().startsWith(deployment.getName()), "Artifact Name " +
                         "mismatched.");
             } else {

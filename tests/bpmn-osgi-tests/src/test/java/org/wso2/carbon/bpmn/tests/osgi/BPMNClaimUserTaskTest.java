@@ -134,7 +134,7 @@ public class BPMNClaimUserTaskTest {
             BPSUserManagerFactory factory = (BPSUserManagerFactory) config.getSessionFactories().
                     get(UserIdentityManager.class);
             BPSUserIdentityManager manager = (BPSUserIdentityManager) factory.openSession();
-
+            
             User user = realmService.getIdentityStore().getUser("admin");
             Assert.assertEquals(user.getUserName().toString(), "admin",
                     "No matching user called admin is found");

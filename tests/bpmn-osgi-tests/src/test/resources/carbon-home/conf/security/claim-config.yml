@@ -1,0 +1,22 @@
+
+claimManager: "DEFAULT"
+dialectURI: "http://wso2.org/claims"
+claims:
+ -
+  claimURI: "http://wso2.org/claims/firstName"
+  mappedAttributes:
+   JDBCIS1: "firstName"
+  properties:
+   displayName: "First Name"
+   description: "First Name"
+   required: "true"
+   supportedByDefault: "true"
+ -
+  claimURI: "http://wso2.org/claims/lastName"
+  mappedAttributes:
+   JDBCIS1: "lastName"
+  properties:
+   displayName: "Last Name"
+   description: "Last Name"
+   required: "true"
+   supportedByDefault: "true"

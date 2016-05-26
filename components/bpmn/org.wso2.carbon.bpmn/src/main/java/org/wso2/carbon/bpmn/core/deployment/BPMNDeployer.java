@@ -260,7 +260,7 @@ public class BPMNDeployer implements Deployer {
     public Object update(Artifact artifact) throws CarbonDeploymentException {
         File artifactFile = artifact.getFile();
         String artifactPath = artifactFile.getAbsolutePath();
-        String deploymentName = artifactFile.getName();
+        String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
 
         //Update activiti engine based deployment
         ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();

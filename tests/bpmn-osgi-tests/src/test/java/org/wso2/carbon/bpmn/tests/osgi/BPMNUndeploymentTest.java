@@ -80,7 +80,7 @@ public class BPMNUndeploymentTest {
             bpmnDeployer.undeploy(key);
             RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
             List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
-            Assert.assertEquals(activitiDeployments.size(), 0, "There is an active deployment count of." + activitiDeployments.size());
+            Assert.assertEquals(activitiDeployments.size(), 0, "There is an active deployment count of new version" + activitiDeployments.size());
 
         } catch (Exception e) {
             log.error("Error  while undeploying HelloWorld Artifact.", e);

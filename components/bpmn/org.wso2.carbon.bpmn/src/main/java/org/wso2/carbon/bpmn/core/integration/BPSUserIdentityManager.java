@@ -33,8 +33,10 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
 import org.wso2.carbon.security.caas.user.core.bean.Role;
+import org.wso2.carbon.security.caas.user.core.claim.Claim;
 import org.wso2.carbon.security.caas.user.core.context.AuthenticationContext;
 import org.wso2.carbon.security.caas.user.core.exception.AuthenticationFailure;
+import org.wso2.carbon.security.caas.user.core.exception.ClaimManagerException;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.carbon.security.caas.user.core.store.AuthorizationStore;
@@ -63,8 +65,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     //list of Claim URIs
     private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
-    private static final String FIRST_NAME_CLAIM_URI = "http://axschema.org/namePerson/first";
-    private static final String LAST_NAME_CLAIM_URI = "http://wso2.org/claims/lastname";
+    private static final String FIRST_NAME_CLAIM_URI = "http://wso2.org/claims/firstName";
+    private static final String LAST_NAME_CLAIM_URI = "http://wso2.org/claims/lastName";
     private static final String FULL_NAME_CLAIM_URI = "http://wso2.org/claims/fullname";
     private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/emailaddress";
     private static final String ROLE_CLAIM_URI = "http://wso2.org/claims/role";
@@ -76,6 +78,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
         this.credentialStore = IdentityDataHolder.getInstance().getCarbonRealmService().getCredentialStore();
         this.identityStore = IdentityDataHolder.getInstance().getCarbonRealmService().getIdentityStore();
         this.authorizationStore = IdentityDataHolder.getInstance().getCarbonRealmService().getAuthorizationStore();
+
 
     }
 
@@ -101,30 +104,37 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 // create claim list
                 claims.add(FIRST_NAME_CLAIM_URI);
                 claims.add(LAST_NAME_CLAIM_URI);
-                claims.add(EMAIL_CLAIM_URI);
+                //todo: Add when available in carbon-security
+               // claims.add(EMAIL_CLAIM_URI);
 
                 UserEntity userEntity = new UserEntity(userId);
-                Map<String, String> userClaimList = user.getClaims(claims);
-                if (userClaimList.containsKey(FIRST_NAME_CLAIM_URI)) {
-                    String firstName = userClaimList.get(FIRST_NAME_CLAIM_URI);
-                    userEntity.setFirstName(firstName);
-                }
-                if (userClaimList.containsKey(LAST_NAME_CLAIM_URI)) {
-                    String lastName = userClaimList.get(LAST_NAME_CLAIM_URI);
-                    userEntity.setLastName(lastName);
-                }
-                if (userClaimList.containsKey(EMAIL_CLAIM_URI)) {
-                    String email = userClaimList.get(EMAIL_CLAIM_URI);
-                    userEntity.setEmail(email);
-                }
+                List<Claim> userClaimList = user.getClaims(claims);
+                if (userClaimList != null) {
+                    for (Claim claim : userClaimList) {
+                        if (claim.getClaimURI().equals(FIRST_NAME_CLAIM_URI)) {
+                            String firstName = claim.getValue();
+                            userEntity.setFirstName(firstName);
+                        }
+                        if (claim.getClaimURI().equals(LAST_NAME_CLAIM_URI)) {
+                            String lastName = claim.getValue();
+                            userEntity.setLastName(lastName);
+                        }//todo: uncomment when c5 user core has this claim
+//                        if(claim.getClaimURI().equals(EMAIL_CLAIM_URI)){
+//                            String email = claim.getValue();
+//                            userEntity.setEmail(email);
+//                        }
+                    }
 
+                } else {
+                    log.error("No claims found for user: " + user);
+                }
                 return userEntity;
             } else {
                 log.error("No user exist with userId:" + userId);
                 return null;
             }
 
-        } catch (IdentityStoreException | UserNotFoundException e) {
+        } catch (ClaimManagerException | IdentityStoreException | UserNotFoundException e) {
             log.error("Error retrieving user info by id for: " + userId, e);
             return null;
         }

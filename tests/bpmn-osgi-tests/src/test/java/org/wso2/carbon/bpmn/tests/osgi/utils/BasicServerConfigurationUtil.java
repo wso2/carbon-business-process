@@ -173,5 +173,11 @@ public class BasicServerConfigurationUtil {
         Path artifactsHome = Paths.get(currentDir, "src", "test", "resources", "artifacts");
         return artifactsHome;
     }
+    public static Path getVersionArtifactHome(){
+        String currentDir = Paths.get("").toAbsolutePath().toString();
+        Path artifactsHome = Paths.get(currentDir, "src", "test", "resources", "artifacts","versions");
+        return artifactsHome;
+
+    }
 
 }
