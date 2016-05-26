@@ -26,23 +26,22 @@ CREATE TABLE UM_TENANT
 
 CREATE TABLE UM_USER
 (
-  ID                     INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  USER_UNIQUE_ID         VARCHAR(64)                        NOT NULL,
-  USERNAME               VARCHAR(255)                       NOT NULL,
-  PASSWORD               VARCHAR(64)                        NOT NULL,
-  IDENTITY_STORE_ID      VARCHAR(255)                       NOT NULL,
-  CREDENTIAL_STORE_ID    VARCHAR(255)                       NOT NULL,
-  TENANT_ID              INTEGER                            NOT NULL,
+  ID                  INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  USER_UNIQUE_ID      VARCHAR(64)                        NOT NULL,
+  USERNAME            VARCHAR(255)                       NOT NULL,
+  IDENTITY_STORE_ID   VARCHAR(255)                       NOT NULL,
+  CREDENTIAL_STORE_ID VARCHAR(255)                       NOT NULL,
+  TENANT_ID           INTEGER                            NOT NULL,
   FOREIGN KEY (TENANT_ID) REFERENCES UM_TENANT (ID)
 );
 CREATE UNIQUE INDEX "unique_USERNAME_INDEX_1" ON UM_USER (USERNAME);
 
 CREATE TABLE UM_GROUP
 (
-  ID                     INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  GROUP_NAME             VARCHAR(255)                       NOT NULL,
-  GROUP_UNIQUE_ID        VARCHAR(64)                        NOT NULL,
-  TENANT_ID              INTEGER                            NOT NULL,
+  ID              INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  GROUP_NAME      VARCHAR(255)                       NOT NULL,
+  GROUP_UNIQUE_ID VARCHAR(64)                        NOT NULL,
+  TENANT_ID       INTEGER                            NOT NULL,
   FOREIGN KEY (TENANT_ID) REFERENCES UM_TENANT (ID)
 );
 
@@ -70,13 +69,23 @@ CREATE TABLE UM_USER_ATTRIBUTES
   FOREIGN KEY (USER_ID) REFERENCES UM_USER (ID) ON DELETE CASCADE
 );
 
+CREATE TABLE UM_PASSWORD
+(
+  ID                INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  PASSWORD          VARCHAR(88)                        NOT NULL,
+  USER_UNIQUE_ID    VARCHAR(64)                        NOT NULL,
+  IDENTITY_STORE_ID VARCHAR(255)                       NOT NULL
+);
+
 CREATE TABLE UM_PASSWORD_INFO
 (
-  ID            INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  USER_ID       INTEGER                            NOT NULL,
-  PASSWORD_SALT VARCHAR(64)                        NOT NULL,
-  HASH_ALGO     VARCHAR(128)                       NOT NULL,
-  FOREIGN KEY (USER_ID) REFERENCES UM_USER (ID) ON DELETE CASCADE
+  ID                INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  PASSWORD_SALT     VARCHAR(64)                        NOT NULL,
+  HASH_ALGO         VARCHAR(128)                       NOT NULL,
+  ITERATION_COUNT   INT,
+  KEY_LENGTH        INT,
+  USER_UNIQUE_ID    VARCHAR(64)                        NOT NULL,
+  IDENTITY_STORE_ID VARCHAR(255)                       NOT NULL
 );
 
 CREATE TABLE UM_USER_ROLE
