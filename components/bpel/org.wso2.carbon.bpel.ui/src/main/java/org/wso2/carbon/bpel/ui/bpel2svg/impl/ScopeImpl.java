@@ -798,10 +798,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         group.appendChild(getSubActivitiesSVGString(doc));
         //Get the end icon definition of the activity
         group.appendChild(getEndImageDefinition(doc));
-
         //Get the arrow flows of the subActivities inside the Scope composite activity
         group.appendChild(getArrows(doc));
-
         return group;
     }
 

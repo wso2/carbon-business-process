@@ -99,11 +99,8 @@ public class UserService {
                 }
                 long count = BPMNOSGIService.getHistoryService()
                         .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().count();
-                if (count == 0) {
-                    userInfo.setTaskCount(0);
-                } else {
-                    userInfo.setTaskCount(count);
-                }
+
+                userInfo.setTaskCount(count);
                 listOfUsers.add(userInfo);
             }
             response.setData(listOfUsers);
@@ -142,8 +139,7 @@ public class UserService {
                 long count = BPMNOSGIService.getHistoryService()
                         .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().count();
                 if (count == 0) {
-                    double avgTime = 0;
-                    userInfo.setAvgTimeDuration(avgTime);
+                    userInfo.setAvgTimeDuration(0);
                 } else {
                     List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
                             .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(assignee).finished().list();
