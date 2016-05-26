@@ -10,6 +10,7 @@ import org.activiti.engine.runtime.Execution;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
@@ -21,6 +22,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -340,10 +344,22 @@ public class ExecutionService  extends BaseExecutionService {
 
         RestVariable restVariable = null;
 
-        try {
-            restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
-        } catch (Exception e) {
-            throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
+            try {
+                restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
+            } catch (Exception e) {
+                throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+            }
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
+            JAXBContext jaxbContext;
+            try {
+                jaxbContext = JAXBContext.newInstance(RestVariable.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(httpServletRequest.getInputStream());
+
+            } catch (JAXBException | IOException e) {
+                throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a RestVariable instance.", e);
+            }
         }
 
         if (restVariable == null) {
