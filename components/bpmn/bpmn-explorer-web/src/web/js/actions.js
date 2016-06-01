@@ -83,13 +83,8 @@ $(document).ready(function () {
     });
 });
 
-<<<<<<< HEAD
-function displayAttachmentData(id) {
-    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
-=======
 function displayAttachmentData(id){
     window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id ;
->>>>>>> e18415e88229eee5189d52b6c58b3a70591abb83
 }
 
 function completeTask(data, id) {
