@@ -24,7 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
+import org.wso2.carbon.bpmn.core.internal.mapper.SubstitutesMapper;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
+import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
 import java.util.List;
 
@@ -152,6 +154,24 @@ public class ActivitiDAO {
 	    if(log.isDebugEnabled()) {
 		    log.debug("deleteDeploymentMetaDataModel" + rowCount);
 	    }
+
+        return rowCount;
+    }
+
+    public int insertSubstitute(final SubstitutesDataModel substitutesDataModel){
+
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.insertSubstitute(substitutesDataModel);
+                    }
+                };
+
+        Integer rowCount = managementService.executeCustomSql(customSqlExecution);
+
+        if(log.isDebugEnabled()) {
+            log.debug("insertDeploymentMetaDataModel" + rowCount);
+        }
 
         return rowCount;
     }
