@@ -33,7 +33,7 @@ permissions:
   actions: ""
  -
   type: "javax.security.auth.AuthPermission"
-  name: "getSubject"
+  name: "getUserName"
   actions: ""
  -
   type: "java.lang.RuntimePermission"
@@ -131,4 +131,11 @@ permissions:
   type: "java.lang.RuntimePermission"
   name: "accessClassInPackage.sun.reflect.generics.reflectiveObjects"
   actions: ""
-  
+ -
+  type: "javax.security.auth.AuthPermission"
+  name: "createLoginConfiguration.JavaLoginConfig"
+  actions: ""
+ -
+  type: "java.lang.RuntimePermission"
+  name: "getenv.METRICS_ENABLED"
+  actions: ""

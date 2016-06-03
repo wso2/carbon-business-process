@@ -123,24 +123,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>clean_target</id>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <tasks>
-                                <delete dir="${project.build.directory}/database"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
                 <version>${maven.sql.plugin.version}</version>
@@ -192,6 +174,18 @@
                                 <delete dir="src/main/resources"/>
                                 <delete dir="src/main"/>
                                 <delete dir="src"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>clean_initial</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${project.build.directory}/database"/>
                             </tasks>
                         </configuration>
                         <goals>

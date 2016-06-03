@@ -1,12 +1,9 @@
 enableCache: true
 credentialStore:
- enableCache: true
  connector: "#JDBCCS1"
 identityStore:
- enableCache: true
  connector: "#JDBCIS1"
 authorizationStore:
- enableCache: true
  connector: "#JDBCAS1"
 
 storeConnectors:
@@ -15,9 +12,7 @@ storeConnectors:
   connectorType: "JDBCCredentialStore"
   properties:
    dataSource: "WSO2_CARBON_DB"
-   hashAlgorithm: "SHA256"
-   iterationCount: 256000
-   keyLength: 512
+   hashAlgorithm: "SHA-256"
    databaseType: "MySQL"
  -
   name: "JDBCIS1"

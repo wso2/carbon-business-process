@@ -73,6 +73,10 @@ public class BasicServerConfigurationUtil {
                 .groupId("org.wso2.carbon.security.userstore")
                 .artifactId("org.wso2.carbon.security.userstore.jdbc")
                 .versionAsInProject());
+        optionList.add(mavenBundle()
+                .groupId("org.wso2.carbon.caching")
+                .artifactId("org.wso2.carbon.caching")
+                .versionAsInProject());
         // Activiti Dependencies.
         optionList.addAll(createActivitiDependenciesConfiguration());
         // DataSource dependencies.

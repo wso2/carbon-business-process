@@ -83,6 +83,11 @@
             <artifactId>org.wso2.carbon.security.userstore.jdbc</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.caching</groupId>
+            <artifactId>org.wso2.carbon.caching</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Pax Exam Dependencies-->
         <dependency>
