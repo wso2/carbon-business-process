@@ -16,7 +16,9 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RuntimeService;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -33,13 +35,19 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
+import org.wso2.carbon.deployment.engine.Artifact;
+import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
-
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import javax.naming.Context;
 import javax.naming.NamingException;
+
 
 /**
  * BPMN Service Component.
@@ -144,8 +152,55 @@ public class BPMNServiceComponent {
                     .initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
             dataSourceHandler.closeDataSource();
 
+           /* BPMNDeployer customDeployer = new BPMNDeployer();
+            customDeployer.init();
+
+            File userArtifact = new File("/home/natasha/Downloads/RestCaller.bar");
+            Artifact artifact = new Artifact(userArtifact);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("RestCaller.bar");
+            artifact.setType(artifactType);
+            customDeployer.deploy(artifact);
+
+            log.info("Artifact Deployed");
+
+            ProcessEngine eng = bpmnEngineService.getProcessEngine();
+            RuntimeService runtimeService = eng.getRuntimeService();
+
+            runtimeService.startProcessInstanceByKey("restProcess");
+            log.info("Process Instance started");*/
+
+            BPMNDeployer customDeployer = new BPMNDeployer();
+            customDeployer.init();
+            File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
+            Artifact artifact = new Artifact(ab);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("SoapInvoker.bar");
+            artifact.setType(artifactType);
+            customDeployer.deploy(artifact);
+            log.info("Artifact Deployed");
+
+            ProcessEngine eng = bpmnEngineService.getProcessEngine();
+            RuntimeService runtimeService = eng.getRuntimeService();
+
+            Map<String, Object> taskVariables = new HashMap<>();
+            taskVariables.put("serviceURL", "http://10.100.4.192:9763/services/HelloService");
+            taskVariables.put("payload" , "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>\" +\n" +
+                    "                \"<TestPart>Hello</TestPart></ns1:hello>");
+            taskVariables.put("headers", "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>" +
+                    "<TestPart>HEADER11</TestPart></ns1:hello>");
+            taskVariables.put("soapVersion" , "soap11");
+            taskVariables.put("httpConnection", "");
+            taskVariables.put("httpTransferEncoding" , "");
+            runtimeService.startProcessInstanceByKey("soapprocess", taskVariables);
+
+            log.info("Process Instance started");
+
+
+
+
         } catch (Throwable t) {
-            log.error("Error initializing bpmn component " + t);
+            log.error("Error initializing bpmn component ", t);
         }
     }
 
