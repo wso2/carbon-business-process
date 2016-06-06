@@ -29,7 +29,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNConflictException;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
@@ -101,7 +101,7 @@ public class BaseProcessInstanceService {
     }
 
     protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().
                 processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
@@ -113,7 +113,7 @@ public class BaseProcessInstanceService {
     }
 
     protected Execution getExecutionInstanceFromRequest(String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         Execution execution =
                 runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
                         .singleResult();
@@ -132,7 +132,7 @@ public class BaseProcessInstanceService {
                     processInstance.getId() + "' is already active.");
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response = new RestResponseFactory()
@@ -151,7 +151,7 @@ public class BaseProcessInstanceService {
                     processInstance.getId() + "' is already suspended.");
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         runtimeService.suspendProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response =
@@ -165,7 +165,7 @@ public class BaseProcessInstanceService {
     protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest,
                                             Map<String, String> requestParams, String baseName) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
         // Populate query based on request
@@ -400,7 +400,7 @@ public class BaseProcessInstanceService {
 
     protected IdentityLink getIdentityLink(String identityId, String type,
                                            String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         // Perhaps it would be better to offer getting a single identity link from the API
         List<IdentityLink> allLinks =
                 runtimeService.getIdentityLinksForProcessInstance(processInstanceId);

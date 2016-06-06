@@ -30,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
+import org.wso2.carbon.bpmn.rest.BPMNRestService;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
@@ -37,13 +38,13 @@ import org.wso2.carbon.security.caas.user.core.service.RealmService;
 /**
  *
  */
-public class BPMNOSGIService {
+public class BPMNRestServiceImpl implements BPMNRestService {
 
-    public static RepositoryService getRepositoryService() {
+    public RepositoryService getRepositoryService() {
         return getBPMNEngineService().getProcessEngine().getRepositoryService();
     }
 
-    public static BPMNEngineService getBPMNEngineService() {
+    public BPMNEngineService getBPMNEngineService() {
         BPMNEngineService bpmnEngineService =
                 RestServiceContentHolder.getInstance().getBpmnEngineService();
 
@@ -53,7 +54,7 @@ public class BPMNOSGIService {
         return bpmnEngineService;
     }
 
-    public static RuntimeService getRumtimeService() {
+    public RuntimeService getRumtimeService() {
 
         RuntimeService runtimeService = null;
 
@@ -67,7 +68,7 @@ public class BPMNOSGIService {
         return runtimeService;
     }
 
-    public static HistoryService getHistoryService() {
+    public HistoryService getHistoryService() {
 
         HistoryService historyService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
@@ -79,7 +80,7 @@ public class BPMNOSGIService {
         return historyService;
     }
 
-    public static TaskService getTaskService() {
+    public TaskService getTaskService() {
 
         TaskService taskService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
@@ -92,7 +93,7 @@ public class BPMNOSGIService {
         return taskService;
     }
 
-    public static ProcessEngineConfiguration getProcessEngineConfiguration() {
+    public ProcessEngineConfiguration getProcessEngineConfiguration() {
 
         ProcessEngineConfiguration processEngineConfiguration = null;
 
@@ -109,7 +110,7 @@ public class BPMNOSGIService {
         return processEngineConfiguration;
     }
 
-    public static FormService getFormService() {
+    public FormService getFormService() {
 
         FormService formService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
@@ -122,7 +123,7 @@ public class BPMNOSGIService {
         return formService;
     }
 
-    public static IdentityService getIdentityService() {
+    public IdentityService getIdentityService() {
 
         IdentityService identityService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
@@ -136,15 +137,15 @@ public class BPMNOSGIService {
     }
 
 
-    public static RealmService getUserRealm() {
+    public RealmService getUserRealm() {
         return getBPMNEngineService().getCarbonRealmService();
     }
 
-    public static ManagementService getManagementService() {
+    public ManagementService getManagementService() {
         return getBPMNEngineService().getProcessEngine().getManagementService();
     }
 
-    public static BPSGroupIdentityManager getGroupIdentityManager() {
+    public BPSGroupIdentityManager getGroupIdentityManager() {
 
         ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().
                 getProcessEngine();

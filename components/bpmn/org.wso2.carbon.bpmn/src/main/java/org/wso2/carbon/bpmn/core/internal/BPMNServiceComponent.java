@@ -46,8 +46,8 @@ import javax.naming.NamingException;
  */
 
 @Component(
-        name = "org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent",
-        service = BPMNEngineService.class,
+        name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+        service = BPMNEngineServiceImpl.class,
         immediate = true)
 
 public class BPMNServiceComponent {

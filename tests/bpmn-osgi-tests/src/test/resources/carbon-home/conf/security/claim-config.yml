@@ -1,4 +1,3 @@
-
 claimManager: "DEFAULT"
 dialectURI: "http://wso2.org/claims"
 claims:

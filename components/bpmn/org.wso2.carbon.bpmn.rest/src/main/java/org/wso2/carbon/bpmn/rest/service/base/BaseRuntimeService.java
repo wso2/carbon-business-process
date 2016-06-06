@@ -18,6 +18,7 @@
 package org.wso2.carbon.bpmn.rest.service.base;
 
 //import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.netty.handler.codec.http.HttpRequest;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -31,7 +32,7 @@ import org.activiti.engine.runtime.ExecutionQuery;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionPaginateList;
@@ -75,9 +76,10 @@ public class BaseRuntimeService {
         allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
     }
 
-    protected RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+    protected RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService()
+            .getRumtimeService();
     //TODO:
-   // protected ObjectMapper objectMapper = new ObjectMapper();
+    // protected ObjectMapper objectMapper = new ObjectMapper();
 
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
                                             Map<String, String> requestParams,
@@ -117,12 +119,12 @@ public class BaseRuntimeService {
         if (queryRequest.getMessageEventSubscriptionName() != null) {
             query.messageEventSubscriptionName(queryRequest.getMessageEventSubscriptionName());
             requestParams.put("messageEventSubscriptionName",
-                              queryRequest.getMessageEventSubscriptionName());
+                    queryRequest.getMessageEventSubscriptionName());
         }
         if (queryRequest.getSignalEventSubscriptionName() != null) {
             query.signalEventSubscriptionName(queryRequest.getSignalEventSubscriptionName());
             requestParams.put("signalEventSubscriptionName",
-                              queryRequest.getSignalEventSubscriptionName());
+                    queryRequest.getSignalEventSubscriptionName());
         }
 
         if (queryRequest.getVariables() != null) {
@@ -150,7 +152,7 @@ public class BaseRuntimeService {
 
         return new ExecutionPaginateList(new RestResponseFactory(), req.getUri())
                 .paginateList(requestParams, queryRequest, query, "processInstanceId",
-                              allowedSortProperties);
+                        allowedSortProperties);
     }
 
     protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables,
@@ -171,10 +173,10 @@ public class BaseRuntimeService {
 
             // A value-only query is only possible using equals-operator
             if (nameLess &&
-                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                    variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
                 throw new ActivitiIllegalArgumentException(
                         "Value-only query (without a variable-name) is only supported when using " +
-                        "'equals' operation.");
+                                "'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
@@ -202,16 +204,16 @@ public class BaseRuntimeService {
                         if (process) {
                             processInstanceQuery
                                     .processVariableValueEqualsIgnoreCase(variable.getName(),
-                                                                          (String) actualValue);
+                                            (String) actualValue);
                         } else {
                             processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
-                                                                               (String) actualValue);
+                                    (String) actualValue);
                         }
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing," +
-                                " but was: " +
-                                actualValue.getClass().getName());
+                                        " but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -230,23 +232,23 @@ public class BaseRuntimeService {
                         if (process) {
                             processInstanceQuery
                                     .processVariableValueNotEqualsIgnoreCase(variable.getName(),
-                                                                             (String) actualValue);
+                                            (String) actualValue);
                         } else {
                             processInstanceQuery
                                     .variableValueNotEqualsIgnoreCase(variable.getName(),
-                                                                      (String) actualValue);
+                                            (String) actualValue);
                         }
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing, " +
-                                "but was: " +
-                                actualValue.getClass().getName());
+                                        "but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
                 default:
                     throw new ActivitiIllegalArgumentException(
                             "Unsupported variable query operation: " +
-                            variable.getVariableOperation());
+                                    variable.getVariableOperation());
             }
         }
     }
@@ -305,7 +307,7 @@ public class BaseRuntimeService {
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
                 .createRestVariables(rawLocalvariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.LOCAL, req.getUri());
+                        RestVariable.RestVariableScope.LOCAL, req.getUri());
 
         for (RestVariable var : localVariables) {
             variableMap.put(var.getName(), var);
@@ -317,7 +319,7 @@ public class BaseRuntimeService {
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory()
                 .createRestVariables(rawVariables, execution.getId(), variableType,
-                                     RestVariable.RestVariableScope.GLOBAL, req.getUri());
+                        RestVariable.RestVariableScope.GLOBAL, req.getUri());
 
         // Overlay global variables over local ones. In case they are present the values are
         // not overridden,
@@ -522,13 +524,13 @@ int variableType) {
         if (isNew && hasVariable) {
             throw new ActivitiException(
                     "Variable '" + name + "' is already present on execution '" +
-                    execution.getId() + "'.");
+                            execution.getId() + "'.");
         }
 
         if (!isNew && !hasVariable) {
             throw new ActivitiObjectNotFoundException(
                     "Execution '" + execution.getId() + "' doesn't have a variable with name: '" +
-                    name + "'.", null);
+                            name + "'.", null);
         }
 
         if (scope == RestVariable.RestVariableScope.LOCAL) {
@@ -548,7 +550,7 @@ int variableType) {
 
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
             if (execution.getParentId() != null &&
-                runtimeService.hasVariable(execution.getParentId(), variableName)) {
+                    runtimeService.hasVariable(execution.getParentId(), variableName)) {
                 variableFound = true;
             }
 
@@ -568,7 +570,7 @@ int variableType) {
 
         if (execution == null) {
             throw new ActivitiObjectNotFoundException("Could not find an execution",
-                                                      Execution.class);
+                    Execution.class);
         }
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
@@ -601,12 +603,12 @@ int variableType) {
 
         if (!variableFound) {
             throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() +
-                                                      "' doesn't have a variable with name: '" +
-                                                      variableName + "'.",
-                                                      VariableInstanceEntity.class);
+                    "' doesn't have a variable with name: '" +
+                    variableName + "'.",
+                    VariableInstanceEntity.class);
         } else {
             return constructRestVariable(variableName, value, variableScope, execution.getId(),
-                                         includeBinary);
+                    includeBinary);
         }
     }
 
@@ -616,8 +618,8 @@ int variableType) {
 
         return new RestResponseFactory()
                 .createRestVariable(variableName, value, variableScope, executionId,
-                                    RestResponseFactory.VARIABLE_EXECUTION, includeBinary,
-                                    req.getUri());
+                        RestResponseFactory.VARIABLE_EXECUTION, includeBinary,
+                        req.getUri());
     }
 
 }

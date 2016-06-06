@@ -29,17 +29,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrlBuilder;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponseCollection;
@@ -79,20 +75,20 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
 
     private static final Logger log = LoggerFactory.getLogger(HistoricTaskInstanceService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
     @Activate
     protected void activate(BundleContext bundleContext) {
@@ -305,7 +301,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     @DELETE
     @Path("/{task-id}")
     public Response deleteTaskInstance(@PathParam("task-id") String taskId) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         historyService.deleteHistoricTaskInstance(taskId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
@@ -315,7 +311,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTaskIdentityLinks(@PathParam("task-id") String taskId,
                                          @Context Request request) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         List<HistoricIdentityLink> identityLinks =
                 historyService.getHistoricIdentityLinksForTask(taskId);
 
@@ -372,7 +368,7 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
     protected RestVariable getVariableFromRequest(boolean includeBinary, String taskId,
                                                   String variableName, String scope,
                                                   String baseContext) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         HistoricTaskInstanceQuery taskQuery =
                 historyService.createHistoricTaskInstanceQuery().taskId(taskId);

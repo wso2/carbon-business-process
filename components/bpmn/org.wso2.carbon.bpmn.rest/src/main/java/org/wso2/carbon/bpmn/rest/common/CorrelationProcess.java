@@ -2,23 +2,24 @@ package org.wso2.carbon.bpmn.rest.common;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
-//import org.activiti.engine.impl.AbstractQuery;
-//import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
-//import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.Response;
+
+//import org.activiti.engine.impl.AbstractQuery;
+//import org.activiti.engine.query.Query;
+//import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
 
 /**
  *
@@ -38,7 +39,7 @@ public class CorrelationProcess {
     public Response getQueryResponse(CorrelationActionRequest correlationActionRequest,
                                      String name) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         String value = correlationActionRequest.getProcessDefinitionId();
@@ -81,7 +82,7 @@ public class CorrelationProcess {
         }
 
         //QueryProperty qp = ALLOWED_SORT_PROPERTIES.get("processInstanceId");
-       // ((AbstractQuery) query).orderBy(qp);
+        // ((AbstractQuery) query).orderBy(qp);
         query.orderByProcessInstanceId();
         query.asc();
 
@@ -113,11 +114,11 @@ public class CorrelationProcess {
             }
             if (correlationActionRequest.getVariables() != null) {
                 runtimeService.signalEventReceived(correlationActionRequest.getSignalName(),
-                                                   execution.getId(),
-                                                   getVariablesToSet(correlationActionRequest));
+                        execution.getId(),
+                        getVariablesToSet(correlationActionRequest));
             } else {
                 runtimeService.signalEventReceived(correlationActionRequest.getSignalName(),
-                                                   execution.getId());
+                        execution.getId());
             }
         } else if (CorrelationActionRequest.ACTION_MESSAGE_EVENT_RECEIVED.equals(action)) {
             if (correlationActionRequest.getMessageName() == null) {
@@ -125,15 +126,15 @@ public class CorrelationProcess {
             }
             if (correlationActionRequest.getVariables() != null) {
                 runtimeService.messageEventReceived(correlationActionRequest.getMessageName(),
-                                                    execution.getId(),
-                                                    getVariablesToSet(correlationActionRequest));
+                        execution.getId(),
+                        getVariablesToSet(correlationActionRequest));
             } else {
                 runtimeService.messageEventReceived(correlationActionRequest.getMessageName(),
-                                                    execution.getId());
+                        execution.getId());
             }
         } else {
             throw new ActivitiIllegalArgumentException("Invalid action: '" +
-                                                       correlationActionRequest.getAction() + "'.");
+                    correlationActionRequest.getAction() + "'.");
         }
 
         Response.ResponseBuilder responseBuilder = Response.ok();
@@ -156,12 +157,12 @@ public class CorrelationProcess {
         for (QueryVariable variable : variables) {
             if (variable.getVariableOperation() == null) {
                 throw new ActivitiIllegalArgumentException("Variable operation is" +
-                                                           " missing for variable: " +
-                                                           variable.getName());
+                        " missing for variable: " +
+                        variable.getName());
             }
             if (variable.getValue() == null) {
                 throw new ActivitiIllegalArgumentException("Variable value is missing " +
-                                                           "for variable: " + variable.getName());
+                        "for variable: " + variable.getName());
             }
 
             boolean nameLess = variable.getName() == null;
@@ -170,10 +171,10 @@ public class CorrelationProcess {
 
             // A value-only query is only possible using equals-operator
             if (nameLess &&
-                variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
+                    variable.getVariableOperation() != QueryVariable.QueryVariableOperation.EQUALS) {
                 throw new ActivitiIllegalArgumentException("Value-only query" +
-                                                           " (without a variable-name) is only " +
-                                                           "supported when using 'equals' operation.");
+                        " (without a variable-name) is only " +
+                        "supported when using 'equals' operation.");
             }
 
             switch (variable.getVariableOperation()) {
@@ -201,16 +202,16 @@ public class CorrelationProcess {
                         if (process) {
                             processInstanceQuery
                                     .processVariableValueEqualsIgnoreCase(variable.getName(),
-                                                                          (String) actualValue);
+                                            (String) actualValue);
                         } else {
                             processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(),
-                                                                               (String) actualValue);
+                                    (String) actualValue);
                         }
                     } else {
                         throw new ActivitiIllegalArgumentException("Only string variable values" +
-                                                                   " are supported when ignoring casing, but was: " +
-                                                                   actualValue.getClass()
-                                                                              .getName());
+                                " are supported when ignoring casing, but was: " +
+                                actualValue.getClass()
+                                        .getName());
                     }
                     break;
 
@@ -229,23 +230,23 @@ public class CorrelationProcess {
                         if (process) {
                             processInstanceQuery
                                     .processVariableValueNotEqualsIgnoreCase(variable.getName(),
-                                                                             (String) actualValue);
+                                            (String) actualValue);
                         } else {
                             processInstanceQuery
                                     .variableValueNotEqualsIgnoreCase(variable.getName(),
-                                                                      (String) actualValue);
+                                            (String) actualValue);
                         }
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are" +
-                                " supported when ignoring casing," +
-                                " but was: " + actualValue.getClass().getName());
+                                        " supported when ignoring casing," +
+                                        " but was: " + actualValue.getClass().getName());
                     }
                     break;
                 default:
                     throw new ActivitiIllegalArgumentException(
                             "Unsupported variable query operation:" +
-                            " " + variable.getVariableOperation());
+                                    " " + variable.getVariableOperation());
             }
         }
     }

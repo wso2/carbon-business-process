@@ -26,7 +26,7 @@
 //import org.osgi.service.component.annotations.Activate;
 //import org.osgi.service.component.annotations.Component;
 //import org.osgi.service.component.annotations.Deactivate;
-//import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+//import org.wso2.carbon.bpmn.rest.common.utils.BPMNRestServiceImpl;
 //import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
 //import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
 //import org.wso2.carbon.bpmn.rest.model.stats.UserTaskCount;
@@ -85,7 +85,7 @@
 //        //TODO:
 //        ResponseHolder response = new ResponseHolder();
 //        //try {
-//        //  users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager()
+//        //  users = (Object[]) BPMNRestServiceImpl.getUserRealm().getUserStoreManager()
 //        //                                    .listUsers("*", -1);
 //        response.setData(Arrays.asList(users));
 //        /*} catch (UserStoreException e) {
@@ -123,7 +123,7 @@
 //            //                } else {
 //            //                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
 //            //                }
-//            long count = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+//            long count = BPMNRestServiceImpl.getHistoryService().createHistoricTaskInstanceQuery()
 //                                        .taskAssignee(assignee).finished().count();
 //            if (count == 0) {
 //                userInfo.setTaskCount(0);
@@ -166,14 +166,14 @@
 //            //                    assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
 //            //                }
 //
-//            long count = BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+//            long count = BPMNRestServiceImpl.getHistoryService().createHistoricTaskInstanceQuery()
 //                                        .taskAssignee(assignee).finished().count();
 //            if (count == 0) {
 //                double avgTime = 0;
 //                userInfo.setAvgTimeDuration(avgTime);
 //            } else {
 //                List<HistoricTaskInstance> taskList =
-//                        BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+//                        BPMNRestServiceImpl.getHistoryService().createHistoricTaskInstanceQuery()
 //                                       .taskAssignee(assignee).finished().list();
 //                double totalTime = 0;
 //                double avgTime = 0;
@@ -206,7 +206,7 @@
 //    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 //    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) {
 //        //TODO:
-//        /*if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
+//        /*if (!(BPMNRestServiceImpl.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
 //            throw new ActivitiObjectNotFoundException("Could not find user with id '" +
 //                                                      assignee + "'.");
 //        }*/
@@ -234,7 +234,7 @@
 //        }
 //        // Get completed tasks
 //        List<HistoricTaskInstance> taskList =
-//                BPMNOSGIService.getHistoryService().createHistoricTaskInstanceQuery()
+//                BPMNRestServiceImpl.getHistoryService().createHistoricTaskInstanceQuery()
 //                               .taskAssignee(taskAssignee).finished().list();
 //        for (HistoricTaskInstance instance : taskList) {
 //            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
@@ -247,7 +247,7 @@
 //        }
 //        // Get active/started tasks
 //        List<Task> taskActive =
-//                BPMNOSGIService.getTaskService().createTaskQuery().taskAssignee(taskAssignee)
+//                BPMNRestServiceImpl.getTaskService().createTaskQuery().taskAssignee(taskAssignee)
 //                               .active().list();
 //        for (Task instance : taskActive) {
 //            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
@@ -257,7 +257,7 @@
 //
 //        // Get suspended tasks
 //        List<Task> taskSuspended =
-//                BPMNOSGIService.getTaskService().createTaskQuery().taskAssignee(taskAssignee)
+//                BPMNRestServiceImpl.getTaskService().createTaskQuery().taskAssignee(taskAssignee)
 //                               .suspended().list();
 //        for (Task instance : taskSuspended) {
 //            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));

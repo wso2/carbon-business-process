@@ -88,8 +88,8 @@
             <artifactId>org.wso2.carbon.security.caas</artifactId>
         </dependency>
         <dependency>
-        <groupId>org.wso2.carbon.security.userstore</groupId>
-        <artifactId>org.wso2.carbon.security.userstore.jdbc</artifactId>
+            <groupId>org.wso2.carbon.security.userstore</groupId>
+            <artifactId>org.wso2.carbon.security.userstore.jdbc</artifactId>
         </dependency>
 
         <!-- Other Dependencies -->
