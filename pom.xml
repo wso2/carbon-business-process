@@ -432,14 +432,14 @@
         <org.osgi.import.version>[1.8.0, 2.0.0)</org.osgi.import.version>
 
         <!-- 2 - Hamming Platform components and their Dependencies  -->
-        <carbon.datasources.version>1.0.0-SNAPSHOT</carbon.datasources.version>
+        <carbon.datasources.version>1.0.0</carbon.datasources.version>
         <carbon.datasources.import.version>[1.0.0,2.0.0)</carbon.datasources.import.version>
-        <carbon.jndi.version>1.0.0-alpha</carbon.jndi.version>
+        <carbon.jndi.version>1.0.0</carbon.jndi.version>
         <carbon.jndi.import.version>[1.0.0,2.0.0)</carbon.jndi.import.version>
         <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
         <carbon.msf4j.impl.version.range>[1.1.0,2.0.0)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
-        <carbon.deployment.version>5.0.0-SNAPSHOT</carbon.deployment.version>
+        <carbon.deployment.version>5.0.0</carbon.deployment.version>
         <carbon.deployment.import.version>[5.0.0,6.0.0)</carbon.deployment.import.version>
         <carbon.messaging.version>1.0.2</carbon.messaging.version>
         <carbon.messaging.import.version>[1.0.2,2.0.0)</carbon.messaging.import.version>
