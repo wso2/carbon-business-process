@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
@@ -146,7 +146,7 @@ public class BaseTaskService {
             }
         }
 
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         // Populate filter-parameters
@@ -514,7 +514,7 @@ public class BaseTaskService {
     }
 
     protected Task getTaskFromRequest(String taskId) {
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
             throw new ActivitiObjectNotFoundException(
@@ -541,7 +541,7 @@ public class BaseTaskService {
 
     protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap,
                                      String baseName) {
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
 
         Map<String, Object> rawVariables = taskService.getVariablesLocal(task.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
@@ -556,7 +556,7 @@ public class BaseTaskService {
     protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap,
                                       String baseName) {
         if (task.getExecutionId() != null) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
             Map<String, Object> rawVariables = runtimeService.getVariables(task.getExecutionId());
             List<RestVariable> globalVariables = new RestResponseFactory()
@@ -581,8 +581,8 @@ public class BaseTaskService {
         boolean variableFound = false;
         Object value = null;
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
-        TaskService taskService = BPMNOSGIService.getTaskService();
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         if (variableScope == null) {
             // First, check local variables (which have precedence when no scope is supplied)
@@ -905,8 +905,8 @@ public class BaseTaskService {
                             "'.", null);
         }
 
-        TaskService taskService = BPMNOSGIService.getTaskService();
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             taskService.setVariableLocal(task.getId(), name, value);
@@ -928,8 +928,8 @@ public class BaseTaskService {
                                          RestVariable.RestVariableScope scope) {
         boolean variableFound = false;
 
-        TaskService taskService = BPMNOSGIService.getTaskService();
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
             if (task.getExecutionId() != null &&
                     runtimeService.hasVariable(task.getExecutionId(), variableName)) {

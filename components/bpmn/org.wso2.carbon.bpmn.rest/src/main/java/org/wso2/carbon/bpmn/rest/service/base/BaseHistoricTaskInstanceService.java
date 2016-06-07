@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.base;
@@ -26,7 +26,7 @@ import org.activiti.engine.impl.HistoricTaskInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
@@ -105,7 +105,7 @@ public class BaseHistoricTaskInstanceService {
         allowedSortProperties
                 .put("taskInstanceId", HistoricTaskInstanceQueryProperty.HISTORIC_TASK_INSTANCE_ID);
         allowedSortProperties.put("processDefinitionId",
-                                  HistoricTaskInstanceQueryProperty.PROCESS_DEFINITION_ID);
+                HistoricTaskInstanceQueryProperty.PROCESS_DEFINITION_ID);
         allowedSortProperties
                 .put("processInstanceId", HistoricTaskInstanceQueryProperty.PROCESS_INSTANCE_ID);
         allowedSortProperties.put("start", HistoricTaskInstanceQueryProperty.START);
@@ -129,7 +129,7 @@ public class BaseHistoricTaskInstanceService {
                                             Map<String, String> allRequestParams,
                                             String serverRootUrl, String baseName) {
 
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
 
         // Populate query based on request
@@ -307,12 +307,12 @@ public class BaseHistoricTaskInstanceService {
         //serverRootUrl was passed before
         return new HistoricTaskInstancePaginateList(restResponseFactory, baseName)
                 .paginateList(allRequestParams, queryRequest, query, "taskInstanceId",
-                              allowedSortProperties);
+                        allowedSortProperties);
     }
 
     protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest,
                                             Map<String, String> allRequestParams, String baseName) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
         // Populate query based on request
@@ -373,7 +373,7 @@ public class BaseHistoricTaskInstanceService {
 
         return new HistoricActivityInstancePaginateList(restResponseFactory, baseName)
                 .paginateList(allRequestParams, queryRequest, query, "startTime",
-                              allowedSortProperties);
+                        allowedSortProperties);
     }
 
     protected void addTaskVariables(HistoricTaskInstanceQuery taskInstanceQuery,
@@ -404,19 +404,19 @@ public class BaseHistoricTaskInstanceService {
 //                    if (nameLess) {
 //                        taskInstanceQuery.taskVariableValueEquals(actualValue);
 //                    } else {
-                        taskInstanceQuery.taskVariableValueEquals(variable.getName(), actualValue);
-                   // }
+                    taskInstanceQuery.taskVariableValueEquals(variable.getName(), actualValue);
+                    // }
                     break;
 
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
                         taskInstanceQuery.taskVariableValueEqualsIgnoreCase(variable.getName(),
-                                                                            (String) actualValue);
+                                (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing," +
-                                " but was: " +
-                                actualValue.getClass().getName());
+                                        " but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -427,12 +427,12 @@ public class BaseHistoricTaskInstanceService {
                 case NOT_EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
                         taskInstanceQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(),
-                                                                               (String) actualValue);
+                                (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing, " +
-                                "but was: " +
-                                actualValue.getClass().getName());
+                                        "but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -461,13 +461,13 @@ public class BaseHistoricTaskInstanceService {
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported using like, but was: " +
-                                actualValue.getClass().getName());
+                                        actualValue.getClass().getName());
                     }
                     break;
                 default:
                     throw new ActivitiIllegalArgumentException(
                             "Unsupported variable query operation: " +
-                            variable.getVariableOperation());
+                                    variable.getVariableOperation());
             }
         }
     }
@@ -503,12 +503,12 @@ public class BaseHistoricTaskInstanceService {
                 case EQUALS_IGNORE_CASE:
                     if (actualValue instanceof String) {
                         taskInstanceQuery.processVariableValueEqualsIgnoreCase(variable.getName(),
-                                                                               (String) actualValue);
+                                (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing," +
-                                " but was: " +
-                                actualValue.getClass().getName());
+                                        " but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -521,12 +521,12 @@ public class BaseHistoricTaskInstanceService {
                     if (actualValue instanceof String) {
                         taskInstanceQuery
                                 .processVariableValueNotEqualsIgnoreCase(variable.getName(),
-                                                                         (String) actualValue);
+                                        (String) actualValue);
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported when ignoring casing," +
-                                " but was: " +
-                                actualValue.getClass().getName());
+                                        " but was: " +
+                                        actualValue.getClass().getName());
                     }
                     break;
 
@@ -537,7 +537,7 @@ public class BaseHistoricTaskInstanceService {
 
                 case GREATER_THAN_OR_EQUALS:
                     taskInstanceQuery.processVariableValueGreaterThanOrEqual(variable.getName(),
-                                                                             actualValue);
+                            actualValue);
                     break;
 
                 case LESS_THAN:
@@ -556,19 +556,19 @@ public class BaseHistoricTaskInstanceService {
                     } else {
                         throw new ActivitiIllegalArgumentException(
                                 "Only string variable values are supported using like, but was: " +
-                                actualValue.getClass().getName());
+                                        actualValue.getClass().getName());
                     }
                     break;
                 default:
                     throw new ActivitiIllegalArgumentException(
                             "Unsupported variable query operation: " +
-                            variable.getVariableOperation());
+                                    variable.getVariableOperation());
             }
         }
     }
 
     protected HistoricTaskInstance getHistoricTaskInstanceFromRequest(String taskId) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricTaskInstance taskInstance =
                 historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         if (taskInstance == null) {

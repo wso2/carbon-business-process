@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.db.DataSourceHandler;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
+import org.wso2.carbon.bpmn.core.config.ProcessEngineConfiguration;
+import org.wso2.carbon.bpmn.core.config.YamlBasedProcessEngineConfigurationFactory;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
@@ -54,8 +54,8 @@ import javax.naming.NamingException;
  */
 
 @Component(
-        name = "org.wso2.carbon.bpmn.core.internal.BPMNServiceComponent",
-        service = BPMNEngineService.class,
+        name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+        service = BPMNEngineServiceImpl.class,
         immediate = true)
 
 public class BPMNServiceComponent {
@@ -66,7 +66,7 @@ public class BPMNServiceComponent {
     private JNDIContextManager jndiContextManager;
     private BundleContext bundleContext;
 
-  //  Set CarbonRealmService
+    //  Set CarbonRealmService
     @Reference(
             name = "org.wso2.carbon.security.CarbonRealmServiceImpl",
             service = RealmService.class,
@@ -76,7 +76,7 @@ public class BPMNServiceComponent {
     )
     public void registerCarbonRealm(RealmService carbonRealmService) {
         log.info("register CarbonRealmService...");
-        IdentityDataHolder.getInstance().registerCarbonRealmService(carbonRealmService);
+        BPMNServerHolder.getInstance().registerCarbonRealmService(carbonRealmService);
     }
 
     public void unregisterCarbonRealm(RealmService carbonRealmService) {
@@ -138,19 +138,28 @@ public class BPMNServiceComponent {
             this.bundleContext = ctxt.getBundleContext();
             registerJNDIContextForActiviti();
             BPMNServerHolder holder = BPMNServerHolder.getInstance();
+
+            // Reading Process engine configuration.
+            YamlBasedProcessEngineConfigurationFactory yamlBasedProcessEngineConfigurationFactory = new
+                    YamlBasedProcessEngineConfigurationFactory();
+            ProcessEngineConfiguration processEngineConfiguration =
+                    yamlBasedProcessEngineConfigurationFactory.getProcessEngineConfiguration();
+            holder.setProcessEngineConfiguration(processEngineConfiguration);
+
             ActivitiEngineBuilder.getInstance();
             holder.setEngine(ActivitiEngineBuilder.getInstance().buildEngine());
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService
                     .setProcessEngine(ActivitiEngineBuilder.getInstance().getProcessEngine());
-            bpmnEngineService.setCarbonRealmService(IdentityDataHolder.getInstance().getCarbonRealmService());
+            bpmnEngineService.setCarbonRealmService(holder.getInstance().getCarbonRealmService());
             bundleContext
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
+
             // Create metadata table for deployments
-            DataSourceHandler dataSourceHandler = new DataSourceHandler();
-            dataSourceHandler
-                    .initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
-            dataSourceHandler.closeDataSource();
+//            DataSourceHandler dataSourceHandler = new DataSourceHandler();
+//            dataSourceHandler
+//                    .initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
+//            dataSourceHandler.closeDataSource();
 
            /* BPMNDeployer customDeployer = new BPMNDeployer();
             customDeployer.init();

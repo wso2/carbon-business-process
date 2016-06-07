@@ -1,17 +1,17 @@
 /**
- *  Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.bpmn.rest.service.base;
@@ -21,7 +21,7 @@ import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.HistoricDetailQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailPaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
@@ -68,7 +68,7 @@ public class BaseHistoricDetailService {
 
     protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest,
                                             Map<String, String> allRequestParams, String baseName) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
         // Populate query based on request
@@ -97,6 +97,6 @@ public class BaseHistoricDetailService {
 
         return new HistoricDetailPaginateList(new RestResponseFactory(), baseName)
                 .paginateList(allRequestParams, queryRequest, query, "processInstanceId",
-                              ALLOWED_SORT_PROPERTIES);
+                        ALLOWED_SORT_PROPERTIES);
     }
 }

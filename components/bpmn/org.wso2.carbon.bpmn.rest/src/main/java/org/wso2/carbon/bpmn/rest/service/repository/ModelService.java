@@ -25,14 +25,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelsPaginateList;
@@ -67,20 +63,20 @@ public class ModelService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(ModelService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
 
     static {
@@ -131,7 +127,8 @@ public class ModelService implements Microservice {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getModels(@Context Request request) {
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
 
         // Apply filters
         Map<String, String> allRequestParams = new HashMap<>();

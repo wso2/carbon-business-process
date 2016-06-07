@@ -21,7 +21,7 @@ import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequest;
@@ -142,7 +142,7 @@ public class BaseHistoricActivitiInstanceService {
 
     protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest,
                                             Map<String, String> allRequestParams, String baseName) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
         // Populate query based on request

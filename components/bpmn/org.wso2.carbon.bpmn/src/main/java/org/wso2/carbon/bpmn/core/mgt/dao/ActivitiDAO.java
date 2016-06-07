@@ -22,7 +22,7 @@ import org.activiti.engine.impl.cmd.AbstractCustomSqlExecution;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 

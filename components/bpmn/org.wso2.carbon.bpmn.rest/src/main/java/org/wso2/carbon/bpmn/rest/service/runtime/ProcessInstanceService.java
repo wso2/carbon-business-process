@@ -45,19 +45,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
@@ -67,7 +63,6 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
-//import org.wso2.carbon.kernel.context.CarbonContext;
 import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
@@ -75,7 +70,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
-//import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -96,6 +90,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+//import org.wso2.carbon.kernel.context.CarbonContext;
+//import java.security.Principal;
 
 //import org.activiti.engine.ProcessEngine;
 //import org.activiti.engine.identity.Group;
@@ -127,20 +124,20 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
     private static final Logger log = LoggerFactory.getLogger(ProcessInstanceService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
     @Activate
     protected void activate(BundleContext bundleContext) {
@@ -291,7 +288,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             }
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         ProcessInstanceResponse processInstanceResponse;
         // Actually start the instance based on key or id
@@ -325,7 +322,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                 }
             }
 
-            HistoryService historyService = BPMNOSGIService.getHistoryService();
+            HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
 
             if (processInstanceCreateRequest.getReturnVariables()) {
                 Map<String, Object> runtimeVariableMap = null;
@@ -361,19 +358,21 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             @PathParam("process-instance-id") String processInstanceId) {
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         ProcessDefinition pde =
                 repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
         if (pde != null && pde.hasGraphicalNotation()) {
             BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
             ProcessEngineConfiguration processEngineConfiguration =
-                    BPMNOSGIService.getProcessEngineConfiguration();
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+                    RestServiceContentHolder.getInstance().getRestService().getProcessEngineConfiguration();
+            RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
             ProcessDiagramGenerator diagramGenerator =
                     processEngineConfiguration.getProcessDiagramGenerator();
-            InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService
+
+            try (InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService
                             .getActiveActivityIds(
                                     processInstance
                                             .getId()),
@@ -383,9 +382,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                     processEngineConfiguration
                             .getLabelFontName(),
                     processEngineConfiguration
-                            .getClassLoader(), 1.0);
-
-            try {
+                            .getClassLoader(), 1.0)) {
                 return Response.ok().type("image/png").entity(IOUtils.toByteArray(resource))
                         .build();
             } catch (Exception e) {
@@ -420,7 +417,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             @PathParam("process-instance-id") String processInstanceId,
             @DefaultValue("") @QueryParam("deleteReason") String deleteReason) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
         runtimeService.deleteProcessInstance(processInstance.getId(), deleteReason);
@@ -456,7 +453,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
     public List<RestIdentityLink> getIdentityLinks(
             @PathParam("process-instance-id") String processInstanceId,
             @Context Request request) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         return new RestResponseFactory().createRestIdentityLinks(
                 runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()),
@@ -485,7 +482,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             throw new ActivitiIllegalArgumentException("The identity link type is required.");
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         runtimeService.addUserIdentityLink(processInstance.getId(), identityLink.getUser(),
                 identityLink.getType());
 
@@ -526,7 +523,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         validateIdentityLinkArguments(identityId, type);
 
         getIdentityLink(identityId, type, processInstance.getId());
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         runtimeService.deleteUserIdentityLink(processInstance.getId(), identityId, type);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
@@ -756,7 +753,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                     VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.removeVariableLocal(execution.getId(), variableName);
@@ -941,7 +938,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 //        }
 //
 //        if (!variablesToSet.isEmpty()) {
-//            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+//            RuntimeService runtimeService = BPMNRestServiceImpl.getRumtimeService();
 //
 //            if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
 //                runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
@@ -1178,7 +1175,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                             name + "'.", null);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.setVariableLocal(execution.getId(), name, value);
         } else {
@@ -1197,7 +1194,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
             log.debug("invoked hasVariableOnScope" + scope);
         }
         boolean variableFound = false;
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
 
@@ -1237,7 +1234,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                     Execution.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
@@ -1305,7 +1302,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
     protected void addLocalVariables(Execution execution, int variableType,
                                      Map<String, RestVariable> variableMap, String baseContext) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory()
                 .createRestVariables(rawLocalvariables, execution.getId(), variableType,
@@ -1318,7 +1315,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
     protected void addGlobalVariables(Execution execution, int variableType,
                                       Map<String, RestVariable> variableMap, String baseContext) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory()
                 .createRestVariables(rawVariables, execution.getId(), variableType,
@@ -1349,14 +1346,16 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
         //check whether the users/groups exist
         String processDefinitionId = processInstanceCreateRequest.getProcessDefinitionId();
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
 
         if (processDefinitionId == null) {
 
             final String processDefinitionKey = processInstanceCreateRequest.getProcessDefinitionKey();
             final String tenantId = processInstanceCreateRequest.getTenantId();
 
-            ProcessEngine processEngine = BPMNOSGIService.getBPMNEngineService().getProcessEngine();
+            ProcessEngine processEngine = RestServiceContentHolder.getInstance().getRestService()
+                    .getBPMNEngineService().getProcessEngine();
 
             if (processEngine != null) {
 
@@ -1430,7 +1429,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
         //todo: remove test value
         String userName = "admin";
 
-        BPSGroupIdentityManager bpsGroupIdentityManager = BPMNOSGIService.getGroupIdentityManager();
+        BPSGroupIdentityManager bpsGroupIdentityManager = RestServiceContentHolder.getInstance().getRestService()
+                .getGroupIdentityManager();
         List<Group> groupList = bpsGroupIdentityManager.findGroupsByUser(userName);
         List<IdentityLink> identityLinkList = repositoryService.getIdentityLinksForProcessDefinition
                 (processDefinitionId);

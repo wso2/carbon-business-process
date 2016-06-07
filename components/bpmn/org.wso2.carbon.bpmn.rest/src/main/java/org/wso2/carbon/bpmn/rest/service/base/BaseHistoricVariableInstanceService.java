@@ -23,7 +23,7 @@ import org.activiti.engine.impl.HistoricVariableInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstancePaginateList;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
@@ -65,7 +65,7 @@ public class BaseHistoricVariableInstanceService {
 
     protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest,
                                             Map<String, String> allRequestParams, String baseName) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
         // Populate query based on request

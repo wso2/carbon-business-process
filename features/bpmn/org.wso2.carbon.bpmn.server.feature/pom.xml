@@ -210,7 +210,7 @@
                                     <directory>resources</directory>
                                     <includes>
                                         <include>conf/datasources/activiti-datasources.xml</include>
-                                        <include>conf/activiti.xml</include>
+                                        <include>conf/bpmn.yml</include>
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
                                     </includes>

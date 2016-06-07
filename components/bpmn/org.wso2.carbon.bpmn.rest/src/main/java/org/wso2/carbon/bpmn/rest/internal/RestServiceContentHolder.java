@@ -16,6 +16,7 @@
 package org.wso2.carbon.bpmn.rest.internal;
 
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.rest.BPMNRestService;
 
 /**
  * BPMN Rest Content holder.
@@ -24,6 +25,7 @@ public class RestServiceContentHolder {
 
     private static volatile RestServiceContentHolder instance;
     private BPMNEngineService engineService;
+    private BPMNRestService restService;
 
     private RestServiceContentHolder() {
         engineService = null;
@@ -60,4 +62,11 @@ public class RestServiceContentHolder {
     }
 
 
+    public BPMNRestService getRestService() {
+        return restService;
+    }
+
+    protected void setRestService(BPMNRestService restService) {
+        this.restService = restService;
+    }
 }

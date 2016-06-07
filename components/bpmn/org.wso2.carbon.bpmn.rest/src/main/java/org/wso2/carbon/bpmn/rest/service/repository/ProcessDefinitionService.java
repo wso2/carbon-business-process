@@ -33,16 +33,12 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
@@ -79,20 +75,20 @@ public class ProcessDefinitionService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(ProcessDefinitionService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
     static {
         properties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
@@ -140,7 +136,8 @@ public class ProcessDefinitionService implements Microservice {
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefinitions(@Context Request request) {
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
         ProcessDefinitionQuery processDefinitionQuery =
@@ -246,7 +243,8 @@ public class ProcessDefinitionService implements Microservice {
     public Response getProcessDefinitionResource(
             @PathParam("process-definition-id") String processDefinitionId) {
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         String resourceID = processDefinition.getResourceName();
         String contentType = Utils.resolveContentType(processDefinition.getResourceName());
@@ -261,7 +259,8 @@ public class ProcessDefinitionService implements Microservice {
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                      @Context Request request) {
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
         return Response.ok().entity(new RestResponseFactory().createRestIdentityLinks(
@@ -280,7 +279,8 @@ public class ProcessDefinitionService implements Microservice {
         ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
         validateIdentityLinkArguments(family, identityId);
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
 
         // Check if identitylink to get exists
         IdentityLink link =
@@ -291,7 +291,8 @@ public class ProcessDefinitionService implements Microservice {
 
     private ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         ProcessDefinition processDefinition =
                 repositoryService.getProcessDefinition(processDefinitionId);
 
@@ -325,10 +326,9 @@ public class ProcessDefinitionService implements Microservice {
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceList.contains(resourceId)) {
-            final InputStream resourceStream =
-                    repositoryService.getResourceAsStream(deploymentId, resourceId);
 
-            try {
+            try (final InputStream resourceStream =
+                         repositoryService.getResourceAsStream(deploymentId, resourceId)) {
                 return IOUtils.toByteArray(resourceStream);
             } catch (Exception e) {
                 throw new ActivitiException("Error converting resource stream", e);

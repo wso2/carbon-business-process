@@ -23,7 +23,7 @@ import java.io.File;
 
 public class BPMNConstants {
 
-    public static final String ACTIVITI_CONFIGURATION_FILE_NAME = "activiti.xml";
+    public static final String BPMN_YAML_CONFIGURATION_FILE_NAME = "bpmn.yml";
     public static final String LATEST_CHECKSUM_PROPERTY = "latestChecksum";
     public static final String BPMN_REGISTRY_PATH = "/bpmn/deployments";
     public static final String REGISTRY_PATH_SEPARATOR = "/";

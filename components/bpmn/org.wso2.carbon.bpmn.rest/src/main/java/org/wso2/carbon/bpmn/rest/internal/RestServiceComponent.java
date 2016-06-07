@@ -20,6 +20,7 @@
 package org.wso2.carbon.bpmn.rest.internal;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -29,16 +30,19 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.rest.BPMNRestService;
 
 /**
  * Rest component lookup for bpmnEngineService
  */
 @Component(
-        name = "org.wso2.carbon.bpmn.rest.common.utils.RestServiceLookupComponent",
-        service = RestServiceContentHolder.class,
+        name = "org.wso2.carbon.bpmn.rest.BPMNRestService",
+        service = BPMNRestService.class,
         immediate = true)
 
 public class RestServiceComponent {
+
+    private BundleContext bundleContext;
 
     private static final Logger log = LoggerFactory.getLogger(RestServiceComponent.class);
 
@@ -58,8 +62,12 @@ public class RestServiceComponent {
     }
 
     @Activate
-    protected void activate(BundleContext bundleContext) {
-        log.info("Activated BPMN Rest Service Component.r");
+    protected void activate(ComponentContext ctxt) {
+        this.bundleContext = ctxt.getBundleContext();
+        RestServiceContentHolder restServiceContentHolder = RestServiceContentHolder.getInstance();
+        BPMNRestServiceImpl restService = new BPMNRestServiceImpl();
+        restServiceContentHolder.setRestService(restService);
+        log.info("Activated BPMN Rest Service Component.");
     }
 
     @Deactivate

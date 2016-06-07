@@ -30,15 +30,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.DeploymentResourceResponseCollection;
@@ -74,24 +70,23 @@ public class DeploymentService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(DeploymentService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
-
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
+    private static final List<String> allPropertiesList = new ArrayList<>();
     private static Map<String, QueryProperty> allowedSortProperties =
             new HashMap<String, QueryProperty>();
-    private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
         allPropertiesList.add("name");
@@ -129,7 +124,8 @@ public class DeploymentService implements Microservice {
     @Path("/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeployments(@Context Request request) {
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
         // Apply filters
@@ -207,7 +203,8 @@ public class DeploymentService implements Microservice {
     public Response getDeployment(@PathParam("deployment-id") String deploymentId,
                                   @Context Request request) {
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         Deployment deployment =
                 repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
 
@@ -232,7 +229,8 @@ public class DeploymentService implements Microservice {
         if (log.isDebugEnabled()) {
             log.debug("deployment-id:" + deploymentId + " resource-path:" + resourcePath);
         }
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         // Check if deployment exists
         Deployment deployment =
                 repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
@@ -267,7 +265,8 @@ public class DeploymentService implements Microservice {
     public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId,
                                            @Context Request request) {
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         // Check if deployment exists
         Deployment deployment =
                 repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
@@ -304,7 +303,8 @@ public class DeploymentService implements Microservice {
             throw new ActivitiIllegalArgumentException("No resource id provided");
         }
 
-        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
+                .getRepositoryService();
         // Check if deployment exists
         Deployment deployment =
                 repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
@@ -317,9 +317,9 @@ public class DeploymentService implements Microservice {
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceList.contains(resourceId)) {
-            final InputStream resourceStream =
-                    repositoryService.getResourceAsStream(deploymentId, resourceId);
-            try {
+
+            try (final InputStream resourceStream =
+                         repositoryService.getResourceAsStream(deploymentId, resourceId)) {
                 return IOUtils.toByteArray(resourceStream);
             } catch (Exception e) {
                 throw new ActivitiException("Error converting resource stream", e);

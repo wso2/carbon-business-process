@@ -26,15 +26,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ActiveActivityCollection;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
@@ -81,20 +77,20 @@ public class ExecutionService extends BaseExecutionService implements Microservi
 
     private static final Logger log = LoggerFactory.getLogger(ExecutionService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
 
     @Activate
@@ -140,7 +136,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
                                            @Context Request request) {
 
         Execution execution = getExecutionFromRequest(executionId);
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
             if (actionRequest.getVariables() != null) {
@@ -199,7 +195,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getActiveActivities(@PathParam("execution-id") String executionId) {
         Execution execution = getExecutionFromRequest(executionId);
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         List<String> activityIdList = runtimeService.getActiveActivityIds(execution.getId());
         ActiveActivityCollection activeActivityCollection = new ActiveActivityCollection();
@@ -342,7 +338,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
         if (actionRequest.getSignalName() == null) {
             throw new ActivitiIllegalArgumentException("Signal name is required.");
         }
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
 
         if (actionRequest.getVariables() != null) {
             runtimeService.signalEventReceived(actionRequest.getSignalName(),
@@ -516,7 +512,7 @@ public class ExecutionService extends BaseExecutionService implements Microservi
                     VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = RestServiceContentHolder.getInstance().getRestService().getRumtimeService();
         if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.removeVariableLocal(execution.getId(), variableName);
         } else {

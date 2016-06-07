@@ -34,17 +34,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.HistoricProcessInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricIdentityLinkResponse;
@@ -87,20 +83,20 @@ public class HistoricProcessInstanceService implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(HistoricProcessInstanceService.class);
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine " + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
     private static final List<String> allPropertiesList = new ArrayList<>();
     private static Map<String, QueryProperty> allowedSortProperties =
@@ -265,7 +261,7 @@ public class HistoricProcessInstanceService implements Microservice {
     @Path("/{process-instance-id}")
     public Response deleteProcessInstance(
             @PathParam("process-instance-id") String processInstanceId) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         historyService.deleteHistoricProcessInstance(processInstanceId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
@@ -278,7 +274,7 @@ public class HistoricProcessInstanceService implements Microservice {
             @PathParam("process-instance-id") String processInstanceId,
             @Context Request request) {
 
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         List<HistoricIdentityLink> identityLinks =
                 historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
         if (identityLinks != null) {
@@ -336,7 +332,7 @@ public class HistoricProcessInstanceService implements Microservice {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getComments(@PathParam("process-instance-id") String processInstanceId,
                                 @Context Request request) {
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         List<CommentResponse> commentResponseList = new RestResponseFactory()
                 .createRestCommentList(taskService.getProcessInstanceComments(instance.getId()),
@@ -359,7 +355,7 @@ public class HistoricProcessInstanceService implements Microservice {
             throw new ActivitiIllegalArgumentException("Comment text is required.");
         }
 
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         Comment createdComment =
                 taskService.addComment(null, instance.getId(), comment.getMessage());
 
@@ -377,7 +373,7 @@ public class HistoricProcessInstanceService implements Microservice {
                                @Context Request request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
 
         Comment comment = taskService.getComment(commentId);
         if (comment == null || comment.getProcessInstanceId() == null ||
@@ -396,7 +392,7 @@ public class HistoricProcessInstanceService implements Microservice {
     public Response deleteComment(@PathParam("process-instance-id") String processInstanceId,
                                   @PathParam("comment-id") String commentId) {
 
-        TaskService taskService = BPMNOSGIService.getTaskService();
+        TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
         Comment comment = taskService.getComment(commentId);
@@ -414,7 +410,7 @@ public class HistoricProcessInstanceService implements Microservice {
     public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId,
                                                String variableName, String baseContext) {
 
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricProcessInstance processObject = historyService.createHistoricProcessInstanceQuery()
                 .processInstanceId(processInstanceId)
                 .includeProcessVariables()
@@ -444,7 +440,7 @@ public class HistoricProcessInstanceService implements Microservice {
                                             Map<String, String> allRequestParams,
                                             String baseContext) {
 
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
 
         // Populate query based on request
@@ -616,7 +612,7 @@ public class HistoricProcessInstanceService implements Microservice {
 
     protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(
             String processInstanceId) {
-        HistoryService historyService = BPMNOSGIService.getHistoryService();
+        HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         HistoricProcessInstance processInstance =
                 historyService.createHistoricProcessInstanceQuery()
                         .processInstanceId(processInstanceId).singleResult();

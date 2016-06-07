@@ -20,22 +20,16 @@ package org.wso2.carbon.bpmn.rest.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.IdentityService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
-
-import org.wso2.carbon.bpmn.rest.internal.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.kernel.context.PrivilegedCarbonContext;
 import org.wso2.carbon.security.caas.api.CarbonPrincipal;
 import org.wso2.carbon.security.caas.user.core.bean.User;
@@ -44,13 +38,14 @@ import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.msf4j.Interceptor;
 import org.wso2.msf4j.Request;
 import org.wso2.msf4j.ServiceMethodInfo;
-//import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+//import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
 
 
 /**
@@ -65,12 +60,10 @@ public class AuthenticationHandler implements Interceptor {
 
     public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    protected Log log = LogFactory.getLog(AuthenticationHandler.class);
-
     private static final String AUTH_TYPE_BASIC = "Basic";
     private static final String AUTH_TYPE_NONE = "None";
     private static final String AUTH_TYPE_OAuth = "Bearer";
-
+    private Logger log = LoggerFactory.getLogger(AuthenticationHandler.class);
 
     @Override
     public boolean preCall(Request request, org.wso2.msf4j.Response responder,
@@ -90,7 +83,7 @@ public class AuthenticationHandler implements Interceptor {
             } else if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
                 //todo: set AUTH_URL
                 log.info("Authorization type used in OAuth");
-               // OAuth2SecurityInterceptor i = new OAuth2SecurityInterceptor();
+                // OAuth2SecurityInterceptor i = new OAuth2SecurityInterceptor();
             } else {
                 //todo:
                 log.info("No authorization type is specified.");
@@ -120,20 +113,20 @@ public class AuthenticationHandler implements Interceptor {
     }
 
 
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
-
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
-    }
+//    @Reference(
+//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
+//            service = BPMNEngineService.class,
+//            cardinality = ReferenceCardinality.MANDATORY,
+//            policy = ReferencePolicy.DYNAMIC,
+//            unbind = "unRegisterBPMNEngineService")
+//    public void setBpmnEngineService(BPMNEngineService engineService) {
+//        log.info("Setting BPMN engine Authernticator." + engineService);
+//
+//    }
+//
+//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+//        log.info("Unregister BPMNEngineService..");
+//    }
 
     @Activate
     protected void activate(BundleContext bundleContext) {
@@ -177,8 +170,10 @@ public class AuthenticationHandler implements Interceptor {
         boolean authStatus;
 
         try {
-            User user = BPMNOSGIService.getUserRealm().getIdentityStore().getUser(userName);
-            IdentityService identityService = BPMNOSGIService.getIdentityService();
+            User user = RestServiceContentHolder.getInstance().getRestService().getUserRealm().getIdentityStore()
+                    .getUser(userName);
+            IdentityService identityService = RestServiceContentHolder.getInstance().getRestService()
+                    .getIdentityService();
             authStatus = identityService.checkPassword(user.getUserId(), password);
 
             if (!authStatus) {
@@ -194,8 +189,9 @@ public class AuthenticationHandler implements Interceptor {
             PrivilegedCarbonContext privilegedCarbonContext =
                     (PrivilegedCarbonContext) PrivilegedCarbonContext.getCurrentContext();
 
-            User authenticatedUser = BPMNOSGIService.getUserRealm().getIdentityStore().
-                    getUser(userName);
+            User authenticatedUser = RestServiceContentHolder.getInstance().getRestService().getUserRealm()
+                    .getIdentityStore().
+                            getUser(userName);
 
             CarbonPrincipal principal = new CarbonPrincipal(authenticatedUser);
             privilegedCarbonContext.setUserPrincipal(principal);
