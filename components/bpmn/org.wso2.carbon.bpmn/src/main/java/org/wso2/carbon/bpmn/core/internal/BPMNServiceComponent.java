@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.core.BPMNEngineServiceImpl;
 import org.wso2.carbon.bpmn.core.config.ProcessEngineConfiguration;
 import org.wso2.carbon.bpmn.core.config.YamlBasedProcessEngineConfigurationFactory;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
@@ -171,7 +172,7 @@ public class BPMNServiceComponent {
 
         Context subcontext = context.createSubcontext("java:comp/jdbc");
         subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME,
-                        datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
+                datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
     }
 
 }

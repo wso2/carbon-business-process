@@ -22,10 +22,10 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.db.mapper.DeploymentMapper;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
 
 import java.util.HashSet;
 
