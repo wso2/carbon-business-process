@@ -14,9 +14,9 @@
 #   limitations under the License.
 ################################################################################
 
-## Activiti Specifi Configuration.
+## Activiti Specific Configuration.
 activitiEngineConfiguration:
-  # Datasource releaded configs.
+  # Datasource related Configuration.
   dataSourceJndiName: java:comp/jdbc/ActivitiDB
   databaseSchemaUpdate: true
   isDbIdentityUsed: true
@@ -24,22 +24,22 @@ activitiEngineConfiguration:
   jdbcPingEnabled: false
   jdbcPingQuery: null
 
-  # Scheduer config.
+  # ​Scheduler Configuration.
   jobExecutorActivate: true
   transactionsExternallyManaged: false
   lockTimeAsyncJobWaitTime: 60
   defaultFailedJobWaitTime: 10
   asyncFailedJobWaitTime: 10
 
- # Mail Server Related Configuration
-  mailServerHost: "mail.my-corp.com"
+ # Mail Server Related Configuration.
+  mailServerHost: mail.my-corp.com
   mailServerPort: 5025
   useSSL: false
   useTLS: false
-  mailServerDefaultFrom: "wso2bps@localhost"
+  mailServerDefaultFrom: wso2bps@localhost
 
-  # Other Activiti Related Configs.
+  # Other Activiti Related Configuration.
   enableProcessDefinitionInfoCache: false
 
-  # End of Activiti configurations.
+  # End of Activiti Configuration.
 
