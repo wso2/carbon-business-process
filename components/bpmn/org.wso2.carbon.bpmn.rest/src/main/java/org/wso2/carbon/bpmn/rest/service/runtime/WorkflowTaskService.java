@@ -1178,33 +1178,32 @@ public class WorkflowTaskService extends BaseTaskService implements Microservice
                     "Task '" + task.getId() + "' doesn't have an attachment with id '" +
                             attachmentId + "'.", Attachment.class);
         }
+        try (InputStream attachmentStream = taskService.getAttachmentContent(attachmentId)) {
+            if (attachmentStream == null) {
+                throw new ActivitiObjectNotFoundException("Attachment with id '" + attachmentId +
+                        "' doesn't have content associated with it.",
+                        Attachment.class);
+            }
 
-        InputStream attachmentStream = taskService.getAttachmentContent(attachmentId);
-        if (attachmentStream == null) {
-            throw new ActivitiObjectNotFoundException("Attachment with id '" + attachmentId +
-                    "' doesn't have content associated with it.",
-                    Attachment.class);
-        }
+            Response.ResponseBuilder responseBuilder = Response.ok();
 
-        Response.ResponseBuilder responseBuilder = Response.ok();
+            String type = attachment.getType();
+            MediaType mediaType = MediaType.valueOf(type);
+            if (mediaType != null) {
+                responseBuilder.type(mediaType);
+            } else {
+                responseBuilder.type("application/octet-stream");
+            }
 
-        String type = attachment.getType();
-        MediaType mediaType = MediaType.valueOf(type);
-        if (mediaType != null) {
-            responseBuilder.type(mediaType);
-        } else {
-            responseBuilder.type("application/octet-stream");
-        }
+            byte[] attachmentArray;
 
-        byte[] attachmentArray;
-        try {
             attachmentArray = IOUtils.toByteArray(attachmentStream);
+            String dispositionValue = "inline; filename=\"" + attachment.getName() + "\"";
+            responseBuilder.header("Content-Disposition", dispositionValue);
+            return responseBuilder.entity(attachmentArray).build();
         } catch (IOException e) {
             throw new ActivitiException("Error creating attachment data", e);
         }
-        String dispositionValue = "inline; filename=\"" + attachment.getName() + "\"";
-        responseBuilder.header("Content-Disposition", dispositionValue);
-        return responseBuilder.entity(attachmentArray).build();
     }
 
     @GET

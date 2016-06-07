@@ -84,10 +84,9 @@ public class DeploymentService implements Microservice {
 //    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
 //        log.info("Unregister BPMNEngineService..");
 //    }
-
+    private static final List<String> allPropertiesList = new ArrayList<>();
     private static Map<String, QueryProperty> allowedSortProperties =
             new HashMap<String, QueryProperty>();
-    private static final List<String> allPropertiesList = new ArrayList<>();
 
     static {
         allPropertiesList.add("name");
@@ -318,9 +317,9 @@ public class DeploymentService implements Microservice {
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceList.contains(resourceId)) {
-            final InputStream resourceStream =
-                    repositoryService.getResourceAsStream(deploymentId, resourceId);
-            try {
+
+            try (final InputStream resourceStream =
+                         repositoryService.getResourceAsStream(deploymentId, resourceId)) {
                 return IOUtils.toByteArray(resourceStream);
             } catch (Exception e) {
                 throw new ActivitiException("Error converting resource stream", e);

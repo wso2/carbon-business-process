@@ -371,7 +371,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
 
             ProcessDiagramGenerator diagramGenerator =
                     processEngineConfiguration.getProcessDiagramGenerator();
-            InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService
+
+            try (InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService
                             .getActiveActivityIds(
                                     processInstance
                                             .getId()),
@@ -381,9 +382,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService implement
                     processEngineConfiguration
                             .getLabelFontName(),
                     processEngineConfiguration
-                            .getClassLoader(), 1.0);
-
-            try {
+                            .getClassLoader(), 1.0)) {
                 return Response.ok().type("image/png").entity(IOUtils.toByteArray(resource))
                         .build();
             } catch (Exception e) {

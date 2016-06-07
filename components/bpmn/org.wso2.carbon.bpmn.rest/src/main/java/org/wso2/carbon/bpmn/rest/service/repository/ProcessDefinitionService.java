@@ -326,10 +326,9 @@ public class ProcessDefinitionService implements Microservice {
         List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceList.contains(resourceId)) {
-            final InputStream resourceStream =
-                    repositoryService.getResourceAsStream(deploymentId, resourceId);
 
-            try {
+            try (final InputStream resourceStream =
+                         repositoryService.getResourceAsStream(deploymentId, resourceId)) {
                 return IOUtils.toByteArray(resourceStream);
             } catch (Exception e) {
                 throw new ActivitiException("Error converting resource stream", e);
