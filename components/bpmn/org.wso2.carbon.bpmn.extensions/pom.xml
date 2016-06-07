@@ -26,19 +26,6 @@
 
     <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
     <name>WSO2 Carbon - BPMN Extensions Component</name>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>

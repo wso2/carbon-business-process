@@ -41,7 +41,6 @@ public class CarbonSOAPMessage extends DefaultCarbonMessage {
         }
         Map headers = cMsg.getHeaders();
         setHeaders(headers);
-        cMsg.getFaultHandlerStack();
 
     }
 
@@ -53,7 +52,7 @@ public class CarbonSOAPMessage extends DefaultCarbonMessage {
      *
      * @return SOAP Envelope
      */
-    public SOAPEnvelope getSOAPEnvelope() throws SOAPException, IOException, SAXException {
+    public SOAPEnvelope getSOAPMessage() throws SOAPException, IOException, SAXException {
 
         if (soapEnvelope != null) {
             return soapEnvelope;
@@ -61,7 +60,7 @@ public class CarbonSOAPMessage extends DefaultCarbonMessage {
             ByteBuffer byteBuffer = getMessageBody();
             byte[] data = new byte[byteBuffer.remaining()];
             byteBuffer.get(data);
-            String token = new String(data);
+            String token = new String(data, Charset.defaultCharset());
             Map headers = getHeaders();
             String contentType = (String.valueOf(headers.get("Content-Type"))).split(";")[0].trim();
             String soapVersion = null;
@@ -83,7 +82,7 @@ public class CarbonSOAPMessage extends DefaultCarbonMessage {
      *
      * @param soapEnvelope
      */
-    public void setSOAPEnvelope(SOAPEnvelope soapEnvelope) {
+    public void setSOAPMessage(SOAPEnvelope soapEnvelope) throws SOAPException {
         String stringMessageBody = soapEnvelope.serialize();
         addMessageBody(ByteBuffer.wrap(stringMessageBody.getBytes(Charset.defaultCharset())));
         setEndOfMsgAdded(true);

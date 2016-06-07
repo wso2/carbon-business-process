@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Implements the NodeList to store nodes.
  */
-public class NodeList implements org.w3c.dom.NodeList {
+public class NodeListImpl implements org.w3c.dom.NodeList {
     private List<Node> nodeList = new ArrayList<Node>();
 
     /**

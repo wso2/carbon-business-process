@@ -331,7 +331,7 @@ public class SOAPModel {
      * @return SOAP Header
      * @throws SOAPException
      */
-    public SOAPHeader createSOAPHeader(NodeList headers) throws SOAPException {
+    public SOAPHeader createSOAPHeader(NodeListImpl headers) throws SOAPException {
 
         String namespaceURI = null;
         SOAPHeader soapHeader = null;
@@ -383,11 +383,13 @@ public class SOAPModel {
         envelope.setSoapEnvelopeElement(rootElement);
 
         if (rootElement.getNamespaceURI().equals(SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI) &&
-                !(getSoapVersion().equals(Constants.SOAP12_VERSION))){
-            throw new SOAPException("Namespace URI of envelope is of SOAP12 but soap version given is of SOAP11. SOAP version mismatch");
+                !(getSoapVersion().equals(Constants.SOAP12_VERSION))) {
+            throw new SOAPException("Namespace URI of envelope is of SOAP12 but soap version given is of SOAP11." +
+                    " SOAP version mismatch");
         } else if (rootElement.getNamespaceURI().equals(SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI) &&
-                !(getSoapVersion().equals(Constants.SOAP11_VERSION))){
-            throw new SOAPException("Namespace URI of envelope is of SOAP11 but soap version given is of SOAP12. SOAP version mismatch");
+                !(getSoapVersion().equals(Constants.SOAP11_VERSION))) {
+            throw new SOAPException("Namespace URI of envelope is of SOAP11 but soap version given is of SOAP12." +
+                    " SOAP version mismatch");
         }
 
         org.w3c.dom.NodeList children = rootElement.getChildNodes();

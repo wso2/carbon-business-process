@@ -26,7 +26,6 @@ limitations under the License.
             <class name="org.wso2.carbon.bpmn.tests.osgi.BPMNInvalidUndeploymentTest" />
             <class name="org.wso2.carbon.bpmn.tests.osgi.BPMNUserTaskTest" />
             <class name="org.wso2.carbon.bpmn.tests.osgi.BPMNClaimUserTaskTest" />
-            <class name="org.wso2.carbon.bpmn.tests.osgi.BPMNSOAPTaskTest" />
         </classes>
     </test>
 </suite>

@@ -40,6 +40,7 @@ public class SOAPEnvelope {
 
     protected SOAPEnvelope(SOAPModel soapModel) throws SOAPException {
         this.soapModel = soapModel;
+        soapEnvelopeElement = null;
     }
 
     public SOAPModel getSoapModel() {
@@ -60,8 +61,7 @@ public class SOAPEnvelope {
      *
      * @param soapEnvelopeElement
      */
-    public void setSoapEnvelopeElement(Element soapEnvelopeElement) {
-
+    public void setSoapEnvelopeElement(Element soapEnvelopeElement) throws SOAPException {
         this.soapEnvelopeElement = soapEnvelopeElement;
     }
 
@@ -80,9 +80,14 @@ public class SOAPEnvelope {
      *
      * @param soapBody
      */
-    public void setSoapBody(SOAPBody soapBody) {
-        soapEnvelopeElement.appendChild(soapBody.getSoapBodyElement());
-        this.soapBody = soapBody;
+    public void setSoapBody(SOAPBody soapBody) throws SOAPException {
+        if (this.soapEnvelopeElement != null) {
+            soapEnvelopeElement.appendChild(soapBody.getSoapBodyElement());
+            this.soapBody = soapBody;
+        } else {
+            throw new SOAPException("Soap Envelope Element is null");
+        }
+
     }
 
     /**
@@ -115,7 +120,7 @@ public class SOAPEnvelope {
      *
      * @return SOAP Envelope as a string
      */
-    public String serialize() {
+    public String serialize() throws SOAPException {
         String str = null;
         Transformer serializer = null;
         try {
@@ -125,9 +130,9 @@ public class SOAPEnvelope {
             str = stw.toString();
 
         } catch (TransformerConfigurationException e) {
-            new SOAPException("Configuration error when converting the element to string");
+            throw new SOAPException("Configuration error when converting the element to string");
         } catch (TransformerException e) {
-            new SOAPException("Exceptional condition that occured during the transformation process" +
+            throw new SOAPException("Exceptional condition that occured during the transformation process" +
                     " when converting the element to string");
 
         }

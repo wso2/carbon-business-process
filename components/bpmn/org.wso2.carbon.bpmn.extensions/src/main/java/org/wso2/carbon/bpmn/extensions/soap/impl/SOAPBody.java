@@ -96,7 +96,7 @@ public class SOAPBody {
      *
      * @return SOAP Body as a string
      */
-    public String serialize() {
+    public String serialize() throws SOAPException {
         String str = null;
         Transformer serializer = null;
         try {
@@ -106,11 +106,10 @@ public class SOAPBody {
             str = stw.toString();
 
         } catch (TransformerConfigurationException e) {
-            // new SOAPException("Configuration error when converting the element to string");
+            throw new SOAPException("Configuration error when converting the element to string");
         } catch (TransformerException e) {
-            /*new SOAPException("Exceptional condition that occured during the transformation process" +
-                    " when converting the element to string");*/
-            return null;
+            throw new SOAPException("Exceptional condition that occured during the transformation process" +
+                    " when converting the element to string");
         }
 
 

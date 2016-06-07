@@ -39,6 +39,7 @@ import org.wso2.carbon.transport.http.netty.sender.NettySender;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -46,6 +47,7 @@ import java.util.Set;
  */
 public class SOAPTask implements JavaDelegate {
     private static final Logger log = LoggerFactory.getLogger(SOAPTask.class);
+    private static final String HTTP_SCHEMA = "http";
     private JuelExpression serviceURL;
     private JuelExpression payload;
     private JuelExpression headers;
@@ -55,22 +57,26 @@ public class SOAPTask implements JavaDelegate {
     private FixedValue outputVariable;
     private FixedValue transportHeaders;
 
-
     @Override
     public void execute(DelegateExecution execution) {
         if (log.isDebugEnabled()) {
             log.debug("Executing SOAP Task " + serviceURL.getValue(execution).toString());
         }
-       /* String senderConfig = null;
+        String senderConfig = null;
         TransportsConfiguration trpConfig = YAMLTransportConfigurationBuilder.build();
         Set<SenderConfiguration> configs = trpConfig.getSenderConfigurations();
-        for (SenderConfiguration config : configs) {
-            if (config) {
-
+        if (!(configs.isEmpty())) {
+            for (SenderConfiguration config : configs) {
+                if (config.getScheme() != null && config.getScheme().toLowerCase(Locale.ENGLISH).equals(HTTP_SCHEMA)) {
+                    senderConfig = config.getId();
+                    break;
+                }
             }
-        }*/
+        } else {
+            log.error("Sender Configuration is id is not specified in netty-transports.yml");
+        }
 
-        SenderConfiguration senderConfiguration = new SenderConfiguration("netty-gw");
+        SenderConfiguration senderConfiguration = new SenderConfiguration(senderConfig);
         NettySender nettySender = new NettySender(senderConfiguration);
 
         String endpointURL = null;
@@ -134,7 +140,7 @@ public class SOAPTask implements JavaDelegate {
             } else {
                 soapModel.createSOAPHeader();
             }
-            if (payloadRequest != null) {
+            if (payloadRequest.length() != 0) {
                 soapModel.createSOAPBody(soapModel.createNode(payloadRequest));
             } else {
                 soapModel.createSOAPBody();
@@ -144,7 +150,7 @@ public class SOAPTask implements JavaDelegate {
             SOAPEnvelope soapEnvelope = soapModel.generateSOAPEnvelope();
 
             // Setting the SOAP Envelope
-            carbonSOAPMessage.setSOAPEnvelope(soapEnvelope);
+            carbonSOAPMessage.setSOAPMessage(soapEnvelope);
 
             HTTPTransportHeaders httpTransportHeaders = new HTTPTransportHeaders(soapModel);
             if (httpConnection != null) {
@@ -182,13 +188,35 @@ public class SOAPTask implements JavaDelegate {
         }
 
         try {
-            SOAPCallBackResponseImpl callBackResponse = new SOAPCallBackResponseImpl(execution, outputVariable);
+            SOAPCallBackResponseImpl callBackResponse = new SOAPCallBackResponseImpl();
             CallbackSOAPMessage callbackSOAPMessage = new CallbackSOAPMessage(callBackResponse);
             nettySender.send(carbonSOAPMessage, callbackSOAPMessage);
+            while (!callBackResponse.isSuccess()) {
+                Thread.sleep(500);
+            }
+            if (outputVariable != null) {
+                String outVarName = outputVariable.getValue(execution).toString();
+                execution.setVariable(outVarName, callBackResponse.getResponseMessage());
+                log.info("* * * * * * * * * *");
+                log.info(String.valueOf(execution.getVariable(outVarName)));
+
+            } else {
+                String outputNotFoundErrorMsg = "Output variable is not provided. " +
+                        "outputVariable must be provided to save " +
+                        "the response.";
+                throw new SOAPException(outputNotFoundErrorMsg);
+
+            }
 
         } catch (MessageProcessorException e) {
             log.error("Message Processor Exception");
             throw new BpmnError("Message Processor Exception");
+        } catch (InterruptedException e) {
+            log.error("Thread Interrupted");
+            throw new BpmnError("Thread Interrupted");
+        } catch (SOAPException e) {
+            log.error("SOAP Exception");
+            throw new BpmnError("SOAP Exception");
         }
 
     }

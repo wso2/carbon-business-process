@@ -16,8 +16,6 @@
 
 package org.wso2.carbon.bpmn.extensions.soap.impl;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.el.FixedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.extensions.soap.SOAPCallBackResponse;
@@ -30,38 +28,61 @@ import java.io.IOException;
  */
 public class SOAPCallBackResponseImpl implements SOAPCallBackResponse {
     private static final Logger log = LoggerFactory.getLogger(SOAPCallBackResponseImpl.class);
-    private DelegateExecution execution;
-    private FixedValue outputVariable;
+    private boolean success = false;
+    private String responseMessage;
 
-    public SOAPCallBackResponseImpl(DelegateExecution execution, FixedValue outputVariable) {
-        this.execution = execution;
-        this.outputVariable = outputVariable;
+    public SOAPCallBackResponseImpl() {
+
+    }
+
+    /**
+     * Gets the response.
+     * @return reponse as a string i.e. serialized
+     */
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    /**
+     * Sets the response.
+     * @param responseMessage
+     */
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+
+    /**
+     * Checks whether the response is fully received.
+     * @return true if received else false
+     */
+    public boolean isSuccess() {
+        return success;
+    }
+
+    /**
+     * Sets true or false depending on the status of the response received.
+     * @param success
+     */
+    public void setSucess(boolean success) {
+        this.success = success;
     }
 
     @Override
     public void handleResponseReceived(CarbonSOAPMessage carbonSOAPMessage) {
 
         try {
-            log.info(carbonSOAPMessage.getSOAPEnvelope().serialize());
-            String response = carbonSOAPMessage.getSOAPEnvelope().serialize();
-            if (outputVariable != null) {
-                String outVarName = outputVariable.getValue(execution).toString();
-               // execution.setVariable(outVarName, response);
+            responseMessage = carbonSOAPMessage.getSOAPMessage().serialize();
+            setResponseMessage(responseMessage);
+            setSucess(true);
 
-            } else {
-                String outputNotFoundErrorMsg = "Output variable is not provided. " +
-                        "outputVariable must be provided to save " +
-                        "the response.";
-                throw new SOAPException(outputNotFoundErrorMsg);
-            }
         } catch (SOAPException e) {
-          //  throw new BpmnError("SOAP Exception when processing the response message");
+            //  throw new BpmnError("SOAP Exception when processing the response message");
             log.error("SOAP Exception when processing the response message");
         } catch (SAXException e) {
-         //   throw new BpmnError("SAX Exception");
+            //   throw new BpmnError("SAX Exception");
             log.error("SAX Exception");
         } catch (IOException e) {
-           // throw new BpmnError("I/O Exception");
+            // throw new BpmnError("I/O Exception");
             log.error("I/O Exception");
         }
     }

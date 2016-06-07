@@ -87,9 +87,9 @@ public class SOAPHeader {
      *
      * @return nodeList with all the headers
      */
-    public NodeList getAllHeaders() {
+    public NodeListImpl getAllHeaders() {
         org.w3c.dom.NodeList list = soapHeaderElement.getChildNodes();
-        NodeList nodes = new NodeList();
+        NodeListImpl nodes = new NodeListImpl();
         for (int i = 0; i < list.getLength(); i++) {
             Node n = list.item(i);
             nodes.addNode(n);
@@ -102,7 +102,7 @@ public class SOAPHeader {
      *
      * @param headers
      */
-    public void setHeaders(NodeList headers) {
+    public void setHeaders(NodeListImpl headers) {
         for (int i = 0; i < headers.getLength(); i++) {
             Node n = headers.item(i);
             setHeader(n);
@@ -132,7 +132,7 @@ public class SOAPHeader {
      *
      * @return SOAP Header as a string
      */
-    public String serialize() {
+    public String serialize() throws SOAPException {
         String str = null;
         Transformer serializer = null;
         try {
@@ -142,9 +142,9 @@ public class SOAPHeader {
             str = stw.toString();
 
         } catch (TransformerConfigurationException e) {
-            new SOAPException("Configuration error when converting the element to string");
+            throw new SOAPException("Configuration error when converting the element to string");
         } catch (TransformerException e) {
-            new SOAPException("Exceptional condition that occured during the transformation process" +
+            throw new SOAPException("Exceptional condition that occured during the transformation process" +
                     " when converting the element to string");
         }
 
