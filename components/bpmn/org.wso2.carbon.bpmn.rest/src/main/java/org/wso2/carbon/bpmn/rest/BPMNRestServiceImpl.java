@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.rest.internal;
+package org.wso2.carbon.bpmn.rest;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -30,8 +30,8 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
-import org.wso2.carbon.bpmn.rest.BPMNRestService;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
+import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
 

@@ -30,21 +30,20 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.rest.BPMNRestService;
+import org.wso2.carbon.bpmn.rest.BPMNRestServiceImpl;
 
 /**
  * Rest component lookup for bpmnEngineService
  */
 @Component(
         name = "org.wso2.carbon.bpmn.rest.BPMNRestService",
-        service = BPMNRestService.class,
+        service = BPMNRestServiceImpl.class,
         immediate = true)
 
 public class RestServiceComponent {
 
-    private BundleContext bundleContext;
-
     private static final Logger log = LoggerFactory.getLogger(RestServiceComponent.class);
+    private BundleContext bundleContext;
 
     @Reference(
             name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
@@ -53,12 +52,14 @@ public class RestServiceComponent {
             policy = ReferencePolicy.DYNAMIC,
             unbind = "unRegisterBPMNEngineService")
     public void setBpmnEngineService(BPMNEngineService engineService) {
-        log.info("Setting BPMN engine " + engineService);
         RestServiceContentHolder.getInstance().setBpmnEngineService(engineService);
     }
 
     protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        log.info("Unregister BPMNEngineService..");
+        RestServiceContentHolder.getInstance().setBpmnEngineService(null);
+        if (log.isDebugEnabled()) {
+            log.debug("Unregistered BPMNEngineService..");
+        }
     }
 
     @Activate
@@ -67,7 +68,7 @@ public class RestServiceComponent {
         RestServiceContentHolder restServiceContentHolder = RestServiceContentHolder.getInstance();
         BPMNRestServiceImpl restService = new BPMNRestServiceImpl();
         restServiceContentHolder.setRestService(restService);
-        log.info("Activated BPMN Rest Service Component.");
+        log.info("Activated BPMN Rest Service Component Successfully.");
     }
 
     @Deactivate

@@ -35,7 +35,6 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.db.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.db.model.DeploymentMetaDataModel;
-import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.deployment.engine.Deployer;
@@ -81,7 +80,9 @@ public class BPMNDeployer implements Deployer {
     private String deploymentDir;
     private File destinationFolder;
     private Path home;
-    ;
+
+    private BPMNEngineService bpmnEngineService;
+
     private ActivitiDAO activitiDAO;
 
     public BPMNDeployer() {
@@ -101,9 +102,11 @@ public class BPMNDeployer implements Deployer {
             policy = ReferencePolicy.DYNAMIC,
             unbind = "unRegisterBPMNEngineService")
     public void setBpmnEngineService(BPMNEngineService engineService) {
+        this.bpmnEngineService = engineService;
     }
 
     protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
+        this.bpmnEngineService = null;
     }
 
     /**
@@ -161,7 +164,10 @@ public class BPMNDeployer implements Deployer {
                 }
 
                 if (deploymentMetaDataModel == null) {
-                    ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+                    ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
+                    if (engine == null) {
+                        throw new CarbonDeploymentException("Can't find BPMN engine.");
+                    }
                     RepositoryService repositoryService = engine.getRepositoryService();
                     DeploymentBuilder deploymentBuilder =
                             repositoryService.createDeployment().name(deploymentName);
@@ -236,7 +242,10 @@ public class BPMNDeployer implements Deployer {
                         deploymentDir + e);
             }
             // Delete all versions of this package from the Activiti engine.
-            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+            ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
+            if (engine == null) {
+                throw new CarbonDeploymentException("Can't find BPMN engine.");
+            }
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
@@ -263,7 +272,10 @@ public class BPMNDeployer implements Deployer {
         String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
 
         //Update activiti engine based deployment
-        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+        ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
+        if (engine == null) {
+            throw new CarbonDeploymentException("Can't find BPMN engine.");
+        }
         RepositoryService repositoryService = engine.getRepositoryService();
         DeploymentBuilder deploymentBuilder =
                 repositoryService.createDeployment().name(deploymentName);
@@ -293,7 +305,7 @@ public class BPMNDeployer implements Deployer {
      * Therefore, this method checks whether deployments are recorded in all these places and undeploys packages, if
      * they are missing in few places in an inconsistent way.
      */
-    public void fixDeployments() {
+    public void fixDeployments() throws CarbonDeploymentException {
 
         // get all added files from file directory
         List<String> fileArchiveNames = new ArrayList<String>();
@@ -308,7 +320,10 @@ public class BPMNDeployer implements Deployer {
 
             // get all deployments in Activiti
             List<String> activitiDeploymentNames = new ArrayList<String>();
-            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
+            ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
+            if (engine == null) {
+                throw new CarbonDeploymentException("Can't find BPMN engine.");
+            }
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
             for (Deployment deployment : activitiDeployments) {
