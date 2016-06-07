@@ -22,13 +22,11 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-//import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
 import org.wso2.carbon.security.caas.user.core.bean.Role;
 import org.wso2.carbon.security.caas.user.core.bean.User;
 import org.wso2.carbon.security.caas.user.core.exception.AuthorizationStoreException;
@@ -49,15 +47,14 @@ import java.util.stream.Collectors;
  */
 public class BPSGroupIdentityManager extends GroupEntityManager {
 
-    private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
+    private static Logger log = LoggerFactory.getLogger(BPSUserIdentityManager.class);
 
     private AuthorizationStore authorizationStore;
     private IdentityStore identityStore;
 
     public BPSGroupIdentityManager() {
-
-        this.authorizationStore = IdentityDataHolder.getInstance().getCarbonRealmService().getAuthorizationStore();
-        this.identityStore = IdentityDataHolder.getInstance().getCarbonRealmService().getIdentityStore();
+        this.authorizationStore = BPMNServerHolder.getInstance().getCarbonRealmService().getAuthorizationStore();
+        this.identityStore = BPMNServerHolder.getInstance().getCarbonRealmService().getIdentityStore();
     }
 
 

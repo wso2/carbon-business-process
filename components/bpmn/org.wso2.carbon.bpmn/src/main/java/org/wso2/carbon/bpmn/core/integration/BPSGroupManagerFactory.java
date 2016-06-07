@@ -20,8 +20,8 @@ package org.wso2.carbon.bpmn.core.integration;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class BPSGroupManagerFactory implements SessionFactory {
 
-    private static Log log = LogFactory.getLog(BPSGroupManagerFactory.class);
+    private static Logger log = LoggerFactory.getLogger(BPSGroupManagerFactory.class);
 
     @Override
     public Class<?> getSessionType() {

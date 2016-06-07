@@ -17,26 +17,24 @@
 package org.wso2.carbon.bpmn.core;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
-import org.wso2.carbon.kernel.utils.Utils;
+import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.util.HashSet;
 
 /**
  * Class responsible for building and initiating the activiti engine.
  */
 public class ActivitiEngineBuilder {
 
-    private static final Log log = LogFactory.getLog(ActivitiEngineBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(ActivitiEngineBuilder.class);
     private static ActivitiEngineBuilder instance = new ActivitiEngineBuilder();
     private String dataSourceJndiName;
     private ProcessEngine processEngine;
@@ -58,30 +56,25 @@ public class ActivitiEngineBuilder {
 
     public ProcessEngine buildEngine() throws BPSFault {
 
-        try {
-            String carbonConfigDirPath = Utils.getCarbonConfigHome().toAbsolutePath().toString();
-            String activitiConfigPath = carbonConfigDirPath + File.separator +
-                    BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
-            File activitiConfigFile = new File(activitiConfigPath);
-            ProcessEngineConfigurationImpl processEngineConfigurationImpl =
-                    (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-                            .createProcessEngineConfigurationFromInputStream(
-                                    new FileInputStream(activitiConfigFile));
-            // we have to build the process engine first to initialize session factories.
-            processEngine = processEngineConfigurationImpl.buildProcessEngine();
-             processEngineConfigurationImpl.getSessionFactories().put(UserIdentityManager.class,
-               new BPSUserManagerFactory());
-              processEngineConfigurationImpl.getSessionFactories().put(GroupIdentityManager.class,
-            new BPSGroupManagerFactory());
+        ProcessEngineConfigurationImpl processEngineConfiguration = BPMNServerHolder.getInstance()
+                .getProcessEngineConfiguration().getActivitiEngineConfiguration();
 
-            dataSourceJndiName = processEngineConfigurationImpl.getProcessEngineConfiguration()
-                    .getDataSourceJndiName();
-
-        } catch (FileNotFoundException e) {
-            String msg =
-                    "Failed to create an Activiti engine. Activiti configuration file not found";
-            throw new BPSFault(msg, e);
+        // Adding custom mybatics mappers.
+        if (processEngineConfiguration.getCustomMybatisMappers() == null) {
+            processEngineConfiguration.setCustomMybatisMappers(new HashSet<>());
         }
+        processEngineConfiguration.getCustomMybatisMappers().add(DeploymentMapper.class);
+
+        // we have to build the process engine first to initialize session factories.
+        processEngine = processEngineConfiguration.buildProcessEngine();
+        processEngineConfiguration.getSessionFactories().put(UserIdentityManager.class,
+                new BPSUserManagerFactory());
+        processEngineConfiguration.getSessionFactories().put(GroupIdentityManager.class,
+                new BPSGroupManagerFactory());
+
+        dataSourceJndiName = processEngineConfiguration.getProcessEngineConfiguration()
+                .getDataSourceJndiName();
+
         return processEngine;
     }
 

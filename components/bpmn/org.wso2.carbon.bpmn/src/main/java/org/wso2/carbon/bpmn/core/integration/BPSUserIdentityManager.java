@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.core.integration;
 
-//import org.activiti.engine.ActivitiObjectNotFoundException;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -28,10 +27,9 @@ import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.internal.IdentityDataHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
 import org.wso2.carbon.security.caas.user.core.bean.Role;
 import org.wso2.carbon.security.caas.user.core.claim.Claim;
 import org.wso2.carbon.security.caas.user.core.context.AuthenticationContext;
@@ -58,7 +56,7 @@ import javax.security.auth.callback.PasswordCallback;
  */
 public class BPSUserIdentityManager extends UserEntityManager {
 
-    private static Log log = LogFactory.getLog(BPSUserIdentityManager.class);
+    private static Logger log = LoggerFactory.getLogger(BPSUserIdentityManager.class);
     private IdentityStore identityStore;
     private CredentialStore credentialStore;
     private AuthorizationStore authorizationStore;
@@ -75,9 +73,9 @@ public class BPSUserIdentityManager extends UserEntityManager {
 
     public BPSUserIdentityManager() {
 
-        this.credentialStore = IdentityDataHolder.getInstance().getCarbonRealmService().getCredentialStore();
-        this.identityStore = IdentityDataHolder.getInstance().getCarbonRealmService().getIdentityStore();
-        this.authorizationStore = IdentityDataHolder.getInstance().getCarbonRealmService().getAuthorizationStore();
+        this.credentialStore = BPMNServerHolder.getInstance().getCarbonRealmService().getCredentialStore();
+        this.identityStore = BPMNServerHolder.getInstance().getCarbonRealmService().getIdentityStore();
+        this.authorizationStore = BPMNServerHolder.getInstance().getCarbonRealmService().getAuthorizationStore();
 
 
     }
