@@ -133,6 +133,9 @@
             org.wso2.carbon.security.caas.*; version="${carbon.security.caas.import.version}",
             org.slf4j; version="${slf4j.import.version}"
         </import.package>
+        <carbon.component>
+            osgi.service;objectClass="org.wso2.carbon.deployment.engine.Deployer"
+        </carbon.component>
         <dynamic.import.package>*</dynamic.import.package>
     </properties>
 </project>

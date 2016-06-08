@@ -41,6 +41,7 @@ import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
+import org.wso2.carbon.deployment.engine.Deployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 import java.io.File;
 import java.util.HashMap;
@@ -154,6 +155,9 @@ public class BPMNServiceComponent {
             bpmnEngineService.setCarbonRealmService(holder.getInstance().getCarbonRealmService());
             bundleContext
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
+
+            BPMNDeployer deployer = new BPMNDeployer();
+            bundleContext.registerService(Deployer.class.getName(), deployer, null);
 
             // Create metadata table for deployments
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
