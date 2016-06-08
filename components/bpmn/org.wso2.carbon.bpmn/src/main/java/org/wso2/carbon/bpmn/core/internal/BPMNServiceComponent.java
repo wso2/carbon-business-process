@@ -33,9 +33,11 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.config.ProcessEngineConfiguration;
 import org.wso2.carbon.bpmn.core.config.YamlBasedProcessEngineConfigurationFactory;
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
+import org.wso2.carbon.deployment.engine.Deployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
 import javax.naming.Context;
@@ -146,6 +148,9 @@ public class BPMNServiceComponent {
             bpmnEngineService.setCarbonRealmService(holder.getInstance().getCarbonRealmService());
             bundleContext
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
+
+            BPMNDeployer deployer = new BPMNDeployer();
+            bundleContext.registerService(Deployer.class.getName(), deployer, null);
 
             // Create metadata table for deployments
 //            DataSourceHandler dataSourceHandler = new DataSourceHandler();
