@@ -53,13 +53,13 @@ import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 /**
  * Invoking a bpmn user claim task with group management
@@ -132,10 +132,10 @@ public class BPMNClaimUserTaskTest {
           BPSUserManagerFactory factory = (BPSUserManagerFactory) config.getSessionFactories().
                   get(UserIdentityManager.class);
           BPSUserIdentityManager manager = (BPSUserIdentityManager) factory.openSession();
-          String userId = "41dadd2aea6e11e59ce95e5517507c66";
+          String userId = "admin";
           UserEntity u = manager.findUserById(userId);
-          Assert.assertEquals(u.getFirstName(), "Jayanga");
-          Assert.assertEquals(u.getLastName(), "Kaushalya");
+          Assert.assertEquals(u.getFirstName(), "Kermit");
+          Assert.assertEquals(u.getLastName(), "The Frog");
       }
       catch(Exception e){
           log.info("Error in retrieving user claims for user.", e);
@@ -160,7 +160,7 @@ public class BPMNClaimUserTaskTest {
             User user = realmService.getIdentityStore().getUser("admin");
             Assert.assertEquals(user.getUserName().toString(), "admin",
                     "No matching user called admin is found");
-            Assert.assertTrue(manager.checkPassword(user.getUserId(), "admin"),
+            Assert.assertTrue(manager.checkPassword(user.getUserName(), "admin"),
                     "Unable to authenticate user" + user.getUserName());
 
             // start process instance
@@ -179,7 +179,7 @@ public class BPMNClaimUserTaskTest {
             List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
             // get the groups of the user admin
             List<org.activiti.engine.identity.Group> groupsOfUser = manager.
-                    findGroupsByUser(user.getUserId().toString());
+                    findGroupsByUser(user.getUserName());
             Assert.assertEquals(groupsOfUser.size(), 1, "Expected group count for admin user");
             // check if group management is in the list
             Group group = realmService.getIdentityStore().getGroupFromId(groupsOfUser.get(0).getId(),
