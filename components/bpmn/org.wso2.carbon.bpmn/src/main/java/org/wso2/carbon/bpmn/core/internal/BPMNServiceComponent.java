@@ -19,6 +19,8 @@ package org.wso2.carbon.bpmn.core.internal;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -45,6 +47,7 @@ import org.wso2.carbon.deployment.engine.Deployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -185,10 +188,11 @@ public class BPMNServiceComponent {
 
             BPMNDeployer customDeployer = new BPMNDeployer();
             customDeployer.init();
-            File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
+          //  File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
+            File ab = new File("/home/natasha/workspace/soapTask/deployment/soapTask.bar");
             Artifact artifact = new Artifact(ab);
             ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("SoapInvoker.bar");
+            artifact.setKey("soapTask.bar");
             artifact.setType(artifactType);
             customDeployer.deploy(artifact);
             log.info("Artifact Deployed");
@@ -196,7 +200,7 @@ public class BPMNServiceComponent {
             ProcessEngine eng = bpmnEngineService.getProcessEngine();
             RuntimeService runtimeService = eng.getRuntimeService();
 
-            Map<String, Object> taskVariables = new HashMap<>();
+            /*Map<String, Object> taskVariables = new HashMap<>();
             taskVariables.put("serviceURL", "http://10.100.4.192:9763/services/HelloService");
             taskVariables.put("payload" , "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>\" +\n" +
                     "                \"<TestPart>Hello</TestPart></ns1:hello>");
@@ -204,10 +208,18 @@ public class BPMNServiceComponent {
                     "<TestPart>HEADER11</TestPart></ns1:hello>");
             taskVariables.put("soapVersion" , "soap11");
             taskVariables.put("httpConnection", "");
-            taskVariables.put("httpTransferEncoding" , "");
-            runtimeService.startProcessInstanceByKey("soapprocess", taskVariables);
+            taskVariables.put("httpTransferEncoding" , "");*/
+            runtimeService.startProcessInstanceByKey("soapProcess");
 
             log.info("Process Instance started");
+
+            TaskService taskService = eng.getTaskService();
+            List<Task> tasks = taskService.createTaskQuery().list();
+            for (Task task : tasks) {
+                log.info("Task available: " + task.getName());
+                log.info(" -------------------------------");
+                log.info("Doc:  " + task.getDescription());
+            }
 
 
 

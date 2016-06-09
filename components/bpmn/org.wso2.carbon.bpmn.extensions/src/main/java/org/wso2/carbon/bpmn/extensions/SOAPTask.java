@@ -51,11 +51,12 @@ public class SOAPTask implements JavaDelegate {
     private JuelExpression serviceURL;
     private JuelExpression payload;
     private JuelExpression headers;
-    private JuelExpression soapVersion;
-    private JuelExpression httpConnection;
-    private JuelExpression httpTransferEncoding;
+    private FixedValue soapVersion;
+    private FixedValue httpConnection;
+    private FixedValue httpTransferEncoding;
     private FixedValue outputVariable;
-    private FixedValue transportHeaders;
+    private JuelExpression transportHeaders;
+    private FixedValue soapAction;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -89,6 +90,7 @@ public class SOAPTask implements JavaDelegate {
         String connection = null;
         String transferEncoding = null;
         String transportHeaderList[] = null;
+        String action = null;
         try {
             if (serviceURL != null) {
                 endpointURL = serviceURL.getValue(execution).toString();
@@ -163,6 +165,11 @@ public class SOAPTask implements JavaDelegate {
             } else {
                 transferEncoding = "chunked";
             }
+            if (soapAction != null) {
+                action = soapAction.getValue(execution).toString();
+                httpTransportHeaders.addSOAPAction(action);
+            }
+
             httpTransportHeaders.addHeader(Constants.HTTP_CONNECTION, connection);
             httpTransportHeaders.addHeader(Constants.HTTP_HOST, host.concat(":" + port));
             httpTransportHeaders.addHeader(Constants.HTTP_TRANSFER_ENCODING, transferEncoding);
