@@ -204,9 +204,6 @@ public class SOAPTask implements JavaDelegate {
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
                 execution.setVariable(outVarName, callBackResponse.getResponseMessage());
-                log.info("* * * * * * * * * *");
-                log.info(String.valueOf(execution.getVariable(outVarName)));
-
             } else {
                 String outputNotFoundErrorMsg = "Output variable is not provided. " +
                         "outputVariable must be provided to save " +
