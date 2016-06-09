@@ -17,6 +17,7 @@ package org.wso2.carbon.bpmn.extensions;
 
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.el.JuelExpression;
@@ -48,15 +49,15 @@ import java.util.Set;
 public class SOAPTask implements JavaDelegate {
     private static final Logger log = LoggerFactory.getLogger(SOAPTask.class);
     private static final String HTTP_SCHEMA = "http";
-    private JuelExpression serviceURL;
-    private JuelExpression payload;
-    private JuelExpression headers;
-    private FixedValue soapVersion;
-    private FixedValue httpConnection;
-    private FixedValue httpTransferEncoding;
-    private FixedValue outputVariable;
-    private JuelExpression transportHeaders;
-    private FixedValue soapAction;
+    private Expression serviceURL;
+    private Expression payload;
+    private Expression headers;
+    private Expression soapVersion;
+    private Expression httpConnection;
+    private Expression httpTransferEncoding;
+    private Expression outputVariable;
+    private Expression transportHeaders;
+    private Expression soapAction;
 
     @Override
     public void execute(DelegateExecution execution) {

@@ -189,10 +189,18 @@ public class BPMNServiceComponent {
             BPMNDeployer customDeployer = new BPMNDeployer();
             customDeployer.init();
           //  File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
-            File ab = new File("/home/natasha/workspace/soapTask/deployment/soapTask.bar");
+           /* File ab = new File("/home/natasha/workspace/soapTask/deployment/soapTask.bar");
             Artifact artifact = new Artifact(ab);
             ArtifactType artifactType = new ArtifactType<>("bar");
             artifact.setKey("soapTask.bar");
+            artifact.setType(artifactType);
+            customDeployer.deploy(artifact);
+            log.info("Artifact Deployed");*/
+
+            File ab = new File("/home/natasha/workspace/testSample/deployment/testprocess.bar");
+            Artifact artifact = new Artifact(ab);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("testprocess.bar");
             artifact.setType(artifactType);
             customDeployer.deploy(artifact);
             log.info("Artifact Deployed");
@@ -209,7 +217,7 @@ public class BPMNServiceComponent {
             taskVariables.put("soapVersion" , "soap11");
             taskVariables.put("httpConnection", "");
             taskVariables.put("httpTransferEncoding" , "");*/
-            runtimeService.startProcessInstanceByKey("soapProcess");
+            runtimeService.startProcessInstanceByKey("testprocess");
 
             log.info("Process Instance started");
 
