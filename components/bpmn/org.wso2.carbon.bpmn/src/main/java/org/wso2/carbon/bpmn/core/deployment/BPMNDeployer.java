@@ -23,18 +23,12 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.Utils;
 import org.wso2.carbon.bpmn.core.db.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.db.model.DeploymentMetaDataModel;
+import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.deployment.engine.Deployer;
@@ -56,24 +50,21 @@ import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 /**
- * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
- * under repository/deployment/server directory. Currently associated file extension is .bar.
- * Separate deployer instance is created for each tenant.
- * Activiti Engine versions same package if deployed twice. In order to overcome this issue,
- * we are using an additional table which will keep track of the deployed package's md5sum in-order to
- * identify the deployment of a new package.
+ * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory located
+ * at <BPS_HOME>/deployment/server directory. Currently associated file extension is .bar. A single
+ * deployer instance is created and registerd as an osgi service. Activiti Engine versions same
+ * package if deployed twice. In order to overcome this issue, we are using an additional table which
+ * will keep track of the deployed package's md5sum in-order to identify the deployment of a new package.
  */
 
-@Component(
-        name = "org.wso2.carbon.bpmn.core.deployment.BPMNDeployer",
-        service = BPMNDeployer.class,
-        immediate = true
-)
 public class BPMNDeployer implements Deployer {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNDeployer.class);
+
     private static final String DEPLOYMENT_PATH = "file:bpmn";
     private static final String SUPPORTED_EXTENSIONS = "bar";
+    private static final String ARTIFACT_TYPE = "bar";
+
     private URL deploymentLocation;
     private ArtifactType artifactType;
     private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
@@ -81,7 +72,6 @@ public class BPMNDeployer implements Deployer {
     private File destinationFolder;
     private Path home;
 
-    private BPMNEngineService bpmnEngineService;
 
     private ActivitiDAO activitiDAO;
 
@@ -90,38 +80,23 @@ public class BPMNDeployer implements Deployer {
         init();
     }
 
-    @Activate
-    protected void start(BundleContext bundleContext) {
-
-    }
-
-    @Reference(
-            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-            service = BPMNEngineService.class,
-            cardinality = ReferenceCardinality.MANDATORY,
-            policy = ReferencePolicy.DYNAMIC,
-            unbind = "unRegisterBPMNEngineService")
-    public void setBpmnEngineService(BPMNEngineService engineService) {
-        this.bpmnEngineService = engineService;
-    }
-
-    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-        this.bpmnEngineService = null;
-    }
-
     /**
-     * Initializes the deployment per tenant
+     * Init method for the BPMN Deployer
      */
     @Override
     public void init() {
-        log.info("Initializing BPMNDeployer");
-        artifactType = new ArtifactType<>("bar");
+
+        log.info(" Initializing BPMN Deployer ");
+
+        artifactType = new ArtifactType<>(ARTIFACT_TYPE);
+
         try {
             deploymentLocation = new URL(DEPLOYMENT_PATH);
             home = org.wso2.carbon.kernel.utils.Utils.getCarbonHome();
             deploymentDir = home + File.separator + "deployment" + File.separator + "bpmn";
+
         } catch (MalformedURLException | ExceptionInInitializerError e) {
-            String msg = "Failed to initialize BPMNDeployer: ";
+            String msg = "BPMN Deployer Initialization failed : ";
             log.error(msg, e);
         }
         destinationFolder = new File(deploymentDir);
@@ -164,10 +139,7 @@ public class BPMNDeployer implements Deployer {
                 }
 
                 if (deploymentMetaDataModel == null) {
-                    ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
-                    if (engine == null) {
-                        throw new CarbonDeploymentException("Can't find BPMN engine.");
-                    }
+                    ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
                     RepositoryService repositoryService = engine.getRepositoryService();
                     DeploymentBuilder deploymentBuilder =
                             repositoryService.createDeployment().name(deploymentName);
@@ -242,10 +214,7 @@ public class BPMNDeployer implements Deployer {
                         deploymentDir + e);
             }
             // Delete all versions of this package from the Activiti engine.
-            ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
-            if (engine == null) {
-                throw new CarbonDeploymentException("Can't find BPMN engine.");
-            }
+            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> deployments =
                     repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
@@ -272,10 +241,7 @@ public class BPMNDeployer implements Deployer {
         String deploymentName = FilenameUtils.getBaseName(artifactFile.getName());
 
         //Update activiti engine based deployment
-        ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
-        if (engine == null) {
-            throw new CarbonDeploymentException("Can't find BPMN engine.");
-        }
+        ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
         DeploymentBuilder deploymentBuilder =
                 repositoryService.createDeployment().name(deploymentName);
@@ -305,7 +271,7 @@ public class BPMNDeployer implements Deployer {
      * Therefore, this method checks whether deployments are recorded in all these places and undeploys packages, if
      * they are missing in few places in an inconsistent way.
      */
-    public void fixDeployments() throws CarbonDeploymentException {
+    public void fixDeployments() {
 
         // get all added files from file directory
         List<String> fileArchiveNames = new ArrayList<String>();
@@ -320,10 +286,7 @@ public class BPMNDeployer implements Deployer {
 
             // get all deployments in Activiti
             List<String> activitiDeploymentNames = new ArrayList<String>();
-            ProcessEngine engine = this.bpmnEngineService.getProcessEngine();
-            if (engine == null) {
-                throw new CarbonDeploymentException("Can't find BPMN engine.");
-            }
+            ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
             RepositoryService repositoryService = engine.getRepositoryService();
             List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
             for (Deployment deployment : activitiDeployments) {
@@ -403,19 +366,10 @@ public class BPMNDeployer implements Deployer {
     }
 
     private boolean isSupportedFile(File file) {
-        return SUPPORTED_EXTENSIONS.equalsIgnoreCase(getFileExtension(file));
+        return SUPPORTED_EXTENSIONS.equalsIgnoreCase(
+                FilenameUtils.getExtension(file.getAbsolutePath()));
     }
 
-    private String getFileExtension(File file) {
-        String fileName = file.getName();
-        String extension = "";
-        if (file.isFile()) {
-            int i = fileName.lastIndexOf('.');
-            if (i > 0) {
-                extension = fileName.substring(i + 1);
-            }
-        }
-        return extension;
-    }
+
 }
 

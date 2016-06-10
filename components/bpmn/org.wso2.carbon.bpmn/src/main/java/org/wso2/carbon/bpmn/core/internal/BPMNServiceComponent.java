@@ -34,9 +34,11 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNEngineServiceImpl;
 import org.wso2.carbon.bpmn.core.config.ProcessEngineConfiguration;
 import org.wso2.carbon.bpmn.core.config.YamlBasedProcessEngineConfigurationFactory;
+import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
+import org.wso2.carbon.deployment.engine.Deployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
 import javax.naming.Context;
@@ -163,7 +165,8 @@ public class BPMNServiceComponent {
             bundleContext
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
 
-            log.info("BPMN core component activated successfully...");
+            BPMNDeployer deployer = new BPMNDeployer();
+            bundleContext.registerService(Deployer.class.getName(), deployer, null);
 
         } catch (Throwable t) {
             log.error("Error initializing bpmn component " + t);
