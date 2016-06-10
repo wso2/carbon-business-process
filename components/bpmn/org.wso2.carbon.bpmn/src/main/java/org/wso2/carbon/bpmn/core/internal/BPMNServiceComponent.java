@@ -188,15 +188,11 @@ public class BPMNServiceComponent {
 
             BPMNDeployer customDeployer = new BPMNDeployer();
             customDeployer.init();
-          //  File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
-           /* File ab = new File("/home/natasha/workspace/soapTask/deployment/soapTask.bar");
-            Artifact artifact = new Artifact(ab);
-            ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("soapTask.bar");
-            artifact.setType(artifactType);
-            customDeployer.deploy(artifact);
-            log.info("Artifact Deployed");*/
 
+            ProcessEngine eng = bpmnEngineService.getProcessEngine();
+            RuntimeService runtimeService = eng.getRuntimeService();
+
+            ///// Without expressions just string values --> works fine with fixed string values
             File ab = new File("/home/natasha/workspace/testSample/deployment/testprocess.bar");
             Artifact artifact = new Artifact(ab);
             ArtifactType artifactType = new ArtifactType<>("bar");
@@ -204,20 +200,33 @@ public class BPMNServiceComponent {
             artifact.setType(artifactType);
             customDeployer.deploy(artifact);
             log.info("Artifact Deployed");
+            runtimeService.startProcessInstanceByKey("testprocess");
 
-            ProcessEngine eng = bpmnEngineService.getProcessEngine();
-            RuntimeService runtimeService = eng.getRuntimeService();
+            ////////////////////////////////////////////////////////
 
-            /*Map<String, Object> taskVariables = new HashMap<>();
+            ///// Expressions ---> Works fine with expressions
+          //  File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
+           /* File ab = new File("/home/natasha/workspace/SoapInvoker/deployment/SoapInvoker.bar");
+            Artifact artifact = new Artifact(ab);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("SoapInvoker.bar");
+            artifact.setType(artifactType);
+            customDeployer.deploy(artifact);
+            log.info("Artifact Deployed");
+            Map<String, Object> taskVariables = new HashMap<>();
             taskVariables.put("serviceURL", "http://10.100.4.192:9763/services/HelloService");
             taskVariables.put("payload" , "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>\" +\n" +
                     "                \"<TestPart>Hello</TestPart></ns1:hello>");
-            taskVariables.put("headers", "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>" +
+            taskVariables.put("httpTransferEncoding" , "chunked");
+           *//* taskVariables.put("headers", "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>" +
                     "<TestPart>HEADER11</TestPart></ns1:hello>");
             taskVariables.put("soapVersion" , "soap11");
-            taskVariables.put("httpConnection", "");
-            taskVariables.put("httpTransferEncoding" , "");*/
-            runtimeService.startProcessInstanceByKey("testprocess");
+            taskVariables.put("httpConnection", "");*//*
+            runtimeService.startProcessInstanceByKey("myProcess", taskVariables);*/
+
+
+
+
 
             log.info("Process Instance started");
 
