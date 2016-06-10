@@ -156,7 +156,6 @@ public class BPMNRestServiceImpl implements BPMNRestService {
             processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
 
             if (processEngineConfigurationImpl != null) {
-                BPSGroupIdentityManager bpsGroupIdentityManager = null;
                 if (processEngineConfigurationImpl.getSessionFactories() != null) {
                     BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory)
                             processEngineConfigurationImpl.getSessionFactories().get

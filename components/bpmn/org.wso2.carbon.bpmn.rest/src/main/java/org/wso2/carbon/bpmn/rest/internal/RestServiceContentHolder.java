@@ -57,7 +57,7 @@ public class RestServiceContentHolder {
      *
      * @param bpmnEngineService Activiti BPMNEngineService.
      */
-    protected void setBpmnEngineService(BPMNEngineService bpmnEngineService) {
+    public void setBpmnEngineService(BPMNEngineService bpmnEngineService) {
         this.engineService = bpmnEngineService;
     }
 
@@ -66,7 +66,7 @@ public class RestServiceContentHolder {
         return restService;
     }
 
-    protected void setRestService(BPMNRestService restService) {
+    public void setRestService(BPMNRestService restService) {
         this.restService = restService;
     }
 }
