@@ -34,7 +34,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Deployer implementation for BPMN Packages. This deployer is associated with bpmn directory
@@ -86,15 +86,6 @@ public class BPMNDeployer extends AbstractDeployer {
 	    // Deployment logic is dependent on whether a given node is a worker node or not.Since process
 	    // information is shared though a persistence db and process is stored into the database, there
 	    // is no need to deploy process in worker nodes.
-
-        ActivitiDAO dao = new ActivitiDAO();
-        SubstitutesDataModel dataModel = new SubstitutesDataModel();
-        dataModel.setEnabled(true);
-        dataModel.setSubstitute("vinod");
-        dataModel.setUser("admin");
-        dataModel.setSubstitutionEnd(new Date(12));
-        dataModel.setSubstitutionStart(new Date(14));
-        System.out.println("--------------------row count:" + dao.insertSubstitute(dataModel));
         // Worker nodes cannot deploy BPMN packages, hence return
         if (isWorkerNode()) {
             return;

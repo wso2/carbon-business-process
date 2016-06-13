@@ -32,7 +32,7 @@ import java.util.List;
  * Custom parse handler.
  * Add the UserSubstitutionTaskListener task listener for all the user tasks at the task creation phase.
  */
-public class AddTaskListnerParseHandler implements BpmnParseHandler{
+public class UserTaskParseHandler implements BpmnParseHandler{
 
     /**
      * Decides which elements to intercept while parsing.

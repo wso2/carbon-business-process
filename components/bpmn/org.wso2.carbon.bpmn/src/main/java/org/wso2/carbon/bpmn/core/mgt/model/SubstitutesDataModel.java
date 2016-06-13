@@ -16,7 +16,7 @@
  */
 package org.wso2.carbon.bpmn.core.mgt.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class SubstitutesDataModel {
 
@@ -25,7 +25,43 @@ public class SubstitutesDataModel {
     private Date substitutionStart;
     private Date substitutionEnd;
     private boolean enabled;
+    private String transitiveSub;
+    private Date created;
+    private Date updated;
+
+    public int getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(int tenantId) {
+        this.tenantId = tenantId;
+    }
+
     private int tenantId;
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getTransitiveSub() {
+        return transitiveSub;
+    }
+
+    public void setTransitiveSub(String transitiveSub) {
+        this.transitiveSub = transitiveSub;
+    }
 
     public String getUser() {
         return user;
@@ -67,21 +103,12 @@ public class SubstitutesDataModel {
         this.enabled = enabled;
     }
 
-    public int getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(int tenantId) {
-        this.tenantId = tenantId;
-    }
-
     public String toString() {
 
         return " User=" + user + " \n" +
                 " Substitute= " + substitute +
                 " SubstitutionStart= " + substitutionStart +
                 "SubstitutionEnd=" + substitutionEnd +
-                "Enabled=" + enabled +
-                " tenantID=" + tenantId;
+                "Enabled=" + enabled;
     }
 }

@@ -28,6 +28,7 @@ import org.wso2.carbon.bpmn.core.internal.mapper.SubstitutesMapper;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -158,6 +159,11 @@ public class ActivitiDAO {
         return rowCount;
     }
 
+    /**
+     * Insert new substitute record. Transitive substitute field is not updated here.
+     * @param substitutesDataModel
+     * @return inserted row count. Ideally should return 1.
+     */
     public int insertSubstitute(final SubstitutesDataModel substitutesDataModel){
 
         CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
@@ -170,10 +176,62 @@ public class ActivitiDAO {
         Integer rowCount = managementService.executeCustomSql(customSqlExecution);
 
         if(log.isDebugEnabled()) {
-            log.debug("insertDeploymentMetaDataModel" + rowCount);
+            log.debug("New substitute addition, row count: " + rowCount);
         }
 
         return rowCount;
+    }
+
+    /**
+     * Return substitute information for the given user
+     * @param user
+     * @param tenantId
+     * @return SubstituteDataModel or null if not exist
+     */
+    public SubstitutesDataModel selectSubstituteInfo(final String user, final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper,  SubstitutesDataModel > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, SubstitutesDataModel>(SubstitutesMapper.class) {
+                    public  SubstitutesDataModel  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectSubstitute(user, tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Update the substitute record for given user
+     * @param substitutesDataModel
+     * @return updated row count. Ideally should return 1.
+     */
+    public int updateSubstituteInfo(final SubstitutesDataModel substitutesDataModel) {
+        substitutesDataModel.setUpdated(new Date());
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.updateSubstitute(substitutesDataModel);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the row count where the given user acts as the substitute
+     * @param substitute
+     * @param tenantId
+     * @return row count
+     */
+    public int countUserAsSubstitute(final String substitute, final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.countUserAsSubstitute(substitute, tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
     }
 
 }

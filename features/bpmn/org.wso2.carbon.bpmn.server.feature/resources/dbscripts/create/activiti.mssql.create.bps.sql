@@ -1,0 +1,12 @@
+create table ACT_BPS_SUBSTITUTES (
+  USER nvarchar(255) not null,
+  SUBSTITUTE nvarchar(255) not null,
+  SUBSTITUTION_START datetime not null,
+  SUBSTITUTION_END datetime,
+  ENABLED tinyint default 1,
+  CREATED datetime,
+  UPDATED datetime,
+  TRANSITIVE_SUBSTITUTE nvarchar(255),
+  TENANT_ID int NOT NULL,
+  primary key (USER, TENANT_ID)
+);

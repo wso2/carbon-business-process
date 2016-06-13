@@ -16,16 +16,65 @@
  */
 package org.wso2.carbon.bpmn.core.internal.mapper;
 
-import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.*;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
 public interface SubstitutesMapper {
 
     final String INSERT_SUBSTITUTE = "INSERT INTO " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  (USER, , SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TENANT_ID) VALUES ('user', 'substitute', 0, 0, 1, 1)";
+            "  (USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, CREATED, UPDATED, TENANT_ID) VALUES (#{user}, #{substitute}, #{substitutionStart}, #{substitutionEnd}, #{enabled}, #{transitiveSub}, #{created}, #{updated}, (#tenantId))";
+    final String SELECT_ALL_BY_USER =
+            "SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
+                    " WHERE USER = #{user} AND TENANT_ID = #{tenantId}";
+    final String UPDATE_ENABLED = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
+            "  SET ENABLED = #{enabled} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+    final String UPDATE = "<script>" + " UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " SET "
+            + "<if test=\"substitute != null\">" + " SUBSTITUTE = #{substitute}, </if> "
+            + "<if test=\"substitutionStart != null\">\" + \" SUBSTITUTION_START = #{substitutionStart}, </if>"
+            + "<if test=\"substitutionEnd != null\">\" + \" SUBSTITUTION_END = #{substitutionEnd}, </if>"
+            + "<if test=\"enabled != null\">\" + \" ENABLED = #{enabled}, </if>"
+            + "<if test=\"transitiveSub != null\">\" + \" TRANSITIVE_SUBSTITUTE = #{transitiveSub}, </if>"
+            + "UPDATED = #{updated} "
+            + "WHERE USER = #{user} AND TENANT_ID=#{tenantId}" + "</script>";
+    final String COUNT_USER_AS_SUBSTITUTE = "SELECT COUNT(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE SUBSTITUTE = #{substitute} AND TENANT_ID = #{tenantId}";
 
+    /**
+     * Insert new row in ACT_BPS_SUBSTITUTES table
+     * @param substitutesDataModel
+     * @return
+     */
     @Insert(INSERT_SUBSTITUTE)
     int insertSubstitute(SubstitutesDataModel substitutesDataModel);
+
+    /**
+     * Select the SubstitutesDataModel from the given tenantId and username
+     * @param user assignee that required the substitution info
+     * @return the substitution info for the given user
+     */
+    @Select(SELECT_ALL_BY_USER)
+    @Results(value = {
+            @Result(property = "user", column = "USER"),
+            @Result(property = "substitute", column = "SUBSTITUTE"),
+            @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
+            @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
+            @Result(property = "enabled", column = "ENABLED"),
+            @Result(property = "tenantId", column = "TENANT_ID"),
+            @Result(property = "transitiveSub", column = "TRANSITIVE_SUBSTITUTE"),
+            @Result(property = "created", column = "CREATED"),
+            @Result(property = "updated", column = "UPDATED")
+    })
+    SubstitutesDataModel selectSubstitute( @Param("user") String user, @Param("tenantId") int tenantId);
+
+    /**
+     * Update the ACT_BPS_SUBSTITUTES table with all the none null values
+     * @param substitutesDataModel
+     * @return number of rows updated
+     */
+    @Update(UPDATE)
+    int updateSubstitute(SubstitutesDataModel substitutesDataModel);
+
+    @Select(COUNT_USER_AS_SUBSTITUTE)
+    int countUserAsSubstitute( @Param("substitute") String substitute, @Param("tenantId") int tenantId);
 
 }

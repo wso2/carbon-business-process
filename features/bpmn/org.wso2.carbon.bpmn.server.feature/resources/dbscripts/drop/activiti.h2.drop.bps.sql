@@ -1,0 +1,1 @@
+drop index if exists ACT_IDX_SUBSTITUTES_USER;
