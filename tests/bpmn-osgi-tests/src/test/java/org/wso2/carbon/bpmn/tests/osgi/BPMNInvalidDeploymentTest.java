@@ -28,7 +28,6 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
@@ -36,11 +35,11 @@ import org.wso2.carbon.deployment.engine.exception.CarbonDeploymentException;
 import org.wso2.carbon.osgi.test.util.CarbonSysPropConfiguration;
 import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Deploying an invalid bpmn artifact to bpmnDeployer
@@ -52,8 +51,6 @@ public class BPMNInvalidDeploymentTest {
     @Inject
     private BPMNEngineService bpmnEngineService;
 
-    @Inject
-    private BPMNDeployer bpmnDeployer;
 
     @Configuration
     public Option[] createConfiguration() {
@@ -73,9 +70,10 @@ public class BPMNInvalidDeploymentTest {
     }
 
     @Test
-    public void testNonExistentBarDeployment() throws CarbonDeploymentException {
+    public void testNonExistentBarDeployment() {
         log.info("[Test] Non existent deployment test - sampleBPMN.bar : Started");
         String exceptionMessage = "";
+        boolean isFailed = false;
         try {
             File ab = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "sampleBPMN.bar")
                     .toString());
@@ -83,35 +81,42 @@ public class BPMNInvalidDeploymentTest {
             ArtifactType artifactType = new ArtifactType<>("bar");
             artifact.setKey("emptyBPMN.bar");
             artifact.setType(artifactType);
-            exceptionMessage = "Artifact " + artifact.getName() + "doesn't exists.";
-            bpmnDeployer.deploy(artifact);
+            exceptionMessage = "Artifact " + artifact.getName() + " doesn't exists.";
+            bpmnEngineService.getBpmnDeployer().deploy(artifact);
 
         } catch (Exception e) {
-            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent bar deployment.");
+            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent " +
+                    "bar deployment.");
+            isFailed = true;
         }
+        Assert.assertTrue(isFailed, "Deployment method didn't throw CarbonDeploymentException");
         log.info("[Test] Non existent deployment test  - sampleBPMN.bar : Completed");
     }
 
     @Test(priority = 1)
-    public void testInvalidExtensionBarDeployment() throws CarbonDeploymentException{
+    public void testInvalidExtensionBarDeployment() {
+        final String INVALID_FILE = "HelloWorld.zip";
         log.info("[Test] Invalid deployment test - HelloWorld.zip : Started");
         String exceptionMessage = "";
+        boolean isFailed = false;
         try {
-            File ab = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "HelloWorld.zip")
+            File ab = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), INVALID_FILE)
                     .toString());
             Artifact artifact = new Artifact(ab);
             ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("HelloWorld.zip");
+            artifact.setKey(INVALID_FILE);
             artifact.setType(artifactType);
             exceptionMessage = "Unsupported Artifact type. Support only .bar files.";
-            bpmnDeployer.deploy(artifact);
+            bpmnEngineService.getBpmnDeployer().deploy(artifact);
 
-        } catch (Exception e) {
-            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non bar deployment.");
+        } catch (CarbonDeploymentException e) {
+            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non bar " +
+                    "deployment.");
+            isFailed = true;
         }
+        Assert.assertTrue(isFailed, "Deployment method didn't throw CarbonDeploymentException");
         log.info("[Test] Invalid deployment test  - HelloWorld.zip : Completed");
     }
-
 
 
 }

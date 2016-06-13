@@ -28,15 +28,14 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.deployment.engine.exception.CarbonDeploymentException;
 import org.wso2.carbon.osgi.test.util.CarbonSysPropConfiguration;
 import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Invalid undeployment for bpmn artifacts
@@ -46,8 +45,6 @@ import java.util.List;
 public class BPMNInvalidUndeploymentTest {
     private static final Log log = LogFactory.getLog(BPMNInvalidUndeploymentTest.class);
 
-    @Inject
-    private BPMNDeployer bpmnDeployer;
     @Inject
     private BPMNEngineService bpmnEngineService;
 
@@ -74,9 +71,10 @@ public class BPMNInvalidUndeploymentTest {
         String exceptionMessage = "";
         try {
             exceptionMessage = "File" + "sampleBPMN.bar" + "does not exist in activiti metadata registry";
-            bpmnDeployer.undeploy("sampleBPMN.bar");
+            bpmnEngineService.getBpmnDeployer().undeploy("sampleBPMN.bar");
         } catch (Exception e) {
-            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent undeployment.");
+            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent " +
+                    "undeployment.");
         }
         log.info("[Test] Non existent undeployment test - sampleBPMN.bar : Completed");
     }
@@ -86,9 +84,10 @@ public class BPMNInvalidUndeploymentTest {
         log.info("[Test] Undeploying an already undeployed artifact test - HelloWorld.bar : Started");
         String exceptionMessage = "";
         try {
-            bpmnDeployer.undeploy("HelloWorld.bar");
+            bpmnEngineService.getBpmnDeployer().undeploy("HelloWorld.bar");
         } catch (Exception e) {
-            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent undeployment.");
+            Assert.assertTrue(exceptionMessage.equals(e.getMessage()), "Valid exception not thrown for non existent " +
+                    "undeployment.");
         }
         log.info("[Test]  Undeploying an already undeployed artifact test - sampleBPMN.bar : Completed");
 

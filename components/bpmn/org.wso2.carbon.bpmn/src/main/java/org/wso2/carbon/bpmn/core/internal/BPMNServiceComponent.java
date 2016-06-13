@@ -166,6 +166,7 @@ public class BPMNServiceComponent {
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
 
             BPMNDeployer deployer = new BPMNDeployer();
+            bpmnEngineService.setBpmnDeployer(deployer);
             bundleContext.registerService(Deployer.class.getName(), deployer, null);
 
         } catch (Throwable t) {
