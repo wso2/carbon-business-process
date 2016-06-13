@@ -176,7 +176,7 @@ public class SOAPTask implements JavaDelegate {
             httpTransportHeaders.addHeader(Constants.HTTP_TRANSFER_ENCODING, transferEncoding);
 
             if (transportHeaders != null) {
-                String headerContent = headers.getValue(execution).toString();
+                String headerContent = transportHeaders.getValue(execution).toString();
                 transportHeaderList = headerContent.split(",");
                 for (String header : transportHeaderList) {
                     String pair[] = header.split(":");
