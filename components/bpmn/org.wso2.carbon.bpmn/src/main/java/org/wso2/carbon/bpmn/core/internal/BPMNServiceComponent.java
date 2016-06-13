@@ -21,6 +21,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -232,18 +233,22 @@ public class BPMNServiceComponent {
                     "<TestPart>HEADER11</TestPart></ns1:hello>");
             taskVariables.put("soapVersion" , "soap11");
             taskVariables.put("httpConnection", "");*/
-            runtimeService.startProcessInstanceByKey("myProcess", taskVariables);
+            String pid = runtimeService.startProcessInstanceByKey("myProcess", taskVariables).getId();
 
 
-            log.info("Process Instance started with expressions");
+            log.info("Process Instance started with expressions & fixed values");
 
             TaskService taskService = eng.getTaskService();
-            List<Task> tasks = taskService.createTaskQuery().list();
+            TaskQuery taskQuery =  taskService.createTaskQuery();
+            taskQuery.processInstanceId(pid);
+            List<Task> tasks = taskQuery.list();
             for (Task task : tasks) {
                 log.info("Task available: " + task.getName());
                 log.info(" -------------------------------");
                 log.info("Doc:  " + task.getDescription());
             }
+            customDeployer.undeploy("SoapInvoker.bar");
+
         } catch (Throwable t) {
             log.error("Error initializing bpmn component ", t);
         }
