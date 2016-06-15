@@ -16,12 +16,8 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-import org.activiti.engine.ProcessEngine;
+
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -36,23 +32,17 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.core.BPMNEngineServiceImpl;
 import org.wso2.carbon.bpmn.core.config.ProcessEngineConfiguration;
 import org.wso2.carbon.bpmn.core.config.YamlBasedProcessEngineConfigurationFactory;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.datasource.core.api.DataSourceManagementService;
 import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
-import org.wso2.carbon.deployment.engine.Artifact;
-import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.deployment.engine.Deployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.naming.Context;
 import javax.naming.NamingException;
-
 
 /**
  * BPMN Service Component.
@@ -80,12 +70,16 @@ public class BPMNServiceComponent {
             unbind = "unregisterCarbonRealm"
     )
     public void registerCarbonRealm(RealmService carbonRealmService) {
-        log.info("register CarbonRealmService...");
+        if (log.isDebugEnabled()) {
+            log.debug("register CarbonRealmService...");
+        }
         BPMNServerHolder.getInstance().registerCarbonRealmService(carbonRealmService);
     }
 
     public void unregisterCarbonRealm(RealmService carbonRealmService) {
-        log.info("Unregister CarbonRealmService...");
+        if (log.isDebugEnabled()) {
+            log.debug("Unregister CarbonRealmService...");
+        }
     }
 
     @Reference(
@@ -96,12 +90,16 @@ public class BPMNServiceComponent {
             unbind = "unRegisterJNDIContext")
 
     public void registerJNDIContext(JNDIContextManager contextManager) {
-        log.info("register JNDI Context");
+        if (log.isDebugEnabled()) {
+            log.debug("register JNDI Context");
+        }
         this.jndiContextManager = contextManager;
     }
 
     public void unRegisterJNDIContext(JNDIContextManager contextManager) {
-        log.info("Unregister JNDI Context");
+        if (log.isDebugEnabled()) {
+            log.debug("Unregister JNDI Context");
+        }
     }
 
     @Reference(
@@ -111,12 +109,16 @@ public class BPMNServiceComponent {
             policy = ReferencePolicy.DYNAMIC,
             unbind = "unRegisterDataSourceService")
     public void registerDataSourceService(DataSourceService datasource) {
-        log.info("register Datasource service");
+        if (log.isDebugEnabled()) {
+            log.debug("register Datasource service");
+        }
         this.datasourceService = datasource;
     }
 
     public void unRegisterDataSourceService(DataSourceService datasource) {
-        log.info("unregister datasource service");
+        if (log.isDebugEnabled()) {
+            log.debug("unregister datasource service");
+        }
     }
 
     @Reference(
@@ -128,17 +130,20 @@ public class BPMNServiceComponent {
 
     public void registerDataSourceManagementService(
             DataSourceManagementService datasourceMgtService) {
-        log.info("register Datasource Management service");
+        if (log.isDebugEnabled()) {
+            log.debug("register Datasource Management service");
+        }
         this.datasourceManagementService = datasourceMgtService;
     }
 
     public void unRegisterDataSourceManagementService(DataSourceManagementService datasource) {
-        log.info("unregister datasource service");
+        if (log.isDebugEnabled()) {
+            log.debug("unregister datasource service");
+        }
     }
 
     @Activate
     protected void activate(ComponentContext ctxt) {
-        log.info("BPMN core component activator...");
         try {
             this.bundleContext = ctxt.getBundleContext();
             registerJNDIContextForActiviti();
@@ -161,102 +166,18 @@ public class BPMNServiceComponent {
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
 
             BPMNDeployer deployer = new BPMNDeployer();
+            bpmnEngineService.setBpmnDeployer(deployer);
             bundleContext.registerService(Deployer.class.getName(), deployer, null);
-
-            // Create metadata table for deployments
-//            DataSourceHandler dataSourceHandler = new DataSourceHandler();
-//            dataSourceHandler
-//                    .initDataSource(ActivitiEngineBuilder.getInstance().getDataSourceJndiName());
-//            dataSourceHandler.closeDataSource();
-
-           /* BPMNDeployer customDeployer = new BPMNDeployer();
-            customDeployer.init();
-
-            File userArtifact = new File("/home/natasha/Downloads/RestCaller.bar");
-            Artifact artifact = new Artifact(userArtifact);
-            ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("RestCaller.bar");
-            artifact.setType(artifactType);
-            customDeployer.deploy(artifact);
-
-            log.info("Artifact Deployed");
-
-            ProcessEngine eng = bpmnEngineService.getProcessEngine();
-            RuntimeService runtimeService = eng.getRuntimeService();
-
-            runtimeService.startProcessInstanceByKey("restProcess");
-            log.info("Process Instance started");*/
-
-            BPMNDeployer customDeployer = new BPMNDeployer();
-            customDeployer.init();
-
-            ProcessEngine eng = bpmnEngineService.getProcessEngine();
-            RuntimeService runtimeService = eng.getRuntimeService();
-
-            ///// Without expressions just string values --> works fine with fixed string values
-           /* File ab = new File("/home/natasha/workspace/testSample/deployment/testprocess.bar");
-            Artifact artifact = new Artifact(ab);
-            ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("testprocess.bar");
-            artifact.setType(artifactType);
-            customDeployer.deploy(artifact);
-            log.info("Artifact Deployed");
-            runtimeService.startProcessInstanceByKey("testprocess");
-
-            log.info("Process Instance started");
-
-            TaskService taskService = eng.getTaskService();
-            List<Task> tasks = taskService.createTaskQuery().list();
-            for (Task task : tasks) {
-                log.info("Task available: " + task.getName());
-                log.info(" -------------------------------");
-                log.info("Doc:  " + task.getDescription());
-            }*/
-
-            ////////////////////////////////////////////////////////
-
-            ///// Expressions ---> Works fine with expressions
-          //  File ab = new File("/home/natasha/Documents/SoapInvoker.bar");
-            File ab = new File("/home/natasha/workspace/SoapInvoker/deployment/SoapInvoker.bar");
-            Artifact artifact = new Artifact(ab);
-            ArtifactType artifactType = new ArtifactType<>("bar");
-            artifact.setKey("SoapInvoker.bar");
-            artifact.setType(artifactType);
-            customDeployer.deploy(artifact);
-            log.info("Artifact Deployed");
-            Map<String, Object> taskVariables = new HashMap<>();
-            taskVariables.put("serviceURL", "http://10.100.4.192:9764/services/HelloService");
-            taskVariables.put("payload" , "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>\" +\n" +
-                    "                \"<TestPart>Hello</TestPart></ns1:hello>");
-            taskVariables.put("httpTransferEncoding" , "chunked");
-           /* taskVariables.put("headers", "<ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'>" +
-                    "<TestPart>HEADER11</TestPart></ns1:hello>");
-            taskVariables.put("soapVersion" , "soap11");
-            taskVariables.put("httpConnection", "");*/
-            String pid = runtimeService.startProcessInstanceByKey("myProcess", taskVariables).getId();
-
-
-            log.info("Process Instance started with expressions & fixed values");
-
-            TaskService taskService = eng.getTaskService();
-            TaskQuery taskQuery =  taskService.createTaskQuery();
-            taskQuery.processInstanceId(pid);
-            List<Task> tasks = taskQuery.list();
-            for (Task task : tasks) {
-                log.info("Task available: " + task.getName());
-                log.info(" -------------------------------");
-                log.info("Doc:  " + task.getDescription());
-            }
-            customDeployer.undeploy("SoapInvoker.bar");
-
         } catch (Throwable t) {
-            log.error("Error initializing bpmn component ", t);
+            log.error("Error initializing bpmn component " +t );
         }
     }
 
     @Deactivate
     protected void deactivate(ComponentContext ctxt) {
-        log.info("Stopping the BPMN core component...");
+        if (log.isDebugEnabled()) {
+            log.debug("Stopping the BPMN core component...");
+        }
         ProcessEngines.destroy();
     }
 
@@ -267,7 +188,7 @@ public class BPMNServiceComponent {
 
         Context subcontext = context.createSubcontext("java:comp/jdbc");
         subcontext.bind(BPMNConstants.BPMN_DB_CONTEXT_NAME,
-                        datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
+                datasourceService.getDataSource(BPMNConstants.BPMN_DB_NAME));
     }
 
 }

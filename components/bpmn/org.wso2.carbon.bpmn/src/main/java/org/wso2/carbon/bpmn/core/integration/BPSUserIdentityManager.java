@@ -20,7 +20,6 @@ package org.wso2.carbon.bpmn.core.integration;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
-//import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -30,36 +29,27 @@ import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
-import org.wso2.carbon.security.caas.user.core.bean.Role;
 import org.wso2.carbon.security.caas.user.core.claim.Claim;
 import org.wso2.carbon.security.caas.user.core.context.AuthenticationContext;
 import org.wso2.carbon.security.caas.user.core.exception.AuthenticationFailure;
 import org.wso2.carbon.security.caas.user.core.exception.ClaimManagerException;
 import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
-import org.wso2.carbon.security.caas.user.core.store.AuthorizationStore;
 import org.wso2.carbon.security.caas.user.core.store.CredentialStore;
 import org.wso2.carbon.security.caas.user.core.store.IdentityStore;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 
 
 /**
- *
+ * CASS based User Identity Manager.
  */
 public class BPSUserIdentityManager extends UserEntityManager {
-
-    private static Logger log = LoggerFactory.getLogger(BPSUserIdentityManager.class);
-    private IdentityStore identityStore;
-    private CredentialStore credentialStore;
-    private AuthorizationStore authorizationStore;
 
     //list of Claim URIs
     private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
@@ -69,15 +59,16 @@ public class BPSUserIdentityManager extends UserEntityManager {
     private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/email";
     private static final String ROLE_CLAIM_URI = "http://wso2.org/claims/role";
 
+    private static Logger log = LoggerFactory.getLogger(BPSUserIdentityManager.class);
+
+    private IdentityStore identityStore;
+    private CredentialStore credentialStore;
+
     private List<String> claims = new ArrayList<String>();
 
     public BPSUserIdentityManager() {
-
         this.credentialStore = BPMNServerHolder.getInstance().getCarbonRealmService().getCredentialStore();
         this.identityStore = BPMNServerHolder.getInstance().getCarbonRealmService().getIdentityStore();
-        this.authorizationStore = BPMNServerHolder.getInstance().getCarbonRealmService().getAuthorizationStore();
-
-
     }
 
     @Override
@@ -93,19 +84,17 @@ public class BPSUserIdentityManager extends UserEntityManager {
     }
 
     @Override
-    public UserEntity findUserById(String userId) {
+    public UserEntity findUserById(String userName) {
         try {
-            String userName = getUserNameForGivenUserId(userId);
             org.wso2.carbon.security.caas.user.core.bean.User user = identityStore.getUser(userName);
             //if user exists
             if (user != null) {
                 // create claim list
                 claims.add(FIRST_NAME_CLAIM_URI);
                 claims.add(LAST_NAME_CLAIM_URI);
-                //todo: Add when available in carbon-security
                 claims.add(EMAIL_CLAIM_URI);
 
-                UserEntity userEntity = new UserEntity(userId);
+                UserEntity userEntity = new UserEntity(userName);
                 List<Claim> userClaimList = user.getClaims(claims);
                 if (userClaimList != null) {
                     for (Claim claim : userClaimList) {
@@ -116,7 +105,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
                         if (claim.getClaimURI().equals(LAST_NAME_CLAIM_URI)) {
                             String lastName = claim.getValue();
                             userEntity.setLastName(lastName);
-                        }//todo: uncomment when c5 user core has this claim
+                        }
                         if (claim.getClaimURI().equals(EMAIL_CLAIM_URI)) {
                             String email = claim.getValue();
                             userEntity.setEmail(email);
@@ -128,12 +117,12 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 }
                 return userEntity;
             } else {
-                log.error("No user exist with userId:" + userId);
+                log.error("No user exist with userId:" + userName);
                 return null;
             }
 
         } catch (ClaimManagerException | IdentityStoreException | UserNotFoundException e) {
-            log.error("Error retrieving user info by id for: " + userId, e);
+            log.error("Error retrieving user info by id for: " + userName, e);
             return null;
         }
     }
@@ -279,24 +268,26 @@ public class BPSUserIdentityManager extends UserEntityManager {
     }
 
     @Override
-    public List<Group> findGroupsByUser(String userId) {
+    public List<Group> findGroupsByUser(String userName) {
 
         List<Group> groups = new ArrayList<Group>();
         try {
-            String userName = getUserNameForGivenUserId(userId);
-            if (!userName.isEmpty()) { // updated according to c5 user-core:set of roles belongs to a group
-                List<Role> roles = authorizationStore.getRolesOfUser(userId, identityStore.getUser(userName).
-                        getIdentityStoreId());
-                for (Role role : roles) {
-                    List<org.wso2.carbon.security.caas.user.core.bean.Group> groupList =
-                            authorizationStore.getGroupsOfRole(role.getRoleId(), role.getAuthorizationStoreId());
-                    groups = groupList.stream().
-                            map(group -> new GroupEntity(group.getGroupId())).collect(Collectors.toList());
+            if (!userName.isEmpty()) {
+                org.wso2.carbon.security.caas.user.core.bean.User user = identityStore.getUser(userName);
+                // updated according to c5 user-core:set of roles belongs to a group
+                List<org.wso2.carbon.security.caas.user.core.bean.Group> groupsOfUser = identityStore
+                        .getGroupsOfUser(user.getUserId(), user.getIdentityStoreId());
+                if (groupsOfUser != null) {
+                    GroupEntity groupEntity;
+                    for (org.wso2.carbon.security.caas.user.core.bean.Group group : groupsOfUser) {
+                        groupEntity = new GroupEntity(group.getGroupId());
+                        groupEntity.setName(group.getName());
+                        groups.add(groupEntity);
+                    }
                 }
-
             }
         } catch (IdentityStoreException e) {
-            String msg = "Failed to get roles of the user: " + userId + ". Returning an empty roles list.";
+            String msg = "Failed to get roles of the user: " + userName + ". Returning an empty roles list.";
             log.error(msg, e);
         } catch (Exception e) {
             log.error("error retrieving user tenant info", e);
@@ -324,9 +315,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
     }
 
     @Override
-    public Boolean checkPassword(String userId, String password) {
+    public Boolean checkPassword(String userName, String password) {
         boolean authStatus = false;
-        String userName = getUserNameForGivenUserId(userId);
         NameCallback usernameCallback = new NameCallback("username");
         PasswordCallback passwordCallback = new PasswordCallback("password", false);
         usernameCallback.setName(userName);
@@ -350,35 +340,7 @@ public class BPSUserIdentityManager extends UserEntityManager {
                     "Username : " + userName +
                     ", Authentication State : " + authStatus);
         }
-
         return authStatus;
-
-    }
-
-
-    // todo: get matching username for userid
-    private String getUserNameForGivenUserId(String userId) {
-        String userName = "";
-        try { //todo: need to set length to -1
-            List<org.wso2.carbon.security.caas.user.core.bean.User> users = identityStore.listUsers("%", 0, 10);
-            if (!users.isEmpty()) {
-                Optional<org.wso2.carbon.security.caas.user.core.bean.User> matchingObjects = users.stream().
-                        filter(u -> u.getUserId().equals(userId)).
-                        findFirst();
-                if (matchingObjects.isPresent()) {
-                    org.wso2.carbon.security.caas.user.core.bean.User filteredUser = matchingObjects.get();
-                    userName = filteredUser.getUserName();
-                } else {
-                    log.info("No matching user found for userId: " + userId);
-                }
-
-            }
-
-        } catch (IdentityStoreException e) {
-            String msg = "Unable to get username for userId : " + userId;
-            log.error(msg, e);
-        }
-        return userName;
     }
 
 

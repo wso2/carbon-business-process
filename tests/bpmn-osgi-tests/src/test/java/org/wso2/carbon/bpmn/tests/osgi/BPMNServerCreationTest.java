@@ -32,11 +32,11 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.kernel.utils.CarbonServerInfo;
 import org.wso2.carbon.osgi.test.util.CarbonSysPropConfiguration;
 import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
+import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -53,6 +53,9 @@ public class BPMNServerCreationTest {
 
     @Inject
     private BPMNEngineService bpmnEngineService;
+
+    @Inject
+    private RealmService realmService;
 
     @Inject
     private CarbonServerInfo carbonServerInfo;
@@ -84,5 +87,13 @@ public class BPMNServerCreationTest {
         Assert.assertNotNull(name, "processEngine name is null.");
         log.info("[Test] Process engine creation : Completed..");
     }
+
+//    public void createUser() {
+//        CredentialStore credentialStore = realmService.getCredentialStore();
+//        IdentityStore identityStore = realmService.getIdentityStore();
+//        AuthorizationStore authorizationStore = realmService.getAuthorizationStore();
+//        ClaimManager claimManager = realmService.getClaimManager();
+//        authorizationStore.
+//    }
 
 }

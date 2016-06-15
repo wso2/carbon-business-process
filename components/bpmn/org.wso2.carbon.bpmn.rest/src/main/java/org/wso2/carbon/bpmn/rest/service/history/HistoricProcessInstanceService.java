@@ -30,10 +30,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.Comment;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.rest.common.RequestUtil;
@@ -49,7 +45,6 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstancePaginateLi
 import org.wso2.carbon.bpmn.rest.model.history.HistoricProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.CommentResponseCollection;
-import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
 import java.io.ByteArrayOutputStream;
@@ -60,47 +55,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
  *
  */
-@Component(
-        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricProcessInstanceService",
-        service = Microservice.class,
-        immediate = true)
-@Path("/historic-process-instances")
-public class HistoricProcessInstanceService implements Microservice {
+//@Component(
+//        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricProcessInstanceService",
+//        service = Microservice.class,
+//        immediate = true)
+//@Path("/historic-process-instances")
+public class HistoricProcessInstanceService {
 
     private static final Logger log = LoggerFactory.getLogger(HistoricProcessInstanceService.class);
 
-//    @Reference(
-//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-//            service = BPMNEngineService.class,
-//            cardinality = ReferenceCardinality.MANDATORY,
-//            policy = ReferencePolicy.DYNAMIC,
-//            unbind = "unRegisterBPMNEngineService")
-//    public void setBpmnEngineService(BPMNEngineService engineService) {
-//        log.info("Setting BPMN engine " + engineService);
-//
-//    }
-//
-//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-//        log.info("Unregister BPMNEngineService..");
-//    }
-
     private static final List<String> allPropertiesList = new ArrayList<>();
-    private static Map<String, QueryProperty> allowedSortProperties =
-            new HashMap<String, QueryProperty>();
+    private static Map<String, QueryProperty> allowedSortProperties = new HashMap();
 
     static {
         allPropertiesList.add("processInstanceId");
@@ -139,21 +109,7 @@ public class HistoricProcessInstanceService implements Microservice {
         allowedSortProperties.put("tenantId", HistoricProcessInstanceQueryProperty.TENANT_ID);
     }
 
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @Deactivate
-    protected void deactivate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @GET
-    @Path("/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getHistoricProcessInstances(@Context Request request) {
+    public Response getHistoricProcessInstances(Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -245,34 +201,26 @@ public class HistoricProcessInstanceService implements Microservice {
                 .build();
     }
 
-    @GET
-    @Path("/{process-instance-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId,
-                                       @Context Request request) {
+    //    @GET
+//    @Path("/{process-instance-id}")
+//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+//    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getProcessInstance(String processInstanceId, Request request) {
         HistoricProcessInstanceResponse historicProcessInstanceResponse = new RestResponseFactory()
                 .createHistoricProcessInstanceResponse(
                         getHistoricProcessInstanceFromRequest(processInstanceId), request.getUri());
         return Response.ok().entity(historicProcessInstanceResponse).build();
     }
 
-    @DELETE
-    @Path("/{process-instance-id}")
-    public Response deleteProcessInstance(
-            @PathParam("process-instance-id") String processInstanceId) {
+
+    public Response deleteProcessInstance(String processInstanceId) {
         HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         historyService.deleteHistoricProcessInstance(processInstanceId);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
-    @GET
-    @Path("/{process-instance-id}/identity-links")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getProcessIdentityLinks(
-            @PathParam("process-instance-id") String processInstanceId,
-            @Context Request request) {
+
+    public Response getProcessIdentityLinks(String processInstanceId, Request request) {
 
         HistoryService historyService = RestServiceContentHolder.getInstance().getRestService().getHistoryService();
         List<HistoricIdentityLink> identityLinks =
@@ -291,11 +239,8 @@ public class HistoricProcessInstanceService implements Microservice {
         return Response.ok().build();
     }
 
-    @GET
-    @Path("/{process-instance-id}/variables/{variable-name}/data")
-    public Response getVariableData(@PathParam("process-instance-id") String processInstanceId,
-                                    @PathParam("variable-name") String variableName,
-                                    @Context Request request) {
+
+    public Response getVariableData(String processInstanceId, String variableName, Request request) {
 
         try {
 
@@ -327,11 +272,7 @@ public class HistoricProcessInstanceService implements Microservice {
         }
     }
 
-    @GET
-    @Path("/{process-instance-id}/comments")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getComments(@PathParam("process-instance-id") String processInstanceId,
-                                @Context Request request) {
+    public Response getComments(String processInstanceId, Request request) {
         TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         List<CommentResponse> commentResponseList = new RestResponseFactory()
@@ -342,12 +283,7 @@ public class HistoricProcessInstanceService implements Microservice {
         return Response.ok().entity(commentResponseCollection).build();
     }
 
-    @POST
-    @Path("/{process-instance-id}/comments")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createComment(@PathParam("process-instance-id") String processInstanceId,
-                                  CommentResponse comment, @Context Request request) {
+    public Response createComment(String processInstanceId, CommentResponse comment, Request request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
@@ -365,12 +301,7 @@ public class HistoricProcessInstanceService implements Microservice {
         return Response.ok().status(Response.Status.CREATED).entity(commentResponse).build();
     }
 
-    @GET
-    @Path("/{process-instance-id}/comments/{comment-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getComment(@PathParam("process-instance-id") String processInstanceId,
-                               @PathParam("comment-id") String commentId,
-                               @Context Request request) {
+    public Response getComment(String processInstanceId, String commentId, Request request) {
 
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
         TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
@@ -387,10 +318,8 @@ public class HistoricProcessInstanceService implements Microservice {
         return Response.ok().entity(commentResponse).build();
     }
 
-    @DELETE
-    @Path("/{process-instance-id}/comments/{comment-id}")
-    public Response deleteComment(@PathParam("process-instance-id") String processInstanceId,
-                                  @PathParam("comment-id") String commentId) {
+
+    public Response deleteComment(String processInstanceId, String commentId) {
 
         TaskService taskService = RestServiceContentHolder.getInstance().getRestService().getTaskService();
         HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);

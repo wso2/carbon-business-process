@@ -21,10 +21,6 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
@@ -38,9 +34,6 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
-import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
@@ -53,13 +46,14 @@ import org.wso2.carbon.security.caas.user.core.exception.IdentityStoreException;
 import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
-import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 /**
  * Invoking a bpmn user task
@@ -71,8 +65,6 @@ public class BPMNUserTaskTest {
     private static final Log log = LogFactory.getLog(BPMNUserTaskTest.class);
     @Inject
     private RealmService realmService;
-    @Inject
-    private BPMNDeployer bpmnDeployer;
     @Inject
     private BPMNEngineService bpmnEngineService;
 
@@ -94,16 +86,17 @@ public class BPMNUserTaskTest {
     }
 
     @Test
-    public void testDeployUserTask() throws CarbonDeploymentException {
+    public void testDeployUserTask() throws CarbonDeploymentException, IOException {
         log.info("[Test] Deploying user task - VacationRequest.bar: Started");
         try {
-            File userArtifact = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(), "VacationRequest.bar")
+            File userArtifact = new File(Paths.get(BasicServerConfigurationUtil.getArtifactHome().toString(),
+                    "VacationRequest.bar")
                     .toString());
             Artifact artifact = new Artifact(userArtifact);
             ArtifactType artifactType = new ArtifactType<>("bar");
             artifact.setKey("VacationRequest.bar");
             artifact.setType(artifactType);
-            bpmnDeployer.deploy(artifact);
+            bpmnEngineService.getBpmnDeployer().deploy(artifact);
 
             RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
             List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
@@ -124,16 +117,16 @@ public class BPMNUserTaskTest {
     }
 
     @Test(dependsOnMethods = "testDeployUserTask")
-    public void testInvokeUserTask() throws CarbonDeploymentException,IdentityStoreException,
-            UserNotFoundException,AuthorizationStoreException {
+    public void testInvokeUserTask() throws CarbonDeploymentException, IdentityStoreException,
+            UserNotFoundException, AuthorizationStoreException, IOException {
         log.info("[Test] Invoking User task - VacationRequest.bar : Started");
         try {
             User user = realmService.getIdentityStore().getUser("admin");
-            Assert.assertEquals(user.getUserName().toString(), "admin", "No matching user called admin is found");
+            Assert.assertEquals(user.getUserName(), "admin", "No matching user called admin is found");
             // start process instance
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("employeeName", "John");
-            variables.put("numberOfDays", new Integer(4));
+            variables.put("numberOfDays", 4);
             variables.put("vacationMotivation", "I'm really tired!");
             ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
             RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -142,7 +135,8 @@ public class BPMNUserTaskTest {
 
             //query tasks  assigned to user admin
             TaskService taskService = processEngine.getTaskService();
-            List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getUserName().toString()).list();
+            List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getUserName())
+                    .list();
             if (tasks != null) {
                 Assert.assertEquals(tasks.size(), 1, "Expected task count for admin");
                 Task task = tasks.get(0);
@@ -152,7 +146,7 @@ public class BPMNUserTaskTest {
 
                 taskService.complete(task.getId(), taskVariables);
                 log.info("Task with id : " + task.getId() + " is completed.");
-                List<Task> newTasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getUserName().toString()).list();
+                List<Task> newTasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getUserName()).list();
                 Assert.assertEquals(newTasks.size(), 0, "New expected task count for admin");
 
             } else {
@@ -163,9 +157,8 @@ public class BPMNUserTaskTest {
             log.info("Error in invoking user task", e);
             Assert.fail("Error in invoking user task.");
             throw e;
-        }
-        finally{
-            bpmnDeployer.undeploy("VacationRequest.bar");
+        } finally {
+            bpmnEngineService.getBpmnDeployer().undeploy("VacationRequest.bar");
         }
 
 

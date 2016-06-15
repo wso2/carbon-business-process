@@ -24,10 +24,6 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.impl.UserQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
@@ -40,51 +36,28 @@ import org.wso2.carbon.bpmn.rest.model.identity.UserInfoResponse;
 import org.wso2.carbon.bpmn.rest.model.identity.UserPaginateList;
 import org.wso2.carbon.bpmn.rest.model.identity.UserResponse;
 import org.wso2.carbon.bpmn.rest.service.base.BaseIdentityService;
-import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
 //import org.bouncycastle.ocsp.Req;
 
 /**
  *
  */
-@Component(
-        name = "org.wso2.carbon.bpmn.rest.service.identity.IdentityService",
-        service = Microservice.class,
-        immediate = true)
-//TODO: @PATH
-public class IdentityService extends BaseIdentityService implements Microservice {
-
-    private static final Logger log = LoggerFactory.getLogger(IdentityService.class);
-
-//    @Reference(
-//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-//            service = BPMNEngineService.class,
-//            cardinality = ReferenceCardinality.MANDATORY,
-//            policy = ReferencePolicy.DYNAMIC,
-//            unbind = "unRegisterBPMNEngineService")
-//    public void setBpmnEngineService(BPMNEngineService engineService) {
-//        log.info("Setting BPMN engine " + engineService);
-//
-//    }
-//
-//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-//        log.info("Unregister BPMNEngineService..");
-//    }
+//@Component(
+//        name = "org.wso2.carbon.bpmn.rest.service.identity.IdentityService",
+//        service = Microservice.class,
+//        immediate = true)
+////TODO: @PATH
+public class IdentityService extends BaseIdentityService { //implements Microservice {
 
     protected static final Map<String, QueryProperty> GROUP_PROPERTIES;
     protected static final Map<String, QueryProperty> USER_PROPERTIES;
+    private static final Logger log = LoggerFactory.getLogger(IdentityService.class);
 
     static {
         HashMap<String, QueryProperty> groupMap = new HashMap<>();
@@ -103,25 +76,13 @@ public class IdentityService extends BaseIdentityService implements Microservice
         USER_PROPERTIES = Collections.unmodifiableMap(userMap);
     }
 
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @Deactivate
-    protected void deactivate(BundleContext bundleContext) {
-        // Nothing to do
-    }
 
     /**
      * Get all the groups that match the filters given by query parameters of the request.
      *
      * @return DataResponse
      */
-    @GET
-    @Path("/groups")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DataResponse getGroups(@Context Request request) {
+    public DataResponse getGroups(Request request) {
         GroupQuery query = RestServiceContentHolder.getInstance().getRestService().getIdentityService()
                 .createGroupQuery();
 
@@ -184,11 +145,8 @@ public class IdentityService extends BaseIdentityService implements Microservice
      * @param groupId
      * @return GroupResponse
      */
-    @GET
-    @Path("/groups/{group-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public GroupResponse getGroup(@PathParam("group-id") String groupId,
-                                  @Context Request request) {
+
+    public GroupResponse getGroup(String groupId, Request request) {
         return new RestResponseFactory()
                 .createGroupResponse(getGroupFromRequest(groupId), request.getUri());
     }
@@ -198,10 +156,8 @@ public class IdentityService extends BaseIdentityService implements Microservice
      *
      * @return DataResponse
      */
-    @GET
-    @Path("/users")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DataResponse getUsers(@Context Request request) {
+
+    public DataResponse getUsers(Request request) {
         UserQuery query = RestServiceContentHolder.getInstance().getRestService().getIdentityService()
                 .createUserQuery();
 
@@ -284,16 +240,13 @@ public class IdentityService extends BaseIdentityService implements Microservice
      * @param userId
      * @return
      */
-    @GET
-    @Path("/users/{user-id}/info")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<UserInfoResponse> getUserInfo(@PathParam("user-id") String userId,
-                                              @Context Request request) {
+
+    public List<UserInfoResponse> getUserInfo(String userId, Request request) {
         User user = getUserFromRequest(userId);
 
         return new RestResponseFactory()
                 .createUserInfoKeysResponse(RestServiceContentHolder.getInstance().getRestService()
-                        .getIdentityService().getUserInfoKeys(user.getId()),
+                                .getIdentityService().getUserInfoKeys(user.getId()),
                         user.getId(), request.getUri());
     }
 
@@ -303,10 +256,7 @@ public class IdentityService extends BaseIdentityService implements Microservice
      * @param userId
      * @return
      */
-    @GET
-    @Path("/users/{user-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public UserResponse getUser(@PathParam("user-id") String userId, @Context Request request) {
+    public UserResponse getUser(String userId, Request request) {
         return new RestResponseFactory()
                 .createUserResponse(getUserFromRequest(userId), false, request.getUri());
     }

@@ -443,9 +443,9 @@
         <carbon.deployment.import.version>[5.0.0,6.0.0)</carbon.deployment.import.version>
         <carbon.messaging.version>1.0.2</carbon.messaging.version>
         <carbon.messaging.import.version>[1.0.2,2.0.0)</carbon.messaging.import.version>
-        <carbon.security.caas.version>1.0.0-SNAPSHOT</carbon.security.caas.version>
+        <carbon.security.caas.version>1.0.0-m2</carbon.security.caas.version>
         <carbon.security.caas.import.version>[1.0.0,2.0.0)</carbon.security.caas.import.version>
-        <carbon.security.userstore.jdbc.version>1.0.0-SNAPSHOT</carbon.security.userstore.jdbc.version>
+        <carbon.security.userstore.jdbc.version>1.0.0-m2</carbon.security.userstore.jdbc.version>
         <carbon.security.userstore.jdbc.import.version>[1.0.0,2.0.0)</carbon.security.userstore.jdbc.import.version>
         <carbon.caching.version>1.0.0</carbon.caching.version>
         <carbon.caching.import.version>[1.0.0,2.0.0)</carbon.caching.import.version>

@@ -26,9 +26,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.core.Utils;
+import org.wso2.carbon.bpmn.core.db.dao.ActivitiDAO;
+import org.wso2.carbon.bpmn.core.db.model.DeploymentMetaDataModel;
 import org.wso2.carbon.bpmn.core.internal.BPMNServerHolder;
-import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
-import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
 import org.wso2.carbon.deployment.engine.Deployer;
@@ -43,7 +43,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,16 +66,16 @@ public class BPMNDeployer implements Deployer {
 
     private URL deploymentLocation;
     private ArtifactType artifactType;
-    private HashMap<Object, List<Object>> deployedArtifacts = new HashMap<>();
+    //    private HashMap<Object, List<Object>> deployedArtifacts =
     private String deploymentDir;
     private File destinationFolder;
     private Path home;
-    ;
+
+
     private ActivitiDAO activitiDAO;
 
     public BPMNDeployer() {
         this.activitiDAO = new ActivitiDAO();
-        init();
     }
 
     /**
@@ -84,9 +83,6 @@ public class BPMNDeployer implements Deployer {
      */
     @Override
     public void init() {
-
-        log.info(" Initializing BPMN Deployer ");
-
         artifactType = new ArtifactType<>(ARTIFACT_TYPE);
 
         try {
@@ -99,6 +95,7 @@ public class BPMNDeployer implements Deployer {
             log.error(msg, e);
         }
         destinationFolder = new File(deploymentDir);
+        log.info("Initialized BPMN Deployer Successfully.");
     }
 
     /**
@@ -161,12 +158,12 @@ public class BPMNDeployer implements Deployer {
                     //call for insertion
                     activitiDAO.insertDeploymentMetaDataModel(deploymentMetaDataModel);
 
-                    try {
-                        FileUtils.copyFileToDirectory(artifactFile, destinationFolder);
-                    } catch (IOException e) {
-                        log.error("Unable to add file " + artifactFile + "to directory" +
-                                destinationFolder);
-                    }
+//                    try {
+//                        FileUtils.copyFileToDirectory(artifactFile, destinationFolder);
+//                    } catch (IOException e) {
+//                        log.error("Unable to add file " + artifactFile + "to directory" +
+//                                destinationFolder);
+//                    }
                 } else { //deployment exists
                     // not the same version that is already deployed
                     if (!checksum.equalsIgnoreCase(deploymentMetaDataModel.getCheckSum())) {
@@ -182,7 +179,7 @@ public class BPMNDeployer implements Deployer {
             }
             return artifactPath;
         } else {
-            throw new CarbonDeploymentException("Artifact " + artifactFile.getName() + "doesn't exists.");
+            throw new CarbonDeploymentException("Artifact " + artifactFile.getName() + " doesn't exists.");
         }
 
     }

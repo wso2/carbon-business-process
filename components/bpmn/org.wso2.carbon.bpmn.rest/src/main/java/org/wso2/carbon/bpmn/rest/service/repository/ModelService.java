@@ -21,10 +21,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ModelQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.ModelQuery;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
@@ -32,18 +28,12 @@ import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ModelsPaginateList;
-import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 //import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
@@ -51,33 +41,16 @@ import javax.ws.rs.core.Response;
 /**
  *
  */
-@Component(
-        name = "org.wso2.carbon.bpmn.rest.service.repository.ModelService",
-        service = Microservice.class,
-        immediate = true)
-@Path("/models")
-public class ModelService implements Microservice {
+//@Component(
+//        name = "org.wso2.carbon.bpmn.rest.service.repository.ModelService",
+//        service = Microservice.class,
+//        immediate = true)
+//@Path("/models")
+public class ModelService { //} implements Microservice {
 
-    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
     private static final List<String> allPropertiesList = new ArrayList<>();
-
     private static final Logger log = LoggerFactory.getLogger(ModelService.class);
-
-//    @Reference(
-//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-//            service = BPMNEngineService.class,
-//            cardinality = ReferenceCardinality.MANDATORY,
-//            policy = ReferencePolicy.DYNAMIC,
-//            unbind = "unRegisterBPMNEngineService")
-//    public void setBpmnEngineService(BPMNEngineService engineService) {
-//        log.info("Setting BPMN engine " + engineService);
-//
-//    }
-//
-//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-//        log.info("Unregister BPMNEngineService..");
-//    }
-
+    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<>();
 
     static {
         allowedSortProperties.put("id", ModelQueryProperty.MODEL_ID);
@@ -112,20 +85,8 @@ public class ModelService implements Microservice {
         allPropertiesList.add("sort");
     }
 
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        // Nothing to do
-    }
 
-    @Deactivate
-    protected void deactivate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getModels(@Context Request request) {
+    public Response getModels(Request request) {
 
         RepositoryService repositoryService = RestServiceContentHolder.getInstance().getRestService()
                 .getRepositoryService();

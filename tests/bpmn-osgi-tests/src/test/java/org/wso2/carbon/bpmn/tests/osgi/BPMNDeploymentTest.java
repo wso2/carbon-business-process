@@ -35,7 +35,6 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.bpmn.tests.osgi.utils.BasicServerConfigurationUtil;
 import org.wso2.carbon.deployment.engine.Artifact;
 import org.wso2.carbon.deployment.engine.ArtifactType;
@@ -45,6 +44,7 @@ import org.wso2.carbon.osgi.test.util.CarbonSysPropConfiguration;
 import org.wso2.carbon.osgi.test.util.OSGiTestConfigurationUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -62,9 +62,6 @@ public class BPMNDeploymentTest {
 
     @Inject
     private BPMNEngineService bpmnEngineService;
-
-    @Inject
-    private BPMNDeployer bpmnDeployer;
 
     @Inject
     private CarbonServerInfo carbonServerInfo;
@@ -96,7 +93,7 @@ public class BPMNDeploymentTest {
             ArtifactType artifactType = new ArtifactType<>("bar");
             artifact.setKey("HelloWorld.bar");
             artifact.setType(artifactType);
-            bpmnDeployer.deploy(artifact);
+            bpmnEngineService.getBpmnDeployer().deploy(artifact);
 
             RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
             List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
@@ -109,10 +106,10 @@ public class BPMNDeploymentTest {
             } else {
                 Assert.fail("There is no artifacts deployed.");
             }
-        }catch (Exception e){
-            log.error("Erro while deploying HelloWorld Artifact." , e);
+        } catch (Exception e) {
+            log.error("Erro while deploying HelloWorld Artifact.", e);
             Assert.fail("There is no artifacts deployed.");
-            throw  e;
+            throw e;
         }
         log.info("[Test] Deployment test - HelloWorld.bar : Completed");
     }
@@ -126,5 +123,66 @@ public class BPMNDeploymentTest {
         log.info("[Test] Deployment test - HelloWorld.bar instance creating : Started");
     }
 
+    @Test(dependsOnMethods = "testStartHelloWorldBarProcess")
+    public void testHelloWorldVersionDeployment() throws CarbonDeploymentException, IOException {
+        log.info("[Test] Version Deployment test - HelloWorld.bar new version : Started");
+        try {
+            File ab = new File(Paths.get(BasicServerConfigurationUtil.getVersionArtifactHome().toString(),
+                    "HelloWorld.bar")
+                    .toString());
+            Artifact artifact = new Artifact(ab);
+            ArtifactType artifactType = new ArtifactType<>("bar");
+            artifact.setKey("HelloWorld.bar");
+            artifact.setType(artifactType);
+            bpmnEngineService.getBpmnDeployer().deploy(artifact);
+
+            RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
+            List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
+            if (activitiDeployments != null) {
+                Assert.assertEquals(activitiDeployments.size(), 2, "Expected Deployment count");
+                Deployment deployment = activitiDeployments.get(1);
+                Assert.assertTrue(artifact.getName().toString().startsWith(deployment.getName()), "Artifact Name " +
+                        "mismatched.");
+            } else {
+                Assert.fail("There is no artifacts deployed.");
+            }
+        } catch (Exception e) {
+            log.error("Error while deploying HelloWorld Artifact.", e);
+            Assert.fail("There is no artifacts deployed.");
+            throw e;
+        }
+        log.info("[Test] Version Deployment test - HelloWorld.bar new version : Completed");
+    }
+
+    @Test(dependsOnMethods = "testHelloWorldVersionDeployment")
+    public void testStartNewVersionHelloWorldBarProcess() throws CarbonDeploymentException {
+        log.info("[Test] Deployment test - HelloWorld.bar new instance creating : Started");
+        ProcessEngine processEngine = bpmnEngineService.getProcessEngine();
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        runtimeService.startProcessInstanceByKey("helloWorldProcess");
+        log.info("[Test] Deployment test - HelloWorld.bar new instance creating : Completed");
+
+    }
+
+    @Test(dependsOnMethods = "testStartNewVersionHelloWorldBarProcess")
+    public void testHelloWorldBarUndeployment() throws CarbonDeploymentException, IOException {
+        log.info("[Test] Undeployment test - HelloWorld.bar : Started");
+        try {
+
+            String key = "HelloWorld.bar";
+            bpmnEngineService.getBpmnDeployer().undeploy(key);
+            RepositoryService repositoryService = bpmnEngineService.getProcessEngine().getRepositoryService();
+            List<Deployment> activitiDeployments = repositoryService.createDeploymentQuery().list();
+            Assert.assertEquals(activitiDeployments.size(), 0, "There is an active deployment count of new version" +
+                    activitiDeployments.size());
+
+        } catch (Exception e) {
+            log.error("Error  while undeploying HelloWorld Artifact.", e);
+            Assert.fail("There are no artifacts undeployed.");
+            throw e;
+
+        }
+        log.info("[Test] Undeployment test - HelloWorld.bar : Completed");
+    }
 
 }

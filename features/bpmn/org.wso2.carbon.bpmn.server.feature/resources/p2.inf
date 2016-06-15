@@ -7,3 +7,5 @@ org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../d
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts/bps); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts/bps/bpmn); \
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../../features/org.wso2.carbon.bpmn.server_${feature.version}/dbscripts,target:${installFolder}/../../../dbscripts/bps/bpmn/,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../deployment); \
+org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../deployment/bpmn); \

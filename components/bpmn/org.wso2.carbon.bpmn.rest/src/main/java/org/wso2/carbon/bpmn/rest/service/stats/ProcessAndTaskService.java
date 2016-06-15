@@ -22,10 +22,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
@@ -35,18 +31,12 @@ import org.wso2.carbon.bpmn.rest.model.stats.DeployedProcesses;
 import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
 import org.wso2.carbon.bpmn.rest.model.stats.ProcessTaskCount;
 import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
-import org.wso2.msf4j.Microservice;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 //import org.wso2.carbon.context.PrivilegedCarbonContext;
 
@@ -54,52 +44,23 @@ import javax.ws.rs.core.MediaType;
  * Service class which includes functionalities related to processes and tasks
  */
 
-@Component(
-        name = "org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService",
-        service = Microservice.class,
-        immediate = true)
-
-@Path("/process-task-services/")
-public class ProcessAndTaskService implements Microservice {
+//@Component(
+//        name = "org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService",
+//        service = Microservice.class,
+//        immediate = true)
+//
+//@Path("/process-task-services/")
+public class ProcessAndTaskService { //} implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(ProcessAndTaskService.class);
 
-//    @Reference(
-//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-//            service = BPMNEngineService.class,
-//            cardinality = ReferenceCardinality.MANDATORY,
-//            policy = ReferencePolicy.DYNAMIC,
-//            unbind = "unRegisterBPMNEngineService")
-//    public void setBpmnEngineService(BPMNEngineService engineService) {
-//        log.info("Setting BPMN engine " + engineService);
-//
-//    }
-//
-//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-//        log.info("Unregister BPMNEngineService..");
-//    }
-
-    //int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-    // String str = String.valueOf(tenantId);
-
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @Deactivate
-    protected void deactivate(BundleContext bundleContext) {
-        // Nothing to do
-    }
 
     /**
      * Get the deployed processes count
      *
      * @return a list of deployed processes with their instance count
      */
-    @GET
-    @Path("/deployed-process-count/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
     public ResponseHolder getDeployedProcesses() {
         List<ProcessDefinition> deployments = RestServiceContentHolder.getInstance().getRestService()
                 .getRepositoryService().
@@ -159,9 +120,8 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return list with the states and the count of process instances in each state
      */
-    @GET
-    @Path("/process-status-count/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
+
     public ResponseHolder getCountOfProcessInstanceStatus() {
         List processCountList = new ArrayList<>();
         ResponseHolder response = new ResponseHolder();
@@ -219,9 +179,6 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return list with the states and the count of task instances in each state
      */
-    @GET
-    @Path("/task-status-count/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getCountOfTaskInstanceStatus() {
 
         List taskCountList = new ArrayList<>();
@@ -277,9 +234,6 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return list with the completed processes and the average time duration taken for each process
      */
-    @GET
-    @Path("/avg-duration-to-complete-process/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAvgTimeDurationForCompletedProcesses() {
         List<ProcessDefinition> deployements = RestServiceContentHolder.getInstance().getRestService()
                 .getRepositoryService().
@@ -329,10 +283,7 @@ public class ProcessAndTaskService implements Microservice {
      *            for each task
      * @return list of completed tasks with the average time duration for the selected process
      */
-    @GET
-    @Path("/avg-task-duration-for-completed-process/{p-id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("p-id") String pId) {
+    public ResponseHolder avgTaskTimeDurationForCompletedProcesses(String pId) {
         long countOfProcesses = RestServiceContentHolder.getInstance().getRestService().getRepositoryService().
                 createProcessDefinitionQuery().processDefinitionId(pId).count();
         if (countOfProcesses == 0) {
@@ -401,9 +352,6 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return array with the no. of tasks started and completed over the months
      */
-    @GET
-    @Path("/task-variation/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
@@ -468,9 +416,7 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return array with the no. of processes started and completed over the months
      */
-    @GET
-    @Path("/process-variation/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
     public ResponseHolder processVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
@@ -522,9 +468,6 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return list with the processDefinitions of all deployed processes
      */
-    @GET
-    @Path("/all-processes/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAllProcesses() {
         //Get a list of the deployed processes
         List<ProcessDefinition> deployements = RestServiceContentHolder.getInstance().getRestService()
@@ -545,9 +488,6 @@ public class ProcessAndTaskService implements Microservice {
      *
      * @return list with the processDefinitions of all deployed processes
      */
-    @GET
-    @Path("/count-of-processes/")
-    @Produces(MediaType.APPLICATION_JSON)
     public long getProcessCount() {
         //Get a list of the deployed processes
         long processCount = RestServiceContentHolder.getInstance().getRestService().getRepositoryService().

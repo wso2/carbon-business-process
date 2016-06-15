@@ -23,10 +23,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
@@ -35,7 +31,6 @@ import org.wso2.carbon.bpmn.rest.internal.RestServiceContentHolder;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricDetailService;
-import org.wso2.msf4j.Microservice;
 import org.wso2.msf4j.Request;
 
 import java.io.ByteArrayOutputStream;
@@ -43,25 +38,17 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-//import org.apache.tools.ant.taskdefs.condition.Http;
 
 /**
  *
  */
-@Component(
-        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricDetailService",
-        service = Microservice.class,
-        immediate = true)
-@Path("/historic-detail")
-public class HistoricDetailService extends BaseHistoricDetailService implements Microservice {
+//@Component(
+//        name = "org.wso2.carbon.bpmn.rest.service.history.HistoricDetailService",
+//        service = Microservice.class,
+//        immediate = true)
+//@Path("/historic-detail")
+public class HistoricDetailService extends BaseHistoricDetailService { // implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(HistoricDetailService.class);
 
@@ -80,20 +67,20 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
 //        log.info("Unregister BPMNEngineService..");
 //    }
 
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @Deactivate
-    protected void deactivate(BundleContext bundleContext) {
-        // Nothing to do
-    }
-
-    @GET
-    @Path("/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getHistoricDetailInfo(@Context Request request) {
+    //    @Activate
+//    protected void activate(BundleContext bundleContext) {
+//        // Nothing to do
+//    }
+//
+//    @Deactivate
+//    protected void deactivate(BundleContext bundleContext) {
+//        // Nothing to do
+//    }
+//
+//    @GET
+//    @Path("/")
+//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getHistoricDetailInfo(Request request) {
 
         Map<String, String> allRequestParams = new HashMap<>();
         QueryStringDecoder decoder = new QueryStringDecoder(request.getUri());
@@ -142,11 +129,10 @@ public class HistoricDetailService extends BaseHistoricDetailService implements 
         return Response.ok().entity(dataResponse).build();
     }
 
-    @GET
-    @Path("/{detail-id}/data")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getVariableData(@PathParam("detail-id") String detailId,
-                                    @Context Request request) {
+    //    @GET
+//    @Path("/{detail-id}/data")
+//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getVariableData(String detailId, Request request) {
         try {
             byte[] result = null;
             RestVariable variable = getVariableFromRequest(true, detailId, request.getUri());
