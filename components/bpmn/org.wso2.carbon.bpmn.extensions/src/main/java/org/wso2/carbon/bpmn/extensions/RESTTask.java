@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.rest;
+package org.wso2.carbon.bpmn.extensions;
 
 import com.jayway.jsonpath.JsonPath;
 import org.activiti.engine.delegate.BpmnError;
@@ -51,7 +51,7 @@ import java.net.URI;
  *
  * Example with text input and text output:
  *
- *  <serviceTask id="servicetask1" name="REST task1" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask">
+ *  <serviceTask id="servicetask1" name="REST task1" activiti:class="RESTTask">
         <extensionElements>
              <activiti:field name="serviceURL">
                  <activiti:expression>http://10.0.3.1:9773/restSample1_1.0.0/services/rest_sample1/${method}</activiti:expression>
@@ -78,7 +78,7 @@ import java.net.URI;
      </serviceTask>
  *
  * Example with JSON input and JSON output mapping and registry based URL:
- <serviceTask id="servicetask2" name="Rest task2" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask">
+ <serviceTask id="servicetask2" name="Rest task2" activiti:class="RESTTask">
      <extensionElements>
          <activiti:field name="serviceRef">
             <activiti:expression>conf:/test1/service2</activiti:expression>

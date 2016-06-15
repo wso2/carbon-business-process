@@ -17,7 +17,6 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
-import org.activiti.engine.ProcessEngines;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
@@ -27,8 +26,8 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
-import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
-import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
+import org.wso2.carbon.bpmn.extensions.BPMNRestExtensionHolder;
+import org.wso2.carbon.bpmn.extensions.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 

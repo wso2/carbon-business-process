@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-~ Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 ~
 ~ Licensed under the Apache License, Version 2.0 (the "License");
 ~ you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
+        <groupId>org.wso2.carbon.business-process</groupId>
         <version>4.4.9-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.bpmn</artifactId>
-    <packaging>bundle</packaging>
-    <name>WSO2 Carbon - BPMN Core Component</name>
-    <url>http://wso2.org</url>
 
+    <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
+    <packaging>bundle</packaging>
+    <name>WSO2 Carbon - BPMN Extensions Component</name>
     <dependencies>
         <dependency>
             <groupId>org.wso2.orbit.org.activiti</groupId>
@@ -53,6 +51,7 @@
         <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -65,10 +64,10 @@
             <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
         </dependency>
 
-	    <dependency>
-             <groupId>org.mybatis</groupId>
-             <artifactId>mybatis</artifactId>
-         </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents.wso2</groupId>
@@ -89,11 +88,76 @@
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
         </dependency>
+
+        <!-- Dependencies for SOAP Extension-->
+        <dependency>
+            <groupId>xerces.wso2</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>${xercesImpl.wso2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2-client</artifactId>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+            <version>1.2.18</version>
+        </dependency>-->
+       <!-- <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2</artifactId>
+            <version>1.6.2</version>
+            <scope>provided</scope>
+        </dependency>-->
+        <!--<dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-local</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-http</artifactId>
+            <version>1.6.2</version>
+        </dependency>-->
+
+        <!--<dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
+            <version>1.2.18</version>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.xmlschema</groupId>
+            <artifactId>xmlschema-core</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>-->
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
-            <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
-            <version>4.4.9-SNAPSHOT</version>
+            <artifactId>org.wso2.carbon.bpmn</artifactId>
         </dependency>
+
+       <!-- <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+            <version>1.9.6</version>
+        </dependency>-->
+
 
     </dependencies>
 
@@ -127,72 +191,25 @@
                     <instructions>
                         <Bundle-Vendor>WSO2</Bundle-Vendor>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <!--<Bundle-Activator>-->
-                        <!--org.wso2.carbon.bpmn.core.deployment.Activator-->
-                        <!--</Bundle-Activator>-->
                         <Private-Package>
-                            org.wso2.carbon.bpmn.core.internal,
-                            <!--org.wso2.carbon.bpmn.extensions-->
+                            org.wso2.carbon.bpmn.extensions.internal
                         </Private-Package>
                         <Export-Package>
-                            !org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.core.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.mgt.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.mgt.model.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.core.deployment.*;
-                            version=${carbon.business-process.exp.pkg.version},
-                            <!--org.wso2.carbon.bpmn.extensions.rest.*;
-                            version=${carbon.business-process.exp.pkg.version},-->
+                            org.wso2.carbon.bpmn.extensions.*
                         </Export-Package>
                         <Import-Package>
-                            !org.wso2.carbon.bpel.deployer,
-                            <!--!org.wso2.carbon.bpmn.extensions,-->
-                            org.wso2.carbon.ndatasource.*,
                             *;resolution:=optional
                         </Import-Package>
-                        <!--<Import-Package>-->
-                        <!--org.activiti.*,org.osgi.*,org.apache.axis2.*-->
-                        <!--</Import-Package>-->
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Axis2Deployer>BPMDeployer</Axis2Deployer>
+
                     </instructions>
                 </configuration>
             </plugin>
-
-            <!--<plugin>-->
-            <!--<groupId>org.apache.axis2</groupId>-->
-            <!--<artifactId>axis2-java2wsdl-maven-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<className>org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService</className>-->
-            <!--<outputFileName>/home/chathura/temp/BPMNDeploymentService.wsdl</outputFileName>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<goals>-->
-            <!--<goal>java2wsdl</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
-
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-    </repositories>
 
-
+    <properties>
+        <xercesImpl.wso2.version>2.8.1.wso2v1</xercesImpl.wso2.version>
+    </properties>
 </project>
