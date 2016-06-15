@@ -47,12 +47,6 @@
             <artifactId>org.wso2.carbon.bpmn</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.business-process</groupId>
-            <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
-            <version>5.0.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
         <!-- Kernel and Platform Dependencies -->
         <dependency>
             <groupId>org.wso2.carbon</groupId>

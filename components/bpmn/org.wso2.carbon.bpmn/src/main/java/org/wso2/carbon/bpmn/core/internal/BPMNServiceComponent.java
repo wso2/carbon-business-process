@@ -169,7 +169,7 @@ public class BPMNServiceComponent {
             bpmnEngineService.setBpmnDeployer(deployer);
             bundleContext.registerService(Deployer.class.getName(), deployer, null);
         } catch (Throwable t) {
-            log.error("Error initializing bpmn component " +t );
+            log.error("Error initializing bpmn component " + t);
         }
     }
 
