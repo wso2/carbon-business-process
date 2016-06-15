@@ -26,8 +26,6 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
-import org.wso2.carbon.bpmn.extensions.BPMNRestExtensionHolder;
-import org.wso2.carbon.bpmn.extensions.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
