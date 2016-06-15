@@ -92,8 +92,9 @@ public class UserSubstitutionOperations {
             boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
             if (!transitivityResolved) {
                 //remove added transitive record
-                activitiDAO.removeSubstitute(assignee,tenantId);
-                throw new SubstitutesException("Could not find an available substitute. Use a different substitute");
+                activitiDAO.removeSubstitute(assignee, tenantId);
+                throw new SubstitutesException(
+                        "Could not find an available substitute. Use a different user to substitute");
             }
             //transitive substitute maybe changed, need to retrieve again.
             dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
@@ -102,6 +103,7 @@ public class UserSubstitutionOperations {
             } else {
                 bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
             }
+
         }
     }
 
@@ -166,7 +168,9 @@ public class UserSubstitutionOperations {
             taskQuery.taskAssignee(assignee);
             List<Task> tasks = taskQuery.list();//this should return a task if valid
             if (tasks == null) {
-                throw new ActivitiIllegalArgumentException("Invalid task Id : " + taskId + ", for substitution.");
+                throw new ActivitiIllegalArgumentException(
+                        "Substitute info added successfully. Task reassign failed, invalid task Id : " + taskId
+                                + ", for substitution.");
             }
         }
     }

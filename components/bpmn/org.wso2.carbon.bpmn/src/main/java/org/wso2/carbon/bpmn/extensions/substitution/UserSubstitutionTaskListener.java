@@ -18,9 +18,11 @@ package org.wso2.carbon.bpmn.extensions.substitution;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.context.CarbonContext;
@@ -46,7 +48,7 @@ public class UserSubstitutionTaskListener implements TaskListener{
                     log.debug("User: " + assignee + "is substituted by : " + substitute + "for the task" + delegateTask.getName());
                 }
             } else {
-                //TODO set the task unclaimed
+                BPMNServerHolder.getInstance().getEngine().getTaskService().deleteUserIdentityLink(delegateTask.getId(), assignee, IdentityLinkType.ASSIGNEE);
             }
         }
 
