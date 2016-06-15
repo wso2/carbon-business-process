@@ -197,6 +197,7 @@ public class SOAPTask implements JavaDelegate {
             SOAPCallBackResponseImpl callBackResponse = new SOAPCallBackResponseImpl();
             CallbackSOAPMessage callbackSOAPMessage = new CallbackSOAPMessage(callBackResponse);
             nettySender.send(carbonSOAPMessage, callbackSOAPMessage);
+            //TODO Handle the call back response synchronously once Carbon-transport implements the functionality
             while (!callBackResponse.isSuccess()) {
                 Thread.sleep(500);
             }
