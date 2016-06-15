@@ -56,4 +56,6 @@ public class BPMNConstants {
 	public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
 
     public static final String ACT_BPS_SUBSTITUTES_TABLE = "ACT_BPS_SUBSTITUTES";
+    public static final String TRANSITIVE_SUB_NOT_APPLICABLE ="_N/A";
+    public static final String TRANSITIVE_SUB_UNDEFINED = "_UNDEFINED";
 }

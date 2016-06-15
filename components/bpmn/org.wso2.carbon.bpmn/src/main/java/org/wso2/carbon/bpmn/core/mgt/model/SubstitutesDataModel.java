@@ -28,6 +28,7 @@ public class SubstitutesDataModel {
     private String transitiveSub;
     private Date created;
     private Date updated;
+    private int tenantId;
 
     public int getTenantId() {
         return tenantId;
@@ -36,8 +37,6 @@ public class SubstitutesDataModel {
     public void setTenantId(int tenantId) {
         this.tenantId = tenantId;
     }
-
-    private int tenantId;
 
     public Date getUpdated() {
         return updated;
@@ -109,6 +108,7 @@ public class SubstitutesDataModel {
                 " Substitute= " + substitute +
                 " SubstitutionStart= " + substitutionStart +
                 "SubstitutionEnd=" + substitutionEnd +
+                "TenantID=" + tenantId +
                 "Enabled=" + enabled;
     }
 }

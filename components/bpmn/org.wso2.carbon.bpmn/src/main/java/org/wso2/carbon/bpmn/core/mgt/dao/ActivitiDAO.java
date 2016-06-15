@@ -30,6 +30,7 @@ import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides the implementation interface between TenantRepository object and DeploymentMapper interface.
@@ -173,13 +174,7 @@ public class ActivitiDAO {
                     }
                 };
 
-        Integer rowCount = managementService.executeCustomSql(customSqlExecution);
-
-        if(log.isDebugEnabled()) {
-            log.debug("New substitute addition, row count: " + rowCount);
-        }
-
-        return rowCount;
+        return managementService.executeCustomSql(customSqlExecution);
     }
 
     /**
@@ -234,4 +229,36 @@ public class ActivitiDAO {
         return managementService.executeCustomSql(customSqlExecution);
     }
 
+    /**
+     * Select all substitutes for given tenant Id
+     * @param tenantId
+     * @return Map with User as key and SubstitutesDataModel as value
+     */
+    public Map<String, SubstitutesDataModel> selectAllSubstitutesByTenant(final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectAllSubstituteInfo(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Update transitive substitute for the given user.
+     * @param user
+     * @param tenantId
+     * @param transitiveSub
+     */
+    public int updateTransitiveSub(final String user, final int tenantId, final String transitiveSub) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.updateTransitiveSub(user, tenantId, transitiveSub, new Date());
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
 }

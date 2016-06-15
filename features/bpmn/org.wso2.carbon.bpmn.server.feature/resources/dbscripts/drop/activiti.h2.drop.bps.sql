@@ -1,1 +1,1 @@
-drop index if exists ACT_IDX_SUBSTITUTES_USER;
+drop table if exists ACT_BPS_SUBSTITUTES cascade constraints;

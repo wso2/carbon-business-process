@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.context.CarbonContext;
@@ -39,25 +40,35 @@ public class UserSubstitutionTaskListener implements TaskListener{
 
         String substitute = getSubstituteIfEnabled(assignee);
         if (substitute != null) {
-            delegateTask.setAssignee(substitute);
-            if (log.isDebugEnabled()) {
-                log.debug("User: " + assignee + "is substituted by : " + substitute + "for the task" + delegateTask.getName());
+            if (!BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(substitute)) {
+                delegateTask.setAssignee(substitute);
+                if (log.isDebugEnabled()) {
+                    log.debug("User: " + assignee + "is substituted by : " + substitute + "for the task" + delegateTask.getName());
+                }
+            } else {
+                //TODO set the task unclaimed
             }
         }
+
     }
 
     /**
-     * Return the Substitute if exist and active or return null
+     * Return the active Substitute or return BPMNConstants.TRANSITIVE_SUB_UNDEFINED
      * @param assignee
      */
-    private String getSubstituteIfEnabled(String assignee) {
+    private String getSubstituteIfEnabled (String assignee) {
         //retrieve Substitute info
         SubstitutesDataModel substitutesDataModel = getImmediateSubstitute(MultitenantUtils.getTenantAwareUsername(assignee));
-        if (substitutesDataModel != null && UserSubstitutionOperations.isSubstitutionActive(substitutesDataModel)) {
-            return UserSubstitutionOperations.getTransitiveSubstitute(substitutesDataModel.getSubstitute());
+        if(substitutesDataModel != null) {
+            if (BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(substitutesDataModel.getTransitiveSub())) {
+                return substitutesDataModel.getSubstitute();
+            } else {
+                return substitutesDataModel.getTransitiveSub();
+            }
         } else {
             return null;
         }
+
 
     }
 
