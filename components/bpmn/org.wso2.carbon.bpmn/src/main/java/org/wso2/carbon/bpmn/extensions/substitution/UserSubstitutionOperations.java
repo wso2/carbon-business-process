@@ -91,6 +91,8 @@ public class UserSubstitutionOperations {
         if (dataModel.isEnabled() && isBeforeBufferTime(dataModel.getSubstitutionStart())) {
             boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
             if (!transitivityResolved) {
+                //remove added transitive record
+                activitiDAO.removeSubstitute(assignee,tenantId);
                 throw new SubstitutesException("Could not find an available substitute. Use a different substitute");
             }
             //transitive substitute maybe changed, need to retrieve again.
@@ -112,7 +114,7 @@ public class UserSubstitutionOperations {
         TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
         if (resolver.isResolvingRequired(dataModel.getUser())) {
             return resolver.resolveTransitiveSubs(false);
-        } else {//need to check transitive sub for this user
+        } else {//need to update transitive sub for this user
             return resolver.resolveSubstituteForSingleUser(dataModel);
         }
     }

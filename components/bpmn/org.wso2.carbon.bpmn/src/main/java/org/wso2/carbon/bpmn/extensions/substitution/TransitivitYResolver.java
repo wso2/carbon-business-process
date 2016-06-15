@@ -43,6 +43,10 @@ public class TransitivityResolver {
     public boolean resolveTransitiveSubs(boolean forcedResolve) {
         subsMap = dao.selectAllSubstitutesByTenant(tenantId);
 
+        return resolve(forcedResolve);
+    }
+
+    private boolean resolve(boolean forcedResolve) {
         for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet())
         {
             String transitiveSub = entry.getValue().getTransitiveSub();

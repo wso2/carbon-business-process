@@ -261,4 +261,20 @@ public class ActivitiDAO {
                 };
         return managementService.executeCustomSql(customSqlExecution);
     }
+
+    /**
+     * Remove the substitute record for the given user
+     * @param assignee
+     * @param tenantId
+     * @return
+     */
+    public int removeSubstitute(final String assignee, final int tenantId) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.removeSubstitute(assignee, tenantId);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
 }

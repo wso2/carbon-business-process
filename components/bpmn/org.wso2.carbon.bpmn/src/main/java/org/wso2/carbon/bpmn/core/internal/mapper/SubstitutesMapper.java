@@ -43,6 +43,7 @@ public interface SubstitutesMapper {
     final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+    final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + "WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
 
     /**
      * Insert new row in ACT_BPS_SUBSTITUTES table
@@ -114,4 +115,13 @@ public interface SubstitutesMapper {
      */
     @Update(UPDATE_TRANSITIVE_SUB)
     int updateTransitiveSub(@Param("user") String user, @Param("tenantId") int tenantId, @Param("transitiveSub") String transitiveSub, @Param("updated") Date date);
+
+    /**
+     * Remove substitute info for given user
+     * @param user
+     * @param tenantId
+     * @return
+     */
+    @Delete(DELETE_SUBSTITUTE)
+    int removeSubstitute(@Param("user") String user, @Param("tenantId") int tenantId);
 }
