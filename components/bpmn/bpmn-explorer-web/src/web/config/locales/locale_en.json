@@ -133,6 +133,8 @@
    "variable.name":"Variable Name",
    "equals":" = ",
    "instance.id":" Instance ID ",
-   "plus.button":" + "
+   "plus.button":" + ",
+   "process.monitoring":" Process Monitoring ",
+   "advanced.filter": "Advanced Filtering"
 
 }
