@@ -25,21 +25,27 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.wso2.carbon.bpmn.extensions.internal.ServerHolder;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.extensions.internal.ServiceComponent;
+import org.wso2.carbon.bpmn.extensions.soap.constants.Constants;
+import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP11Constants;
+import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP12Constants;
 import org.wso2.carbon.bpmn.extensions.soap.impl.HTTPTransportHeaders;
 import org.wso2.carbon.bpmn.extensions.soap.impl.SOAPException;
 
 import javax.xml.stream.XMLStreamException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides SOAP service invocation support within BPMN processes.
  */
 public class SOAPTask implements JavaDelegate {
-    //   private static final Logger log = LoggerFactory.getLogger(SOAPTask.class);
+    private static final Log log = LogFactory.getLog(SOAPTask.class);
     private static final String HTTP_SCHEMA = "http";
     private Expression serviceURL;
     private Expression payload;
@@ -63,11 +69,11 @@ public class SOAPTask implements JavaDelegate {
         String headerList = null;
         String host = null;
         int port = 0;
-        String service = null;
         String connection = null;
         String transferEncoding = null;
         String transportHeaderList[] = null;
         String action = null;
+        String soapVersionURI = SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI;
         try {
             if (serviceURL != null) {
                 endpointURL = serviceURL.getValue(execution).toString();
@@ -87,83 +93,115 @@ public class SOAPTask implements JavaDelegate {
             }
             if (soapVersion != null) {
                 version = soapVersion.getValue(execution).toString();
-            } else {
-                version = org.wso2.carbon.bpmn.extensions.soap.constants.Constants.SOAP11_VERSION;
+                if (version.equalsIgnoreCase(Constants.SOAP12_VERSION)) {
+                    soapVersionURI = SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI;
+                }
             }
 
+            List list = new ArrayList();
 
-            HTTPTransportHeaders httpTransportHeaders = new HTTPTransportHeaders(version);
+            // Create an instance of org.apache.commons.httpclient.Header
+            Header contentTypeHeader = new Header();
+
+
+            //Adding the connection
+            Header transferEncodingHeader = new Header();
             if (httpConnection != null) {
                 connection = httpConnection.getValue(execution).toString();
             } else {
                 connection = "keep-alive";
             }
-            if (httpTransferEncoding != null) {
-                transferEncoding = httpTransferEncoding.getValue(execution).toString();
-            } else {
-                transferEncoding = "chunked";
-            }
+            transferEncodingHeader.setName("Connection");
+            transferEncodingHeader.setValue(connection);
+            list.add(transferEncodingHeader);
+
+            //Adding the soap action
             if (soapAction != null) {
                 action = soapAction.getValue(execution).toString();
             } else {
                 action = "";
             }
 
-            httpTransportHeaders.addHeader("Connection", connection);
-            httpTransportHeaders.addHeader("HOST", host.concat(":" + port));
-            httpTransportHeaders.addHeader("Transfer-Encoding", transferEncoding);
-
             if (transportHeaders != null) {
                 String headerContent = transportHeaders.getValue(execution).toString();
                 transportHeaderList = headerContent.split(",");
-                for (String header : transportHeaderList) {
-                    String pair[] = header.split(":");
+                for (String transportHeader : transportHeaderList) {
+                    String pair[] = transportHeader.split(":");
+                    Header additionalHeader = new Header();
                     if (pair.length == 1) {
-                        httpTransportHeaders.addHeader(pair[0], "");
+                        additionalHeader.setName(pair[0]);
+                        additionalHeader.setValue("");
                     } else {
-                        httpTransportHeaders.addHeader(pair[0], pair[1]);
+                        additionalHeader.setName(pair[0]);
+                        additionalHeader.setValue(pair[1]);
                     }
+                    list.add(additionalHeader);
                 }
             }
 
             OMElement payLoad = AXIOMUtil.stringToOM(payloadRequest);
             ServiceClient sender;
-            Options options;
             OMElement response = null;
-            sender = new ServiceClient(ServiceComponent.getConfigurationContext(),null);
-            options = new Options();
+            sender = new ServiceClient(ServiceComponent.getConfigurationContext(), null);
+            Options options = new Options();
             options.setTo(new EndpointReference(endpointURL));
-            options.setProperties(httpTransportHeaders.getHeaders());
+            options.setProperty(org.apache.axis2.transport.http.HTTPConstants.HTTP_HEADERS, list);
             options.setAction(action);
+            options.setSoapVersionURI(soapVersionURI);
+
+            //Adding the transfer encoding
+            if (httpTransferEncoding != null) {
+                transferEncoding = httpTransferEncoding.getValue(execution).toString();
+                if (transferEncoding.equalsIgnoreCase("chunked")) {
+                    options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.TRUE);
+                } else {
+                    options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
+
+                }
+            } else {
+                options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.TRUE);
+
+            }
+
             sender.setOptions(options);
 
-            if(headers != null){
+            if (headers != null) {
                 headerList = headers.getValue(execution).toString();
                 OMElement headerElement = AXIOMUtil.stringToOM(headerList);
                 sender.addHeader(headerElement);
 
             }
-
             response = sender.sendReceive(payLoad);
             String responseStr = response.toStringWithConsume();
-            System.out.println("Response Message :" + response);
-            System.out.println("Str --> "+responseStr);
+            if (outputVariable != null) {
+                String outVarName = outputVariable.getValue(execution).toString();
+                execution.setVariable(outVarName, responseStr);
+            } else {
+                String outputNotFoundErrorMsg = "Output variable is not provided. " +
+                        "outputVariable must be provided to save " +
+                        "the response.";
+                throw new SOAPException(outputNotFoundErrorMsg);
+
+            }
+            log.info("Response Message :" + execution.getVariable(outputVariable.getValue(execution).toString()));
+
+           /* System.out.println("Response Message :" + response);
+            System.out.println("Str --> " + responseStr);*/
         } catch (SOAPException e) {
-        // log.error("Exception when generating the envelope", e);
-        throw new BpmnError("Exception when generating the envelope");
-    } catch (AxisFault axisFault) {
-        System.out.println(axisFault.getMessage());
-        throw new BpmnError("AxisFault while getting response :" + axisFault.getMessage());
-    } catch (XMLStreamException e) {
-        System.out.println(e.getMessage());
-        throw new BpmnError("XMLStreamException  :" + e.getMessage());
-    } catch (MalformedURLException e) {
+            log.error("Exception when generating the envelope", e);
+            throw new BpmnError("Exception when generating the envelope");
+        } catch (AxisFault axisFault) {
+            System.out.println(axisFault.getMessage());
+            throw new BpmnError("AxisFault while getting response :" + axisFault.getMessage());
+        } catch (XMLStreamException e) {
+            System.out.println(e.getMessage());
+            throw new BpmnError("XMLStreamException  :" + e.getMessage());
+        } catch (MalformedURLException e) {
             //  log.error("Exception when creating the URL");
             throw new BpmnError("Exception when creating the URL");
         }
 
 
-
-}
+    }
 
 }
