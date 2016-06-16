@@ -638,9 +638,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                             //Define the entry arrow flow coordinates for the activity
                             subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft() - getEndIconWidth() / 2, exitCoords.getYTop(), id));
                             //If there is a Throw activity inside Else, no exit arrow from Throw activity
-                            if (check == true) {
-                                //No exit arrow flow. The process terminates.
-                            } else {
+                            if (check != true) {
                                 subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                             }
                         }
@@ -651,9 +649,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                             //Define the entry arrow flow coordinates for the activity
                             subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                             //If there is a Throw activity inside ElseIf, no exit arrow from Throw activity
-                            if (check == true) {
-                                //No exit arrow flow. The process terminates.
-                            } else {
+                            if (check != true) {
                                 subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                             }
                         }
@@ -677,12 +673,9 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                         //Define the entry arrow flow coordinates for the activity
                         subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         //If there is a Throw activity inside ElseIf, no exit arrow from Throw activity
-                        if (check == true) {
-                            //No exit arrow . Process terminates from there
-                        } else {
+                        if (check != true) {
                             subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                         }
-
                     }
                     //Checks whether the activity is an instance of Else
                     else if (activity instanceof ElseImpl) {
@@ -691,9 +684,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                         //Define the entry arrow flow coordinates for the activity
                         subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         //If there is a Throw activity inside Else, no exit arrow from Throw activity
-                        if (check == true) {
-                            //No exit arrow . Process terminates from there
-                        } else {
+                        if (check != true) {
                             subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                         }
                     } else {

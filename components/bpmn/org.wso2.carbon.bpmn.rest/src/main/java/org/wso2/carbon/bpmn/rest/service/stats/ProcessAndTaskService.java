@@ -54,6 +54,7 @@ public class ProcessAndTaskService {
     private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     String str = String.valueOf(tenantId);
+    public static final String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     /**
      * Get the deployed processes count
@@ -356,7 +357,6 @@ public class ProcessAndTaskService {
     public ResponseHolder taskVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
         SimpleDateFormat ft = new SimpleDateFormat("M");
 
         InstanceStatPerMonth[] taskStatPerMonths = new InstanceStatPerMonth[12];
@@ -412,7 +412,6 @@ public class ProcessAndTaskService {
     public ResponseHolder processVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
         SimpleDateFormat ft = new SimpleDateFormat("M");
         InstanceStatPerMonth[] processStatPerMonths = new InstanceStatPerMonth[12];
         for (int i = 0; i < processStatPerMonths.length; i++) {

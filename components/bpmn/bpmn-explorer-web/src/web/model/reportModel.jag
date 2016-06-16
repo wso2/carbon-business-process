@@ -112,16 +112,14 @@ if (update != null && update === "true") {
 
             var x = request.getParameter("id");
 
-
             var listOfTasks = get( httpUrl +"/bpmn/stats/processTaskServices/avgTaskDurationForCompletedProcess/"+x ,null, headers, "json" ).data.data;
             var avgTaskForProcess = [];
-            if(listOfTasks == null){
-            } else {
+            if (listOfTasks != null) {
                 for(var i= 0; i < listOfTasks.length; i++){
-                    var taskDefinitionKey = listOfTasks[i].taskDefinitionKey;
-                    var averageTime = listOfTasks[i].averageTimeForCompletion;
-                    avgTaskForProcess.push([taskDefinitionKey, averageTime]);
-                }
+                        var taskDefinitionKey = listOfTasks[i].taskDefinitionKey;
+                        var averageTime = listOfTasks[i].averageTimeForCompletion;
+                        avgTaskForProcess.push([taskDefinitionKey, averageTime]);
+                    }
             }
 
         }
