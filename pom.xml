@@ -438,10 +438,10 @@
         <carbon.jndi.import.version>[1.0.0,2.0.0)</carbon.jndi.import.version>
         <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
         <carbon.msf4j.impl.version.range>[1.1.0,2.0.0)</carbon.msf4j.impl.version.range>
-        <carbon.http.netty.version>2.0.2-SNAPSHOT</carbon.http.netty.version>
+        <carbon.http.netty.version>2.1.0</carbon.http.netty.version>
         <carbon.deployment.version>5.0.0</carbon.deployment.version>
         <carbon.deployment.import.version>[5.0.0,6.0.0)</carbon.deployment.import.version>
-        <carbon.messaging.version>1.0.2</carbon.messaging.version>
+        <carbon.messaging.version>1.0.3</carbon.messaging.version>
         <carbon.messaging.import.version>[1.0.2,2.0.0)</carbon.messaging.import.version>
         <carbon.security.caas.version>1.0.0-m2</carbon.security.caas.version>
         <carbon.security.caas.import.version>[1.0.0,2.0.0)</carbon.security.caas.import.version>
@@ -477,11 +477,11 @@
         <slf4j.import.version>[1.7.7, 2.0.0)</slf4j.import.version>
         <snakeyaml.version>1.16.0.wso2v1</snakeyaml.version>
         <commons-io.version>2.4.0.wso2v1</commons-io.version>
-        <commons.lang3.version>3.3.2</commons.lang3.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
         <version.commons.logging>1.2</version.commons.logging>
-        <commons-codec.version>1.3</commons-codec.version>
+        <commons-codec.version>1.10</commons-codec.version>
         <com.zaxxer.hikaricp.version>2.4.1</com.zaxxer.hikaricp.version>
-        <h2.version>1.4.191</h2.version>
+        <h2.version>1.4.192</h2.version>
 
         <!-- Maven Plugin versions -->
         <carbon.feature.plugin.version>2.0.1</carbon.feature.plugin.version>
