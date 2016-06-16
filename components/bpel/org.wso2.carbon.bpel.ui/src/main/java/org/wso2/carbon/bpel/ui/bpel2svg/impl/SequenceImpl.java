@@ -408,9 +408,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                         setCheck(true);
                     }
                     //Checks whether the previous activity is a Throw activity, if so no exit arrow
-                    if (prevActivity instanceof ThrowImpl) {
-                        //No exit arrow . Process terminates from there
-                    } else if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
+                   if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
                             || prevActivity instanceof TargetsImpl || activity instanceof SourcesImpl || activity instanceof SourceImpl ||
                             activity instanceof TargetImpl || activity instanceof TargetsImpl) {
                         //No exit arrow for Source or Target as it doesn't have an icon specified.
