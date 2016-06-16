@@ -99,7 +99,8 @@ public class RESTInvoker {
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
                 byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
-                httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
+                String credentials = new String(encodedCredentials);
+                httpGet.addHeader("Authorization", "Basic " + credentials);
             }
             if(headerList != null){
                 for(String header: headerList){
