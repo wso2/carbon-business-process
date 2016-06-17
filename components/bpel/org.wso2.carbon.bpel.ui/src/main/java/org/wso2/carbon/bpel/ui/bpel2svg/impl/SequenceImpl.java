@@ -407,11 +407,12 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     if (activity instanceof ThrowImpl) {
                         setCheck(true);
                     }
-                    //Checks whether the previous activity is a Throw activity, if so no exit arrow
+
                    if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
                             || prevActivity instanceof TargetsImpl || activity instanceof SourcesImpl || activity instanceof SourceImpl ||
-                            activity instanceof TargetImpl || activity instanceof TargetsImpl) {
+                            activity instanceof TargetImpl || activity instanceof TargetsImpl || prevActivity instanceof ThrowImpl) {
                         //No exit arrow for Source or Target as it doesn't have an icon specified.
+                        // Checks whether the previous activity is a Throw activity, if so no exit arrow
                     } else {
                         subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
                     }
