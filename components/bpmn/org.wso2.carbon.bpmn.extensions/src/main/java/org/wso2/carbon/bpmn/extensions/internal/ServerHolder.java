@@ -19,7 +19,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import java.util.Observable;
 
 /**
- * Data holder for the BPELServiceComponent
+ * Data holder for the ServiceComponent for the SOAP task to get the Axis2 ConfigurationContext
  */
 public final class ServerHolder extends Observable {
     private static ServerHolder instance;
