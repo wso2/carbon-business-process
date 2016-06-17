@@ -257,8 +257,7 @@ public class ProcessAndTaskService {
 
             long noOfHistoricInstances = historicProcessInstanceQuery.count();
 
-            if (noOfHistoricInstances == 0) {
-            } else {
+            if (noOfHistoricInstances != 0) {
                 List<HistoricProcessInstance> instanceList = historicProcessInstanceQuery.list();
 
                 for (HistoricProcessInstance completedProcess : instanceList) {
@@ -270,7 +269,6 @@ public class ProcessAndTaskService {
                 bpmnProcessInstance.setAverageTimeForCompletion(averageTime);
                 list.add(bpmnProcessInstance);
             }
-
         }
         response.setData(list);
         return response;
