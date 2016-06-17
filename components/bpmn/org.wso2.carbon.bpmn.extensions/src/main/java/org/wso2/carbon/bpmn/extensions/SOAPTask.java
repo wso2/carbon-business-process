@@ -40,6 +40,45 @@ import java.util.List;
 
 /**
  * Provides SOAP service invocation support within BPMN processes.
+ * Following fields is required when using the SOAP task : (Both string values and expressions can be used)
+     serviceURL : Endpoint url of the partner service
+     payload :  Request payload which is attached to the SOAP body when creating the SOAP request
+     outputVariable : Name of the variable to save response
+     soapVersion :  Soap version to be used when creating the SOAP request i.e. soap11 or soap12
+     headers : SOAP header block which is attached to the SOAP header when creating the SOAP request
+     transportHeaders : additional transport header values in the format "headerName1:headerVal ue1,headerName2:headerValue2"
+     httpConnection : Control options for the current connection. Connection: keep-alive (set as the default value)
+     soapAction : Indicate the intent of the SOAP HTTP request
+     httpTransferEncoding : The form of encoding used to safely transfer the entity to the user. Transfer-Encoding: chunked (set as the default value)
+ *  Example :
+     <serviceTask id="servicetask3" name="SOAP Task" activiti:class="org.wso2.carbon.bpmn.extensions.SOAPTask" activiti:extensionId="org.wso2.bps.tooling.bpmn.extensions.soapTask.SOAPTask">
+     <extensionElements>
+     <activiti:field name="serviceURL">
+     <activiti:expression>${serviceURL eg: http://10.100.4.192:9764/services/HelloService }</activiti:expression>
+     </activiti:field>
+     <activiti:field name="payload">
+     <activiti:expression>${input-payload}</activiti:expression>
+     </activiti:field>
+     <activiti:field name="soapVersion">
+     <activiti:string>soap11</activiti:string>
+     </activiti:field>
+     <activiti:field name="httpTransferEncoding">
+     <activiti:expression>${httpTransferEncoding}</activiti:expression>
+     </activiti:field>
+     <activiti:field name="outputVariable">
+     <activiti:string>output</activiti:string>
+     </activiti:field>
+     <activiti:field name="headers">
+     <activiti:string>&lt;ns1:hello xmlns:ns1='http://ode/bpel/unit-test.wsdl'&gt; &lt;TestPart&gt;HEADER11&lt;/TestPart&gt;&lt;/ns1:hello&gt;</activiti:string>
+     </activiti:field>
+     <activiti:field name="httpConnection">
+     <activiti:string>keep-alive</activiti:string>
+     </activiti:field>
+     <activiti:field name="transportHeaders">
+     <activiti:string>Pragma: no-cache,Cache-Control: no-cache</activiti:string>
+     </activiti:field>
+     </extensionElements>
+     </serviceTask>
  */
 public class SOAPTask implements JavaDelegate {
     private static final Log log = LogFactory.getLog(SOAPTask.class);
@@ -92,15 +131,15 @@ public class SOAPTask implements JavaDelegate {
             List list = new ArrayList();
 
             //Adding the connection
-            Header transferEncodingHeader = new Header();
+            Header connectionHeader = new Header();
             if (httpConnection != null) {
                 connection = httpConnection.getValue(execution).toString();
             } else {
                 connection = "keep-alive";
             }
-            transferEncodingHeader.setName("Connection");
-            transferEncodingHeader.setValue(connection);
-            list.add(transferEncodingHeader);
+            connectionHeader.setName("Connection");
+            connectionHeader.setValue(connection);
+            list.add(connectionHeader);
 
             //Adding the soap action
             if (soapAction != null) {
