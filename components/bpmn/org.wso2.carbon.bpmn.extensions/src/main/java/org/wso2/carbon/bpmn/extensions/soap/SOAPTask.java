@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions;
+package org.wso2.carbon.bpmn.extensions.soap;
 
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -32,8 +32,6 @@ import org.wso2.carbon.bpmn.extensions.internal.ServiceComponent;
 import org.wso2.carbon.bpmn.extensions.soap.constants.Constants;
 import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP11Constants;
 import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP12Constants;
-import org.wso2.carbon.bpmn.extensions.soap.impl.SOAPException;
-
 import javax.xml.stream.XMLStreamException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +49,7 @@ import java.util.List;
      soapAction : Indicate the intent of the SOAP HTTP request
      httpTransferEncoding : The form of encoding used to safely transfer the entity to the user. Transfer-Encoding: chunked (set as the default value)
  *  Example :
-     <serviceTask id="servicetask3" name="SOAP Task" activiti:class="org.wso2.carbon.bpmn.extensions.SOAPTask" activiti:extensionId="org.wso2.bps.tooling.bpmn.extensions.soapTask.SOAPTask">
+     <serviceTask id="servicetask3" name="SOAP Task" activiti:class="org.wso2.carbon.bpmn.extensions.soap.SOAPTask" activiti:extensionId="org.wso2.bps.tooling.bpmn.extensions.soapTask.SOAPTask">
      <extensionElements>
      <activiti:field name="serviceURL">
      <activiti:expression>${serviceURL eg: http://10.100.4.192:9764/services/HelloService }</activiti:expression>

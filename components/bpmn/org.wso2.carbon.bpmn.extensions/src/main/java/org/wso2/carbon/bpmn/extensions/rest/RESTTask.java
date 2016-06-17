@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions;
+package org.wso2.carbon.bpmn.extensions.rest;
 
 import com.jayway.jsonpath.JsonPath;
 import org.activiti.engine.delegate.BpmnError;
