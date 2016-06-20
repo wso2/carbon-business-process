@@ -1210,22 +1210,23 @@ function getAuditLogForRunningProcessInstances(pid,id){
                                 var endTime = taskList2.data[j].endTime;
                                 var taskId = taskList2.data[j].taskId;
                                 var activityInstanceId = taskList2.data[j].id;
+                                var state ;
                                 if (taskId == null) {
                                     taskId = "N/A";
                                 }
                                 if (taskDefKey == activityId && endTime !== null ) {
-                                    var state = "Completed";
+                                    state = "Completed";
                                     break;
                                 } else if (taskDefKey == activityId && endTime == null ) {
-                                    var state = "Active";
-                                    var endTime = "N/A";
+                                    state = "Active";
+                                    endTime = "N/A";
                                     break;
                                 } else {
-                                    var state = "Not Started";
-                                    var startTime = "N/A";
-                                    var endTime = "N/A";
-                                    var activityInstanceId = "N/A";
-                                    var taskId = "N/A";
+                                    state = "Not Started";
+                                    startTime = "N/A";
+                                    endTime = "N/A";
+                                    activityInstanceId = "N/A";
+                                    taskId = "N/A";
                                 }
 
                             }
@@ -1255,22 +1256,20 @@ function getVariablesOfRunningProcessInstances(id){
 
             $("#variables").html("");
             var variableInfo = JSON.parse(data);
-            if (variableInfo.restVariables.length == 0) {
-                var DIV = "<h3> No variables for this process instance </h3>";
-                $("#variables").html(DIV);
-            } else {
+            var DIV = "<h3> No variables for this process instance </h3>";
+            if (variableInfo.restVariables.length > 0) {
                 var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.restVariables.length; k++) {
                     var name = variableInfo.restVariables[k].name;
                     var type =variableInfo.restVariables[k].type;
-                    var value = variableInfo.restVariables[k].value;                    
+                    var value = variableInfo.restVariables[k].value;
                     var scope = variableInfo.restVariables[k].variableScope;
 
                     DIV = DIV + "<tr><td style='word-wrap: break-word'>"+name+"</td><td>"+type+"</td><td style='word-wrap: break-word'>"+value+"</td><td>"+scope+"</td></tr>";
                 }
                 DIV = DIV+"</tbody></table></div>"
-                $("#variables").html(DIV);
             }
+            $("#variables").html(DIV);
         }
     });
 }
@@ -1341,7 +1340,6 @@ function getUserTasksOfRunningProcessInstances(pid,id){
                                 }                
                                
                                 DIV = DIV + "<tr><td>"+state+"</td><td style='word-wrap: break-word'>"+activityName+"</td><td style='word-wrap: break-word'>"+taskDefKey+"</td><td>"+startTime+"</td><td>"+endTime+"</td><td>"+duration+"</td><td>"+assignee+"</td></tr>";
-                            } else {
                             }
                         }
                         DIV = DIV+"</tbody></table></div>"

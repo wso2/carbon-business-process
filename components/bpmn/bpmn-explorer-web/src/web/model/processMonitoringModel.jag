@@ -54,10 +54,8 @@ if (query1.data.length != 0) {
                            <%
         var resource = get(httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/" + pId, null, headers, "json").data.data;
 
-        var imageUrl = "";
-        if (resource == null) {
-            imageUrl = "not supported";
-        } else {
+        var imageUrl = "not supported";
+        if (resource != null) {
             var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
 
             if (BPSResponseXML == null || BPSResponseXML == "") {
