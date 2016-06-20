@@ -175,11 +175,11 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                 TaskConfiguration taskConf = (TaskConfiguration) htConf;
 
                 //retrieve response binding
-                Service callbackService = (Service) taskConf.getWSDL().getServices().get(taskConf.getCallbackServiceName());
+                Service callbackService = (Service) taskConf.getResponseWSDL().getServices().get(taskConf.getCallbackServiceName());
                 Port callbackPort = (Port) callbackService.getPorts().get(taskConf.getCallbackPortName());
                 String callbackBinding = callbackPort.getBinding().getQName().getLocalPart();
 
-                outputMsgTemplate = createSoapTemplate(htConf.getWSDL().getDocumentBaseURI(),
+                outputMsgTemplate = createSoapTemplate(taskConf.getResponseWSDL().getDocumentBaseURI(),
                                                        taskConf.getResponsePortType().getLocalPart(),
                                                        taskConf.getResponseOperation(), callbackBinding);
             } catch (Exception e) {

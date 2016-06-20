@@ -1079,18 +1079,8 @@ public abstract class ActivityImpl implements ActivityInterface {
      * @return String with the arrow styling attributes
      */
     protected String getArrowStyle() {
-        String largeArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1";
-        String mediumArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1";
+        String largeArrowStr = ArrowStyles.LARGE_ARROW_STYLE;
+        String mediumArrowStr = ArrowStyles.MEDIUM_ARROW_STYLE;
         //Checks whether the arrow needed is a largeArrow
         if (largeArrow) {
             return largeArrowStr;
@@ -1103,18 +1093,8 @@ public abstract class ActivityImpl implements ActivityInterface {
      * @return String with the link arrow styling attributes
      */
     protected String getLinkArrowStyle() {
-        String largeArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1;opacity: 0.25;";
-        String mediumArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1;opacity: 0.25;";
+        String largeArrowStr = ArrowStyles.LARGE_LINK_ARROW_STYLE;
+        String mediumArrowStr = ArrowStyles.MEDIUM_LINK_ARROW_STYLE;
         //Checks whether the link arrow needed is a largeArrow
         if (largeArrow) {
             return largeArrowStr;

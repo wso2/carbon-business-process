@@ -96,6 +96,7 @@
                         </resource>
                     </webResources>
                     <warName>bpmn</warName>
+                    <packagingExcludes>WEB-INF/lib/axis2-kernel-1.6.1-wso2v17.jar</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>

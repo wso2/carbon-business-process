@@ -33,6 +33,9 @@ import java.util.*;
 public class ElseImpl extends ActivityImpl implements ElseInterface {
     private static final Log log = LogFactory.getLog(ElseImpl.class);
     public static final String SVG_NAMESPACE = SVG_Namespace.SVG_NAMESPACE;
+    public static final int CONSTANT_VALUE_ONE = 1;
+    public static final int CONSTANT_VALUE_TWO = 2;
+    public static final int CONSTANT_VALUE_THREE = 3;
 
     //Variable to check whether a throw activity is inside Else
     public boolean throwOrNot;
@@ -463,11 +466,11 @@ public class ElseImpl extends ActivityImpl implements ElseInterface {
         } else {
             if (layoutManager.isVerticalLayout()) {
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
-                        ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX +
+                        ((startY + CONSTANT_VALUE_TWO * endY) / CONSTANT_VALUE_THREE) + " L " + endX + "," + ((startY + CONSTANT_VALUE_TWO * endY) / CONSTANT_VALUE_THREE) + " L " + endX +
                         "," + endY);
             } else {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
-                        "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + CONSTANT_VALUE_ONE * endX) / CONSTANT_VALUE_TWO) +
+                        "," + startY + " L " + ((startX + CONSTANT_VALUE_ONE * endX) / CONSTANT_VALUE_TWO) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
             }
         }
         //Set the id of the path
