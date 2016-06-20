@@ -116,7 +116,7 @@ public class RESTTask implements JavaDelegate {
     private static final String REST_INVOKE_ERROR = "RestInvokeError";
     private static final String GET_METHOD = "GET";
     private static final String POST_METHOD = "POST";
-
+    private static final String PUT_METHOD = "PUT";
     private RESTInvoker restInvoker;
 
     private Expression serviceURL;
@@ -210,14 +210,20 @@ public class RESTTask implements JavaDelegate {
             if (POST_METHOD.equals(method.getValue(execution).toString())) {
                 String inputContent = input.getValue(execution).toString();
                 output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
-            } else {
+            } else if (GET_METHOD.equals(method.getValue(execution).toString())) {
                 output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
+            } else if (PUT_METHOD.equals(method.getValue(execution).toString())) {
+                String inputContent = input.getValue(execution).toString();
+                output = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
+            } else {
+                output = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
+
             }
 
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
                 execution.setVariable(outVarName, output);
-            } else {
+            } else if (outputMappings != null) {
                 try {
                     new JSONObject(output);
                 } catch (JSONException e) {
@@ -236,6 +242,11 @@ public class RESTTask implements JavaDelegate {
                     Object value = JsonPath.read(output, jsonExpression);
                     execution.setVariable(varName, value);
                 }
+            } else {
+                String outputNotFoundErrorMsg = "An output variable or outmappings is not provided. " +
+                        "Either an output variable or outmappings  must be provided to save " +
+                        "the response.";
+                 throw new BPMNRESTException(outputNotFoundErrorMsg);
             }
         } catch (Exception e) {
             String errorMessage = "Failed to execute " + method.getValue(execution).toString() + " " + url + " within task " + getTaskDetails(execution);
