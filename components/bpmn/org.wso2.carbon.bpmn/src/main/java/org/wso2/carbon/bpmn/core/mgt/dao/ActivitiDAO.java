@@ -22,10 +22,12 @@ import org.activiti.engine.impl.cmd.AbstractCustomSqlExecution;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.session.RowBounds;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
 import org.wso2.carbon.bpmn.core.internal.mapper.SubstitutesMapper;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
+import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
 import java.util.Date;
@@ -263,7 +265,7 @@ public class ActivitiDAO {
     }
 
     /**
-     * Remove the substitute record for the given user
+     * Remove the substitute record for the given user.
      * @param assignee
      * @param tenantId
      * @return
@@ -275,6 +277,60 @@ public class ActivitiDAO {
                         return substitutesMapper.removeSubstitute(assignee, tenantId);
                     }
                 };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Update the substitute of the given user.
+     * @param assignee
+     * @param substitute
+     * @param tenantId
+     * @param updated
+     * @return
+     */
+    public int updateSubstitute(final String assignee, final String substitute, final int tenantId, final Date updated) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.updateSubstituteUser(assignee, substitute, tenantId, updated);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the list of substitute info based on query parameters.
+     * @param model model with only required query parameter values. Leave others as null. By default enabled=false.
+     * @return List<SubstitutesDataModel> Result set of substitute info
+     */
+    public List<PaginatedSubstitutesDataModel> querySubstituteInfo(final PaginatedSubstitutesDataModel model) {
+
+        final RowBounds rw = new RowBounds(model.getStart(), model.getSize());
+        CustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public List<PaginatedSubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.querySubstitutes(rw, model);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+
+    }
+
+    /**
+     * Return the list of substitute info based on query parameters except enabled property.
+     * @param model data model with only required query parameter values. Leave others as null.
+     * @return List<PaginatedSubstitutesDataModel> Result set of substitute info
+     */
+    public List<PaginatedSubstitutesDataModel> querySubstituteInfoWithoutEnabled(final PaginatedSubstitutesDataModel model) {
+        final RowBounds rw = new RowBounds(model.getStart(), model.getSize());
+        CustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public List<PaginatedSubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.querySubstitutesWithoutEnabled(rw, model);
+                    }
+                };
+
         return managementService.executeCustomSql(customSqlExecution);
     }
 }

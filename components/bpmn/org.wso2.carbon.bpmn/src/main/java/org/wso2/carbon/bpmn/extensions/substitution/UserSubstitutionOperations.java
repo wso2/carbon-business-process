@@ -26,11 +26,13 @@ import org.joda.time.DateTime;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
+import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,11 +66,6 @@ public class UserSubstitutionOperations {
             dataModel.setEnabled(true); //by default enabled
             dataModel.setCreated(new Date());
             dataModel.setTenantId(tenantId);
-            //            String transitiveSub = getTransitiveSubstitute(substitute);
-            //            if (transitiveSub != substitute) { //if the current substitute available, trans sub remains null
-            //                dataModel.setTransitiveSub(transitiveSub);
-            //            }
-
             activitiDAO.insertSubstitute(dataModel);
             return dataModel;
         }
@@ -210,4 +207,122 @@ public class UserSubstitutionOperations {
         };
         reassignThread.start();
     }
+
+    public static void handleUpdateSubstitute(String assignee, String substitute, Date startTime, Date endTime,
+            boolean enabled, List<String> taskList) {
+        SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee,tenantId);
+        if (existingSubInfo != null) {
+            SubstitutesDataModel dataModel = updateSubstituteInfo(assignee, substitute, startTime, endTime);
+
+            if (dataModel.isEnabled() && isBeforeBufferTime(dataModel.getSubstitutionStart())) {
+                boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
+                if (!transitivityResolved) {
+                    //remove added transitive record
+                    activitiDAO.updateSubstituteInfo(existingSubInfo);
+                    throw new SubstitutesException(
+                            "Could not find an available substitute. Use a different user to substitute");
+                }
+                //transitive substitute maybe changed, need to retrieve again.
+                dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
+                if (BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
+                    bulkReassign(dataModel.getUser(), dataModel.getSubstitute(), taskList);
+                } else {
+                    bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
+                }
+
+            }
+        } else {
+            throw new SubstitutesException(
+                    "Substitute for user: " + assignee + ", does not exist. Try to add new substitute info record");
+
+        }
+
+    }
+
+    public static SubstitutesDataModel updateSubstituteInfo(String assignee, String substitute, Date startTime, Date endTime) {
+        SubstitutesDataModel dataModel = new SubstitutesDataModel();
+        dataModel.setUser(assignee);
+        dataModel.setSubstitute(MultitenantUtils.getTenantAwareUsername(substitute));
+        dataModel.setSubstitutionStart(startTime);
+        dataModel.setSubstitutionEnd(endTime);
+        dataModel.setEnabled(true); //by default enabled
+        dataModel.setTenantId(tenantId);
+        dataModel.setUpdated(new Date());
+        activitiDAO.updateSubstituteInfo(dataModel);
+        return dataModel;
+    }
+
+    public static void handleChangeSubstitute(String assignee, String substitute) {
+        SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee,tenantId);
+        if (existingSubInfo != null) {
+            activitiDAO.updateSubstitute(assignee, substitute, tenantId, new Date());
+
+            if (existingSubInfo.isEnabled() && isBeforeBufferTime(existingSubInfo.getSubstitutionStart())) {
+                String existingSub = existingSubInfo.getSubstitute();
+                existingSubInfo.setSubstitute(substitute);
+                boolean transitivityResolved = updateTransitiveSubstitutes(existingSubInfo);
+                if (!transitivityResolved) {
+                    //remove added record
+                    activitiDAO.updateSubstitute(assignee, existingSub, tenantId, existingSubInfo.getUpdated());
+                    throw new SubstitutesException(
+                            "Could not find an available substitute. Use a different user to substitute");
+                }
+            }
+        } else {
+            throw new SubstitutesException(
+                    "No substitution record found for the user: " + assignee );
+
+        }
+    }
+
+    /**
+     * Get the substitute info of the given user
+     * @param assignee
+     * @return SubstitutesDataModel
+     */
+    public static SubstitutesDataModel getSubstituteOfUser(String assignee) {
+        SubstitutesDataModel dataModel = activitiDAO.selectSubstituteInfo(assignee, tenantId);
+        return dataModel;
+    }
+
+    public static List<PaginatedSubstitutesDataModel> querySubstitutions(Map<String, String> propertiesMap) {
+        PaginatedSubstitutesDataModel model = new PaginatedSubstitutesDataModel();
+        if(propertiesMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
+            model.setSubstitute(propertiesMap.get(SubstitutionQueryProperties.SUBSTITUTE));
+        }
+
+        if (propertiesMap.get(SubstitutionQueryProperties.USER) != null) {
+            model.setUser(propertiesMap.get(SubstitutionQueryProperties.USER));
+        }
+
+        String enabled = propertiesMap.get(SubstitutionQueryProperties.ENABLED);
+        boolean enabledProvided = false;
+        if (enabled != null) {
+            enabledProvided = true;
+            if (enabled.equalsIgnoreCase("true")) {
+                model.setEnabled(true);
+            } else if (enabled.equalsIgnoreCase("false")) {
+                model.setEnabled(false);
+            } else {
+                throw new ActivitiIllegalArgumentException("Invalid parameter " + enabled + " for enabled property.");
+            }
+        }
+
+        model.setTenantId(tenantId);
+        int start = Integer.valueOf(propertiesMap.get(SubstitutionQueryProperties.START));
+        int size = Integer.valueOf(propertiesMap.get(SubstitutionQueryProperties.SIZE));
+        model.setStart(start);
+        model.setSize(size);
+        model.setOrder(propertiesMap.get(SubstitutionQueryProperties.ORDER));
+        model.setSort(propertiesMap.get(SubstitutionQueryProperties.SORT));
+
+
+        if (!enabledProvided) {
+            return activitiDAO.querySubstituteInfoWithoutEnabled(model);
+        } else {
+            return activitiDAO.querySubstituteInfo(model);
+        }
+
+    }
+
 }

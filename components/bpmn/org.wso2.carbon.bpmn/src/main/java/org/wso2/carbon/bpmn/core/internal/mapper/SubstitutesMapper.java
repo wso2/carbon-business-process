@@ -17,10 +17,13 @@
 package org.wso2.carbon.bpmn.core.internal.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.session.RowBounds;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public interface SubstitutesMapper {
@@ -31,19 +34,27 @@ public interface SubstitutesMapper {
             " WHERE USER = #{user} AND TENANT_ID = #{tenantId}";
     final String UPDATE_ENABLED = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET ENABLED = #{enabled} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
-    final String UPDATE = "<script>" + " UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " SET "
-            + "<if test=\"substitute != null\">" + " SUBSTITUTE = #{substitute}, </if> "
-            + "<if test=\"substitutionStart != null\">\" + \" SUBSTITUTION_START = #{substitutionStart}, </if>"
-            + "<if test=\"substitutionEnd != null\">\" + \" SUBSTITUTION_END = #{substitutionEnd}, </if>"
-            + "<if test=\"enabled != null\">\" + \" ENABLED = #{enabled}, </if>"
-            + "<if test=\"transitiveSub != null\">\" + \" TRANSITIVE_SUBSTITUTE = #{transitiveSub}, </if>"
-            + "UPDATED = #{updated} " + "WHERE USER = #{user} AND TENANT_ID=#{tenantId}" + "</script>";
+    final String UPDATE_INFO = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
+            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
     final String COUNT_USER_AS_SUBSTITUTE = "SELECT COUNT(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
             + " WHERE SUBSTITUTE = #{substitute} AND TENANT_ID = #{tenantId}";
-    final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
+    final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
-    final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+    final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
+            + " WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+    final String UPDATE_SUBSTITUTE_USER = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
+            "  SET SUBSTITUTE = #{substitute}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+    final String QUERY_SUBSTITUTES = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE " +
+            " <if test=\"user != null\"> USER = #{user} AND </if> " +
+            " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
+            " <if test=\"enabled != null\"> ENABLED = #{enabled} AND </if> " +
+            " TENANT_ID = #{tenantId}</script>";
+    final String QUERY_SUBSTITUTES_NO_ENABLED = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE " +
+            " <if test=\"user != null\"> USER = #{user} AND </if> " +
+            " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
+            " TENANT_ID = #{tenantId}</script>";
 
     /**
      * Insert new row in ACT_BPS_SUBSTITUTES table
@@ -73,11 +84,11 @@ public interface SubstitutesMapper {
     SubstitutesDataModel selectSubstitute( @Param("user") String user, @Param("tenantId") int tenantId);
 
     /**
-     * Update the ACT_BPS_SUBSTITUTES table with all the none null values
+     * Update the ACT_BPS_SUBSTITUTES table.
      * @param substitutesDataModel
      * @return number of rows updated
      */
-    @Update(UPDATE)
+    @Update(UPDATE_INFO)
     int updateSubstitute(SubstitutesDataModel substitutesDataModel);
 
     /**
@@ -124,4 +135,45 @@ public interface SubstitutesMapper {
      */
     @Delete(DELETE_SUBSTITUTE)
     int removeSubstitute(@Param("user") String user, @Param("tenantId") int tenantId);
+
+    /**
+     * Update the substitute of the given user
+     * @param assignee
+     * @param substitute
+     * @param tenantId
+     * @param updated
+     * @return updated row count
+     */
+    @Update(UPDATE_SUBSTITUTE_USER)
+    Integer updateSubstituteUser(String assignee, String substitute, int tenantId, Date updated);
+
+    /**
+     * Return the list of substitute info based on query parameters.
+     * @param substitutesDataModel
+     * @return List<SubstitutesDataModel> Result set of substitute info
+     */
+    @Select(QUERY_SUBSTITUTES)
+    @Results(value = {
+            @Result(property = "user", column = "USER"),
+            @Result(property = "substitute", column = "SUBSTITUTE"),
+            @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
+            @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
+            @Result(property = "enabled", column = "ENABLED")
+    })
+    List<PaginatedSubstitutesDataModel> querySubstitutes(RowBounds rowBounds, PaginatedSubstitutesDataModel substitutesDataModel);
+
+    /**
+     * Return the list of substitute info based on query parameters except enabled property.
+     * @param substitutesDataModel
+     * @return List<SubstitutesDataModel> Result set of substitute info
+     */
+    @Select(QUERY_SUBSTITUTES_NO_ENABLED)
+    @Results(value = {
+            @Result(property = "user", column = "USER"),
+            @Result(property = "substitute", column = "SUBSTITUTE"),
+            @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
+            @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
+            @Result(property = "enabled", column = "ENABLED")
+    })
+    List<PaginatedSubstitutesDataModel> querySubstitutesWithoutEnabled(RowBounds rowBounds, PaginatedSubstitutesDataModel substitutesDataModel);
 }
