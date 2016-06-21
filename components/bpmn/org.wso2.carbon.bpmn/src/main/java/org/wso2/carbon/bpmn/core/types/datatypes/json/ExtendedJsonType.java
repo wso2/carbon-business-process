@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
+import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.impl.variable.JsonType;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.apache.commons.logging.Log;
@@ -50,7 +51,10 @@ public class ExtendedJsonType extends JsonType {
     public boolean isAbleToStore(Object value) {
         if (value == null) {
             return true;
-        } else if (value instanceof ScriptObjectMirror) {
+            //TODO NEED TO DISCUSS WHETHER TO CHECK FOR JAVA7, JAVA8 OR >JAVA7, >JAVA8
+            //TODO WE CANNOT PROVIDE NATIVE JS JSON support of JAVA7
+            //TODO ScriptObjectMirror not found in Java7
+        } else if (JvmUtil.isJDK8() && value instanceof ScriptObjectMirror) {
             ScriptObjectMirror scriptObjectMirror = (ScriptObjectMirror) value;
 
             Object unwrappedObj = ScriptUtils.unwrap(scriptObjectMirror);
@@ -66,7 +70,7 @@ public class ExtendedJsonType extends JsonType {
                     return false;
                 }
             }
-        } else if(JsonNode.class.isAssignableFrom(value.getClass())) {
+        } else if (JsonNode.class.isAssignableFrom(value.getClass())) {
             JsonNode jsonValue = (JsonNode)value;
             return jsonValue.toString().length() <= this.maxLength;
         } else {

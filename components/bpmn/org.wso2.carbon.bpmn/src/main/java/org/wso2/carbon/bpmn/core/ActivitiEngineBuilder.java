@@ -24,6 +24,9 @@ import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
+import org.activiti.engine.impl.scripting.BeansResolverFactory;
+import org.activiti.engine.impl.scripting.ResolverFactory;
+import org.activiti.engine.impl.scripting.VariableScopeResolverFactory;
 import org.activiti.engine.impl.variable.BooleanType;
 import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.engine.impl.variable.CustomObjectType;
@@ -47,11 +50,14 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.json.ExtendedJsonType;
+import org.wso2.carbon.bpmn.core.types.datatypes.xml.XmlAPIResolverFactory;
+import org.wso2.carbon.bpmn.core.types.datatypes.xml.XmlType;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,6 +89,9 @@ public class ActivitiEngineBuilder {
                     (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(
                             new FileInputStream(
                                     activitiConfigFile));
+
+            //Add script engine resolvers
+            setResolverFactories(processEngineConfigurationImpl);
             //Add supported variable types
             setSupportedVariableTypes(processEngineConfigurationImpl);
 
@@ -124,6 +133,8 @@ public class ActivitiEngineBuilder {
                 variableTypes.addType(customVariableType);
             }
         }
+
+        //Default types in Activiti
         variableTypes.addType(new NullType());
         variableTypes.addType(new StringType(ProcessEngineConfigurationImpl.DEFAULT_ORACLE_MAX_LENGTH_STRING));
         variableTypes.addType(new LongStringType(ProcessEngineConfigurationImpl.DEFAULT_ORACLE_MAX_LENGTH_STRING + 1));
@@ -136,11 +147,14 @@ public class ActivitiEngineBuilder {
         variableTypes.addType(new UUIDType());;
         variableTypes.addType(new JsonType(ProcessEngineConfigurationImpl.DEFAULT_ORACLE_MAX_LENGTH_STRING, objectMapper));
         variableTypes.addType(new LongJsonType(ProcessEngineConfigurationImpl.DEFAULT_ORACLE_MAX_LENGTH_STRING + 1, objectMapper));
-        variableTypes.addType(new ExtendedJsonType(ProcessEngineConfigurationImpl.DEFAULT_ORACLE_MAX_LENGTH_STRING, objectMapper));
         variableTypes.addType(new ByteArrayType());
         variableTypes.addType(new SerializableType());
         variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
         variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
+
+        //types added for WSO2 BPS
+        variableTypes.addType(new ExtendedJsonType(ProcessEngineConfigurationImpl.DEFAULT_ORACLE_MAX_LENGTH_STRING, objectMapper));
+        variableTypes.addType(new XmlType());
 
         List<VariableType> customPostVariableTypes =processEngineConfiguration.getCustomPostVariableTypes();
         if (customPostVariableTypes != null) {
@@ -150,5 +164,19 @@ public class ActivitiEngineBuilder {
         }
 
         processEngineConfiguration.setVariableTypes(variableTypes);
+    }
+
+    /**
+     * Function to register resolver factories that used by script engines and JUEL
+     * @param processEngineConfiguration
+     */
+    private void setResolverFactories (ProcessEngineConfigurationImpl processEngineConfiguration) {
+        List <ResolverFactory> resolverFactories = new ArrayList<>();
+        //Resolvers from Activiti
+        resolverFactories.add(new VariableScopeResolverFactory());
+        resolverFactories.add(new BeansResolverFactory());
+        //Resolvers added for WSO2 BPS
+        resolverFactories.add(new XmlAPIResolverFactory());
+        processEngineConfiguration.setResolverFactories(resolverFactories);
     }
 }
