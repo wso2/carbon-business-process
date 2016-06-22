@@ -24,7 +24,7 @@ if (request.isSecure()) {//check whether the request is secure or not
 		if (queryParameters == "null" || queryParameters == null) {
 			response.sendRedirect("login?requestUrl=" + request.getRequestURI());
 		} else {
-			response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+			response.sendRedirect(encodeURI("login?requestUrl=" + request.getRequestURI() + "?" + request.getQueryString()));
 		}
 	} else {
 		include("/model/advancedFilterModel.jag");
