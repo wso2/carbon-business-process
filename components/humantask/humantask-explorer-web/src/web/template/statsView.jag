@@ -44,7 +44,7 @@
             }
              var options = {
                vAxis: {title: "<%=i18n.localize("status.task", "Status of the Task")%>",  titleTextStyle: { color: 'grey' }},
-               hAxis: {title: hTitle, titleTextStyle: {color: 'grey'},logScale:logScaleEnabled},
+               hAxis: {title: hTitle, titleTextStyle: {color: 'grey'}, logScale:logScaleEnabled},
                colors:['#be2d28'],
                height: ((data.getNumberOfRows() + 2) * 70),
                chartArea:{top:40}
