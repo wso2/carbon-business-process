@@ -18,31 +18,23 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 public class ArrowStyles {
 
     public static String LARGE_ARROW_STYLE =
-            "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
-                    +
-                    "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:"
-                    +
+            "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"+
+                    "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:"+
                     "none;stroke-opacity:1";
 
     public static String MEDIUM_ARROW_STYLE =
-            "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
-                    +
-                    "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:"
-                    +
+            "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"+
+                    "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:"+
                     "none;stroke-opacity:1";
 
     public static String LARGE_LINK_ARROW_STYLE =
-            "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
-                    +
-                    "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
-                    +
+            "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"+
+                    "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"+
                     "none;stroke-opacity:1;opacity: 0.25;";
 
     public static String MEDIUM_LINK_ARROW_STYLE =
-            "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
-                    +
-                    "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
-                    +
+            "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"+
+                    "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"+
                     "none;stroke-opacity:1;opacity: 0.25;";
 
 
