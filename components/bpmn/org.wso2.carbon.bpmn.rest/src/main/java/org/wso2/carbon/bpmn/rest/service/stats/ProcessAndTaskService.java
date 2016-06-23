@@ -244,11 +244,9 @@ public class ProcessAndTaskService {
         for (ProcessDefinition instance : deployements) {
             CompletedProcesses bpmnProcessInstance = new CompletedProcesses();
             bpmnProcessInstance.setProcessDefinitionId(instance.getId());
-
             double totalTime = 0;
             double averageTime = 0;
             String processDefinitionID = instance.getId();
-
 
             HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOSGIService.
                     getHistoryService().createHistoricProcessInstanceQuery().
