@@ -163,7 +163,7 @@ public class SOAPTask implements JavaDelegate {
             //Converting the payload to an OMElement
             OMElement payLoad = AXIOMUtil.stringToOM(payloadRequest);
             //Creating the Service client
-            ServiceClient sender = new ServiceClient(ServiceComponent.getConfigurationContext(), null);
+            ServiceClient sender = new ServiceClient();
             OMElement response = null;
             //Creating options to set the headers
             Options options = new Options();

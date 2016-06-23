@@ -117,6 +117,7 @@ public class RESTTask implements JavaDelegate {
     private static final String GET_METHOD = "GET";
     private static final String POST_METHOD = "POST";
     private static final String PUT_METHOD = "PUT";
+    private static final String DELETE_METHOD = "DELETE";
     private RESTInvoker restInvoker;
 
     private Expression serviceURL;
@@ -135,21 +136,15 @@ public class RESTTask implements JavaDelegate {
             log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " + serviceURL.getValue(execution).toString());
         }
 
-        if (restInvoker == null) {
-            BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
-
-            try {
-                restHolder.setRestInvoker(new RESTInvoker());
-
-            } catch (IOException e) {
-                log.error("I/O Exception when initializing the rest invoker", e);
-                throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
-            } catch (XMLStreamException e) {
-                log.error("XMLStream Exception when initializing the rest invoker", e);
-                throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
-            }
+        try {
+            restInvoker = new RESTInvoker();
+        } catch (XMLStreamException e) {
+            log.error("XMLStream Exception when initializing the rest invoker", e);
+            throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
+        } catch (IOException e) {
+            log.error("I/O Exception when initializing the rest invoker", e);
+            throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
         }
-        restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
 
         String output = "";
         String url = null;
@@ -176,6 +171,7 @@ public class RESTTask implements JavaDelegate {
                             getTaskDetails(execution) + ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
                     throw new BPMNRESTException(msg);
                 }
+                //Check
                 Registry registry = CarbonContext.getThreadLocalCarbonContext().getRegistry(RegistryType.SYSTEM_CONFIGURATION);
 
                 if (log.isDebugEnabled()) {
@@ -207,17 +203,19 @@ public class RESTTask implements JavaDelegate {
                 headerList = headerContent.split(",");
             }
 
-            if (POST_METHOD.equals(method.getValue(execution).toString())) {
+            if (POST_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
                 output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
-            } else if (GET_METHOD.equals(method.getValue(execution).toString())) {
+            } else if (GET_METHOD.equals(method.getValue(execution).toString().trim())) {
                 output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
-            } else if (PUT_METHOD.equals(method.getValue(execution).toString())) {
+            } else if (PUT_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
                 output = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
-            } else {
+            } else if (DELETE_METHOD.equals(method.getValue(execution).toString().trim())) {
                 output = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
-
+            } else {
+                String unsupportedOperationMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
+                throw new BPMNRESTException(unsupportedOperationMsg);
             }
 
             if (outputVariable != null) {
@@ -246,7 +244,7 @@ public class RESTTask implements JavaDelegate {
                 String outputNotFoundErrorMsg = "An output variable or outmappings is not provided. " +
                         "Either an output variable or outmappings  must be provided to save " +
                         "the response.";
-                 throw new BPMNRESTException(outputNotFoundErrorMsg);
+                throw new BPMNRESTException(outputNotFoundErrorMsg);
             }
         } catch (Exception e) {
             String errorMessage = "Failed to execute " + method.getValue(execution).toString() + " " + url + " within task " + getTaskDetails(execution);
