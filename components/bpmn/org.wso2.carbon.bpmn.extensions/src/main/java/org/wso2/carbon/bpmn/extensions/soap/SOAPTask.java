@@ -28,11 +28,9 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.extensions.internal.ServiceComponent;
 import org.wso2.carbon.bpmn.extensions.soap.constants.Constants;
 import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP11Constants;
 import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP12Constants;
-
 import javax.xml.stream.XMLStreamException;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +124,6 @@ public class SOAPTask implements JavaDelegate {
                     soapVersionURI = SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI;
                 }
             }
-
             //Adding the connection
             Header connectionHeader = new Header();
             if (httpConnection != null) {
@@ -155,7 +152,6 @@ public class SOAPTask implements JavaDelegate {
                     headerlist.add(additionalHeader);
                 }
             }
-
             //Adding the soap action
             if (soapAction != null) {
                 action = soapAction.getValue(execution).toString();
@@ -178,7 +174,6 @@ public class SOAPTask implements JavaDelegate {
                 headerList = headers.getValue(execution).toString();
                 OMElement headerElement = AXIOMUtil.stringToOM(headerList);
                 sender.addHeader(headerElement);
-
             }
             //Adding the transfer encoding
             if (httpTransferEncoding != null) {
@@ -200,11 +195,8 @@ public class SOAPTask implements JavaDelegate {
                         "outputVariable must be provided to save " +
                         "the response.";
                 throw new SOAPException(outputNotFoundErrorMsg);
-
             }
             log.info("Response Message :" + execution.getVariable(outputVariable.getValue(execution).toString()));
-
-
         } catch (SOAPException e) {
             log.error("Exception when generating the envelope", e);
             throw new BpmnError("Exception when generating the envelope");
@@ -215,7 +207,5 @@ public class SOAPTask implements JavaDelegate {
             log.error("XML Stream Exception");
             throw new BpmnError("XMLStreamException  :" + e.getMessage());
         }
-
     }
-
 }

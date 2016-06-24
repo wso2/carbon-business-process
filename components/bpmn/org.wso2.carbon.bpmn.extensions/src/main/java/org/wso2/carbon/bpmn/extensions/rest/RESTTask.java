@@ -135,7 +135,6 @@ public class RESTTask implements JavaDelegate {
         if (log.isDebugEnabled()) {
             log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " + serviceURL.getValue(execution).toString());
         }
-
         try {
             restInvoker = new RESTInvoker();
         } catch (XMLStreamException e) {
@@ -145,7 +144,6 @@ public class RESTTask implements JavaDelegate {
             log.error("I/O Exception when initializing the rest invoker", e);
             throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
         }
-
         String output = "";
         String url = null;
         String bUsername = null;
