@@ -1,10 +1,8 @@
-package org.wso2.carbon.bpmn.extensions.substitution;
-
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- * WSO2 Inc. licenses this file to you under the Apache License, 
- * Version 2.0 (the "License"); you may not use this file except 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -16,6 +14,8 @@ package org.wso2.carbon.bpmn.extensions.substitution;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wso2.carbon.bpmn.extensions.substitution;
+
 public class SubstitutionQueryProperties {
 
     public static final String USER = "USER";

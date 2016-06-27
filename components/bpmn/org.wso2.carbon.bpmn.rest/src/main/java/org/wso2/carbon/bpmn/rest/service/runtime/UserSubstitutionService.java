@@ -84,10 +84,9 @@ public class UserSubstitutionService {
      * @param request
      * @return 201 created response with the resource location.
      */
-    @POST
-    @Path("/")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response substitute(SubstitutionRequest request) {
+    @POST @Path("/") @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response substitute(
+            SubstitutionRequest request) {
 
         try {
 
@@ -112,7 +111,8 @@ public class UserSubstitutionService {
             }
 
             //at this point, substitution is enabled by default
-            UserSubstitutionOperations.handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList());
+            UserSubstitutionOperations
+                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList());
 
             return Response.created(new URI("substitute/" + assignee)).build();
 
@@ -132,10 +132,10 @@ public class UserSubstitutionService {
      * @return
      * @throws URISyntaxException
      */
-    @PUT
-    @Path("/{user}")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateSubstituteInfo(@PathParam("user") String user, SubstitutionRequest request) throws URISyntaxException {
+    @PUT @Path("/{user}") @Consumes({ MediaType.APPLICATION_JSON,
+            MediaType.APPLICATION_XML })
+    public Response updateSubstituteInfo(@PathParam("user") String user,
+            SubstitutionRequest request) throws URISyntaxException {
         try {
             request.setAssignee(user);
             String assignee = getRequestedAssignee(request.getAssignee());
@@ -158,7 +158,8 @@ public class UserSubstitutionService {
                 throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
 
-            UserSubstitutionOperations.handleUpdateSubstitute(assignee, substitute, startTime, endTime, true, request.getTaskList());
+            UserSubstitutionOperations
+                    .handleUpdateSubstitute(assignee, substitute, startTime, endTime, true, request.getTaskList());
             return Response.ok().build();
 
         } catch (UserStoreException e) {
@@ -174,10 +175,10 @@ public class UserSubstitutionService {
      * @return
      * @throws URISyntaxException
      */
-    @PUT
-    @Path("/{user}/substitute")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response changeSubstitute(@PathParam("user") String user, SubstituteRequest request) throws URISyntaxException {
+    @PUT @Path("/{user}/substitute") @Consumes({ MediaType.APPLICATION_JSON,
+            MediaType.APPLICATION_XML })
+    public Response changeSubstitute(@PathParam("user") String user,
+            SubstituteRequest request) throws URISyntaxException {
         try {
             String assignee = getRequestedAssignee(user);
             String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
@@ -194,10 +195,10 @@ public class UserSubstitutionService {
      * @return SubstituteInfoResponse
      * @throws URISyntaxException
      */
-    @GET
-    @Path("/{user}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getSubstitute(@PathParam("user") String user) throws URISyntaxException {
+    @GET @Path("/{user}") @Produces({ MediaType.APPLICATION_JSON,
+            MediaType.APPLICATION_XML })
+    public Response getSubstitute(@PathParam("user") String user)
+            throws URISyntaxException {
         try {
             String assignee = getRequestedAssignee(user);
             SubstitutesDataModel model = UserSubstitutionOperations.getSubstituteOfUser(assignee);
@@ -213,9 +214,8 @@ public class UserSubstitutionService {
         }
     }
 
-    @GET
-    @Path("/")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @GET @Path("/") @Produces({ MediaType.APPLICATION_JSON,
+            MediaType.APPLICATION_XML })
     public Response querySubstitutes() {
 
         Map<String, String> queryMap = new HashedMap();

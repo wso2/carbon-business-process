@@ -26,6 +26,7 @@ import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import java.util.Map;
 
 public class TransitivityResolver {
+
     private static final Log log = LogFactory.getLog(UserSubstitutionOperations.class);
 
     private int tenantId;
@@ -33,7 +34,7 @@ public class TransitivityResolver {
     public boolean transitivityEnabled = BPMNConstants.SUBSTITUTION_TRANSITIVITY_DEFAULT;
     Map<String, SubstitutesDataModel> subsMap;
 
-    private TransitivityResolver(){}
+    private TransitivityResolver() {}
 
     protected TransitivityResolver(ActivitiDAO activitiDAO, int tenantId) {
         this.dao = activitiDAO;
@@ -44,19 +45,21 @@ public class TransitivityResolver {
     private void initConfig() {
         BPMNActivitiConfiguration bpmnActivitiConfiguration = BPMNActivitiConfiguration.getInstance();
 
-        if(bpmnActivitiConfiguration != null){
-            String transitivityEnabledProperty = bpmnActivitiConfiguration.getBPMNPropertyValue(BPMNConstants
-                    .SUBSTITUTION_CONFIG, BPMNConstants
-                    .SUBSTITUTION_TRANSITIVITY_PROPERTY);
+        if (bpmnActivitiConfiguration != null) {
+            String transitivityEnabledProperty = bpmnActivitiConfiguration
+                    .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG,
+                            BPMNConstants.SUBSTITUTION_TRANSITIVITY_PROPERTY);
 
-            if(transitivityEnabledProperty != null ) {
-                if (transitivityEnabledProperty.trim().equalsIgnoreCase("true") ||transitivityEnabledProperty.trim().equalsIgnoreCase("false")) {
+            if (transitivityEnabledProperty != null) {
+                if (transitivityEnabledProperty.trim().equalsIgnoreCase("true") || transitivityEnabledProperty.trim()
+                        .equalsIgnoreCase("false")) {
                     transitivityEnabled = Boolean.parseBoolean(transitivityEnabledProperty);
                     if (log.isDebugEnabled()) {
                         log.debug("User substitution transitivity enabled : " + transitivityEnabled);
                     }
                 } else {
-                    log.warn("Invalid value for the property: " + BPMNConstants.SUBSTITUTION_TRANSITIVITY_PROPERTY + ". Transitivity is being disabled by default.");
+                    log.warn("Invalid value for the property: " + BPMNConstants.SUBSTITUTION_TRANSITIVITY_PROPERTY
+                            + ". Transitivity is being disabled by default.");
                 }
             }
         }
@@ -70,13 +73,14 @@ public class TransitivityResolver {
     protected synchronized boolean resolveTransitiveSubs(boolean forcedResolve) {
         if (transitivityEnabled) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
-            for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet())
-            {
+            for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
                 String transitiveSub = entry.getValue().getTransitiveSub();
-                if(transitiveSub == null) {
-                    transitiveSub = calculateTransitiveSubstitute(entry.getValue(), entry.getKey(), entry.getValue().getSubstitute());
+                if (transitiveSub == null) {
+                    transitiveSub = calculateTransitiveSubstitute(entry.getValue(), entry.getKey(),
+                            entry.getValue().getSubstitute());
                 }
-                if (!forcedResolve && BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(transitiveSub)) { //unresolvable sub found and forced resolve not enabled
+                if (!forcedResolve && BPMNConstants.TRANSITIVE_SUB_UNDEFINED
+                        .equals(transitiveSub)) { //unresolvable sub found and forced resolve not enabled
                     return false;
                 }
             }
@@ -85,7 +89,6 @@ public class TransitivityResolver {
             for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
                 dao.updateTransitiveSub(entry.getKey(), tenantId, entry.getValue().getTransitiveSub());
             }
-
 
             return true;
         } else {//transitivity disabled, no need to resolve
@@ -117,14 +120,16 @@ public class TransitivityResolver {
      * @param substituteDataModel data model that need the transitive sub
      * @return available addSubstituteInfo name
      */
-    private synchronized String calculateTransitiveSubstitute(SubstitutesDataModel substituteDataModel, String originUser, String originSub) {
+    private synchronized String calculateTransitiveSubstitute(SubstitutesDataModel substituteDataModel,
+            String originUser, String originSub) {
         String newSub = null;
         SubstitutesDataModel nextDataModel = subsMap.get(substituteDataModel.getSubstitute());
 
         if (nextDataModel != null) {
-            if (nextDataModel.getSubstitute().equals(originUser) || nextDataModel.getSubstitute().equals(originSub)) {//circular dependency, could not resolve
+            if (nextDataModel.getSubstitute().equals(originUser) || nextDataModel.getSubstitute()
+                    .equals(originSub)) {//circular dependency, could not resolve
                 newSub = BPMNConstants.TRANSITIVE_SUB_UNDEFINED;
-            } else if(BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(nextDataModel.getTransitiveSub())) {
+            } else if (BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(nextDataModel.getTransitiveSub())) {
                 newSub = nextDataModel.getSubstitute();
             } else if (nextDataModel.getTransitiveSub() != null) {
                 newSub = nextDataModel.getTransitiveSub();
@@ -167,12 +172,13 @@ public class TransitivityResolver {
         return false;
     }
 
-    protected synchronized boolean  resolveSubstituteForSingleUser(SubstitutesDataModel dataModel) {
+    protected synchronized boolean resolveSubstituteForSingleUser(SubstitutesDataModel dataModel) {
         if (transitivityEnabled) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);
             SubstitutesDataModel subDataModel = dao.selectSubstituteInfo(dataModel.getSubstitute(), tenantId);
             if (subDataModel != null) {
-                String newSub = calculateTransitiveSubstitute(dataModel, dataModel.getUser(), dataModel.getSubstitute());
+                String newSub = calculateTransitiveSubstitute(dataModel, dataModel.getUser(),
+                        dataModel.getSubstitute());
                 if (BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(newSub)) {
                     return false;
                 } else {

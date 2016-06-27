@@ -102,7 +102,8 @@ public class UserSubstitutionOperations {
                 dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
             }
 
-            if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
+            if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE
+                    .equals(dataModel.getTransitiveSub())) {
                 bulkReassign(dataModel.getUser(), dataModel.getSubstitute(), taskList);
             } else {
                 bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
@@ -133,7 +134,12 @@ public class UserSubstitutionOperations {
         }
     }
 
-    //Reassign all the tasks
+    /**
+     * Reassign the given tasks or all the tasks if the given task list null to the given substitute
+     * @param assignee - original user of the tasks
+     * @param substitute - user who getting assigned
+     * @param taskList - list of tasks to reassign. Leave this null to reassign all tha tasks of the assignee.
+     */
     public static void bulkReassign(String assignee, String substitute, List<String> taskList) {
 
         if (taskList != null) { //reassign the given tasks
@@ -242,7 +248,8 @@ public class UserSubstitutionOperations {
                     dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
                 }
 
-                if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
+                if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE
+                        .equals(dataModel.getTransitiveSub())) {
                     bulkReassign(dataModel.getUser(), dataModel.getSubstitute(), taskList);
                 } else {
                     bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
@@ -294,7 +301,7 @@ public class UserSubstitutionOperations {
     }
 
     /**
-     * Get the substitute info of the given user
+     * Get the substitute info of the given user.
      * @param assignee
      * @return SubstitutesDataModel
      */
@@ -349,9 +356,10 @@ public class UserSubstitutionOperations {
         if (activationInterval == null) {
             BPMNActivitiConfiguration bpmnActivitiConfiguration = BPMNActivitiConfiguration.getInstance();
 
-            if(bpmnActivitiConfiguration != null){
-                String activationIntervalString = bpmnActivitiConfiguration.getBPMNPropertyValue(BPMNConstants
-                        .SUBSTITUTION_CONFIG, BPMNConstants.SUBSTITUTION_SCHEDULER_INTERVAL);
+            if (bpmnActivitiConfiguration != null) {
+                String activationIntervalString = bpmnActivitiConfiguration
+                        .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG,
+                                BPMNConstants.SUBSTITUTION_SCHEDULER_INTERVAL);
 
                 if (activationInterval != null) {
                     activationInterval = Integer.parseInt(activationIntervalString);
