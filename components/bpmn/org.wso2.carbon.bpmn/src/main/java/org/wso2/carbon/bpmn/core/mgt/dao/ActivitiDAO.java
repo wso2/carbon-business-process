@@ -248,6 +248,24 @@ public class ActivitiDAO {
         return managementService.executeCustomSql(customSqlExecution);
     }
 
+
+    /**
+     * Select all active substitutes for given tenant Id
+     * @param tenantId
+     * @return Map with User as key and SubstitutesDataModel as value
+     */
+    public Map<String, SubstitutesDataModel> selectActiveSubstitutesByTenant(final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectActiveSubstitutesInfo(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
     /**
      * Update transitive substitute for the given user.
      * @param user

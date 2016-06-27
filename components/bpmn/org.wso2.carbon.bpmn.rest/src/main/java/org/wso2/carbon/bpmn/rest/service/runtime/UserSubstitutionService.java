@@ -56,10 +56,11 @@ public class UserSubstitutionService {
 
     private static final String ASCENDING = "asc";
     private static final String DESCENDING = "desc";
+    public static final String ADD_PERMISSION = "add";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
 
-    protected static HashMap<String, String> propertiesMap = new HashMap<>();
+    protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 
     static {
         propertiesMap.put("assignee", SubstitutionQueryProperties.USER);
@@ -92,7 +93,7 @@ public class UserSubstitutionService {
 
             String assignee = getRequestedAssignee(request.getAssignee());
 
-            String substitute = validateSubstitute(request.getSubstitute(), assignee);
+            String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
 
             Date endTime = null;
             Date startTime = new Date();
@@ -104,6 +105,10 @@ public class UserSubstitutionService {
 
             if (request.getEndTime() != null) {
                 endTime = validateEndTime(request.getEndTime(), requestStartTime);
+            }
+
+            if (!UserSubstitutionOperations.validateTasksList(request.getTaskList(), assignee)) {
+                throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
 
             //at this point, substitution is enabled by default
@@ -135,7 +140,7 @@ public class UserSubstitutionService {
             request.setAssignee(user);
             String assignee = getRequestedAssignee(request.getAssignee());
 
-            String substitute = validateSubstitute(request.getSubstitute(), assignee);
+            String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
 
             Date endTime = null;
             Date startTime = new Date();
@@ -147,6 +152,10 @@ public class UserSubstitutionService {
 
             if (request.getEndTime() != null) {
                 endTime = validateEndTime(request.getEndTime(), requestStartTime);
+            }
+
+            if (!UserSubstitutionOperations.validateTasksList(request.getTaskList(), assignee)) {
+                throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
 
             UserSubstitutionOperations.handleUpdateSubstitute(assignee, substitute, startTime, endTime, true, request.getTaskList());
@@ -171,7 +180,7 @@ public class UserSubstitutionService {
     public Response changeSubstitute(@PathParam("user") String user, SubstituteRequest request) throws URISyntaxException {
         try {
             String assignee = getRequestedAssignee(user);
-            String substitute = validateSubstitute(request.getSubstitute(), assignee);
+            String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
             UserSubstitutionOperations.handleChangeSubstitute(assignee, substitute);
         } catch (UserStoreException e) {
             throw new ActivitiException("Error accessing User Store", e);
@@ -180,7 +189,7 @@ public class UserSubstitutionService {
     }
 
     /**
-     * Return the substitute info for the given user in path
+     * Return the substitute info for the given user in path parameter
      * @param user
      * @return SubstituteInfoResponse
      * @throws URISyntaxException
@@ -211,7 +220,7 @@ public class UserSubstitutionService {
 
         Map<String, String> queryMap = new HashedMap();
 
-        for (Map.Entry<String,String> entry : propertiesMap.entrySet() ) {
+        for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
             String value = uriInfo.getQueryParameters().getFirst(entry.getKey());
 
             if (value != null) {
@@ -220,18 +229,20 @@ public class UserSubstitutionService {
         }
 
         try {
-            if(queryMap.get(SubstitutionQueryProperties.USER) != null) {
+            if (queryMap.get(SubstitutionQueryProperties.USER) != null) {
                 getRequestedAssignee(queryMap.get(SubstitutionQueryProperties.USER));
             }
 
-            if(queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
+            if (queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
                 String substitute = queryMap.get(SubstitutionQueryProperties.SUBSTITUTE);
                 String loggedUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
                 if (!substitute.equals(loggedUser)) {
                     UserRealm userRealm = BPMNOSGIService.getUserRealm();
-                    boolean isAuthorized = userRealm.getAuthorizationManager().isUserAuthorized(loggedUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, "get");
+                    boolean isAuthorized = userRealm.getAuthorizationManager()
+                            .isUserAuthorized(loggedUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, "get");
                     if (!isAuthorized || userRealm.getUserStoreManager().isExistingUser(substitute)) {
-                        throw new ActivitiIllegalArgumentException("Unauthorized action or invalid parameter substitute: " + substitute);
+                        throw new ActivitiIllegalArgumentException(
+                                "Unauthorized action or invalid parameter substitute: " + substitute);
                     }
                 }
             }
@@ -246,7 +257,7 @@ public class UserSubstitutionService {
         SubstituteInfoCollectionResponse collectionResponse = new SubstituteInfoCollectionResponse();
         List<SubstituteInfoResponse> responseList = new ArrayList<>();
 
-        for (SubstitutesDataModel subsData: dataModelList) {
+        for (SubstitutesDataModel subsData : dataModelList) {
             SubstituteInfoResponse response = new SubstituteInfoResponse();
             response.setEnabled(subsData.isEnabled());
             response.setEndTime(subsData.getSubstitutionEnd());
@@ -258,11 +269,27 @@ public class UserSubstitutionService {
 
         collectionResponse.setSubstituteInfoList(responseList);
         collectionResponse.setSize(responseList.size());
-        collectionResponse.setSort(queryMap.get(SubstitutionQueryProperties.SORT));
-        collectionResponse.setStart(Integer.valueOf(queryMap.get(SubstitutionQueryProperties.START)));
-        collectionResponse.setOrder(queryMap.get(SubstitutionQueryProperties.START));
+        String sortType = getSortType(queryMap.get(SubstitutionQueryProperties.SORT));
+        collectionResponse.setSort(sortType);
+        collectionResponse.setStart(Integer.parseInt(SubstitutionQueryProperties.START));
+        collectionResponse.setOrder(queryMap.get(SubstitutionQueryProperties.ORDER));
         return Response.ok(collectionResponse).build();
 
+    }
+
+    private String getSortType(String sortType) {
+        switch (sortType) {
+        case (SubstitutionQueryProperties.SUBSTITUTION_START):
+            return "startTime";
+        case (SubstitutionQueryProperties.SUBSTITUTION_END):
+            return "endTime";
+        case (SubstitutionQueryProperties.SUBSTITUTE):
+            return "substitute";
+        case (SubstitutionQueryProperties.USER):
+            return "assignee";
+        }
+
+        return "";
     }
 
     private void validatePaginationParams(Map<String, String> queryMap) {
@@ -271,8 +298,8 @@ public class UserSubstitutionService {
         String sort = queryMap.get(SubstitutionQueryProperties.SORT);
         String order = queryMap.get(SubstitutionQueryProperties.ORDER);
 
-        if(start != null) {
-            if (Integer.valueOf(start) < 0) {
+        if (start != null) {
+            if (Integer.parseInt(start) < 0) {
                 throw new ActivitiIllegalArgumentException("Invalid argument for parameter 'start'");
             }
         } else {
@@ -291,26 +318,25 @@ public class UserSubstitutionService {
 
         if (sort != null) {
             switch (sort) {
-            case ("startTime") :
+            case ("startTime"):
                 sort = SubstitutionQueryProperties.SUBSTITUTION_START;
                 break;
-            case ("endTime") :
+            case ("endTime"):
                 sort = SubstitutionQueryProperties.SUBSTITUTION_END;
                 break;
-            case ("substitute") :
+            case ("substitute"):
                 sort = SubstitutionQueryProperties.SUBSTITUTE;
                 break;
-            case ("assignee") :
+            case ("assignee"):
                 sort = SubstitutionQueryProperties.USER;
                 break;
             default:
                 throw new ActivitiIllegalArgumentException("Invalid argument for parameter 'sort'");
-             }
+            }
         } else {
             sort = SubstitutionQueryProperties.SUBSTITUTION_START;
         }
         queryMap.put(SubstitutionQueryProperties.SORT, sort);
-
 
         if (order != null) {
             if (!ASCENDING.equalsIgnoreCase(order) && !DESCENDING.equalsIgnoreCase(order)) {
@@ -330,16 +356,16 @@ public class UserSubstitutionService {
      */
     private Date validateEndTime(String endTime, DateTime startTime) {
 
-            DateTime requestEndTime = new DateTime(endTime);
-            if (requestEndTime.isBeforeNow()) {
-                throw new ActivitiIllegalArgumentException("End time should be in future");
+        DateTime requestEndTime = new DateTime(endTime);
+        if (requestEndTime.isBeforeNow()) {
+            throw new ActivitiIllegalArgumentException("End time should be in future");
+        }
+        if (startTime != null) {
+            if (requestEndTime.isBefore(startTime.getMillis())) {
+                throw new ActivitiIllegalArgumentException("Invalid Start and End time combination");
             }
-            if (startTime != null) {
-                if (requestEndTime.isBefore(startTime.getMillis())) {
-                    throw new ActivitiIllegalArgumentException("Invalid Start and End time combination");
-                }
-            }
-            return new Date(requestEndTime.getMillis());
+        }
+        return new Date(requestEndTime.getMillis());
     }
 
     /**
@@ -348,16 +374,16 @@ public class UserSubstitutionService {
      * @return actual assignee of the substitute request
      * @throws UserStoreException
      */
-    private String getRequestedAssignee(String user) throws UserStoreException {
+    private String getRequestedAssignee(final String user) throws UserStoreException {
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
         String assignee = user;
 
         //validate the assignee
-        if (assignee != null && loggedInUser != assignee) { //setting another users
-            boolean isAuthorized = userRealm.getAuthorizationManager().isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, "add");
-            if (!isAuthorized || !userRealm.getUserStoreManager()
-                    .isExistingUser(assignee)) {
+        if (assignee != null && !assignee.trim().isEmpty() && !assignee.equals(loggedInUser)) { //setting another users
+            boolean isAuthorized = userRealm.getAuthorizationManager()
+                    .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
+            if (!isAuthorized || !userRealm.getUserStoreManager().isExistingUser(assignee)) {
                 throw new ActivitiIllegalArgumentException("Unauthorized action or invalid argument for assignee");
             }
         } else { //assignee is the logged in user
@@ -373,16 +399,15 @@ public class UserSubstitutionService {
      * @return substitute name if valid
      * @throws UserStoreException
      */
-    private String validateSubstitute(String substitute, String assignee) throws UserStoreException {
+    private String validateAndGetSubstitute(String substitute, String assignee) throws UserStoreException {
         //validate substitute
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
-        if (substitute == null) {
+        if (substitute == null || substitute.trim().isEmpty()) {
             throw new ActivitiIllegalArgumentException("The substitute must be specified");
-        } else if (assignee == substitute) {
+        } else if (assignee.equalsIgnoreCase(substitute)) {
             throw new ActivitiIllegalArgumentException("Substitute and assignee should be different users");
-        } else if (!userRealm.getUserStoreManager()
-                .isExistingUser(substitute)) {
-            throw new ActivitiIllegalArgumentException("Cannot substitute a non existing user:" + substitute);
+        } else if (!userRealm.getUserStoreManager().isExistingUser(substitute.trim())) {
+            throw new ActivitiIllegalArgumentException("Cannot substitute a non existing user: " + substitute);
         }
         return substitute;
     }

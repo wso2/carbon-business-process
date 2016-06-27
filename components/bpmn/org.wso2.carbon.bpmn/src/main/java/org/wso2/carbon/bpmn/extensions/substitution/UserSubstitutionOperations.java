@@ -17,12 +17,10 @@
 package org.wso2.carbon.bpmn.extensions.substitution;
 
 import org.activiti.engine.*;
-import org.activiti.engine.impl.TaskQueryImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.joda.time.DateTime;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
@@ -32,15 +30,17 @@ import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 public class UserSubstitutionOperations {
 
+    private static final Log log = LogFactory.getLog(UserSubstitutionOperations.class);
     private static ActivitiDAO activitiDAO = new ActivitiDAO();
     private static TaskService taskService = BPMNServerHolder.getInstance().getEngine().getTaskService();
     private static int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+    private static TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
 
     /**
      * Persist the substitute info. Transitive substitute is not added here.
@@ -49,13 +49,15 @@ public class UserSubstitutionOperations {
      * @param startDate - start od the substitution
      * @param endDate - end of the substitution
      * @return added row count.
-     * @throws SubstitutesException
+     * @throws SubstitutionException
      */
     public static SubstitutesDataModel addSubstituteInfo(String assignee, String substitute, Date startDate,
-            Date endDate) throws SubstitutesException {
+            Date endDate) throws SubstitutionException {
 
+        //at any given time there could be only one substitute for a single user
         if (activitiDAO.selectSubstituteInfo(assignee, tenantId) != null) {
-            throw new SubstitutesException(
+            log.error("Substitute for user: " + assignee + ", already exist. Try to update the substitute info");
+            throw new SubstitutionException(
                     "Substitute for user: " + assignee + ", already exist. Try to update the substitute info");
         } else {
             SubstitutesDataModel dataModel = new SubstitutesDataModel();
@@ -79,18 +81,18 @@ public class UserSubstitutionOperations {
      * @param endTime
      * @param enabled
      * @param taskList
-     * @throws SubstitutesException
+     * @throws SubstitutionException
      */
     public static void handleNewSubstituteAddition(String assignee, String substitute, Date startTime, Date endTime,
-            boolean enabled, List<String> taskList) throws SubstitutesException {
+            boolean enabled, List<String> taskList) throws SubstitutionException {
         SubstitutesDataModel dataModel = addSubstituteInfo(assignee, substitute, startTime, endTime);
 
-        if (dataModel.isEnabled() && isBeforeBufferTime(dataModel.getSubstitutionStart())) {
+        if (dataModel.isEnabled()) {
             boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
             if (!transitivityResolved) {
                 //remove added transitive record
                 activitiDAO.removeSubstitute(assignee, tenantId);
-                throw new SubstitutesException(
+                throw new SubstitutionException( //SubstitutionException
                         "Could not find an available substitute. Use a different user to substitute");
             }
             //transitive substitute maybe changed, need to retrieve again.
@@ -110,7 +112,6 @@ public class UserSubstitutionOperations {
      */
     private static boolean updateTransitiveSubstitutes(SubstitutesDataModel dataModel) {
 
-        TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
         if (resolver.isResolvingRequired(dataModel.getUser())) {
             return resolver.resolveTransitiveSubs(false);
         } else {//need to update transitive sub for this user
@@ -130,8 +131,7 @@ public class UserSubstitutionOperations {
     //Reassign all the tasks
     public static void bulkReassign(String assignee, String substitute, List<String> taskList) {
 
-        if (taskList != null) { //reassign the given tasks TODO : should we consider enabled and date here?
-            validateTasksList(taskList, assignee);
+        if (taskList != null) { //reassign the given tasks
             reassignFromTaskIdsList(taskList, substitute);
         } else { //reassign all existing tasks for assignee
             TaskQuery taskQuery = taskService.createTaskQuery();
@@ -158,21 +158,23 @@ public class UserSubstitutionOperations {
      * @param taskList
      * @param assignee
      */
-    private static void validateTasksList(List<String> taskList, String assignee) {
-        TaskQuery taskQuery = taskService.createTaskQuery();
-        for (String taskId : taskList) {
-            taskQuery.taskId(taskId);
-            taskQuery.taskAssignee(assignee);
-            List<Task> tasks = taskQuery.list();//this should return a task if valid
-            if (tasks == null) {
-                throw new ActivitiIllegalArgumentException(
-                        "Substitute info added successfully. Task reassign failed, invalid task Id : " + taskId
-                                + ", for substitution.");
+    public static boolean validateTasksList(List<String> taskList, String assignee) {
+        if (taskList != null) {
+            TaskQuery taskQuery = taskService.createTaskQuery();
+            for (String taskId : taskList) {
+                taskQuery.taskId(taskId);
+                taskQuery.taskAssignee(assignee);
+                List<Task> tasks = taskQuery.list();//this should return a task if valid
+                if (tasks == null) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     private static void reassignFromTaskIdsList(final List<String> taskList, final String substitute) {
+
         Thread reassignThread = new Thread() {
 
             public void run() {
@@ -181,7 +183,14 @@ public class UserSubstitutionOperations {
                 }
             }
         };
-        reassignThread.start();
+
+        executeInThreadPool(reassignThread);
+    }
+
+    private static void executeInThreadPool(Runnable runnable) {
+        ExecutorService pool = Executors.newCachedThreadPool();
+        pool.execute(runnable);
+
     }
 
     private static void reassignFromTasksList(final List<Task> taskList, final String substitute) {
@@ -193,7 +202,8 @@ public class UserSubstitutionOperations {
                 }
             }
         };
-        reassignThread.start();
+
+        executeInThreadPool(reassignThread);
     }
 
     private static void addAsCandidate(final List<Task> taskList, final String substitute) {
@@ -210,7 +220,7 @@ public class UserSubstitutionOperations {
 
     public static void handleUpdateSubstitute(String assignee, String substitute, Date startTime, Date endTime,
             boolean enabled, List<String> taskList) {
-        SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee,tenantId);
+        SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee, tenantId);
         if (existingSubInfo != null) {
             SubstitutesDataModel dataModel = updateSubstituteInfo(assignee, substitute, startTime, endTime);
 
@@ -219,7 +229,7 @@ public class UserSubstitutionOperations {
                 if (!transitivityResolved) {
                     //remove added transitive record
                     activitiDAO.updateSubstituteInfo(existingSubInfo);
-                    throw new SubstitutesException(
+                    throw new SubstitutionException(
                             "Could not find an available substitute. Use a different user to substitute");
                 }
                 //transitive substitute maybe changed, need to retrieve again.
@@ -232,14 +242,15 @@ public class UserSubstitutionOperations {
 
             }
         } else {
-            throw new SubstitutesException(
+            throw new SubstitutionException(
                     "Substitute for user: " + assignee + ", does not exist. Try to add new substitute info record");
 
         }
 
     }
 
-    public static SubstitutesDataModel updateSubstituteInfo(String assignee, String substitute, Date startTime, Date endTime) {
+    public static SubstitutesDataModel updateSubstituteInfo(String assignee, String substitute, Date startTime,
+            Date endTime) {
         SubstitutesDataModel dataModel = new SubstitutesDataModel();
         dataModel.setUser(assignee);
         dataModel.setSubstitute(MultitenantUtils.getTenantAwareUsername(substitute));
@@ -253,7 +264,7 @@ public class UserSubstitutionOperations {
     }
 
     public static void handleChangeSubstitute(String assignee, String substitute) {
-        SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee,tenantId);
+        SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee, tenantId);
         if (existingSubInfo != null) {
             activitiDAO.updateSubstitute(assignee, substitute, tenantId, new Date());
 
@@ -264,13 +275,12 @@ public class UserSubstitutionOperations {
                 if (!transitivityResolved) {
                     //remove added record
                     activitiDAO.updateSubstitute(assignee, existingSub, tenantId, existingSubInfo.getUpdated());
-                    throw new SubstitutesException(
+                    throw new SubstitutionException(
                             "Could not find an available substitute. Use a different user to substitute");
                 }
             }
         } else {
-            throw new SubstitutesException(
-                    "No substitution record found for the user: " + assignee );
+            throw new SubstitutionException("No substitution record found for the user: " + assignee);
 
         }
     }
@@ -287,7 +297,7 @@ public class UserSubstitutionOperations {
 
     public static List<PaginatedSubstitutesDataModel> querySubstitutions(Map<String, String> propertiesMap) {
         PaginatedSubstitutesDataModel model = new PaginatedSubstitutesDataModel();
-        if(propertiesMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
+        if (propertiesMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
             model.setSubstitute(propertiesMap.get(SubstitutionQueryProperties.SUBSTITUTE));
         }
 
@@ -315,7 +325,6 @@ public class UserSubstitutionOperations {
         model.setSize(size);
         model.setOrder(propertiesMap.get(SubstitutionQueryProperties.ORDER));
         model.setSort(propertiesMap.get(SubstitutionQueryProperties.SORT));
-
 
         if (!enabledProvided) {
             return activitiDAO.querySubstituteInfoWithoutEnabled(model);

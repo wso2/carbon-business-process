@@ -40,26 +40,32 @@ public interface SubstitutesMapper {
             + " WHERE SUBSTITUTE = #{substitute} AND TENANT_ID = #{tenantId}";
     final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
             + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
+    final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = TRUE AND now() > SUBSTITUTION_START AND now() < SUBSTITUTION_END";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
     final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
             + " WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
     final String UPDATE_SUBSTITUTE_USER = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET SUBSTITUTE = #{substitute}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
-    final String QUERY_SUBSTITUTES = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE " +
+    final String QUERY_SUBSTITUTES = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
+            " WHERE " +
             " <if test=\"user != null\"> USER = #{user} AND </if> " +
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
             " <if test=\"enabled != null\"> ENABLED = #{enabled} AND </if> " +
-            " TENANT_ID = #{tenantId}</script>";
-    final String QUERY_SUBSTITUTES_NO_ENABLED = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE " +
+            " TENANT_ID = #{tenantId}" +
+            " ORDER BY ${sort} ${order} </script>";
+    final String QUERY_SUBSTITUTES_NO_ENABLED = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
+            " WHERE " +
             " <if test=\"user != null\"> USER = #{user} AND </if> " +
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
-            " TENANT_ID = #{tenantId}</script>";
+            " TENANT_ID = #{tenantId}" +
+            " ORDER BY ${sort} ${order} </script>";
 
     /**
      * Insert new row in ACT_BPS_SUBSTITUTES table
      * @param substitutesDataModel
-     * @return
+     * @return Inserted row count
      */
     @Insert(INSERT_SUBSTITUTE)
     int insertSubstitute(SubstitutesDataModel substitutesDataModel);
@@ -115,6 +121,22 @@ public interface SubstitutesMapper {
             @Result(property = "enabled", column = "ENABLED")
     })
     Map<String, SubstitutesDataModel> selectAllSubstituteInfo(@Param("tenantId") int tenantId);
+
+    /**
+     * Select active substitutes info for given tenant
+     * @param tenantId
+     * @return Map with key USER and value SubstitutesDataModel
+     */
+    @Select(SELECT_ACTIVE_SUBSTITUTES)
+    @MapKey("user")
+    @Results(value = {
+            @Result(property = "user", column = "USER"),
+            @Result(property = "substitute", column = "SUBSTITUTE"),
+            @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
+            @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
+            @Result(property = "enabled", column = "ENABLED")
+    })
+    Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId);
 
     /**
      * Update Transitive substitute for the given user and tenant

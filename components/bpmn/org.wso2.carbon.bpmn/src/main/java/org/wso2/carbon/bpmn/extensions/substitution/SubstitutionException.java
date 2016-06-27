@@ -19,13 +19,13 @@ package org.wso2.carbon.bpmn.extensions.substitution;
 
 import org.activiti.engine.ActivitiException;
 
-public class SubstitutesException extends ActivitiException {
+public class SubstitutionException extends ActivitiException {
 
-    public SubstitutesException(String message) {
+    public SubstitutionException(String message) {
         super(message);
     }
 
-    public SubstitutesException(String message, Exception e) {
+    public SubstitutionException(String message, Exception e) {
         super(message, e);
     }
 
