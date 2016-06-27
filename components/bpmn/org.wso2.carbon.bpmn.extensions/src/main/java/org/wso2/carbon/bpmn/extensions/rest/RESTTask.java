@@ -156,7 +156,6 @@ public class RESTTask implements JavaDelegate {
                     bUsername = basicAuthUsername.getValue(execution).toString();
                     bPassword = basicAuthPassword.getValue(execution).toString();
                 }
-
             } else if (serviceRef != null) {
                 String resourcePath = serviceRef.getValue(execution).toString();
                 String registryPath;
@@ -169,9 +168,7 @@ public class RESTTask implements JavaDelegate {
                             getTaskDetails(execution) + ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
                     throw new BPMNRESTException(msg);
                 }
-                //Check
                 Registry registry = CarbonContext.getThreadLocalCarbonContext().getRegistry(RegistryType.SYSTEM_CONFIGURATION);
-
                 if (log.isDebugEnabled()) {
                     log.debug("Reading endpoint from registry location: " + registryPath + " for task " + getTaskDetails(execution));
                 }
@@ -189,7 +186,6 @@ public class RESTTask implements JavaDelegate {
                     String resourceNotFoundMeg = "Endpoint resource " + registryPath + " is not found. Failed to execute REST invocation in task " + getTaskDetails(execution);
                     throw new BPMNRESTException(resourceNotFoundMeg);
                 }
-
             } else {
                 String urlNotFoundErrorMsg = "Service URL is not provided for " +
                         getTaskDetails(execution) + ". serviceURL or serviceRef must be provided.";

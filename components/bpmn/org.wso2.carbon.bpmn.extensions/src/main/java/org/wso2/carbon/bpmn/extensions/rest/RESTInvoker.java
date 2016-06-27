@@ -91,6 +91,15 @@ public class RESTInvoker {
         }
     }
 
+    /**
+     * Invokes the http GET method
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @return response string of the GET request (can be the response body or the response status code)
+     * @throws Exception
+     */
     public String invokeGET(URI uri, String headerList[], String username, String password) throws Exception {
 
         HttpGet httpGet = null;
@@ -131,7 +140,6 @@ public class RESTInvoker {
             if (response != null) {
                 response.close();
             }
-
             if (httpGet != null) {
                 httpGet.releaseConnection();
             }
@@ -139,6 +147,16 @@ public class RESTInvoker {
         return output;
     }
 
+    /**
+     * Invokes the http POST method
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @param payload    payload body passed
+     * @return response string of the POST request (can be the response body or the response status code)
+     * @throws Exception
+     */
     public String invokePOST(URI uri, String headerList[], String username, String password, String payload) throws Exception {
 
         HttpPost httpPost = null;
@@ -163,7 +181,6 @@ public class RESTInvoker {
                 }
             }
             response = client.execute(httpPost);
-
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             StringBuffer result = new StringBuffer();
             String line = "";
@@ -180,7 +197,6 @@ public class RESTInvoker {
             if (response != null) {
                 response.close();
             }
-
             if (httpPost != null) {
                 httpPost.releaseConnection();
             }
@@ -188,6 +204,17 @@ public class RESTInvoker {
         return output;
     }
 
+    /**
+     * Invokes the http PUT method
+     *
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @param payload    payload body passed
+     * @return response string of the PUT request (can be the response body or the response status code)
+     * @throws Exception
+     */
     public String invokePUT(URI uri, String headerList[], String username, String password, String payload) throws Exception {
 
         HttpPut httpPut = null;
@@ -235,7 +262,6 @@ public class RESTInvoker {
             if (response != null) {
                 response.close();
             }
-
             if (httpPut != null) {
                 httpPut.releaseConnection();
             }
@@ -243,6 +269,16 @@ public class RESTInvoker {
         return output;
     }
 
+    /**
+     * Invokes the http DELETE method
+     *
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @return response string of the DELETE (can be the response status code or the response body)
+     * @throws Exception
+     */
     public String invokeDELETE(URI uri, String headerList[], String username, String password) throws Exception {
 
         HttpDelete httpDelete = null;
@@ -266,9 +302,7 @@ public class RESTInvoker {
                     }
                 }
             }
-
             response = client.execute(httpDelete);
-
             if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 202) {
                 BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                 StringBuffer result = new StringBuffer();
@@ -289,7 +323,6 @@ public class RESTInvoker {
             if (response != null) {
                 response.close();
             }
-
             if (httpDelete != null) {
                 httpDelete.releaseConnection();
             }

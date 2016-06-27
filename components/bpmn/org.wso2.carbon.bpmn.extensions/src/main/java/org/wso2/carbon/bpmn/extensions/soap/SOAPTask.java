@@ -28,9 +28,6 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.extensions.soap.constants.Constants;
-import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP11Constants;
-import org.wso2.carbon.bpmn.extensions.soap.constants.SOAP12Constants;
 import javax.xml.stream.XMLStreamException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +76,11 @@ import java.util.List;
  */
 public class SOAPTask implements JavaDelegate {
     private static final Log log = LogFactory.getLog(SOAPTask.class);
+
+    private static final String SOAP12_VERSION = "soap12";
+    private static final String SOAP11_ENVELOPE_NAMESPACE_URI = "http://schemas.xmlsoap.org/soap/envelope/";
+    private static final String SOAP12_ENVELOPE_NAMESPACE_URI = "http://www.w3.org/2003/05/soap-envelope";
+
     private Expression serviceURL;
     private Expression payload;
     private Expression headers;
@@ -88,9 +90,6 @@ public class SOAPTask implements JavaDelegate {
     private Expression outputVariable;
     private Expression transportHeaders;
     private Expression soapAction;
-
-    public SOAPTask() {
-    }
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -103,7 +102,7 @@ public class SOAPTask implements JavaDelegate {
         String transferEncoding = null;
         String transportHeaderList[] = null;
         String action = "";
-        String soapVersionURI = SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI;
+        String soapVersionURI = SOAP11_ENVELOPE_NAMESPACE_URI;
         List headerlist = new ArrayList();
         try {
             if (serviceURL != null) {
@@ -120,8 +119,8 @@ public class SOAPTask implements JavaDelegate {
             }
             if (soapVersion != null) {
                 version = soapVersion.getValue(execution).toString();
-                if (version.equalsIgnoreCase(Constants.SOAP12_VERSION)) {
-                    soapVersionURI = SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI;
+                if (version.equalsIgnoreCase(SOAP12_VERSION)) {
+                    soapVersionURI = SOAP12_ENVELOPE_NAMESPACE_URI;
                 }
             }
             //Adding the connection

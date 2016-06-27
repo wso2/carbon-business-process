@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+/**
+ * Exception class to catch REST exceptions.
+ */
 public class BPMNRESTException extends Exception {
     public BPMNRESTException(String msg) {
         super(msg);
