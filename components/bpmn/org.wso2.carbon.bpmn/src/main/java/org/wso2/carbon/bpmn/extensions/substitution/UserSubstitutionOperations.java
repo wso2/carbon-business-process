@@ -26,6 +26,7 @@ import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
+import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
@@ -41,6 +42,7 @@ public class UserSubstitutionOperations {
     private static TaskService taskService = BPMNServerHolder.getInstance().getEngine().getTaskService();
     private static int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     private static TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
+    public static Integer activationInterval = null;
 
     /**
      * Persist the substitute info. Transitive substitute is not added here.
@@ -87,7 +89,7 @@ public class UserSubstitutionOperations {
             boolean enabled, List<String> taskList) throws SubstitutionException {
         SubstitutesDataModel dataModel = addSubstituteInfo(assignee, substitute, startTime, endTime);
 
-        if (dataModel.isEnabled()) {
+        if (dataModel.isEnabled() && isBeforeActivationInterval(dataModel.getSubstitutionStart())) {
             boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
             if (!transitivityResolved) {
                 //remove added transitive record
@@ -95,9 +97,12 @@ public class UserSubstitutionOperations {
                 throw new SubstitutionException( //SubstitutionException
                         "Could not find an available substitute. Use a different user to substitute");
             }
-            //transitive substitute maybe changed, need to retrieve again.
-            dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
-            if (BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
+            if (resolver.transitivityEnabled) {
+                //transitive substitute maybe changed, need to retrieve again.
+                dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
+            }
+
+            if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
                 bulkReassign(dataModel.getUser(), dataModel.getSubstitute(), taskList);
             } else {
                 bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
@@ -119,8 +124,8 @@ public class UserSubstitutionOperations {
         }
     }
 
-    private static boolean isBeforeBufferTime(Date substitutionStart) {
-        Date bufferedTime = new Date(System.currentTimeMillis() + SubstitutionConstants.BUFFER_TIME_IN_SECONDS * 1000);
+    private static boolean isBeforeActivationInterval(Date substitutionStart) {
+        Date bufferedTime = new Date(System.currentTimeMillis() + getActivationInterval());
         if (substitutionStart.compareTo(bufferedTime) < 0) {
             return true;
         } else {
@@ -224,7 +229,7 @@ public class UserSubstitutionOperations {
         if (existingSubInfo != null) {
             SubstitutesDataModel dataModel = updateSubstituteInfo(assignee, substitute, startTime, endTime);
 
-            if (dataModel.isEnabled() && isBeforeBufferTime(dataModel.getSubstitutionStart())) {
+            if (dataModel.isEnabled() && isBeforeActivationInterval(dataModel.getSubstitutionStart())) {
                 boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
                 if (!transitivityResolved) {
                     //remove added transitive record
@@ -232,9 +237,12 @@ public class UserSubstitutionOperations {
                     throw new SubstitutionException(
                             "Could not find an available substitute. Use a different user to substitute");
                 }
-                //transitive substitute maybe changed, need to retrieve again.
-                dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
-                if (BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
+                if (resolver.transitivityEnabled) {
+                    //transitive substitute maybe changed, need to retrieve again.
+                    dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
+                }
+
+                if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(dataModel.getTransitiveSub())) {
                     bulkReassign(dataModel.getUser(), dataModel.getSubstitute(), taskList);
                 } else {
                     bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
@@ -249,7 +257,7 @@ public class UserSubstitutionOperations {
 
     }
 
-    public static SubstitutesDataModel updateSubstituteInfo(String assignee, String substitute, Date startTime,
+    private static SubstitutesDataModel updateSubstituteInfo(String assignee, String substitute, Date startTime,
             Date endTime) {
         SubstitutesDataModel dataModel = new SubstitutesDataModel();
         dataModel.setUser(assignee);
@@ -268,7 +276,7 @@ public class UserSubstitutionOperations {
         if (existingSubInfo != null) {
             activitiDAO.updateSubstitute(assignee, substitute, tenantId, new Date());
 
-            if (existingSubInfo.isEnabled() && isBeforeBufferTime(existingSubInfo.getSubstitutionStart())) {
+            if (existingSubInfo.isEnabled() && isBeforeActivationInterval(existingSubInfo.getSubstitutionStart())) {
                 String existingSub = existingSubInfo.getSubstitute();
                 existingSubInfo.setSubstitute(substitute);
                 boolean transitivityResolved = updateTransitiveSubstitutes(existingSubInfo);
@@ -331,7 +339,38 @@ public class UserSubstitutionOperations {
         } else {
             return activitiDAO.querySubstituteInfo(model);
         }
+    }
 
+    /**
+     * Return the maximum activation interval for a substitution.
+     * @return activation interval in milliseconds
+     */
+    public static int getActivationInterval() {
+        if (activationInterval == null) {
+            BPMNActivitiConfiguration bpmnActivitiConfiguration = BPMNActivitiConfiguration.getInstance();
+
+            if(bpmnActivitiConfiguration != null){
+                String activationIntervalString = bpmnActivitiConfiguration.getBPMNPropertyValue(BPMNConstants
+                        .SUBSTITUTION_CONFIG, BPMNConstants.SUBSTITUTION_SCHEDULER_INTERVAL);
+
+                if (activationInterval != null) {
+                    activationInterval = Integer.parseInt(activationIntervalString);
+                }
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("Using the substitution activation interval : " + activationInterval + " minutes");
+            }
+        }
+
+        if (activationInterval == null) { //if still null, should assign default
+            activationInterval = BPMNConstants.DEFAULT_SUNSTITITION_INTERVAL_IN_MINUTES;
+            if (log.isDebugEnabled()) {
+                log.debug("Using the default substitution activation interval : " + activationInterval + " minutes");
+            }
+        }
+
+        return activationInterval * 60 * 1000;
     }
 
 }

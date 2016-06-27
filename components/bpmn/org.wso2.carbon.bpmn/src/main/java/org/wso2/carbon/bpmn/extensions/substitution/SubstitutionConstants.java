@@ -18,6 +18,6 @@ package org.wso2.carbon.bpmn.extensions.substitution;
 
 public class SubstitutionConstants {
 
-    protected static final String DOMAIN_SEPARATOR = "@";
-    protected static final int BUFFER_TIME_IN_SECONDS = 10;
+
+
 }

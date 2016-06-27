@@ -16,16 +16,21 @@
  */
 package org.wso2.carbon.bpmn.extensions.substitution;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
+import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 
 import java.util.Map;
 
 public class TransitivityResolver {
+    private static final Log log = LogFactory.getLog(UserSubstitutionOperations.class);
 
     private int tenantId;
     private ActivitiDAO dao;
+    public boolean transitivityEnabled = BPMNConstants.SUBSTITUTION_TRANSITIVITY_DEFAULT;
     Map<String, SubstitutesDataModel> subsMap;
 
     private TransitivityResolver(){}
@@ -33,6 +38,28 @@ public class TransitivityResolver {
     protected TransitivityResolver(ActivitiDAO activitiDAO, int tenantId) {
         this.dao = activitiDAO;
         this.tenantId = tenantId;
+        initConfig();
+    }
+
+    private void initConfig() {
+        BPMNActivitiConfiguration bpmnActivitiConfiguration = BPMNActivitiConfiguration.getInstance();
+
+        if(bpmnActivitiConfiguration != null){
+            String transitivityEnabledProperty = bpmnActivitiConfiguration.getBPMNPropertyValue(BPMNConstants
+                    .SUBSTITUTION_CONFIG, BPMNConstants
+                    .SUBSTITUTION_TRANSITIVITY_PROPERTY);
+
+            if(transitivityEnabledProperty != null ) {
+                if (transitivityEnabledProperty.trim().equalsIgnoreCase("true") ||transitivityEnabledProperty.trim().equalsIgnoreCase("false")) {
+                    transitivityEnabled = Boolean.parseBoolean(transitivityEnabledProperty);
+                    if (log.isDebugEnabled()) {
+                        log.debug("User substitution transitivity enabled : " + transitivityEnabled);
+                    }
+                } else {
+                    log.warn("Invalid value for the property: " + BPMNConstants.SUBSTITUTION_TRANSITIVITY_PROPERTY + ". Transitivity is being disabled by default.");
+                }
+            }
+        }
     }
 
     /**
@@ -41,25 +68,30 @@ public class TransitivityResolver {
      * @return false if unresolvable state found while forced resolve disabled
      */
     protected synchronized boolean resolveTransitiveSubs(boolean forcedResolve) {
-        subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
-        for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet())
-        {
-            String transitiveSub = entry.getValue().getTransitiveSub();
-            if(transitiveSub == null) {
-                transitiveSub = calculateTransitiveSubstitute(entry.getValue(), entry.getKey(), entry.getValue().getSubstitute());
+        if (transitivityEnabled) {
+            subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
+            for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet())
+            {
+                String transitiveSub = entry.getValue().getTransitiveSub();
+                if(transitiveSub == null) {
+                    transitiveSub = calculateTransitiveSubstitute(entry.getValue(), entry.getKey(), entry.getValue().getSubstitute());
+                }
+                if (!forcedResolve && BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(transitiveSub)) { //unresolvable sub found and forced resolve not enabled
+                    return false;
+                }
             }
-            if (!forcedResolve && BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(transitiveSub)) { //unresolvable sub found and forced resolve not enabled
-                return false;
+
+            //persist the map, cannot do this in above loop since it may run into unresolved state
+            for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
+                dao.updateTransitiveSub(entry.getKey(), tenantId, entry.getValue().getTransitiveSub());
             }
+
+
+            return true;
+        } else {//transitivity disabled, no need to resolve
+            return false;
         }
 
-        //persist the map, cannot do this in above loop since it may run into unresolved state
-        for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
-            dao.updateTransitiveSub(entry.getKey(), tenantId, entry.getValue().getTransitiveSub());
-        }
-
-
-        return true;
     }
 
     /**
@@ -68,11 +100,16 @@ public class TransitivityResolver {
      */
     public boolean isResolvingRequired(String user) {
 
-        if (dao.countUserAsSubstitute(user, tenantId) > 0) {
-            return true;
+        if (transitivityEnabled) {
+            if (dao.countUserAsSubstitute(user, tenantId) > 0) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
+
     }
 
     /**
@@ -131,19 +168,25 @@ public class TransitivityResolver {
     }
 
     protected synchronized boolean  resolveSubstituteForSingleUser(SubstitutesDataModel dataModel) {
-        subsMap = dao.selectActiveSubstitutesByTenant(tenantId);
-        SubstitutesDataModel subDataModel = dao.selectSubstituteInfo(dataModel.getSubstitute(), tenantId);
-        if (subDataModel != null) {
-            String newSub = calculateTransitiveSubstitute(dataModel, dataModel.getUser(), dataModel.getSubstitute());
-            if (BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(newSub)) {
-                return false;
+        if (transitivityEnabled) {
+            subsMap = dao.selectActiveSubstitutesByTenant(tenantId);
+            SubstitutesDataModel subDataModel = dao.selectSubstituteInfo(dataModel.getSubstitute(), tenantId);
+            if (subDataModel != null) {
+                String newSub = calculateTransitiveSubstitute(dataModel, dataModel.getUser(), dataModel.getSubstitute());
+                if (BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(newSub)) {
+                    return false;
+                } else {
+                    dao.updateTransitiveSub(dataModel.getUser(), tenantId, newSub);
+                    return true;
+                }
             } else {
-                dao.updateTransitiveSub(dataModel.getUser(), tenantId, newSub);
+                dao.updateTransitiveSub(dataModel.getUser(), tenantId, BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE);
                 return true;
             }
-        } else {
-            dao.updateTransitiveSub(dataModel.getUser(), tenantId, BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE);
+        } else {//transitivity not enabled. NO issue with transitive properties.
             return true;
         }
+
     }
+
 }
