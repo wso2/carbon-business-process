@@ -195,7 +195,6 @@ public class SOAPTask implements JavaDelegate {
                         "the response.";
                 throw new SOAPException(outputNotFoundErrorMsg);
             }
-            log.info("Response Message :" + execution.getVariable(outputVariable.getValue(execution).toString()));
         } catch (SOAPException e) {
             log.error("Exception when generating the envelope", e);
             throw new BpmnError("Exception when generating the envelope");

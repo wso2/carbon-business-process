@@ -76,7 +76,7 @@
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn</artifactId>
         </dependency>
-        
+
     </dependencies>
 
     <build>
@@ -109,9 +109,6 @@
                     <instructions>
                         <Bundle-Vendor>WSO2</Bundle-Vendor>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Private-Package>
-                            org.wso2.carbon.bpmn.extensions.internal
-                        </Private-Package>
                         <Export-Package>
                             org.wso2.carbon.bpmn.extensions.*
                         </Export-Package>
@@ -119,7 +116,6 @@
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
-
                     </instructions>
                 </configuration>
             </plugin>
