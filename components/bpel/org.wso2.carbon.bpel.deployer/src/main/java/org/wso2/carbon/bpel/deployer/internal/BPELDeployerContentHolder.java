@@ -26,17 +26,15 @@ import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
  * Data holder for the BPELServiceComponent
  */
 public final class BPELDeployerContentHolder {
-    private static BPELDeployerContentHolder instance;
+    private static BPELDeployerContentHolder instance = new BPELDeployerContentHolder();
 
     private BPELServer bpelServer;
     private TenantRegistryLoader registryLoader;
 
-    private BPELDeployerContentHolder() {}
+    private BPELDeployerContentHolder() {
+    }
 
     public static BPELDeployerContentHolder getInstance() {
-        if(instance == null) {
-            instance = new BPELDeployerContentHolder();
-        }
         return instance;
     }
 
