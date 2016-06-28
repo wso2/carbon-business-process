@@ -114,8 +114,6 @@
    "save":"Save",
    "reassign.task":"Reassign Task",
    "no.sub.tasks":"No subtasks",
-   "processMonitoring":"Process Monitoring",
-   "advancedFilter":"Advanced Filter",
    "process.Monitoring":"Process Monitoring",
    "view.details":"View Details",
    "filter.instances":"Filter the instances",
@@ -135,6 +133,8 @@
    "variable.name":"Variable Name",
    "equals":" = ",
    "instance.id":" Instance ID ",
-   "plus.button":" + "
+   "plus.button":" + ",
+   "process.monitoring":" Process Monitoring ",
+   "advanced.filter": "Advanced Filtering"
 
 }
