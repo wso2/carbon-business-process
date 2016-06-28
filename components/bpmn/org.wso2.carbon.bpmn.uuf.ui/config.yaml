@@ -1,0 +1,14 @@
+appName : BPMN Explorer
+elementsPerPage: 10
+theme : org.wso2.uuf.theme.blue
+menu :
+  main :
+    HOME: { icon: "fw-home", link: "", text: "Home" }
+    MY TASKS : { icon: "fw fw-list", link: "bpmn", text: "My Tasks" }
+    CLAIMABLE TASKS : { icon: "fw fw-add", link: "bpmn/claimableTasks", text: "Claimable Tasks" }
+    COMPLETED TASKS : { icon: "fw fw-bug", link: "bpmn/historicTasks", text: "Completed Tasks" }
+    PROCESSES : { icon: "fw fw-list", link: "bpmn/process", text: "Processes" }
+bpsHost: localhost
+bpsPort: 9443
+bpsTenantId: -1234
+

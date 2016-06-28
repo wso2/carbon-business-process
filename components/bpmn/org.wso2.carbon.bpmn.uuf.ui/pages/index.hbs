@@ -1,0 +1,15 @@
+{{layout "org.wso2.uuf.base.main"}}
+{{favicon "images/favicon.png" type="image/png"}}
+{{title @app.config.appName " | Home"}}
+{{#fillZone "content"}}
+    <h2>Welcome to BPMN Explorer</h2>
+    <h4></h4>
+    <hr/>
+    <a href="{{@app.context}}/bpmn">MY TASKS</a>
+    <br/>
+    <a href="{{@app.context}}/bpmn/claimableTasks">CLAIMABLE TASKS</a>
+    <br/>
+    <a href="{{@app.context}}/bpmn/historicTasks">COMPLETED TASKS</a>
+    <br/>
+    <a href="{{@app.context}}/bpmn/process">PROCESSES</a>
+{{/fillZone}}

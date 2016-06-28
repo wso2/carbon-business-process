@@ -1,0 +1,246 @@
+{{layout "org.wso2.uuf.base.main"}}
+{{title @app.config.appName}}
+{{#fillZone "content"}}
+    {{css "css/style.css"}}
+    {{#if processInstanceData}}
+        <div class="col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Process Instance Info</div>
+                <div class="col-lg-12 white-bg margin-bottom">
+                    process Id : {{processInstanceData.process-def-id}}
+                    <br />
+                    process Instance Id : {{processInstanceData.process-instance-id}}
+                    <br />
+                    <div class="col-lg-12 margin-bottom-double">
+                        <a href="process">
+                            <button class="btn-start btn btn-xs btn-info">Back</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {{else if elements}}
+        <div class="col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Start Process</div>
+                <div class="col-lg-12 white-bg margin-bottom">
+                    <form id="processDataForm">
+                        {{#each elements}}
+                            {{#if isNumberBox}}
+                                <div class='small-med'>
+                                    <div class='small-col'
+                                         style='padding-right:15px; padding-top:10px;'>{{data.name}} :
+                                    </div>
+                                    <div class='small-col' style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <input name="{{data.id}}" type="number" class="form-control"
+                                                   disabled="true" />
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input name="{{data.id}}" type="number" class="form-control"
+                                                       required />
+                                            {{else}}
+                                                <input name="{{data.id}}" type="number" class="form-control" />
+                                            {{/if}}
+                                        {{/if}}
+                                    </div>
+                                </div>
+
+                            {{else if isNumberBoxWithValues}}
+                                <tr>
+                                    <td style='padding-right:15px; padding-top:10px;'>{{data.name}} :</td>
+                                    <td style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <input name="{{data.id}}" value="{{data.value}}" type="number"
+                                                   class="form-control" disabled="true" />
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input name="{{data.id}}" value="{{data.value}}" type="number"
+                                                       class="form-control" required />
+                                            {{else}}
+                                                <input name="{{data.id}}" value="{{data.value}}" type="number"
+                                                       class="form-control" />
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+
+                            {{else if isTextBox}}
+                                <div class='small-med'>
+                                    <div class='small-col'
+                                         style='padding-right:15px; padding-top:10px;'>{{data.name}} :
+                                    </div>
+                                    <div class='small-col' style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <input name="{{data.id}}" type="text" class="form-control"
+                                                   disabled="true" />
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input name="{{data.id}}" type="text" class="form-control"
+                                                       required />
+                                            {{else}}
+                                                <input name="{{data.id}}" type="text" class="form-control" />
+                                            {{/if}}
+                                        {{/if}}
+                                    </div>
+                                </div>
+
+
+                            {{else if isTextBoxWithValues}}
+                                <tr>
+                                    <td style='padding-right:15px; padding-top:10px;'>{{data.name}} :</td>
+                                    <td style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <input name="{{data.id}}" value="{{data.value}}" type="text"
+                                                   class="form-control" disabled="true" />
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input name="{{data.id}}" value="{{data.value}}" type="text"
+                                                       class="form-control" required />
+                                            {{else}}
+                                                <input name="{{data.id}}" value="{{data.value}}" type="text"
+                                                       class="form-control" />
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+                            {{else if isCheckbox}}
+                                <tr>
+                                    <td />
+                                    <td style='padding-right:15px; padding-top:10px;' colspan='2'>
+                                        {{#if disabled}}
+                                            <input value="true" name="{{data.id}}" type="checkbox"
+                                                   disabled="true" {{checked}}> {{data.name}}
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input value="true" name="{{data.id}}" type="checkbox" {{checked}}
+                                                       required> {{data.name}}
+                                            {{else}}
+                                                <input value="true" name="{{data.id}}"
+                                                       type="checkbox" {{checked}}> {{data.name}}
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+
+                            {{else if isCheckboxWithValues}}
+                                <tr>
+                                    <td />
+                                    <td style='padding-right:15px; padding-top:10px;' colspan='2'>
+                                        {{#if disabled}}
+                                            <input value="true" name="{{data.id}}" type="checkbox"
+                                                   disabled="true" {{checked}}> {{data.name}}
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input value="true" name="{{data.id}}" type="checkbox" {{checked}}
+                                                       required> {{data.name}}
+                                            {{else}}
+                                                <input value="true" name="{{data.id}}"
+                                                       type="checkbox" {{checked}}> {{data.name}}
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+                            {{else if isDatepicker}}
+                                <tr>
+                                    <td style='padding-right:15px; padding-top:10px;'>{{data.name}} :</td>
+                                    <td style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <input name="{{data.id}}" type="date"
+                                                   class="form-control" disabled="true" />
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input name="{{data.id}}" type="date"
+                                                       class="form-control" required />
+                                            {{else}}
+                                                <input name="{{data.id}}" type="date"
+                                                       class="form-control" />
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+
+                            {{else if isDatepickerWithValues}}
+                                <tr>
+                                    <td style='padding-right:15px; padding-top:10px;'>{{data.name}} :</td>
+                                    <td style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <input name="{{data.id}}" value="{{data.value}}" type="date"
+                                                   class="form-control" disabled="true" />
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <input name="{{data.id}}" value="{{data.value}}" type="date"
+                                                       class="form-control" required />
+                                            {{else}}
+                                                <input name="{{data.id}}" value="{{data.value}}" type="date"
+                                                       class="form-control" />
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+                            {{else if isSelect}}
+                                <tr>
+                                    <td style='padding-right:15px; padding-top:10px;'>{{data.name}} :</td>
+                                    <td style='padding-top:10px'>
+                                        {{#if disabled}}
+                                            <select name="{{data.id}}" class="form-control" disabled="true">
+                                                {{#each enumData}}
+                                                    <option value="{{enumData.id}}" {{enumData.selected}}>{{enumData.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        {{else}}
+                                            {{#if data.required}}
+                                                <select name="{{data.id}}" class="form-control" required>
+                                                    {{#each enumData}}
+                                                        <option value="{{enumData.id}}" {{enumData.selected}}>{{enumData.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            {{else}}
+                                                <select name="{{data.id}}" class="form-control">
+                                                    {{#each enumData}}
+                                                        <option value="{{enumData.id}}" {{enumData.selected}}>{{enumData.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+
+                            {{else if process-def-id}}
+                                <input name="pId" value="{{process-def-id}}" type="hidden"
+                                       class="form-control" />
+                            {{/if}}
+                        {{/each}}
+                        <div class="col-lg-12 margin-bottom-double">
+                            <input type="submit" value="Start" class="btn-start btn btn-xs btn-info">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {{else if error-message}}
+        <div class="col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Error Message</div>
+                <div class="col-lg-12 white-bg margin-bottom">
+                    {{error-message}}
+                    <div class="col-lg-12 margin-bottom-double">
+                        <a href="process">
+                            <button class="btn-start btn btn-xs btn-info">Back</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+
+{{/fillZone}}
+
