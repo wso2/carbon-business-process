@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,12 +23,16 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.bpel.stub.mgt.ProcessManagementException;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.BPELImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.SVGImpl;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
 import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.utils.ServerConstants;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -37,14 +41,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Generate the PNG out of the SVG. May be useful in browsers which doesn't support SVG
  */
 public class PNGGenarateServlet extends HttpServlet {
+
+    static final long serialVersionUID = 42L;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -73,10 +76,12 @@ public class PNGGenarateServlet extends HttpServlet {
             client = new ProcessManagementServiceClient(cookie, backendServerURL, configContext,
                     request.getLocale());
             //Gets the bpel process definition needed to create the SVG from the processId
-            processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition().getExtraElement().toString();
+            processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition()
+                    .getExtraElement().toString();
 
             BPELInterface bpel = new BPELImpl();
-            //Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM) represents an XML document
+            //Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM)
+            // represents an XML document
             OMElement bpelStr = bpel.load(processDef);
             /**
              * Process the OmElement containing the bpel process definition
@@ -100,13 +105,12 @@ public class PNGGenarateServlet extends HttpServlet {
             ServletOutputStream sos = response.getOutputStream();
             //Convert the image as a byte array of a PNG
             byte[] pngBytes = svg.toPNGBytes();
-            if (pngBytes != null) {
-                // stream to write binary data into the response
-                sos.write(pngBytes);
-                sos.flush();
-                sos.close();
-            }
-        } catch (Exception e) {
+            // stream to write binary data into the response
+            sos.write(pngBytes);
+            sos.flush();
+            sos.close();
+
+        } catch (ProcessManagementException e) {
             log.error("PNG Generation Error", e);
         }
 

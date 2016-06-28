@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * ReThrow Interface.
+ */
 public interface ReThrowInterface extends ActivityInterface {
 
 }

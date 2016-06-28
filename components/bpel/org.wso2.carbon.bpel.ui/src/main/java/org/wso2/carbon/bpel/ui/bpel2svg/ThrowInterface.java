@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * Throw Interface.
+ */
 public interface ThrowInterface extends ActivityInterface {
 
 }

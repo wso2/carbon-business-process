@@ -29,7 +29,13 @@ import org.w3c.dom.svg.SVGDocument;
 import org.wso2.carbon.bpel.ui.bpel2svg.ProcessInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.SVGInterface;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 /**
  * Handles the SVG generation
@@ -46,6 +52,7 @@ public class SVGImpl implements SVGInterface {
 
     /**
      * Gets the root activity of the process i.e. Process Activity
+     *
      * @return root activity of the process i.e. Process Activity
      */
     public ProcessInterface getRootActivity() {
@@ -54,6 +61,7 @@ public class SVGImpl implements SVGInterface {
 
     /**
      * Sets the root activity of the process i.e. Process Activity
+     *
      * @param rootActivity root activity of the process i.e. Process Activity
      */
     public void setRootActivity(ProcessInterface rootActivity) {
@@ -111,7 +119,8 @@ public class SVGImpl implements SVGInterface {
             return null;
         }
         // Base64 encoding from byte array to string
-        String base64 = new String(Base64.encodeBase64(((ByteArrayOutputStream) osByteArray).toByteArray()));
+        String base64 = new String(Base64.encodeBase64(((ByteArrayOutputStream) osByteArray).toByteArray()), Charset
+                .defaultCharset());
         return base64;
     }
 
@@ -134,20 +143,19 @@ public class SVGImpl implements SVGInterface {
             jpegTranscoder.transcode(transcoderInput2, transcoderOutput);
         } catch (TranscoderException e) {
             log.error("JPEGTranscoder transcode error", e);
-            return null;
+            return new byte[0];
         }
 
         try {
             osByteArray.flush();
         } catch (IOException e) {
             log.error("Error while flushing OutputStreamByteArray", e);
-            return null;
+            return new byte[0];
         }
         return ((ByteArrayOutputStream) osByteArray).toByteArray();
     }
 
     /**
-     *
      * @return String with the header of the SVG document
      */
     public String getHeaders() {

@@ -16,60 +16,24 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.TerminationHandlerInterface;
+import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.TerminationHandlerInterface;
 
 /**
  * TerminationHandler tag UI implementation
  */
 public class TerminationHandlerImpl extends SequenceImpl implements TerminationHandlerInterface {
-	/**
+    /**
      * Initializes a new instance of the TerminationHandlerImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public TerminationHandlerImpl(String token) {
         super(token);
 
-		//Assigns the name of the activity to be displayed when drawing the process
-        name = "TERMINATIONHANDLER";
-        displayName = "Termination Handler";
-
-       // Set Start and End Icons and their Sizes
-        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-    }
-	
-	 /**
-     * Initializes a new instance of the TerminationHandlerImpl class using the specified omElement
-     * @param omElement which matches the TerminationHandler tag
-     */
-    public TerminationHandlerImpl(OMElement omElement) {
-        super(omElement);
-
-		//Assigns the name of the activity to be displayed when drawing the process
-        name = "TERMINATIONHANDLER";
-        displayName = "Termination Handler";
-
-        // Set Start and End Icons and their Sizes
-        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-    }
-	/**
-     * Initializes a new instance of the TerminationHandlerImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an TerminationHandler Activity when processing the subActivities
-     * of the process
-     * @param omElement which matches the TerminationHandler tag
-     * @param parent
-     */
-    public TerminationHandlerImpl(OMElement omElement, ActivityInterface parent) {
-        super(omElement);
-
-        //Set the parent of the activity
-        setParent(parent);
-
-		//Assigns the name of the activity to be displayed when drawing the process
+        //Assigns the name of the activity to be displayed when drawing the process
         name = "TERMINATIONHANDLER";
         displayName = "Termination Handler";
 
@@ -79,7 +43,47 @@ public class TerminationHandlerImpl extends SequenceImpl implements TerminationH
     }
 
     /**
+     * Initializes a new instance of the TerminationHandlerImpl class using the specified omElement
      *
+     * @param omElement which matches the TerminationHandler tag
+     */
+    public TerminationHandlerImpl(OMElement omElement) {
+        super(omElement);
+
+        //Assigns the name of the activity to be displayed when drawing the process
+        name = "TERMINATIONHANDLER";
+        displayName = "Termination Handler";
+
+        // Set Start and End Icons and their Sizes
+        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+    }
+
+    /**
+     * Initializes a new instance of the TerminationHandlerImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an TerminationHandler Activity when processing the
+     * subActivities
+     * of the process
+     *
+     * @param omElement which matches the TerminationHandler tag
+     * @param parent
+     */
+    public TerminationHandlerImpl(OMElement omElement, ActivityInterface parent) {
+        super(omElement);
+
+        //Set the parent of the activity
+        setParent(parent);
+
+        //Assigns the name of the activity to be displayed when drawing the process
+        name = "TERMINATIONHANDLER";
+        displayName = "Termination Handler";
+
+        // Set Start and End Icons and their Sizes
+        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+    }
+
+    /**
      * @return String with the end tag of TerminationHandler Activity
      */
     @Override

@@ -18,9 +18,15 @@ package org.wso2.carbon.bpel.ui.fileupload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
-import java.util.zip.ZipInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Basic archive extracting operations
@@ -39,7 +45,7 @@ public final class ArchiveExtractor {
             while ((len = in.read(buffer)) >= 0) {
                 out.write(buffer, 0, len);
             }
-        }finally {
+        } finally {
             out.close();
         }
     }

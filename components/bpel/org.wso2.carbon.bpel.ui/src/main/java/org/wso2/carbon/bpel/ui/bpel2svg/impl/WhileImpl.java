@@ -16,28 +16,31 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.WhileInterface;
 
 /**
  * While tag UI implementation
  */
 public class WhileImpl extends ForEachImpl implements WhileInterface {
-	/**
+    /**
      * Initializes a new instance of the WhileImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public WhileImpl(String token) {
         super(token);
 
-       // Set Start and End Icons and their Sizes
+        // Set Start and End Icons and their Sizes
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	/**
+
+    /**
      * Initializes a new instance of the WhileImpl class using the specified omElement
+     *
      * @param omElement which matches the While tag
      */
     public WhileImpl(OMElement omElement) {
@@ -47,10 +50,12 @@ public class WhileImpl extends ForEachImpl implements WhileInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	/**
+
+    /**
      * Initializes a new instance of the WhileImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an While Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the While tag
      * @param parent
      */
@@ -66,7 +71,6 @@ public class WhileImpl extends ForEachImpl implements WhileInterface {
     }
 
     /**
-     *
      * @return String with the end tag of While Activity
      */
     @Override

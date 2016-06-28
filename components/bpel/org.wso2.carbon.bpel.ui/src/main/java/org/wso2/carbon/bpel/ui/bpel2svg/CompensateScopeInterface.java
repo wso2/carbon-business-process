@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * CompensateScope Interface.
+ */
 public interface CompensateScopeInterface extends ActivityInterface {
 
 }

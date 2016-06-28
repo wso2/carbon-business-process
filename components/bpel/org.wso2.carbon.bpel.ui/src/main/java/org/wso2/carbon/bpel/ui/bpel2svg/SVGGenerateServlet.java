@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,40 +18,46 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.bpel.stub.mgt.ProcessManagementException;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.BPELImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.SVGImpl;
-import org.wso2.carbon.ui.CarbonUIUtil;
-import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
+import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.utils.ServerConstants;
 
-
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletOutputStream;
 import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+
 /**
  * SVG Generator
  */
 public class SVGGenerateServlet extends HttpServlet {
+
+    static final long serialVersionUID = 42L;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * Handles the HTTP process request which creates the SVG graph for a bpel process
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -75,10 +81,12 @@ public class SVGGenerateServlet extends HttpServlet {
             client = new ProcessManagementServiceClient(cookie, backendServerURL, configContext,
                     request.getLocale());
             //Gets the bpel process definition needed to create the SVG from the processId
-            processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition().getExtraElement().toString();
+            processDef = client.getProcessInfo(QName.valueOf(pid)).getDefinitionInfo().getDefinition()
+                    .getExtraElement().toString();
 
             BPELInterface bpel = new BPELImpl();
-            //Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM) represents an XML document
+            //Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM)
+            // represents an XML document
             OMElement bpelStr = bpel.load(processDef);
 
             /**
@@ -104,22 +112,23 @@ public class SVGGenerateServlet extends HttpServlet {
             //Checks whether the SVG string generated contains a value
             if (svgStr != null) {
                 // stream to write binary data into the response
-                sos.write(svgStr.getBytes());
+                sos.write(svgStr.getBytes(Charset.defaultCharset()));
                 sos.flush();
                 sos.close();
             }
-        } catch (Exception e) {
+        } catch (ProcessManagementException e) {
             log.error("SVG Generation Error", e);
             String errorSVG = "<svg version=\"1.1\"\n" +
                     "     xmlns=\"http://www.w3.org/2000/svg\"><text y=\"50\">Could not display SVG</text></svg>";
-            sos.write(errorSVG.getBytes());
+            sos.write(errorSVG.getBytes(Charset.defaultCharset()));
             sos.flush();
             sos.close();
         }
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the
+    // code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.

@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.OnEventInterface;
 
 /**
@@ -27,6 +27,7 @@ import org.wso2.carbon.bpel.ui.bpel2svg.OnEventInterface;
 public class OnEventImpl extends OnMessageImpl implements OnEventInterface {
     /**
      * Initializes a new instance of the OnEventImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public OnEventImpl(String token) {
@@ -39,8 +40,10 @@ public class OnEventImpl extends OnMessageImpl implements OnEventInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the OnEventImpl class using the specified omElement
+     *
      * @param omElement which matches the OnEvent tag
      */
     public OnEventImpl(OMElement omElement) {
@@ -53,10 +56,12 @@ public class OnEventImpl extends OnMessageImpl implements OnEventInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the OnEventImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an OnEvent Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the OnEvent tag
      * @param parent
      */
@@ -71,8 +76,8 @@ public class OnEventImpl extends OnMessageImpl implements OnEventInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
-     *
      * @return String with the end tag of OnEvent Activity
      */
     @Override

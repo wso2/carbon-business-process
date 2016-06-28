@@ -24,9 +24,8 @@ public class BPELAttributeValuePair {
     private String value = null;
 
     /**
-     *
      * @param attribute type of the activity i.e. whether an activity is an instance of ASSIGN, SEQUENCE etc.
-     * @param value name of the activity
+     * @param value     name of the activity
      */
     public BPELAttributeValuePair(String attribute, String value) {
         this.attribute = attribute;
@@ -35,13 +34,16 @@ public class BPELAttributeValuePair {
 
     /**
      * Gets the type of the activity i.e. whether an activity is an instance of ASSIGN, SEQUENCE etc.
+     *
      * @return String with the type of the activity
      */
     public String getAttribute() {
         return attribute;
     }
+
     /**
      * Gets the name of the activity
+     *
      * @return String with the name of the activity
      */
     public String getValue() {

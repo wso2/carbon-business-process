@@ -16,10 +16,10 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.ExitInterface;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
-import org.apache.axiom.om.OMElement;
 
 /**
  * Exit tag UI implementation
@@ -27,6 +27,7 @@ import org.apache.axiom.om.OMElement;
 public class ExitImpl extends SimpleActivityImpl implements ExitInterface {
     /**
      * Initializes a new instance of the ExitImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public ExitImpl(String token) {
@@ -39,6 +40,7 @@ public class ExitImpl extends SimpleActivityImpl implements ExitInterface {
 
     /**
      * Initializes a new instance of the ExitImpl class using the specified omElement
+     *
      * @param omElement which matches the Exit tag
      */
     public ExitImpl(OMElement omElement) {
@@ -53,6 +55,7 @@ public class ExitImpl extends SimpleActivityImpl implements ExitInterface {
      * Initializes a new instance of the ExitImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Exit Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Exit tag
      * @param parent
      */
