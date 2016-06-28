@@ -30,7 +30,11 @@ import org.apache.ode.bpel.common.ProcessFilter;
 import org.apache.ode.bpel.dao.BpelDAOConnection;
 import org.apache.ode.bpel.dao.ProcessDAO;
 import org.apache.ode.bpel.dao.ProcessInstanceDAO;
-import org.apache.ode.bpel.dd.*;
+import org.apache.ode.bpel.dd.TDeployment;
+import org.apache.ode.bpel.dd.TInvoke;
+import org.apache.ode.bpel.dd.TProcessEvents;
+import org.apache.ode.bpel.dd.TProvide;
+import org.apache.ode.bpel.dd.TService;
 import org.apache.ode.bpel.engine.BpelDatabase;
 import org.apache.ode.bpel.evt.BpelEvent;
 import org.apache.ode.bpel.iapi.ProcessConf;
@@ -48,21 +52,64 @@ import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStoreImpl;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AdminServiceUtils;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.ProcessManagementException;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.ProcessManagementServiceSkeletonInterface;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.BpelDefinition;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CategoryListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Category_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.DefinitionInfo;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.DeploymentInfo;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EnableEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EndpointRef_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EndpointReferencesType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailuresInfo;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Generate_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceStatus;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceSummary;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Instances_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InvokeServiceListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InvokedServiceType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.MexInterpreterListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.On_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.PaginatedProcessInfoList;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessDeployDetailsList;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessDeployDetailsList_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessEventsListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessProperties;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessProperty_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessStatus;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.PropertyListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Property_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProvideServiceListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProvidedServiceType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ServiceLocation;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Service_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Service_type1;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.service.mgt.util.Utils;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * BPEL Process management service implementation.
@@ -321,16 +368,21 @@ public class ProcessManagementServiceSkeleton extends AbstractAdmin
                 tenantProcessStore.getBPELPackageRepository().
                         createPropertiesForUpdatedDeploymentInfo(processConf);
             }
-            bpelServer.getODEBPELServer().getContexts().scheduler.execTransaction(new java.util.concurrent.Callable<Boolean>() {
+            bpelServer.getODEBPELServer().getContexts().scheduler.execTransaction(new java.util.concurrent
+                    .Callable<Boolean>() {
                 public Boolean call() throws Exception {
 
                     ProcessDAO processDAO;
                     ProcessDAO newProcessDAO;
 
                     if (oldIsInmemory & !newIsInmemory) {
-                        processDAO = bpelServer.getODEBPELServer().getContexts().getInMemDao().getConnection().getProcess(processId);
-                        if (bpelServer.getODEBPELServer().getContexts().dao.getConnection().getProcess(processId) == null) {
-                            newProcessDAO = bpelServer.getODEBPELServer().getContexts().dao.getConnection().createProcess(processDAO.getProcessId(), processDAO.getType(), processDAO.getGuid(), processDAO.getVersion());
+                        processDAO = bpelServer.getODEBPELServer().getContexts().getInMemDao().getConnection()
+                                .getProcess(processId);
+                        if (bpelServer.getODEBPELServer().getContexts().dao.getConnection().getProcess(processId) ==
+                                null) {
+                            newProcessDAO = bpelServer.getODEBPELServer().getContexts().dao.getConnection()
+                                    .createProcess(processDAO.getProcessId(), processDAO.getType(), processDAO
+                                            .getGuid(), processDAO.getVersion());
 
                             Set<String> correlatorsSet = processDAO.getCorrelatorsSet();
                             for (String correlator : correlatorsSet) {
@@ -340,8 +392,11 @@ public class ProcessManagementServiceSkeleton extends AbstractAdmin
                     } else if (!oldIsInmemory & newIsInmemory) {
                         QName pId = processId;
                         processDAO = bpelServer.getODEBPELServer().getContexts().dao.getConnection().getProcess(pId);
-                        if (bpelServer.getODEBPELServer().getContexts().getInMemDao().getConnection().getProcess(pId) == null) {
-                            newProcessDAO = bpelServer.getODEBPELServer().getContexts().getInMemDao().getConnection().createProcess(processDAO.getProcessId(), processDAO.getType(), processDAO.getGuid(), processDAO.getVersion());
+                        if (bpelServer.getODEBPELServer().getContexts().getInMemDao().getConnection().getProcess(pId)
+                                == null) {
+                            newProcessDAO = bpelServer.getODEBPELServer().getContexts().getInMemDao().getConnection()
+                                    .createProcess(processDAO.getProcessId(), processDAO.getType(), processDAO
+                                            .getGuid(), processDAO.getVersion());
 
                             Set<String> correlatorsSet = processDAO.getCorrelatorsSet();
                             for (String correlator : correlatorsSet) {
@@ -454,8 +509,8 @@ public class ProcessManagementServiceSkeleton extends AbstractAdmin
                     sLocation.addServiceLocation(url);
                     String[] wsdls = Utils.getWsdlInformation(serviceName.getLocalPart(),
                             getConfigContext().getAxisConfiguration());
-                    if(wsdls.length == 2){
-                        if(wsdls[0].endsWith("?wsdl")) {
+                    if (wsdls.length == 2) {
+                        if (wsdls[0].endsWith("?wsdl")) {
                             sLocation.addServiceLocation(wsdls[0]);
                         } else {
                             sLocation.addServiceLocation(wsdls[1]);

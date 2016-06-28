@@ -23,145 +23,153 @@ import org.apache.commons.collections.map.MultiKeyMap;
  */
 public class AnalyticsServerProfile {
 
-	// AnalyticsServerProfile name.
-	private String name;
+    // AnalyticsServerProfile name.
+    private String name;
 
-	// The Agent name from which the DataPublisher that needs to be created. By default Thrift, and Binary is supported.
-	private String type;
+    // The Agent name from which the DataPublisher that needs to be created. By default Thrift, and Binary is supported.
+    private String type;
 
-	// Authorized username at receiver.
+    // Authorized username at receiver.
     private String userName;
 
-	// The password of the username provided.
+    // The password of the username provided.
     private String password;
 
-	// The receiving endpoint URL Set. This can be either load balancing URL set or Failover URL set.
+    // The receiving endpoint URL Set. This can be either load balancing URL set or Failover URL set.
     private String receiverURLSet;
 
-	// The authenticating URL Set for the endpoints given in receiverURLSet parameter. This should be in the same format
-	// as receiverURL set parameter. If null is passed the authURLs will be offsetted by value of 100.
-	private String authURLSet;
+    // The authenticating URL Set for the endpoints given in receiverURLSet parameter. This should be in the same format
+    // as receiverURL set parameter. If null is passed the authURLs will be offsetted by value of 100.
+    private String authURLSet;
 
-	// Stream configuration.
+    // Stream configuration.
     private MultiKeyMap streamConfigurations = new MultiKeyMap();
 
-	/**
-	 * Get Analytics Server Profile name
-	 * @return Analytics Server Profile name.
-	 */
+    /**
+     * Get Analytics Server Profile name
+     *
+     * @return Analytics Server Profile name.
+     */
     public String getName() {
         return name;
     }
 
-	/**
-	 * Get Analytics Agent name
-	 * @return Agent name
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 *  Get Authorized username at receiver
-	 * @return username
-	 */
-    public String getUserName() {
-        return userName;
-    }
-
-	/**
-	 * Get The password of the username provided.
-	 * @return password
-	 */
-    public String getPassword() {
-        return password;
-    }
-
-	/**
-	 *
-	 * @param streamName
-	 * @param version
-	 * @return AnalyticsStreamConfiguration
-	 */
-    public AnalyticsStreamConfiguration getAnalyticsStreamConfiguration(String streamName, String version) {
-        return (AnalyticsStreamConfiguration)streamConfigurations.get(streamName, version);
-    }
-
-
-	/**
-	 * Get The receiving endpoint URL Set. This can be either load balancing URL set or Failover URL set.
-	 * eg : tcp://localhost:7611|tcp://localhost:7612|tcp://localhost:7613
-	 * @return The receiving endpoint URL Set.
-	 */
-	public String getReceiverURLSet() {
-		return receiverURLSet;
-	}
-
-	/**
-	 * Get The authenticating URL Set for the endpoints given in receiverURLSet parameter.
-	 * @return The authenticating URL Set
-	 */
-	public String getAuthURLSet() {
-		return authURLSet;
-	}
-
-
-	public void addAnalyticsStreamConfiguration(String streamName, String version,
-            AnalyticsStreamConfiguration streamConfiguration) {
-        streamConfigurations.put(streamName, version, streamConfiguration);
-    }
-
-	/**
-	 * Set Analytics Server Profile name
-	 * @param name Analytics Server Profile name
-	 */
+    /**
+     * Set Analytics Server Profile name
+     *
+     * @param name Analytics Server Profile name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
-	/**
-	 * Set Analytics Agent name
-	 * @param type Analytics Agent name
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * Get Analytics Agent name
+     *
+     * @return Agent name
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Set Authorized username at receiver
-	 * @param userName Username as a string value
-	 */
+    /**
+     * Set Analytics Agent name
+     *
+     * @param type Analytics Agent name
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Get Authorized username at receiver
+     *
+     * @return username
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * Set Authorized username at receiver
+     *
+     * @param userName Username as a string value
+     */
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
-	/**
-	 * Set The password of the username provided.
-	 * @param password password as a string
-	 */
+    /**
+     * Get The password of the username provided.
+     *
+     * @return password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Set The password of the username provided.
+     *
+     * @param password password as a string
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     * @param streamName
+     * @param version
+     * @return AnalyticsStreamConfiguration
+     */
+    public AnalyticsStreamConfiguration getAnalyticsStreamConfiguration(String streamName, String version) {
+        return (AnalyticsStreamConfiguration) streamConfigurations.get(streamName, version);
+    }
 
-	/**
-	 * Set The receiving endpoint URL Set.
-	 * @param receiverURLSet The receiving endpoint URL Set
-	 */
+    /**
+     * Get The receiving endpoint URL Set. This can be either load balancing URL set or Failover URL set.
+     * eg : tcp://localhost:7611|tcp://localhost:7612|tcp://localhost:7613
+     *
+     * @return The receiving endpoint URL Set.
+     */
+    public String getReceiverURLSet() {
+        return receiverURLSet;
+    }
+
+    /**
+     * Set The receiving endpoint URL Set.
+     *
+     * @param receiverURLSet The receiving endpoint URL Set
+     */
     public void setReceiverURLSet(String receiverURLSet) {
         this.receiverURLSet = receiverURLSet;
     }
 
-	/**
-	 * Set The authenticating URL Set for the endpoints given in receiverURLSet parameter.
-	 * @param authURLSet The authenticating URL Set
-	 */
-	public void setAuthURLSet(String authURLSet) {
-		this.authURLSet = authURLSet;
-	}
+    /**
+     * Get The authenticating URL Set for the endpoints given in receiverURLSet parameter.
+     *
+     * @return The authenticating URL Set
+     */
+    public String getAuthURLSet() {
+        return authURLSet;
+    }
 
-	@Override
-	public String toString() {
-		return getName() + ", type of " + getType();
-	}
+    /**
+     * Set The authenticating URL Set for the endpoints given in receiverURLSet parameter.
+     *
+     * @param authURLSet The authenticating URL Set
+     */
+    public void setAuthURLSet(String authURLSet) {
+        this.authURLSet = authURLSet;
+    }
+
+    public void addAnalyticsStreamConfiguration(String streamName, String version,
+                                                AnalyticsStreamConfiguration streamConfiguration) {
+        streamConfigurations.put(streamName, version, streamConfiguration);
+    }
+
+    @Override
+    public String toString() {
+        return getName() + ", type of " + getType();
+    }
 }

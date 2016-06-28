@@ -39,14 +39,21 @@ import org.wso2.carbon.bpel.core.ode.integration.axis2.WSDLAwareSOAPProcessor;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AxisServiceUtils;
 import org.wso2.carbon.bpel.core.ode.integration.utils.Messages;
 
-import javax.wsdl.*;
+import java.util.List;
+import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.Definition;
+import javax.wsdl.Port;
+import javax.wsdl.Service;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.http.HTTPAddress;
 import javax.wsdl.extensions.http.HTTPBinding;
 import javax.wsdl.extensions.http.HTTPOperation;
 import javax.xml.namespace.QName;
-import java.util.List;
 
+/**
+ * HTTP BindingHandler.
+ */
 public class HTTPBindingHandler {
     private ConfigurationContext configurationContext;
     private QName serviceName;
@@ -253,7 +260,8 @@ public class HTTPBindingHandler {
 //        List<BindingOperation> bindingOperations = httpBinding.getBindingOperations();
 //        for (BindingOperation bindingOperation : bindingOperations) {
 //            String operationName = bindingOperation.getName();
-//            AxisOperation operation = createAxisOperation(operationName, targetNamesapce, isOutOnly(bindingOperation));
+//            AxisOperation operation = createAxisOperation(operationName, targetNamesapce, isOutOnly
+// (bindingOperation));
 //            operations.put(new QName(targetNamesapce, operationName), operation);
 //            service.addOperation(operation);
 //        }
@@ -287,6 +295,9 @@ public class HTTPBindingHandler {
 //        return operation;
 //    }
 
+    /**
+     * HTTPBindingResponse.
+     */
     public static class HTTPBindingResponse {
         private MessageContext responseMessageContext;
         private MessageContext faultMessageContext;

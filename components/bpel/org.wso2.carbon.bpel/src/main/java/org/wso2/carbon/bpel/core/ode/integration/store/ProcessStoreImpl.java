@@ -21,7 +21,13 @@ import org.apache.axis2.clustering.state.StateClusteringCommand;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ode.bpel.iapi.*;
+import org.apache.ode.bpel.iapi.ContextException;
+import org.apache.ode.bpel.iapi.EndpointReferenceContext;
+import org.apache.ode.bpel.iapi.ProcessConf;
+import org.apache.ode.bpel.iapi.ProcessState;
+import org.apache.ode.bpel.iapi.ProcessStore;
+import org.apache.ode.bpel.iapi.ProcessStoreEvent;
+import org.apache.ode.bpel.iapi.ProcessStoreListener;
 import org.apache.ode.store.ConfStoreConnection;
 import org.apache.ode.store.ConfStoreConnectionFactory;
 import org.apache.ode.store.DeploymentUnitDAO;
@@ -34,18 +40,26 @@ import org.w3c.dom.Node;
 import org.wso2.carbon.bpel.cluster.notifier.BPELClusterNotifier;
 import org.wso2.carbon.bpel.core.ode.integration.ODEConfigurationProperties;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import javax.sql.DataSource;
-import javax.xml.namespace.QName;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import javax.sql.DataSource;
+import javax.xml.namespace.QName;
 
 /**
  * This class implements multi-tenancy supported BPEL Process Store .Multi-tenancy features are achieved
@@ -62,6 +76,9 @@ public class ProcessStoreImpl implements ProcessStore, MultiTenantProcessStore {
                 }
             };
 
+    /**
+     * Tenant Process Store status.
+     */
     public static enum TenatProcessStoreState {
         // Resides in Memory
         ACTIVE,
@@ -102,7 +119,8 @@ public class ProcessStoreImpl implements ProcessStore, MultiTenantProcessStore {
     private Map<QName, String> processToDeploymentUnitMap =
             new ConcurrentHashMap<QName, String>();
 
-    private Map<Integer, Map<QName, Object>> servicesPublishedByTenants = new ConcurrentHashMap<Integer, Map<QName, Object>>();
+    private Map<Integer, Map<QName, Object>> servicesPublishedByTenants = new ConcurrentHashMap<Integer, Map<QName,
+            Object>>();
 
     private File bpelDURepo;
 
@@ -243,8 +261,8 @@ public class ProcessStoreImpl implements ProcessStore, MultiTenantProcessStore {
     }
 
     public void updateProcessAndDUMapsForSalve(Integer tenantId,
-                                        String duName,
-                                        Collection<QName> pids) {
+                                               String duName,
+                                               Collection<QName> pids) {
         for (QName pid : pids) {
             ProcessConfigurationImpl processConf =
                     (ProcessConfigurationImpl) getProcessConfiguration(pid);
@@ -309,10 +327,10 @@ public class ProcessStoreImpl implements ProcessStore, MultiTenantProcessStore {
         Collections.sort(pConfs, BY_DEPLOYEDDATE);
         for (ProcessConfigurationImpl processConfiguration : pConfs) {
             try {
-                if(log.isDebugEnabled()) {
-                    log.debug("Firing state change event --" + processConfiguration.getState()  +
-                              "--  for process conf " + processConfiguration.getPackage() +
-                              "located at " + processConfiguration.getAbsolutePathForBpelArchive());
+                if (log.isDebugEnabled()) {
+                    log.debug("Firing state change event --" + processConfiguration.getState() +
+                            "--  for process conf " + processConfiguration.getPackage() +
+                            "located at " + processConfiguration.getAbsolutePathForBpelArchive());
                 }
                 fireStateChange(processConfiguration.getProcessId(),
                         processConfiguration.getState(),

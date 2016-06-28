@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.bpel.core.ode.integration.jmx;
 
+/**
+ * Bean interface class for Instance Status Monitor.
+ */
 public interface InstanceStatusMonitorMXBean {
     public String getLastFailedProcessInfo();
 }

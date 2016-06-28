@@ -19,13 +19,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.InputSource;
 
-import javax.wsdl.xml.WSDLLocator;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.wsdl.xml.WSDLLocator;
 
 /**
  * WSDL locator for the WSDLs in BPEL package

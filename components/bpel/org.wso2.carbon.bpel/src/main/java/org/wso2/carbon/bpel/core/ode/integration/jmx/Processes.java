@@ -24,84 +24,91 @@ import org.wso2.carbon.bpel.core.ode.integration.store.ProcessStoreImpl;
 
 import javax.xml.namespace.QName;
 
-
+/**
+ * Implementation class for Process Bean.
+ */
 public class Processes implements ProcessesMXBean {
 
-  private  MultiTenantProcessStore processStore;
-    public String[] getProcessStates(){
+    private MultiTenantProcessStore processStore;
+
+    public String[] getProcessStates() {
         BPELServer bpelServer = BPELServiceComponent.getBPELServer();
-        processStore= bpelServer.getMultiTenantProcessStore();
-        int processCount=((ProcessStoreImpl) processStore).getProcesses().size();
-        String[] processStates= new String[processCount];
-        if(processCount!=0){
-            for(int i=0;i<processCount;i++) {
-                StringBuffer buffer= new StringBuffer();
+        processStore = bpelServer.getMultiTenantProcessStore();
+        int processCount = ((ProcessStoreImpl) processStore).getProcesses().size();
+        String[] processStates = new String[processCount];
+        if (processCount != 0) {
+            for (int i = 0; i < processCount; i++) {
+                StringBuffer buffer = new StringBuffer();
                 buffer.append(((ProcessStoreImpl) processStore).getProcesses().get(i).getLocalPart().toString());
                 buffer.append(" State-");
-                buffer.append(((ProcessStoreImpl) processStore).getProcessConfiguration(((ProcessStoreImpl) processStore).getProcesses().get(i)).getState().toString());
-                processStates[i]=buffer.toString();
+                buffer.append(((ProcessStoreImpl) processStore).getProcessConfiguration(((ProcessStoreImpl)
+                        processStore).getProcesses().get(i)).getState().toString());
+                processStates[i] = buffer.toString();
             }
         }
-            return  processStates;
+        return processStates;
     }
 
     public String retireProcess(String processQnameLocalPart) {
-        int processCount= ((ProcessStoreImpl) processStore).getProcesses().size();
-        QName name=null ;
-        if(processCount!=0){
-             for(int i=0;i<processCount;i++){
-                 if(processQnameLocalPart.equalsIgnoreCase(((ProcessStoreImpl) processStore).getProcesses().get(i).getLocalPart().toString())) {
-                    name= ((ProcessStoreImpl) processStore).getProcesses().get(i);
-                 }
-             }
-             if(name!=null){
-                 ((ProcessStoreImpl) processStore).setState(name, ProcessState.RETIRED);
-                 return "successfully retired "+processQnameLocalPart;
-             } else{
-                 return "no process with specified name";
-             }
-         }  else{
-                return "No processess deployed";
-         }
+        int processCount = ((ProcessStoreImpl) processStore).getProcesses().size();
+        QName name = null;
+        if (processCount != 0) {
+            for (int i = 0; i < processCount; i++) {
+                if (processQnameLocalPart.equalsIgnoreCase(((ProcessStoreImpl) processStore).getProcesses().get(i)
+                        .getLocalPart().toString())) {
+                    name = ((ProcessStoreImpl) processStore).getProcesses().get(i);
+                }
+            }
+            if (name != null) {
+                ((ProcessStoreImpl) processStore).setState(name, ProcessState.RETIRED);
+                return "successfully retired " + processQnameLocalPart;
+            } else {
+                return "no process with specified name";
+            }
+        } else {
+            return "No processess deployed";
+        }
     }
 
     public String activateProcess(String processQnameLocalPart) {
-        int processCount= ((ProcessStoreImpl) processStore).getProcesses().size();
-        QName name=null ;
-        if(processCount!=0){
-            for(int i=0;i<processCount;i++){
-                if(processQnameLocalPart.equalsIgnoreCase(((ProcessStoreImpl) processStore).getProcesses().get(i).getLocalPart().toString())) {
-                    name= ((ProcessStoreImpl) processStore).getProcesses().get(i);
+        int processCount = ((ProcessStoreImpl) processStore).getProcesses().size();
+        QName name = null;
+        if (processCount != 0) {
+            for (int i = 0; i < processCount; i++) {
+                if (processQnameLocalPart.equalsIgnoreCase(((ProcessStoreImpl) processStore).getProcesses().get(i)
+                        .getLocalPart().toString())) {
+                    name = ((ProcessStoreImpl) processStore).getProcesses().get(i);
                 }
             }
-            if(name!=null){
+            if (name != null) {
                 ((ProcessStoreImpl) processStore).setState(name, ProcessState.ACTIVE);
-                return "successfully activated "+processQnameLocalPart;
-            } else{
+                return "successfully activated " + processQnameLocalPart;
+            } else {
                 return "no process with specified name";
             }
-        }   else{
+        } else {
             return "no processess deployed";
         }
     }
 
 
     public String disableProcess(String processQnameLocalPart) {
-        int processCount= ((ProcessStoreImpl) processStore).getProcesses().size();
-        QName name=null ;
-        if(processCount!=0){
-            for(int i=0;i<processCount;i++){
-                if(processQnameLocalPart.equalsIgnoreCase(((ProcessStoreImpl) processStore).getProcesses().get(i).getLocalPart().toString())) {
-                    name= ((ProcessStoreImpl) processStore).getProcesses().get(i);
+        int processCount = ((ProcessStoreImpl) processStore).getProcesses().size();
+        QName name = null;
+        if (processCount != 0) {
+            for (int i = 0; i < processCount; i++) {
+                if (processQnameLocalPart.equalsIgnoreCase(((ProcessStoreImpl) processStore).getProcesses().get(i)
+                        .getLocalPart().toString())) {
+                    name = ((ProcessStoreImpl) processStore).getProcesses().get(i);
                 }
             }
-            if(name!=null){
+            if (name != null) {
                 ((ProcessStoreImpl) processStore).setState(name, ProcessState.DISABLED);
-                return "successfully disabled "+processQnameLocalPart;
-            } else{
+                return "successfully disabled " + processQnameLocalPart;
+            } else {
                 return "no process with specified name";
             }
-        }   else{
+        } else {
             return "no processess deployed";
         }
     }
