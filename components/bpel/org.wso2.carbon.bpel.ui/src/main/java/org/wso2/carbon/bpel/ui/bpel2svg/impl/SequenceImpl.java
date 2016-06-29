@@ -352,7 +352,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the icon opacity
@@ -380,7 +380,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
         //Creating an SVG Container "g" to place the activities
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Checks for the subActivities
         if (subActivities != null) {
             ActivityInterface prevActivity = null;
@@ -407,13 +407,12 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     if (activity instanceof ThrowImpl) {
                         setCheck(true);
                     }
-                    //Checks whether the previous activity is a Throw activity, if so no exit arrow
-                    if (prevActivity instanceof ThrowImpl) {
-                        //No exit arrow . Process terminates from there
-                    } else if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
+
+                   if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
                             || prevActivity instanceof TargetsImpl || activity instanceof SourcesImpl || activity instanceof SourceImpl ||
-                            activity instanceof TargetImpl || activity instanceof TargetsImpl) {
+                            activity instanceof TargetImpl || activity instanceof TargetsImpl || prevActivity instanceof ThrowImpl) {
                         //No exit arrow for Source or Target as it doesn't have an icon specified.
+                        // Checks whether the previous activity is a Throw activity, if so no exit arrow
                     } else {
                         subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
                     }

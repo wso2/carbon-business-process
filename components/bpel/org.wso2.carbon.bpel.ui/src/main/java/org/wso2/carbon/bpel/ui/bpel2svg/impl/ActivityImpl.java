@@ -110,7 +110,6 @@ public abstract class ActivityImpl implements ActivityInterface {
         this.parent = parent;
     }
 
-
     // Attributes of the Start Icon
     protected String startIconPath = null;
     protected int startIconHeight = layoutManager.getStartIconDim();
@@ -148,11 +147,9 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected int boxYTop = 0;
     protected int boxHeight = 0;
     protected int boxWidth = 0;
-    protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;"
-            +
-            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;"
-            +
-            "bbbbbbbstroke-opacity:1;fill:url(#orange_red);stroke-opacity:0.2";
+    protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;"+
+            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;"+
+            "stroke-opacity:1;fill:url(#orange_red);stroke-opacity:0.2";
 
     // Constructor
     public ActivityImpl() {
@@ -169,8 +166,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             if (firstQuoteIndex >= 0) {
                 int lastQuoteIndex = token.indexOf("\"", firstQuoteIndex + 1);
                 if (lastQuoteIndex > firstQuoteIndex) {
-                    setName(token
-                            .substring(firstQuoteIndex + 1, lastQuoteIndex));
+                    setName(token.substring(firstQuoteIndex + 1, lastQuoteIndex));
                     //Set the name of the activity
                     setDisplayName(getName());
                 }
@@ -885,7 +881,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     public Element getSubActivitiesSVGString(SVGDocument doc) {
         Iterator<ActivityInterface> itr = subActivities.iterator();
         ActivityInterface activity = null;
-        Element subElement = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        Element subElement = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Iterates through the subActivities
         while (itr.hasNext()) {
             activity = itr.next();
@@ -912,16 +908,16 @@ public abstract class ActivityImpl implements ActivityInterface {
                                          int imgXLeft, int imgYTop, int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         group.setAttributeNS(null, "id", getLayerId());
         //Checks whether the start icon path is null
         if (getStartIconPath() != null) {
 
             Element x = null;
-            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             x.setAttributeNS(null, "id", id);
             //Rectangle/Image holder to place the image
-            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            Element rect = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "rect");
             //Attributes of the rectangle drawn
             rect.setAttributeNS(null, "x", String.valueOf(imgXLeft));
             rect.setAttributeNS(null, "y", String.valueOf(imgYTop));
@@ -938,7 +934,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             int embedImageHeight = 45;
             int embedImageWidth = 50;
             //Attributes of the image embedded inside the rectangle
-            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
+            Element embedImage = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
             embedImage.setAttributeNS(null, "x", String.valueOf(embedImageX));
             embedImage.setAttributeNS(null, "y", String.valueOf(embedImageY));
@@ -994,30 +990,26 @@ public abstract class ActivityImpl implements ActivityInterface {
         int txtXLeft = imgXLeft;
         int txtYTop = imgYTop;
         // SVG <a> element is used to create links in SVG images
-        Element a = doc.createElementNS("http://www.w3.org/2000/svg", "a");
+        Element a = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "a");
         if (imgDisplayName != null) {
             //Set the image/activity name
             a.setAttributeNS(null, "id", imgName);
             //Attributes of the <text> which is used to define a text
             Element text1 = doc
-                    .createElementNS("http://www.w3.org/2000/svg", "text");
+                    .createElementNS(SVG_Namespace.SVG_NAMESPACE, "text");
             text1.setAttributeNS(null, "x", String.valueOf(txtXLeft));
             text1.setAttributeNS(null, "y", String.valueOf(txtYTop));
             text1.setAttributeNS(null, "id", imgName + ".Text");
             text1.setAttributeNS(null, "xml:space", "preserve");
             text1.setAttributeNS(null, "style",
-                    "font-size:12px;font-style:normal;font-variant:normal;font-weight:"
-                            +
-                            "normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:"
-                            +
-                            "start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;"
-                            +
-                            "stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;"
-                            +
+                    "font-size:12px;font-style:normal;font-variant:normal;font-weight:"+
+                            "normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:"+
+                            "start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;"+
+                            "stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;"+
                             "-inkscape-font-specification:Arial Narrow");
             //Creating an SVG <tspan> element which is used to draw multiple lines of text in SVG
             Element tspan = doc
-                    .createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    .createElementNS(SVG_Namespace.SVG_NAMESPACE, "tspan");
             //Attributes of the tspan element i.e. xLeft and yTop position and the name of the activity
             tspan.setAttributeNS(null, "x", String.valueOf(txtXLeft + 5));
             tspan.setAttributeNS(null, "y", String.valueOf(txtYTop + 5));
@@ -1079,18 +1071,8 @@ public abstract class ActivityImpl implements ActivityInterface {
      * @return String with the arrow styling attributes
      */
     protected String getArrowStyle() {
-        String largeArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Lend);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1";
-        String mediumArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#Arrow1Mend);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1";
+        String largeArrowStr = ArrowStyles.LARGE_ARROW_STYLE;
+        String mediumArrowStr = ArrowStyles.MEDIUM_ARROW_STYLE;
         //Checks whether the arrow needed is a largeArrow
         if (largeArrow) {
             return largeArrowStr;
@@ -1103,18 +1085,8 @@ public abstract class ActivityImpl implements ActivityInterface {
      * @return String with the link arrow styling attributes
      */
     protected String getLinkArrowStyle() {
-        String largeArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1;opacity: 0.25;";
-        String mediumArrowStr =
-                "fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:3;stroke-linecap:"
-                        +
-                        "butt;stroke-linejoin:bevel;marker-end:url(#LinkArrow);stroke-dasharray:"
-                        +
-                        "none;stroke-opacity:1;opacity: 0.25;";
+        String largeArrowStr = ArrowStyles.LARGE_LINK_ARROW_STYLE;
+        String mediumArrowStr = ArrowStyles.MEDIUM_LINK_ARROW_STYLE;
         //Checks whether the link arrow needed is a largeArrow
         if (largeArrow) {
             return largeArrowStr;
@@ -1134,7 +1106,7 @@ public abstract class ActivityImpl implements ActivityInterface {
      * @return An element which contains the arrow flows/paths of the activity
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :
@@ -1150,8 +1122,7 @@ public abstract class ActivityImpl implements ActivityInterface {
                         + ((startY + 2 * endY) / 3) + " L " + endX + "," + endY);
             } else {
                 path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
-                        "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + ","
-                        + endY);
+                        "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);
             }
         }
         //Set the id of the path
@@ -1176,7 +1147,7 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected Element getArrowDefinition(SVGDocument doc, int startX,
                                          int startY, int midX, int midY, int endX, int endY, String id) {
         Element path = doc
-                .createElementNS("http://www.w3.org/2000/svg", "path");
+                .createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         path.setAttributeNS(null, "d",
                 "M " + startX + "," + startY + " L " + midX + "," + midY + "L "
                         + endX +
@@ -1213,13 +1184,13 @@ public abstract class ActivityImpl implements ActivityInterface {
      */
     protected Element getBoxDefinition(SVGDocument doc, int boxXLeft, int boxYTop, int boxWidth, int boxHeight, String id) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Set the id of the box
         group.setAttributeNS(null, "id", "Layer-" + id);
         //Check whether Sequence boxes can be shown/ is true
         if (layoutManager.isShowSequenceBoxes()) {
             //Rectangle/Box to hold the subActivities inside the Sequence
-            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            Element rect = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "rect");
             //Attributes of the box is defined
             rect.setAttributeNS(null, "width", String.valueOf(boxWidth));
             rect.setAttributeNS(null, "height", String.valueOf(boxHeight));

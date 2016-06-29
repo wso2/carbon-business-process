@@ -514,9 +514,8 @@ public class BaseExecutionService {
 
         List<RestVariable> inputVariables = new ArrayList<>();
         List<RestVariable> resultVariables = new ArrayList<>();
-        String contentType = httpServletRequest.getContentType();
 
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 @SuppressWarnings("unchecked")
@@ -528,7 +527,7 @@ public class BaseExecutionService {
             } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
             }
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
             JAXBContext jaxbContext = null;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);

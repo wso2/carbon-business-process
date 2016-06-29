@@ -17,6 +17,7 @@
 
 package org.wso2.carbon.bpmn.rest.common.utils;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
 import java.util.List;
@@ -330,4 +331,21 @@ public class Utils {
 
     }
 
+    /**
+     * This function will check whether the HTTP Request is with Content-Type with application/json
+     * @param httpServletRequest : httpServeletRequest
+     * @return : true if the Content-Type is application/json, false otherwise
+     */
+    public static boolean isApplicationJsonRequest(HttpServletRequest httpServletRequest) {
+        return httpServletRequest.getContentType().trim().startsWith(MediaType.APPLICATION_JSON);
+    }
+
+    /**
+     * This function will check whether the HTTP Request is with Content-Type with application/xml
+     * @param httpServletRequest : httpServeletRequest
+     * @return : true if the Content-Type is application/xml, false otherwise
+     */
+    public static boolean isApplicationXmlRequest(HttpServletRequest httpServletRequest) {
+        return httpServletRequest.getContentType().trim().startsWith(MediaType.APPLICATION_XML);
+    }
 }

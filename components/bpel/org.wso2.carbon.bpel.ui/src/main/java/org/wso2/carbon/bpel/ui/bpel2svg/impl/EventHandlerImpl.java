@@ -303,7 +303,7 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Get the scope/box of the EventHandler which surrounds all its subActivities

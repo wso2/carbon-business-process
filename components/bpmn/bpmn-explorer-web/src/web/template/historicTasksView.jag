@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -13,10 +13,11 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
+
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
       <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close", "Close")%></span></button>
-      <p id="errorMsg"><%=commonErrorMessage%></p>
+      <p id="errorMsg"><%=Encode.forJavaScript(commonErrorMessage)%></p>
     </div>
 </div>
 <%if (commonErrorMessage == null) {%>

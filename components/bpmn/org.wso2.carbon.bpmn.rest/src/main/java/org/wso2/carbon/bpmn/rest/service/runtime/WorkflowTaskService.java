@@ -448,15 +448,12 @@ public class WorkflowTaskService extends BaseTaskService {
             httpServletRequest) {
 
         Task task = getTaskFromRequest(taskId);
-
-        Object result = null;
         List<RestVariable> inputVariables = new ArrayList<>();
         List<RestVariable> resultVariables = new ArrayList<>();
-        result = resultVariables;
+        Response.ResponseBuilder responseBuilder = Response.ok();
 
         try {
-            String contentType = httpServletRequest.getContentType();
-            if (contentType.equals(MediaType.APPLICATION_JSON)) {
+            if (Utils.isApplicationJsonRequest(httpServletRequest)) {
                 try {
                     @SuppressWarnings("unchecked")
                     List<Object> variableObjects = (List<Object>) new ObjectMapper().readValue(httpServletRequest.getInputStream(),
@@ -470,7 +467,7 @@ public class WorkflowTaskService extends BaseTaskService {
                             "instance.", e);
                 }
 
-            } else if (contentType.equals(MediaType.APPLICATION_XML)) {
+            } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
 
                 JAXBContext jaxbContext = null;
                 try {
@@ -559,7 +556,11 @@ public class WorkflowTaskService extends BaseTaskService {
             }
         }
 
-        return Response.ok().status(Response.Status.CREATED).build();
+        RestVariableCollection restVariableCollection = new RestVariableCollection();
+        restVariableCollection.setRestVariables(resultVariables);
+        responseBuilder.entity(restVariableCollection);
+
+        return responseBuilder.status(Response.Status.CREATED).build();
     }
 
     @PUT
@@ -593,15 +594,14 @@ public class WorkflowTaskService extends BaseTaskService {
         Task task = getTaskFromRequest(taskId);
 
         RestVariable restVariable = null;
-        String contentType = httpServletRequest.getContentType();
 
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
             try {
                 restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
             } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
             }
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
             JAXBContext jaxbContext = null;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);

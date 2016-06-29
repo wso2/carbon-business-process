@@ -187,7 +187,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         /* SVG <defs> element is used to embed definitions that can be reused inside an SVG image.
            For instance, you can group SVG shapes together and reuse them as a single shape.
         */
-        Element defs = doc.createElementNS("http://www.w3.org/2000/svg", "defs");
+        Element defs = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "defs");
         defs.setAttributeNS(null, "id", "defs4");
 
         /*SVG markers are used to mark the start, mid and end of a line or path
@@ -197,7 +197,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
                     the x-axis a tangent of the vertex (default 0)
 
          */
-        Element marker1 = doc.createElementNS("http://www.w3.org/2000/svg", "marker");
+        Element marker1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "marker");
         //Defining the attributes
         marker1.setAttributeNS(null, "refX", "0");
         marker1.setAttributeNS(null, "refY", "0");
@@ -210,7 +210,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
             pathLength=If present, the path will be scaled so that the computed path length of the points equals this value
             transform=a list of transformations
          */
-        Element path1 = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         //Defining the attributes
         path1.setAttributeNS(null, "d", "M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z");
         path1.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
@@ -218,7 +218,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         path1.setAttributeNS(null, "style", "fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none");
 
         //Creating a SVG marker element and defining the attributes
-        Element marker2 = doc.createElementNS("http://www.w3.org/2000/svg", "marker");
+        Element marker2 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "marker");
         marker2.setAttributeNS(null, "refX", "0");
         marker2.setAttributeNS(null, "refY", "0");
         marker2.setAttributeNS(null, "orient", "auto");
@@ -226,14 +226,14 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         marker2.setAttributeNS(null, "style", "overflow:visible");
 
         //Creating a SVG path element and defining the attributes
-        Element path2 = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path2 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         path2.setAttributeNS(null, "d", "M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z");
         path2.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
         path2.setAttributeNS(null, "id", "path3193");
         path2.setAttributeNS(null, "style", "fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none");
 
         //Creating a SVG marker element and defining the attributes
-        Element linkMarker = doc.createElementNS("http://www.w3.org/2000/svg", "marker");
+        Element linkMarker = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "marker");
         linkMarker.setAttributeNS(null, "refX", "0");
         linkMarker.setAttributeNS(null, "refY", "0");
         linkMarker.setAttributeNS(null, "orient", "auto");
@@ -241,7 +241,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         linkMarker.setAttributeNS(null, "style", "overflow:visible");
 
         //Creating a SVG path element and defining the attributes
-        Element linkPath = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element linkPath = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         linkPath.setAttributeNS(null, "d", "M -11.5,0 L -7,-7.5 L -12.5,0 L -7,7.5 L -11.5,0 z");
         linkPath.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
         linkPath.setAttributeNS(null, "id", "linkPath");
@@ -255,7 +255,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
             y1- y start point of the gradient vector
             y2- y end point of the gradient vector
         */
-        Element linearGradient = doc.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+        Element linearGradient = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "linearGradient");
         linearGradient.setAttributeNS(null, "id", "orange_red");
         linearGradient.setAttributeNS(null, "x1", "0%");
         linearGradient.setAttributeNS(null, "y1", "0%");
@@ -266,11 +266,11 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
          The stops for a gradient
            offset= The offset for this stop (0 to 1/0% to 100%) -->  Required.
         */
-        Element stop1 = doc.createElementNS("http://www.w3.org/2000/svg", "stop");
+        Element stop1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "stop");
         stop1.setAttributeNS(null, "offset", "0%");
         stop1.setAttributeNS(null, "style", "stop-color:rgb(255,255,255);stop-opacity:1");
 
-        Element stop2 = doc.createElementNS("http://www.w3.org/2000/svg", "stop");
+        Element stop2 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "stop");
         stop2.setAttributeNS(null, "offset", "100%");
         stop2.setAttributeNS(null, "style", "stop-color:rgb(0,0,255);stop-opacity:1");
 
@@ -294,7 +294,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
      * @return An element which contains the arrow coordinates of the Process and its subActivities
      */
     protected Element getArrows(SVGDocument doc) {
-        Element group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        Element group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         if (subActivities != null) {
             //Gets the start activity of the process
             ActivityInterface startActivity = subActivities.get(0);
@@ -318,7 +318,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
      * @return An element which contains the link arrow coordinates of the Process
      */
     private Element getLinkArrows(SVGDocument doc) {
-        Element group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        Element group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Checks whether the any links exist
         if (links != null && !links.isEmpty()) {
             //Returns a collection-view of the map with the link names, sources(starting activity) and the target(ending activity)
@@ -359,7 +359,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
      * @return
      */
     private Element drawLink(SVGDocument doc, int startX, int startY, int endX, int endY, int startIconWidth, String id, String linkName) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
          /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :

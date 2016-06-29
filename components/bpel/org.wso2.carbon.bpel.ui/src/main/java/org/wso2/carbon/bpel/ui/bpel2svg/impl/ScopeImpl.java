@@ -27,6 +27,7 @@ import java.util.Iterator;
  * Scope tag UI implementation
  */
 public class ScopeImpl extends ActivityImpl implements ScopeInterface {
+
     //Variables for Core and Conditional dimensions
     private SVGDimension coreDimensions = null;
     private SVGDimension conditionalDimensions = null;
@@ -772,7 +773,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Gets the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the opacity of the icons
@@ -797,10 +798,8 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
         group.appendChild(getSubActivitiesSVGString(doc));
         //Get the end icon definition of the activity
         group.appendChild(getEndImageDefinition(doc));
-
         //Get the arrow flows of the subActivities inside the Scope composite activity
         group.appendChild(getArrows(doc));
-
         return group;
     }
 
@@ -812,7 +811,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         if (subActivities != null) {
-            Element subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            Element subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             ActivityInterface prevActivity = null;
             ActivityInterface activity = null;
             String id = null;
@@ -1018,17 +1017,17 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
                                          int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         group.setAttributeNS(null, "id", getLayerId());
         //Checks whether the start icon path is null
         if (getStartIconPath() != null && imgPath != getStartIconPath()) {
 
             //Rectangle to place the image
             Element x = null;
-            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             x.setAttributeNS(null, "id", id);
             //Attributes of the rectangle drawn
-            Element rect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+            Element rect = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "rect");
             rect.setAttributeNS(null, "x", String.valueOf(imgXLeft + 10));
             rect.setAttributeNS(null, "y", String.valueOf(imgYTop));
             rect.setAttributeNS(null, "width", String.valueOf(imgWidth));
@@ -1044,7 +1043,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
             int embedImageHeight = 45;
             int embedImageWidth = 45;
             //Attributes of the image embedded inside the rectangle
-            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "image");
+            Element embedImage = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "image");
             embedImage.setAttributeNS(null, "xlink:href", imgPath);
             embedImage.setAttributeNS(null, "x", String.valueOf(embedImageX));
             embedImage.setAttributeNS(null, "y", String.valueOf(embedImageY));
@@ -1100,14 +1099,14 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
                                           int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks whether the start icon path is null
         if (getStartIconPath() != null) {
 
             Element x = null;
-            x = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            x = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             //Get the id of the activity
             x.setAttributeNS(null, "id", id);
             int embedImageX = imgXLeft + imgWidth;
@@ -1117,7 +1116,7 @@ public class ScopeImpl extends ActivityImpl implements ScopeInterface {
              (x1,y1) --> Start point coordinates
              (x2,y2) --> End point coordinates
              */
-            Element embedImage = doc.createElementNS("http://www.w3.org/2000/svg", "line");
+            Element embedImage = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "line");
             embedImage.setAttributeNS(null, "x1", String.valueOf(imgXLeft + 10));
             embedImage.setAttributeNS(null, "y1", String.valueOf(embedImageY));
             embedImage.setAttributeNS(null, "x2", String.valueOf(embedImageX));

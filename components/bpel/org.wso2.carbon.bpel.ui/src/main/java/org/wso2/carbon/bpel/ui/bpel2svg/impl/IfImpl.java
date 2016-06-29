@@ -569,7 +569,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
      */
     public Element getSVGString(SVGDocument doc) {
         Element group1 = null;
-        group1 = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group1.setAttributeNS(null, "id", getLayerId());
         //Checks for the icon opacity
@@ -616,7 +616,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
             SVGCoordinates activityEntryCoords = null;
             SVGCoordinates activityExitCoords = null;
             Iterator<ActivityInterface> itr = subActivities.iterator();
-            Element subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            Element subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
             //Iterates through all the subActivities
             while (itr.hasNext()) {
                 activity = itr.next();
@@ -638,9 +638,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                             //Define the entry arrow flow coordinates for the activity
                             subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft() - getEndIconWidth() / 2, exitCoords.getYTop(), id));
                             //If there is a Throw activity inside Else, no exit arrow from Throw activity
-                            if (check == true) {
-                                //No exit arrow flow. The process terminates.
-                            } else {
+                            if (check != true) {
                                 subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                             }
                         }
@@ -651,9 +649,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                             //Define the entry arrow flow coordinates for the activity
                             subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                             //If there is a Throw activity inside ElseIf, no exit arrow from Throw activity
-                            if (check == true) {
-                                //No exit arrow flow. The process terminates.
-                            } else {
+                            if (check != true) {
                                 subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                             }
                         }
@@ -677,12 +673,9 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                         //Define the entry arrow flow coordinates for the activity
                         subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         //If there is a Throw activity inside ElseIf, no exit arrow from Throw activity
-                        if (check == true) {
-                            //No exit arrow . Process terminates from there
-                        } else {
+                        if (check != true) {
                             subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                         }
-
                     }
                     //Checks whether the activity is an instance of Else
                     else if (activity instanceof ElseImpl) {
@@ -691,9 +684,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
                         //Define the entry arrow flow coordinates for the activity
                         subGroup.appendChild(getArrowDefinition(doc, myStartElseCoords.getXLeft(), myStartElseCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                         //If there is a Throw activity inside Else, no exit arrow from Throw activity
-                        if (check == true) {
-                            //No exit arrow . Process terminates from there
-                        } else {
+                        if (check != true) {
                             subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
                         }
                     } else {
@@ -797,7 +788,7 @@ public class IfImpl extends ActivityImpl implements IfInterface {
      * @return An element which contains the arrow flows/paths of the If activity and its subActivities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
          /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :

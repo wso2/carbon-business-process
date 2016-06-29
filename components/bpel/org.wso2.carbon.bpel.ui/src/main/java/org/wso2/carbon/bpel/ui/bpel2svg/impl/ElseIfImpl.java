@@ -37,6 +37,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * Initializes a new instance of the ElseIfImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public ElseIfImpl(String token) {
@@ -49,6 +50,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * Initializes a new instance of the ElseIfImpl class using the specified omElement
+     *
      * @param omElement which matches the ElseIf tag
      */
     public ElseIfImpl(OMElement omElement) {
@@ -63,6 +65,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
      * Initializes a new instance of the ElseIfImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an ElseIf Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the ElseIf tag
      * @param parent
      */
@@ -78,7 +81,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     }
 
     /**
-     *
      * @return String with the name of the activity
      */
     @Override
@@ -87,7 +89,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     }
 
     /**
-     *
      * @return- String with the end tag of ElseIf Activity
      */
     @Override
@@ -97,8 +98,9 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * At the start: width=0, height=0
+     *
      * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -143,6 +145,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -158,9 +161,10 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -199,9 +203,10 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     public void layoutHorizontal(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -238,6 +243,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -262,6 +268,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -280,6 +287,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves the start ElseIf Icon
+     *
      * @return coordinates of the exit arrow for the start icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
      */
@@ -304,6 +312,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the exit arrow of Else Activity
+     *
      * @return coordinates of the exit arrow for the Else Activity
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + width of icon , yTop= Ytop of the Icon + (height of the icon)/2
      */
@@ -325,14 +334,13 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     }
 
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the components of the ElseIf composite activity
      */
     public Element getSVGString(SVGDocument doc) {
 
         Element group1 = null;
-        group1 = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group1.setAttributeNS(null, "id", getLayerId());
         //Add opacity to the icons
@@ -351,6 +359,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * Get the arrow coordinates of the activities
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return An element which contains the arrow coordinates of the ElseIf activity and its subActivities
      */
@@ -368,7 +377,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
             SVGCoordinates activityExitCoords = null;
             Iterator<ActivityInterface> itr = subActivities.iterator();
             //Creating an SVG Container "g"
-            Element subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+            Element subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
 
             //Iterates through all the subActivities
             while (itr.hasNext()) {
@@ -427,6 +436,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters the end icon
+     *
      * @return coordinates of the entry arrow for the end icon
      * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -449,6 +459,7 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
@@ -457,7 +468,6 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
     }
 
     /**
-     *
      * @return String with the opacity value
      */
     @Override
@@ -467,16 +477,17 @@ public class ElseIfImpl extends ActivityImpl implements ElseIfInterface {
 
     /**
      * Get the arrow flows/paths from the coordinates given by getArrows()
+     *
      * @param doc
-     * @param startX  x-coordinate of the start point
-     * @param startY  y-coordinate of the start point
-     * @param endX    x-coordinate of the end point
-     * @param endY    y-coordinate of the end point
-     * @param id      previous activity id + current activity id
+     * @param startX x-coordinate of the start point
+     * @param startY y-coordinate of the start point
+     * @param endX   x-coordinate of the end point
+     * @param endY   y-coordinate of the end point
+     * @param id     previous activity id + current activity id
      * @return An element which contains the arrow flows/paths of the ElseIf activity and its subActivities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :

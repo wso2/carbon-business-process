@@ -1,6 +1,6 @@
 <%
 /*
- * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * 
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -22,6 +22,8 @@
     var i18n = require("i18n");
     var localeResourcesBasePath="../config/locales/";
     i18n.init(request,localeResourcesBasePath);
+    // owasp encoder to prevent XSS attacks
+    var Encode = Packages.org.owasp.encoder.Encode;
 
     //construct backend URI using config.json
     var BPSUrl = application.get('bpsURI');

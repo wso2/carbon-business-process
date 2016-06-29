@@ -16,10 +16,16 @@
 package org.wso2.carbon.bpmn.rest.service.stats;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.logging.Log;
@@ -48,6 +54,7 @@ public class ProcessAndTaskService {
     private static final Log log = LogFactory.getLog(ProcessAndTaskService.class);
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     String str = String.valueOf(tenantId);
+    public static final String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     /**
      * Get the deployed processes count
@@ -237,11 +244,9 @@ public class ProcessAndTaskService {
         for (ProcessDefinition instance : deployements) {
             CompletedProcesses bpmnProcessInstance = new CompletedProcesses();
             bpmnProcessInstance.setProcessDefinitionId(instance.getId());
-
             double totalTime = 0;
             double averageTime = 0;
             String processDefinitionID = instance.getId();
-
 
             HistoricProcessInstanceQuery historicProcessInstanceQuery = BPMNOSGIService.
                     getHistoryService().createHistoricProcessInstanceQuery().
@@ -250,8 +255,7 @@ public class ProcessAndTaskService {
 
             long noOfHistoricInstances = historicProcessInstanceQuery.count();
 
-            if (noOfHistoricInstances == 0) {
-            } else {
+            if (noOfHistoricInstances != 0) {
                 List<HistoricProcessInstance> instanceList = historicProcessInstanceQuery.list();
 
                 for (HistoricProcessInstance completedProcess : instanceList) {
@@ -263,7 +267,6 @@ public class ProcessAndTaskService {
                 bpmnProcessInstance.setAverageTimeForCompletion(averageTime);
                 list.add(bpmnProcessInstance);
             }
-
         }
         response.setData(list);
         return response;
@@ -350,7 +353,6 @@ public class ProcessAndTaskService {
     public ResponseHolder taskVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
         SimpleDateFormat ft = new SimpleDateFormat("M");
 
         InstanceStatPerMonth[] taskStatPerMonths = new InstanceStatPerMonth[12];
@@ -406,7 +408,6 @@ public class ProcessAndTaskService {
     public ResponseHolder processVariationOverTime() {
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
         SimpleDateFormat ft = new SimpleDateFormat("M");
         InstanceStatPerMonth[] processStatPerMonths = new InstanceStatPerMonth[12];
         for (int i = 0; i < processStatPerMonths.length; i++) {
@@ -478,5 +479,65 @@ public class ProcessAndTaskService {
                 createProcessDefinitionQuery().processDefinitionTenantId(str).count();
         return processCount;
     }
+
+    /**
+     * Return the bpmn resource/process diagram
+     * @param pId process instance id
+     * @return bpmn resource/process diagram
+     */
+    @GET
+    @Path("/resourceDiagram/{pId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public ResponseHolder getResourceDiagram(@PathParam("pId") String pId) {
+        //Get a list of the deployed processes
+        List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionTenantId(str).processDefinitionId(pId).list();
+
+        List list = new ArrayList<>();
+        ResponseHolder response = new ResponseHolder();
+        for (ProcessDefinition processDefinition : deployements) {
+            list.add(processDefinition.getDiagramResourceName());
+        }
+
+        response.setData(list);
+        return response;
+    }
+
+    /**
+     * Return all the tasks/activities in a process
+     * @param pId process instance id
+     * @return all the tasks/activities in a process
+     */
+    @GET
+    @Path("/allTasks/{pId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public ResponseHolder getTasks(@PathParam("pId") String pId) {
+        ResponseHolder response = new ResponseHolder();
+        List list = new ArrayList();
+
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(pId);
+        if (processDefinition!=null) {
+
+            for (ActivityImpl activity: processDefinition.getActivities()) {
+                TaskInfo taskInfo = new TaskInfo();
+                    String taskDefKey = activity.getId();
+                    String type = (String) activity.getProperty("type");
+                    String taskName = (String) activity.getProperty("name");
+                    taskInfo.setTaskDefinitionKey(taskDefKey);
+                    taskInfo.setType(type);
+                    taskInfo.setName(taskName);
+                    list.add(taskInfo);
+            }
+        }
+
+        response.setData(list);
+        return response;
+    }
 }
+
+
+
+
+
 

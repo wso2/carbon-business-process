@@ -464,15 +464,14 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         RestVariable restVariable = null;
 
-        String contentType = httpServletRequest.getContentType();
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
             try {
                 restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
             } catch (IOException e) {
                 throw new ActivitiIllegalArgumentException("request body could not be transformed to a RestVariable " +
                         "instance.", e);
             }
-        } else if (MediaType.APPLICATION_XML.equals(MediaType.APPLICATION_JSON)) {
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
 
             JAXBContext jaxbContext;
             try {
@@ -563,13 +562,13 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                                                     @Context HttpServletRequest httpServletRequest) {
 
         Execution execution = getExecutionInstanceFromRequest(processInstanceId);
-        Object result;
+        Response result;
         try {
             result = createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, httpServletRequest);
         } catch (IOException | ServletException e) {
             throw new BPMNRestException("Exception occured during creating execution variable", e);
         }
-        return Response.ok().status(Response.Status.CREATED).entity(result).build();
+        return result;
     }
 
     @GET
@@ -685,10 +684,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         List<RestVariable> inputVariables = new ArrayList<>();
         List<RestVariable> resultVariables = new ArrayList<>();
 
-        String contentType = httpServletRequest.getContentType();
-
         try {
-            if (MediaType.APPLICATION_JSON.equals(contentType)) {
+            if (Utils.isApplicationJsonRequest(httpServletRequest)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 @SuppressWarnings("unchecked")
                 List<Object> variableObjects = (List<Object>) objectMapper.readValue(httpServletRequest.getInputStream(), List.class);
@@ -696,7 +693,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                     RestVariable restVariable = objectMapper.convertValue(restObject, RestVariable.class);
                     inputVariables.add(restVariable);
                 }
-            } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+            } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
                 JAXBContext jaxbContext;
                 try {
                     jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
