@@ -158,7 +158,6 @@ public class AnalyticsPublisher {
                                 publishBPMNProcessInstanceProcVariablesEvent(instance);
                             }
                         }
-                        //        String processDefinitionId = instance.getProcessDefinitionId();
 
                         BPMNTaskInstance[] bpmnTaskInstances = analyticsPublishServiceUtils.getCompletedTaskInstances();
                         if (bpmnTaskInstances != null && bpmnTaskInstances.length > 0) {
@@ -192,14 +191,19 @@ public class AnalyticsPublisher {
     /**
      * Publish process instance as events to the data receiver
      *
-     * @param bpmnProcessInstance BPMN process instance to retrieve the data for payload param of data publisher's publish method
+     * @param bpmnProcessInstance BPMN process instance to retrieve the data for payload param of data publisher's
+     *                            publish method
      */
     private void publishBPMNProcessInstanceGenericEvent(BPMNProcessInstance bpmnProcessInstance) {
 
-        Object[] payload = new Object[] { bpmnProcessInstance.getProcessDefinitionId(),
-                bpmnProcessInstance.getInstanceId(), bpmnProcessInstance.getStartActivityId(),
-                bpmnProcessInstance.getStartUserId(), bpmnProcessInstance.getStartTime().toString(),
-                bpmnProcessInstance.getEndTime().toString(), bpmnProcessInstance.getDuration(),
+        Object[] payload = new Object[] {
+                bpmnProcessInstance.getProcessDefinitionId(),
+                bpmnProcessInstance.getInstanceId(),
+                bpmnProcessInstance.getStartActivityId(),
+                bpmnProcessInstance.getStartUserId(),
+                bpmnProcessInstance.getStartTime().toString(),
+                bpmnProcessInstance.getEndTime().toString(),
+                bpmnProcessInstance.getDuration(),
                 bpmnProcessInstance.getTenantId() };
         if (log.isDebugEnabled()) {
             log.debug("Start to Publish BPMN process instance event... " + payload.toString());
@@ -214,9 +218,11 @@ public class AnalyticsPublisher {
         String processDefinitionId = bpmnProcessInstance.getProcessDefinitionId();
         String processInstanceId = bpmnProcessInstance.getInstanceId();
         String eventStreamId;
-        Object[] payload = new Object[0];//initialize with a 0 length array just to avoid possible null pointer exception in the catch block
+        Object[] payload = new Object[0];//initialize with a 0 length array just to avoid possible null pointer
+        // exception in the catch block
         try {
-            //get a list of names of variables which are configured for analytics from registry for that process, if not already taken
+            //get a list of names of variables which are configured for analytics from registry for that process, if
+            // not already taken
             JSONArray configedProcessVariablesListJsonArray = null;
             Map<String, ?> variableVals = new HashMap();
             if (mapOfProcessVariablesLists.get(processDefinitionId) == null) {
@@ -226,7 +232,6 @@ public class AnalyticsPublisher {
 
                 configedProcessVariablesListJsonArray = dasConfigDetailsSavedInBPSregJOb
                         .getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
-                //configedProcessVariablesListJsonArray = getProcessVariablesList(dasConfigDetailsSavedInBPSregJOb); // >> [{"name":"status","type":"string"},{"name":"amount","type":"int"},{"name":"pizzaTopping","type":"string"},{"name":"size","type":"int"},{"name":"processInstanceId","type":"string"}]}
 
                 mapOfProcessVariablesLists.put(processDefinitionId, configedProcessVariablesListJsonArray);
 
@@ -284,16 +289,17 @@ public class AnalyticsPublisher {
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Failed Publishing BPMN process instance event... Process Instance Id :" + processInstanceId
-                            + ", Process Definition Id:" + processDefinitionId + ", Published Event's Payload Data :"
-                            + payload.toString());
+                    log.debug(
+                            "Failed Publishing BPMN process instance event... Process Instance Id :" + processInstanceId
+                                    + ", Process Definition Id:" + processDefinitionId
+                                    + ", Published Event's Payload Data :" + payload.toString());
                 }
             }
         } catch (RegistryException e) {
-            String strMsg="Failed Publishing BPMN process instance event... Process Instance Id :" + processInstanceId
-                    + ", Process Definition Id:" + processDefinitionId + ", Published Event's Payload Data :"
-                    + payload.toString();
-            log.error(strMsg,e);;
+            String strMsg = "Failed Publishing BPMN process instance event... Process Instance Id :" + processInstanceId
+                    + ", Process Definition Id:" + processDefinitionId + ", Published Event's Payload Data :" + payload
+                    .toString();
+            log.error(strMsg, e);
         }
     }
 
@@ -477,19 +483,6 @@ public class AnalyticsPublisher {
         return DataBridgeCommonsUtils.generateStreamId(AnalyticsPublisherConstants.PROCESS_STREAM_NAME,
                 AnalyticsPublisherConstants.STREAM_VERSION);
     }
-
-/*//get also the process stream id and set it to a instance variable in this class
-    //set proc variables too to a instance variable Map
-    public JSONArray getProcessVariablesList(JSONObject dasConfigDetailsJObj) throws JSONException{
-            JSONArray processVarJObArray = dasConfigDetailsJObj.getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
-            //JSONArray variableArray = new JSONArray(processVariablesElement.getTextContent());
-            return processVarJObArray;
-
-    }
-
-    public String getConfigedStreamId(JSONObject dasConfigDetailsJObj){
-        return dasConfigDetailsJObj.getString("eventStreamId");
-    }*/
 
     public JSONObject getDasConfigDetailsSavedInBPSreg(String processDefinitionId) throws RegistryException {
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
