@@ -16,29 +16,35 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.configuration;
 
-import java.io.*;
-
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlException;
-import org.wso2.carbon.bpel.b4p.coordination.config.*;
+import org.wso2.carbon.bpel.b4p.coordination.config.HumanTaskCoordinationConfigurationDocument;
+import org.wso2.carbon.bpel.b4p.coordination.config.TClusterConfig;
+import org.wso2.carbon.bpel.b4p.coordination.config.THtCoordinationConfig;
+import org.wso2.carbon.bpel.b4p.coordination.config.TPersistenceConfig;
+import org.wso2.carbon.bpel.b4p.coordination.config.TTaskAuthenticationConfig;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.securevault.SecretResolver;
 import org.wso2.securevault.SecretResolverFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Utility class for reading Coordination Configuration from b4p-coordination-config.xml.
+ */
 public class CoordinationConfiguration {
-
-    private static Log log = LogFactory.getLog(CoordinationConfiguration.class);
-
-    private static CoordinationConfiguration coordinationConfiguration = null;
-
 
     public static final String HUMAN_TASK_COORDINATION_CONFIG_FILE = "b4p-coordination-config.xml";
     public static final String PROTOCOL_HANDLER_USERNAME_ALIAS = "HumanTask.ProtocolHandler.Username";
     public static final String PROTOCOL_HANDLER_PASSWORD_ALIAS = "HumanTask.ProtocolHandler.Password";
-
-
+    private static Log log = LogFactory.getLog(CoordinationConfiguration.class);
+    private static volatile CoordinationConfiguration coordinationConfiguration = null;
     private boolean humantaskCoordinationEnabled = false;
 
     private boolean registrationServiceEnabled = false;
@@ -59,7 +65,8 @@ public class CoordinationConfiguration {
 
         File htCoordinationConfigFile = getHumanTaskCoordinationConfigurationFile();
 
-        HumanTaskCoordinationConfigurationDocument humanTaskCoordinationConfigurationDocument = readConfigFile(htCoordinationConfigFile);
+        HumanTaskCoordinationConfigurationDocument humanTaskCoordinationConfigurationDocument = readConfigFile
+                (htCoordinationConfigFile);
 
         if (humanTaskCoordinationConfigurationDocument == null
                 || humanTaskCoordinationConfigurationDocument.getHumanTaskCoordinationConfiguration() == null) {
@@ -69,13 +76,15 @@ public class CoordinationConfiguration {
         }
 
         // Reading values
-        THtCoordinationConfig tHtCoordinationConfig = humanTaskCoordinationConfigurationDocument.getHumanTaskCoordinationConfiguration();
+        THtCoordinationConfig tHtCoordinationConfig = humanTaskCoordinationConfigurationDocument
+                .getHumanTaskCoordinationConfiguration();
 
         this.humantaskCoordinationEnabled = tHtCoordinationConfig.getTaskCoordinationEnabled();
         this.registrationServiceEnabled = tHtCoordinationConfig.getRegistrationServiceEnabled();
         if (tHtCoordinationConfig.getTaskProtocolHandlerAuthentication() != null) {
             // Reading secured password
-            getAuthenticationConfig(htCoordinationConfigFile, tHtCoordinationConfig.getTaskProtocolHandlerAuthentication());
+            getAuthenticationConfig(htCoordinationConfigFile, tHtCoordinationConfig
+                    .getTaskProtocolHandlerAuthentication());
         } else {
             log.warn("Error occurred while retrieving TaskEngineProtocolHandler configuration. ");
         }
@@ -90,6 +99,12 @@ public class CoordinationConfiguration {
         }
     }
 
+    public static CoordinationConfiguration getInstance() {
+        if (coordinationConfiguration == null) {
+            coordinationConfiguration = new CoordinationConfiguration();
+        }
+        return coordinationConfiguration;
+    }
 
     /**
      * Get protocol handler admin username and password from secure vault. If secure vault not set then
@@ -156,13 +171,6 @@ public class CoordinationConfiguration {
         } else {
             this.clusteredTaskEngines = false;
         }
-    }
-
-    public static CoordinationConfiguration getInstance() {
-        if (coordinationConfiguration == null) {
-            coordinationConfiguration = new CoordinationConfiguration();
-        }
-        return coordinationConfiguration;
     }
 
     private HumanTaskCoordinationConfigurationDocument readConfigFile(File aFile) {

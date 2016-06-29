@@ -48,9 +48,9 @@ import java.util.concurrent.Callable;
 public class TerminationTask implements CoordinationTask {
 
     private static final Log log = LogFactory.getLog(TerminationTask.class);
-    private static final String REG_TASK_COORDINATION =  "TaskCoordination";
-    private static final String USERNAME =  "username";
-    private static final String PASSWORD =  "password";
+    private static final String REG_TASK_COORDINATION = "TaskCoordination";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     private String instanceID;
     private int tenantID;
@@ -85,7 +85,8 @@ public class TerminationTask implements CoordinationTask {
                 // Task Protocol Handler and Task ID should be not null
                 if (taskProtocolHandler.getProtocolHandlerURL() != null && taskProtocolHandler.getTaskID() != null) {
                     // Note: Result set is pre-sorted using protocolHandler URL.
-                    // So we can retrieve a list of task id for that particular protocol handler URL using few iterations.
+                    // So we can retrieve a list of task id for that particular protocol handler URL using few
+                    // iterations.
                     // Here we are building that taskID list and store them in exitMessage.
                     // If it found new URL, do invoke using old exit message and create a new exit message
 
@@ -124,11 +125,13 @@ public class TerminationTask implements CoordinationTask {
     }
 
     private List<HTProtocolHandlerDAO> getHtProtocolHandlerDAOList(final String instanceID) throws Exception {
-        List<HTProtocolHandlerDAO> htProtocolHandlerDAOList = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer())
+        List<HTProtocolHandlerDAO> htProtocolHandlerDAOList = ((BPELServerImpl) B4PContentHolder.getInstance()
+                .getBpelServer())
                 .getScheduler().execTransaction(new Callable<List<HTProtocolHandlerDAO>>() {
                     @Override
                     public List<HTProtocolHandlerDAO> call() throws Exception {
-                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController()
+                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance()
+                                .getCoordinationController()
                                 .getDaoConnectionFactory().getConnection();
                         return daoConnection.getProtocolHandlers(instanceID);
                     }
@@ -137,11 +140,13 @@ public class TerminationTask implements CoordinationTask {
     }
 
     private List<TaskProtocolHandler> getHTProtocolHandlerURLWithTasks(final String instanceID) throws Exception {
-        List<TaskProtocolHandler> htProtocolURLWithTasks = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer())
+        List<TaskProtocolHandler> htProtocolURLWithTasks = ((BPELServerImpl) B4PContentHolder.getInstance()
+                .getBpelServer())
                 .getScheduler().execTransaction(new Callable<List<TaskProtocolHandler>>() {
                     @Override
                     public List<TaskProtocolHandler> call() throws Exception {
-                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController()
+                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance()
+                                .getCoordinationController()
                                 .getDaoConnectionFactory().getConnection();
                         return daoConnection.getProtocolHandlerURLsWithTasks(instanceID);
                     }
@@ -154,7 +159,8 @@ public class TerminationTask implements CoordinationTask {
                 .execTransaction(new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
-                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController()
+                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance()
+                                .getCoordinationController()
                                 .getDaoConnectionFactory().getConnection();
                         return daoConnection.deleteCoordinationData(instanceID);
                     }
@@ -176,7 +182,8 @@ public class TerminationTask implements CoordinationTask {
             String tenantDomain = MultitenantUtils.getTenantDomainFromUrl(message.getTaskProtocolHandlerURL());
             if (message.getTaskProtocolHandlerURL().equals(tenantDomain)) {
                 //this is a Super tenant registration service
-                CarbonUtils.setBasicAccessSecurityHeaders(CoordinationConfiguration.getInstance().getProtocolHandlerAdminUser()
+                CarbonUtils.setBasicAccessSecurityHeaders(CoordinationConfiguration.getInstance()
+                        .getProtocolHandlerAdminUser()
                         , CoordinationConfiguration.getInstance().getProtocolHandlerAdminPassword(), serviceClient);
             } else {
                 if (log.isDebugEnabled()) {
@@ -186,7 +193,8 @@ public class TerminationTask implements CoordinationTask {
                 String username = "";
                 String password = "";
                 try {
-                    UserRegistry configSystemRegistry = B4PContentHolder.getInstance().getRegistryService().getConfigSystemRegistry(tenantID);
+                    UserRegistry configSystemRegistry = B4PContentHolder.getInstance().getRegistryService()
+                            .getConfigSystemRegistry(tenantID);
                     Resource taskCoordination = configSystemRegistry.get(REG_TASK_COORDINATION);
                     if (taskCoordination != null) {
                         username = taskCoordination.getProperty(USERNAME);
@@ -205,7 +213,7 @@ public class TerminationTask implements CoordinationTask {
             }
             serviceClient.fireAndForget(payload);
             if (log.isDebugEnabled()) {
-                log.debug("Sent exit protocol message to " + message.getTaskProtocolHandlerURL() );
+                log.debug("Sent exit protocol message to " + message.getTaskProtocolHandlerURL());
             }
         } catch (AxisFault axisFault) {
             log.error("Error occurred while invoking HT Protocol Handler " + message.getTaskProtocolHandlerURL() +

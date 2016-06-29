@@ -16,5 +16,8 @@
 
 package org.wso2.carbon.bpel.b4p.coordination;
 
+/**
+ * Coordination Task Interface
+ */
 public interface CoordinationTask extends Runnable {
 }

@@ -20,7 +20,6 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.databinding.types.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +36,9 @@ import org.wso2.carbon.core.AbstractAdmin;
 
 import java.util.concurrent.Callable;
 
+/**
+ * WS-Coordination Registration service. (Admin Service).
+ */
 public class RegistrationService extends AbstractAdmin implements RegistrationServiceSkeletonInterface {
 
 
@@ -49,10 +51,12 @@ public class RegistrationService extends AbstractAdmin implements RegistrationSe
     private static final String COORDINATION_FAULT_MESSAGE = "Participant could not be registered.";
     private static final String COORDINATION_FAULT_SUB_CODE = "wscoor:CannotRegisterParticipant";
 
-    private static final String HT_COORDINATION_PROTOCOL = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/protocol/200803";
+    private static final String HT_COORDINATION_PROTOCOL = "http://docs.oasis-open" +
+            ".org/ns/bpel4people/ws-humantask/protocol/200803";
 
     @Override
-    public RegisterResponseType registerOperation(URI uri, EndpointReferenceType endpointReferenceType, OMElement[] omElements) {
+    public RegisterResponseType registerOperation(URI uri, EndpointReferenceType endpointReferenceType, OMElement[]
+            omElements) {
         if (!CoordinationConfiguration.getInstance().isRegistrationServiceEnabled()) {
             log.warn("Registration request is discarded. Registration service is disabled in this server");
             return null;
@@ -85,7 +89,8 @@ public class RegistrationService extends AbstractAdmin implements RegistrationSe
         boolean foundB4PMessageID = false;
         if (omElements.length > 0) {
             for (OMElement omElement : omElements) {
-                if (B4P_NAMESPACE.equals(omElement.getNamespace().getNamespaceURI()) && B4P_IDENTIFIER.equals(omElement.getLocalName())) {
+                if (B4P_NAMESPACE.equals(omElement.getNamespace().getNamespaceURI()) && B4P_IDENTIFIER.equals
+                        (omElement.getLocalName())) {
                     messageID = omElement.getText();
                     foundB4PMessageID = true;
                     break;
@@ -135,14 +140,18 @@ public class RegistrationService extends AbstractAdmin implements RegistrationSe
         return responseType;
     }
 
-    private HTProtocolHandlerDAO persistData(final String messageID, final String participantProtocolService) throws Exception {
-        HTProtocolHandlerDAO htProtocolHandlerDAO = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer()).getScheduler().execTransaction(new Callable<HTProtocolHandlerDAO>() {
-            @Override
-            public HTProtocolHandlerDAO call() throws Exception {
-                HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController().getDaoConnectionFactory().getConnection();
-                return daoConnection.createCoordinatedTask(messageID, participantProtocolService);
-            }
-        });
+    private HTProtocolHandlerDAO persistData(final String messageID, final String participantProtocolService) throws
+            Exception {
+        HTProtocolHandlerDAO htProtocolHandlerDAO = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer())
+                .getScheduler().execTransaction(new Callable<HTProtocolHandlerDAO>() {
+                    @Override
+                    public HTProtocolHandlerDAO call() throws Exception {
+                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance()
+                                .getCoordinationController
+                                ().getDaoConnectionFactory().getConnection();
+                        return daoConnection.createCoordinatedTask(messageID, participantProtocolService);
+                    }
+                });
         return htProtocolHandlerDAO;
     }
 

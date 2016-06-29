@@ -16,12 +16,15 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.dao;
 
+/**
+ * Task Protocol handler contains information about task and it's protocol handler URL.
+ */
 public class TaskProtocolHandler {
 
     private String taskID;
     private String protocolHandlerURL;
 
-    public TaskProtocolHandler(String protocolHandlerURL,String taskID) {
+    public TaskProtocolHandler(String protocolHandlerURL, String taskID) {
         this.taskID = taskID;
         this.protocolHandlerURL = protocolHandlerURL;
     }

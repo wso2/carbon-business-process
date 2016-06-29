@@ -38,7 +38,16 @@ import org.wso2.carbon.bpel.b4p.coordination.context.impl.HumanTaskCoordinationC
 import org.wso2.carbon.bpel.b4p.extension.BPEL4PeopleConstants;
 import org.wso2.carbon.bpel.common.constants.Constants;
 
-import javax.wsdl.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import javax.wsdl.Binding;
+import javax.wsdl.BindingInput;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.Message;
+import javax.wsdl.Operation;
+import javax.wsdl.Part;
 import javax.wsdl.extensions.ElementExtensible;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.http.HTTPBinding;
@@ -46,10 +55,6 @@ import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * TODO: Analyze the implementation copied from ODE source.
@@ -85,14 +90,62 @@ public class SOAPHelper {
         }
     }
 
+    public static String parseResponseFeedback(org.apache.axiom.soap.SOAPBody soapBody) throws FaultException {
+        /*  Sample feedback response
+        *   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+            <soapenv:Body><part><axis2ns3:correlation xmlns:axis2ns3="http://wso2.org/humantask/feedback">
+            <axis2ns3:taskid>10001</axis2ns3:taskid></axis2ns3:correlation></part></soapenv:Body></soapenv:Envelope>
+        * */
+        Iterator<OMElement> srcParts = soapBody.getChildElements();
+        if (srcParts.hasNext()) {
+            OMElement srcPart = srcParts.next();
+            if (!srcPart.getQName().equals(new QName(null, "part"))) {
+                throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
+                        "Unexpected element in SOAP body: " + srcPart.toString());
+            }
+            OMElement hifb = srcPart.getFirstChildWithName(
+                    new QName(BPEL4PeopleConstants.B4P_NAMESPACE,
+                            BPEL4PeopleConstants.B4P_CORRELATION_HEADER));
+            if (hifb == null) {
+                throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
+                        "Unexpected element in SOAP body: " + srcPart.toString());
+            }
+            OMElement taskIDele = hifb.getFirstChildWithName(
+                    new QName(BPEL4PeopleConstants.B4P_NAMESPACE,
+                            BPEL4PeopleConstants.B4P_CORRELATION_HEADER_ATTRIBUTE));
+            if (taskIDele == null) {
+                throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
+                        "Unexpected element in SOAP body: " + srcPart.toString());
+            }
+            return taskIDele.getText();
+//            Document doc = DOMUtils.newDocument();
+//            Element destPart = doc.createElementNS(null, "part");
+//            destPart.appendChild(doc.importNode(OMUtils.toDOM(srcPart), true));
+//            message.setPart("part", destPart);
+        }
+        throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
+                "TaskID not found in the feedback message");
+    }
+
+    public static SOAPBody getSOAPBody(ElementExtensible ee) {
+        return getFirstExtensibilityElement(ee, SOAPBody.class);
+    }
+
+    public static <T> T getFirstExtensibilityElement(ElementExtensible parent, Class<T> cls) {
+        Collection<T> ee = CollectionsX.filter(parent.getExtensibilityElements(), cls);
+
+        return ee.isEmpty() ? null : ee.iterator().next();
+    }
+
     /**
      * Create a SOAP request and add a list of attachment ids to the SOAP Header
-     * @param msgCtx base message context which will be manipulated through out the operation
-     * @param message element to be included in the SOAP Body
-     * @param op operation incorporated with the request
+     *
+     * @param msgCtx           base message context which will be manipulated through out the operation
+     * @param message          element to be included in the SOAP Body
+     * @param op               operation incorporated with the request
      * @param attachmentIDList list of attachment ids to be included in the SOAP header
      * @throws AxisFault Exception if operation/input not found for the binding or if any exception thrown from
-     * the axis2 level operations
+     *                   the axis2 level operations
      */
     public void createSoapRequest(MessageContext msgCtx, Element message, Operation op, List<Long> attachmentIDList)
             throws AxisFault {
@@ -107,16 +160,16 @@ public class SOAPHelper {
 
     /**
      * Adding ws-Coordination context to soap request.
-     * @param msgCtx MessageContext
-     * @param messageID UUID as a WS-Coordination identifier
+     *
+     * @param msgCtx              MessageContext
+     * @param messageID           UUID as a WS-Coordination identifier
      * @param registrationService URL of the ws-coordination registration service.
      */
-    public void addCoordinationContext(MessageContext msgCtx, String messageID , String registrationService )
-    {
+    public void addCoordinationContext(MessageContext msgCtx, String messageID, String registrationService) {
         SOAPHeader header = msgCtx.getEnvelope().getHeader();
         EndpointReference epr = new EndpointReference();
         epr.setAddress(registrationService);
-        CoordinationContext context = new HumanTaskCoordinationContextImpl(messageID,epr);
+        CoordinationContext context = new HumanTaskCoordinationContextImpl(messageID, epr);
         header.addChild(context.toOM());
     }
 
@@ -138,20 +191,21 @@ public class SOAPHelper {
 
     /**
      * Adding the attachment ids iteratively to the SOAP Header
-     * @param header Header Element where the child elements going to be included
+     *
+     * @param header           Header Element where the child elements going to be included
      * @param attachmentIDList attachment ids
      */
     private void addAttachmentIDHeader(SOAPHeader header, List<Long> attachmentIDList) {
-        final String NAMESPACE = Constants.ATTACHMENT_ID_NAMESPACE;
-        final String NAMESPACE_PREFIX = Constants.ATTACHMENT_ID_NAMESPACE_PREFIX;
-        final String PARENT_ELEMENT_NAME = Constants.ATTACHMENT_ID_PARENT_ELEMENT_NAME;
-        final String CHILD_ELEMENT_NAME = Constants.ATTACHMENT_ID_CHILD_ELEMENT_NAME;
+        final String namespace = Constants.ATTACHMENT_ID_NAMESPACE;
+        final String namespacePrefix = Constants.ATTACHMENT_ID_NAMESPACE_PREFIX;
+        final String parentElementName = Constants.ATTACHMENT_ID_PARENT_ELEMENT_NAME;
+        final String childElementName = Constants.ATTACHMENT_ID_CHILD_ELEMENT_NAME;
 
-        OMNamespace omNs = soapFactory.createOMNamespace(NAMESPACE, NAMESPACE_PREFIX);
-        OMElement headerElement = soapFactory.createOMElement(PARENT_ELEMENT_NAME, omNs);
+        OMNamespace omNs = soapFactory.createOMNamespace(namespace, namespacePrefix);
+        OMElement headerElement = soapFactory.createOMElement(parentElementName, omNs);
 
         for (Long id : attachmentIDList) {
-            OMElement idElement = soapFactory.createOMElement(CHILD_ELEMENT_NAME, omNs);
+            OMElement idElement = soapFactory.createOMElement(childElementName, omNs);
             idElement.setText(String.valueOf(id));
 
             headerElement.addChild(idElement);
@@ -216,60 +270,12 @@ public class SOAPHelper {
             OMElement omPart = OMUtils.toOM(srcPartEl, soapFactory);
             if (isRPC) {
                 partHolder.addChild(omPart);
-            }
-            else {
+            } else {
                 for (Iterator<OMNode> i = omPart.getChildren(); i.hasNext(); ) {
                     partHolder.addChild(i.next());
                 }
             }
         }
 
-    }
-
-    public static String parseResponseFeedback(org.apache.axiom.soap.SOAPBody soapBody) throws FaultException {
-        /*  Sample feedback response
-        *   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-            <soapenv:Body><part><axis2ns3:correlation xmlns:axis2ns3="http://wso2.org/humantask/feedback">
-            <axis2ns3:taskid>10001</axis2ns3:taskid></axis2ns3:correlation></part></soapenv:Body></soapenv:Envelope>
-        * */
-        Iterator<OMElement> srcParts = soapBody.getChildElements();
-        if (srcParts.hasNext()) {
-            OMElement srcPart = srcParts.next();
-            if (!srcPart.getQName().equals(new QName(null, "part"))) {
-                throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
-                        "Unexpected element in SOAP body: " + srcPart.toString());
-            }
-            OMElement hifb = srcPart.getFirstChildWithName(
-                    new QName(BPEL4PeopleConstants.B4P_NAMESPACE,
-                            BPEL4PeopleConstants.B4P_CORRELATION_HEADER));
-            if (hifb == null) {
-                throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
-                        "Unexpected element in SOAP body: " + srcPart.toString());
-            }
-            OMElement taskIDele = hifb.getFirstChildWithName(
-                    new QName(BPEL4PeopleConstants.B4P_NAMESPACE,
-                            BPEL4PeopleConstants.B4P_CORRELATION_HEADER_ATTRIBUTE));
-            if (taskIDele == null) {
-                throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
-                        "Unexpected element in SOAP body: " + srcPart.toString());
-            }
-            return taskIDele.getText();
-//            Document doc = DOMUtils.newDocument();
-//            Element destPart = doc.createElementNS(null, "part");
-//            destPart.appendChild(doc.importNode(OMUtils.toDOM(srcPart), true));
-//            message.setPart("part", destPart);
-        }
-        throw new FaultException(BPEL4PeopleConstants.B4P_FAULT,
-                "TaskID not found in the feedback message");
-    }
-
-    public static SOAPBody getSOAPBody(ElementExtensible ee) {
-        return getFirstExtensibilityElement(ee, SOAPBody.class);
-    }
-
-    public static <T> T getFirstExtensibilityElement(ElementExtensible parent, Class<T> cls) {
-        Collection<T> ee = CollectionsX.filter(parent.getExtensibilityElements(), cls);
-
-        return ee.isEmpty() ? null : ee.iterator().next();
     }
 }

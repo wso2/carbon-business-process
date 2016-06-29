@@ -46,11 +46,9 @@ import java.util.Set;
  */
 public abstract class ActivityImpl implements ActivityInterface {
 
-    private static final Log log = LogFactory.getLog(ActivityImpl.class);
-
     // Attributes of the Box/Scope which holds the subActivities
     public static final int BOX_MARGIN = 10;
-
+    private static final Log log = LogFactory.getLog(ActivityImpl.class);
     /**
      * Properties related to the Flow Activity
      * links: Give a level of dependency indicating that the activity that is the target of the link
@@ -109,11 +107,9 @@ public abstract class ActivityImpl implements ActivityInterface {
     protected int boxYTop = 0;
     protected int boxHeight = 0;
     protected int boxWidth = 0;
-    protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;"
-            +
-            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;"
-            +
-            "bbbbbbbstroke-opacity:1;fill:url(#orange_red);stroke-opacity:0.2";
+    protected String boxStyle = "fill-opacity:0.04;fill-rule:evenodd;stroke:#0000FF;stroke-width:1.99999988;" +
+            "stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1;stroke-dasharray:none;" +
+            "stroke-opacity:1;fill:url(#orange_red);stroke-opacity:0.2";
     protected boolean largeArrow = false;
     /*
         Property related to the SEQUENCE Activity
@@ -149,8 +145,7 @@ public abstract class ActivityImpl implements ActivityInterface {
             if (firstQuoteIndex >= 0) {
                 int lastQuoteIndex = token.indexOf("\"", firstQuoteIndex + 1);
                 if (lastQuoteIndex > firstQuoteIndex) {
-                    setName(token
-                            .substring(firstQuoteIndex + 1, lastQuoteIndex));
+                    setName(token.substring(firstQuoteIndex + 1, lastQuoteIndex));
                     //Set the name of the activity
                     setDisplayName(getName());
                 }
@@ -1135,15 +1130,10 @@ public abstract class ActivityImpl implements ActivityInterface {
             text1.setAttributeNS(null, "id", imgName + ".Text");
             text1.setAttributeNS(null, "xml:space", "preserve");
             text1.setAttributeNS(null, "style",
-                    "font-size:12px;font-style:normal;font-variant:normal;font-weight:"
-                            +
-                            "normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;" +
-                            "text-anchor:"
-                            +
-                            "start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;"
-                            +
-                            "stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;"
-                            +
+                    "font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;" +
+                            "font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;" +
+                            "text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;" +
+                            "stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;font-family:Arial Narrow;" +
                             "-inkscape-font-specification:Arial Narrow");
             //Creating an SVG <tspan> element which is used to draw multiple lines of text in SVG
             Element tspan = doc

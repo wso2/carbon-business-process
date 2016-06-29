@@ -19,12 +19,12 @@ package org.wso2.carbon.bpel.b4p.coordination.dao;
 import javax.sql.DataSource;
 
 /**
- * HT Coordination DAO Connection Factory Interface. This would be used to obtain HTCoordinationDAOConnection to query the Database.
+ * HT Coordination DAO Connection Factory Interface. This would be used to obtain HTCoordinationDAOConnection to
+ * query the Database.
  */
 public interface HTCoordinationDAOConnectionFactory {
 
     /**
-     *
      * @return HTCoordinationDAOConnection : The dao connection which acts as the interface to the database.
      */
     HTCoordinationDAOConnection getConnection();
@@ -35,7 +35,6 @@ public interface HTCoordinationDAOConnectionFactory {
     void init();
 
     /**
-     *
      * @return : The DataSource
      */
     DataSource getDataSource();
