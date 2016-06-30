@@ -39,6 +39,7 @@ var loggedUser = session.get("userName");
         //This BPSTenant is used by js scripts to identify tenant domain
         var BPSTenant = "<%=application.get('bpsTenant')%>";
     </script>
+    <script type=”text/javascript” src=”/csrf.js”></script>
 </head>
 <body>
     <header>
