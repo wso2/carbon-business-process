@@ -15,5 +15,35 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
-public class BPSAnalyticsConfigContextObserver {
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.databridge.agent.DataPublisher;
+import org.wso2.carbon.utils.AbstractAxis2ConfigurationContextObserver;
+
+public class BPSAnalyticsConfigContextObserver extends AbstractAxis2ConfigurationContextObserver {
+
+    private static Log log = LogFactory.getLog(BPSAnalyticsConfigContextObserver.class);
+
+    @Override
+    public void createdConfigurationContext(ConfigurationContext configContext) {
+
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        log.info("Loading analytics publisher for tenant " + tenantId + ".");
+        BPMNDataReceiverConfig config = new BPMNDataReceiverConfig(tenantId);
+        config.init();
+
+        DataPublisher dataPublisher = BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().createDataPublisher(config);
+        BPMNAnalyticsHolder.getInstance().addDataPublisher(tenantId, dataPublisher);
+    }
+
+    @Override
+    public void terminatingConfigurationContext(ConfigurationContext configCtx) {
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        log.info("Unloading analytics publisher for tenant " + tenantId + ".");
+        BPMNAnalyticsHolder.getInstance().removeDataPublisher(tenantId);
+    }
 }

@@ -21,11 +21,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
-import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsSchedulerShutdown;
-import org.wso2.carbon.bpmn.analytics.publisher.BPMNAnalyticsAxis2ConfigurationContextObserverImpl;
+import org.wso2.carbon.bpmn.analytics.publisher.*;
+import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
@@ -48,16 +50,29 @@ public class BPMNAnalyticsServiceComponent {
 	protected void activate(ComponentContext ctxt) {
 		log.info("Initializing the BPMN Analytics Service component...");
 		try {
-			//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-			//            analyticsPublisher.initialize();
-			ConfigurationContext cxt = new ConfigurationContext(new AxisConfiguration());
-			BPMNAnalyticsAxis2ConfigurationContextObserverImpl configCtx =
-					new BPMNAnalyticsAxis2ConfigurationContextObserverImpl();
-			configCtx.createdConfigurationContext(cxt);
+			BPSDataPublisher bpsDataPublisher = new BPSDataPublisher();
+			BPMNAnalyticsHolder.getInstance().setBpsDataPublisher(bpsDataPublisher);
 
-			ctxt.getBundleContext()
-			    .registerService(WaitBeforeShutdownObserver.class, new AnalyticsSchedulerShutdown(),
-			                     null);
+			// create data publisher for the super tenant
+			Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+			log.info("Loading analytics publisher for tenant " + tenantId + ".");
+			BPMNDataReceiverConfig config = new BPMNDataReceiverConfig(tenantId);
+			config.init();
+			DataPublisher dataPublisher = bpsDataPublisher.createDataPublisher(config);
+			BPMNAnalyticsHolder.getInstance().addDataPublisher(tenantId, dataPublisher);
+
+			// data publishers for other tenants will be created upon tenant loading and removed upon unloading tenents
+			ctxt.getBundleContext().registerService(
+					Axis2ConfigurationContextObserver.class.getName(),	new BPSAnalyticsConfigContextObserver(), null);
+
+//			ConfigurationContext cxt = new ConfigurationContext(new AxisConfiguration());
+//			BPMNAnalyticsAxis2ConfigurationContextObserverImpl configCtx =
+//					new BPMNAnalyticsAxis2ConfigurationContextObserverImpl();
+//			configCtx.createdConfigurationContext(cxt);
+//
+//			ctxt.getBundleContext()
+//			    .registerService(WaitBeforeShutdownObserver.class, new AnalyticsSchedulerShutdown(),
+//			                     null);
 		} catch (Throwable e) {
 			log.error("Failed to initialize the Analytics Service component.", e);
 		}

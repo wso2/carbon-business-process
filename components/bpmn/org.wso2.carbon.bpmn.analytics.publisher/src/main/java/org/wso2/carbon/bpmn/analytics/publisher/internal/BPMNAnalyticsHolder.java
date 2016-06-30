@@ -19,11 +19,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
+import org.wso2.carbon.bpmn.analytics.publisher.BPSDataPublisher;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -40,10 +43,13 @@ public class BPMNAnalyticsHolder {
 	private ServerConfigurationService serverConfigurationService;
 	private ExecutorService executorService = null;
 
-	private HashMap<Integer, AnalyticsPublisher> tenantAnalyticsPublisherMap;
+	private BPSDataPublisher bpsDataPublisher;
+	private Map<Integer, AnalyticsPublisher> tenantAnalyticsPublisherMap;
+	private Map<Integer, DataPublisher> tenantDataPublisherMap;
 
 	private BPMNAnalyticsHolder() {
 		tenantAnalyticsPublisherMap = new HashMap<>();
+		tenantDataPublisherMap = new HashMap<>();
 	}
 
 	/**
@@ -155,8 +161,28 @@ public class BPMNAnalyticsHolder {
 		return this.tenantAnalyticsPublisherMap.get(tenantID);
 	}
 
-	public HashMap<Integer, AnalyticsPublisher> getAllPublishers() {
+	public Map<Integer, AnalyticsPublisher> getAllPublishers() {
 		return this.tenantAnalyticsPublisherMap;
+	}
+
+	public BPSDataPublisher getBpsDataPublisher() {
+		return bpsDataPublisher;
+	}
+
+	public void setBpsDataPublisher(BPSDataPublisher bpsDataPublisher) {
+		this.bpsDataPublisher = bpsDataPublisher;
+	}
+
+	public DataPublisher getDataPublisher(int tenantId) {
+		return tenantDataPublisherMap.get(tenantId);
+	}
+
+	public void addDataPublisher(int tenantId, DataPublisher dataPublisher) {
+		tenantDataPublisherMap.put(tenantId, dataPublisher);
+	}
+
+	public void removeDataPublisher(int tenantId) {
+		tenantDataPublisherMap.remove(tenantId);
 	}
 
 	private static class BPMNServerInstanceHolder {

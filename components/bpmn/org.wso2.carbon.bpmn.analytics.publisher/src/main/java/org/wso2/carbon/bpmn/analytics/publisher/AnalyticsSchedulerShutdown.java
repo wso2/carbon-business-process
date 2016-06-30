@@ -32,7 +32,7 @@ public class AnalyticsSchedulerShutdown implements WaitBeforeShutdownObserver {
 
 	//triggered before shutting down server and shutdown the scheduler if exists
 	@Override public void startingShutdown() {
-		HashMap<Integer, AnalyticsPublisher> publisherList =
+		Map<Integer, AnalyticsPublisher> publisherList =
 				BPMNAnalyticsHolder.getInstance().getAllPublishers();
 
 		if (publisherList != null) {
