@@ -37,7 +37,8 @@ var loggedUser = session.get("user");
 	<link rel="stylesheet" href="css/bootstrap-select.css">
     <script>
         var BPSTenant = "<%=bpsTenantDomain%>";
-    </script>    
+    </script>
+    <script type=”text/javascript” src=”/csrf.js”></script>
 </head>
 <body>
 	<header>
