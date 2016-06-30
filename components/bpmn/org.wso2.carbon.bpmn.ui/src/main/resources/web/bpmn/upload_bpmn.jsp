@@ -104,7 +104,7 @@
     <div id="workArea">
         <div id="formset">
             <form id="bpmn_upload_form" method="post" name="bpmnUpload"
-                      action="../../fileupload/bpmn?<csrf:tokenname/>=<csrf:tokenvalue/>"
+                      action="../../fileupload/bpmn"
                       enctype="multipart/form-data"
                       target="_self">
                 <label style="font-weight:bold;">&nbsp;<fmt:message key="bpmn.uploadpackge"/></label>
