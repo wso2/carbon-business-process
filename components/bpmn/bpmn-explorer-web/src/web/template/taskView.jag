@@ -99,7 +99,8 @@
 	</div>
  </div>
  <!-- Adding attachments tab -->
- <div class="row secondry-table" name="additionalInfoSection">
+
+
   	<div class="table-title margin-left-double margin-right-double">
 	 	<a onclick="displayAttachmentData(<%=id%>);"><%=i18n.localize("attachments","Attachments")%></a>
 	</div>
@@ -178,7 +179,27 @@ else{%>
    <!-- end of add Attachment content -->
    </ul>
 </div>
-		    	<!--End of attachments tab -->
+<!--End of attachments tab -->
+
+<!-- Adding comments panel -->
+ <div class="row secondry-table" name="additionalInfoSection">
+  	<div class="table-title margin-left-double margin-right-double">
+	 	<a onclick="displayComments(<%=id%>);"><%=i18n.localize("comments","Comments")%></a>
+	</div>
+
+	<div id="addComments" class="addComments padding-double">
+   		<form id="commentForm" style="margin-left: 10px;" method="POST" action="<%=application.get('bpsTenantUrlPart')%>/bpmn/runtime/tasks/<%=id%>/comments" enctype="multipart/form-data">
+	   		<div class="col-lg-3"><%=i18n.localize("file.name","File Name:")%>
+	   			<span class="padding-left">
+	   				<input type="textarea" id="comments" name="comments" <%=taskInputsDisabled%>/>
+	   			</span>
+	   		</div>
+	   		<div class="col-lg-1 right" id="submit-comment-div"><button type="submit" id="submit-comment"  class="btn btn-info <%=taskInputsDisabled%>"><%=i18n.localize("add","Add")%></button></div>
+  		</form>
+   </div>
+
+
+
 	<div class="modal fade" id="transfer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog model-center">
             <div class="modal-content">

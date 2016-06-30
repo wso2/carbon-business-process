@@ -89,6 +89,11 @@ function displayAttachmentData(id) {
     window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
 }
 
+function displayComments(id) {
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+}
+
+
 function completeTask(data, id) {
     document.getElementById("completeButton").style.display = 'none';
     document.getElementById("loadingCompleteButton").hidden = false;
