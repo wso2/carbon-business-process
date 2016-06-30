@@ -19,6 +19,7 @@
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <!-- This page is included to display messages which are set to request scope or session scope -->
 <jsp:include page="../dialog/display_messages.jsp"/>
@@ -139,7 +140,7 @@
         <div id="workArea">
             <div id="formset">
                 <form id="humantask_upload_form" method="post" name="humantaskUpload"
-                      action="../../fileupload/humantask"
+                      action="../../fileupload/humantask?<csrf:tokenname/>=<csrf:tokenvalue/>"
                       enctype="multipart/form-data"
                       target="_self">
                     <label style="font-weight:bold;">&nbsp;<fmt:message key="humantask.uploadpackge"/></label>
