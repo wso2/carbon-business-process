@@ -22,8 +22,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -89,6 +91,15 @@ public class RESTInvoker {
         }
     }
 
+    /**
+     * Invokes the http GET method
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @return response string of the GET request (can be the response body or the response status code)
+     * @throws Exception
+     */
     public String invokeGET(URI uri, String headerList[], String username, String password) throws Exception {
 
         HttpGet httpGet = null;
@@ -99,14 +110,15 @@ public class RESTInvoker {
             if (username != null && password != null) {
                 String combinedCredentials = username + ":" + password;
                 byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
-                httpGet.addHeader("Authorization", "Basic " + encodedCredentials);
+                String credentials = new String(encodedCredentials);
+                httpGet.addHeader("Authorization", "Basic " + credentials);
             }
-            if(headerList != null){
-                for(String header: headerList){
+            if (headerList != null) {
+                for (String header : headerList) {
                     String pair[] = header.split(":");
                     if (pair.length == 1) {
                         httpGet.addHeader(pair[0], "");
-                    }else {
+                    } else {
                         httpGet.addHeader(pair[0], pair[1]);
                     }
                 }
@@ -128,7 +140,6 @@ public class RESTInvoker {
             if (response != null) {
                 response.close();
             }
-
             if (httpGet != null) {
                 httpGet.releaseConnection();
             }
@@ -136,6 +147,16 @@ public class RESTInvoker {
         return output;
     }
 
+    /**
+     * Invokes the http POST method
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @param payload    payload body passed
+     * @return response string of the POST request (can be the response body or the response status code)
+     * @throws Exception
+     */
     public String invokePOST(URI uri, String headerList[], String username, String password, String payload) throws Exception {
 
         HttpPost httpPost = null;
@@ -149,18 +170,17 @@ public class RESTInvoker {
                 String encodedCredentials = new String(Base64.encodeBase64(combinedCredentials.getBytes()));
                 httpPost.addHeader("Authorization", "Basic " + encodedCredentials);
             }
-            if(headerList != null){
-                for(String header: headerList){
+            if (headerList != null) {
+                for (String header : headerList) {
                     String pair[] = header.split(":");
                     if (pair.length == 1) {
                         httpPost.addHeader(pair[0], "");
-                    }else {
+                    } else {
                         httpPost.addHeader(pair[0], pair[1]);
                     }
                 }
             }
             response = client.execute(httpPost);
-
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             StringBuffer result = new StringBuffer();
             String line = "";
@@ -177,9 +197,134 @@ public class RESTInvoker {
             if (response != null) {
                 response.close();
             }
-
             if (httpPost != null) {
                 httpPost.releaseConnection();
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Invokes the http PUT method
+     *
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @param payload    payload body passed
+     * @return response string of the PUT request (can be the response body or the response status code)
+     * @throws Exception
+     */
+    public String invokePUT(URI uri, String headerList[], String username, String password, String payload) throws Exception {
+
+        HttpPut httpPut = null;
+        CloseableHttpResponse response = null;
+        String output = "";
+        try {
+            httpPut = new HttpPut(uri);
+            httpPut.setEntity(new StringEntity(payload));
+            if (username != null && password != null) {
+                String combinedCredentials = username + ":" + password;
+                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
+                String credentials = new String(encodedCredentials);
+                httpPut.addHeader("Authorization", "Basic " + credentials);
+            }
+            if (headerList != null) {
+                for (String header : headerList) {
+                    String pair[] = header.split(":");
+                    if (pair.length == 1) {
+                        httpPut.addHeader(pair[0], "");
+                    } else {
+                        httpPut.addHeader(pair[0], pair[1]);
+                    }
+                }
+            }
+            response = client.execute(httpPut);
+            if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 201 ||
+                    response.getStatusLine().getStatusCode() == 202) {
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                output = result.toString();
+            } else {
+                output = String.valueOf(response.getStatusLine().getStatusCode());
+            }
+
+            if (log.isTraceEnabled()) {
+                log.trace("Invoked PUT " + uri.toString() + " - Response message: " + output);
+            }
+            EntityUtils.consume(response.getEntity());
+
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+            if (httpPut != null) {
+                httpPut.releaseConnection();
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Invokes the http DELETE method
+     *
+     * @param uri        endpoint/service url
+     * @param headerList header list
+     * @param username   username for authentication
+     * @param password   password for authentication
+     * @return response string of the DELETE (can be the response status code or the response body)
+     * @throws Exception
+     */
+    public String invokeDELETE(URI uri, String headerList[], String username, String password) throws Exception {
+
+        HttpDelete httpDelete = null;
+        CloseableHttpResponse response = null;
+        String output = "";
+        try {
+            httpDelete = new HttpDelete(uri);
+            if (username != null && password != null) {
+                String combinedCredentials = username + ":" + password;
+                byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes());
+                String credentials = new String(encodedCredentials);
+                httpDelete.addHeader("Authorization", "Basic " + credentials);
+            }
+            if (headerList != null) {
+                for (String header : headerList) {
+                    String pair[] = header.split(":");
+                    if (pair.length == 1) {
+                        httpDelete.addHeader(pair[0], "");
+                    } else {
+                        httpDelete.addHeader(pair[0], pair[1]);
+                    }
+                }
+            }
+            response = client.execute(httpDelete);
+            if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 202) {
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                output = result.toString();
+            } else {
+                output = String.valueOf(response.getStatusLine().getStatusCode());
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("Invoked DELETE " + uri.toString() + " - Response message: " + output);
+            }
+            EntityUtils.consume(response.getEntity());
+
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+            if (httpDelete != null) {
+                httpDelete.releaseConnection();
             }
         }
         return output;
