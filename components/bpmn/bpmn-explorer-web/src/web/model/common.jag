@@ -59,7 +59,8 @@ if (httpUrl == null || httpUrl === "") {
         //retrieve host name and the port from the deployed server assuming it's a BPS
         log.info('Starting BPMN-explorer in default configuration');
         var process = require("process");
-        bpsHost = process.getProperty('carbon.local.ip');
+        var NetworkUtils = Packages.org.wso2.carbon.utils.NetworkUtils;
+        bpsHost = NetworkUtils.getLocalHostname();
         bpsPort = process.getProperty('mgt.transport.https.port');
     }
 
