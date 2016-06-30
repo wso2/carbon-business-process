@@ -84,7 +84,9 @@ public class UserSubstitutionService {
      * @param request
      * @return 201 created response with the resource location.
      */
-    @POST @Path("/") @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @POST
+    @Path("/")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response substitute(
             SubstitutionRequest request) {
 
@@ -132,7 +134,8 @@ public class UserSubstitutionService {
      * @return
      * @throws URISyntaxException
      */
-    @PUT @Path("/{user}") @Consumes({ MediaType.APPLICATION_JSON,
+    @PUT
+    @Path("/{user}") @Consumes({ MediaType.APPLICATION_JSON,
             MediaType.APPLICATION_XML })
     public Response updateSubstituteInfo(@PathParam("user") String user,
             SubstitutionRequest request) throws URISyntaxException {
@@ -195,7 +198,8 @@ public class UserSubstitutionService {
      * @return SubstituteInfoResponse
      * @throws URISyntaxException
      */
-    @GET @Path("/{user}") @Produces({ MediaType.APPLICATION_JSON,
+    @GET
+    @Path("/{user}") @Produces({ MediaType.APPLICATION_JSON,
             MediaType.APPLICATION_XML })
     public Response getSubstitute(@PathParam("user") String user)
             throws URISyntaxException {
@@ -214,7 +218,8 @@ public class UserSubstitutionService {
         }
     }
 
-    @GET @Path("/") @Produces({ MediaType.APPLICATION_JSON,
+    @GET
+    @Path("/") @Produces({ MediaType.APPLICATION_JSON,
             MediaType.APPLICATION_XML })
     public Response querySubstitutes() {
 

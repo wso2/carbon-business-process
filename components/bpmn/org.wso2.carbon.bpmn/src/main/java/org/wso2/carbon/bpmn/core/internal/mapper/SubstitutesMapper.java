@@ -29,18 +29,18 @@ import java.util.Map;
 public interface SubstitutesMapper {
 
     final String INSERT_SUBSTITUTE = "INSERT INTO " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  (USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, CREATED, UPDATED, TENANT_ID) VALUES (#{user}, #{substitute}, #{substitutionStart}, #{substitutionEnd}, #{enabled}, #{transitiveSub}, #{created}, #{updated}, #{tenantId})";
+            "  (USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, CREATED, UPDATED, TENANT_ID, TASK_LIST) VALUES (#{user}, #{substitute}, #{substitutionStart}, #{substitutionEnd}, #{enabled}, #{transitiveSub}, #{created}, #{updated}, #{tenantId}, #{taskList})";
     final String SELECT_ALL_BY_USER = "SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             " WHERE USER = #{user} AND TENANT_ID = #{tenantId}";
     final String UPDATE_ENABLED = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET ENABLED = #{enabled} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
     final String UPDATE_INFO = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
-            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated}, TASK_LIST = #{taskList} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
     final String COUNT_USER_AS_SUBSTITUTE = "SELECT COUNT(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
             + " WHERE SUBSTITUTE = #{substitute} AND TENANT_ID = #{tenantId}";
-    final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
+    final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
             + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
-    final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
+    final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
             + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = TRUE AND now() > SUBSTITUTION_START AND now() < SUBSTITUTION_END";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
@@ -85,7 +85,8 @@ public interface SubstitutesMapper {
             @Result(property = "tenantId", column = "TENANT_ID"),
             @Result(property = "transitiveSub", column = "TRANSITIVE_SUBSTITUTE"),
             @Result(property = "created", column = "CREATED"),
-            @Result(property = "updated", column = "UPDATED")
+            @Result(property = "updated", column = "UPDATED"),
+            @Result(property = "taskList", column = "TASK_LIST")
     })
     SubstitutesDataModel selectSubstitute( @Param("user") String user, @Param("tenantId") int tenantId);
 
@@ -118,7 +119,8 @@ public interface SubstitutesMapper {
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
-            @Result(property = "enabled", column = "ENABLED")
+            @Result(property = "enabled", column = "ENABLED"),
+            @Result(property = "taskList", column = "TASK_LIST")
     })
     Map<String, SubstitutesDataModel> selectAllSubstituteInfo(@Param("tenantId") int tenantId);
 
@@ -134,7 +136,8 @@ public interface SubstitutesMapper {
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
-            @Result(property = "enabled", column = "ENABLED")
+            @Result(property = "enabled", column = "ENABLED"),
+            @Result(property = "taskList", column = "TASK_LIST")
     })
     Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId);
 
@@ -180,7 +183,8 @@ public interface SubstitutesMapper {
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
-            @Result(property = "enabled", column = "ENABLED")
+            @Result(property = "enabled", column = "ENABLED"),
+            @Result(property = "taskList", column = "TASK_LIST")
     })
     List<PaginatedSubstitutesDataModel> querySubstitutes(RowBounds rowBounds, PaginatedSubstitutesDataModel substitutesDataModel);
 
@@ -195,7 +199,8 @@ public interface SubstitutesMapper {
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
-            @Result(property = "enabled", column = "ENABLED")
+            @Result(property = "enabled", column = "ENABLED"),
+            @Result(property = "taskList", column = "TASK_LIST")
     })
     List<PaginatedSubstitutesDataModel> querySubstitutesWithoutEnabled(RowBounds rowBounds, PaginatedSubstitutesDataModel substitutesDataModel);
 }

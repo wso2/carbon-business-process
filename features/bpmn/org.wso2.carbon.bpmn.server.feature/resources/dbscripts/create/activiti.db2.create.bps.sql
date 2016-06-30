@@ -1,6 +1,7 @@
 create table ACT_BPS_SUBSTITUTES (
     USER varchar(255) not null,
     SUBSTITUTE varchar(255) not null,
+    TASK_LIST varchar(1000),
     SUBSTITUTION_START timestamp not null,
     SUBSTITUTION_END timestamp,
     ENABLED integer default 1,

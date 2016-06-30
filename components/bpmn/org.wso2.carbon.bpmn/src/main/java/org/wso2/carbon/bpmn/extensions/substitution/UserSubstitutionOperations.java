@@ -17,6 +17,8 @@
 package org.wso2.carbon.bpmn.extensions.substitution;
 
 import org.activiti.engine.*;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.logging.Log;
@@ -30,6 +32,7 @@ import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,7 @@ public class UserSubstitutionOperations {
     private static int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     private static TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
     public static Integer activationInterval = null;
+    public static final String LIST_SEPARATOR = ",";
 
     /**
      * Persist the substitute info. Transitive substitute is not added here.
@@ -50,11 +54,12 @@ public class UserSubstitutionOperations {
      * @param substitute - substitute for the assignee
      * @param startDate - start od the substitution
      * @param endDate - end of the substitution
+     * @param taskListString - Comma separated String of task Ids
      * @return added row count.
      * @throws SubstitutionException
      */
     public static SubstitutesDataModel addSubstituteInfo(String assignee, String substitute, Date startDate,
-            Date endDate) throws SubstitutionException {
+            Date endDate, String taskListString) throws SubstitutionException {
 
         //at any given time there could be only one substitute for a single user
         if (activitiDAO.selectSubstituteInfo(assignee, tenantId) != null) {
@@ -70,6 +75,7 @@ public class UserSubstitutionOperations {
             dataModel.setEnabled(true); //by default enabled
             dataModel.setCreated(new Date());
             dataModel.setTenantId(tenantId);
+            dataModel.setTaskList(taskListString);
             activitiDAO.insertSubstitute(dataModel);
             return dataModel;
         }
@@ -87,7 +93,8 @@ public class UserSubstitutionOperations {
      */
     public static void handleNewSubstituteAddition(String assignee, String substitute, Date startTime, Date endTime,
             boolean enabled, List<String> taskList) throws SubstitutionException {
-        SubstitutesDataModel dataModel = addSubstituteInfo(assignee, substitute, startTime, endTime);
+        String taskListStr = getTaskListString(taskList);
+        SubstitutesDataModel dataModel = addSubstituteInfo(assignee, substitute, startTime, endTime, taskListStr);
 
         if (dataModel.isEnabled() && isBeforeActivationInterval(dataModel.getSubstitutionStart())) {
             boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
@@ -109,6 +116,24 @@ public class UserSubstitutionOperations {
                 bulkReassign(dataModel.getUser(), dataModel.getTransitiveSub(), taskList);
             }
 
+        }
+    }
+
+    /**
+     * Return a LIST_SEPARATOR separated String from given list
+     * @param taskList
+     * @return a LIST_SEPARATOR separated String from given item list
+     */
+    private static String getTaskListString(List<String> taskList) {
+
+        if (taskList != null & !taskList.isEmpty()) {
+            String list = "";
+            for (String id : taskList) {
+                list = list + id + LIST_SEPARATOR;
+            }
+            return list;
+        } else {
+            return null;
         }
     }
 
@@ -135,7 +160,7 @@ public class UserSubstitutionOperations {
     }
 
     /**
-     * Reassign the given tasks or all the tasks if the given task list null to the given substitute
+     * Reassign the given tasks or all the tasks if the given task list is null, to the given substitute
      * @param assignee - original user of the tasks
      * @param substitute - user who getting assigned
      * @param taskList - list of tasks to reassign. Leave this null to reassign all tha tasks of the assignee.
@@ -226,14 +251,16 @@ public class UserSubstitutionOperations {
                 }
             }
         };
-        reassignThread.start();
+        executeInThreadPool(reassignThread);
     }
 
     public static void handleUpdateSubstitute(String assignee, String substitute, Date startTime, Date endTime,
             boolean enabled, List<String> taskList) {
         SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee, tenantId);
+        String taskListString = getTaskListString(taskList);
         if (existingSubInfo != null) {
-            SubstitutesDataModel dataModel = updateSubstituteInfo(assignee, substitute, startTime, endTime);
+            SubstitutesDataModel dataModel = updateSubstituteInfo(assignee, substitute, startTime, endTime,
+                    taskListString);
 
             if (dataModel.isEnabled() && isBeforeActivationInterval(dataModel.getSubstitutionStart())) {
                 boolean transitivityResolved = updateTransitiveSubstitutes(dataModel);
@@ -265,7 +292,7 @@ public class UserSubstitutionOperations {
     }
 
     private static SubstitutesDataModel updateSubstituteInfo(String assignee, String substitute, Date startTime,
-            Date endTime) {
+            Date endTime, String taskListString) {
         SubstitutesDataModel dataModel = new SubstitutesDataModel();
         dataModel.setUser(assignee);
         dataModel.setSubstitute(MultitenantUtils.getTenantAwareUsername(substitute));
@@ -274,6 +301,7 @@ public class UserSubstitutionOperations {
         dataModel.setEnabled(true); //by default enabled
         dataModel.setTenantId(tenantId);
         dataModel.setUpdated(new Date());
+        dataModel.setTaskList(taskListString);
         activitiDAO.updateSubstituteInfo(dataModel);
         return dataModel;
     }
@@ -310,6 +338,13 @@ public class UserSubstitutionOperations {
         return dataModel;
     }
 
+    /**
+     * Query substitution records by given properties.
+     * Allowed properties: user, substitute, enabled.
+     * Pagination parameters : start, size, sort, order
+     * @param propertiesMap
+     * @return Paginated list of PaginatedSubstitutesDataModel
+     */
     public static List<PaginatedSubstitutesDataModel> querySubstitutions(Map<String, String> propertiesMap) {
         PaginatedSubstitutesDataModel model = new PaginatedSubstitutesDataModel();
         if (propertiesMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
@@ -369,16 +404,102 @@ public class UserSubstitutionOperations {
             if (log.isDebugEnabled()) {
                 log.debug("Using the substitution activation interval : " + activationInterval + " minutes");
             }
+            activationInterval = activationInterval * 60 * 1000;
         }
 
         if (activationInterval == null) { //if still null, should assign default
-            activationInterval = BPMNConstants.DEFAULT_SUNSTITITION_INTERVAL_IN_MINUTES;
+            activationInterval = BPMNConstants.DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES;
             if (log.isDebugEnabled()) {
                 log.debug("Using the default substitution activation interval : " + activationInterval + " minutes");
             }
+            activationInterval = activationInterval * 60 * 1000;
         }
 
-        return activationInterval * 60 * 1000;
+        return activationInterval;
+    }
+
+    public static void handleSheduledEvent() {
+        if (resolver.transitivityEnabled) {
+            resolver.resolveTransitiveSubs(true); //update transitives, only the map is updated here
+        } else {
+            resolver.subsMap = activitiDAO.selectActiveSubstitutesByTenant(tenantId);
+        }
+
+        //bulk reassign
+        //flush into db
+        for (Map.Entry<String, SubstitutesDataModel> entry : resolver.subsMap.entrySet()) { //go through the updated map
+            SubstitutesDataModel model = entry.getValue();
+            if (!BPMNConstants.BULK_REASSIGN_PROCESSED.equals(model.getTaskList())) { //active substitution, not yet bulk reassigned
+
+                String sub = getActualSubstitute(model);
+                if (model.getTaskList() == null) {//reassign all
+                    if (sub != null) {
+                        bulkReassign(model.getUser(), sub, null);
+                    } else {
+                        assignToTaskOwner(model.getUser(), null);
+                    }
+                } else {
+                    List<String> taskList = getTaskListFromString(model.getTaskList());
+                    if (sub != null) {
+                        bulkReassign(model.getUser(), sub, taskList);
+                    } else {
+                        assignToTaskOwner(model.getUser(), taskList);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private static void assignToTaskOwner(String assignee, List<String> taskList) {
+        TaskService taskService = BPMNServerHolder.getInstance().getEngine().getTaskService();
+
+        if (taskList != null) {
+            for (String taskId : taskList) {
+                String taskOwner = null;
+                List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+                for (IdentityLink link : identityLinks) {
+                    if(IdentityLinkType.OWNER.equals(link.getType())) {
+                        taskOwner = link.getUserId();
+                    }
+                }
+                if (taskOwner != null) {//assign to task owner
+                    taskService.setAssignee(taskId, taskOwner);
+                } else {
+                    taskService.addCandidateUser(taskId, assignee);
+                    taskService.unclaim(taskId);
+                }
+            }
+        } else {//reassign all tasks
+            TaskQuery taskQuery = taskService.createTaskQuery();
+            taskQuery.taskAssignee(assignee);
+            List<Task> list = taskQuery.list();
+
+            for (Task task : list) {
+                String taskOwner = task.getOwner();
+                if (taskOwner != null) {//assign to task owner
+                    taskService.setAssignee(task.getId(), taskOwner);
+                } else {
+                    taskService.addCandidateUser(task.getId(), assignee);
+                    taskService.unclaim(task.getId());
+                }
+            }
+        }
+    }
+
+    private static List<String> getTaskListFromString(String taskList) {
+        return Arrays.asList(taskList.split("\\s*,\\s*"));
+    }
+
+    private static String getActualSubstitute(SubstitutesDataModel model) {
+        if (!resolver.transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE
+                .equals(model.getTransitiveSub())) {
+            return model.getSubstitute();
+        } else if (BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(model.getTransitiveSub())){
+            return null;
+        } else {
+            return model.getTransitiveSub();
+        }
     }
 
 }

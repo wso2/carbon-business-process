@@ -16,6 +16,9 @@
  */
 package org.wso2.carbon.bpmn.extensions.substitution;
 
+/**
+ * Properties required for querying substitution records.
+ */
 public class SubstitutionQueryProperties {
 
     public static final String USER = "USER";

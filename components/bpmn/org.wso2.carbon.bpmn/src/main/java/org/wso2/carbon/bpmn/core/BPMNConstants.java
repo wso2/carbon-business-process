@@ -58,10 +58,12 @@ public class BPMNConstants {
     public static final String ACT_BPS_SUBSTITUTES_TABLE = "ACT_BPS_SUBSTITUTES";
     public static final String TRANSITIVE_SUB_NOT_APPLICABLE ="_N/A";
     public static final String TRANSITIVE_SUB_UNDEFINED = "_UNDEFINED";
+    public static final String BULK_REASSIGN_PROCESSED = "_PROCESSED";
     public static final String SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/addSubstituteInfo";
     public static final String SUBSTITUTION_CONFIG = "userSubstitutionConfiguration";
     public static final String SUBSTITUTION_TRANSITIVITY_PROPERTY = "enableTransitivity";
     public static final String SUBSTITUTION_SCHEDULER_INTERVAL = "activationInterval";
     public static final boolean SUBSTITUTION_TRANSITIVITY_DEFAULT = false;
-    public static final int DEFAULT_SUNSTITITION_INTERVAL_IN_MINUTES = 10;
+    public static final int DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES = 10;
+
 }

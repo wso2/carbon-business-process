@@ -32,7 +32,7 @@ public class TransitivityResolver {
     private int tenantId;
     private ActivitiDAO dao;
     public boolean transitivityEnabled = BPMNConstants.SUBSTITUTION_TRANSITIVITY_DEFAULT;
-    Map<String, SubstitutesDataModel> subsMap;
+    protected Map<String, SubstitutesDataModel> subsMap;
 
     private TransitivityResolver() {}
 
@@ -66,11 +66,11 @@ public class TransitivityResolver {
     }
 
     /**
-     * Recalculate all the transitive substitutes for the given substitutes
-     * @param forcedResolve - if true, Continues to resolve even if transitivity unresolvable
+     * Recalculate all the transitive substitutes
+     * @param isScheduler - if true, Continues to resolve even if transitivity unresolvable and do not persisis
      * @return false if unresolvable state found while forced resolve disabled
      */
-    protected synchronized boolean resolveTransitiveSubs(boolean forcedResolve) {
+    protected synchronized boolean resolveTransitiveSubs(boolean isScheduler) {
         if (transitivityEnabled) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
             for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
@@ -79,20 +79,22 @@ public class TransitivityResolver {
                     transitiveSub = calculateTransitiveSubstitute(entry.getValue(), entry.getKey(),
                             entry.getValue().getSubstitute());
                 }
-                if (!forcedResolve && BPMNConstants.TRANSITIVE_SUB_UNDEFINED
+                if (!isScheduler && BPMNConstants.TRANSITIVE_SUB_UNDEFINED
                         .equals(transitiveSub)) { //unresolvable sub found and forced resolve not enabled
                     return false;
                 }
             }
 
             //persist the map, cannot do this in above loop since it may run into unresolved state
-            for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
-                dao.updateTransitiveSub(entry.getKey(), tenantId, entry.getValue().getTransitiveSub());
+            if(!isScheduler) {
+                for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
+                    dao.updateTransitiveSub(entry.getKey(), tenantId, entry.getValue().getTransitiveSub());
+                }
             }
 
             return true;
         } else {//transitivity disabled, no need to resolve
-            return false;
+            return true;
         }
 
     }

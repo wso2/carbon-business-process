@@ -29,6 +29,15 @@ public class SubstitutesDataModel {
     private Date created;
     private Date updated;
     private int tenantId;
+    private String taskList;
+
+    public String getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(String taskList) {
+        this.taskList = taskList;
+    }
 
     public int getTenantId() {
         return tenantId;

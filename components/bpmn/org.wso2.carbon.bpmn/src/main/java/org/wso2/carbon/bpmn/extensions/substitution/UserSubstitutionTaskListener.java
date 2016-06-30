@@ -16,6 +16,7 @@
  */
 package org.wso2.carbon.bpmn.extensions.substitution;
 
+import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.task.IdentityLinkType;
@@ -48,10 +49,20 @@ public class UserSubstitutionTaskListener implements TaskListener{
                     log.debug("User: " + assignee + "is substituted by : " + substitute + "for the task" + delegateTask.getName());
                 }
             } else {
-                BPMNServerHolder.getInstance().getEngine().getTaskService().deleteUserIdentityLink(delegateTask.getId(), assignee, IdentityLinkType.ASSIGNEE);
+                if (delegateTask.getOwner() != null) {
+                    delegateTask.setAssignee(delegateTask.getOwner());
+                    if (log.isDebugEnabled()) {
+                        log.debug("User: " + assignee + "is substituted to task owner : " + delegateTask.getOwner() + "for the task" + delegateTask.getName());
+                    }
+                } else {
+                    delegateTask.addCandidateUser(assignee);
+                    BPMNServerHolder.getInstance().getEngine().getTaskService().deleteUserIdentityLink(delegateTask.getId(), assignee, IdentityLinkType.ASSIGNEE);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Could not find an substitution assignee for the task" + delegateTask.getName() + ". Task status changed to unclaimed");
+                    }
+                }
             }
         }
-
     }
 
     /**
@@ -59,10 +70,11 @@ public class UserSubstitutionTaskListener implements TaskListener{
      * @param assignee
      */
     private String getSubstituteIfEnabled (String assignee) {
+        TransitivityResolver resolver = new TransitivityResolver(dao, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
         //retrieve Substitute info
         SubstitutesDataModel substitutesDataModel = getImmediateSubstitute(MultitenantUtils.getTenantAwareUsername(assignee));
         if(substitutesDataModel != null) {
-            if (BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(substitutesDataModel.getTransitiveSub())) {
+            if (!resolver.transitivityEnabled || substitutesDataModel.getTransitiveSub() == null || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(substitutesDataModel.getTransitiveSub())) {
                 return substitutesDataModel.getSubstitute();
             } else {
                 return substitutesDataModel.getTransitiveSub();
