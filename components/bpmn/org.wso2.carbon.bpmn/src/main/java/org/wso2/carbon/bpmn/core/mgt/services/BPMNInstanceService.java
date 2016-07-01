@@ -24,6 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -36,16 +37,14 @@ import org.wso2.carbon.bpmn.core.mgt.model.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNVariable;
 import org.wso2.carbon.context.CarbonContext;
 import sun.misc.BASE64Encoder;
+import org.activiti.engine.delegate.Expression;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BPMNInstanceService {
 
@@ -599,5 +598,97 @@ public class BPMNInstanceService {
             }
         }
         return imageString;
+    }
+
+    /**
+     *
+     * @param instanceId
+     * @return a 2D array of String containing information of current task(s) of an active BPMN instance
+     */
+    public String[][] getCurrentTaskInformation(String instanceId){
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
+        RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
+
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
+                .processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
+        if (processInstances.isEmpty()) {
+            String msg = "No current task information for ID: " + instanceId;
+            log.info(msg);
+            return null;
+        }
+
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(processInstances.get(0).getProcessDefinitionId());
+
+        //get the ids of current task(s)
+        List<String> ids = runtimeService.getActiveActivityIds(instanceId);
+        Iterator<String> iterator = ids.iterator();
+
+        Map<String, TaskDefinition> taskDefinitions = processDefinition.getTaskDefinitions();
+        String currentTaskDefinitions[][] = new String[ids.size()][12];
+        int count = 0;
+
+        //for each current task
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            TaskDefinition currentTaskDef = taskDefinitions.get(key);
+            //currentTaskDefinitions will keep 12 properties of each task.
+            //1. task key
+            currentTaskDefinitions[count][0] = currentTaskDef.getKey();
+            //2. task name
+            currentTaskDefinitions[count][1] = currentTaskDef.getNameExpression().getExpressionText();
+            //3. assignee
+            currentTaskDefinitions[count][2] = (currentTaskDef.getAssigneeExpression() != null) ?
+                    currentTaskDef.getAssigneeExpression().getExpressionText() : null;
+            //4. description
+            currentTaskDefinitions[count][3] = (currentTaskDef.getDescriptionExpression() != null) ?
+                    currentTaskDef.getDescriptionExpression().getExpressionText() : null;
+
+            //5. category
+            currentTaskDefinitions[count][4] = (currentTaskDef.getCategoryExpression() != null) ?
+                    currentTaskDef.getCategoryExpression().getExpressionText() : null;
+            //6. due date
+            currentTaskDefinitions[count][5] = (currentTaskDef.getDueDateExpression() != null) ?
+                    currentTaskDef.getDueDateExpression().getExpressionText() : null;
+            //7. form key
+            currentTaskDefinitions[count][6] = (currentTaskDef.getFormKeyExpression() != null) ?
+                    currentTaskDef.getFormKeyExpression().getExpressionText() : null;
+            //8. owner
+            currentTaskDefinitions[count][7] = (currentTaskDef.getOwnerExpression() != null) ?
+                    currentTaskDef.getOwnerExpression().getExpressionText() : null;
+            //9. priority
+            currentTaskDefinitions[count][8] = (currentTaskDef.getPriorityExpression() != null) ?
+                    currentTaskDef.getPriorityExpression().getExpressionText() : null;
+            //10. skip
+            currentTaskDefinitions[count][9] = (currentTaskDef.getSkipExpression() != null) ?
+                    currentTaskDef.getSkipExpression().getExpressionText() : null;
+
+            //11. candidate group ids
+            String candidateGroupIds = "";
+            if(currentTaskDef.getCandidateGroupIdExpressions().size() != 0){
+                Iterator<Expression> candIterator = currentTaskDef.getCandidateGroupIdExpressions().iterator();
+                while(candIterator.hasNext()) {
+                    candidateGroupIds = candidateGroupIds.concat(candIterator.next().getExpressionText() + ", ");
+                }
+                currentTaskDefinitions[count][10] = candidateGroupIds;
+            }else{
+                currentTaskDefinitions[count][10] = null;
+            }
+
+            //12. candidate user ids
+            String candidateUserIds = "";
+            if(currentTaskDef.getCandidateUserIdExpressions().size() != 0){
+                Iterator<Expression> userIterator = currentTaskDef.getCandidateUserIdExpressions().iterator();
+                while(userIterator.hasNext()){
+                    candidateUserIds = candidateUserIds.concat(userIterator.next().getExpressionText() + ", ");
+                }
+                currentTaskDefinitions[count][11] = candidateGroupIds;
+            }else{
+                currentTaskDefinitions[count][11] = null;
+            }
+            count++;
+        }
+        return currentTaskDefinitions;
     }
 }

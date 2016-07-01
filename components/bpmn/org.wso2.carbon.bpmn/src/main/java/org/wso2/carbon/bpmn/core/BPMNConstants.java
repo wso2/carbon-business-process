@@ -54,4 +54,7 @@ public class BPMNConstants {
 	public static final String REST_CLIENT_CONFIG_ELEMENT = "restClientConfiguration";
 	public static final String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
 	public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
+
+    public static final String JMS_INITIAL_CONTEXT_FACTORY = "initialContextFactory";
+    public static final String JMS_PROVIDER_URL = "providerURL";
 }

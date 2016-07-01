@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
-        <version>4.4.9-SNAPSHOT</version>
+        <version>4.4.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -90,7 +90,7 @@
             <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
         </dependency>
 
-	    <dependency>
+	<dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jms_1.1_spec</artifactId>
             <version>${geronimo-jms.version}</version>
@@ -152,7 +152,7 @@
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
                             !org.wso2.carbon.bpmn.extensions,
-                            org.wso2.carbon.ndatasource.*,javax.jms.*;resolution:=optional;version="[0.0.0,2.0.0)",
+                            org.wso2.carbon.ndatasource.*,
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Import-Package>-->

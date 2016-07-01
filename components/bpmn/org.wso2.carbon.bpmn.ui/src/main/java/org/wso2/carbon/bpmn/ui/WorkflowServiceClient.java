@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
+import org.wso2.carbon.bpmn.core.mgt.services.ArrayOfString;
 import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceBPSFaultException;
 import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceStub;
 import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceBPSFaultException;
@@ -306,5 +307,26 @@ public class WorkflowServiceClient {
             }
         }
         return image;
+    }
+
+    /**
+     *
+     * @param instanceId
+     * @return a 2D array of String containing information of current task(s) of an active BPMN instance
+     */
+    public String[][] getCurrentTaskInformation(String instanceId){
+        try {
+            ArrayOfString taskDefinitions[] =  instanceServiceStub.getCurrentTaskInformation(instanceId);
+            String details[][] = new String[taskDefinitions.length][12];
+            for (int i = 0; i < taskDefinitions.length; i++) {
+                for (int j = 0; j < 12; j++) {
+                    details[i][j] = taskDefinitions[i].getArray()[j];
+                }
+            }
+            return details;
+        } catch (RemoteException e) {
+            log.error("Error getting task definitions for instance id: " + instanceId, e);
+        }
+        return null;
     }
 }

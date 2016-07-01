@@ -20,15 +20,18 @@ package org.wso2.carbon.bpmn.rest.service.runtime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Execution;
@@ -39,6 +42,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.rest.common.CorrelationProcess;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
@@ -55,6 +61,7 @@ import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 
 import javax.activation.DataHandler;
@@ -611,6 +618,126 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         return Response.ok().status(Response.Status.NO_CONTENT).build();
+    }
+
+    @GET
+    @Path("/{processInstanceId}/current-task")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getCurrentTaskInformation(@PathParam("processInstanceId") String instanceId){
+        RuntimeService runtimeService = BPMNServerHolder.getInstance().getEngine().getRuntimeService();
+        Map<String, TaskDefinition> taskDefinitionMap = getTaskDefinitionList(instanceId, runtimeService);
+        //get the ids of current task(s)
+
+        List<String> ids = runtimeService.getActiveActivityIds(instanceId);
+        Iterator<String> iterator = ids.iterator();
+        JSONArray result = new JSONArray();
+        while(iterator.hasNext()){
+            JSONObject currentTaskDefinitions = new JSONObject();
+            String key = iterator.next();
+            TaskDefinition currentTaskDef = taskDefinitionMap.get(key);
+            //currentTaskDefinitions will keep 12 properties of each task.
+            //1. task key
+            if(currentTaskDef.getKey() != null)
+                currentTaskDefinitions.put("Key", currentTaskDef.getKey());
+            else
+                currentTaskDefinitions.put("Key", "NA");
+
+            //2. task name
+            if(currentTaskDef.getNameExpression() != null)
+                currentTaskDefinitions.put("Name", currentTaskDef.getNameExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Name", "NA");
+
+            //3. assignee
+            if(currentTaskDef.getAssigneeExpression() != null)
+                currentTaskDefinitions.put("Assignee", currentTaskDef.getAssigneeExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Assignee", "NA");
+
+            //4. description
+            if(currentTaskDef.getDescriptionExpression() != null)
+                currentTaskDefinitions.put("Description", currentTaskDef.getDescriptionExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Description", "NA");
+
+            //5. category
+            if(currentTaskDef.getCategoryExpression() != null)
+                currentTaskDefinitions.put("Category", currentTaskDef.getCategoryExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Category", "NA");
+
+            //6. due date
+            if(currentTaskDef.getDueDateExpression() != null)
+                currentTaskDefinitions.put("Due Date", currentTaskDef.getDueDateExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Due Date", "NA");
+
+            //7. form key
+            if(currentTaskDef.getFormKeyExpression() != null)
+                currentTaskDefinitions.put("Form Key", currentTaskDef.getFormKeyExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Form Key", "NA");
+
+            //8. owner
+            if(currentTaskDef.getOwnerExpression() != null)
+                currentTaskDefinitions.put("Owner", currentTaskDef.getOwnerExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Owner", "NA");
+
+            //9. priority
+            if(currentTaskDef.getPriorityExpression() != null)
+                currentTaskDefinitions.put("Priority", currentTaskDef.getPriorityExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Priority", "NA");
+
+            //10. skip
+            if(currentTaskDef.getSkipExpression() != null)
+                currentTaskDefinitions.put("Skip", currentTaskDef.getSkipExpression().getExpressionText());
+            else
+                currentTaskDefinitions.put("Skip", "NA");
+
+            //11. candidate group ids
+            String candidateGroupIds = "";
+            if(currentTaskDef.getCandidateGroupIdExpressions().size() != 0){
+                Iterator<Expression> candIterator = currentTaskDef.getCandidateGroupIdExpressions().iterator();
+                while(candIterator.hasNext()) {
+                    candidateGroupIds = candidateGroupIds.concat(candIterator.next().getExpressionText() + ", ");
+                }
+                currentTaskDefinitions.put("Candidate Group Ids", candidateGroupIds);
+            }else{
+                currentTaskDefinitions.put("Candidate Group Ids", "NA");
+            }
+
+            //12. candidate user ids
+            String candidateUserIds = "";
+            if(currentTaskDef.getCandidateUserIdExpressions().size() != 0){
+                Iterator<Expression> userIterator = currentTaskDef.getCandidateUserIdExpressions().iterator();
+                while(userIterator.hasNext()){
+                    candidateUserIds = candidateUserIds.concat(userIterator.next().getExpressionText() + ", ");
+                }
+                currentTaskDefinitions.put("Candidate User Ids", candidateUserIds);
+            }else{
+                currentTaskDefinitions.put("Candidate User Ids", "NA");
+            }
+            result.put(currentTaskDefinitions);
+        }
+        return Response.ok(result.toString()).status(Response.Status.CREATED).build();
+    }
+
+    private Map<String, TaskDefinition> getTaskDefinitionList(String instanceId, RuntimeService runtimeService){
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        RepositoryService repositoryService = BPMNServerHolder.getInstance().getEngine().getRepositoryService();
+
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery()
+                .processInstanceTenantId(tenantId.toString()).processInstanceId(instanceId).list();
+        if (processInstances.isEmpty()) {
+            String msg = "No current task information for ID: " + instanceId;
+            log.info(msg);
+            return null;
+        }
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(processInstances.get(0).getProcessDefinitionId());
+        return processDefinition.getTaskDefinitions();
     }
 
     protected byte[] getVariableDataByteArray(Execution execution, String variableName, String scope, Response.ResponseBuilder responseBuilder) {
