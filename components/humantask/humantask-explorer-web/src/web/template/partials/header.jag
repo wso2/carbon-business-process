@@ -35,11 +35,11 @@ var loggedUser = session.get("userName");
     <!-- Custom theme -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="ICON" href="images/favicon.ico" type="image/ico" />
+    <script type="text/javascript" src="/csrf.js"></script>
     <script>
         //This BPSTenant is used by js scripts to identify tenant domain
         var BPSTenant = "<%=application.get('bpsTenant')%>";
     </script>
-    <script type=”text/javascript” src=”/csrf.js”></script>
 </head>
 <body>
     <header>
