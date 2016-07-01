@@ -418,9 +418,10 @@ public class UserSubstitutionOperations {
         return activationInterval;
     }
 
-    public static void handleSheduledEvent() {
+    public static boolean handleSheduledEvent() {
+        boolean result = true;
         if (resolver.transitivityEnabled) {
-            resolver.resolveTransitiveSubs(true); //update transitives, only the map is updated here
+            result = resolver.resolveTransitiveSubs(true); //update transitives, only the map is updated here
         } else {
             resolver.subsMap = activitiDAO.selectActiveSubstitutesByTenant(tenantId);
         }
@@ -429,25 +430,30 @@ public class UserSubstitutionOperations {
         //flush into db
         for (Map.Entry<String, SubstitutesDataModel> entry : resolver.subsMap.entrySet()) { //go through the updated map
             SubstitutesDataModel model = entry.getValue();
+            if (resolver.transitivityEnabled) {//transitivity may be changed
+                activitiDAO.updateSubstituteInfo(model);
+            }
             if (!BPMNConstants.BULK_REASSIGN_PROCESSED.equals(model.getTaskList())) { //active substitution, not yet bulk reassigned
 
                 String sub = getActualSubstitute(model);
                 if (model.getTaskList() == null) {//reassign all
                     if (sub != null) {
                         bulkReassign(model.getUser(), sub, null);
-                    } else {
+                    } else {//transitivity undefined, assign to task owner or un-claim
                         assignToTaskOwner(model.getUser(), null);
                     }
                 } else {
                     List<String> taskList = getTaskListFromString(model.getTaskList());
                     if (sub != null) {
                         bulkReassign(model.getUser(), sub, taskList);
-                    } else {
+                    } else {//transitivity undefined, assign to task owner or un-claim
                         assignToTaskOwner(model.getUser(), taskList);
                     }
                 }
             }
         }
+
+        return true;
 
     }
 

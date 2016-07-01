@@ -16,7 +16,6 @@
  */
 package org.wso2.carbon.bpmn.extensions.substitution;
 
-import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.task.IdentityLinkType;
@@ -26,7 +25,6 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
-import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
@@ -41,6 +39,9 @@ public class UserSubstitutionTaskListener implements TaskListener{
 
         String assignee = delegateTask.getAssignee();
 
+        if (assignee == null) {
+            return;
+        }
         String substitute = getSubstituteIfEnabled(assignee);
         if (substitute != null) {
             if (!BPMNConstants.TRANSITIVE_SUB_UNDEFINED.equals(substitute)) {

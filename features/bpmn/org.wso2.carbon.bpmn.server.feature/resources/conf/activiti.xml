@@ -19,12 +19,17 @@
             </set>
         </property>
 
-        <property name="postBpmnParseHandlers">
+        <!--<property name="postBpmnParseHandlers">
             <list>
                 <bean class="org.wso2.carbon.bpmn.extensions.substitution.UserTaskParseHandler" />
             </list>
-        </property>
+        </property>-->
 
     </bean>
+
+    <!--<bean id="userSubstitutionConfiguration">
+        <property name="enableTransitivity" value="false"></property>
+        <property name="activationInterval" value="60"></property>
+    </bean>-->
 
 </beans>

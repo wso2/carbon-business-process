@@ -64,6 +64,6 @@ public class BPMNConstants {
     public static final String SUBSTITUTION_TRANSITIVITY_PROPERTY = "enableTransitivity";
     public static final String SUBSTITUTION_SCHEDULER_INTERVAL = "activationInterval";
     public static final boolean SUBSTITUTION_TRANSITIVITY_DEFAULT = false;
-    public static final int DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES = 10;
+    public static final int DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES = 60 * 24;
 
 }

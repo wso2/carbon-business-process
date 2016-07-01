@@ -80,7 +80,7 @@ public class TransitivityResolver {
                             entry.getValue().getSubstitute());
                 }
                 if (!isScheduler && BPMNConstants.TRANSITIVE_SUB_UNDEFINED
-                        .equals(transitiveSub)) { //unresolvable sub found and forced resolve not enabled
+                        .equals(transitiveSub)) { //unresolvable sub found and not in scheduler, return false
                     return false;
                 }
             }
