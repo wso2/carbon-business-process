@@ -230,7 +230,8 @@ public class UnifiedEndpointHandler extends AbstractHandler {
                 }
 
                 try {
-                    if(uep.getAuthorizationUserName()!=null && uep.getAuthorizationUserName()!=null) {
+
+                    if(uep.getAuthorizationUserName() != null && !uep.getAuthorizationUserName().equals(" ")) {
                         CarbonUtils.setBasicAccessSecurityHeaders(uep.getAuthorizationUserName(), uep.getAuthorizationPassword(), false, msgContext);
                     }
                 } catch (AxisFault e) {
