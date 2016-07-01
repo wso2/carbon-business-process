@@ -26,6 +26,8 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineShutdown;
+import org.wso2.carbon.bpmn.core.integration.BPMNEngineStart;
+import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
@@ -53,6 +55,7 @@ public class BPMNServiceComponent {
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
             bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);
+            bundleContext.registerService(ServerStartupObserver.class.getName(), new BPMNEngineStart(), null);
             bundleContext.registerService(WaitBeforeShutdownObserver.class, new BPMNEngineShutdown(), null);
 
 
