@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,19 @@
  */
 package org.wso2.carbon.bpmn.extensions.soap;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
+
 /**
  * Exception class to catch SOAP exceptions.
  */
-public class SOAPException extends Exception {
+public class SOAPException extends BpmnError {
 
-    public SOAPException(String msg, Exception e) {
-        super(msg, e);
+    public SOAPException(String errorCode, String message) {
+        super(errorCode, message);
     }
 
-    public SOAPException(String msg) {
-        super(msg);
+    public SOAPException(String errorCode) {
+        super(errorCode);
     }
 }
