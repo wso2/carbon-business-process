@@ -126,7 +126,7 @@ public class UserSubstitutionOperations {
      */
     private static String getTaskListString(List<String> taskList) {
 
-        if (taskList != null & !taskList.isEmpty()) {
+        if (taskList != null && !taskList.isEmpty()) {
             String list = "";
             for (String id : taskList) {
                 list = list + id + LIST_SEPARATOR;
@@ -395,16 +395,15 @@ public class UserSubstitutionOperations {
                 String activationIntervalString = bpmnActivitiConfiguration
                         .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG,
                                 BPMNConstants.SUBSTITUTION_SCHEDULER_INTERVAL);
-
-                if (activationInterval != null) {
-                    activationInterval = Integer.parseInt(activationIntervalString);
+                if (activationIntervalString != null) {
+                    activationInterval = Integer.parseInt(activationIntervalString) * 60 * 1000;
+                    if (log.isDebugEnabled()) {
+                        log.debug("Using the substitution activation interval : " + activationIntervalString + " minutes");
+                    }
                 }
             }
-
-            if (log.isDebugEnabled()) {
-                log.debug("Using the substitution activation interval : " + activationInterval + " minutes");
-            }
-            activationInterval = activationInterval * 60 * 1000;
+        } else {
+            return activationInterval;
         }
 
         if (activationInterval == null) { //if still null, should assign default
@@ -414,8 +413,8 @@ public class UserSubstitutionOperations {
             }
             activationInterval = activationInterval * 60 * 1000;
         }
-
         return activationInterval;
+
     }
 
     public static boolean handleSheduledEvent() {
