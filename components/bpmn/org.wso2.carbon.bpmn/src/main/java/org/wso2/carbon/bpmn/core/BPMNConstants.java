@@ -65,5 +65,6 @@ public class BPMNConstants {
     public static final String SUBSTITUTION_SCHEDULER_INTERVAL = "activationInterval";
     public static final boolean SUBSTITUTION_TRANSITIVITY_DEFAULT = false;
     public static final int DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES = 60 * 24;
+    public static final String SUBSTITUTION_ENABLED = "enabled";
 
 }

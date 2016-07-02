@@ -28,6 +28,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 public class BPMNEngineStart implements ServerStartupObserver {
 
     private static final Log log = LogFactory.getLog(BPMNServerHolder.class);
+    public static final String TRUE = "true";
 
     @Override
     public void completingServerStartup() {
@@ -36,7 +37,9 @@ public class BPMNEngineStart implements ServerStartupObserver {
 
     @Override
     public void completedServerStartup() {
-        if (!CarbonUtils.isChildNode()) {
+        if (!CarbonUtils.isChildNode() && TRUE.equalsIgnoreCase(BPMNActivitiConfiguration.getInstance()
+                .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG,
+                        BPMNConstants.SUBSTITUTION_ENABLED))) {
             String activationIntervalString = BPMNActivitiConfiguration.getInstance()
                     .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG,
                             BPMNConstants.SUBSTITUTION_SCHEDULER_INTERVAL);
