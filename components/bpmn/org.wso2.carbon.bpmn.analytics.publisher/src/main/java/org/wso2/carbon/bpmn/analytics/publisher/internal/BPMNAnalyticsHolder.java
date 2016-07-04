@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
 import org.wso2.carbon.bpmn.analytics.publisher.BPSDataPublisher;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -46,6 +47,7 @@ public class BPMNAnalyticsHolder {
 	private BPSDataPublisher bpsDataPublisher;
 	private Map<Integer, AnalyticsPublisher> tenantAnalyticsPublisherMap;
 	private Map<Integer, DataPublisher> tenantDataPublisherMap;
+	private BPMNEngineService bpmnEngineService;
 
 	private BPMNAnalyticsHolder() {
 		tenantAnalyticsPublisherMap = new HashMap<>();
@@ -62,6 +64,14 @@ public class BPMNAnalyticsHolder {
 			bpmnAnalyticsHolder = new BPMNAnalyticsHolder();
 		}
 		return bpmnAnalyticsHolder;
+	}
+
+	public BPMNEngineService getBpmnEngineService() {
+		return bpmnEngineService;
+	}
+
+	public void setBpmnEngineService(BPMNEngineService bpmnEngineService) {
+		this.bpmnEngineService = bpmnEngineService;
 	}
 
 	public static BPMNServerHolder getThreadSafeBPMNServerInstance() {
@@ -177,7 +187,7 @@ public class BPMNAnalyticsHolder {
 		return tenantDataPublisherMap.get(tenantId);
 	}
 
-	public void addDataPublisher(int tenantId, DataPublisher dataPublisher) {
+	public void setDataPublisher(int tenantId, DataPublisher dataPublisher) {
 		tenantDataPublisherMap.put(tenantId, dataPublisher);
 	}
 

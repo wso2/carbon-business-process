@@ -20,6 +20,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 
 public class ProcessParseHandler extends AbstractBpmnParseHandler {
 
@@ -32,9 +33,11 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler {
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, BaseElement baseElement) {
-        if (log.isDebugEnabled()) {
-            log.debug("Associating process execution listener to publish events upon process completion...");
+        if (BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().isDataPublishingEnabled()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Associating process execution listener to publish events upon process completion...");
+            }
+            bpmnParse.getCurrentProcessDefinition().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
         }
-        bpmnParse.getCurrentProcessDefinition().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
     }
 }

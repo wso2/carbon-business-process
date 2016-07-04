@@ -15,13 +15,19 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher.mgt.services;
 
+import org.activiti.engine.ProcessEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.analytics.publisher.BPSDataPublisher;
+import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.bpmn.analytics.publisher.mgt.model.BPMNAnalyticsConfiguration;
+import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
-import org.wso2.carbon.bpmn.core.mgt.model.BPMNAnalyticsConfiguration;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.core.util.CryptoUtil;
+import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
@@ -32,9 +38,10 @@ public class BPMNAnalyticsService {
 
     public BPMNAnalyticsConfiguration getAnalyticsConfiguration() throws BPSFault {
         RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             BPMNAnalyticsConfiguration config = new BPMNAnalyticsConfiguration();
-            UserRegistry registry = registryService.getConfigSystemRegistry();
+            UserRegistry registry = registryService.getConfigSystemRegistry(tenantId);
             if (registry.resourceExists(BPMNConstants.DATA_PUBLISHER_CONFIG_PATH)) {
                 Resource resource = registry.get(BPMNConstants.DATA_PUBLISHER_CONFIG_PATH);
                 config.setPublisherEnabled(resource.getProperty("dataPublishingEnabled"));
@@ -61,7 +68,9 @@ public class BPMNAnalyticsService {
 
         RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
         try {
-            UserRegistry registry = registryService.getConfigSystemRegistry();
+            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
+            UserRegistry registry = registryService.getConfigSystemRegistry(tenantId);
             Resource resource = registry.get(BPMNConstants.DATA_PUBLISHER_CONFIG_PATH);
             if (resource == null) {
                 resource = registry.newResource();
@@ -75,6 +84,11 @@ public class BPMNAnalyticsService {
                     CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(config.getPassword().getBytes());
             resource.setProperty("password", encryptedPassword);
             registry.put(BPMNConstants.DATA_PUBLISHER_CONFIG_PATH, resource);
+
+            BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().configure();
+
+            ProcessEngine engine = BPMNAnalyticsHolder.getInstance().getBpmnEngineService().getProcessEngine();
+
 
         } catch (Exception e) {
             String msg = "Failed to update BPMN analytics configuration.";

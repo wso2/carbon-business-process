@@ -15,12 +15,22 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmEvent;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationListener;
+import org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskCompletionListener;
 import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointAgentConfigurationException;
@@ -31,6 +41,8 @@ import org.wso2.carbon.databridge.commons.exception.TransportException;
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class BPSDataPublisher {
 
@@ -121,7 +133,107 @@ public class BPSDataPublisher {
                 AnalyticsPublisherConstants.STREAM_VERSION);
     }
 
-    public DataPublisher createDataPublisher(BPMNDataReceiverConfig config) {
+    public boolean isDataPublishingEnabled() {
+        return true;
+    }
+
+    public void configure() {
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        log.info("Configuring analytics publisher for tenant " + tenantId + ".");
+
+        BPMNDataReceiverConfig config = new BPMNDataReceiverConfig(tenantId);
+        DataPublisher dataPublisher = createDataPublisher(config);
+        BPMNAnalyticsHolder.getInstance().setDataPublisher(tenantId, dataPublisher);
+
+        BPMNEngineService engineService = BPMNAnalyticsHolder.getInstance().getBpmnEngineService();
+        RepositoryService repositoryService = engineService.getProcessEngine().getRepositoryService();
+        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(tenantId).list();
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            if (processDefinition instanceof ProcessDefinitionEntity) {
+                ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) processDefinition;
+                configureProcessLevelAnalytics(processDefinitionEntity, config);
+
+                Map<String, TaskDefinition> tasks = processDefinitionEntity.getTaskDefinitions();
+                for (TaskDefinition task : tasks.values()) {
+                    configureTaskLevelAnalytics(processDefinitionEntity, task, config);
+                }
+            }
+        }
+    }
+
+    public void close() {
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        log.info("Unloading analytics publisher for tenant " + tenantId + ".");
+        BPMNAnalyticsHolder.getInstance().removeDataPublisher(tenantId);
+    }
+
+    private void configureProcessLevelAnalytics(ProcessDefinitionEntity processDefinitionEntity, BPMNDataReceiverConfig config) {
+
+        if (config.isDataPublisherEnabled()) {
+            List<ExecutionListener> endListeners = processDefinitionEntity.getExecutionListeners(PvmEvent.EVENTNAME_END);
+            ExecutionListener processTerminationListener = null;
+            for (ExecutionListener listener : endListeners) {
+                if (listener instanceof ProcessTerminationListener) {
+                    processTerminationListener = listener;
+                }
+            }
+            if (processTerminationListener == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Enabling data publishing for process: " + processDefinitionEntity.getName());
+                }
+                processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
+            }
+        } else {
+            List<ExecutionListener> endListeners = processDefinitionEntity.getExecutionListeners(PvmEvent.EVENTNAME_END);
+            ExecutionListener processTerminationListener = null;
+            for (ExecutionListener listener : endListeners) {
+                if (listener instanceof ProcessTerminationListener) {
+                    processTerminationListener = listener;
+                }
+            }
+            if (processTerminationListener != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Disabling data publishing for process: " + processDefinitionEntity.getName());
+                }
+                endListeners.remove(processTerminationListener);
+            }
+        }
+    }
+
+    private void configureTaskLevelAnalytics(ProcessDefinitionEntity process, TaskDefinition taskDefinition, BPMNDataReceiverConfig config) {
+        if (config.isDataPublisherEnabled()) {
+            List<TaskListener> completionListeners = taskDefinition.getTaskListener(TaskListener.EVENTNAME_COMPLETE);
+            TaskListener taskCompletionListener = null;
+            for (TaskListener listener : completionListeners) {
+                if (listener instanceof TaskCompletionListener) {
+                    taskCompletionListener = listener;
+                }
+            }
+            if (taskCompletionListener == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Adding task completion listener to task: " + taskDefinition.getKey() + " of process: " + process.getId());
+                }
+                taskDefinition.addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
+            }
+
+        } else {
+            List<TaskListener> completionListeners = taskDefinition.getTaskListener(TaskListener.EVENTNAME_COMPLETE);
+            TaskListener taskCompletionListener = null;
+            for (TaskListener listener : completionListeners) {
+                if (listener instanceof TaskCompletionListener) {
+                    taskCompletionListener = listener;
+                }
+            }
+            if (taskCompletionListener != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Removing task completion listener from task: " + taskDefinition.getKey() + " of process: " + process.getId());
+                }
+                completionListeners.remove(taskCompletionListener);
+            }
+        }
+    }
+
+    private DataPublisher createDataPublisher(BPMNDataReceiverConfig config) {
         DataPublisher dataPublisher = null;
         if (config != null) {
             String type = config.getType();

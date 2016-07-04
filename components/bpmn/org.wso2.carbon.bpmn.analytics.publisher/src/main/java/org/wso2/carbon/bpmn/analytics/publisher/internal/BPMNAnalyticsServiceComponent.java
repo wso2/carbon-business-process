@@ -15,20 +15,20 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher.internal;
 
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.engine.AxisConfiguration;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.bpmn.analytics.publisher.*;
 import org.wso2.carbon.bpmn.analytics.publisher.utils.BPMNDataReceiverConfig;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
-import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
@@ -38,6 +38,8 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  * @scr.reference name="server.configuration" interface="org.wso2.carbon.base.api.ServerConfigurationService"
  * cardinality="1..1" policy="dynamic" bind="setServerConfiguration" unbind="unsetServerConfiguration"
+ * @scr.reference name="bpmn.service" interface="org.wso2.carbon.bpmn.core.BPMNEngineService"
+ * cardinality="1..1" policy="dynamic" bind="setBPMNEngineService" unbind="unsetBPMNEngineService"
  */
 public class BPMNAnalyticsServiceComponent {
 	private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
@@ -52,14 +54,7 @@ public class BPMNAnalyticsServiceComponent {
 		try {
 			BPSDataPublisher bpsDataPublisher = new BPSDataPublisher();
 			BPMNAnalyticsHolder.getInstance().setBpsDataPublisher(bpsDataPublisher);
-
-			// create data publisher for the super tenant
-			Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-			log.info("Loading analytics publisher for tenant " + tenantId + ".");
-			BPMNDataReceiverConfig config = new BPMNDataReceiverConfig(tenantId);
-			config.init();
-			DataPublisher dataPublisher = bpsDataPublisher.createDataPublisher(config);
-			BPMNAnalyticsHolder.getInstance().addDataPublisher(tenantId, dataPublisher);
+			bpsDataPublisher.configure();
 
 			// data publishers for other tenants will be created upon tenant loading and removed upon unloading tenents
 			ctxt.getBundleContext().registerService(
@@ -76,6 +71,14 @@ public class BPMNAnalyticsServiceComponent {
 		} catch (Throwable e) {
 			log.error("Failed to initialize the Analytics Service component.", e);
 		}
+	}
+
+	public void setBPMNEngineService(BPMNEngineService bpmnEngineService) {
+		BPMNAnalyticsHolder.getInstance().setBpmnEngineService(bpmnEngineService);
+	}
+
+	public void unsetBPMNEngineService(BPMNEngineService bpmnEngineService) {
+		BPMNAnalyticsHolder.getInstance().setBpmnEngineService(null);
 	}
 
 	/**

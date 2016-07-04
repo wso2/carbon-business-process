@@ -30,20 +30,11 @@ public class BPSAnalyticsConfigContextObserver extends AbstractAxis2Configuratio
 
     @Override
     public void createdConfigurationContext(ConfigurationContext configContext) {
-
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Loading analytics publisher for tenant " + tenantId + ".");
-        BPMNDataReceiverConfig config = new BPMNDataReceiverConfig(tenantId);
-        config.init();
-
-        DataPublisher dataPublisher = BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().createDataPublisher(config);
-        BPMNAnalyticsHolder.getInstance().addDataPublisher(tenantId, dataPublisher);
+        BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().configure();
     }
 
     @Override
     public void terminatingConfigurationContext(ConfigurationContext configCtx) {
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Unloading analytics publisher for tenant " + tenantId + ".");
-        BPMNAnalyticsHolder.getInstance().removeDataPublisher(tenantId);
+        BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().close();
     }
 }

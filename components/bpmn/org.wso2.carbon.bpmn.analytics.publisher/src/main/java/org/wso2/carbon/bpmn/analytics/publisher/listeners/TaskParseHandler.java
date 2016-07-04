@@ -24,6 +24,7 @@ import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 
 public class TaskParseHandler extends AbstractBpmnParseHandler {
 
@@ -36,10 +37,12 @@ public class TaskParseHandler extends AbstractBpmnParseHandler {
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, BaseElement element) {
-        if (log.isDebugEnabled()) {
-            log.debug("Associating task listener to publish events upon task completion...");
+        if (BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().isDataPublishingEnabled()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Associating task listener to publish events upon task completion...");
+            }
+            TaskDefinition taskDefinition = (TaskDefinition) bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
+            taskDefinition.addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
         }
-        TaskDefinition taskDefinition = (TaskDefinition) bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
-        taskDefinition.addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
     }
 }

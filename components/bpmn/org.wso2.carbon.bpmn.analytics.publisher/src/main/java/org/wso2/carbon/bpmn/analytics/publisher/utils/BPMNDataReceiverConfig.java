@@ -54,6 +54,7 @@ public class BPMNDataReceiverConfig {
 	 */
 	public BPMNDataReceiverConfig(int tenantID) {
 		this.tenantID = tenantID;
+		init();
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class BPMNDataReceiverConfig {
 	 *
 	 * @return true if success.
 	 */
-	public boolean init() {
+	private boolean init() {
 		try {
 			// Get tenant specific configuration registry.
 			this.registry = BPMNAnalyticsHolder.getInstance().getRegistryService().getConfigSystemRegistry(tenantID);

@@ -16,30 +16,13 @@
  ~ under the License.
  -->
 <component xmlns="http://products.wso2.org/carbon">
-    <deployers>
-        <deployer>
-            <directory>bpmn</directory>
-            <extension>bar</extension>
-            <class>org.wso2.carbon.bpmn.core.deployment.BPMNDeployer</class>
-        </deployer>
-    </deployers>
+
     <ManagementPermissions>
         <ManagementPermission>
-            <DisplayName>BPMN</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn</ResourceId>
+            <DisplayName>BPMN Analytics Configuration</DisplayName>
+            <ResourceId>/permission/admin/config/analytics/bpmn</ResourceId>
         </ManagementPermission>
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Processes</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/process</ResourceId>
-        </ManagementPermission>
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Process Instances</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/instance</ResourceId>
-        </ManagementPermission>
-        <ManagementPermission>
-            <DisplayName>Manage BPMN Packages</DisplayName>
-            <ResourceId>/permission/admin/manage/bpmn/uploader</ResourceId>
-        </ManagementPermission>
+
         <!--
         This permission removed since it affect permissions to unused BPMNHumanTasksService admin service
         <ManagementPermission>

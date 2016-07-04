@@ -34,6 +34,4 @@ public class ProcessTerminationListener implements ExecutionListener {
             BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().publishProcessEvent(instance);
         }
     }
-
-
 }
