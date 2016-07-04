@@ -59,6 +59,7 @@ public class UserSubstitutionService {
     public static final String ADD_PERMISSION = "add";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
+    private static final boolean subsFeatureEnabled = UserSubstitutionOperations.isSubstitutionFeatureEnabled();
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 
@@ -82,15 +83,17 @@ public class UserSubstitutionService {
      *  startTime : optional, current timestamp if not provided, the timestamp the substitution should start in ISO format
      *  endTime : optional, considered as forever if not provided, the timestamp the substitution should end in ISO format
      * @param request
-     * @return 201 created response with the resource location.
+     * @return 201 created response with the resource location. 405 if substitution disabled
      */
     @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response substitute(
-            SubstitutionRequest request) {
+    public Response substitute(SubstitutionRequest request) {
 
         try {
+            if (!subsFeatureEnabled) {
+                return Response.status(405).build();
+            }
 
             String assignee = getRequestedAssignee(request.getAssignee());
 
@@ -135,13 +138,16 @@ public class UserSubstitutionService {
      * @throws URISyntaxException
      */
     @PUT
-    @Path("/{user}") @Consumes({ MediaType.APPLICATION_JSON,
-            MediaType.APPLICATION_XML })
+    @Path("/{user}")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response updateSubstituteInfo(@PathParam("user") String user,
             SubstitutionRequest request) throws URISyntaxException {
         try {
+            if (!subsFeatureEnabled) {
+                return Response.status(405).build();
+            }
             request.setAssignee(user);
-            String assignee = getRequestedAssignee(request.getAssignee());
+            String assignee = getRequestedAssignee(user);
 
             String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
 
@@ -178,11 +184,15 @@ public class UserSubstitutionService {
      * @return
      * @throws URISyntaxException
      */
-    @PUT @Path("/{user}/substitute") @Consumes({ MediaType.APPLICATION_JSON,
-            MediaType.APPLICATION_XML })
-    public Response changeSubstitute(@PathParam("user") String user,
-            SubstituteRequest request) throws URISyntaxException {
+    @PUT
+    @Path("/{user}/substitute")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response changeSubstitute(@PathParam("user") String user, SubstituteRequest request)
+            throws URISyntaxException {
         try {
+            if (!subsFeatureEnabled) {
+                return Response.status(405).build();
+            }
             String assignee = getRequestedAssignee(user);
             String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
             UserSubstitutionOperations.handleChangeSubstitute(assignee, substitute);
@@ -199,13 +209,11 @@ public class UserSubstitutionService {
      * @throws URISyntaxException
      */
     @GET
-    @Path("/{user}") @Produces({ MediaType.APPLICATION_JSON,
-            MediaType.APPLICATION_XML })
-    public Response getSubstitute(@PathParam("user") String user)
-            throws URISyntaxException {
-        try {
-            String assignee = getRequestedAssignee(user);
-            SubstitutesDataModel model = UserSubstitutionOperations.getSubstituteOfUser(assignee);
+    @Path("/{user}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response getSubstitute(@PathParam("user") String user) {
+        SubstitutesDataModel model = UserSubstitutionOperations.getSubstituteOfUser(user);
+        if (model != null) {
             SubstituteInfoResponse response = new SubstituteInfoResponse();
             response.setSubstitute(model.getSubstitute());
             response.setAssignee(model.getUser());
@@ -213,14 +221,15 @@ public class UserSubstitutionService {
             response.setStartTime(model.getSubstitutionStart());
             response.setEndTime(model.getSubstitutionEnd());
             return Response.ok(response).build();
-        } catch (UserStoreException e) {
-            throw new ActivitiException("Error accessing User Store", e);
+        } else {
+            return Response.status(404).build();
         }
+
     }
 
     @GET
-    @Path("/") @Produces({ MediaType.APPLICATION_JSON,
-            MediaType.APPLICATION_XML })
+    @Path("/")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response querySubstitutes() {
 
         Map<String, String> queryMap = new HashedMap();
@@ -276,7 +285,7 @@ public class UserSubstitutionService {
         collectionResponse.setSize(responseList.size());
         String sortType = getSortType(queryMap.get(SubstitutionQueryProperties.SORT));
         collectionResponse.setSort(sortType);
-        collectionResponse.setStart(Integer.parseInt(SubstitutionQueryProperties.START));
+        collectionResponse.setStart(Integer.parseInt(queryMap.get(SubstitutionQueryProperties.START)));
         collectionResponse.setOrder(queryMap.get(SubstitutionQueryProperties.ORDER));
         return Response.ok(collectionResponse).build();
 
