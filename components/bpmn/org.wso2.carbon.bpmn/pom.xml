@@ -126,8 +126,7 @@
                         <!--org.wso2.carbon.bpmn.core.deployment.Activator-->
                         <!--</Bundle-Activator>-->
                         <Private-Package>
-                            org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.extensions
+                            org.wso2.carbon.bpmn.core.internal
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpmn.core.internal,
@@ -139,12 +138,10 @@
                             version=${carbon.business-process.exp.pkg.version},
                             org.wso2.carbon.bpmn.core.deployment.*;
                             version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.extensions.rest.*;
-                            version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.extensions.substitution.*;
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
-                            !org.wso2.carbon.bpmn.extensions,
                             org.wso2.carbon.ndatasource.*,
                             *;resolution:=optional
                         </Import-Package>
