@@ -23,7 +23,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.json.api.JsonNodeObject;
 
-
+/**
+ * WSO2 JSON type implemented extending Activiti JsonType
+ */
 public class ExtendedJsonType extends JsonType {
 
     private static final Log log = LogFactory.getLog(ExtendedJsonType.class);

@@ -23,6 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+/**
+ * Json API for BPMN JSON data type support
+ */
 public class JSON {
     
     private ObjectMapper objectMapper = null;
