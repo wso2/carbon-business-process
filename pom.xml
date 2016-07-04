@@ -1135,6 +1135,17 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons.lang3.version}</version>
             </dependency>
+            <!--For BPMN JSON variable support-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${orbit.fasterxml.jackson.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -1629,6 +1640,10 @@
         <com.predic8.soa-model-core.wso2.version>1.5.0.wso2v4</com.predic8.soa-model-core.wso2.version>
         <org.asm4.wso2.version>4.0.0.wso2v1</org.asm4.wso2.version>
         <org.codehaus.groovy.version>2.3.9</org.codehaus.groovy.version>
+
+        <!--For BPMN JSON-->
+        <orbit.fasterxml.jackson.version>2.2.3.wso2v1</orbit.fasterxml.jackson.version>
+        <fasterxml.jackson.version>2.2.3</fasterxml.jackson.version>
     </properties>
 
 
