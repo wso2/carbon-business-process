@@ -18,8 +18,13 @@ package org.wso2.carbon.bpmn.rest.service.runtime;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.*;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -34,7 +39,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.image.ProcessDiagramGenerator;
+import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,14 +58,38 @@ import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.common.RestIdentityLink;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
-import org.wso2.carbon.bpmn.rest.model.runtime.*;
+import org.wso2.carbon.bpmn.rest.model.runtime.AttachmentDataHolder;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceActionRequest;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceCreateRequest;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceQueryRequest;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.RestVariableCollection;
 import org.wso2.carbon.bpmn.rest.service.base.BaseProcessInstanceService;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.activation.DataHandler;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -68,8 +97,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import java.util.*;
 
 @Path("/process-instances")
 public class ProcessInstanceService extends BaseProcessInstanceService {
@@ -266,23 +293,20 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
         if (pde != null && pde.hasGraphicalNotation()) {
-            BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
-            ProcessEngineConfiguration processEngineConfiguration = BPMNOSGIService.getProcessEngineConfiguration();
             RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
 
-            ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-            InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()),
-                    Collections.<String>emptyList(), processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(),
-                    processEngineConfiguration.getClassLoader(), 1.0);
-
+            InputStream diagramStream = new DefaultProcessDiagramGenerator().generateDiagram(repositoryService
+                            .getBpmnModel(pde.getId()), "png",
+                    runtimeService.getActiveActivityIds(processInstanceId));
             try {
-                return Response.ok().type("image/png").entity(IOUtils.toByteArray(resource)).build();
+                return Response.ok().type("image/png").entity(IOUtils.toByteArray(diagramStream)).build();
             } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
             }
 
         } else {
-            throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
+            throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId()
+                    + "' has no graphical notation defined.");
         }
     }
 
