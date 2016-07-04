@@ -21,6 +21,9 @@
 package org.wso2.carbon.bpmn.core.types.datatypes.xml.api;
 
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -38,16 +41,14 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.w3c.dom.UserDataHandler;
-import org.wso2.carbon.bpmn.core.types.datatypes.BPMNDataTypeException;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.BPMNXmlException;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.Utils;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 
 /**
@@ -56,74 +57,106 @@ import java.io.IOException;
 public class XMLDocument implements Document {
 
     private Document doc;
+    private static final Log log = LogFactory.getLog(XMLDocument.class);
 
     public XMLDocument(Document document) {
         this.doc = document;
     }
 
-    //introduced functions for BPMN START
+    /*******************************************************************************************************************
+     * introduced functions for BPMN START
+     * ****************************************************************************************************************/
 
     /**
      * Function to evaluate xPath query and retrieve relevant element
-     * @param xpathStr
+     *
+     * @param xpathStr xpath expression to evaluate
      * @return Returns org.w3c.dom.NodeList if there are more than one elements in the result, Otherwise org.w3c.dom.Node Object is returned
      * @throws XPathExpressionException If expression cannot be evaluated
      */
-    public Object xPath (String xpathStr) throws XPathExpressionException {
+    public Object xPath(String xpathStr) throws BPMNXmlException {
 
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        //String output = xPath.evaluate(xpathStr, this.doc);
-        NodeList outputObjList = (NodeList) xPath.evaluate(xpathStr, this.doc, XPathConstants.NODESET);
-
-        if (outputObjList.getLength() == 1) {
-            //If there is only one node, return the node instead of Node List
-            //TODO : If there are any situation where Boolean, String, Double Object types, we have to cast them to relevant
-            // type here and return.
-            return (Node)outputObjList.item(0);
+        if (log.isDebugEnabled()) {
+            log.debug("Evaluating xPath: " +xpathStr + " on XML :"+ this.toString());
         }
 
-        return outputObjList;
+        return Utils.evaluateXPath(doc, xpathStr);
+    }
+
+    /**
+     * Function to evaluate xPath query, and return specified return type
+     *
+     * @param xpathStr xpath expression to evaluate
+     * @param returnType The desired return type of xpath evaluation. Supported retrun types : "NODESET", "NODE", "STRING", "NUMBER", "BOOLEAN"
+     * @return result of xpath evaluation in specified return type
+     * @throws BPMNXmlException
+     * @throws XPathExpressionException
+     */
+    public Object xPath(String xpathStr, String returnType) throws BPMNXmlException, XPathExpressionException {
+
+        if (returnType.equals(XPathConstants.NODESET.getLocalPart())) {
+            Utils.evaluateXPath(doc, xpathStr, XPathConstants.NODESET);
+        } else if (returnType.equals(XPathConstants.NODE.getLocalPart())) {
+            Utils.evaluateXPath(doc, xpathStr, XPathConstants.NODE);
+        } else if (returnType.equals(XPathConstants.STRING.getLocalPart())) {
+            Utils.evaluateXPath(doc, xpathStr, XPathConstants.STRING);
+        } else if (returnType.equals(XPathConstants.NUMBER.getLocalPart())) {
+            Utils.evaluateXPath(doc, xpathStr, XPathConstants.NUMBER);
+        } else if (returnType.equals(XPathConstants.BOOLEAN.getLocalPart())) {
+            Utils.evaluateXPath(doc, xpathStr, XPathConstants.BOOLEAN);
+        } else {
+            //Unknown return type
+            throw new BPMNXmlException("Unknown return type : " +returnType);
+        }
+
+        return null;
     }
 
     /**
      * Function to set/replace/update an object (String / Element) to matching the xPath provided. (In case new element
      * is added, this api will clone it and merge the new node to the target location pointed by xPath and return the new cloned node)
+     *
      * @param xPathStr xPath to the location object need to set
-     * @param obj String or Node
+     * @param obj      String or Node
      * @return returns the node get updated when the set object is String, or returns newly added Node in case object is Element
      * @throws XPathExpressionException If expression cannot be evaluated
-     * @throws BPMNXmlException is thrown due to : Provided XPath and object does not match, provided object is not a Node or String
-     *                                              result is NodeList, not a Text node or Element
+     * @throws BPMNXmlException         is thrown due to : Provided XPath and object does not match, provided object is not a Node or String
+     *                                  result is NodeList, not a Text node or Element
      */
-    public Node set (String xPathStr, Object obj) throws XPathExpressionException, BPMNXmlException {
+    public Node set(String xPathStr, Object obj) throws XPathExpressionException, BPMNXmlException {
 
-        Object evalResult = xPath(xPathStr);
-        if (evalResult instanceof Node) {
-            Node targetNode = (Node) evalResult;
+        NodeList evalResult = (NodeList) Utils.evaluateXPath(this.doc, xPathStr, XPathConstants.NODESET);
+        if (evalResult.getLength() == 1) {
+            Node targetNode = evalResult.item(0);
 
             if (obj instanceof String && targetNode instanceof Text) { //if string is provided, assume that user
-                                                                        //need to replace the node value
-                targetNode.setNodeValue((String)obj);
+                //need to replace the node value
+                targetNode.setNodeValue((String) obj);
                 //return updated Text Node
                 return targetNode;
-            } else if (obj instanceof Element && evalResult instanceof Element && targetNode.getParentNode() != null) { //if the user provides Node object,
-                                                                        // assume that need to replace the target node
-                Element targetParent = (Element) targetNode.getParentNode();
+            } else if (obj instanceof Element && targetNode instanceof Element && targetNode.getParentNode() != null) { //if the user provides Node object,
+                // assume that need to replace the target node
+                Node targetParent = targetNode.getParentNode();
+                Node nextSibling = targetNode.getNextSibling();
                 //remove the target node
                 targetParent.removeChild(targetNode);
                 //add new node
-                Node newNode = doc.importNode((Node)obj, true);
-                targetParent.appendChild(newNode);
+                Node newNode = doc.importNode((Node) obj, true);
+
+                if (nextSibling != null) {
+                    //If next sibling exists we have to put the new node before it
+                    targetParent.insertBefore(newNode, nextSibling);
+                } else {
+                    targetParent.appendChild(newNode);
+                }
                 //return new node
                 return newNode;
 
             } else { //provided XPath and object to set does not match
-                throw new BPMNXmlException("Provided XPath and object does not match");
+                throw new BPMNXmlException("Provided XPath and provided object does not match");
             }
 
-        } else if (evalResult instanceof NodeList) {
-
-            /**/
+        } else if (evalResult.getLength() > 0) {
 
             throw new BPMNXmlException("Error in provided xPath. Evaluation result is NodeList, not a Text node or Element");
 
@@ -135,53 +168,104 @@ public class XMLDocument implements Document {
 
     /**
      * Function to append child element to target element
+     *
      * @param xPathToParent xPath to parent node
-     * @param element element to append
+     * @param element       element to append
      * @return returns the node get appended or returns newly added Node in case object is Element
      * @throws XPathExpressionException If expression cannot be evaluated
-     * @throws BPMNXmlException If no parent node found, the resulting NodeList empty,
-     *                              Error in provided xPath. Evaluation result is not a Node or NodeList
+     * @throws BPMNXmlException         If no parent node found, the resulting NodeList empty,
+     *                                  Error in provided xPath. Evaluation result is not a Node or NodeList
      */
-    public Element append (String xPathToParent, Element element) throws XPathExpressionException, BPMNXmlException {
-        Object evalResult = xPath(xPathToParent);
-        if (evalResult instanceof Element) {
+    public Node appendChild(String xPathToParent, Element element) throws XPathExpressionException, BPMNXmlException {
 
-            Node newNode = doc.importNode((Node)element, true);
-            Node temp = ((Node) evalResult).appendChild(newNode);
-            return (Element) newNode;
+        Object evalResult = Utils.evaluateXPath(doc, xPathToParent);
+
+        if (evalResult instanceof Node && evalResult instanceof Element) {
+            //If xpath evaluated to an Element, will add as child element
+            Node newNode = doc.importNode((Node) element, true);
+            return ((Node) evalResult).appendChild(newNode);
 
         } else if (evalResult instanceof NodeList) {
-
-            NodeList resuldNodeList = (NodeList) evalResult;
-            //if the result is node list, then that element is added as child of the first nodes parent
-            if (resuldNodeList.getLength() > 0 && resuldNodeList.item(0).getParentNode() != null) {
-
-                Node newNode = doc.importNode((Node)element, true);
-                return (Element) resuldNodeList.item(0).getParentNode().appendChild((Node) newNode);
-
-            } else {
-
-                String exceptionMessage = "XML append failed due to : ";
-                exceptionMessage = exceptionMessage + (resuldNodeList.getLength() > 0 ?
-                                    (resuldNodeList.item(0).getParentNode() != null ? "Unknown Error" : "no parent node") :
-                                    "the resulting NodeList empty");
-                throw new BPMNXmlException(exceptionMessage);
-            }
+            throw new BPMNXmlException((((NodeList)evalResult).getLength() > 0 ?
+                                                                "xpath does not evaluated to a unique parent node" :
+                                                                "xPath evaluation failed. Node does not exists for xPath: " + xPathToParent));
         } else {
-            throw new BPMNXmlException("Error in provided xPath. Evaluation result is not a Node or NodeList");
+            throw new BPMNXmlException("Error in provided xPath. Evaluation result is not a Node." +
+                                                    "The evaluation result is in type:" + evalResult.getClass().getName());
         }
     }
 
-    public Node createNode (String nodeStr) throws IOException, SAXException, ParserConfigurationException {
-        XMLDocument document = Utils.parse(nodeStr);
-        return document.getDocumentElement();
+    /**
+     * Inserts the node newChild node before the existing node
+     * @param xPathToTargetNode
+     * @param element
+     * @return
+     * @throws XPathExpressionException
+     * @throws BPMNXmlException
+     */
+    public Node insertBefore(String xPathToTargetNode, Element element) throws XPathExpressionException, BPMNXmlException {
+
+        Object evalResult = Utils.evaluateXPath(doc, xPathToTargetNode);
+
+        if (evalResult instanceof Node && evalResult instanceof Element) {
+
+            Node parentNode = ((Node)evalResult).getParentNode();
+            if (parentNode != null) {
+                Node newNode = doc.importNode((Node) element, true);
+                return parentNode.insertBefore(newNode, (Node)evalResult);
+            }
+
+            throw new BPMNXmlException("Target node is the root node (no parent node found).");
+
+        } else if (evalResult instanceof NodeList) {
+            throw new BPMNXmlException((((NodeList)evalResult).getLength() > 0 ?
+                    "xpath does not evaluated to a unique parent node" :
+                    "xPath evaluation failed. Node does not exists for xPath: " + xPathToTargetNode));
+        } else {
+            throw new BPMNXmlException("Error in provided xPath. Evaluation result is not a Node." +
+                    "The evaluation result is in type:" + evalResult.getClass().getName());
+        }
     }
 
-    //introduced functions for BPMN END
+
+    /**
+     * Function overriding Object.toString(). This will serialize the XML object to string
+     *
+     * @return String serializing XML object
+     */
+    @Override
+    public String toString() {
+        try {
+            return StringEscapeUtils.escapeXml(Utils.stringify(this));
+        } catch (TransformerException e) {
+            log.error("Error occurred while serializing XMLDocument", e);
+            //If error occurred while serializing we will return the object string
+            return ((Object) this).toString();
+        }
+    }
 
 
+    /**
+     * Function to create new XML Element (this is a util method)
+     *
+     * @param elementStr
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
+    public static Element createNewElement(String elementStr) throws IOException, SAXException, ParserConfigurationException {
+        XMLDocument document = Utils.parse(elementStr);
+        if (document != null) {
+            return document.getDocumentElement();
+        }
+        return null;
+    }
 
-    //Implemented functions
+    /*******************************************************************************************************************
+     * Implemented functions of org.w3c.dom.Document
+     ****************************************************************************************************************/
+
     @Override
     public DocumentType getDoctype() {
         return doc.getDoctype();

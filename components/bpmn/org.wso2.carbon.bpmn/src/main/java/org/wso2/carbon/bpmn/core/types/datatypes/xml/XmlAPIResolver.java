@@ -24,28 +24,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.api.XML;
 
+/**
+ * Resolver to resolve "XML" api usage in JS scripts in script tasks
+ */
 public class XmlAPIResolver implements Resolver {
 
     private static final Log log = LogFactory.getLog(XmlAPIResolver.class);
 
-    protected String APIkey = "XML";
-    //private static XML xmlStaticObj = new XML(); //TODO decide whether to make this static or not
+    private static final String APIkey = "XML";
+    private static final XML xmlAPIObj = new XML();
 
 
     @Override
     public boolean containsKey(Object key) {
-
-        if (APIkey.equals(key)) {
-            return true;
-        }
-        return false;
+        return APIkey.equals(key);
     }
 
     @Override
     public Object get(Object key) {
 
         if (APIkey.equals(key)) {
-            return new XML();
+            return xmlAPIObj;
         }
         return null;
     }

@@ -50,6 +50,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
 import org.wso2.carbon.bpmn.core.integration.BPSUserManagerFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.json.ExtendedJsonType;
+import org.wso2.carbon.bpmn.core.types.datatypes.json.JsonAPIResolverFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.XmlAPIResolverFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.XmlType;
 import org.wso2.carbon.utils.CarbonUtils;
@@ -177,6 +178,7 @@ public class ActivitiEngineBuilder {
         resolverFactories.add(new BeansResolverFactory());
         //Resolvers added for WSO2 BPS
         resolverFactories.add(new XmlAPIResolverFactory());
+        resolverFactories.add(new JsonAPIResolverFactory());
         processEngineConfiguration.setResolverFactories(resolverFactories);
     }
 }

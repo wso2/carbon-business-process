@@ -41,7 +41,7 @@ public class XML {
      * @throws IOException
      * @throws SAXException
      */
-    public XMLDocument parse (String str) throws ParserConfigurationException, IOException, SAXException {
+    public XMLDocument parse(String str) throws ParserConfigurationException, IOException, SAXException {
 
         return Utils.parse(str);
 
@@ -53,7 +53,7 @@ public class XML {
      * @return xml in string form
      * @throws TransformerException
      */
-    public String stringify (XMLDocument xmlDoc) throws TransformerException {
+    public String stringify(XMLDocument xmlDoc) throws TransformerException {
 
         return Utils.stringify(xmlDoc);
 

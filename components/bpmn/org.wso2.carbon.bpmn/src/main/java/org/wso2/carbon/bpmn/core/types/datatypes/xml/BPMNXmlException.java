@@ -20,7 +20,9 @@
 
 package org.wso2.carbon.bpmn.core.types.datatypes.xml;
 
-
+/**
+ * Class representing exceptions occurred while XML processing
+ */
 public class BPMNXmlException extends Exception {
 
     public BPMNXmlException(String message, Exception e) {

@@ -31,13 +31,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
+/**
+ * WSO2XML variable type class
+ */
 public class XmlType implements VariableType{
 
     private static final Log log = LogFactory.getLog(XmlType.class);
 
     @Override
     public String getTypeName() {
-        return "xml";
+        return "WSO2Xml";
     }
 
     @Override
@@ -48,9 +51,7 @@ public class XmlType implements VariableType{
     @Override
     public boolean isAbleToStore(Object obj) {
 
-        if (obj == null) {
-            return true;
-        } else if (XMLDocument.class.isAssignableFrom(obj.getClass())) {
+        if (obj == null || XMLDocument.class.isAssignableFrom(obj.getClass())) {
             return true;
         }
 

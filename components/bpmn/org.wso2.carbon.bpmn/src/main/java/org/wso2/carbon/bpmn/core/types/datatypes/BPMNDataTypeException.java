@@ -23,7 +23,9 @@
 
 package org.wso2.carbon.bpmn.core.types.datatypes;
 
-
+/**
+ * Common exception class for BPMN data type related exceptions
+ */
 public class BPMNDataTypeException extends Exception {
 
     public BPMNDataTypeException (String message, Exception ex) {
