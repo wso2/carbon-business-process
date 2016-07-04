@@ -14,9 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.substitution.scheduler;
+package org.wso2.carbon.bpmn.people.substitution.scheduler;
 
-public interface TaskRunner {
+public class ScheduledTask {
 
-    public void runTask(Task task);
+    /** Scheduled date/time. */
+    public long schedDate;
+
+    ScheduledTask(long schedDate) {
+        this.schedDate = schedDate;
+    }
 }

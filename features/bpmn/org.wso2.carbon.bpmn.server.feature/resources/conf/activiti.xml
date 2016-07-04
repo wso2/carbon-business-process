@@ -21,7 +21,7 @@
 
         <!--<property name="postBpmnParseHandlers">
             <list>
-                <bean class="org.wso2.carbon.bpmn.extensions.substitution.UserTaskParseHandler" />
+                <bean class="org.wso2.carbon.bpmn.people.substitution.UserTaskParseHandler" />
             </list>
         </property>-->
 

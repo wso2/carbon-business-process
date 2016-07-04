@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.extensions.substitution.scheduler;
+package org.wso2.carbon.bpmn.people.substitution.scheduler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +32,7 @@ public class SchedulerThread implements Runnable {
     private static final int TODO_QUEUE_INITIAL_CAPACITY = 200;
 
     /** Jobs ready for immediate execution. */
-    private PriorityBlockingQueue<Task> _todo;
+    private PriorityBlockingQueue<ScheduledTask> _todo;
 
     /** Lock for managing the queue */
     private ReentrantLock _lock = new ReentrantLock();
@@ -42,13 +41,13 @@ public class SchedulerThread implements Runnable {
 
     private volatile boolean _done;
 
-    private TaskRunner _taskrunner;
+    private ScheduledTaskRunner _taskrunner;
 
     private Thread _thread;
 
-    SchedulerThread(TaskRunner runner) {
-        _todo = new PriorityBlockingQueue<Task>(TODO_QUEUE_INITIAL_CAPACITY,
-                new JobComparatorByDate());
+    SchedulerThread(ScheduledTaskRunner runner) {
+        _todo = new PriorityBlockingQueue<ScheduledTask>(TODO_QUEUE_INITIAL_CAPACITY,
+                new ComparatorByDate());
         _taskrunner = runner;
     }
 
@@ -92,7 +91,7 @@ public class SchedulerThread implements Runnable {
      *
      * @param task
      */
-    void enqueue(Task task) {
+    void enqueue(ScheduledTask task) {
         _lock.lock();
         try {
             _todo.add(task);
@@ -107,7 +106,7 @@ public class SchedulerThread implements Runnable {
      *
      * @param task
      */
-    void dequeue(Task task) {
+    void dequeue(ScheduledTask task) {
         _lock.lock();
         try {
             _todo.remove(task);
@@ -138,7 +137,7 @@ public class SchedulerThread implements Runnable {
                     _activity.await(nextjob, TimeUnit.MILLISECONDS);
 
                 if (!_done && nextjob == 0) {
-                    Task task = _todo.take();
+                    ScheduledTask task = _todo.take();
                     _taskrunner.runTask(task);
 
                 }
@@ -159,7 +158,7 @@ public class SchedulerThread implements Runnable {
     private long nextJobTime() {
         assert _lock.isLocked();
 
-        Task job = _todo.peek();
+        ScheduledTask job = _todo.peek();
         if (job == null)
             return Long.MAX_VALUE;
 
@@ -170,10 +169,10 @@ public class SchedulerThread implements Runnable {
      * Remove the tasks of a given type from the list.
      * @param taskType type of task
      */
-    public void clearTasks(final Class<? extends Task> taskType) {
+    public void clearTasks(final Class<? extends ScheduledTask> taskType) {
         _lock.lock();
         try {
-            Iterator<Task> i = _todo.iterator();
+            Iterator<ScheduledTask> i = _todo.iterator();
 
             while (i.hasNext()) {
                 if (taskType.isAssignableFrom(i.next().getClass())) {

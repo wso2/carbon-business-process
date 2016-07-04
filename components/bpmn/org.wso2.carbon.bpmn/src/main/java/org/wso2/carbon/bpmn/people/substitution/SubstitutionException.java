@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.extensions.substitution;
+package org.wso2.carbon.bpmn.people.substitution;
 
 import org.activiti.engine.ActivitiException;
 

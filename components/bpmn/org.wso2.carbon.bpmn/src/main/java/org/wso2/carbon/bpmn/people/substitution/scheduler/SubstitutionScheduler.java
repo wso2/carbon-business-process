@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.substitution.scheduler;
+package org.wso2.carbon.bpmn.people.substitution.scheduler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.extensions.substitution.UserSubstitutionOperations;
+import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionOperations;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SimpleScheduler implements TaskRunner{
+public class SubstitutionScheduler implements ScheduledTaskRunner {
 
-    private static Log log = LogFactory.getLog(SimpleScheduler.class);
+    private static Log log = LogFactory.getLog(SubstitutionScheduler.class);
     private SchedulerThread _todo;
     private boolean _running;
     ExecutorService _exec;
@@ -38,18 +38,18 @@ public class SimpleScheduler implements TaskRunner{
      */
     long interval = BPMNConstants.DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES * 60 * 1000;
 
-    public SimpleScheduler(long interval) {
+    public SubstitutionScheduler(long interval) {
         _todo = new SchedulerThread(this);
         this.interval = interval;
     }
 
     @Override
-    public void runTask(final Task task) {
+    public void runTask(final ScheduledTask task) {
 
         _exec.submit(new Callable<Void>() {
             public Void call() throws Exception {
                 try {
-                    ((SchedulerTask) task).run();
+                    ((SchedulerScheduledTask) task).run();
                 } catch (Exception ex) {
                     log.error("Error during scheduled task execution for substitutes", ex);
                 }
@@ -67,7 +67,7 @@ public class SimpleScheduler implements TaskRunner{
             _exec = Executors.newCachedThreadPool();
         }
 
-        _todo.enqueue(new LoadImmediateTask(System.currentTimeMillis()));
+        _todo.enqueue(new LoadImmediateScheduledTask(System.currentTimeMillis()));
 
         _todo.start();
         _running = true;
@@ -78,18 +78,18 @@ public class SimpleScheduler implements TaskRunner{
             return;
 
         _todo.stop();
-        _todo.clearTasks(LoadImmediateTask.class);
+        _todo.clearTasks(LoadImmediateScheduledTask.class);
         _running = false;
     }
 
-    private abstract class SchedulerTask extends Task implements Runnable {
-        SchedulerTask(long schedDate) {
+    private abstract class SchedulerScheduledTask extends ScheduledTask implements Runnable {
+        SchedulerScheduledTask(long schedDate) {
             super(schedDate);
         }
     }
 
-    private class LoadImmediateTask extends SchedulerTask {
-        LoadImmediateTask(long schedDate) {
+    private class LoadImmediateScheduledTask extends SchedulerScheduledTask {
+        LoadImmediateScheduledTask(long schedDate) {
             super(schedDate);
         }
 
@@ -100,10 +100,10 @@ public class SimpleScheduler implements TaskRunner{
                 success = UserSubstitutionOperations.handleSheduledEvent();
             } finally {
                 if (success) {
-                    _todo.enqueue(new LoadImmediateTask(System.currentTimeMillis() + (long) (interval)));
+                    _todo.enqueue(new LoadImmediateScheduledTask(System.currentTimeMillis() + (long) (interval)));
                 } else {
                     log.debug("BPMN User Substitution scheduled event failed. Scheduling next event in 60 seconds");
-                    _todo.enqueue(new LoadImmediateTask(System.currentTimeMillis() + 1000 * 60));
+                    _todo.enqueue(new LoadImmediateScheduledTask(System.currentTimeMillis() + 1000 * 60));
                 }
 
             }

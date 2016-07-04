@@ -14,17 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.substitution.scheduler;
+package org.wso2.carbon.bpmn.people.substitution.scheduler;
 
-import java.util.Comparator;
+public interface ScheduledTaskRunner {
 
-public class JobComparatorByDate implements Comparator<Task> {
-
-    public int compare(Task o1, Task o2) {
-        long diff = o1.schedDate - o2.schedDate;
-        if (diff < 0) return -1;
-        if (diff > 0) return 1;
-        return 0;
-    }
-
+    public void runTask(ScheduledTask task);
 }

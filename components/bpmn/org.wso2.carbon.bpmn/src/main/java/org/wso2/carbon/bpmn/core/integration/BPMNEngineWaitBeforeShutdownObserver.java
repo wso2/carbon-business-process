@@ -21,18 +21,18 @@ import org.activiti.engine.impl.context.Context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.extensions.substitution.scheduler.SimpleScheduler;
+import org.wso2.carbon.bpmn.people.substitution.scheduler.SubstitutionScheduler;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
-public class BPMNEngineShutdown implements WaitBeforeShutdownObserver{
+public class BPMNEngineWaitBeforeShutdownObserver implements WaitBeforeShutdownObserver{
 
-    private static Log log = LogFactory.getLog(BPMNEngineShutdown.class);
+    private static Log log = LogFactory.getLog(BPMNEngineWaitBeforeShutdownObserver.class);
     private boolean status = false;
 
     @Override
     public void startingShutdown() {
         log.info("Shutting down activiti process engine");
-        SimpleScheduler scheduler = BPMNServerHolder.getInstance().getSimpleScheduler();
+        SubstitutionScheduler scheduler = BPMNServerHolder.getInstance().getSubstitutionScheduler();
         if (scheduler != null) {
             log.info("Shutting down the BPMN Substitution Scheduler");
             scheduler.stop();

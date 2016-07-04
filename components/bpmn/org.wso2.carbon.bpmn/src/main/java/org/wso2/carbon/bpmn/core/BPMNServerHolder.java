@@ -21,7 +21,7 @@ import org.activiti.engine.ProcessEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
-import org.wso2.carbon.bpmn.extensions.substitution.scheduler.SimpleScheduler;
+import org.wso2.carbon.bpmn.people.substitution.scheduler.SubstitutionScheduler;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 public final class BPMNServerHolder {
@@ -33,14 +33,14 @@ public final class BPMNServerHolder {
     private ProcessEngine engine = null;
     private TenantManager tenantManager = null;
     private RegistryService registryService = null;
-    private SimpleScheduler simpleScheduler = null;
+    private SubstitutionScheduler substitutionScheduler = null;
 
-    public SimpleScheduler getSimpleScheduler() {
-        return simpleScheduler;
+    public SubstitutionScheduler getSubstitutionScheduler() {
+        return substitutionScheduler;
     }
 
-    public void setSimpleScheduler(SimpleScheduler simpleScheduler) {
-        this.simpleScheduler = simpleScheduler;
+    public void setSubstitutionScheduler(SubstitutionScheduler substitutionScheduler) {
+        this.substitutionScheduler = substitutionScheduler;
     }
 
     private BPMNServerHolder() {

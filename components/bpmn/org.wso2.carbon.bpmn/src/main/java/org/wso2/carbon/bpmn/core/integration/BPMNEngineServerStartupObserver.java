@@ -21,13 +21,13 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
-import org.wso2.carbon.bpmn.extensions.substitution.scheduler.SimpleScheduler;
+import org.wso2.carbon.bpmn.people.substitution.scheduler.SubstitutionScheduler;
 import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.utils.CarbonUtils;
 
-public class BPMNEngineStart implements ServerStartupObserver {
+public class BPMNEngineServerStartupObserver implements ServerStartupObserver {
 
-    private static final Log log = LogFactory.getLog(BPMNServerHolder.class);
+    private static final Log log = LogFactory.getLog(BPMNEngineServerStartupObserver.class);
     public static final String TRUE = "true";
 
     @Override
@@ -47,8 +47,8 @@ public class BPMNEngineStart implements ServerStartupObserver {
             if (activationIntervalString != null) {
                 interval = Long.parseLong(activationIntervalString) * 60 * 1000;
             }
-            BPMNServerHolder.getInstance().setSimpleScheduler(new SimpleScheduler(interval));
-            BPMNServerHolder.getInstance().getSimpleScheduler().start();
+            BPMNServerHolder.getInstance().setSubstitutionScheduler(new SubstitutionScheduler(interval));
+            BPMNServerHolder.getInstance().getSubstitutionScheduler().start();
             log.info("BPMN Substitution scheduler started.");
         }
     }
