@@ -15,11 +15,17 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import org.activiti.engine.delegate.BpmnError;
+
 /**
  * Exception class to catch REST exceptions.
  */
-public class BPMNRESTException extends Exception {
-    public BPMNRESTException(String msg) {
-        super(msg);
+public class RESTClientException extends BpmnError {
+    public RESTClientException(String message) {
+        super(message);
+    }
+
+    public RESTClientException(String errorCode, String message) {
+        super(errorCode, message);
     }
 }

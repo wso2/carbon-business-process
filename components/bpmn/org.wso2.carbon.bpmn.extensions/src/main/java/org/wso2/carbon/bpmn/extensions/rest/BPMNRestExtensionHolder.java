@@ -30,11 +30,11 @@ public class BPMNRestExtensionHolder {
         return bpmnRestHolder;
     }
 
-    public synchronized RESTInvoker getRestInvoker() {
+    public RESTInvoker getRestInvoker() {
         return restInvoker;
     }
 
-    public void setRestInvoker(RESTInvoker restInvoker) {
+    public synchronized void setRestInvoker(RESTInvoker restInvoker) {
         this.restInvoker = restInvoker;
     }
 }

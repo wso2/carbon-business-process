@@ -650,11 +650,11 @@
                 <artifactId>org.wso2.carbon.bpmn</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
-           <!-- <dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.bpmn.rest</artifactId>
+                <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
                 <version>${carbon.business-process.version}</version>
-            </dependency>-->
+            </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpmn.ui</artifactId>

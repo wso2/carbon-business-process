@@ -26,6 +26,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -207,12 +208,23 @@ public class SOAPTask implements JavaDelegate {
                 String headerContent = headers.getValue(execution).toString();
                 OMElement headerElement = AXIOMUtil.stringToOM(headerContent);
                 sender.addHeader(headerElement);
+                if(log.isDebugEnabled()) {
+                    log.debug("Adding soap header " + headerContent);
+                }
             }
             //Adding the transfer encoding
             if (httpTransferEncoding != null) {
                 transferEncoding = httpTransferEncoding.getValue(execution).toString();
-                if (!transferEncoding.equalsIgnoreCase("chunked")) {
-                    options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
+                if (transferEncoding.equalsIgnoreCase("chunked")) {
+                    options.setProperty(HTTPConstants.CHUNKED, Boolean.TRUE);
+                    if(log.isDebugEnabled()) {
+                        log.debug("Enabling transfer encoding chunked ");
+                    }
+                } else {
+                    options.setProperty(HTTPConstants.CHUNKED, Boolean.FALSE);
+                    if(log.isDebugEnabled()) {
+                        log.debug("Disabling transfer encoding chunked ");
+                    }
                 }
             }
             sender.setOptions(options);
@@ -231,7 +243,8 @@ public class SOAPTask implements JavaDelegate {
             }
         } catch (AxisFault axisFault) {
             log.error("Axis2 Fault" , axisFault);
-            throw new SOAPException(SOAP_INVOKE_ERROR_CODE ,"Exception while getting response :" + axisFault.getMessage());
+            throw new SOAPException(SOAP_INVOKE_ERROR_CODE ,"Exception while getting response :" +
+                    axisFault.getMessage());
         } catch (XMLStreamException e) {
             log.error("XML Stream Exception" , e);
             throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "XMLStreamException  :" + e.getMessage());
