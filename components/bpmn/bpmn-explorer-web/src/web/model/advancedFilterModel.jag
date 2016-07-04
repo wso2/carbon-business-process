@@ -1,5 +1,5 @@
 <%/*<!--
- ~ Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -76,50 +76,41 @@ if (request.getQueryString() != null) {
     
 
         if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
-          
             vCollection["processInstanceId"] = requestParameters.processInstanceId;
         }
 
         if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
-            
             vCollection["processDefinitionId"] = requestParameters.processDefinitionNameLike;           
         }       
            
        if (requestParameters.createdBefore !== undefined && requestParameters.createdBefore.length > 0) {
-           
             vCollection["startedBefore"] = requestParameters.createdBefore;  
         }
 
         if (requestParameters.createdAfter !== undefined && requestParameters.createdAfter.length > 0) {
-           
             vCollection["startedAfter"] = requestParameters.createdAfter;  
         }      
        
        if (requestParameters.variableName !== undefined && requestParameters.variableName.length > 0 && 
             requestParameters.variableValue !== undefined && requestParameters.variableValue.length > 0) {
-
             var variableNames = requestParameters.variableName;      
             var values = requestParameters.variableValue;
             
             vCollection = {"variables":[]};
             if (typeof variableNames == 'string') {
-
                 vCollection.variables.push({
                             "name":variableNames,
                             "value":values,
                             "operation" : "equals"
                 });
-
             } else {               
                 for (var i = 0; i < variableNames.length; i++) {
-
                     if (variableNames[i] != null && variableNames[i] !== "") {                    
                           vCollection.variables.push({
                             "name":variableNames[i],
                             "value":values[i],
                             "operation" : "equals"
                         });
-                               
                     } else {
                          break;
                     }
@@ -132,49 +123,36 @@ if (request.getQueryString() != null) {
         vCollection["size"] = pageSize;
         vCollection["finished"] =  "true";
         vCollection["tenantId"] =  bpsTenantID;
-        bodyOfRequest= vCollection;          
-     
+        bodyOfRequest= vCollection;
         requestUrl = httpUrl + "/bpmn/query/historic-process-instances";
-       
-
     } else {
-            
         if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
-           
             vCollection["processInstanceId"] = requestParameters.processInstanceId;
         }
 
         if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
-             
             vCollection["processDefinitionId"] = requestParameters.processDefinitionNameLike;         
         }      
      
        if (requestParameters.variableName !== undefined && requestParameters.variableName.length > 0 && 
             requestParameters.variableValue !== undefined && requestParameters.variableValue.length > 0) {
-
             var variableNames = requestParameters.variableName;        
             var values = requestParameters.variableValue;
             vCollection = {"variables":[]};
             if (typeof variableNames == 'string') {
-
                 vCollection.variables.push({
                             "name":variableNames,
                             "value":values,
                             "operation" : "equals"
                 });
-
-            } else {            
-
+            } else {
                 for (var i = 0; i < variableNames.length; i++) {
-
-                    if (variableNames[i] != null && variableNames[i] !== "") {                  
-                       
-                          vCollection.variables.push({
+                    if (variableNames[i] != null && variableNames[i] !== "") {
+                       vCollection.variables.push({
                             "name":variableNames[i],
                             "value":values[i],
                             "operation" : "equals"
                         });
-                               
                     } else {
                          break;
                     }

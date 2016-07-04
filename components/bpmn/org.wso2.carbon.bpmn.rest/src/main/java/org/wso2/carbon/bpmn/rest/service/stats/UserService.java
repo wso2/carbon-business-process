@@ -21,6 +21,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.bpmn.rest.model.stats.*;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -43,11 +44,11 @@ import java.util.List;
 @Path("/userServices/")
 public class UserService {
     private static final Log log = LogFactory.getLog(UserService.class);
-    private static final String DOMAIN_OF_SUPER_TENANT = "carbon.super";
     private static final String ADDRESS_SIGN = "@";
     int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
     String strValOfTenantId = String.valueOf(tenantId);
     String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+    public static final String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     public UserService() {
     }
@@ -86,7 +87,7 @@ public class UserService {
             UserTaskCount userInfo = new UserTaskCount();
             userInfo.setUserName(u);
             String assignee;
-            if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+            if (tenantDomain.equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
                 assignee = u;
             } else {
                 assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
@@ -122,7 +123,7 @@ public class UserService {
             userInfo.setUserName(u);
 
             String assignee;
-            if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+            if (tenantDomain.equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
                 assignee = u;
             } else {
                 assignee = u.concat(ADDRESS_SIGN).concat(tenantDomain);
@@ -168,7 +169,7 @@ public class UserService {
         }
 
         String taskAssignee;
-        if (tenantDomain == DOMAIN_OF_SUPER_TENANT) {
+        if (tenantDomain.equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
             taskAssignee = assignee;
         } else {
             taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
@@ -176,7 +177,6 @@ public class UserService {
 
         ResponseHolder response = new ResponseHolder();
         List list = new ArrayList();
-        String[] MONTHS = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
         SimpleDateFormat ft = new SimpleDateFormat("M");
 
         InstanceStatPerMonth[] taskStatPerMonths = new InstanceStatPerMonth[12];
