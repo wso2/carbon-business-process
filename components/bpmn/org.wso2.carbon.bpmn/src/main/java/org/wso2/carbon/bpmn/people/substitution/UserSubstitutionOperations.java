@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.substitution;
+package org.wso2.carbon.bpmn.people.substitution;
 
 import org.activiti.engine.*;
 import org.activiti.engine.task.IdentityLink;
@@ -47,6 +47,7 @@ public class UserSubstitutionOperations {
     private static TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
     public static Integer activationInterval = null;
     public static final String LIST_SEPARATOR = ",";
+    public static final String TRUE = "true";
 
     /**
      * Persist the substitute info. Transitive substitute is not added here.
@@ -505,6 +506,18 @@ public class UserSubstitutionOperations {
         } else {
             return model.getTransitiveSub();
         }
+    }
+
+    public static boolean isSubstitutionFeatureEnabled() {
+        BPMNActivitiConfiguration activitiConfiguration = BPMNActivitiConfiguration.getInstance();
+        if (activitiConfiguration != null) {
+            String enabledString = activitiConfiguration
+                    .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG, BPMNConstants.SUBSTITUTION_ENABLED);
+            if (TRUE.equalsIgnoreCase(enabledString)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

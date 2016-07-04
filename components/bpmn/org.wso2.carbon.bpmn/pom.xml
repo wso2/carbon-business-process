@@ -138,7 +138,7 @@
                             version=${carbon.business-process.exp.pkg.version},
                             org.wso2.carbon.bpmn.core.deployment.*;
                             version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.extensions.substitution.*;
+                            org.wso2.carbon.bpmn.people.substitution.*;
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
