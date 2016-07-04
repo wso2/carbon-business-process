@@ -125,7 +125,6 @@ if (request.isSecure()) {//check whether the request is secure or not
             session.put('BPSSessionCookie' , cookie);
 
             //authenticate again via managment console login. Required for attachment handling
-            var mgtCookie = AuthenticateForAttachment(username, password);
             /*
             * TODO : Disabled Attachment authentication till we fix Jaggery CXRF issues. (JIRA :
             * https://wso2.org/jira/browse/BPS-1058 )
