@@ -54,4 +54,6 @@ public class BPMNConstants {
 	public static final String REST_CLIENT_CONFIG_ELEMENT = "restClientConfiguration";
 	public static final String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
 	public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
+
+    public static final String DATA_PUBLISHER_CONFIG_PATH = "bpmn/data_analytics_publisher/publisher_configuration";
 }

@@ -27,11 +27,12 @@ public class ProcessTerminationListener implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
+
         HistoryService historyService = delegateExecution.getEngineServices().getHistoryService();
         List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
         if (historicProcessInstances.size() == 1) {
             HistoricProcessInstance instance = historicProcessInstances.get(0);
-            BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().publishProcessEvent(instance);
+            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishProcessEvent(instance);
         }
     }
 }

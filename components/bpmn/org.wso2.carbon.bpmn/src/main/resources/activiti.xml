@@ -13,13 +13,6 @@
         <property name="mailServerHost" value="mail.my-corp.com"/>
         <property name="mailServerPort" value="5025"/>
 
-        <property name="postBpmnParseHandlers">
-            <list>
-                <bean class="org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessParseHandler" />
-                <bean class="org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskParseHandler" />
-            </list>
-        </property>
-
     </bean>
 
     <bean id="restClientConfiguration">

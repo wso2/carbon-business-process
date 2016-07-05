@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.analytics.publisher.listeners;
+package org.wso2.carbon.bpmn.analytics.publisher.handlers;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationListener;
+
+import java.util.List;
 
 public class ProcessParseHandler extends AbstractBpmnParseHandler {
 
@@ -33,11 +38,23 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler {
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, BaseElement baseElement) {
-        if (BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().isDataPublishingEnabled()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Associating process execution listener to publish events upon process completion...");
+        ProcessDefinitionEntity processDefinitionEntity = bpmnParse.getCurrentProcessDefinition();
+
+        // We have to check if the data publishing listener has already been associated at server startup.
+        ExecutionListener processTerminationListener = null;
+        List<ExecutionListener> endListeners = processDefinitionEntity.getExecutionListeners(PvmEvent.EVENTNAME_END);
+        if (endListeners != null) {
+            for (ExecutionListener listener : endListeners) {
+                if (listener instanceof ProcessTerminationListener) {
+                    processTerminationListener = listener;
+                }
             }
-            bpmnParse.getCurrentProcessDefinition().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
+        }
+        if (processTerminationListener == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Enabling data publishing for process: " + processDefinitionEntity.getName());
+            }
+            processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
         }
     }
 }

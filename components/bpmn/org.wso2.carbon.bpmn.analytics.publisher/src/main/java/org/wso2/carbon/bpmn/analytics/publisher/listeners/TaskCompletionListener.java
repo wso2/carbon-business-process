@@ -28,9 +28,7 @@ public class TaskCompletionListener implements TaskListener {
         HistoryService historyService = delegateTask.getExecution().getEngineServices().getHistoryService();
         HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(delegateTask.getId()).singleResult();
         if (taskInstance != null) {
-            BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().publishTaskEvent(taskInstance);
+            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishTaskEvent(taskInstance);
         }
-
-//        delegateTask.getExecution().getEngineServices().getRuntimeService().
     }
 }

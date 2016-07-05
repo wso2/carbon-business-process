@@ -25,10 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNInstance;
 import org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNProcess;
-import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceBPSFaultException;
-import org.wso2.carbon.bpmn.stub.BPMNDeploymentServiceStub;
-import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceBPSFaultException;
-import org.wso2.carbon.bpmn.stub.BPMNInstanceServiceStub;
+import org.wso2.carbon.bpmn.stub.*;
 import org.wso2.carbon.utils.xml.XMLPrettyPrinter;
 import sun.misc.BASE64Decoder;
 
@@ -49,8 +46,9 @@ import java.util.List;
 
 public class WorkflowServiceClient {
 
-    BPMNInstanceServiceStub instanceServiceStub = null;
-    BPMNDeploymentServiceStub deploymentServiceStub = null;
+    private BPMNInstanceServiceStub instanceServiceStub = null;
+    private BPMNDeploymentServiceStub deploymentServiceStub = null;
+
     private static Log log = LogFactory.getLog(WorkflowServiceClient.class);
     public WorkflowServiceClient(String cookie,
                                  String backendServerURL,

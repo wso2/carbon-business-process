@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.analytics.publisher.listeners;
+package org.wso2.carbon.bpmn.analytics.publisher.handlers;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
@@ -24,7 +24,9 @@ import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+import org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskCompletionListener;
+
+import java.util.List;
 
 public class TaskParseHandler extends AbstractBpmnParseHandler {
 
@@ -37,11 +39,22 @@ public class TaskParseHandler extends AbstractBpmnParseHandler {
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, BaseElement element) {
-        if (BPMNAnalyticsHolder.getInstance().getBpsDataPublisher().isDataPublishingEnabled()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Associating task listener to publish events upon task completion...");
+        TaskDefinition taskDefinition = (TaskDefinition) bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
+
+        // We have to check if data publishing listener has already been associated at server startup
+        TaskListener taskCompletionListener = null;
+        List<TaskListener> completionListeners = taskDefinition.getTaskListener(TaskListener.EVENTNAME_COMPLETE);
+        if (completionListeners != null) {
+            for (TaskListener listener : completionListeners) {
+                if (listener instanceof TaskCompletionListener) {
+                    taskCompletionListener = listener;
+                }
             }
-            TaskDefinition taskDefinition = (TaskDefinition) bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
+        }
+        if (taskCompletionListener == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Adding data publishing listener to task: " + taskDefinition.getKey());
+            }
             taskDefinition.addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
         }
     }
