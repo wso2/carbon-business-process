@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 
 /**
  * Provides REST service invocation support within BPMN processes. It invokes the REST service given by "serviceURL" or "serviceRef" parameters using
@@ -137,7 +138,7 @@ public class RESTTask implements JavaDelegate {
                     serviceURL.getValue(execution).toString());
         }
 
-        restInvoker = BPMNExtensionsComponent.getRestInvoker();
+        restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
 
         String output = "";
         String url = null;
@@ -172,7 +173,7 @@ public class RESTTask implements JavaDelegate {
                 }
                 Resource urlResource = registry.get(registryPath);
                 if (urlResource != null) {
-                    String uepContent = new String((byte[]) urlResource.getContent());
+                    String uepContent = new String((byte[]) urlResource.getContent(), Charset.defaultCharset());
 
                     UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
                     OMElement uepElement = AXIOMUtil.stringToOM(uepContent);

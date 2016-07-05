@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
+import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
 import org.wso2.carbon.bpmn.extensions.rest.RESTClientShutdownObserver;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -39,17 +40,17 @@ public class BPMNExtensionsComponent {
     private static Log log = LogFactory.getLog(BPMNExtensionsComponent.class);
     private static RegistryService registryService;
     private static BPMNEngineService engineService;
-    private static RESTInvoker restInvoker;
 
     protected void activate(ComponentContext ctxt) {
         BundleContext bundleContext = ctxt.getBundleContext();
-        restInvoker = new RESTInvoker();
+        RESTInvoker restInvoker = new RESTInvoker();
+        BPMNRestExtensionHolder.getInstance().setRestInvoker(restInvoker);
 
         if (log.isDebugEnabled()) {
             log.debug("Activated bpmn extensions component and configured rest invoker");
         }
 
-        //bundleContext.registerService(WaitBeforeShutdownObserver.class, new RESTClientShutdownObserver(), null);
+        bundleContext.registerService(WaitBeforeShutdownObserver.class, new RESTClientShutdownObserver(), null);
     }
 
     protected void deactivate(ComponentContext ctxt) {
@@ -62,7 +63,7 @@ public class BPMNExtensionsComponent {
         if (log.isDebugEnabled()) {
             log.debug("RegistryService bound to the BPMN Extensions component");
         }
-        BPMNExtensionsComponent.registryService = registryService;
+        BPMNExtensionsHolder.getInstance().setRegistryService(registryService);
 
     }
 
@@ -70,30 +71,27 @@ public class BPMNExtensionsComponent {
         if (log.isDebugEnabled()) {
             log.debug("RegistryService unbound from the BPMN Extensions component");
         }
-        BPMNExtensionsComponent.registryService = null;
+        BPMNExtensionsHolder.getInstance().setRegistryService(null);
     }
 
     protected void setBPMNEngineService(BPMNEngineService engineService) {
         if (log.isDebugEnabled()) {
             log.debug("BPMNEngineService bound to the BPMN Extensions component");
         }
-        BPMNExtensionsComponent.engineService = engineService;
+        BPMNExtensionsHolder.getInstance().setEngineService(engineService);
     }
 
     protected void unsetBPMNEngineService(BPMNEngineService engineService) {
-        BPMNExtensionsComponent.engineService = null;
+
     }
 
     public static RegistryService getRegistryService() {
-        return registryService;
+        return BPMNExtensionsHolder.getInstance().getRegistryService();
     }
 
     public static BPMNEngineService getEngineService() {
-        return engineService;
+        return BPMNExtensionsHolder.getInstance().getEngineService();
     }
 
-    public static RESTInvoker getRestInvoker() {
-        return restInvoker;
-    }
 }
 

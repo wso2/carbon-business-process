@@ -17,12 +17,18 @@ package org.wso2.carbon.bpmn.extensions.rest;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.HttpHost;
+import org.apache.commons.httpclient.auth.BasicScheme;
+import org.apache.commons.httpclient.util.EncodingUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
@@ -36,6 +42,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.MessageConstraints;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -51,6 +58,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -64,6 +72,7 @@ public class RESTInvoker {
     private int maxTotalConnections;
     private int maxTotalConnectionsPerRoute;
     private int connectionTimeout;
+    private int socketTimeout;
 
     private CloseableHttpClient client = null;
     private PoolingHttpClientConnectionManager connectionManager = null;
@@ -72,6 +81,7 @@ public class RESTInvoker {
         maxTotalConnectionsPerRoute = RESTConstants.MAX_TOTAL_CONNECTIONS_PER_ROUTE;
         maxTotalConnections = RESTConstants.MAX_TOTAL_CONNECTIONS;
         connectionTimeout = RESTConstants.CONNECTION_TIMEOUT;
+        socketTimeout = RESTConstants.SOCKET_TIMEOUT;
     }
 
     public RESTInvoker() {
@@ -101,24 +111,31 @@ public class RESTInvoker {
                         OMElement beanProp = (OMElement) beanProps.next();
                         String beanName = beanProp.getAttributeValue(new QName(null, "name"));
                         if (RESTConstants.REST_CLIENT_MAX_TOTAL_CONNECTIONS.equals(beanName)) {
-
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            maxTotalConnections = Integer.parseInt(value);
-
+                            if(value != null && !value.trim().equals("")) {
+                                maxTotalConnections = Integer.parseInt(value);
+                            }
                             if (log.isDebugEnabled()) {
                                 log.debug("Max total http connections " + maxTotalConnections);
                             }
-
                         } else if (RESTConstants.REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            maxTotalConnectionsPerRoute = Integer.parseInt(value);
-
+                            if(value != null && !value.trim().equals("")) {
+                                maxTotalConnectionsPerRoute = Integer.parseInt(value);
+                            }
                             if (log.isDebugEnabled()) {
                                 log.debug("Max total client connections per route " + maxTotalConnectionsPerRoute);
                             }
                         } else if (RESTConstants.REST_CLEINT_CONNECTION_TIMEOUT.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            connectionTimeout = Integer.parseInt(value);
+                            if(value != null && !value.trim().equals("")) {
+                                connectionTimeout = Integer.parseInt(value);
+                            }
+                        } else if(RESTConstants.REST_CLEINT_SOCKET_TIMEOUT.equals(beanName)) {
+                            String value = beanProp.getAttributeValue(new QName(null, "value"));
+                            if(value != null && !value.trim().equals("")) {
+                                socketTimeout = Integer.parseInt(value);
+                            }
                         }
                     }
                 }
@@ -134,36 +151,18 @@ public class RESTInvoker {
 
         parseConfiguration();
 
-        // Create message constraints
-        MessageConstraints messageConstraints = MessageConstraints.custom()
-                .setMaxHeaderCount(200)
-                .setMaxLineLength(10000)
-                .build();
-        // Create connection configuration
-        ConnectionConfig connectionConfig = ConnectionConfig.custom()
-                .setMalformedInputAction(CodingErrorAction.IGNORE)
-                .setUnmappableInputAction(CodingErrorAction.IGNORE)
-                .setCharset(Charset.defaultCharset())
-                .setMessageConstraints(messageConstraints)
-                .build();
-
         RequestConfig defaultRequestConfig = RequestConfig.custom()
                 .setExpectContinueEnabled(true)
-                .setTargetPreferredAuthSchemes(Arrays.asList(AuthSchemes.NTLM, AuthSchemes.DIGEST, AuthSchemes.BASIC))
-                .setProxyPreferredAuthSchemes(Arrays.asList(AuthSchemes.BASIC))
                 .setConnectTimeout(connectionTimeout)
+                .setSocketTimeout(socketTimeout)
                 .build();
-
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 
         connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setDefaultMaxPerRoute(maxTotalConnectionsPerRoute);
         connectionManager.setMaxTotal(maxTotalConnections);
         client = HttpClients.custom()
                 .setConnectionManager(connectionManager)
-                .setDefaultCredentialsProvider(credentialsProvider)
                 .setDefaultRequestConfig(defaultRequestConfig)
-                .setDefaultConnectionConfig(connectionConfig)
                 .build();
 
         if (log.isDebugEnabled()) {
@@ -175,37 +174,23 @@ public class RESTInvoker {
     }
 
     public void closeHttpClient() {
-        try {
-            client.close();
-            connectionManager.close();
-        } catch (IOException e) {
-            // Ignore
-            log.error("Error shutting down http client");
-        }
+        IOUtils.closeQuietly(client);
+        IOUtils.closeQuietly(connectionManager);
     }
 
     private CloseableHttpResponse sendReceiveRequest(HttpRequestBase requestBase, String username,
                                                      String password) throws IOException {
         CloseableHttpResponse response;
         if(username != null && !username.equals("") && password != null) {
-            response = client.execute(requestBase,
-                    getHttpClientContextWithCredentials(username, password));
+            String combinedCredentials = username + ":" + password;
+            byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes(StandardCharsets.UTF_8));
+            requestBase.addHeader("Authorization" , "Basic " + new String(encodedCredentials));
+
+            response = client.execute(requestBase);
         } else {
             response = client.execute(requestBase);
         }
         return response;
-    }
-
-    private HttpClientContext getHttpClientContextWithCredentials(String username, String password) {
-
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(new AuthScope(AuthScope.ANY_HOST,
-                        AuthScope.ANY_PORT, AuthScope.ANY_REALM, "basic"),
-                new UsernamePasswordCredentials(username, password));
-
-        HttpClientContext httpClientContext = HttpClientContext.create();
-        httpClientContext.setCredentialsProvider(credentialsProvider);
-        return httpClientContext;
     }
 
     private void processHeaderList(HttpRequestBase request, String headerList[]) {

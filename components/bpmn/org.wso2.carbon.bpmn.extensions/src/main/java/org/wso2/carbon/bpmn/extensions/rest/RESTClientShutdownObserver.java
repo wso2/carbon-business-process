@@ -16,17 +16,26 @@
 
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.extensions.internal.BPMNExtensionsComponent;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 public class RESTClientShutdownObserver implements WaitBeforeShutdownObserver {
+
+    private static Log log = LogFactory.getLog(RESTClientShutdownObserver.class);
+    private boolean status = false;
     @Override
     public void startingShutdown() {
-        BPMNExtensionsComponent.getRestInvoker().closeHttpClient();
+        BPMNRestExtensionHolder.getInstance().getRestInvoker().closeHttpClient();
+        if (log.isDebugEnabled()) {
+            log.debug("Shutting down rest invoker http client");
+        }
+        status = true;
     }
 
     @Override
     public boolean isTaskComplete() {
-        return false;
+        return status;
     }
 }
