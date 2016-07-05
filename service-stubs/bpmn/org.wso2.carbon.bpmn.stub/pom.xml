@@ -62,6 +62,7 @@
                                     <classpath refid="maven.runtime.classpath" />
                                     <arg line="-uri src/main/resources/BPMNUploaderService.wsdl -u -uw -o target/generated-sources -p org.wso2.carbon.bpmn.stub" />
                                 </java>
+
                             </tasks>
                         </configuration>
                     </execution>
@@ -96,7 +97,8 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Export-Package>
                             org.wso2.carbon.bpmn.stub.*,
-                            org.wso2.carbon.bpmn.core.mgt.model.xsd.*
+                            org.wso2.carbon.bpmn.core.mgt.model.xsd.*,
+                            org.wso2.carbon.bpmn.analytics.publisher.mgt.model.xsd.*
                         </Export-Package>
                         <Import-Package />
                         <DynamicImport-Package>*</DynamicImport-Package>

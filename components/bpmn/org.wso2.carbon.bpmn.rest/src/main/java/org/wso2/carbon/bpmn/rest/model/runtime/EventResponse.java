@@ -20,7 +20,10 @@ package org.wso2.carbon.bpmn.rest.model.runtime;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.wso2.carbon.bpmn.rest.common.DateToStringSerializer;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
 

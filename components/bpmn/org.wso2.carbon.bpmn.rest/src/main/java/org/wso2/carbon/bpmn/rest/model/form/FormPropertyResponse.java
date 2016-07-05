@@ -16,8 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.model.form;
 
-import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
-
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
