@@ -23,18 +23,13 @@ import org.apache.axis2.deployment.repository.util.DeploymentFileData;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.registry.api.Registry;
-import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.CarbonUtils;
-
-import javax.ws.rs.core.MediaType;
 import java.io.File;
 
 /**

@@ -20,7 +20,6 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.models.BPMNProcessInstance;
@@ -46,6 +45,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,6 +214,11 @@ public class AnalyticsPublisher {
         }
     }
 
+    /**
+     * Publish the separate event to the DAS for the process variables
+     *
+     * @param bpmnProcessInstance
+     */
     private void publishBPMNProcessInstanceProcVariablesEvent(BPMNProcessInstance bpmnProcessInstance) {
         String processDefinitionId = bpmnProcessInstance.getProcessDefinitionId();
         String processInstanceId = bpmnProcessInstance.getInstanceId();
@@ -224,23 +229,29 @@ public class AnalyticsPublisher {
             //get a list of names of variables which are configured for analytics from registry for that process, if
             // not already taken
             JSONArray configedProcessVariablesListJsonArray = null;
-            Map<String, ?> variableVals = new HashMap();
             if (mapOfProcessVariablesLists.get(processDefinitionId) == null) {
-                JSONObject dasConfigDetailsSavedInBPSregJOb = null;
-
-                dasConfigDetailsSavedInBPSregJOb = getDasConfigDetailsSavedInBPSreg(processDefinitionId);
-
+                JSONObject dasConfigDetailsSavedInBPSregJOb = getDASconfigDetailsSavedInBPSreg(processDefinitionId);
+                //do not publish the KPI event if DAS configurations are not done by the PC
+                if(dasConfigDetailsSavedInBPSregJOb == null){
+                    return;
+                }
                 configedProcessVariablesListJsonArray = dasConfigDetailsSavedInBPSregJOb
                         .getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
-
                 mapOfProcessVariablesLists.put(processDefinitionId, configedProcessVariablesListJsonArray);
-
-                String streamId = dasConfigDetailsSavedInBPSregJOb.getString("eventStreamId");
-                mapOfKPIstreamIdsOFProcesses.put(processDefinitionId, streamId);
+                eventStreamId = dasConfigDetailsSavedInBPSregJOb.getString("eventStreamId");
+                mapOfKPIstreamIdsOFProcesses.put(processDefinitionId, eventStreamId);
+            }else{
+                JSONObject dasConfigDetailsSavedInBPSregJOb = getDASconfigDetailsSavedInBPSreg(processDefinitionId);
+                //do not publish the KPI event if DAS configurations are not done by the PC
+                if(dasConfigDetailsSavedInBPSregJOb == null){
+                    return;
+                }
+                configedProcessVariablesListJsonArray = dasConfigDetailsSavedInBPSregJOb
+                        .getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
+                eventStreamId = mapOfKPIstreamIdsOFProcesses.get(processDefinitionId);
             }
 
             Map<String, Object> hitoricVariablesMap = new HashMap();
-            eventStreamId = mapOfKPIstreamIdsOFProcesses.get(processDefinitionId);
 
             HistoryService historyService = BPMNServerHolder.getInstance().getEngine().getHistoryService();
             final List<HistoricVariableInstance> historicVariableInstancesList = historyService
@@ -262,7 +273,7 @@ public class AnalyticsPublisher {
                 if (varValue != null) {
                     switch (varType) {
                     case "string":
-                        payload[i] = (String) varValue;
+                        payload[i] = varValue;
                         break;
                     case "int":
                         payload[i] = Integer.parseInt((String) varValue);
@@ -272,6 +283,8 @@ public class AnalyticsPublisher {
                         break;
                     case "boolean":
                         payload[i] = Boolean.parseBoolean((String) varValue);
+                        break;
+                    default:
                         break;
                     }
                 }
@@ -283,20 +296,22 @@ public class AnalyticsPublisher {
             boolean dataPublishingSuccess = dataPublisher.tryPublish(eventStreamId, getMeta(), null, payload);
             if (dataPublishingSuccess) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Published BPMN process instance event...  Process Instance Id :" + processInstanceId
+                    log.debug("Published BPMN process instance KPI event...  Process Instance Id :" + processInstanceId
                             + ", Process Definition Id:" + processDefinitionId + ", Published Event's Payload Data :"
                             + payload.toString());
                 }
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug(
-                            "Failed Publishing BPMN process instance event... Process Instance Id :" + processInstanceId
+                            "Failed Publishing BPMN process instance KPI event... Process Instance Id :" +
+                                    processInstanceId
                                     + ", Process Definition Id:" + processDefinitionId
                                     + ", Published Event's Payload Data :" + payload.toString());
                 }
             }
         } catch (RegistryException e) {
-            String strMsg = "Failed Publishing BPMN process instance event... Process Instance Id :" + processInstanceId
+            String strMsg = "Failed Publishing BPMN process instance KPI event... Process Instance Id :" +
+                    processInstanceId
                     + ", Process Definition Id:" + processDefinitionId + ", Published Event's Payload Data :" + payload
                     .toString();
             log.error(strMsg, e);
@@ -484,7 +499,15 @@ public class AnalyticsPublisher {
                 AnalyticsPublisherConstants.STREAM_VERSION);
     }
 
-    public JSONObject getDasConfigDetailsSavedInBPSreg(String processDefinitionId) throws RegistryException {
+    /**
+     * Get DAS configuration details (related to process variable analytics) saved in config registry for each
+     * process definitionId
+     *
+     * @param processDefinitionId
+     * @return
+     * @throws RegistryException
+     */
+    public JSONObject getDASconfigDetailsSavedInBPSreg(String processDefinitionId) throws RegistryException {
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
         try {
@@ -492,10 +515,14 @@ public class AnalyticsPublisher {
             RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
             Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
 
-            Resource processRegistryResource = configRegistry.get(resourcePath);
-            log.info("content:" + processRegistryResource.getContent().toString());
-            String dasConfigDetailsJSONStr = new String((byte[]) processRegistryResource.getContent());
-            return new JSONObject(dasConfigDetailsJSONStr);
+            if(configRegistry.resourceExists(resourcePath)) {
+                Resource processRegistryResource = configRegistry.get(resourcePath);
+                String dasConfigDetailsJSONStr = new String((byte[]) processRegistryResource.getContent(),
+                        StandardCharsets.UTF_8);
+                return new JSONObject(dasConfigDetailsJSONStr);
+            }else{
+                return null;
+            }
 
         } catch (RegistryException e) {
             String errMsg =

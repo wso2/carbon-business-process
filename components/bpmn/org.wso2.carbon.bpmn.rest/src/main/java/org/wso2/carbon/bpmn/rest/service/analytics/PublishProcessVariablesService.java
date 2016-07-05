@@ -45,7 +45,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
      */
     @POST @Path("/{processId}") @Consumes({ MediaType.APPLICATION_JSON,
             MediaType.TEXT_PLAIN }) public Response publishProcessVariables(@PathParam("processId") String processId,
-            String dasConfigDetailsJson) {//},@PathParam("processVariables") JSONString processVariablesJson){
+            String dasConfigDetailsJson) {
         if (log.isDebugEnabled()) {
             log.debug("Recieved analytics configuration details to from PC to BPS for Process ID:" + processId
                     + "\nRecieved Date:" + dasConfigDetailsJson);
@@ -58,14 +58,14 @@ import org.wso2.carbon.registry.core.service.RegistryService;
             String errMsg =
                     "Error in saving DAS Analytics Configuratios in BPS Config-Registry for process (PC Process-ID):"
                             + processId + "\n Details tried to save:" + dasConfigDetailsJson;
-            log.error(e.getMessage(), e);
+            log.error(errMsg, e);
             return Response.status(500).entity(e.getMessage()).build();
         }
         return Response.ok().build();
     }
 
     /**
-     * Save DAS configuration details (recieved from PC), in config registry
+     * Save DAS configuration details (received from PC), in config registry
      *
      * @param processId
      * @param dasConfigDetailsJSONString
@@ -92,5 +92,3 @@ import org.wso2.carbon.registry.core.service.RegistryService;
         }
     }
 }
-
-

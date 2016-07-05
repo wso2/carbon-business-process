@@ -148,18 +148,6 @@
         </jaxrs:providers>
     </jaxrs:server>
 
-    <!--<jaxrs:server id="processInstanceVariableService" address="/analytics">
-        <jaxrs:serviceBeans>
-            <bean class="org.wso2.carbon.bpmn.rest.service.analytics.ProcessInstanceVariableSevice"/>
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-            <ref bean="authenticationBean"/>
-            <ref bean="exceptionHandlerBean"/>
-            <ref bean="errorHandlerBean"/>
-            <ref bean="jacksonBean"/>
-        </jaxrs:providers>
-    </jaxrs:server>-->
-
     <jaxrs:server id="analyticsService" address="/analytics">
         <jaxrs:serviceBeans>
             <bean class="org.wso2.carbon.bpmn.rest.service.analytics.PublishProcessVariablesService"/>

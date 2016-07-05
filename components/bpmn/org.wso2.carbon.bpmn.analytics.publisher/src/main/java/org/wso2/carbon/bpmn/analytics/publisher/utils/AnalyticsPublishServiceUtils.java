@@ -35,12 +35,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.registry.core.service.RegistryService;
-
-import javax.ws.rs.core.MediaType;
-
 /**
  * AnalyticsPublishServiceUtils is used by the AnalyticsPublisher to fetch the BPMN process instances and the task instances
  */
@@ -310,76 +304,6 @@ public class AnalyticsPublishServiceUtils {
         }
         return time;
     }
-
-    /*public static void saveDASconfigInfoInConfigRegistry(String processId, String dasConfigDetailsJSONString)
-            throws RegistryException {
-
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
-        try {
-            JSONObject dasConfigDetailsJOb = new JSONObject(dasConfigDetailsJSONString);
-            String processDefinitionId = dasConfigDetailsJOb.getString(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID);
-
-            Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
-
-            //create a new resource (text file) to keep process variables
-            String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
-                    + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
-            if(!configRegistry.resourceExists(resourcePath)) {
-                Resource procVariableJsonResource = configRegistry.newResource();
-                procVariableJsonResource.setContent(dasConfigDetailsJSONString);
-                procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
-                configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/" + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME,
-                        procVariableJsonResource);
-            }
-        } catch (RegistryException e) {
-            String errMsg =
-                    "Error in saving DAS Analytics Configuratios in BPS Config Registry for process:" + processId
-                            + "\n Details tried to save:" + dasConfigDetailsJSONString;
-            throw new RegistryException(errMsg,e);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-   /* public ResponseHolder getAllProcesses() {
-        //Get a list of the deployed processes
-        List<ProcessDefinition> deployements = BPMNOSGIService.getRepositoryService().
-                createProcessDefinitionQuery().processDefinitionTenantId(str).list();
-        List listOfProcesses = new ArrayList<>();
-        ResponseHolder response = new ResponseHolder();
-        for (ProcessDefinition processDefinition : deployements) {
-            listOfProcesses.add(processDefinition.getId());
-        }
-
-        response.setData(listOfProcesses);
-        return response;
-    }*/
-
-   /* FileInputStream fileInputStream = null;
-    try {
-        org.wso2.carbon.registry.core.Resource latestHumanTaskArchive = configRegistry.newResource();
-        fileInputStream = new FileInputStream(humanTaskFile);
-        latestHumanTaskArchive.setContent(fileInputStream);
-        configRegistry.put(HumanTaskPackageRepositoryUtils.getHumanTaskPackageArchiveResourcePath
-                (humanTaskDeploymentUnit.getPackageName()), latestHumanTaskArchive);
-    } catch (FileNotFoundException ex) {
-        String errMsg = "HumanTask package zip file couldn't found on given location " +
-                humanTaskFile.getAbsolutePath();
-        throw new HumanTaskStoreException(errMsg, ex);
-    } catch (
-    org.wso2.carbon.registry.core.exceptions.RegistryException ex) {
-        String errMsg = "Exception occurred while adding latest archive to registry collection";
-        throw new org.wso2.carbon.registry.core.exceptions.RegistryException(errMsg, ex);
-    } finally {
-        if (fileInputStream != null) {
-            try {
-                fileInputStream.close();
-            } catch (IOException e) {
-                log.warn("Cannot close file input stream.", e);
-            }
-        }
-    }*/
 }
 
 
