@@ -64,17 +64,17 @@ public class UserSubstitutionTaskListener implements TaskListener{
                 }
             }
         }
-    }
+   }
 
     /**
      * Return the active Substitute or return BPMNConstants.TRANSITIVE_SUB_UNDEFINED
      * @param assignee
      */
     private String getSubstituteIfEnabled (String assignee) {
-        TransitivityResolver resolver = new TransitivityResolver(dao, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
+        TransitivityResolver resolver = new TransitivityResolver(dao);
         //retrieve Substitute info
         SubstitutesDataModel substitutesDataModel = getImmediateSubstitute(MultitenantUtils.getTenantAwareUsername(assignee));
-        if(substitutesDataModel != null) {
+        if(substitutesDataModel != null && isSubstitutionActive(substitutesDataModel)) {
             if (!resolver.transitivityEnabled || substitutesDataModel.getTransitiveSub() == null || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(substitutesDataModel.getTransitiveSub())) {
                 return substitutesDataModel.getSubstitute();
             } else {
@@ -89,5 +89,21 @@ public class UserSubstitutionTaskListener implements TaskListener{
 
     private SubstitutesDataModel getImmediateSubstitute(String assignee){
         return dao.selectSubstituteInfo(assignee, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
+    }
+
+    /**
+     * Check if an active substitution available for given substitute info
+     * @param substitutesDataModel
+     * @return true if substitution active
+     */
+    private boolean isSubstitutionActive(SubstitutesDataModel substitutesDataModel) {
+        long startDate = substitutesDataModel.getSubstitutionStart().getTime();
+        long endDate = substitutesDataModel.getSubstitutionEnd().getTime();
+        long currentTime = System.currentTimeMillis();
+
+        if (substitutesDataModel.isEnabled() && (startDate < currentTime) && (endDate > currentTime)) {
+            return true;
+        }
+        return false;
     }
 }

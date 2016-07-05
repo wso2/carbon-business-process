@@ -351,4 +351,19 @@ public class ActivitiDAO {
 
         return managementService.executeCustomSql(customSqlExecution);
     }
+
+    /**
+     * Return the list of tenant Ids that has substitutions.
+     * @return tenant ID list
+     */
+    public List<Integer> getTenantsList() {
+        CustomSqlExecution<SubstitutesMapper, List<Integer>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<Integer>>(SubstitutesMapper.class) {
+                    public List<Integer> execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.getDistinctTenantList();
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
 }

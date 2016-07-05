@@ -26,7 +26,7 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
-import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionOperations;
+import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteInfoCollectionResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteInfoResponse;
@@ -59,7 +59,7 @@ public class UserSubstitutionService {
     public static final String ADD_PERMISSION = "add";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
-    private static final boolean subsFeatureEnabled = UserSubstitutionOperations.isSubstitutionFeatureEnabled();
+    private static final boolean subsFeatureEnabled = UserSubstitutionUtils.isSubstitutionFeatureEnabled();
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 
@@ -111,15 +111,16 @@ public class UserSubstitutionService {
                 endTime = validateEndTime(request.getEndTime(), requestStartTime);
             }
 
-            if (!UserSubstitutionOperations.validateTasksList(request.getTaskList(), assignee)) {
+            if (!UserSubstitutionUtils.validateTasksList(request.getTaskList(), assignee)) {
                 throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
 
+            int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
             //at this point, substitution is enabled by default
-            UserSubstitutionOperations
-                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList());
+            UserSubstitutionUtils
+                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList(), tenantId);
 
-            return Response.created(new URI("substitute/" + assignee)).build();
+            return Response.created(new URI("substitutes/" + assignee)).build();
 
         } catch (UserStoreException e) {
             throw new ActivitiException("Error accessing User Store", e);
@@ -163,12 +164,13 @@ public class UserSubstitutionService {
                 endTime = validateEndTime(request.getEndTime(), requestStartTime);
             }
 
-            if (!UserSubstitutionOperations.validateTasksList(request.getTaskList(), assignee)) {
+            if (!UserSubstitutionUtils.validateTasksList(request.getTaskList(), assignee)) {
                 throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
 
-            UserSubstitutionOperations
-                    .handleUpdateSubstitute(assignee, substitute, startTime, endTime, true, request.getTaskList());
+            int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+            UserSubstitutionUtils
+                    .handleUpdateSubstitute(assignee, substitute, startTime, endTime, true, request.getTaskList(), tenantId);
             return Response.ok().build();
 
         } catch (UserStoreException e) {
@@ -195,7 +197,8 @@ public class UserSubstitutionService {
             }
             String assignee = getRequestedAssignee(user);
             String substitute = validateAndGetSubstitute(request.getSubstitute(), assignee);
-            UserSubstitutionOperations.handleChangeSubstitute(assignee, substitute);
+            int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+            UserSubstitutionUtils.handleChangeSubstitute(assignee, substitute, tenantId);
         } catch (UserStoreException e) {
             throw new ActivitiException("Error accessing User Store", e);
         }
@@ -212,7 +215,8 @@ public class UserSubstitutionService {
     @Path("/{user}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getSubstitute(@PathParam("user") String user) {
-        SubstitutesDataModel model = UserSubstitutionOperations.getSubstituteOfUser(user);
+        int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+        SubstitutesDataModel model = UserSubstitutionUtils.getSubstituteOfUser(user, tenantId);
         if (model != null) {
             SubstituteInfoResponse response = new SubstituteInfoResponse();
             response.setSubstitute(model.getSubstitute());
@@ -267,7 +271,8 @@ public class UserSubstitutionService {
         //validate pagination parameters
         validatePaginationParams(queryMap);
 
-        List<PaginatedSubstitutesDataModel> dataModelList = UserSubstitutionOperations.querySubstitutions(queryMap);
+        int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+        List<PaginatedSubstitutesDataModel> dataModelList = UserSubstitutionUtils.querySubstitutions(queryMap, tenantId);
         SubstituteInfoCollectionResponse collectionResponse = new SubstituteInfoCollectionResponse();
         List<SubstituteInfoResponse> responseList = new ArrayList<>();
 

@@ -132,9 +132,13 @@ public class SchedulerThread implements Runnable {
         while (!_done) {
             _lock.lock();
             try {
+                boolean wait = false;
                 long nextjob;
                 while ((nextjob = nextJobTime()) > 0 && !_done)
-                    _activity.await(nextjob, TimeUnit.MILLISECONDS);
+                    wait = _activity.await(nextjob, TimeUnit.MILLISECONDS);
+                    if (__log.isDebugEnabled()) {
+                        __log.debug("waiting for next job : " + wait);
+                    }
 
                 if (!_done && nextjob == 0) {
                     ScheduledTask task = _todo.take();

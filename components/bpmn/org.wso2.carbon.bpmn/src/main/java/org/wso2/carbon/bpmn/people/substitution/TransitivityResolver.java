@@ -27,18 +27,16 @@ import java.util.Map;
 
 public class TransitivityResolver {
 
-    private static final Log log = LogFactory.getLog(UserSubstitutionOperations.class);
+    private static final Log log = LogFactory.getLog(TransitivityResolver.class);
 
-    private int tenantId;
     private ActivitiDAO dao;
     public boolean transitivityEnabled = BPMNConstants.SUBSTITUTION_TRANSITIVITY_DEFAULT;
     protected Map<String, SubstitutesDataModel> subsMap;
 
     private TransitivityResolver() {}
 
-    protected TransitivityResolver(ActivitiDAO activitiDAO, int tenantId) {
+    protected TransitivityResolver(ActivitiDAO activitiDAO) {
         this.dao = activitiDAO;
-        this.tenantId = tenantId;
         initConfig();
     }
 
@@ -70,7 +68,7 @@ public class TransitivityResolver {
      * @param isScheduler - if true, Continues to resolve even if transitivity unresolvable and do not persisis
      * @return false if unresolvable state found while forced resolve disabled
      */
-    protected synchronized boolean resolveTransitiveSubs(boolean isScheduler) {
+    protected synchronized boolean resolveTransitiveSubs(boolean isScheduler, int tenantId) {
         if (transitivityEnabled) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
             for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
@@ -103,7 +101,7 @@ public class TransitivityResolver {
      * Check if the given user unavailability affects the existing transitivity.
      * @param user - user getting unavailable
      */
-    public boolean isResolvingRequired(String user) {
+    public boolean isResolvingRequired(String user, int tenantId) {
 
         if (transitivityEnabled) {
             if (dao.countUserAsSubstitute(user, tenantId) > 0) {
@@ -158,23 +156,7 @@ public class TransitivityResolver {
         subsMap.put(substituteDataModel.getUser(), model);
     }
 
-    /**
-     * Check if an active substitution available for given substitute info
-     * @param substitutesDataModel
-     * @return true if substitution active
-     */
-    private boolean isSubstitutionActive(SubstitutesDataModel substitutesDataModel) {
-        long startDate = substitutesDataModel.getSubstitutionStart().getTime();
-        long endDate = substitutesDataModel.getSubstitutionEnd().getTime();
-        long currentTime = System.currentTimeMillis();
-
-        if (substitutesDataModel.isEnabled() && (startDate < currentTime) && (endDate > currentTime)) {
-            return true;
-        }
-        return false;
-    }
-
-    protected synchronized boolean resolveSubstituteForSingleUser(SubstitutesDataModel dataModel) {
+    protected boolean resolveSubstituteForSingleUser(SubstitutesDataModel dataModel, int tenantId) {
         if (transitivityEnabled) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);
             SubstitutesDataModel subDataModel = dao.selectSubstituteInfo(dataModel.getSubstitute(), tenantId);
