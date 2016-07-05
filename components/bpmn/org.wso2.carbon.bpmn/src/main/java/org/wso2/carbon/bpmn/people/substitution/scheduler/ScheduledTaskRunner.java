@@ -1,8 +1,9 @@
 /*
- * Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * WSO2 Inc. licenses this file to you under the Apache License, 
+ * Version 2.0 (the "License"); you may not use this file except 
+ * in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -13,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.rest;
+package org.wso2.carbon.bpmn.people.substitution.scheduler;
 
-public class BPMNRESTException extends Exception {
-    public BPMNRESTException(String msg) {
-        super(msg);
-    }
+public interface ScheduledTaskRunner {
+
+    public void runTask(ScheduledTask task);
 }
