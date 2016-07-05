@@ -49,7 +49,7 @@ public class BPMNExtensionsComponent {
             log.debug("Activated bpmn extensions component and configured rest invoker");
         }
 
-        bundleContext.registerService(WaitBeforeShutdownObserver.class, new RESTClientShutdownObserver(), null);
+        //bundleContext.registerService(WaitBeforeShutdownObserver.class, new RESTClientShutdownObserver(), null);
     }
 
     protected void deactivate(ComponentContext ctxt) {

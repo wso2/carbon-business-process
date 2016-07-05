@@ -149,7 +149,7 @@ public class RESTInvoker {
 
         RequestConfig defaultRequestConfig = RequestConfig.custom()
                 .setExpectContinueEnabled(true)
-                .setTargetPreferredAuthSchemes(Arrays.asList(AuthSchemes.NTLM, AuthSchemes.DIGEST))
+                .setTargetPreferredAuthSchemes(Arrays.asList(AuthSchemes.NTLM, AuthSchemes.DIGEST, AuthSchemes.BASIC))
                 .setProxyPreferredAuthSchemes(Arrays.asList(AuthSchemes.BASIC))
                 .setConnectTimeout(connectionTimeout)
                 .build();
@@ -182,6 +182,18 @@ public class RESTInvoker {
             // Ignore
             log.error("Error shutting down http client");
         }
+    }
+
+    private CloseableHttpResponse sendReceiveRequest(HttpRequestBase requestBase, String username,
+                                                     String password) throws IOException {
+        CloseableHttpResponse response;
+        if(username != null && !username.equals("") && password != null) {
+            response = client.execute(requestBase,
+                    getHttpClientContextWithCredentials(username, password));
+        } else {
+            response = client.execute(requestBase);
+        }
+        return response;
     }
 
     private HttpClientContext getHttpClientContextWithCredentials(String username, String password) {
@@ -227,7 +239,7 @@ public class RESTInvoker {
         try {
             httpGet = new HttpGet(uri);
             processHeaderList(httpGet, headerList);
-            response = client.execute(httpGet, getHttpClientContextWithCredentials(username, password));
+            response = sendReceiveRequest(httpGet, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             if (log.isTraceEnabled()) {
                 log.trace("Invoked GET " + uri.toString() + " - Response message: " + output);
@@ -264,7 +276,7 @@ public class RESTInvoker {
             httpPost = new HttpPost(uri);
             httpPost.setEntity(new StringEntity(payload));
             processHeaderList(httpPost, headerList);
-            response = client.execute(httpPost, getHttpClientContextWithCredentials(username, password));
+            response = sendReceiveRequest(httpPost, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             if (log.isTraceEnabled()) {
                 log.trace("Invoked POST " + uri.toString() + " - Input payload: " + payload + " - Response message: " + output);
@@ -302,7 +314,7 @@ public class RESTInvoker {
             httpPut = new HttpPut(uri);
             httpPut.setEntity(new StringEntity(payload));
             processHeaderList(httpPut, headerList);
-            response = client.execute(httpPut, getHttpClientContextWithCredentials(username, password));
+            response = sendReceiveRequest(httpPut, username, password);
             if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 201 ||
                     response.getStatusLine().getStatusCode() == 202) {
 
@@ -344,7 +356,7 @@ public class RESTInvoker {
         try {
             httpDelete = new HttpDelete(uri);
             processHeaderList(httpDelete, headerList);
-            response = client.execute(httpDelete, getHttpClientContextWithCredentials(username, password));
+            response = sendReceiveRequest(httpDelete, username, password);
             if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 202) {
                 output = IOUtils.toString(response.getEntity().getContent());
             } else {
