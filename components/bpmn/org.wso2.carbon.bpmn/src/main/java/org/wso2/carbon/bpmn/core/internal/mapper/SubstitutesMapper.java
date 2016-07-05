@@ -41,7 +41,7 @@ public interface SubstitutesMapper {
     final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
             + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
     final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
-            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = TRUE AND now() > SUBSTITUTION_START AND now() < SUBSTITUTION_END";
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = TRUE";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
     final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
@@ -61,6 +61,7 @@ public interface SubstitutesMapper {
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
             " TENANT_ID = #{tenantId}" +
             " ORDER BY ${sort} ${order} </script>";
+    final String SELECT_DISTINCT_TENANT_LIST = "SELECT DISTINCT TENANT_ID FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE;
 
     /**
      * Insert new row in ACT_BPS_SUBSTITUTES table
@@ -137,6 +138,7 @@ public interface SubstitutesMapper {
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
             @Result(property = "enabled", column = "ENABLED"),
+            @Result(property = "enabled", column = "ENABLED"),
             @Result(property = "taskList", column = "TASK_LIST")
     })
     Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId);
@@ -203,4 +205,11 @@ public interface SubstitutesMapper {
             @Result(property = "taskList", column = "TASK_LIST")
     })
     List<PaginatedSubstitutesDataModel> querySubstitutesWithoutEnabled(RowBounds rowBounds, PaginatedSubstitutesDataModel substitutesDataModel);
+
+    /**
+     * Return a list of distinct tenant IDs in the substitute tables
+     * @return List<Integer> List of Distinct tenant IDs
+     */
+    @Select(SELECT_DISTINCT_TENANT_LIST)
+    List<Integer> getDistinctTenantList();
 }
