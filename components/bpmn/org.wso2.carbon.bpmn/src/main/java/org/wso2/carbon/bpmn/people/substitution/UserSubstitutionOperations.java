@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.extensions.substitution;
+package org.wso2.carbon.bpmn.people.substitution;
 
 import org.activiti.engine.*;
 import org.activiti.engine.task.IdentityLink;
@@ -47,6 +47,8 @@ public class UserSubstitutionOperations {
     private static TransitivityResolver resolver = new TransitivityResolver(activitiDAO, tenantId);
     public static Integer activationInterval = null;
     public static final String LIST_SEPARATOR = ",";
+    public static final String TRUE = "true";
+    private static Boolean substitutionFeatureEnabled = null;
 
     /**
      * Persist the substitute info. Transitive substitute is not added here.
@@ -71,6 +73,9 @@ public class UserSubstitutionOperations {
             dataModel.setUser(assignee);
             dataModel.setSubstitute(MultitenantUtils.getTenantAwareUsername(substitute));
             dataModel.setSubstitutionStart(startDate);
+            if (endDate == null) {
+                endDate = new Date(Long.MAX_VALUE);
+            }
             dataModel.setSubstitutionEnd(endDate);
             dataModel.setEnabled(true); //by default enabled
             dataModel.setCreated(new Date());
@@ -201,7 +206,7 @@ public class UserSubstitutionOperations {
                 taskQuery.taskId(taskId);
                 taskQuery.taskAssignee(assignee);
                 List<Task> tasks = taskQuery.list();//this should return a task if valid
-                if (tasks == null) {
+                if (tasks == null || tasks.isEmpty()) {
                     return false;
                 }
             }
@@ -243,6 +248,9 @@ public class UserSubstitutionOperations {
     }
 
     private static void addAsCandidate(final List<Task> taskList, final String substitute) {
+        if (taskList == null || taskList.isEmpty()) {
+            return;
+        }
         Thread reassignThread = new Thread() {
 
             public void run() {
@@ -257,8 +265,25 @@ public class UserSubstitutionOperations {
     public static void handleUpdateSubstitute(String assignee, String substitute, Date startTime, Date endTime,
             boolean enabled, List<String> taskList) {
         SubstitutesDataModel existingSubInfo = activitiDAO.selectSubstituteInfo(assignee, tenantId);
-        String taskListString = getTaskListString(taskList);
+
+
         if (existingSubInfo != null) {
+
+            //need to put existing values for null columns, if not existing data may replace by Null
+            if (startTime == null) {
+                startTime = existingSubInfo.getSubstitutionStart();
+            }
+
+            if (endTime == null) {
+                endTime = existingSubInfo.getSubstitutionEnd();
+            }
+
+            String taskListString = getTaskListString(taskList);
+
+            if (taskList == null) {
+                taskListString = existingSubInfo.getTaskList();
+            }
+
             SubstitutesDataModel dataModel = updateSubstituteInfo(assignee, substitute, startTime, endTime,
                     taskListString);
 
@@ -295,7 +320,7 @@ public class UserSubstitutionOperations {
             Date endTime, String taskListString) {
         SubstitutesDataModel dataModel = new SubstitutesDataModel();
         dataModel.setUser(assignee);
-        dataModel.setSubstitute(MultitenantUtils.getTenantAwareUsername(substitute));
+        dataModel.setSubstitute(substitute);
         dataModel.setSubstitutionStart(startTime);
         dataModel.setSubstitutionEnd(endTime);
         dataModel.setEnabled(true); //by default enabled
@@ -452,7 +477,7 @@ public class UserSubstitutionOperations {
             }
         }
 
-        return true;
+        return result;
 
     }
 
@@ -505,6 +530,21 @@ public class UserSubstitutionOperations {
         } else {
             return model.getTransitiveSub();
         }
+    }
+
+    public static boolean isSubstitutionFeatureEnabled() {
+        if (substitutionFeatureEnabled == null) {
+            substitutionFeatureEnabled = false;
+            BPMNActivitiConfiguration activitiConfiguration = BPMNActivitiConfiguration.getInstance();
+            if (activitiConfiguration != null) {
+                String enabledString = activitiConfiguration
+                        .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG, BPMNConstants.SUBSTITUTION_ENABLED);
+                if (TRUE.equalsIgnoreCase(enabledString)) {
+                    substitutionFeatureEnabled = true;
+                }
+            }
+        }
+        return substitutionFeatureEnabled;
     }
 
 }

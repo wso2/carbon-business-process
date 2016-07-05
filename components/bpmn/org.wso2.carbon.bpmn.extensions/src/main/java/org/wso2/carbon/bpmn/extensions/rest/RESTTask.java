@@ -16,7 +16,6 @@
 package org.wso2.carbon.bpmn.extensions.rest;
 
 import com.jayway.jsonpath.JsonPath;
-import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -27,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.RegistryType;
+import org.wso2.carbon.bpmn.extensions.internal.BPMNExtensionsComponent;
 import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
@@ -37,6 +36,7 @@ import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Provides REST service invocation support within BPMN processes. It invokes the REST service given by "serviceURL" or "serviceRef" parameters using
@@ -133,17 +133,12 @@ public class RESTTask implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         if (log.isDebugEnabled()) {
-            log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " + serviceURL.getValue(execution).toString());
+            log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " +
+                    serviceURL.getValue(execution).toString());
         }
-        try {
-            restInvoker = new RESTInvoker();
-        } catch (XMLStreamException e) {
-            log.error("XMLStream Exception when initializing the rest invoker", e);
-            throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
-        } catch (IOException e) {
-            log.error("I/O Exception when initializing the rest invoker", e);
-            throw new BpmnError(REST_INVOKE_ERROR, e.getMessage());
-        }
+
+        restInvoker = BPMNExtensionsComponent.getRestInvoker();
+
         String output = "";
         String url = null;
         String bUsername = null;
@@ -165,10 +160,13 @@ public class RESTTask implements JavaDelegate {
                     registryPath = resourcePath.substring(CONFIGURATION_REGISTRY_PREFIX.length());
                 } else {
                     String msg = "Registry type is not specified for service reference in " +
-                            getTaskDetails(execution) + ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
-                    throw new BPMNRESTException(msg);
+                            getTaskDetails(execution) +
+                            ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
+                    throw new RESTClientException(msg);
                 }
-                Registry registry = CarbonContext.getThreadLocalCarbonContext().getRegistry(RegistryType.SYSTEM_CONFIGURATION);
+                String tenantId = execution.getTenantId();
+                Registry registry = BPMNExtensionsComponent.getRegistryService().getLocalRepository(Integer.parseInt(tenantId));
+                //UserRegistry configSystemRegistry = BPMNExtensionsComponent.getRegistryService().getLocalRepository();
                 if (log.isDebugEnabled()) {
                     log.debug("Reading endpoint from registry location: " + registryPath + " for task " + getTaskDetails(execution));
                 }
@@ -183,13 +181,14 @@ public class RESTTask implements JavaDelegate {
                     bUsername = uep.getAuthorizationUserName();
                     bPassword = uep.getAuthorizationPassword();
                 } else {
-                    String resourceNotFoundMeg = "Endpoint resource " + registryPath + " is not found. Failed to execute REST invocation in task " + getTaskDetails(execution);
-                    throw new BPMNRESTException(resourceNotFoundMeg);
+                    String errorMsg = "Endpoint resource " + registryPath +
+                            " is not found. Failed to execute REST invocation in task " + getTaskDetails(execution);
+                    throw new RESTClientException(errorMsg);
                 }
             } else {
                 String urlNotFoundErrorMsg = "Service URL is not provided for " +
                         getTaskDetails(execution) + ". serviceURL or serviceRef must be provided.";
-                throw new BPMNRESTException(urlNotFoundErrorMsg);
+                throw new RESTClientException(urlNotFoundErrorMsg);
             }
 
             if (headers != null) {
@@ -199,17 +198,17 @@ public class RESTTask implements JavaDelegate {
 
             if (POST_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
-                output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
+                output = this.restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else if (GET_METHOD.equals(method.getValue(execution).toString().trim())) {
-                output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
+                output = this.restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
             } else if (PUT_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
-                output = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
+                output = this.restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else if (DELETE_METHOD.equals(method.getValue(execution).toString().trim())) {
-                output = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
+                output = this.restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
             } else {
-                String unsupportedOperationMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
-                throw new BPMNRESTException(unsupportedOperationMsg);
+                String errorMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
+                throw new RESTClientException(errorMsg);
             }
 
             if (outputVariable != null) {
@@ -238,12 +237,13 @@ public class RESTTask implements JavaDelegate {
                 String outputNotFoundErrorMsg = "An output variable or outmappings is not provided. " +
                         "Either an output variable or outmappings  must be provided to save " +
                         "the response.";
-                throw new BPMNRESTException(outputNotFoundErrorMsg);
+                throw new RESTClientException(outputNotFoundErrorMsg);
             }
-        } catch (Exception e) {
-            String errorMessage = "Failed to execute " + method.getValue(execution).toString() + " " + url + " within task " + getTaskDetails(execution);
+        } catch (RegistryException | XMLStreamException | URISyntaxException | IOException e) {
+            String errorMessage = "Failed to execute " + method.getValue(execution).toString() +
+                    " " + url + " within task " + getTaskDetails(execution);
             log.error(errorMessage, e);
-            throw new BpmnError(REST_INVOKE_ERROR, errorMessage);
+            throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         }
     }
 

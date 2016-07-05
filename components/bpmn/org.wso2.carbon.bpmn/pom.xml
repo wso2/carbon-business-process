@@ -89,6 +89,14 @@
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -138,7 +146,7 @@
                             version=${carbon.business-process.exp.pkg.version},
                             org.wso2.carbon.bpmn.core.deployment.*;
                             version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.extensions.substitution.*;
+                            org.wso2.carbon.bpmn.people.substitution.*;
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,

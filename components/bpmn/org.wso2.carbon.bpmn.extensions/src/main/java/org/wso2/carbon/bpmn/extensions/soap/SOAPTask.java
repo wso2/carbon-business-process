@@ -26,6 +26,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,8 +50,8 @@ import java.util.List;
  * Transfer-Encoding: chunked (set as the default value)
  * Example :
  * <serviceTask id="servicetask3" name="SOAP Task"
- *  activiti:class="org.wso2.carbon.bpmn.extensions.soap.SOAPTask"
- *  activiti:extensionId="org.wso2.bps.tooling.bpmn.extensions.soapTask.SOAPTask">
+ * activiti:class="org.wso2.carbon.bpmn.extensions.soap.SOAPTask"
+ * activiti:extensionId="org.wso2.bps.tooling.bpmn.extensions.soapTask.SOAPTask">
  * <extensionElements>
  * <activiti:field name="serviceURL">
  * <activiti:expression>${serviceURL eg: http://localhost:9763/services/HelloService }</activiti:expression>
@@ -146,7 +147,7 @@ public class SOAPTask implements JavaDelegate {
             Header connectionHeader = new Header();
             if (httpConnection != null) {
                 connection = httpConnection.getValue(execution).toString();
-                if(connection != null && !connection.trim().equals("Keep-Alive")) {
+                if (connection != null && !connection.trim().equals("Keep-Alive")) {
                     log.debug("Setting Keep-Alive header ");
                     connectionHeader.setName("Connection");
                     connectionHeader.setValue(connection);
@@ -167,13 +168,13 @@ public class SOAPTask implements JavaDelegate {
                         if (pair.length == 1) {
                             additionalHeader.setName(pair[0]);
                             additionalHeader.setValue("");
-                            if(log.isDebugEnabled()) {
+                            if (log.isDebugEnabled()) {
                                 log.debug("Adding transport headers " + pair[0]);
                             }
                         } else {
                             additionalHeader.setName(pair[0]);
                             additionalHeader.setValue(pair[1]);
-                            if(log.isDebugEnabled()) {
+                            if (log.isDebugEnabled()) {
                             }
                         }
                         headerList.add(additionalHeader);
@@ -185,7 +186,7 @@ public class SOAPTask implements JavaDelegate {
             //Adding the soap action
             if (soapAction != null) {
                 action = soapAction.getValue(execution).toString();
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug("Setting soap action " + soapAction);
                 }
             }
@@ -207,12 +208,23 @@ public class SOAPTask implements JavaDelegate {
                 String headerContent = headers.getValue(execution).toString();
                 OMElement headerElement = AXIOMUtil.stringToOM(headerContent);
                 sender.addHeader(headerElement);
+                if (log.isDebugEnabled()) {
+                    log.debug("Adding soap header " + headerContent);
+                }
             }
             //Adding the transfer encoding
             if (httpTransferEncoding != null) {
                 transferEncoding = httpTransferEncoding.getValue(execution).toString();
-                if (!transferEncoding.equalsIgnoreCase("chunked")) {
-                    options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
+                if (transferEncoding.equalsIgnoreCase("chunked")) {
+                    options.setProperty(HTTPConstants.CHUNKED, Boolean.TRUE);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Enabling transfer encoding chunked ");
+                    }
+                } else {
+                    options.setProperty(HTTPConstants.CHUNKED, Boolean.FALSE);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Disabling transfer encoding chunked ");
+                    }
                 }
             }
             sender.setOptions(options);
@@ -230,10 +242,11 @@ public class SOAPTask implements JavaDelegate {
                 throw new SOAPException(SOAP_INVOKE_ERROR_CODE, outputNotFoundErrorMsg);
             }
         } catch (AxisFault axisFault) {
-            log.error("Axis2 Fault" , axisFault);
-            throw new SOAPException(SOAP_INVOKE_ERROR_CODE ,"Exception while getting response :" + axisFault.getMessage());
+            log.error("Axis2 Fault", axisFault);
+            throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "Exception while getting response :" +
+                    axisFault.getMessage());
         } catch (XMLStreamException e) {
-            log.error("XML Stream Exception" , e);
+            log.error("XML Stream Exception", e);
             throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "XMLStreamException  :" + e.getMessage());
         }
     }

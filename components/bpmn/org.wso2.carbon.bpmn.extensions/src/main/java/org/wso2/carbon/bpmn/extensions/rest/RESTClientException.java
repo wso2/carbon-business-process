@@ -15,26 +15,17 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import org.activiti.engine.delegate.BpmnError;
+
 /**
- * Holder class for the REST Extension
+ * Exception class to catch REST exceptions.
  */
-public class BPMNRestExtensionHolder {
-
-    private static final BPMNRestExtensionHolder bpmnRestHolder = new BPMNRestExtensionHolder();
-
-    private RESTInvoker restInvoker = null;
-
-    private BPMNRestExtensionHolder() {}
-
-    public static BPMNRestExtensionHolder getInstance() {
-        return bpmnRestHolder;
+public class RESTClientException extends BpmnError {
+    public RESTClientException(String message) {
+        super(message);
     }
 
-    public synchronized RESTInvoker getRestInvoker() {
-        return restInvoker;
-    }
-
-    public void setRestInvoker(RESTInvoker restInvoker) {
-        this.restInvoker = restInvoker;
+    public RESTClientException(String errorCode, String message) {
+        super(errorCode, message);
     }
 }

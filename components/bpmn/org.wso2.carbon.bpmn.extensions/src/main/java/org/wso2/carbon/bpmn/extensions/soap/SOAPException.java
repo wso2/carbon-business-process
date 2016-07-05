@@ -15,7 +15,6 @@
  */
 package org.wso2.carbon.bpmn.extensions.soap;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 
 /**
