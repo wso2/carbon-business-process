@@ -21,8 +21,6 @@ public interface RESTConstants {
     String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
     String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
     String REST_CLEINT_CONNECTION_TIMEOUT = "connectionTimeout";
-
-
     int MAX_TOTAL_CONNECTIONS = 100;
     int MAX_TOTAL_CONNECTIONS_PER_ROUTE = 100;
     int CONNECTION_TIMEOUT = 120;

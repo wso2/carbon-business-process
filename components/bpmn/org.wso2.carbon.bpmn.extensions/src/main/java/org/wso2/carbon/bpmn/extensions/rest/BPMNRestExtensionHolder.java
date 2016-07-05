@@ -24,7 +24,8 @@ public class BPMNRestExtensionHolder {
 
     private RESTInvoker restInvoker = null;
 
-    private BPMNRestExtensionHolder() {}
+    private BPMNRestExtensionHolder() {
+    }
 
     public static BPMNRestExtensionHolder getInstance() {
         return bpmnRestHolder;

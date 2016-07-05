@@ -38,12 +38,11 @@ public class BPMNExtensionsComponent {
     private static Log log = LogFactory.getLog(BPMNExtensionsComponent.class);
     private static RegistryService registryService;
     private static BPMNEngineService engineService;
+    private static RESTInvoker restInvoker;
 
     protected void activate(ComponentContext ctxt) {
 
-        RESTInvoker restInvoker = new RESTInvoker();
-        BPMNRestExtensionHolder holder = BPMNRestExtensionHolder.getInstance();
-        holder.setRestInvoker(restInvoker);
+        restInvoker = new RESTInvoker();
 
         if (log.isDebugEnabled()) {
             log.debug("Activated bpmn extensions component and configured rest invoker");
@@ -83,11 +82,15 @@ public class BPMNExtensionsComponent {
     }
 
     public static RegistryService getRegistryService() {
-        return  registryService;
+        return registryService;
     }
 
     public static BPMNEngineService getEngineService() {
         return engineService;
+    }
+
+    public static RESTInvoker getRestInvoker() {
+        return restInvoker;
     }
 }
 

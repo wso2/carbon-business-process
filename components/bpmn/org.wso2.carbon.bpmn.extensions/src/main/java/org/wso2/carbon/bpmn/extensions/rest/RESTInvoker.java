@@ -74,14 +74,14 @@ public class RESTInvoker {
         connectionTimeout = RESTConstants.CONNECTION_TIMEOUT;
     }
 
-    public RESTInvoker(){
+    public RESTInvoker() {
         configureHttpClient();
     }
 
     private void parseConfiguration() {
         String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
         String activitiConfigPath = carbonConfigDirPath + File.separator +
-                                        BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+                BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
         File configFile = new File(activitiConfigPath);
 
         try {
@@ -105,7 +105,7 @@ public class RESTInvoker {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
                             maxTotalConnections = Integer.parseInt(value);
 
-                            if(log.isDebugEnabled()) {
+                            if (log.isDebugEnabled()) {
                                 log.debug("Max total http connections " + maxTotalConnections);
                             }
 
@@ -113,10 +113,10 @@ public class RESTInvoker {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
                             maxTotalConnectionsPerRoute = Integer.parseInt(value);
 
-                            if(log.isDebugEnabled()) {
+                            if (log.isDebugEnabled()) {
                                 log.debug("Max total client connections per route " + maxTotalConnectionsPerRoute);
                             }
-                        } else if(RESTConstants.REST_CLEINT_CONNECTION_TIMEOUT.equals(beanName)) {
+                        } else if (RESTConstants.REST_CLEINT_CONNECTION_TIMEOUT.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
                             connectionTimeout = Integer.parseInt(value);
                         }
@@ -124,7 +124,7 @@ public class RESTInvoker {
                 }
             }
         } catch (IOException | XMLStreamException e) {
-            log.error("Error in processing http connection settings, using default settings" , e);
+            log.error("Error in processing http connection settings, using default settings", e);
         }
 
 
@@ -211,6 +211,7 @@ public class RESTInvoker {
 
     /**
      * Invokes the http GET method
+     *
      * @param uri        endpoint/service url
      * @param headerList header list
      * @param username   username for authentication
@@ -226,7 +227,7 @@ public class RESTInvoker {
         try {
             httpGet = new HttpGet(uri);
             processHeaderList(httpGet, headerList);
-            response = client.execute(httpGet, getHttpClientContextWithCredentials(username , password));
+            response = client.execute(httpGet, getHttpClientContextWithCredentials(username, password));
             output = IOUtils.toString(response.getEntity().getContent());
             if (log.isTraceEnabled()) {
                 log.trace("Invoked GET " + uri.toString() + " - Response message: " + output);
@@ -245,6 +246,7 @@ public class RESTInvoker {
 
     /**
      * Invokes the http POST method
+     *
      * @param uri        endpoint/service url
      * @param headerList header list
      * @param username   username for authentication
@@ -262,7 +264,7 @@ public class RESTInvoker {
             httpPost = new HttpPost(uri);
             httpPost.setEntity(new StringEntity(payload));
             processHeaderList(httpPost, headerList);
-            response = client.execute(httpPost , getHttpClientContextWithCredentials(username, password));
+            response = client.execute(httpPost, getHttpClientContextWithCredentials(username, password));
             output = IOUtils.toString(response.getEntity().getContent());
             if (log.isTraceEnabled()) {
                 log.trace("Invoked POST " + uri.toString() + " - Input payload: " + payload + " - Response message: " + output);
@@ -270,12 +272,12 @@ public class RESTInvoker {
             EntityUtils.consume(response.getEntity());
 
         } finally {
-                if (response != null) {
-                    IOUtils.closeQuietly(response);
-                }
-                if (httpPost != null) {
-                    httpPost.releaseConnection();
-                }
+            if (response != null) {
+                IOUtils.closeQuietly(response);
+            }
+            if (httpPost != null) {
+                httpPost.releaseConnection();
+            }
         }
         return output;
     }
@@ -300,7 +302,7 @@ public class RESTInvoker {
             httpPut = new HttpPut(uri);
             httpPut.setEntity(new StringEntity(payload));
             processHeaderList(httpPut, headerList);
-            response = client.execute(httpPut, getHttpClientContextWithCredentials(username , password));
+            response = client.execute(httpPut, getHttpClientContextWithCredentials(username, password));
             if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 201 ||
                     response.getStatusLine().getStatusCode() == 202) {
 
@@ -342,7 +344,7 @@ public class RESTInvoker {
         try {
             httpDelete = new HttpDelete(uri);
             processHeaderList(httpDelete, headerList);
-            response = client.execute(httpDelete, getHttpClientContextWithCredentials(username , password));
+            response = client.execute(httpDelete, getHttpClientContextWithCredentials(username, password));
             if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 202) {
                 output = IOUtils.toString(response.getEntity().getContent());
             } else {

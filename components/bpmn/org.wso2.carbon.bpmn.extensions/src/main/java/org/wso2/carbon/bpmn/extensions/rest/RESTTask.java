@@ -139,7 +139,7 @@ public class RESTTask implements JavaDelegate {
                     serviceURL.getValue(execution).toString());
         }
 
-        restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
+        restInvoker = BPMNExtensionsComponent.getRestInvoker();
 
         String output = "";
         String url = null;
