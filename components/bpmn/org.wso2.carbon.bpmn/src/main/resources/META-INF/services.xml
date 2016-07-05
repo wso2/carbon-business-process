@@ -54,7 +54,7 @@
             /permission/admin/manage/bpmn,/permission/admin/manage/bpmn/uploader
         </parameter>
     </service>
-    
+
     <parameter name="adminService" locked="true">true</parameter>
     <parameter name="hiddenService" locked="true">true</parameter>
 </serviceGroup>
