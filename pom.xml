@@ -1601,10 +1601,15 @@
         <!--geronimo-ejb_2.1_spec.version>1.1.0.wso2v1</geronimo-ejb_2.1_spec.version-->
         <derby.wso2.version>10.3.2.1wso2v1</derby.wso2.version>
         <version.javax.servlet>3.0.0.v201112011016</version.javax.servlet>
-        <!-- <orbit.version.restlet>2.2.1.wso2v1</orbit.version.restlet>-->
         <orbit.ode.version>1.3.5-wso2v16</orbit.ode.version>
         <mybatis.version>3.2.5</mybatis.version>
+        <joda.time.version>2.1</joda.time.version>
+        <snakeyaml.version>1.13</snakeyaml.version>
+        <org.wso2.orbit.org.tinyjee.jgraphx.version>1.10.4.1.wso2v1</org.wso2.orbit.org.tinyjee.jgraphx.version>
+        <commons.io.version>2.0.1</commons.io.version>
+        <commons.fileupload.version>1.2.2</commons.fileupload.version>
         <jsonpath.wso2.version>1.2.0.wso2v1</jsonpath.wso2.version>
+        <json.smart.version>2.2</json.smart.version>
 
 
         <!-- Servlet API -->
