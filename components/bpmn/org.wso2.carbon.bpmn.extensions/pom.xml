@@ -109,7 +109,11 @@
                     <instructions>
                         <Bundle-Vendor>WSO2</Bundle-Vendor>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Private-Package>
+                            org.wso2.carbon.bpmn.extensions.internal
+                        </Private-Package>
                         <Export-Package>
+                            !org.wso2.carbon.bpmn.extensions.internal,
                             org.wso2.carbon.bpmn.extensions.*
                         </Export-Package>
                         <Import-Package>

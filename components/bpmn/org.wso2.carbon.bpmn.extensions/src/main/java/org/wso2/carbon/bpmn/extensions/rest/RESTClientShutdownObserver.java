@@ -16,12 +16,13 @@
 
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import org.wso2.carbon.bpmn.extensions.internal.BPMNExtensionsComponent;
 import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 public class RESTClientShutdownObserver implements WaitBeforeShutdownObserver {
     @Override
     public void startingShutdown() {
-        BPMNRestExtensionHolder.getInstance().getRestInvoker().closeHttpClient();
+        BPMNExtensionsComponent.getRestInvoker().closeHttpClient();
     }
 
     @Override

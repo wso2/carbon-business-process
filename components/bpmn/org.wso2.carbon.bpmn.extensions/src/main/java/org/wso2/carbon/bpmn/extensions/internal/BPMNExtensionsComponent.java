@@ -18,12 +18,13 @@ package org.wso2.carbon.bpmn.extensions.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
-import org.wso2.carbon.bpmn.extensions.rest.BPMNRestExtensionHolder;
+import org.wso2.carbon.bpmn.extensions.rest.RESTClientShutdownObserver;
 import org.wso2.carbon.bpmn.extensions.rest.RESTInvoker;
 import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpel.BPMNExtensionsComponent" immediate="true"
@@ -41,12 +42,14 @@ public class BPMNExtensionsComponent {
     private static RESTInvoker restInvoker;
 
     protected void activate(ComponentContext ctxt) {
-
+        BundleContext bundleContext = ctxt.getBundleContext();
         restInvoker = new RESTInvoker();
 
         if (log.isDebugEnabled()) {
             log.debug("Activated bpmn extensions component and configured rest invoker");
         }
+
+        bundleContext.registerService(WaitBeforeShutdownObserver.class, new RESTClientShutdownObserver(), null);
     }
 
     protected void deactivate(ComponentContext ctxt) {
