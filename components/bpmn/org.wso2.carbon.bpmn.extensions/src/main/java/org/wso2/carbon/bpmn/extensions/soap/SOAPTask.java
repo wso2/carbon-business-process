@@ -92,7 +92,7 @@ public class SOAPTask implements JavaDelegate {
      */
     private static final String SOAP12_VERSION = "soap12";
     private static final String SOAP11_VERSION = "soap11";
-    private static final String SOAP_INVOKE_ERROR_CODE = "SoapClientInvokeError";
+    private static final String SOAP_INVOKE_ERROR_CODE = "SOAP_CLIENT_INVOKE_ERROR";
 
     private Expression serviceURL;
     private Expression payload;

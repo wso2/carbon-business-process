@@ -114,7 +114,7 @@ public class RESTTask implements JavaDelegate {
 
     private static final String GOVERNANCE_REGISTRY_PREFIX = "gov:/";
     private static final String CONFIGURATION_REGISTRY_PREFIX = "conf:/";
-    private static final String REST_INVOKE_ERROR = "RestInvokeError";
+    private static final String REST_INVOKE_ERROR = "REST_CLIENT_INVOKE_ERROR";
     private static final String GET_METHOD = "GET";
     private static final String POST_METHOD = "POST";
     private static final String PUT_METHOD = "PUT";

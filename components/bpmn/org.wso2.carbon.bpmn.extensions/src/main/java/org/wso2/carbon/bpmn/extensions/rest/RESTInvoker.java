@@ -95,7 +95,7 @@ public class RESTInvoker {
                         String beanName = beanProp.getAttributeValue(new QName(null, "name"));
                         if (RESTConstants.REST_CLIENT_MAX_TOTAL_CONNECTIONS.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            if(value != null && !value.trim().equals("")) {
+                            if (value != null && !value.trim().equals("")) {
                                 maxTotalConnections = Integer.parseInt(value);
                             }
                             if (log.isDebugEnabled()) {
@@ -103,7 +103,7 @@ public class RESTInvoker {
                             }
                         } else if (RESTConstants.REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            if(value != null && !value.trim().equals("")) {
+                            if (value != null && !value.trim().equals("")) {
                                 maxTotalConnectionsPerRoute = Integer.parseInt(value);
                             }
                             if (log.isDebugEnabled()) {
@@ -111,12 +111,12 @@ public class RESTInvoker {
                             }
                         } else if (RESTConstants.REST_CLEINT_CONNECTION_TIMEOUT.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            if(value != null && !value.trim().equals("")) {
+                            if (value != null && !value.trim().equals("")) {
                                 connectionTimeout = Integer.parseInt(value);
                             }
-                        } else if(RESTConstants.REST_CLEINT_SOCKET_TIMEOUT.equals(beanName)) {
+                        } else if (RESTConstants.REST_CLEINT_SOCKET_TIMEOUT.equals(beanName)) {
                             String value = beanProp.getAttributeValue(new QName(null, "value"));
-                            if(value != null && !value.trim().equals("")) {
+                            if (value != null && !value.trim().equals("")) {
                                 socketTimeout = Integer.parseInt(value);
                             }
                         }
@@ -164,10 +164,10 @@ public class RESTInvoker {
     private CloseableHttpResponse sendReceiveRequest(HttpRequestBase requestBase, String username,
                                                      String password) throws IOException {
         CloseableHttpResponse response;
-        if(username != null && !username.equals("") && password != null) {
+        if (username != null && !username.equals("") && password != null) {
             String combinedCredentials = username + ":" + password;
             byte[] encodedCredentials = Base64.encodeBase64(combinedCredentials.getBytes(StandardCharsets.UTF_8));
-            requestBase.addHeader("Authorization" , "Basic " + new String(encodedCredentials));
+            requestBase.addHeader("Authorization", "Basic " + new String(encodedCredentials));
 
             response = client.execute(requestBase);
         } else {
@@ -247,7 +247,8 @@ public class RESTInvoker {
             response = sendReceiveRequest(httpPost, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             if (log.isTraceEnabled()) {
-                log.trace("Invoked POST " + uri.toString() + " - Input payload: " + payload + " - Response message: " + output);
+                log.trace("Invoked POST " + uri.toString() +
+                        " - Input payload: " + payload + " - Response message: " + output);
             }
             EntityUtils.consume(response.getEntity());
 

@@ -24,6 +24,11 @@ public class BPMNExtensionsHolder {
     private static BPMNExtensionsHolder holder = new BPMNExtensionsHolder();
 
     private RegistryService registryService;
+    private BPMNEngineService engineService;
+
+    public static BPMNExtensionsHolder getInstance() {
+        return holder;
+    }
 
     public BPMNEngineService getEngineService() {
         return engineService;
@@ -31,12 +36,6 @@ public class BPMNExtensionsHolder {
 
     public void setEngineService(BPMNEngineService engineService) {
         this.engineService = engineService;
-    }
-
-    private BPMNEngineService engineService;
-
-    public static BPMNExtensionsHolder getInstance() {
-        return holder;
     }
 
     public RegistryService getRegistryService() {

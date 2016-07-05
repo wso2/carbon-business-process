@@ -41,6 +41,22 @@ public class BPMNExtensionsComponent {
     private static RegistryService registryService;
     private static BPMNEngineService engineService;
 
+    public static RegistryService getRegistryService() {
+        return BPMNExtensionsHolder.getInstance().getRegistryService();
+    }
+
+    protected void setRegistryService(RegistryService registryService) {
+        if (log.isDebugEnabled()) {
+            log.debug("RegistryService bound to the BPMN Extensions component");
+        }
+        BPMNExtensionsHolder.getInstance().setRegistryService(registryService);
+
+    }
+
+    public static BPMNEngineService getEngineService() {
+        return BPMNExtensionsHolder.getInstance().getEngineService();
+    }
+
     protected void activate(ComponentContext ctxt) {
         BundleContext bundleContext = ctxt.getBundleContext();
         RESTInvoker restInvoker = new RESTInvoker();
@@ -59,14 +75,6 @@ public class BPMNExtensionsComponent {
         }
     }
 
-    protected void setRegistryService(RegistryService registryService) {
-        if (log.isDebugEnabled()) {
-            log.debug("RegistryService bound to the BPMN Extensions component");
-        }
-        BPMNExtensionsHolder.getInstance().setRegistryService(registryService);
-
-    }
-
     protected void unsetRegistryService(RegistryService registryService) {
         if (log.isDebugEnabled()) {
             log.debug("RegistryService unbound from the BPMN Extensions component");
@@ -83,14 +91,6 @@ public class BPMNExtensionsComponent {
 
     protected void unsetBPMNEngineService(BPMNEngineService engineService) {
 
-    }
-
-    public static RegistryService getRegistryService() {
-        return BPMNExtensionsHolder.getInstance().getRegistryService();
-    }
-
-    public static BPMNEngineService getEngineService() {
-        return BPMNExtensionsHolder.getInstance().getEngineService();
     }
 
 }
