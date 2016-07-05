@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationListener;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskCompletionListener;
-import org.wso2.carbon.bpmn.extensions.rest.BPMNRESTException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNRestException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 

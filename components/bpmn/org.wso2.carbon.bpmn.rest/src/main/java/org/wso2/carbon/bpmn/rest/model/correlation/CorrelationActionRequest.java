@@ -17,7 +17,6 @@
 package org.wso2.carbon.bpmn.rest.model.correlation;
 
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
-import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionActionRequest;
 
 import javax.xml.bind.annotation.*;
