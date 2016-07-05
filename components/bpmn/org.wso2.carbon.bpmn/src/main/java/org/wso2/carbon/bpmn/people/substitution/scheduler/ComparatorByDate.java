@@ -16,9 +16,10 @@
  */
 package org.wso2.carbon.bpmn.people.substitution.scheduler;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class ComparatorByDate implements Comparator<ScheduledTask> {
+public class ComparatorByDate implements Comparator<ScheduledTask>, Serializable {
 
     public int compare(ScheduledTask o1, ScheduledTask o2) {
         long diff = o1.schedDate - o2.schedDate;

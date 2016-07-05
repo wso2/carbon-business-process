@@ -19,11 +19,12 @@ package org.wso2.carbon.bpmn.people.substitution.scheduler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionOperations;
+import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SubstitutionScheduler implements ScheduledTaskRunner {
 
@@ -46,7 +47,7 @@ public class SubstitutionScheduler implements ScheduledTaskRunner {
     @Override
     public void runTask(final ScheduledTask task) {
 
-        _exec.submit(new Callable<Void>() {
+        Future future =_exec.submit(new Callable<Void>() {
             public Void call() throws Exception {
                 try {
                     ((SchedulerScheduledTask) task).run();
@@ -56,6 +57,10 @@ public class SubstitutionScheduler implements ScheduledTaskRunner {
                 return null;
             }
         });
+
+        if (log.isDebugEnabled()) {
+            log.debug("Scheduled task : " + task.toString() +", completed : " + future.isDone());
+        }
 
     }
 
@@ -97,7 +102,7 @@ public class SubstitutionScheduler implements ScheduledTaskRunner {
             boolean success = false;
             try {
                 log.debug("Executing BPMN User Substitution scheduled event");
-                success = UserSubstitutionOperations.handleSheduledEvent();
+                success = UserSubstitutionUtils.handleScheduledEvent();
             } finally {
                 if (success) {
                     _todo.enqueue(new LoadImmediateScheduledTask(System.currentTimeMillis() + (long) (interval)));
