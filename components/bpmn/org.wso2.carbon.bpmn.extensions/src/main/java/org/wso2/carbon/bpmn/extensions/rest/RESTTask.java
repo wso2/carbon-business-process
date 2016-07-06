@@ -217,7 +217,7 @@ public class RESTTask implements JavaDelegate {
 
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
-                execution.setVariable(outVarName, output);
+                execution.setVariableLocal(outVarName, output);
             } else if (outputMappings != null) {
                 try {
                     new JSONObject(output);
