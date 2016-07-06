@@ -366,4 +366,37 @@ public class ActivitiDAO {
 
         return managementService.executeCustomSql(customSqlExecution);
     }
+
+    /**
+     * Disable or enable the substitution.
+     * @param enable - true to enable, false to disable
+     * @param assignee - assignee of the substitution record
+     * @param tenantId - assignee's tenant id
+     * @return updated rpw count
+     */
+    public int enableSubstitution(final boolean enable, final String assignee, final int tenantId) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.enableSubstitution(enable, assignee, tenantId);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Select enabled but date expired substitute info for given tenant
+     * @param tenantId
+     * @return Map<User, SubstitutesDataModel>
+     */
+    public Map<String, SubstitutesDataModel> getEnabledExpiredRecords(final int tenantId) {
+        CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectEnabledExpiredRecords(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
 }

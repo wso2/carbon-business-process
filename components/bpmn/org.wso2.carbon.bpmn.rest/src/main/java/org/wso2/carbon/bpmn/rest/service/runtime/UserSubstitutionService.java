@@ -28,10 +28,7 @@ import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
 import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteInfoCollectionResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteInfoResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteRequest;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstitutionRequest;
+import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -56,9 +53,11 @@ public class UserSubstitutionService {
 
     private static final String ASCENDING = "asc";
     private static final String DESCENDING = "desc";
-    public static final String ADD_PERMISSION = "add";
+    private static final String ADD_PERMISSION = "add";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
+    private static final String TRUE = "true";
+    private static final String FALSE = "false";
     private static final boolean subsFeatureEnabled = UserSubstitutionUtils.isSubstitutionFeatureEnabled();
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
@@ -168,6 +167,7 @@ public class UserSubstitutionService {
                 throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
 
+
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
             UserSubstitutionUtils
                     .handleUpdateSubstitute(assignee, substitute, startTime, endTime, true, request.getTaskList(), tenantId);
@@ -231,6 +231,11 @@ public class UserSubstitutionService {
 
     }
 
+    /**
+     * Query the substitution records based on substitute, assignee and enabled or disabled.
+     * Pagination parameters, start, size, sort, order are allowed.
+     * @return paginated list of substitution info records
+     */
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -295,6 +300,39 @@ public class UserSubstitutionService {
         return Response.ok(collectionResponse).build();
 
     }
+
+    /**
+     * Change the status of a substitution record.
+     *
+     * @param user : assignee of the substitution
+     * @param request : format {"action" : "true/false"}
+     * @return HTTP 200 upon success
+     * @throws UserStoreException
+     */
+    @POST
+    @Path("/{user}/disable")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response disableSubstitution(@PathParam("user") String user, RestActionRequest request)
+            throws UserStoreException {
+        String assignee = getRequestedAssignee(user);
+        String action = request.getAction();
+        if (action != null) {
+            int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+            if (action.trim().equalsIgnoreCase(TRUE)) {
+                UserSubstitutionUtils.disableSubstitution(true, assignee, tenantId);
+            } else if (action.trim().equalsIgnoreCase(FALSE)) {
+                UserSubstitutionUtils.disableSubstitution(false, assignee, tenantId);
+            } else {
+                throw new ActivitiIllegalArgumentException("Invalid disable action : " + action + " specified");
+            }
+        } else {
+            throw new ActivitiIllegalArgumentException("No disable action specified");
+        }
+
+        return Response.ok().build();
+    }
+
+
 
     private String getSortType(String sortType) {
         switch (sortType) {
