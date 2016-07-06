@@ -228,7 +228,7 @@
                                     org.wso2.carbon.core.server:${carbon.kernel.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.service.mgt.server:${carbon.deployment.version}
+                                    org.wso2.carbon.service.mgt.server:compatible:${carbon.deployment.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.system.statistics.server:${carbon.commons.version}
