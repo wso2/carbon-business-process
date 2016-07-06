@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -54,10 +54,8 @@ if (query1.data.length != 0) {
                            <%
         var resource = get(httpUrl + "/bpmn/stats/processTaskServices/resourceDiagram/" + pId, null, headers, "json").data.data;
 
-        var imageUrl = "";
-        if (resource == null) {
-            imageUrl = "not supported";
-        } else {
+        var imageUrl = "not supported";
+        if (resource != null) {
             var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
 
             if (BPSResponseXML == null || BPSResponseXML == "") {

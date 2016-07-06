@@ -1,6 +1,6 @@
 <%
 /*<!--
- ~ Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -59,7 +59,8 @@ if (httpUrl == null || httpUrl === "") {
         //retrieve host name and the port from the deployed server assuming it's a BPS
         log.info('Starting BPMN-explorer in default configuration');
         var process = require("process");
-        bpsHost = process.getProperty('carbon.local.ip');
+        var NetworkUtils = Packages.org.wso2.carbon.utils.NetworkUtils;
+        bpsHost = NetworkUtils.getLocalHostname();
         bpsPort = process.getProperty('mgt.transport.https.port');
     }
 
