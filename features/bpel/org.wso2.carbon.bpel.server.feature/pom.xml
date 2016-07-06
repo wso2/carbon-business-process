@@ -244,19 +244,19 @@
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>
-                                    org.wso2.carbon.core.server:${carbon.kernel.version}
+                                    org.wso2.carbon.core.server:compatible:${carbon.kernel.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.service.mgt.server:${carbon.deployment.version}
+                                    org.wso2.carbon.service.mgt.server:compatible:${carbon.deployment.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.unifiedendpoint.server:${carbon.business-process.version}
+                                    org.wso2.carbon.unifiedendpoint.server:compatible:${carbon.business-process.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.system.statistics.server:${carbon.commons.version}
+                                    org.wso2.carbon.system.statistics.server:compatible:${carbon.commons.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.attachment.mgt.server:${carbon.business-process.version}
+                                    org.wso2.carbon.attachment.mgt.server:compatible:${carbon.business-process.version}
                                 </importFeatureDef>
                             </importFeatures>
                         </configuration>

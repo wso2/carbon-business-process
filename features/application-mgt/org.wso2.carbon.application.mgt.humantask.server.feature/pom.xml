@@ -78,13 +78,13 @@
                             </bundles>
                             <importFeatures>
                                 <importFeatureDef>
-                                    org.wso2.carbon.core.server:${carbon.kernel.version}
+                                    org.wso2.carbon.core.server:compatible:${carbon.kernel.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.application.deployer.humantask
+                                    org.wso2.carbon.application.deployer.humantask:compatible:${carbon.business-process.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.humantask.server
+                                    org.wso2.carbon.humantask.server:compatible:${carbon.business-process.version}
                                 </importFeatureDef>
                             </importFeatures>
                         </configuration>

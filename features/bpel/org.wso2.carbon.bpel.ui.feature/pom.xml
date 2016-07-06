@@ -130,15 +130,15 @@
                                 <importBundleDef>org.apache.batik.wso2:batik</importBundleDef>
                             </importBundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.ui:${carbon.kernel.version}
+                                <importFeatureDef>org.wso2.carbon.core.ui:compatible:${carbon.kernel.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.service.mgt.ui:${carbon.deployment.version}
+                                    org.wso2.carbon.service.mgt.ui:compatible:${carbon.deployment.version}
                                 </importFeatureDef>
-                                <importFeatureDef>org.wso2.carbon.tryit:${carbon.commons.version}
+                                <importFeatureDef>org.wso2.carbon.tryit:compatible:${carbon.commons.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.system.statistics.ui:${carbon.commons.version}
+                                    org.wso2.carbon.system.statistics.ui:compatible:${carbon.commons.version}
                                 </importFeatureDef>
                             </importFeatures>
                         </configuration>
