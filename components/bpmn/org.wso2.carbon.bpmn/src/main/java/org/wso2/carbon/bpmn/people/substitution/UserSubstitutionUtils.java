@@ -179,6 +179,7 @@ public class UserSubstitutionUtils {
             reassignFromTasksList(taskQuery.list(), substitute);
             transformUnclaimedTasks(assignee, substitute);
         }
+        //should mark bulk reassign done
     }
 
     /**
@@ -450,11 +451,10 @@ public class UserSubstitutionUtils {
                 context.setUsername(model.getUser());
                 context.setTenantId(tenantId, true);
 
-                boolean active = isSubstitutionActive(model);
-                if (resolver.transitivityEnabled || !active) {//transitivity may be changed or recently expired record
-                    model.setEnabled(active);
+                if (resolver.transitivityEnabled) {
                     activitiDAO.updateSubstituteInfo(model);
                 }
+
                 if (!BPMNConstants.BULK_REASSIGN_PROCESSED.equals(model.getTaskList())) { //active substitution, not yet bulk reassigned
 
                     String sub = getActualSubstitute(model);
@@ -472,7 +472,9 @@ public class UserSubstitutionUtils {
                             assignToTaskOwner(model.getUser(), taskList);
                         }
                     }
+                    model.setTaskList(BPMNConstants.BULK_REASSIGN_PROCESSED);
                 }
+
             } finally {
                 PrivilegedCarbonContext.endTenantFlow();
                 PrivilegedCarbonContext.destroyCurrentContext();
@@ -481,7 +483,22 @@ public class UserSubstitutionUtils {
 
         }
 
+        //disable expired records
+        disableExpiredRecords(tenantId);
+
         return result;
+
+    }
+
+    /**
+     * Disable the records that are still enabled but expired
+     * @param tenantId
+     */
+    public static void disableExpiredRecords(int tenantId) {
+        Map<String, SubstitutesDataModel> map = activitiDAO.getEnabledExpiredRecords(tenantId);
+        for (Map.Entry<String, SubstitutesDataModel> entry : map.entrySet()) {
+            activitiDAO.enableSubstitution(false, entry.getKey(), tenantId);
+        }
 
     }
 
@@ -595,4 +612,18 @@ public class UserSubstitutionUtils {
         return false;
     }
 
+    /**
+     * Disable the the substitution record of the given assignee
+     * @param disable - true to disable
+     * @param assignee - user of the substitution
+     * @param tenantId - assignee's tenant id
+     */
+    public static void disableSubstitution(boolean disable, String assignee, int tenantId) {
+        if (activitiDAO.selectSubstituteInfo(assignee, tenantId) != null) {
+            activitiDAO.enableSubstitution(!disable, assignee, tenantId);
+        } else {
+            throw new ActivitiIllegalArgumentException("No substitution record exist for the given user : " + assignee);
+        }
+
+    }
 }
