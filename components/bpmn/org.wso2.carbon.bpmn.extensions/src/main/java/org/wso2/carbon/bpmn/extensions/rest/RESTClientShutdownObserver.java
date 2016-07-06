@@ -22,7 +22,7 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 public class RESTClientShutdownObserver implements WaitBeforeShutdownObserver {
 
-    private static Log log = LogFactory.getLog(RESTClientShutdownObserver.class);
+    private static final Log log = LogFactory.getLog(RESTClientShutdownObserver.class);
     private boolean status = false;
 
     @Override

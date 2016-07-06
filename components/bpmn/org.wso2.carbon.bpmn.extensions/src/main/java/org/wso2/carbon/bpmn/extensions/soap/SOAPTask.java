@@ -30,8 +30,15 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.extensions.internal.BPMNExtensionsComponent;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
+import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
 
 import javax.xml.stream.XMLStreamException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,11 +97,17 @@ public class SOAPTask implements JavaDelegate {
     /**
      * Soap version numbers
      */
+    private static final String GOVERNANCE_REGISTRY_PREFIX = "gov:/";
+    private static final String CONFIGURATION_REGISTRY_PREFIX = "conf:/";
+    private static final String REST_INVOKE_ERROR = "REST_CLIENT_INVOKE_ERROR";
     private static final String SOAP12_VERSION = "soap12";
     private static final String SOAP11_VERSION = "soap11";
     private static final String SOAP_INVOKE_ERROR_CODE = "SOAP_CLIENT_INVOKE_ERROR";
 
+
+
     private Expression serviceURL;
+    private Expression serviceRef;
     private Expression payload;
     private Expression headers;
     private Expression soapVersion;
@@ -108,13 +121,12 @@ public class SOAPTask implements JavaDelegate {
     public void execute(DelegateExecution execution) {
 
 
-        String endpointURL = null;
-        String payloadRequest = null;
-        String version = null;
-        String headerStr = null;
-        String connection = null;
-        String transferEncoding = null;
-        String transportHeaderList[] = null;
+        String endpointURL;
+        String payloadRequest;
+        String version;
+        String connection;
+        String transferEncoding;
+        String transportHeaderList[];
         String action = "";
         String soapVersionURI = SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI;
         List<Header> headerList = new ArrayList<Header>();
@@ -122,6 +134,44 @@ public class SOAPTask implements JavaDelegate {
         try {
             if (serviceURL != null) {
                 endpointURL = serviceURL.getValue(execution).toString();
+            } else if (serviceRef != null) {
+                String resourcePath = serviceRef.getValue(execution).toString();
+                String registryPath;
+                String tenantId = execution.getTenantId();
+                Registry registry;
+                if (resourcePath.startsWith(GOVERNANCE_REGISTRY_PREFIX)) {
+                    registryPath = resourcePath.substring(GOVERNANCE_REGISTRY_PREFIX.length());
+                    registry = BPMNExtensionsComponent.getRegistryService().getGovernanceSystemRegistry(
+                            Integer.parseInt(tenantId));
+                } else if (resourcePath.startsWith(CONFIGURATION_REGISTRY_PREFIX)) {
+                    registryPath = resourcePath.substring(CONFIGURATION_REGISTRY_PREFIX.length());
+                    registry = BPMNExtensionsComponent.getRegistryService().getConfigSystemRegistry(
+                            Integer.parseInt(tenantId));
+                } else {
+                    String msg = "Registry type is not specified for service reference in " +
+                            " serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
+                    throw new SOAPException(SOAP_INVOKE_ERROR_CODE , msg);
+                }
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Reading endpoint from registry location: " + registryPath + " for task " +
+                            execution.getCurrentActivityName());
+                }
+                Resource urlResource = registry.get(registryPath);
+                if (urlResource != null) {
+                    String uepContent = new String((byte[]) urlResource.getContent(), Charset.defaultCharset());
+
+                    UnifiedEndpointFactory uepFactory = new UnifiedEndpointFactory();
+                    OMElement uepElement = AXIOMUtil.stringToOM(uepContent);
+                    UnifiedEndpoint uep = uepFactory.createEndpoint(uepElement);
+                    endpointURL = uep.getAddress();
+
+                } else {
+                    String errorMsg = "Endpoint resource " + registryPath +
+                            " is not found. Failed to execute REST invocation in task " +
+                            execution.getCurrentActivityName();
+                    throw new SOAPException(SOAP_INVOKE_ERROR_CODE, errorMsg);
+                }
             } else {
                 String urlNotFoundErrorMsg = "Service URL is not provided. serviceURL must be provided.";
                 throw new SOAPException(SOAP_INVOKE_ERROR_CODE, urlNotFoundErrorMsg);
@@ -175,6 +225,7 @@ public class SOAPTask implements JavaDelegate {
                             additionalHeader.setName(pair[0]);
                             additionalHeader.setValue(pair[1]);
                             if (log.isDebugEnabled()) {
+                                log.debug("Adding transport headers " + pair[0] + " " + pair[1] );
                             }
                         }
                         headerList.add(additionalHeader);
@@ -194,7 +245,7 @@ public class SOAPTask implements JavaDelegate {
             OMElement payLoad = AXIOMUtil.stringToOM(payloadRequest);
             //Creating the Service client
             ServiceClient sender = new ServiceClient();
-            OMElement response = null;
+            OMElement response;
             //Creating options to set the headers
             Options options = new Options();
             options.setTo(new EndpointReference(endpointURL));
@@ -245,9 +296,49 @@ public class SOAPTask implements JavaDelegate {
             log.error("Axis2 Fault", axisFault);
             throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "Exception while getting response :" +
                     axisFault.getMessage());
-        } catch (XMLStreamException e) {
-            log.error("XML Stream Exception", e);
-            throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "XMLStreamException  :" + e.getMessage());
+        } catch (XMLStreamException | RegistryException e) {
+            log.error("Exception in processing", e);
+            throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "Exception in processing  :" + e.getMessage());
         }
+    }
+
+    public void setServiceURL(Expression serviceURL) {
+        this.serviceURL = serviceURL;
+    }
+
+    public void setServiceRef(Expression serviceRef) {
+        this.serviceRef = serviceRef;
+    }
+
+    public void setPayload(Expression payload) {
+        this.payload = payload;
+    }
+
+    public void setHeaders(Expression headers) {
+        this.headers = headers;
+    }
+
+    public void setSoapVersion(Expression soapVersion) {
+        this.soapVersion = soapVersion;
+    }
+
+    public void setHttpConnection(Expression httpConnection) {
+        this.httpConnection = httpConnection;
+    }
+
+    public void setOutputVariable(Expression outputVariable) {
+        this.outputVariable = outputVariable;
+    }
+
+    public void setHttpTransferEncoding(Expression httpTransferEncoding) {
+        this.httpTransferEncoding = httpTransferEncoding;
+    }
+
+    public void setSoapAction(Expression soapAction) {
+        this.soapAction = soapAction;
+    }
+
+    public void setTransportHeaders(Expression transportHeaders) {
+        this.transportHeaders = transportHeaders;
     }
 }
