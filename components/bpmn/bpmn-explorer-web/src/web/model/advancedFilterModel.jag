@@ -84,21 +84,24 @@ if (request.getQueryString() != null) {
         }       
            
        if (requestParameters.createdBefore !== undefined && requestParameters.createdBefore.length > 0) {
-            vCollection["startedBefore"] = requestParameters.createdBefore;  
+            var dateArray = requestParameters.createdBefore.split("T")[0].split("-");
+            var date = dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2];
+            vCollection["startedBefore"] = date;
         }
 
         if (requestParameters.createdAfter !== undefined && requestParameters.createdAfter.length > 0) {
-            vCollection["startedAfter"] = requestParameters.createdAfter;  
+            var dateArray = requestParameters.createdAfter.split("T")[0].split("-");
+            var date = dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2];
+            vCollection["startedAfter"] = date;
         }      
        
        if (requestParameters.variableName !== undefined && requestParameters.variableName.length > 0 && 
             requestParameters.variableValue !== undefined && requestParameters.variableValue.length > 0) {
             var variableNames = requestParameters.variableName;      
             var values = requestParameters.variableValue;
-            
-            vCollection = {"variables":[]};
+            var variables = [];
             if (typeof variableNames == 'string') {
-                vCollection.variables.push({
+                   variables.push({
                             "name":variableNames,
                             "value":values,
                             "operation" : "equals"
@@ -106,7 +109,7 @@ if (request.getQueryString() != null) {
             } else {               
                 for (var i = 0; i < variableNames.length; i++) {
                     if (variableNames[i] != null && variableNames[i] !== "") {                    
-                          vCollection.variables.push({
+                          variables.push({
                             "name":variableNames[i],
                             "value":values[i],
                             "operation" : "equals"
@@ -118,7 +121,7 @@ if (request.getQueryString() != null) {
             }             
            
         }
-
+        vCollection["variables"] = variables;
         vCollection["start"] = ((pagination - 1) * pageSize);
         vCollection["size"] = pageSize;
         vCollection["finished"] =  "true";
@@ -138,17 +141,17 @@ if (request.getQueryString() != null) {
             requestParameters.variableValue !== undefined && requestParameters.variableValue.length > 0) {
             var variableNames = requestParameters.variableName;        
             var values = requestParameters.variableValue;
-            vCollection = {"variables":[]};
+            var variables = [];
             if (typeof variableNames == 'string') {
-                vCollection.variables.push({
-                            "name":variableNames,
-                            "value":values,
-                            "operation" : "equals"
+                variables.push({
+                    "name":variableNames,
+                    "value":values,
+                    "operation" : "equals"
                 });
             } else {
                 for (var i = 0; i < variableNames.length; i++) {
                     if (variableNames[i] != null && variableNames[i] !== "") {
-                       vCollection.variables.push({
+                       .variables.push({
                             "name":variableNames[i],
                             "value":values[i],
                             "operation" : "equals"
@@ -160,7 +163,7 @@ if (request.getQueryString() != null) {
             }        
                         
         }
-
+        vCollection["variables"] = variables;
         vCollection["start"] = ((pagination - 1) * pageSize);
         vCollection["size"] = pageSize;
         vCollection["tenantId"] =  bpsTenantID;
