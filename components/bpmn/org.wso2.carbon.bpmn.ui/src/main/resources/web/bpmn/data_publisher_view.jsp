@@ -30,6 +30,7 @@
 <%@ page import="org.wso2.carbon.registry.api.Resource" %>
 <%@ page import="org.wso2.carbon.core.util.CryptoUtil" %>
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
+<%@ page import="org.wso2.carbon.bpmn.core.mgt.model.xsd.BPMNAnalyticsConfiguration" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <fmt:bundle basename="org.wso2.carbon.bpmn.ui.i18n.Resources">
@@ -52,7 +53,7 @@
     <%
             return;
         }
-        RegistryUtils.setTrustStoreSystemProperties();
+//        RegistryUtils.setTrustStoreSystemProperties();
 
         String thriftUrl = CharacterEncoder.getSafeText(request.getParameter("thrift_url"));
         String authUrl = CharacterEncoder.getSafeText(request.getParameter("auth_url"));
@@ -62,125 +63,30 @@
                 CharacterEncoder.getSafeText(request.getParameter("publisher_enable"));
         String selectType = CharacterEncoder.getSafeText(request.getParameter("publisher_type"));
         String buttonVal = CharacterEncoder.getSafeText(request.getParameter("publishBtn"));
+        String configAction = CharacterEncoder.getSafeText(request.getParameter("config_action"));
 
-        CarbonContext context = CarbonContext.getThreadLocalCarbonContext();
-        Registry configRegistry = context.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
-        String registryPath = "bpmn/data_analytics_publisher/publisher_configuration";
+        if (configAction != null) {
+            BPMNAnalyticsConfiguration newConfig = new BPMNAnalyticsConfiguration();
+            newConfig.setThriftURL(thriftUrl);
+            newConfig.setAuthURL(authUrl);
+            newConfig.setPublisherType(selectType);
+            newConfig.setPublisherEnabled(publisherEnable);
+            newConfig.setUsername(username);
+            newConfig.setPassword(password);
+            client.configureAnalytics(newConfig);
+        }
 
-        try {
-            if (configRegistry.resourceExists(registryPath)) {
-                Resource resource = configRegistry.get(registryPath);
-                if ("POST".equalsIgnoreCase(request.getMethod()) &&
-                    "Save".equalsIgnoreCase(buttonVal)) {
-                    if (thriftUrl != null && username != null && password != null &&
-                        authUrl != null && publisherEnable != null && selectType != null) {
-                        String passwordFromReg = resource.getProperty("password");
-                        byte[] decryptedPasswordBinary = CryptoUtil.getDefaultCryptoUtil()
-                                                                   .base64DecodeAndDecrypt(
-                                                                           passwordFromReg);
-                        String decryptedPlainPassword = new String(decryptedPasswordBinary);
-                        if (thriftUrl.equals(resource.getProperty("receiverURLSet")) &&
-                            username.equals(resource.getProperty("username")) &&
-                            password.equals(decryptedPlainPassword) &&
-                            authUrl.equals(resource.getProperty("authURLSet")) &&
-                            publisherEnable.equals(resource.getProperty("dataPublishingEnabled")) &&
-                            selectType.equals(resource.getProperty("type"))) {
-    %>
-    <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is already exists.");</script>
-    <%
-    } else {
-    %>
-    <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
-    <%
-                }
-            }
-        }
-        if (publisherEnable == null) {
-            if (resource.getProperty("dataPublishingEnabled") != null) {
-                publisherEnable = resource.getProperty("dataPublishingEnabled");
-            }
-        } else if (!publisherEnable.equals(resource.getProperty("dataPublishingEnabled"))) {
-            resource.setProperty("dataPublishingEnabled", publisherEnable);
-            configRegistry.put(registryPath, resource);
-        }
-        if (selectType == null) {
-            if (resource.getProperty("type") != null) {
-                selectType = resource.getProperty("type");
-            } else {
-                selectType = "Default";
-            }
-        } else if (!selectType.equals(resource.getProperty("type"))) {
-            resource.setProperty("type", selectType);
-            configRegistry.put(registryPath, resource);
-        }
-        //if resource is available then get properties and set them to the text fields
-        if (thriftUrl == null) {
-            //if thrift url is null then set value from the registry
-            if (resource.getProperty("receiverURLSet") != null) {
-                thriftUrl = resource.getProperty("receiverURLSet");
-            }
-        } else if (!thriftUrl.equals(resource.getProperty("receiverURLSet"))) {
-            //else if user updates the thrift url then update the registry property
-            resource.setProperty("receiverURLSet", thriftUrl);
-            configRegistry.put(registryPath, resource);
-        }
-        if (authUrl == null) {
-            //if auth url is null then set value from the registry
-            if (resource.getProperty("authURLSet") != null) {
-                authUrl = resource.getProperty("authURLSet");
-            }
-        } else if (!authUrl.equals(resource.getProperty("authURLSet"))) {
-            //else if user updates the auth url then update the registry property
-            resource.setProperty("authURLSet", authUrl);
-            configRegistry.put(registryPath, resource);
-        }
-        if (username == null) {
-            //if username is null then set value from the registry
-            if (resource.getProperty("username") != null) {
-                username = resource.getProperty("username");
-            }
-        } else if (!username.equals(resource.getProperty("username"))) {
-            //else if user updates the username then update the registry property
-            resource.setProperty("username", username);
-            configRegistry.put(registryPath, resource);
-        }
-        if (password == null) {
-            //if password is null then set value from the registry
-            if (resource.getProperty("password") != null) {
-                byte[] decryptedPassword = CryptoUtil.getDefaultCryptoUtil().base64DecodeAndDecrypt(
-                        resource.getProperty("password"));
-                password = new String(decryptedPassword);
-            }
-        } else if (!password.equals(resource.getProperty("password"))) {
-            //else if user updates the password then update the registry property
-            String encryptedPassword =
-                    CryptoUtil.getDefaultCryptoUtil().encryptAndBase64Encode(password.getBytes());
-            resource.setProperty("password", encryptedPassword);
-            configRegistry.put(registryPath, resource);
-        }
-    } else {
-        //if resource doesn't exists then create a new resource and add properties to it.
-        if ((thriftUrl != null && thriftUrl.startsWith("tcp://")) ||
-            (authUrl != null && authUrl.startsWith("ssl://")) || (username != null) ||
-            (password != null) || (publisherEnable != null)) {
-            Resource resource = configRegistry.newResource();
-            resource.addProperty("receiverURLSet", thriftUrl);
-            resource.addProperty("username", username);
-            resource.addProperty("password", CryptoUtil.getDefaultCryptoUtil()
-                                                       .encryptAndBase64Encode(
-                                                               password.getBytes()));
-            resource.addProperty("authURLSet", authUrl);
-            resource.addProperty("dataPublishingEnabled", publisherEnable);
-            configRegistry.put(registryPath, resource);
-    %>
-    <script type="text/javascript">CARBON.showInfoDialog("Publisher Configuration is saved successfully.");</script>
-    <%
-                }
-            }
-        } catch (RegistryException e) {
-            CarbonUIMessage.sendCarbonUIMessage(e.getMessage(), CarbonUIMessage.ERROR, request, e);
+        BPMNAnalyticsConfiguration analyticsConfig = client.getAnalyticsConfiguration();
+        if (analyticsConfig != null) {
+            thriftUrl = analyticsConfig.getThriftURL();
+            authUrl = analyticsConfig.getAuthURL();
+            selectType = analyticsConfig.getPublisherType();
+            publisherEnable = analyticsConfig.getPublisherEnabled();
+            username = analyticsConfig.getUsername();
+            password = analyticsConfig.getPassword();
         }
     %>
+
     <script type="text/javascript">
 
         if (typeof String.prototype.startsWith != 'function') {
@@ -319,6 +225,7 @@
                         </tbody>
                     </table>
                     <input name="publishBtn" type="hidden">
+                    <input name="config_action" type="hidden" value="update"/>
                     <table class="styledLeft">
                         <tr>
                             <td class="buttonRow">

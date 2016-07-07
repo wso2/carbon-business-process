@@ -308,9 +308,6 @@ public class BPMNDeploymentService {
         if(log.isDebugEnabled()){
             log.debug("Process ID has completed instances count : " + completedProcessInstanceCount);
         }
-
-        log.info("Process ID has completed instances count : " + completedProcessInstanceCount);
-
         return true;
     }
 

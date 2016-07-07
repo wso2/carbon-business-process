@@ -897,6 +897,9 @@ public class RestResponseFactory {
         variableConverters.add(new DoubleRestVariableConverter());
         variableConverters.add(new BooleanRestVariableConverter());
         variableConverters.add(new DateRestVariableConverter());
+        //Add WSO2 XML and JSON variable type converters
+        variableConverters.add(new JsonVariableConverter());
+        variableConverters.add(new XmlVariableConverter());
     }
 
     public List<GroupResponse> createGroupResponseList(List<Group> groups, String baseUrl) {

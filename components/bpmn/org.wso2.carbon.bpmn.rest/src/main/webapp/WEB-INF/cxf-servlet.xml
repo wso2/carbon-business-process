@@ -44,6 +44,7 @@
             <bean class="org.wso2.carbon.bpmn.rest.service.runtime.WorkflowTaskService"/>
             <bean class="org.wso2.carbon.bpmn.rest.service.runtime.ExecutionService"/>
             <bean class="org.wso2.carbon.bpmn.rest.service.correlate.CorrelationService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.runtime.UserSubstitutionService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
@@ -139,6 +140,18 @@
         <jaxrs:serviceBeans>
             <bean class="org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService"/>
             <bean class="org.wso2.carbon.bpmn.rest.service.stats.UserService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="authenticationBean"/>
+            <ref bean="exceptionHandlerBean"/>
+            <ref bean="errorHandlerBean"/>
+            <ref bean="jacksonBean"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <jaxrs:server id="analyticsService" address="/analytics">
+        <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.analytics.AnalyticsConfigurationService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="authenticationBean"/>

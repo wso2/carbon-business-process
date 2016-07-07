@@ -55,18 +55,18 @@
         </menu>
 
         <!-- add new menu item called Data Publisher -->
-        <menu>
-            <id>data_publisher_menu</id>
-            <i18n-key>bpmn.data.publisher.dashboard</i18n-key>
-            <i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>configure_menu</parent-menu>
-            <link>../bpmn/data_publisher_view.jsp</link>
-            <region>region1</region>
-            <order>35</order>
-            <style-class>manage</style-class>
-            <icon>../bpmn/images/bpmn-instance.gif</icon>
-            <require-permission>/permission/admin/manage/bpmn</require-permission>
-        </menu>
+        <!--<menu>-->
+            <!--<id>data_publisher_menu</id>-->
+            <!--<i18n-key>bpmn.data.publisher.dashboard</i18n-key>-->
+            <!--<i18n-bundle>org.wso2.carbon.bpmn.ui.i18n.Resources</i18n-bundle>-->
+            <!--<parent-menu>configure_menu</parent-menu>-->
+            <!--<link>../bpmn/data_publisher_view.jsp</link>-->
+            <!--<region>region1</region>-->
+            <!--<order>35</order>-->
+            <!--<style-class>manage</style-class>-->
+            <!--<icon>../bpmn/images/bpmn-instance.gif</icon>-->
+            <!--<require-permission>/permission/admin/manage/bpmn</require-permission>-->
+        <!--</menu>-->
 
     </menus>
     <FileUploadConfig>

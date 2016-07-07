@@ -21,7 +21,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
-
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 
 import javax.ws.rs.core.UriInfo;
