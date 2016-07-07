@@ -1,14 +1,14 @@
 <%
 /*
  * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- * 
+ *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -39,7 +39,7 @@ if (request.isSecure()) {//check whether the request is secure or not
         var userTenantInfo = carbon.server.tenantUser(username);
 
         if (userTenantInfo.domain == carbon.server.tenantDomain() && userTenantInfo.tenantId == carbon.server.tenantId()) {
-            
+
             try {
                 authSuccess = HTTPAuthenticate(username, password, 'localhost');
             } catch (e) {
@@ -125,7 +125,11 @@ if (request.isSecure()) {//check whether the request is secure or not
             session.put('BPSSessionCookie' , cookie);
 
             //authenticate again via managment console login. Required for attachment handling
-            var mgtCookie = AuthenticateForAttachment(username, password);
+            /*
+            * TODO : Disabled Attachment authentication till we fix Jaggery CXRF issues. (JIRA :
+            * https://wso2.org/jira/browse/BPS-1058 )
+            */
+            var mgtCookie = cookie; // AuthenticateForAttachment(username, password);
             if (mgtCookie == null) {
                 //AuthenticateForAttachment failed therefore overall authentication marked as failed
                 session.remove('BPSSessionCookie');
@@ -149,7 +153,7 @@ if (request.isSecure()) {//check whether the request is secure or not
     * @return session cookie from response
     */
     function AuthenticateForAttachment(userName, password) {
-        
+
         var endPoint = application.get('hostServer') + '/carbon/admin/login_action.jsp'
         var mgtAuth = new XMLHttpRequest();
 
@@ -169,8 +173,8 @@ if (request.isSecure()) {//check whether the request is secure or not
         if (mgtAuth.getResponseHeader("Location").split('loginStatus=')[1] === "true"){
             log.debug("/carbon/admin/login_action.jsp login success");
             return mgtAuth.getResponseHeader('Set-Cookie');
-        } 
-        
+        }
+
         return null;
     }
 %>

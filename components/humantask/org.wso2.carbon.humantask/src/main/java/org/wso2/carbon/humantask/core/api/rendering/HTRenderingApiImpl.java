@@ -60,6 +60,10 @@ import org.wso2.carbon.humantask.rendering.api.ValueType;
 import org.wso2.carbon.humantask.rendering.api.Value_tType;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.concurrent.Callable;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
@@ -67,10 +71,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 /**
  * The implementation of the WS Human Task Rendering API Operations.

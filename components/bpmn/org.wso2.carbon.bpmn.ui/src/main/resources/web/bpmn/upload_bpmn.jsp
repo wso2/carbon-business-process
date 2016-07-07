@@ -24,6 +24,7 @@
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 <carbon:breadcrumb
         label="bpmn.newpackage"
         resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
@@ -102,7 +103,8 @@
     <h2><fmt:message key="bpmn.newpackage"/></h2>
     <div id="workArea">
         <div id="formset">
-            <form id="bpmn_upload_form" method="post" name="bpmnUpload" action="../../fileupload/bpmn"
+            <form id="bpmn_upload_form" method="post" name="bpmnUpload"
+                      action="../../fileupload/bpmn?<csrf:tokenname/>=<csrf:tokenvalue/>"
                       enctype="multipart/form-data"
                       target="_self">
                 <label style="font-weight:bold;">&nbsp;<fmt:message key="bpmn.uploadpackge"/></label>

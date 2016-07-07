@@ -35,9 +35,10 @@ var loggedUser = session.get("user");
 	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.css">
+	<script type="text/javascript" src="/csrf.js"></script>
     <script>
         var BPSTenant = "<%=bpsTenantDomain%>";
-    </script>    
+    </script>
 </head>
 <body>
 	<header>
