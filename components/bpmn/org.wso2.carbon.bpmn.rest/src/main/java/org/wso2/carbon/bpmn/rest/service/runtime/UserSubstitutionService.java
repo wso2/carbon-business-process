@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
+import org.wso2.carbon.bpmn.people.substitution.SubstitutionDataHolder;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
 import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
@@ -58,7 +59,7 @@ public class UserSubstitutionService {
     private static final String DEFAULT_PAGINATION_SIZE = "10";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
-    private static final boolean subsFeatureEnabled = UserSubstitutionUtils.isSubstitutionFeatureEnabled();
+    private static final boolean subsFeatureEnabled = SubstitutionDataHolder.getInstance().isSubstitutionEnabled();
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 

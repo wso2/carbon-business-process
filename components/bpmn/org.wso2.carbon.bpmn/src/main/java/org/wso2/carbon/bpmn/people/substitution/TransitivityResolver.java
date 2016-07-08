@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
-import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 
 import java.util.Map;
 
@@ -30,37 +29,12 @@ public class TransitivityResolver {
     private static final Log log = LogFactory.getLog(TransitivityResolver.class);
 
     private ActivitiDAO dao;
-    public boolean transitivityEnabled = BPMNConstants.SUBSTITUTION_TRANSITIVITY_DEFAULT;
     protected Map<String, SubstitutesDataModel> subsMap;
 
     private TransitivityResolver() {}
 
     protected TransitivityResolver(ActivitiDAO activitiDAO) {
         this.dao = activitiDAO;
-        initConfig();
-    }
-
-    private void initConfig() {
-        BPMNActivitiConfiguration bpmnActivitiConfiguration = BPMNActivitiConfiguration.getInstance();
-
-        if (bpmnActivitiConfiguration != null) {
-            String transitivityEnabledProperty = bpmnActivitiConfiguration
-                    .getBPMNPropertyValue(BPMNConstants.SUBSTITUTION_CONFIG,
-                            BPMNConstants.SUBSTITUTION_TRANSITIVITY_PROPERTY);
-
-            if (transitivityEnabledProperty != null) {
-                if (transitivityEnabledProperty.trim().equalsIgnoreCase("true") || transitivityEnabledProperty.trim()
-                        .equalsIgnoreCase("false")) {
-                    transitivityEnabled = Boolean.parseBoolean(transitivityEnabledProperty);
-                    if (log.isDebugEnabled()) {
-                        log.debug("User substitution transitivity enabled : " + transitivityEnabled);
-                    }
-                } else {
-                    log.warn("Invalid value for the property: " + BPMNConstants.SUBSTITUTION_TRANSITIVITY_PROPERTY
-                            + ". Transitivity is being disabled by default.");
-                }
-            }
-        }
     }
 
     /**
@@ -69,7 +43,7 @@ public class TransitivityResolver {
      * @return false if unresolvable state found while forced resolve disabled
      */
     protected synchronized boolean resolveTransitiveSubs(boolean isScheduler, int tenantId) {
-        if (transitivityEnabled) {
+        if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
             for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
                 String transitiveSub = entry.getValue().getTransitiveSub();
@@ -103,7 +77,7 @@ public class TransitivityResolver {
      */
     public boolean isResolvingRequired(String user, int tenantId) {
 
-        if (transitivityEnabled) {
+        if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
             if (dao.countUserAsSubstitute(user, tenantId) > 0) {
                 return true;
             } else {
@@ -157,7 +131,7 @@ public class TransitivityResolver {
     }
 
     protected boolean resolveSubstituteForSingleUser(SubstitutesDataModel dataModel, int tenantId) {
-        if (transitivityEnabled) {
+        if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
             subsMap = dao.selectActiveSubstitutesByTenant(tenantId);
             SubstitutesDataModel subDataModel = dao.selectSubstituteInfo(dataModel.getSubstitute(), tenantId);
             if (subDataModel != null) {
