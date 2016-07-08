@@ -248,7 +248,7 @@ public class UserSubstitutionService {
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
         return userRealm.getAuthorizationManager()
-                .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, GET_PERMISSION);
+                .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
     }
 
     /**
