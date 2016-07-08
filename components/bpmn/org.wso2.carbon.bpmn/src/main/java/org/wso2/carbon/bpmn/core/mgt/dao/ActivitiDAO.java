@@ -321,12 +321,12 @@ public class ActivitiDAO {
      * @param model model with only required query parameter values. Leave others as null. By default enabled=false.
      * @return List<SubstitutesDataModel> Result set of substitute info
      */
-    public List<PaginatedSubstitutesDataModel> querySubstituteInfo(final PaginatedSubstitutesDataModel model) {
+    public List<SubstitutesDataModel> querySubstituteInfo(final PaginatedSubstitutesDataModel model) {
 
         final RowBounds rw = new RowBounds(model.getStart(), model.getSize());
-        CustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>> customSqlExecution =
-                new AbstractCustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>>(SubstitutesMapper.class) {
-                    public List<PaginatedSubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
+        CustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public List<SubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
                         return substitutesMapper.querySubstitutes(rw, model);
                     }
                 };
@@ -340,11 +340,11 @@ public class ActivitiDAO {
      * @param model data model with only required query parameter values. Leave others as null.
      * @return List<PaginatedSubstitutesDataModel> Result set of substitute info
      */
-    public List<PaginatedSubstitutesDataModel> querySubstituteInfoWithoutEnabled(final PaginatedSubstitutesDataModel model) {
+    public List<SubstitutesDataModel> querySubstituteInfoWithoutEnabled(final PaginatedSubstitutesDataModel model) {
         final RowBounds rw = new RowBounds(model.getStart(), model.getSize());
-        CustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>> customSqlExecution =
-                new AbstractCustomSqlExecution<SubstitutesMapper, List<PaginatedSubstitutesDataModel>>(SubstitutesMapper.class) {
-                    public List<PaginatedSubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
+        CustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public List<SubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
                         return substitutesMapper.querySubstitutesWithoutEnabled(rw, model);
                     }
                 };
@@ -394,6 +394,38 @@ public class ActivitiDAO {
                 new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
                     public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
                         return substitutesMapper.selectEnabledExpiredRecords(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the substitute info count based on query parameters.
+     * @param model model with only required query parameter values. Leave others as null. By default enabled=false.
+     * @return result count
+     */
+    public int selectQueryResultCount(final PaginatedSubstitutesDataModel model) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectQuerySubstitutesCount(model);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the count of substitute info based on query parameters except enabled property.
+     * @param model data model with only required query parameter values. Leave others as null.
+     * @return int Result set count
+     */
+    public int selectQueryResultCountWithoutEnabled(final PaginatedSubstitutesDataModel model) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectQuerySubstitutesCountWithoutEnabled(model);
                     }
                 };
 

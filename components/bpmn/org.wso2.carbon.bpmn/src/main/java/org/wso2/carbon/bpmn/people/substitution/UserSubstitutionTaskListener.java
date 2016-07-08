@@ -71,11 +71,11 @@ public class UserSubstitutionTaskListener implements TaskListener{
      * @param assignee
      */
     private String getSubstituteIfEnabled (String assignee) {
-        TransitivityResolver resolver = new TransitivityResolver(dao);
+
         //retrieve Substitute info
         SubstitutesDataModel substitutesDataModel = getImmediateSubstitute(MultitenantUtils.getTenantAwareUsername(assignee));
         if(substitutesDataModel != null && isSubstitutionActive(substitutesDataModel)) {
-            if (!resolver.transitivityEnabled || substitutesDataModel.getTransitiveSub() == null || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(substitutesDataModel.getTransitiveSub())) {
+            if (!SubstitutionDataHolder.getInstance().isTransitivityEnabled() || substitutesDataModel.getTransitiveSub() == null || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE.equals(substitutesDataModel.getTransitiveSub())) {
                 return substitutesDataModel.getSubstitute();
             } else {
                 return substitutesDataModel.getTransitiveSub();
