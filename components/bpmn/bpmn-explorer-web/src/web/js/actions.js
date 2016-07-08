@@ -464,7 +464,7 @@ function setDatePicker(dateElement) {
         singleDatePicker: true,
         showDropdowns: true,
         locale: {
-            format: 'MM/DD/YYYY'
+            format: 'YYYY-MM-DD'
         }
     });
 }
@@ -1430,7 +1430,6 @@ function validateFilter() {
         //disable startDateISO since it's not entered by the user
         document.getElementById("endDateISO").disabled = true;
     }
-
 }
 /**
  * Function to filter the records for the instance id in advanced filtering
@@ -1438,5 +1437,48 @@ function validateFilter() {
 function filterResults(id) {
 
     window.location = httpUrl + "/" + CONTEXT + "/processMonitoring?instanceId=" + id;
+}
+
+/**
+* Script to add more variable names and values to filter for instances
+*/
+function addVariable(){
+    var vNames = document.getElementsByName("variableName");
+    if (vNames[vNames.length - 1].value !== "" && vNames[vNames.length - 1].value !== undefined) {
+        var vRow = document.getElementById("variablesRow");
+
+        var vBr = document.createElement("BR");
+        vRow.appendChild(vBr);
+
+        var vNameNode = document.createElement("INPUT");
+        vNameNode.setAttribute("type", "text");
+        vNameNode.setAttribute("name", "variableName");
+        vNameNode.setAttribute("class", "form-control");
+        vNameNode.setAttribute("placeholder", "Variable Name");
+        vNameNode.setAttribute("style", "width: initial; float: left;");
+        vRow.appendChild(vNameNode);
+
+        var vLabel = document.createElement("LABEL");
+        var t = document.createTextNode("\u00A0=\u00A0");
+        vLabel.setAttribute("for", "equals");
+        vLabel.setAttribute("name", "variableName");
+        vLabel.setAttribute("class", "control-label");
+        vLabel.setAttribute("style", "width: initial; float: left; font-size:25px;");
+        vLabel.appendChild(t);
+        vRow.appendChild(vLabel);
+
+        var vValueNode = document.createElement("INPUT");
+        vValueNode.setAttribute("type", "text");
+        vValueNode.setAttribute("name", "variableValue");
+        vValueNode.setAttribute("class", "form-control");
+        vValueNode.setAttribute("placeholder", "Variable value like");
+        vValueNode.setAttribute("style", "width: initial;");
+        vRow.appendChild(vValueNode);
+    }
+}
+
+function resetForm() {
+    window.location = httpUrl + "/" + CONTEXT + "/advancedFilter";
+
 }
 
