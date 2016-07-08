@@ -90,7 +90,7 @@
                         <% } else { %>
                             disabled
                         <% } %>
-                        >
+                        />
                         <input id="endDateISO" name="createdBefore" type="hidden" class="form-control">
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                         <% } else { %>
                             disabled
                         <% } %>
-                        >
+                        />
                         <input id="startDateISO" name="createdAfter" type="hidden" class="form-control">
                     </div>
                 </div>               
@@ -136,7 +136,7 @@
                         <label for="variable" class="control-label"><%=i18n.localize("variable.value.like" , "Variable Value Like")%>
                          </label>
                         <input type="button" id="addVar" onclick="addVariable()" 
-                            value='<%=i18n.localize("plus.button" , " + ")%>'>
+                            value='<%=i18n.localize("plus.button" , " + ")%>'/>
 
                         <div id="variablesRow">
                         <input type="text" class="form-control" id="variableName" name="variableName"
@@ -144,7 +144,7 @@
                             <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
                                 value='<%=vCollection["variables"][0].name%>'
                             <% } %>
-                        >
+                        />
 
                         <label for="equals" class="control-label" style="width: initial; float: left; font-size:25px;">
                             &nbsp;<%=i18n.localize("equals" , " = ")%>&nbsp; </label>
@@ -154,7 +154,7 @@
                             <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
                                 value='<%=vCollection["variables"][0].value%>'
                             <% } %>
-                        >
+                        />
 
                         <% if (queryReceived == true && vCollection["variables"] !== undefined && vCollection["variables"].length > 1) {
                             <%for(var i=1; i<vCollection["variables"].length; i++) {%>
@@ -164,7 +164,7 @@
                              <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
                                 value='<%=vCollection["variables"][i].name%>'
                              <% } %>
-                             >
+                             />
 
                              <label for="equals" class="control-label" style="width: initial; float: left; font-size:25px;">
                               &nbsp;<%=i18n.localize("equals" , " = ")%>&nbsp; </label>
@@ -174,7 +174,7 @@
                               <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
                                 value='<%=vCollection["variables"][i].value%>'
                               <% } %>
-                              >
+                              />
                         <% } } %>
 
                         </div>   
