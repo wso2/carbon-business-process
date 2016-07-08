@@ -333,7 +333,7 @@ public class ManagementService {
         response.setSize(((Long) listPage.getSize()).intValue());
         response.setStart(((Long) listPage.getFirstResult()).intValue());
         response.setTotal(listPage.getTotal());
-        response.setData(listPage.getRows());
+        response.setData((List)listPage.getRows());
 
         return response;
     }
