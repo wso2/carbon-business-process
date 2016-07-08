@@ -18,20 +18,23 @@ package org.wso2.carbon.bpel.core.ode.integration.jmx;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.MBeanNotificationInfo;
-import javax.management.NotificationBroadcasterSupport;
 import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
 
+/**
+ * Implementation class for Instance status Monitor Bean.
+ */
 public class InstanceStatusMonitor extends NotificationBroadcasterSupport implements InstanceStatusMonitorMXBean {
     String lastFailedProcessInfo = "No new instance faliures";
 
-    private static InstanceStatusMonitor instanceStatusMonitor=null;
-    long sequenceNumber=0;
+    private static InstanceStatusMonitor instanceStatusMonitor = null;
+    long sequenceNumber = 0;
 
     public void setLastFailedProcessInfo(String info) {
-        String oldStatus= lastFailedProcessInfo;
-        this.lastFailedProcessInfo =info;
+        String oldStatus = lastFailedProcessInfo;
+        this.lastFailedProcessInfo = info;
 
-        Notification notification= new AttributeChangeNotification(this,
+        Notification notification = new AttributeChangeNotification(this,
                 sequenceNumber++, System.currentTimeMillis(),
                 info, "Instance Status", "String",
                 oldStatus, this.lastFailedProcessInfo);
@@ -48,18 +51,18 @@ public class InstanceStatusMonitor extends NotificationBroadcasterSupport implem
         String[] types = new String[]{
                 AttributeChangeNotification.ATTRIBUTE_CHANGE
         };
-         String name = "notification on faliure";
+        String name = "notification on faliure";
         String description = "An instance has failed";
         MBeanNotificationInfo info =
                 new MBeanNotificationInfo(types, name, description);
         return new MBeanNotificationInfo[]{info};
     }
 
-    public static InstanceStatusMonitor getInstanceStatusMonitor(){
-        if(instanceStatusMonitor==null){
-            instanceStatusMonitor= new InstanceStatusMonitor();
+    public static InstanceStatusMonitor getInstanceStatusMonitor() {
+        if (instanceStatusMonitor == null) {
+            instanceStatusMonitor = new InstanceStatusMonitor();
             return instanceStatusMonitor;
-        } else{
+        } else {
             return instanceStatusMonitor;
         }
 

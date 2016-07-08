@@ -16,21 +16,21 @@
 
 package org.wso2.carbon.bpel.ui;
 
+/**
+ * BPEL UI constants.
+ */
 public final class BPELUIConstant {
-    private BPELUIConstant() {
-    }
-
     public static final String INSTANCE_STATE_ACTIVE = "ACTIVE";
     public static final String INSTANCE_STATE_COMPLETED = "COMPLETED";
     public static final String INSTANCE_STATE_TERMINATED = "TERMINATED";
     public static final String INSTANCE_STATE_FAILED = "FAILED";
     public static final String INSTANCE_STATE_SUSPENDED = "SUSPENDED";
-
     public static final String INSTANCE_LIFETIME_TILL_LASTACTIVE = "CREATED_TO_LASTACTIVE";
     public static final String INSTANCE_LIFETIME_FROM_LASTACTIVE_TO_NOW = "LASTACTIVE_TO_NOW";
-
     public static final String TOTAL_INSTANCES = "TOTAL";
 
+    private BPELUIConstant() {
+    }
 
 
 }

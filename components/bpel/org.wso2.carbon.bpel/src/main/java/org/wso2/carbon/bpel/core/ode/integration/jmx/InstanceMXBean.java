@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.core.ode.integration.jmx;
 
+/**
+ * Bean interface class for Instance.
+ */
 public interface InstanceMXBean {
     public String[] getInstanceInfoFromInstanceId();
 }

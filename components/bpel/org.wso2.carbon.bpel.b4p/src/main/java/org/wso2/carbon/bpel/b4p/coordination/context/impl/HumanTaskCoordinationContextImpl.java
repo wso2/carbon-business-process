@@ -21,6 +21,9 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.wso2.carbon.bpel.b4p.coordination.context.AbstractCoordinationContext;
 import org.wso2.carbon.bpel.b4p.coordination.context.WSConstants;
 
+/**
+ * WS-HumanTask Coordination Context implementation.
+ */
 public class HumanTaskCoordinationContextImpl extends AbstractCoordinationContext {
 
     public HumanTaskCoordinationContextImpl(OMElement context) {
@@ -29,7 +32,8 @@ public class HumanTaskCoordinationContextImpl extends AbstractCoordinationContex
 
     /**
      * Create WS-Coordination context using parameters.
-     * @param identifier message ID
+     *
+     * @param identifier          message ID
      * @param registrationService EPR of the Registration service
      */
     public HumanTaskCoordinationContextImpl(String identifier, EndpointReference registrationService) {

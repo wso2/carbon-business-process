@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,10 +23,10 @@ import org.apache.axis2.context.MessageContext;
 import org.wso2.carbon.bpel.core.ode.integration.axis2.WSDLAwareMessage;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 
+import java.util.List;
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
-import java.util.List;
 
 /**
  * Used as a Data Transfer Object. Will be created at the BPEL Message Receiver. Instance of this
@@ -73,7 +73,7 @@ public class BPELMessageContext {
      */
     private List attachmentIDs;
 
-    public BPELMessageContext(Definition bpelServiceWSDLDefinition){
+    public BPELMessageContext(Definition bpelServiceWSDLDefinition) {
         this.bpelServiceWSDLDefinition = bpelServiceWSDLDefinition;
     }
 
@@ -194,20 +194,20 @@ public class BPELMessageContext {
     }
 
     /**
-     * Assign a list of attachments to be associated with the BPEL Message Context
-     *
-     * @param attachmentIDs a list of attachments to be associated with the BPEL Message Context
-     */
-    public void setAttachmentIDList(List attachmentIDs) {
-        this.attachmentIDs = attachmentIDs;
-    }
-
-    /**
      * Returns the list of attachments associated with the BPEL Message Context
      *
      * @return the list of attachments associated with the BPEL Message Context
      */
     public List getAttachmentIDList() {
         return attachmentIDs;
+    }
+
+    /**
+     * Assign a list of attachments to be associated with the BPEL Message Context
+     *
+     * @param attachmentIDs a list of attachments to be associated with the BPEL Message Context
+     */
+    public void setAttachmentIDList(List attachmentIDs) {
+        this.attachmentIDs = attachmentIDs;
     }
 }

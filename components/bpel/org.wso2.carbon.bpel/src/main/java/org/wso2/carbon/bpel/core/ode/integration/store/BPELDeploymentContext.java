@@ -18,10 +18,10 @@ package org.wso2.carbon.bpel.core.ode.integration.store;
 
 import org.wso2.carbon.bpel.core.BPELConstants;
 
-import javax.xml.namespace.QName;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.namespace.QName;
 
 /**
  * Data transfer object which holds BPEL deployment specific state information.
@@ -123,8 +123,8 @@ public class BPELDeploymentContext {
         processIds.add(pid);
     }
 
-    public List<QName> getProcessIdsForCurrentDeployment(){
-        return processIds;     
+    public List<QName> getProcessIdsForCurrentDeployment() {
+        return processIds;
     }
 
     public String getProcessIdsInCurrentVersion() {

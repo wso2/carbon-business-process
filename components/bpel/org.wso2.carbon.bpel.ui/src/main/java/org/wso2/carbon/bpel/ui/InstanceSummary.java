@@ -45,6 +45,7 @@ public class InstanceSummary {
 
     /**
      * Create instance summary object from process instances array.
+     *
      * @param processInstances process instance array
      * @return instance summary object
      */
@@ -72,10 +73,11 @@ public class InstanceSummary {
 
     /**
      * Create instance summary from return value of getInstanceSummary operation of instance management web service.
+     *
      * @param globalInstanceSummary instance summary from instance management API(global counts)
      * @return global instance count
      */
-    public static InstanceSummary createInstanceSummary(InstanceSummaryE globalInstanceSummary){
+    public static InstanceSummary createInstanceSummary(InstanceSummaryE globalInstanceSummary) {
         InstanceSummary summary = new InstanceSummary();
 
         summary.activeInstances = globalInstanceSummary.getActive();
@@ -87,7 +89,7 @@ public class InstanceSummary {
         return summary;
     }
 
-        public int getActiveInstances() {
+    public int getActiveInstances() {
         return activeInstances;
     }
 

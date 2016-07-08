@@ -19,10 +19,14 @@ package org.wso2.carbon.bpel.b4p.coordination.dao.jpa.hibernate;
 import org.wso2.carbon.bpel.b4p.coordination.dao.DatabaseType;
 import org.wso2.carbon.bpel.b4p.coordination.dao.jpa.AbstractJPAVendorAdapter;
 
-import javax.transaction.TransactionManager;
 import java.util.HashMap;
 import java.util.Map;
+import javax.transaction.TransactionManager;
 
+/**
+ * Not supported.
+ */
+@Deprecated
 public class HibernateJPAVendorAdapter extends AbstractJPAVendorAdapter {
 
     @Override

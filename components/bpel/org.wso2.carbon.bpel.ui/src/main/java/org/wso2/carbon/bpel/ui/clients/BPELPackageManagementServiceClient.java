@@ -29,6 +29,9 @@ import org.wso2.carbon.bpel.stub.mgt.types.UndeployStatus_type0;
 
 import java.rmi.RemoteException;
 
+/**
+ * BPEL Package Management Service Client is wrapper class for BPEL Package Management stub.
+ */
 public class BPELPackageManagementServiceClient {
     private static Log log = LogFactory.getLog(BPELPackageManagementServiceClient.class);
     private BPELPackageManagementServiceStub stub;

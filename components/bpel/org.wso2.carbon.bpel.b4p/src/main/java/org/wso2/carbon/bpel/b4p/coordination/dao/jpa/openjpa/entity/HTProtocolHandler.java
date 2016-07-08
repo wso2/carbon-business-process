@@ -20,8 +20,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.b4p.coordination.dao.HTProtocolHandlerDAO;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+/**
+ * Entity class for HT_COORDINATION_DATA table.
+ */
 @Entity
 @Table(name = "HT_COORDINATION_DATA")
 public class HTProtocolHandler implements HTProtocolHandlerDAO {
@@ -43,7 +49,6 @@ public class HTProtocolHandler implements HTProtocolHandlerDAO {
 
     /**
      * Used to specify TaskID. A process instance can have multiple task IDs.
-     *
      */
     @Column(name = "TASK_ID", nullable = true)
     private String taskID;

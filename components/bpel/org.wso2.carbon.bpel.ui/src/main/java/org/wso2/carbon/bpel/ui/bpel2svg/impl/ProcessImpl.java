@@ -21,7 +21,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.Link;
+import org.wso2.carbon.bpel.ui.bpel2svg.ProcessInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -33,8 +38,10 @@ import java.util.Set;
  */
 public class ProcessImpl extends ActivityImpl implements ProcessInterface {
     private Log log = LogFactory.getLog(ActivityImpl.class);
+
     /**
      * Initializes a new instance of the ProcessImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public ProcessImpl(String token) {
@@ -47,8 +54,10 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         endIconHeight = startIconHeight;
         endIconWidth = startIconWidth;
     }
+
     /**
      * Initializes a new instance of the ProcessImpl class using the specified omElement
+     *
      * @param omElement which matches the Process tag
      */
     public ProcessImpl(OMElement omElement) {
@@ -61,10 +70,12 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         endIconHeight = startIconHeight;
         endIconWidth = startIconWidth;
     }
+
     /**
      * Initializes a new instance of the ProcessImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Process Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Process tag
      * @param parent
      */
@@ -78,8 +89,8 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         endIconHeight = startIconHeight;
         endIconWidth = startIconWidth;
     }
+
     /**
-     *
      * @return String with name of the activity
      */
     @Override
@@ -88,7 +99,6 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
     }
 
     /**
-     *
      * @param document SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML or HTML document) which contains the components of the Process
      */
@@ -116,6 +126,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
 
     /**
      * Creates the SVG document which defines the components of the process
+     *
      * @return SVG document which defines the components including shapes, gradients etc. of the process
      */
     public SVGDocument getSVGDocument() {
@@ -148,38 +159,38 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         return doc;
     }
 
-    /**
-     *
-     * @return String with the SVG file header which defines the attributes like height, width, id
-     */
-    private String getSVGFileHeader() {
-        StringBuffer svgSB = new StringBuffer();
-        // Build Specific Code
-        svgSB.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
-        svgSB.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1 Tiny//EN\"\n\t\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd\">\n");
-        svgSB.append("<!-- Created with Oen ESB SVG Generator http://blogs.sun.com/toxophily/ -->\n");
+//    /**
+//     * @return String with the SVG file header which defines the attributes like height, width, id
+//     */
+//    private String getSVGFileHeader() {
+//        StringBuffer svgSB = new StringBuffer();
+//        // Build Specific Code
+//        svgSB.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+//        svgSB.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1 Tiny//EN\"\n\t\"http://www.w3.org/Graphics/SVG/1" +
+//                ".1/DTD/svg11-tiny.dtd\">\n");
+//        svgSB.append("<!-- Created with Oen ESB SVG Generator http://blogs.sun.com/toxophily/ -->\n");
+//
+//        svgSB.append("<svg\n");
+//        svgSB.append("\txmlns=\"http://www.w3.org/2000/svg\"\n");
+//        svgSB.append("\txmlns:xlink=\"http://www.w3.org/1999/xlink\"\n");
+//        svgSB.append("\tversion=\"1.1\"  baseProfile=\"tiny\"\n");
+//        svgSB.append("\twidth=\"" + dimensions.getWidth() * 2 + "\"\n");
+//        svgSB.append("\theight=\"" + dimensions.getHeight() * 2 + "\"\n");
+//        svgSB.append("\tid=\"" + getId() + "\">\n");
+//
+//        return svgSB.toString();
+//    }
 
-        svgSB.append("<svg\n");
-        svgSB.append("\txmlns=\"http://www.w3.org/2000/svg\"\n");
-        svgSB.append("\txmlns:xlink=\"http://www.w3.org/1999/xlink\"\n");
-        svgSB.append("\tversion=\"1.1\"  baseProfile=\"tiny\"\n");
-        svgSB.append("\twidth=\"" + dimensions.getWidth() * 2 + "\"\n");
-        svgSB.append("\theight=\"" + dimensions.getHeight() * 2 + "\"\n");
-        svgSB.append("\tid=\"" + getId() + "\">\n");
-
-        return svgSB.toString();
-    }
-
-    /**
-     *
-     * @return String with the </svg> closing tag/footer
-     */
-    private String getSCGFileFooter() {
-        return "</svg>\n";
-    }
+//    /**
+//     * @return String with the </svg> closing tag/footer
+//     */
+//    private String getSCGFileFooter() {
+//        return "</svg>\n";
+//    }
 
     /**
      * All Elements are described inline
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the components of the Process
      */
@@ -187,7 +198,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         /* SVG <defs> element is used to embed definitions that can be reused inside an SVG image.
            For instance, you can group SVG shapes together and reuse them as a single shape.
         */
-        Element defs = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "defs");
+        Element defs = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "defs");
         defs.setAttributeNS(null, "id", "defs4");
 
         /*SVG markers are used to mark the start, mid and end of a line or path
@@ -197,7 +208,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
                     the x-axis a tangent of the vertex (default 0)
 
          */
-        Element marker1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "marker");
+        Element marker1 = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "marker");
         //Defining the attributes
         marker1.setAttributeNS(null, "refX", "0");
         marker1.setAttributeNS(null, "refY", "0");
@@ -207,10 +218,11 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
 
         /*Creating a SVG path and defining its attributes
             d=a set of commands which define the path
-            pathLength=If present, the path will be scaled so that the computed path length of the points equals this value
+            pathLength=If present, the path will be scaled so that the computed path length of the points equals this
+             value
             transform=a list of transformations
          */
-        Element path1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
+        Element path1 = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "path");
         //Defining the attributes
         path1.setAttributeNS(null, "d", "M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z");
         path1.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
@@ -218,7 +230,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         path1.setAttributeNS(null, "style", "fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none");
 
         //Creating a SVG marker element and defining the attributes
-        Element marker2 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "marker");
+        Element marker2 = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "marker");
         marker2.setAttributeNS(null, "refX", "0");
         marker2.setAttributeNS(null, "refY", "0");
         marker2.setAttributeNS(null, "orient", "auto");
@@ -226,14 +238,14 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         marker2.setAttributeNS(null, "style", "overflow:visible");
 
         //Creating a SVG path element and defining the attributes
-        Element path2 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
+        Element path2 = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "path");
         path2.setAttributeNS(null, "d", "M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z");
         path2.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
         path2.setAttributeNS(null, "id", "path3193");
         path2.setAttributeNS(null, "style", "fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none");
 
         //Creating a SVG marker element and defining the attributes
-        Element linkMarker = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "marker");
+        Element linkMarker = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "marker");
         linkMarker.setAttributeNS(null, "refX", "0");
         linkMarker.setAttributeNS(null, "refY", "0");
         linkMarker.setAttributeNS(null, "orient", "auto");
@@ -241,7 +253,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         linkMarker.setAttributeNS(null, "style", "overflow:visible");
 
         //Creating a SVG path element and defining the attributes
-        Element linkPath = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
+        Element linkPath = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "path");
         linkPath.setAttributeNS(null, "d", "M -11.5,0 L -7,-7.5 L -12.5,0 L -7,7.5 L -11.5,0 z");
         linkPath.setAttributeNS(null, "transform", "matrix(-0.8,0,0,-0.8,-10,0)");
         linkPath.setAttributeNS(null, "id", "linkPath");
@@ -255,7 +267,7 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
             y1- y start point of the gradient vector
             y2- y end point of the gradient vector
         */
-        Element linearGradient = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "linearGradient");
+        Element linearGradient = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "linearGradient");
         linearGradient.setAttributeNS(null, "id", "orange_red");
         linearGradient.setAttributeNS(null, "x1", "0%");
         linearGradient.setAttributeNS(null, "y1", "0%");
@@ -266,11 +278,11 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
          The stops for a gradient
            offset= The offset for this stop (0 to 1/0% to 100%) -->  Required.
         */
-        Element stop1 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "stop");
+        Element stop1 = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "stop");
         stop1.setAttributeNS(null, "offset", "0%");
         stop1.setAttributeNS(null, "style", "stop-color:rgb(255,255,255);stop-opacity:1");
 
-        Element stop2 = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "stop");
+        Element stop2 = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "stop");
         stop2.setAttributeNS(null, "offset", "100%");
         stop2.setAttributeNS(null, "style", "stop-color:rgb(0,0,255);stop-opacity:1");
 
@@ -288,13 +300,15 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         return defs;
 
     }
+
     /**
      * Get the arrow coordinates of the activities
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return An element which contains the arrow coordinates of the Process and its subActivities
      */
     protected Element getArrows(SVGDocument doc) {
-        Element group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
+        Element group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         if (subActivities != null) {
             //Gets the start activity of the process
             ActivityInterface startActivity = subActivities.get(0);
@@ -303,25 +317,29 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
             //Get the coordinates of the entry arrow of the start activity
             SVGCoordinates exitCoords = getExitArrowCoords();
             //Define the arrow flow according to the coordinates
-            group.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), startActivity.getEntryArrowCoords().getXLeft(), startActivity.getEntryArrowCoords().getYTop(), name));
+            group.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), startActivity
+                    .getEntryArrowCoords().getXLeft(), startActivity.getEntryArrowCoords().getYTop(), name));
             //Get the coordinates of the entry arrows of the end activity
             SVGCoordinates entryCoords = getEndEntryArrowCoords();
             //Define the arrow flow according to the coordinates
-            group.appendChild(getArrowDefinition(doc, endActivity.getExitArrowCoords().getXLeft(), endActivity.getExitArrowCoords().getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), name));
+            group.appendChild(getArrowDefinition(doc, endActivity.getExitArrowCoords().getXLeft(), endActivity
+                    .getExitArrowCoords().getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), name));
         }
         return group;
     }
 
     /**
      * Gets the Link arrow coordinates when there is a FLOW activity in the process
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the process
      * @return An element which contains the link arrow coordinates of the Process
      */
     private Element getLinkArrows(SVGDocument doc) {
-        Element group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
+        Element group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Checks whether the any links exist
         if (links != null && !links.isEmpty()) {
-            //Returns a collection-view of the map with the link names, sources(starting activity) and the target(ending activity)
+            //Returns a collection-view of the map with the link names, sources(starting activity) and the target
+            // (ending activity)
             Set linksSet = links.entrySet();
             Iterator linksIterator = linksSet.iterator();
             //Iterates through the links
@@ -347,20 +365,21 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
     }
 
     /**
-     *
-     * @param doc               SVG document which defines the components including shapes, gradients etc. of the process
-     * @param startX            x-coordinate of the start point
-     * @param startY            y-coordinate of the start point
-     * @param endX              x-coordinate of the end point
-     * @param endY              y-coordinate of the end point
-     * @param id                previous activity id + current activity id
-     * @param startIconWidth    width of the startIcon
-     * @param linkName          name of the link
+     * @param doc            SVG document which defines the components including shapes, gradients etc. of the process
+     * @param startX         x-coordinate of the start point
+     * @param startY         y-coordinate of the start point
+     * @param endX           x-coordinate of the end point
+     * @param endY           y-coordinate of the end point
+     * @param id             previous activity id + current activity id
+     * @param startIconWidth width of the startIcon
+     * @param linkName       name of the link
      * @return
      */
-    private Element drawLink(SVGDocument doc, int startX, int startY, int endX, int endY, int startIconWidth, String id, String linkName) {
-        Element path = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "path");
-         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
+    private Element drawLink(SVGDocument doc, int startX, int startY, int endX, int endY, int startIconWidth, String
+            id, String linkName) {
+        Element path = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "path");
+         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively
+          few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :
           M = move to
@@ -370,25 +389,32 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         int firstBend = 20;
         if (layoutManager.isVerticalLayout()) {
             if (startY < endY) {
-                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
+                path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY +
+                        firstBend) +
                         " L " + startX + "," + (startY + firstBend) + " L " + endX + "," + (startY + firstBend) +
                         " L " + endX + "," + endY);                            //use constants for these propotions
             } else {
                 if (startX > endX) {
-                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
+                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY +
+                            firstBend) +
                             " L " + (startX - (startIconWidth / 2 + firstBend)) + "," + (startY + firstBend) + " L " +
-                            (startX - (startIconWidth / 2 + firstBend)) + "," + (endY - firstBend) + " L " + endX + "," + (endY - firstBend) +
+                            (startX - (startIconWidth / 2 + firstBend)) + "," + (endY - firstBend) + " L " + endX +
+                            "," + (endY - firstBend) +
                             " L " + endX + "," + endY);                            //use constants for these propotions
                 } else {
-                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY + firstBend) +
+                    path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," + (startY +
+                            firstBend) +
                             " L " + (startX + (startIconWidth / 2 + firstBend)) + "," + (startY + firstBend) + " L " +
-                            (startX + (startIconWidth / 2 + firstBend)) + "," + (endY - firstBend) + " L " + endX + "," + (endY - firstBend) +
+                            (startX + (startIconWidth / 2 + firstBend)) + "," + (endY - firstBend) + " L " + endX +
+                            "," + (endY - firstBend) +
                             " L " + endX + "," + endY);
                 }
             }
 
         } else {
-            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+            path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," +
+                    startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);
+            //use constants for these propotions
         }
         //Set the id
         path.setAttributeNS(null, "id", id);
@@ -400,17 +426,19 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
     }
 
     /**
-     *
      * @return String with the end tag of Process
      */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.PROCESS_END_TAG;
     }
+
     /**
      * At the start: width=0, height=0
-     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     *
+     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by
+     * iterating
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -433,7 +461,8 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
                     if (subActivityDim.getWidth() > width) {
                         width += subActivityDim.getWidth();
                     }
-                     /*As the Process should increase in height when the number of subActivities increase, height of each
+                     /*As the Process should increase in height when the number of subActivities increase, height of
+                     each
                       subActivity is added to the height of the main/composite activity
                       */
                     height += subActivityDim.getHeight();
@@ -459,8 +488,10 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         }
         return dimensions;
     }
+
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -472,13 +503,14 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
             layoutHorizontal(startXLeft, startYTop);
         }
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
      * centreOfMyLayout- center of the the SVG
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -513,12 +545,14 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     private void layoutHorizontal(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -553,9 +587,11 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
+
     /**
      * At the start: xLeft= xLeft of startIcon + (width of startIcon)/2, yTop= yTop of startIcon + height of startIcon
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -570,9 +606,11 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
         return coords;
     }
+
     /**
      * At the start: xLeft= xLeft of endIcon + (width of endIcon)/2, yTop= yTop of endIcon
      * Calculates the coordinates of the entry arrow of the end activity
+     *
      * @return coordinates/exit point of the entry arrow for the end activity
      */
     public SVGCoordinates getEndEntryArrowCoords() {
@@ -586,16 +624,18 @@ public class ProcessImpl extends ActivityImpl implements ProcessInterface {
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
         return coords;
     }
+
     /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }
+
     /**
-     *
      * @return String with the opacity value
      */
     @Override

@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.CompensationHandlerInterface;
 
 /**
@@ -28,6 +28,7 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
 
     /**
      * Initializes a new instance of the CompensationHandlerImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public CompensationHandlerImpl(String token) {
@@ -44,6 +45,7 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
 
     /**
      * Initializes a new instance of the CompensationHandlerImpl class using the specified omElement
+     *
      * @param omElement which matches the CompensationHandler tag
      */
     public CompensationHandlerImpl(OMElement omElement) {
@@ -60,8 +62,10 @@ public class CompensationHandlerImpl extends SequenceImpl implements Compensatio
 
     /**
      * Initializes a new instance of the CompensationHandlerImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an CompensationHandler Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an CompensationHandler Activity when processing
+     * the subActivities
      * of the process
+     *
      * @param omElement which matches the CompensationHandler tag
      * @param parent
      */

@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * Receive Interface.
+ */
 public interface ReceiveInterface extends ActivityInterface {
 
 }

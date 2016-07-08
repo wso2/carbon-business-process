@@ -19,18 +19,18 @@ package org.wso2.carbon.bpel.b4p.coordination.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.b4p.coordination.configuration.CoordinationConfiguration;
-import org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnectionFactoryJDBC;
 import org.wso2.carbon.bpel.b4p.coordination.dao.Constants;
+import org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnectionFactoryJDBC;
 import org.wso2.carbon.bpel.b4p.internal.B4PContentHolder;
 import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Internal representation of the b4p coordination database.
@@ -121,7 +121,8 @@ public class DatabaseUtil {
             }
 
         } catch (Exception e) {
-            String errorMsg = "Failed to resolved external DataSource at " + bpelServerConfiguration.getDataSourceName();
+            String errorMsg = "Failed to resolved external DataSource at " + bpelServerConfiguration
+                    .getDataSourceName();
             log.error(errorMsg, e);
             throw new DatabaseConfigurationException(errorMsg, e);
         }
@@ -201,7 +202,8 @@ public class DatabaseUtil {
         Map<String, Object> daoFactoryProperties = new HashMap<String, Object>();
         daoFactoryProperties.put(Constants.PROP_ENABLE_DDL_GENERATION,
                 CoordinationConfiguration.getInstance().isGenerateDdl());
-        daoFactoryProperties.put(Constants.PROP_ENABLE_SQL_TRACING, CoordinationConfiguration.getInstance().isShowSQL());
+        daoFactoryProperties.put(Constants.PROP_ENABLE_SQL_TRACING, CoordinationConfiguration.getInstance().isShowSQL
+                ());
         return daoFactoryProperties;
     }
 }

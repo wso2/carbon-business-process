@@ -16,8 +16,10 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.dao;
 
+/**
+ * Constants used for JPA integration.
+ */
 public final class Constants {
-
 
     public static final String PROP_ENABLE_SQL_TRACING = "org.wso2.carbon.bpel.b4p.SQLTracing";
     public static final String PROP_ENABLE_DDL_GENERATION = "org.wso2.carbon.bpel.b4p.DDLGeneration";

@@ -20,16 +20,21 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.addressing.EndpointReference;
 import org.wso2.carbon.bpel.b4p.coordination.context.AbstractCoordinationContext;
 
+/**
+ * Simple Coordination Context implementation. Which represents ws-coordination context.
+ */
 public class SimpleCoordinationContext extends AbstractCoordinationContext {
     public SimpleCoordinationContext(OMElement context) {
         super(context);
     }
 
-    public SimpleCoordinationContext(String identifier, String coordinationType, long expires, EndpointReference registrationService) {
+    public SimpleCoordinationContext(String identifier, String coordinationType, long expires, EndpointReference
+            registrationService) {
         super(identifier, coordinationType, expires, registrationService);
     }
 
-    public SimpleCoordinationContext(String identifier, String coordinationType, EndpointReference registrationService) {
+    public SimpleCoordinationContext(String identifier, String coordinationType, EndpointReference
+            registrationService) {
         super(identifier, coordinationType, registrationService);
     }
 }

@@ -29,7 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ode.agents.memory.SizingAgent;
 import org.apache.ode.bpel.epr.WSDL11Endpoint;
-import org.apache.ode.bpel.iapi.*;
+import org.apache.ode.bpel.iapi.BindingContext;
+import org.apache.ode.bpel.iapi.ContextException;
+import org.apache.ode.bpel.iapi.Endpoint;
+import org.apache.ode.bpel.iapi.EndpointReference;
+import org.apache.ode.bpel.iapi.PartnerRoleChannel;
+import org.apache.ode.bpel.iapi.ProcessConf;
+import org.apache.ode.bpel.iapi.ProcessStore;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.bpel.common.BusinessProcessConstants;
 import org.wso2.carbon.bpel.common.ServiceConfigurationUtil;
@@ -38,12 +44,12 @@ import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStore;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AxisServiceUtils;
 
-import javax.wsdl.Definition;
-import javax.wsdl.PortType;
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.wsdl.Definition;
+import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
 
 /**
  * Axis2 implementation of the {@link org.apache.ode.bpel.iapi.BindingContext}
@@ -93,7 +99,8 @@ public class BPELBindingContextImpl implements BindingContext {
 
         Integer tenantId = bpelServer.getMultiTenantProcessStore().getTenantId(processID);
 
-        BPELProcessProxy processProxy = getBPELProcessProxy(tenantId.toString(), endpoint.serviceName, endpoint.portName);
+        BPELProcessProxy processProxy = getBPELProcessProxy(tenantId.toString(), endpoint.serviceName, endpoint
+                .portName);
         if (processProxy != null) {
             ProcessConfigurationImpl processConf =
                     (ProcessConfigurationImpl) processProxy.getProcessConfiguration();
@@ -147,10 +154,11 @@ public class BPELBindingContextImpl implements BindingContext {
         ProcessConf processConfiguration = ((ProcessStore) bpelServer.
                 getMultiTenantProcessStore()).getProcessConfiguration(processId);
 
-        return  ((ProcessConfigurationImpl)processConfiguration).getTenantId();
+        return ((ProcessConfigurationImpl) processConfiguration).getTenantId();
 
 //        return MultitenantUtils
-//                .getTenantId(((MultiTenantProcessConfiguration) processConfiguration).getTenantConfigurationContext());
+//                .getTenantId(((MultiTenantProcessConfiguration) processConfiguration).getTenantConfigurationContext
+// ());
     }
 
     private PartnerService createPartnerService(ProcessConf pConf, QName serviceName,
@@ -176,7 +184,7 @@ public class BPELBindingContextImpl implements BindingContext {
         if (partnerService == null) {
             throw new ContextException("Only SOAP and HTTP binding supported!");
         }
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Created external service " + serviceName);
         }
         return partnerService;
@@ -199,8 +207,8 @@ public class BPELBindingContextImpl implements BindingContext {
                     processProxy);
 
             EndpointConfiguration endpointConfig =
-                ((ProcessConfigurationImpl) processConfiguration).getEndpointConfiguration(
-                        new WSDL11Endpoint(serviceName, portName));
+                    ((ProcessConfigurationImpl) processConfiguration).getEndpointConfiguration(
+                            new WSDL11Endpoint(serviceName, portName));
 
             ServiceConfigurationUtil.configureService(axisService, endpointConfig, tenantConfigCtx);
 
@@ -275,7 +283,8 @@ public class BPELBindingContextImpl implements BindingContext {
                     // can't stress strongly enough how important it is to clean this up.
 //                ArrayList<Parameter> parameters = (ArrayList<Parameter>) axisService.getParameters();
 //                for (Parameter parameter : parameters) {
-//                    if (!parameter.getName().equals(CarbonConstants.PRESERVE_SERVICE_HISTORY_PARAM) && !BPELProcessStoreImpl.isUndeploying) {
+//                    if (!parameter.getName().equals(CarbonConstants.PRESERVE_SERVICE_HISTORY_PARAM) &&
+// !BPELProcessStoreImpl.isUndeploying) {
 //                        axisService.removeParameter(parameter);
 //                    }
 //                }
@@ -287,7 +296,8 @@ public class BPELBindingContextImpl implements BindingContext {
 //
 //                if (RegistryBasedProcessStoreImpl.isUpdatingBPELPackage) {
 //                    axisService.addParameter(new Parameter(CarbonConstants.PRESERVE_SERVICE_HISTORY_PARAM, "true"));
-//                    axisService.getAxisServiceGroup().addParameter(new Parameter(CarbonConstants.PRESERVE_SERVICE_HISTORY_PARAM, "true"));
+//                    axisService.getAxisServiceGroup().addParameter(new Parameter(CarbonConstants
+// .PRESERVE_SERVICE_HISTORY_PARAM, "true"));
 //                }
                     // now, stop the service
                     axisConfig.stopService(axisServiceName);

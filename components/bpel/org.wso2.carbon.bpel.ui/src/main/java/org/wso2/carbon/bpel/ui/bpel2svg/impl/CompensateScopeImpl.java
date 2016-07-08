@@ -16,10 +16,10 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.CompensateScopeInterface;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
-import org.apache.axiom.om.OMElement;
 
 /**
  * CompensateScope tag UI implementation
@@ -28,6 +28,7 @@ public class CompensateScopeImpl extends SimpleActivityImpl implements Compensat
 
     /**
      * Initializes a new instance of the CompensateScopeImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public CompensateScopeImpl(String token) {
@@ -37,8 +38,10 @@ public class CompensateScopeImpl extends SimpleActivityImpl implements Compensat
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the CompensateScopeImpl class using the specified omElement
+     *
      * @param omElement which matches the CompensateScope tag
      */
     public CompensateScopeImpl(OMElement omElement) {
@@ -51,10 +54,12 @@ public class CompensateScopeImpl extends SimpleActivityImpl implements Compensat
 
     /**
      * Initializes a new instance of the CompensateScopeImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an CompensateScope Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an CompensateScope Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement omElement which matches the CompensateScope tag
-     * @param parent parent of the activity
+     * @param parent    parent of the activity
      */
     public CompensateScopeImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
@@ -68,7 +73,7 @@ public class CompensateScopeImpl extends SimpleActivityImpl implements Compensat
     }
 
     /**
-     *@return String with the end tag of CompensateScope Activity
+     * @return String with the end tag of CompensateScope Activity
      */
     @Override
     public String getEndTag() {

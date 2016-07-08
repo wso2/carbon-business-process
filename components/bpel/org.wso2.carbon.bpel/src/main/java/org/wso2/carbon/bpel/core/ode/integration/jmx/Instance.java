@@ -31,17 +31,17 @@ import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Instance
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.LimitedInstanceInfoType;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.PaginatedInstanceList;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import javax.xml.namespace.QName;
-import java.lang.String;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
+import javax.xml.namespace.QName;
 
+/**
+ * Implementation class for Instance Bean.
+ */
 public class Instance extends AbstractAdmin implements InstanceMXBean {
     private BPELServerImpl bpelServer = BPELServerImpl.getInstance();
     private static Log log = LogFactory.getLog(Instance.class);
@@ -51,45 +51,45 @@ public class Instance extends AbstractAdmin implements InstanceMXBean {
     public String[] getInstanceInfoFromInstanceId() {
         StringBuffer buffer = new StringBuffer();
         PaginatedInstanceList paginatedInstanceList;
-        String instanceInfoArray[]=null;
-        int arrayCount=0;
+        String instanceInfoArray[] = null;
+        int arrayCount = 0;
         try {
             paginatedInstanceList = getPaginatedInstanceList(" ", "-last-active", 200, 0);
             LimitedInstanceInfoType[] instanceArray = paginatedInstanceList.getInstance();
-            instanceInfoArray= new String[instanceArray.length];
+            instanceInfoArray = new String[instanceArray.length];
             for (LimitedInstanceInfoType instance : instanceArray) {
-                buffer.append("Instance id="+instance.getIid());
+                buffer.append("Instance id=" + instance.getIid());
                 buffer.append("  ");
-                buffer.append("Process id="+instance.getPid());
+                buffer.append("Process id=" + instance.getPid());
                 buffer.append(" ");
-                buffer.append("Status ="+instance.getStatus());
+                buffer.append("Status =" + instance.getStatus());
                 buffer.append(" ");
-                buffer.append("Started Date="+instance.getDateStarted().get(5));
-                buffer.append("-"+instance.getDateStarted().get(2));
-                buffer.append("-"+instance.getDateStarted().get(1));
+                buffer.append("Started Date=" + instance.getDateStarted().get(5));
+                buffer.append("-" + instance.getDateStarted().get(2));
+                buffer.append("-" + instance.getDateStarted().get(1));
                 buffer.append("  ");
                 buffer.append(instance.getDateStarted().get(11));
-                buffer.append(":"+instance.getDateStarted().get(12));
-                buffer.append(":"+instance.getDateStarted().get(13));
+                buffer.append(":" + instance.getDateStarted().get(12));
+                buffer.append(":" + instance.getDateStarted().get(13));
                 buffer.append("  ");
 
-                buffer.append("Date Last Activate="+instance.getDateLastActive().get(5));
-                buffer.append("-"+instance.getDateLastActive().get(2));
-                buffer.append("-"+instance.getDateLastActive().get(1));
+                buffer.append("Date Last Activate=" + instance.getDateLastActive().get(5));
+                buffer.append("-" + instance.getDateLastActive().get(2));
+                buffer.append("-" + instance.getDateLastActive().get(1));
                 buffer.append("  ");
                 buffer.append(instance.getDateLastActive().get(11));
-                buffer.append(":"+instance.getDateLastActive().get(12));
-                buffer.append(":"+instance.getDateLastActive().get(13));
+                buffer.append(":" + instance.getDateLastActive().get(12));
+                buffer.append(":" + instance.getDateLastActive().get(13));
                 buffer.append("  ");
-                instanceInfoArray[arrayCount]=buffer.toString();
+                instanceInfoArray[arrayCount] = buffer.toString();
                 arrayCount++;
-                buffer.delete(0,buffer.length());
+                buffer.delete(0, buffer.length());
             }
         } catch (InstanceManagementException e) {
-            String errMsg="failed to get instance information from instance id";
+            String errMsg = "failed to get instance information from instance id";
             log.error(errMsg, e);
         }
-       return instanceInfoArray;
+        return instanceInfoArray;
     }
 
     public PaginatedInstanceList getPaginatedInstanceList(String filter, final String order,
@@ -148,7 +148,7 @@ public class Instance extends AbstractAdmin implements InstanceMXBean {
             });
         } catch (Exception e) {
             String errMsg = "Error querying instances from database. Instance Filter:" +
-            instanceFilter.toString();
+                    instanceFilter.toString();
             log.error(errMsg, e);
             throw new InstanceManagementException(errMsg, e);
         }

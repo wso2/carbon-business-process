@@ -20,6 +20,9 @@ import org.wso2.carbon.registry.core.RegistryConstants;
 
 import java.io.File;
 
+/**
+ * Constants used in BPEL project.
+ */
 public final class BPELConstants {
     private BPELConstants() {
     }
@@ -222,7 +225,7 @@ public final class BPELConstants {
             RegistryConstants.PATH_SEPARATOR + "bpel" + RegistryConstants.PATH_SEPARATOR +
                     "packages" + RegistryConstants.PATH_SEPARATOR;
     public static final String BPEL_PACKAGE_VERSIONS =
-            RegistryConstants.PATH_SEPARATOR +  "versions" + RegistryConstants.PATH_SEPARATOR;
+            RegistryConstants.PATH_SEPARATOR + "versions" + RegistryConstants.PATH_SEPARATOR;
 
     /* Commented following constant and introduced repository archives based on package names*/
 
@@ -268,12 +271,12 @@ public final class BPELConstants {
     public static final int DEFAULT_INSTANCE_DELETION_LIMIT = 2000;
 
     /*  added to set updated properties of a package*/
-    public static final String BPEL_INSTANCE_CLEANUP_FAILURE =  "bpel.instance.cleanup.failure: ";
-    public static final String BPEL_INSTANCE_CLEANUP_SUCCESS =  "bpel.instance.cleanup.success:";
-    public static final String BPEL_PROCESS_EVENT_GENERATE   =  "bpel.process.event.generate: ";
-    public static final String BPEL_PROCESS_EVENTS           =  "bpel.process.events: ";
-    public static final String BPEL_PROCESS_INMEMORY         =  "bpel.process.inmemory: ";
-    public static final String BPEL_PROCESS_STATE            =  "bpel.process.state: ";
+    public static final String BPEL_INSTANCE_CLEANUP_FAILURE = "bpel.instance.cleanup.failure: ";
+    public static final String BPEL_INSTANCE_CLEANUP_SUCCESS = "bpel.instance.cleanup.success:";
+    public static final String BPEL_PROCESS_EVENT_GENERATE = "bpel.process.event.generate: ";
+    public static final String BPEL_PROCESS_EVENTS = "bpel.process.events: ";
+    public static final String BPEL_PROCESS_INMEMORY = "bpel.process.inmemory: ";
+    public static final String BPEL_PROCESS_STATE = "bpel.process.state: ";
     public static final String BPEL_PROCESS_SCOPE_EVENT = "bpel.process.scope.event:";
 
     public static final String PORTS_OFFSET = "Ports.Offset";
@@ -282,7 +285,7 @@ public final class BPELConstants {
 
     public static final String ANALYTICS_SERVER_PROFILE_NS = "http://wso2.org/analytics/3.0";
 
-     public static final String MESSAGE_TRACE = "org.wso2.carbon.bpel.messagetrace";
+    public static final String MESSAGE_TRACE = "org.wso2.carbon.bpel.messagetrace";
 
     public static final String MESSAGE_RECEIVER_INVOKE_ON_SEPARATE_THREAD =
             "messageReceiver.invokeOnSeparateThread";

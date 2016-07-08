@@ -20,11 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
 
-import javax.sql.DataSource;
 import java.io.File;
+import javax.sql.DataSource;
 
 /**
- *  To handle -Dsetup for B4P component
+ * To handle -Dsetup for B4P component
  */
 public class B4PDatabaseCreator extends DatabaseCreator {
     private static final Log log = LogFactory.getLog(B4PDatabaseCreator.class);

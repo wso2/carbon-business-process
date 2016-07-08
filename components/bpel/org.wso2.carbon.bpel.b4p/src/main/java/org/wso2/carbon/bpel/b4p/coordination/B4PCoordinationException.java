@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.b4p.coordination;
 
+/**
+ * BPEL for People Coordination Exception.
+ */
 public class B4PCoordinationException extends Exception {
 
 

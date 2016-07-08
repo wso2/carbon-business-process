@@ -18,6 +18,9 @@ package org.wso2.carbon.bpel.ui;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Instance Filter Utils.
+ */
 public final class InstanceFilterUtil {
     private static Log log = LogFactory.getLog(InstanceFilterUtil.class);
 

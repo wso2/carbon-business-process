@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * ForEach Interface.
+ */
 public interface ForEachInterface extends ActivityInterface {
 
 }

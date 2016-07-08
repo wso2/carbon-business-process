@@ -16,10 +16,10 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
-import org.wso2.carbon.bpel.ui.bpel2svg.CompensateInterface;
 import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.CompensateInterface;
 
 /**
  * Compensate tag UI implementation
@@ -28,6 +28,7 @@ public class CompensateImpl extends SimpleActivityImpl implements CompensateInte
 
     /**
      * Initializes a new instance of the CompensateImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public CompensateImpl(String token) {
@@ -40,6 +41,7 @@ public class CompensateImpl extends SimpleActivityImpl implements CompensateInte
 
     /**
      * Initializes a new instance of the CompensateImpl class using the specified omElement
+     *
      * @param omElement omElement which matches the Compensate tag
      */
     public CompensateImpl(OMElement omElement) {
@@ -52,10 +54,12 @@ public class CompensateImpl extends SimpleActivityImpl implements CompensateInte
 
     /**
      * Initializes a new instance of the CompensateImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an Compensate Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an Compensate Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement omElement which matches the Compensate tag
-     * @param parent parent of the activity
+     * @param parent    parent of the activity
      */
     public CompensateImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
@@ -69,7 +73,6 @@ public class CompensateImpl extends SimpleActivityImpl implements CompensateInte
     }
 
     /**
-     *
      * @return String with the end tag of Compensate Activity
      */
     @Override

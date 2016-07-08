@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.bpel.core.ode.integration.utils;
 
+/**
+ * File Loading Util Exception
+ */
 public class FileLoadingUtilException extends Exception {
     public FileLoadingUtilException() {
         super();

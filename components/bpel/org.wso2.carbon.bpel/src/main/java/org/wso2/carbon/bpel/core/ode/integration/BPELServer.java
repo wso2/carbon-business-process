@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.bpel.core.ode.integration;
 
+import org.apache.commons.httpclient.HttpConnectionManager;
 import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
 import org.wso2.carbon.bpel.core.ode.integration.store.MultiTenantProcessStore;
-import org.apache.commons.httpclient.HttpConnectionManager;
 
 /**
  * BPEL Server which initialize the data sources, data access layers, transaction managers,
@@ -31,15 +31,15 @@ public interface BPELServer {
     /**
      * Register BPEL Event listener in ODE BPEL Engine.
      *
-     * @param eventListenerClass  Fully qualified class name of BpelEventListener implementation.
+     * @param eventListenerClass Fully qualified class name of BpelEventListener implementation.
      */
     void registerEventListener(String eventListenerClass);
 
     /**
      * Register ODE Message Exchange Interceptor in ODE BPEL Engine.
      *
-     * @param mexInterceptorClass  Fully qualified class name of 
-     * MessageExchangeInterceptor implementation
+     * @param mexInterceptorClass Fully qualified class name of
+     *                            MessageExchangeInterceptor implementation
      */
     void registerMessageExchangeInterceptor(String mexInterceptorClass);
 
@@ -48,18 +48,20 @@ public interface BPELServer {
      * Returns multi-tenant BPEL process store. This process store will be a composition of
      * tenant specific process store for each tenant.
      *
-     * @return MultiTenantProcessStore BPEL Process Store 
+     * @return MultiTenantProcessStore BPEL Process Store
      */
     MultiTenantProcessStore getMultiTenantProcessStore();
 
     /**
      * Get the multi threaded http connection manager to use with external service invocations.
+     *
      * @return HttpConnectionManager instace(multi-threaded implementation).
      */
     HttpConnectionManager getHttpConnectionManager();
 
     /**
      * Get the BPEL server configuration which is derived from "bps.xml" file
+     *
      * @return BPELServerConfiguration
      */
     BPELServerConfiguration getBpelServerConfiguration();

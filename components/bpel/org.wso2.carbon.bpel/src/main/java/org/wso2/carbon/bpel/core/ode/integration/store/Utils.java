@@ -18,28 +18,41 @@ package org.wso2.carbon.bpel.core.ode.integration.store;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ode.bpel.dd.TDeployment;
-import org.apache.ode.bpel.iapi.ProcessState;
-import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.common.InstanceFilter;
-import org.apache.ode.bpel.engine.BpelDatabase;
 import org.apache.ode.bpel.dao.BpelDAOConnection;
 import org.apache.ode.bpel.dao.ProcessInstanceDAO;
+import org.apache.ode.bpel.dd.TDeployment;
+import org.apache.ode.bpel.engine.BpelDatabase;
+import org.apache.ode.bpel.iapi.ProcessConf;
+import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.ode.bpel.pmapi.ManagementException;
 import org.apache.ode.utils.DOMUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
+import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 
-import javax.xml.namespace.QName;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.namespace.QName;
 
 /**
  * Utility methods for the process store
@@ -261,8 +274,7 @@ public final class Utils {
      *
      * @param callable action to run
      * @return object of type T
-     * @throws org.apache.ode.bpel.pmapi.ManagementException
-     *          if exception occurred during transaction
+     * @throws org.apache.ode.bpel.pmapi.ManagementException if exception occurred during transaction
      */
     private static <T> T dbexec(BpelDatabase.Callable<T> callable) throws ManagementException {
         try {
@@ -321,6 +333,7 @@ public final class Utils {
 
     /**
      * Return the instances in the given processes list
+     *
      * @param processesInPackage
      * @return Instance count
      * @throws ManagementException

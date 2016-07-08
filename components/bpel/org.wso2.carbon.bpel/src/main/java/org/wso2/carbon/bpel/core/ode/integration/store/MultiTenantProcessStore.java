@@ -18,8 +18,8 @@ package org.wso2.carbon.bpel.core.ode.integration.store;
 
 import org.apache.axis2.context.ConfigurationContext;
 
-import javax.xml.namespace.QName;
 import java.io.File;
+import javax.xml.namespace.QName;
 
 /**
  * Multi-tenant process store object. Multi-tenant process store will contain several

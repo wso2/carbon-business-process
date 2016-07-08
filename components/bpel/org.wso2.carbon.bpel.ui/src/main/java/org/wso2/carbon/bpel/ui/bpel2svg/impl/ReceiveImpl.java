@@ -16,17 +16,18 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.ReceiveInterface;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
-import org.apache.axiom.om.OMElement;
 
 /**
  * Receive tag UI implementation
  */
 public class ReceiveImpl extends SimpleActivityImpl implements ReceiveInterface {
- 	/**
+    /**
      * Initializes a new instance of the ReceiveImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public ReceiveImpl(String token) {
@@ -36,8 +37,10 @@ public class ReceiveImpl extends SimpleActivityImpl implements ReceiveInterface 
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	/**
+
+    /**
      * Initializes a new instance of the ReceiveImpl class using the specified omElement
+     *
      * @param omElement which matches the Receive tag
      */
     public ReceiveImpl(OMElement omElement) {
@@ -47,20 +50,23 @@ public class ReceiveImpl extends SimpleActivityImpl implements ReceiveInterface 
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	 /**
+
+    /**
      * Initializes a new instance of the ReceiveImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an Receive Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an Receive Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the Receive tag
      * @param parent
      */
     public ReceiveImpl(OMElement omElement, ActivityInterface parent) {
         super(omElement);
-		//Set the parent of the activity
+        //Set the parent of the activity
         setParent(parent);
     }
-	/**
-     *
+
+    /**
      * @return String with the end tag of Receive Activity
      */
     @Override

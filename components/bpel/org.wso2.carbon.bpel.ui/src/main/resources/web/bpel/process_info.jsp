@@ -683,17 +683,7 @@
                             <tr>
                                 <td>
                                     <div id="bpel2svg" style="height:auto;text-align:center;">
-    <%
-        if (isMSIE) {
-    %>
                                             <%="<img src=../png?pid=" + processID + " />"%>
-    <%}
-       else {
-    %>
-                                        <%="<object type=\"image/svg+xml\" data=../svg?pid=" + processID + " />"%>
-    <%
-        }
-    %>
                                     </div>
                                 </td>
                             </tr>

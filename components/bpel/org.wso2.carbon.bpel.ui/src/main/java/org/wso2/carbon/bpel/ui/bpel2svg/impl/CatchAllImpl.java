@@ -28,6 +28,7 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
 
     /**
      * Initializes a new instance of the CatchAllImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public CatchAllImpl(String token) {
@@ -44,6 +45,7 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
 
     /**
      * Initializes a new instance of the CatchAllImpl class using the specified omElement
+     *
      * @param omElement which matches the CatchAll tag
      */
     public CatchAllImpl(OMElement omElement) {
@@ -60,8 +62,10 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
 
     /**
      * Initializes a new instance of the CatchAllImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an CatchAll Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an CatchAll Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the CatchAll tag
      * @param parent
      */
@@ -81,7 +85,6 @@ public class CatchAllImpl extends SequenceImpl implements CatchAllInterface {
     }
 
     /**
-     *
      * @return- String with the end tag of CatchAll Activity
      */
     @Override
