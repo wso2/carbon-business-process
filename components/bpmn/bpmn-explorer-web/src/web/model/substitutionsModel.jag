@@ -24,16 +24,16 @@ var headers = {"Authorization": "Basic " + auth,
     "Accept" : "application/json"
 };*/
 var log = new Log();
-var headers = 	{	
-					"Authorization": "Basic " + auth,
-	    			"getCommonErrorContentnt-Type": "application/json",
-	    			"Accept" : "application/json"
-				};
+var headers = 	{
+                    "Authorization": "Basic " + auth,
+                    "getCommonErrorContentnt-Type": "application/json",
+                    "Accept" : "application/json"
+                };
 try {
-	//URLs
-	var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
+    //URLs
+    var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
 
-	
+
     var loggedUsersSubInfo = null;
     var httpResponse = null;
     var usersSubstitutedByLoggedUser = null;
@@ -48,13 +48,13 @@ try {
     if (pagination == null || pagination == ""){
         pagination = 1;
     }
-    
+
     if(pagination > 0){
         start = (pagination - 1)*10 ;
     }
 
     //retrieve logged in users substitute if exists
-	httpResponse = get(httpUrl+ RUNTIME_SUBSTITUTES_URL + "/" + session.get("user"), null, headers, "json");
+    httpResponse = get(httpUrl+ RUNTIME_SUBSTITUTES_URL + "/" + session.get("user"), null, headers, "json");
 
     if (log.isDebugEnabled()) {
         log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_URL + "/" + session.get("user"));
@@ -74,13 +74,13 @@ try {
             log.debug("User substitutions not available");
         }
     }
-	
+
     //retrieve list of users that substituted by logged-in user
-    httpResponse = get(httpUrl+ RUNTIME_SUBSTITUTES_URL + "?substitute=" + session.get("user")+ 
+    httpResponse = get(httpUrl+ RUNTIME_SUBSTITUTES_URL + "?substitute=" + session.get("user")+
                                                     "&order=asc&start="+ start+"&size=10&tenantId="+ bpsTenantID, null, headers, "json");
-    
+
     if (log.isDebugEnabled()) {
-        log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_URL + "?substitute=" + session.get("user")+ 
+        log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_URL + "?substitute=" + session.get("user")+
                                                         "&order=asc&start="+ start+"&size=10&tenantId="+ bpsTenantID);
         log.debug("BPS BPMN REST API response: " + stringify(httpResponse));
     }

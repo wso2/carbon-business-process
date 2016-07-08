@@ -18,22 +18,22 @@ include("/model/common.jag");
 
 if (request.isSecure()) {//check whether the request is secure or not
 
-	var authSuccess = session.get("authSuccess");
-	if(!authSuccess){
-		var queryParameters = request.getQueryString();
-		if(queryParameters == "null" || queryParameters == null){
-			response.sendRedirect("login?requestUrl=" + request.getRequestURI());
-		} else{
-			response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
-		}
-	} else {
-		include("/model/common.jag");
-		include("/model/substitutionsModel.jag");
-		include("/template/partials/header.jag");
-		include("/template/partials/navigation.jag");
-		include("/template/substitutionsView.jag");
-		include("/template/partials/footer.jag");
-	}
+    var authSuccess = session.get("authSuccess");
+    if(!authSuccess){
+        var queryParameters = request.getQueryString();
+        if(queryParameters == "null" || queryParameters == null){
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else{
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+        }
+    } else {
+        include("/model/common.jag");
+        include("/model/substitutionsModel.jag");
+        include("/template/partials/header.jag");
+        include("/template/partials/navigation.jag");
+        include("/template/substitutionsView.jag");
+        include("/template/partials/footer.jag");
+    }
 
 } else {
     //request is not secured, therefore need redirect to the secure channel
