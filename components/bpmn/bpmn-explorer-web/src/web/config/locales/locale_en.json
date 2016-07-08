@@ -5,6 +5,7 @@
    "dashboard":"Dashboard",
    "my.tasks.title":"My Tasks",
    "claimable.tasks":"Claimable Tasks",
+   "substitutions":"Substitutions",
    "completed.tasks":" Completed Tasks",
    "processes":"Processes",
    "process":"Process",
@@ -135,6 +136,18 @@
    "instance.id":" Instance ID ",
    "plus.button":" + ",
    "process.monitoring":" Process Monitoring ",
-   "advanced.filter": "Advanced Filtering"
+   "advanced.filter": "Advanced Filtering",
+   "my.substitutions.info": "My Substitutions Information",
+   "user.substitutions.not.available": "Logged User Substitution Information Not Available.",
+   "add.substitute": "Add Substitute",
+   "update": "Update",
+   "substitute.username" : "Substitute User Name",
+   "assignee.username" : "Assignee User Name",
+   "substituted.assignees" : "Substituted Assignees",
+   "substitution.status" : "Substitution Status",
+   "my.substitute" : "My Substitute",
+   "assingee" : "Assignee",
+   "simple.active" : "Active",
+   "simple.inactive" : "Inactive"
 
 }
