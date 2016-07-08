@@ -1,18 +1,20 @@
-<!--
- ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- ~
- ~ Licensed under the Apache License, Version 2.0 (the "License");
- ~ you may not use this file except in compliance with the License.
- ~ You may obtain a copy of the License at
- ~
- ~      http://www.apache.org/licenses/LICENSE-2.0
- ~
- ~ Unless required by applicable law or agreed to in writing, software
- ~ distributed under the License is distributed on an "AS IS" BASIS,
- ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- ~ See the License for the specific language governing permissions and
- ~ limitations under the License.
--->
+<%
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+%>
 <!--Area to display common errors-->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
@@ -21,15 +23,32 @@
     </div>
 </div>
 <%if (commonErrorMessage == null) {%>
+    <!--Show this only to users with bpmn substitution permission-->
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <a data-toggle="collapse" href="#collapseSummaryOverview" aria-expanded="true" class="collapsing-h2">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6"><%=i18n.localize("you.have.admin.access.to.manage.substitutions","You Have Admin Access to Manage Substitutions")%></div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <button type="button" class="btn btn-md btn-info float-right" onclick="window.location='substitutions_admin'">
+                                <span class="fw fw-edit"></span>&nbsp;&nbsp;<%=i18n.localize("go.to.substitute.admin.view","Go To Substitute Admin View")%>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12">
+			<a data-toggle="collapse" href="#collapseSummaryOverview" aria-expanded="true" class="collapsing-h2">
                 <div class="table-title" style="width:100%">
                 <div style=" margin-top: -4px; float: left;">
                     <i class="cu-btn-exp-col btn-collapsed"></i>
                 </div>
                 <div>
-                    <%=i18n.localize("my.substitutions.info","My Substitutions Information")%>
+                	<%=i18n.localize("my.substitutions.info","My Substitutions Information")%>
                 </div>
                 </div>
             </a>
@@ -64,7 +83,7 @@
                     <div class="panel-footer">
                         <div class="row" style="padding-bottom: 1%; padding-top: 1%;">
                             <div class="col-sm-12 col-md-12 col-lg-12">
-                                <button type="button" class="btn btn-default btn-info float-right" data-toggle="modal" data-target="#updateSubstituteModal">
+                                <button type="button" class="btn btn-md btn-info float-right" data-toggle="modal" data-target="#updateSubstituteModal">
                                     <span class="fw fw-edit"></span>&nbsp;&nbsp;<%=i18n.localize("update","Update")%>
                                 </button>
                             </div>
@@ -97,12 +116,17 @@
                                                         onfocus="setDateTimePicker('updateSubEndDate', 'updateSubstituteModalContent')"
                                                         placeholder="YYYY-MM-DD h:mm" value="<%=epochToFormattedTime(loggedUsersSubInfo.endTime)%>">
                                         </div>
-                                        <button class="btn btn-default"
-                                                onclick="updateSubstitute($('#updateAssigneeName').val(), $('#updateSubstituteName').val(), $('#updateSubStartDate').val(), $('#updateSubEndDate').val())">
-                                            <%=i18n.localize("update","Update")%>
-                                        </button>
                                 </div>
                                 <div class="modal-footer">
+                                    <div id="updateSubErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
+                                        <button type="button" class="close" onclick="$('#updateSubErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
+                                        <p id="updateSubErrMsg"></p>
+                                    </div>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
+                                    <button class="btn btn-default btn-info" 
+                                            onclick="updateSubstitute($('#updateAssigneeName').val(), $('#updateSubstituteName').val(), $('#updateSubStartDate').val(), $('#updateSubEndDate').val())">
+                                        <%=i18n.localize("update","Update")%>
+                                    </button>
                                 </div>
                             </div><!-- /.modal-content updateSubstituteModal-->
                         </div><!-- /.modal-dialog updateSubstituteModal-->
@@ -155,7 +179,7 @@
                         <tbody>
                             <% for (var i = 0; i < usersSubstitutedByLoggedUser.length; i++) { %>
                                 <% if (usersSubstitutedByLoggedUser[i].enabled) {%>
-                                <tr class="success">
+                                <tr class="danger">
                                 <%} else {%>
                                 <tr>
                                 <%}%>
@@ -206,12 +230,17 @@
                                         onfocus="setDateTimePicker('subEndDate', 'addSubstituteModalContent')"
                                         placeholder="YYYY-MM-DD h:mm">
                         </div>
-                        <button class="btn btn-default"
-                                onclick="addNewSubstitute($('#assigneeName').val(), $('#substituteName').val(), $('#subStartDate').val(), $('#subEndDate').val())">
-                            <%=i18n.localize("add.substitute","Add Substitute")%>
-                        </button>
                 </div>
                 <div class="modal-footer">
+                    <div id="addSubErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
+                        <button type="button" class="close" onclick="$('#addSubErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
+                        <p id="addSubErrMsg"></p>
+                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
+                    <button class="btn btn-default btn-info" 
+                            onclick="addNewSubstitute($('#assigneeName').val(), $('#substituteName').val(), $('#subStartDate').val(), $('#subEndDate').val())">
+                        <%=i18n.localize("add.substitute","Add Substitute")%>
+                    </button>
                 </div>
             </div><!-- /.modal-content addSubstituteModal-->
         </div><!-- /.modal-dialog addSubstituteModal-->
