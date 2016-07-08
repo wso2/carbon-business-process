@@ -21,9 +21,7 @@
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
       <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">
       <%=i18n.localize("close", "Close")%></span></button>
-      <% if (!commonErrorMessage.contains("Can not construct instance of java.util.Date from String value")) { %>
       <p id="errorMsg"><%=commonErrorMessage%></p>
-      <% } %>
     </div>
 </div>
  <div class="row">

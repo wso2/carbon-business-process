@@ -1442,13 +1442,13 @@ function filterResults(id) {
 /**
 * Script to add more variable names and values to filter for instances
 */
-function addVariable(name,value){
+function addVariable(){
     var vNames = document.getElementsByName("variableName");
-    if (vNames[vNames.length - 1].value !== "") {
+    if (vNames[vNames.length - 1].value !== "" && vNames[vNames.length - 1].value !== undefined) {
         var vRow = document.getElementById("variablesRow");
 
-        var vBr1 = document.createElement("BR");
-        vRow.appendChild(vBr1);
+        var vBr = document.createElement("BR");
+        vRow.appendChild(vBr);
 
         var vNameNode = document.createElement("INPUT");
         vNameNode.setAttribute("type", "text");
@@ -1456,9 +1456,6 @@ function addVariable(name,value){
         vNameNode.setAttribute("class", "form-control");
         vNameNode.setAttribute("placeholder", "Variable Name");
         vNameNode.setAttribute("style", "width: initial; float: left;");
-        if(name != undefined) {
-          vNameNode.setAttribute("value", name);
-        }
         vRow.appendChild(vNameNode);
 
         var vLabel = document.createElement("LABEL");
@@ -1476,12 +1473,7 @@ function addVariable(name,value){
         vValueNode.setAttribute("class", "form-control");
         vValueNode.setAttribute("placeholder", "Variable value like");
         vValueNode.setAttribute("style", "width: initial;");
-        if(name != undefined) {
-            vNameNode.setAttribute("value", value);
-        }
         vRow.appendChild(vValueNode);
-        var vBr = document.createElement("BR");
-        vRow.appendChild(vBr);
     }
 }
 
