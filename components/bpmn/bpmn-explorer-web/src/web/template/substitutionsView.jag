@@ -89,48 +89,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="updateSubstituteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog model-center">
-                            <div class="modal-content" id="updateSubstituteModalContent">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="myModalLabel"><%=i18n.localize("add.substitute","Add Substitute")%></h4>
-                                </div>
-                                <div class="modal-body">
-                                        <div class="form-group">
-                                            <label for="updateAssigneeName"><%=i18n.localize("assignee.username","Assignee User Name")%></label>
-                                            <input type="text" class="form-control" id="updateAssigneeName" placeholder="Enter Assignee Name" value="<%=session.get("user")%>" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="updateSubstituteName"><%=i18n.localize("substitute.username","Substitute User Name")%></label>
-                                            <input type="text" class="form-control" id="updateSubstituteName" placeholder="Enter User Name" value="<%=loggedUsersSubInfo.substitute%>">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="updateSubStartDate"><%=i18n.localize("start.time","Start Time")%></label>
-                                            <input type="text" class="form-control" id="updateSubStartDate"
-                                                        onfocus="setDateTimePicker('updateSubStartDate', 'updateSubstituteModalContent')"
-                                                        placeholder="YYYY-MM-DD h:mm" value="<%=epochToFormattedTime(loggedUsersSubInfo.startTime)%>">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="updateSubEndDate"><%=i18n.localize("end.time","End Time")%></label>
-                                            <input type="text" class="form-control" id="updateSubEndDate"
-                                                        onfocus="setDateTimePicker('updateSubEndDate', 'updateSubstituteModalContent')"
-                                                        placeholder="YYYY-MM-DD h:mm" value="<%=epochToFormattedTime(loggedUsersSubInfo.endTime)%>">
-                                        </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <div id="updateSubErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
-                                        <button type="button" class="close" onclick="$('#updateSubErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
-                                        <p id="updateSubErrMsg"></p>
-                                    </div>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
-                                    <button class="btn btn-default btn-info" 
-                                            onclick="updateSubstitute($('#updateAssigneeName').val(), $('#updateSubstituteName').val(), $('#updateSubStartDate').val(), $('#updateSubEndDate').val())">
-                                        <%=i18n.localize("update","Update")%>
-                                    </button>
-                                </div>
-                            </div><!-- /.modal-content updateSubstituteModal-->
-                        </div><!-- /.modal-dialog updateSubstituteModal-->
-                    </div><!-- /.modal updateSubstituteModal-->
+                    <%
+                        //Add updateSubstituteModal
+                        var updateSubstituteModalConfig =  {
+                                        "updatedAssigneeName" : session.get("user"),
+                                        "updatedSubstituteName" : loggedUsersSubInfo.substitute,
+                                        "updatedSubStartDate" : loggedUsersSubInfo.startTime,
+                                        "updatedSubEndDate" : loggedUsersSubInfo.endTime,
+                                        "assigneeEditEnable" : false
+                                    }
+                        include("/template/modals/updateSubstituteModal.jag");
+                    %>
                     <%} else {%>
                     <div class="row" style="padding-bottom: 1%; padding-top: 1%;">
                         &nbsp;&nbsp;&nbsp;&nbsp;<%=i18n.localize("user.substitutions.not.available",
@@ -145,6 +114,14 @@
                             </div>
                         </div>
                     </div>
+                    <%
+                        //Add addSubstituteModal
+                        var addSubstituteModalConfig = {
+                                            "assigneeName" : session.get("user"),
+                                            "assigneeEditEnable" : false
+                                        }
+                        include("/template/modals/addSubstituteModal.jag");
+                    %>
                     <%}%>
                 </div>
             </div>
@@ -202,49 +179,6 @@
     </div>
     <% } %>
 
-
-    <div class="modal fade" id="addSubstituteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog model-center">
-            <div class="modal-content" id="addSubstituteModalContent">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel"><%=i18n.localize("add.substitute","Add Substitute")%></h4>
-                </div>
-                <div class="modal-body">
-                        <div class="form-group">
-                            <label for="assigneeName"><%=i18n.localize("assignee.username","Assignee User Name")%></label>
-                            <input type="text" class="form-control" id="assigneeName" placeholder="Enter Assignee Name" value="<%=session.get("user")%>" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="substituteName"><%=i18n.localize("substitute.username","Substitute User Name")%></label>
-                            <input type="text" class="form-control" id="substituteName" placeholder="Enter User Name">
-                        </div>
-                        <div class="form-group">
-                            <label for="subStartDate"><%=i18n.localize("start.time","Start Time")%></label>
-                            <input type="text" class="form-control" id="subStartDate"
-                                        onfocus="setDateTimePicker('subStartDate', 'addSubstituteModalContent')"
-                                        placeholder="YYYY-MM-DD h:mm">
-                        </div>
-                        <div class="form-group">
-                            <label for="subEndDate"><%=i18n.localize("end.time","End Time")%></label>
-                            <input type="text" class="form-control" id="subEndDate"
-                                        onfocus="setDateTimePicker('subEndDate', 'addSubstituteModalContent')"
-                                        placeholder="YYYY-MM-DD h:mm">
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <div id="addSubErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
-                        <button type="button" class="close" onclick="$('#addSubErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
-                        <p id="addSubErrMsg"></p>
-                    </div>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
-                    <button class="btn btn-default btn-info" 
-                            onclick="addNewSubstitute($('#assigneeName').val(), $('#substituteName').val(), $('#subStartDate').val(), $('#subEndDate').val())">
-                        <%=i18n.localize("add.substitute","Add Substitute")%>
-                    </button>
-                </div>
-            </div><!-- /.modal-content addSubstituteModal-->
-        </div><!-- /.modal-dialog addSubstituteModal-->
-    </div><!-- /.modal addSubstituteModal-->
-
-
+    
+    
 <%}%>
