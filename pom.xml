@@ -652,6 +652,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
+                <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
+                <version>${carbon.business-process.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
                 <version>${carbon.business-process.version}</version>
             </dependency>
