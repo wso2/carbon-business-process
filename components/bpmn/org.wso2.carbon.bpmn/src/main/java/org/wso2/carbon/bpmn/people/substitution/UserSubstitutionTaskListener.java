@@ -37,6 +37,10 @@ public class UserSubstitutionTaskListener implements TaskListener{
     @Override
     public void notify(DelegateTask delegateTask) {
 
+        if (!SubstitutionDataHolder.getInstance().isSubstitutionFeatureEnabled()) {
+            return;
+        }
+
         String assignee = delegateTask.getAssignee();
 
         if (assignee == null) {

@@ -23,13 +23,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionDataHolder;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
 import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.model.common.BooleanResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
@@ -345,6 +345,20 @@ public class UserSubstitutionService {
         }
 
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("/configs/enabled")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response isSubstitutionFeatureEnabled() {
+        BooleanResponse response = new BooleanResponse();
+        if (subsFeatureEnabled) {
+            response.setEnabled(true);
+        } else {
+            response.setEnabled(false);
+        }
+
+        return Response.ok(response).build();
     }
 
 
