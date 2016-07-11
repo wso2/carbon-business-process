@@ -30,6 +30,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
 
 import javax.xml.bind.annotation.*;
+import java.util.List;
 
 @XmlRootElement(name = "DataResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
