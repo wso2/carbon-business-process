@@ -1,3 +1,17 @@
+create table ACT_BPS_SUBSTITUTES (
+  USER nvarchar(255) not null,
+  SUBSTITUTE nvarchar(255) not null,
+  TASK_LIST nvarchar(1000),
+  SUBSTITUTION_START datetime not null,
+  SUBSTITUTION_END datetime,
+  ENABLED tinyint default 1,
+  CREATED datetime,
+  UPDATED datetime,
+  TRANSITIVE_SUBSTITUTE nvarchar(255),
+  TENANT_ID int NOT NULL,
+  primary key (USER, TENANT_ID)
+);
+
 create table ACT_GE_PROPERTY (
     NAME_ nvarchar(64),
     VALUE_ nvarchar(300),
