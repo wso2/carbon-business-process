@@ -32,7 +32,8 @@ if (request.isSecure()) {//check whether the request is secure or not
     var USER='user',
         AUTH='auth',
         AUTH_SUCCESS='authSuccess',
-        ROLES='roles';
+        ROLES='roles',
+        PERM_SUBSTITUTION_ADD = "PERM_SUBSTITUTION_ADD";
     
     try{
         if(username == "" || password == ""){
@@ -54,6 +55,9 @@ if (request.isSecure()) {//check whether the request is secure or not
             response.sendRedirect(requestUrl);
         } else {
             var roles = authentication.getRoles(username,password,httpServiceUrl);
+            //get user substitution permission
+            var subAddPermission = authentication.isUserAuthorized(username, SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION, httpServiceUrl);
+
             var encoder = require("/assets/encoder.js");
             var auth = encoder.encode(username+':'+password);
             var cookie = session.get('BPSSessionCookie');
@@ -69,6 +73,7 @@ if (request.isSecure()) {//check whether the request is secure or not
             session.put(USER, username);
             session.put('BPSSessionCookie', cookie);
             session.put(ROLES ,roles);
+            session.put(PERM_SUBSTITUTION_ADD ,subAddPermission);
             response.sendRedirect(requestUrl);
         }
     

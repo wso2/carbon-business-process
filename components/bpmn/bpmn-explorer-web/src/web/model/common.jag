@@ -132,6 +132,10 @@ var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErr
 // errorDisplayEnable = '' to display
 var commonErrorMessage = null; //Common error message if exists
 
+//Common Constants
+var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/addSubstituteInfo";
+var ADD_PERMISSION = "add";
+
 
 //START COMMON FUNCTIONS
 

@@ -29,10 +29,19 @@ if (request.isSecure()) {//check whether the request is secure or not
         }
     } else {
         include("/model/common.jag");
-        include("/model/adminSubstitutionsModel.jag");
-        include("/template/partials/header.jag");
-        include("/template/partials/navigation.jag");
-        include("/template/adminSubstitutionsView.jag");
+        if (session.get("PERM_SUBSTITUTION_ADD")) {
+            include("/model/adminSubstitutionsModel.jag");
+            include("/template/partials/header.jag");
+            include("/template/partials/navigation.jag");
+            include("/template/adminSubstitutionsView.jag");
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("User is not authorized for Substitution Admin functionality")
+            }   
+            include("/template/partials/header.jag");
+            include("/template/partials/navigation.jag");
+            include("/template/unauthorizedView.jag");
+        }
         include("/template/partials/footer.jag");
     }
 

@@ -25,7 +25,6 @@ try {
     //URLs
     var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
 
-
     var loggedUsersSubInfo = null;
     var httpResponse = null;
     var usersSubstitutedByLoggedUser = null;
@@ -85,7 +84,7 @@ try {
         usersSubstitutedByLoggedUser = httpResponse.data.substituteInfoList;
 
         //calculate pagination info
-        paginatePageCount = 10;//Math.ceil(httpResponse.data.total / 10);//TODO since still do not respond total commenting it and hardcode to 10
+        paginatePageCount = Math.ceil(httpResponse.data.total / 10);
         currentPage = parseInt(pagination);
     }
 

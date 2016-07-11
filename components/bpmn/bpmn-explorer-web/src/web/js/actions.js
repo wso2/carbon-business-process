@@ -1463,97 +1463,165 @@ function filterResults(id) {
 
 function addNewSubstitute (assignee, subName, startDate, endDate) {
 
-    //create start time Date object
-    var startTimeStrArr = startDate.split(' ');
-    var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
-    var startTime = new Date(startDateTimeStr);
-
-    //create end time Date object
-    var endTimeStrArr = endDate.split(' ');
-    var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-    var endTime = new Date(endDateTimeStr);
-
-    //json request
-    var addSubRequest  =  {
-                               "assignee": assignee,
-                               "substitute" : subName,
-                               "startTime" : startTime.toISOString(),
-                               "endTime" : endTime.toISOString()
-                            };
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes";
-
-    $.ajax({
-        type: 'POST',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(addSubRequest),
-        success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-        },
-        error: function (xhr, status, error) {
-            var errorJson = eval("(" + xhr.responseText + ")");
-            if (errorJson != null && errorJson.errorMessage != undefined) {
-                $('#addSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
-            } else {
-                $('#addSubErrMsg').html("Error occurred while adding substitute. Please try again");
-            }
-
-            $('#addSubErrorMessageArea').show();
-            //set callback to remove error message when hiding the modal
-            $('#addSubstituteModal').on('hide.bs.modal', function (e) {
-                    $('#addSubErrorMessageArea').hide();
-            });
-
+    try {
+        if (assignee.length == 0) {
+            throw "Please enter assignee name";
         }
-    });
+        if (subName.length == 0) {
+            throw "Please enter substitute name";
+        }
+        //create start time Date object
+        var startTimeStrArr = startDate.split(' ');
+        var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
+        var startTime = new Date(startDateTimeStr);
+        var startTimeStr = "";
+        try {
+            startTimeStr = startTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid start time";
+        }
+
+        //create end time Date object
+        var endTimeStrArr = endDate.split(' ');
+        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+        var endTime = new Date(endDateTimeStr);
+        var endTimeStr = "";
+        try {
+            endTimeStr = endTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid end time";
+        }
+
+        //json request
+        var addSubRequest  =  {
+                                   "assignee": assignee,
+                                   "substitute" : subName,
+                                   "startTime" : startTimeStr,
+                                   "endTime" : endTimeStr
+                                };
+
+        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes";
+
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: httpUrl + url,
+            data: JSON.stringify(addSubRequest),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                if (xhr.responseText.length > 0) {
+                    var errorJson = eval("(" + xhr.responseText + ")");
+                    if (errorJson != null && errorJson.errorMessage != undefined) {
+                        $('#addSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+                    } else {
+                        $('#addSubErrMsg').html("Error occurred while adding substitute. Please try again");
+                    }
+                } else if (xhr.status == 405) {
+                    $('#addSubErrMsg').html("User Substitution not enabled");
+                } else {
+                    $('#addSubErrMsg').html("Error occurred while adding substitute user. Please try again");
+                }
+                
+                $('#addSubErrorMessageArea').show();
+                //set callback to remove error message when hiding the modal
+                $('#addSubstituteModal').on('hide.bs.modal', function (e) {
+                        $('#addSubErrorMessageArea').hide();
+                });
+
+            }
+        });
+    } catch (error) {
+        $('#addSubErrMsg').html(error);
+        $('#addSubErrorMessageArea').show();
+        //set callback to remove error message when hiding the modal
+        $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                $('#addSubErrorMessageArea').hide();
+        });
+    }
 }
 
 function updateSubstitute (assignee, subName, startDate, endDate) {
+    try {
 
-    //create start time Date object
-    var startTimeStrArr = startDate.split(' ');
-    var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
-    var startTime = new Date(startDateTimeStr);
-
-    //create end time Date object
-    var endTimeStrArr = endDate.split(' ');
-    var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-    var endTime = new Date(endDateTimeStr);
-
-    //json request
-    var updateSubRequest  =  {
-                               "assignee": assignee,
-                               "substitute" : subName,
-                               "startTime" : startTime.toISOString(),
-                               "endTime" : endTime.toISOString()
-                            };
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ assignee;
-
-    $.ajax({
-        type: 'PUT',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(updateSubRequest),
-        success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-        },
-        error: function (xhr, status, error) {
-            var errorJson = eval("(" + xhr.responseText + ")");
-            if (errorJson != null && errorJson.errorMessage != undefined) {
-                $('#updateSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
-            } else {
-                $('#updateSubErrMsg').html("Error occurred while updating substitute. Please try again");
-            }
-
-            $('#updateSubErrorMessageArea').show();
-            //set callback to remove error message when hiding the modal
-            $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
-                    $('#updateSubErrorMessageArea').hide();
-            });
+        if (assignee.length == 0) {
+            throw "Please enter assignee name";
         }
-    });
+        if (subName.length == 0) {
+            throw "Please enter substitute name";
+        }
+
+        //create start time Date object
+        var startTimeStrArr = startDate.split(' ');
+        var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
+        var startTime = new Date(startDateTimeStr);
+        var startTimeStr = "";
+        try {
+            startTimeStr = startTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid start time";
+        }
+
+        //create end time Date object
+        var endTimeStrArr = endDate.split(' ');
+        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+        var endTime = new Date(endDateTimeStr);
+        var endTimeStr = "";
+        try {
+            endTimeStr = endTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid end time";
+        }
+
+        //json request
+        var updateSubRequest  =  {
+                                   "assignee": assignee,
+                                   "substitute" : subName,
+                                   "startTime" : startTimeStr,
+                                   "endTime" : endTimeStr
+                                };
+
+        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ assignee;
+
+        $.ajax({
+            type: 'PUT',
+            contentType: "application/json",
+            url: httpUrl + url,
+            data: JSON.stringify(updateSubRequest),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                if (xhr.responseText.length > 0) {
+                    var errorJson = eval("(" + xhr.responseText + ")");
+                    if (errorJson != null && errorJson.errorMessage != undefined) {
+                        $('#updateSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+                    } else {
+                        $('#updateSubErrMsg').html("Error occurred while updating substitute. Please try again");
+                    }
+                } else if (xhr.status == 405) {
+                    $('#updateSubErrMsg').html("User Substitution not enabled");
+                } else {
+                    $('#updateSubErrMsg').html("Error occurred while adding substitute user. Please try again");
+                }
+                
+                $('#updateSubErrorMessageArea').show();
+                //set callback to remove error message when hiding the modal
+                $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                        $('#updateSubErrorMessageArea').hide();
+                });
+            }
+        });
+
+    } catch (error) {
+        $('#updateSubErrMsg').html(error);
+        $('#updateSubErrorMessageArea').show();
+        //set callback to remove error message when hiding the modal
+        $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                $('#updateSubErrorMessageArea').hide();
+        });
+    }
 }
 
 

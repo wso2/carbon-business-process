@@ -150,6 +150,7 @@
    "simple.active" : "Active",
    "simple.inactive" : "Inactive",
    "go.to.substitute.admin.view" : "Go To Substitute Admin View",
-   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access to Manage Substitutions"
+   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access to Manage Substitutions",
+   "unauthorized" : "Unauthorized"
 
 }
