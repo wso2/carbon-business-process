@@ -64,8 +64,9 @@
                     <table class="table table-condensed table-hover">
                         <thead>
                             <tr class="table-title-row">
-                                <th class="col-lg-3 col-md-3 col-sm-3"><%=i18n.localize("assignee", "Assignee")%></th>
-                                <th class="col-lg-3 col-md-3 col-sm-3"><%=i18n.localize("status", "Status")%></th>
+                                <th class="col-lg-2 col-md-2 col-sm-2"><%=i18n.localize("assignee", "Assignee")%></th>
+                                <th class="col-lg-2 col-md-2 col-sm-2"><%=i18n.localize("substitute", "Substitute")%></th>
+                                <th class="col-lg-2 col-md-2 col-sm-2"><%=i18n.localize("status", "Status")%></th>
                                 <th class="col-lg-3 col-md-3 col-sm-3"><%=i18n.localize("start.time","Start Time")%></th>
                                 <th class="col-lg-3 col-md-3 col-sm-3"><%=i18n.localize("end.time","End Time")%></th>
                             </tr>
@@ -73,15 +74,24 @@
                         <tbody>
                             <% for (var i = 0; i < usersSubstitutionsList.length; i++) { %>
                                 <% if (usersSubstitutionsList[i].enabled) {%>
-                                <tr class="danger" style="cursor:pointer;">
+                                <tr class="danger" style="cursor:pointer;" 
+                                    onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%>')">
                                 <%} else {%>
-                                <tr class="success" style="cursor:pointer;">
+                                <tr class="success" style="cursor:pointer;" 
+                                    onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%>')">
                                 <%}%>
                                     <td><%=usersSubstitutionsList[i].assignee%></td>
+                                    <td><%=usersSubstitutionsList[i].substitute%></td>
                                     <% if (usersSubstitutionsList[i].enabled) {%>
-                                        <td><%=i18n.localize("simple.active","Active")%></td>
+                                        <td>
+                                            <span class="text-success btn-sm-bold-text"><%=i18n.localize("simple.active","Active")%></span>&nbsp;&nbsp; 
+                                            <button type="button" class="btn btn-info btn-sm-deactivate" onclick="deactivateSub('<%=usersSubstitutionsList[i].assignee%>')">Deactivate</button>
+                                        </td>
                                     <%} else {%>
-                                        <td><%=i18n.localize("simple.inactive","Inactive")%></td>
+                                        <td>
+                                            <span class="text-danger btn-sm-bold-text"><%=i18n.localize("simple.inactive","Inactive")%></span>&nbsp;&nbsp;
+                                            <button type="button" class="btn btn-info btn-sm-activate" onclick="activateSub('<%=usersSubstitutionsList[i].assignee%>')">Activate</button>
+                                        </td>
                                     <%}%>
                                     <td><%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%></td>
                                     <td><%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%></td>
@@ -94,5 +104,17 @@
             </div>
         </div>
     </div>
+    <%
+        //Add updateSubstituteModal
+        var updateSubstituteModalConfig =  {
+                        "updatedAssigneeName" : "",
+                        "updatedSubstituteName" : "",
+                        "updatedSubStartDate" : "",
+                        "updatedSubEndDate" : "",
+                        "assigneeEditEnable" : false
+                    }
+        include("/template/modals/updateSubstituteModal.jag");
+    %>
+
     <% } %>
 <%}%>

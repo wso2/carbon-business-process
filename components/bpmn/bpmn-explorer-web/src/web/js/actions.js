@@ -1624,6 +1624,16 @@ function updateSubstitute (assignee, subName, startDate, endDate) {
     }
 }
 
+function populateupdateSubstituteModal(assignee, substitute, startTime, endTime) {
+
+    $('#updatedAssigneeName').val(assignee);
+    $('#updatedSubstituteName').val(substitute);
+    $('#updatedSubStartDate').val(startTime);
+    $('#updatedSubEndDate').val(endTime);
+
+    $('#updateSubstituteModal').modal('show')
+}
+
 
 function deactivateSub(userName) {
     //json request
@@ -1637,12 +1647,15 @@ function deactivateSub(userName) {
         url: httpUrl + url,
         data: JSON.stringify(disableSubRequest),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            location.reload();
         },
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
             //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //TODO show error instead of reload
+            location.reload();
 
         }
     });
@@ -1660,13 +1673,15 @@ function activateSub(userName) {
         url: httpUrl + url,
         data: JSON.stringify(disableSubRequest),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            location.reload();
         },
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
             //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
             //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-            
+            //TODO show error instead of reload
+            location.reload();
         }
     });
 }
