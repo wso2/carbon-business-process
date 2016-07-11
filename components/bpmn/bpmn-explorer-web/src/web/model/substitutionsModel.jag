@@ -18,10 +18,14 @@
 var log = new Log();
 var headers = 	{
                     "Authorization": "Basic " + auth,
-                    "getCommonErrorContentnt-Type": "application/json",
+                    "Content-Type": "application/json",
                     "Accept" : "application/json"
                 };
 try {
+    //Check whether the user substitution feature enabled
+    if (!(application.get('bpsSubstitutionFeatureEN'))) {
+        throw "User Substitution feature disabled";
+    }
     //URLs
     var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
 
