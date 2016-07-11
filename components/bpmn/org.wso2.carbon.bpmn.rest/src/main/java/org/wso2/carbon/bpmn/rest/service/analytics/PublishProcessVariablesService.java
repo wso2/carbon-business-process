@@ -17,9 +17,11 @@ package org.wso2.carbon.bpmn.rest.service.analytics;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.json.JSONObject;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
@@ -32,7 +34,8 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 /**
  * Enables the process variable publishing from BPS to DAS
  */
-@Path("/publish-process-variables") public class PublishProcessVariablesService {
+@Path("/publish-process-variables")
+public class PublishProcessVariablesService {
     private static final Log log = LogFactory.getLog(PublishProcessVariablesService.class);
 
     /**
@@ -52,14 +55,13 @@ import org.wso2.carbon.registry.core.service.RegistryService;
         }
 
         try {
-            PublishProcessVariablesService service = new PublishProcessVariablesService();
-            service.saveDASconfigInfoInConfigRegistry(processId, dasConfigDetailsJson);
+            saveDASconfigInfoInConfigRegistry(dasConfigDetailsJson);
         } catch (RegistryException e) {
             String errMsg =
-                    "Error in saving DAS Analytics Configuratios in BPS Config-Registry for process (PC Process-ID):"
-                            + processId + "\n Details tried to save:" + dasConfigDetailsJson;
+                    "Error in saving DAS Analytics Configuratios in BPS Config-Registry for process :" + processId
+                            + "\n Details tried to save:" + dasConfigDetailsJson;
             log.error(errMsg, e);
-            return Response.status(500).entity(e.getMessage()).build();
+            return Response.status(500).entity(errMsg + " : " + e.getMessage()).build();
         }
         return Response.ok().build();
     }
@@ -67,18 +69,16 @@ import org.wso2.carbon.registry.core.service.RegistryService;
     /**
      * Save DAS configuration details (received from PC), in config registry
      *
-     * @param processId
      * @param dasConfigDetailsJSONString
      * @throws RegistryException
      */
-    public void saveDASconfigInfoInConfigRegistry(String processId, String dasConfigDetailsJSONString)
+    private void saveDASconfigInfoInConfigRegistry(String dasConfigDetailsJSONString)
             throws RegistryException {
 
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
         JSONObject dasConfigDetailsJOb = new JSONObject(dasConfigDetailsJSONString);
         String processDefinitionId = dasConfigDetailsJOb.getString(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID);
-        Registry configRegistry = registryService.getConfigSystemRegistry(tenantId);
+        Registry configRegistry = registryService.getConfigSystemRegistry();
 
         //create a new resource (text file) to keep process variables
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
@@ -89,6 +89,8 @@ import org.wso2.carbon.registry.core.service.RegistryService;
             procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
             configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                     + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME, procVariableJsonResource);
+        } else {
+            //warning msg
         }
     }
 }

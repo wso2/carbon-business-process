@@ -24,6 +24,10 @@
             <artifactId>org.wso2.carbon.bpmn</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
         </dependency>
@@ -78,6 +82,7 @@
                                     <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql" />
                                     <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql" />
                                     <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql" />
+                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.bps.sql" />
                                 </sql>
                                 <echo message="##################### END ############################" />
                                 <echo message="********Version of H2: " />
@@ -155,9 +160,7 @@
                                 <bundleDef>org.slf4j:slf4j-log4j12</bundleDef>
                                 <bundleDef>org.apache.commons:commons-lang3</bundleDef>
                                 <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn</bundleDef>
-                                <!-- <bundleDef>
-                                     org.wso2.carbon.business-process:org.wso2.carbon.bpmn.rest
-                                 </bundleDef>-->
+                                <bundleDef>org.wso2.carbon.business-process:org.wso2.carbon.bpmn.extensions</bundleDef>
                             </bundles>
                             <importBundles>
                                 <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:5.19.0.wso2v2</importBundleDef>

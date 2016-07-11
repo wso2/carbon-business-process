@@ -25,7 +25,6 @@ import org.activiti.engine.form.FormData;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.model.form.FormDataResponse;
 import org.wso2.carbon.bpmn.rest.model.form.RestFormProperty;
 import org.wso2.carbon.bpmn.rest.model.form.SubmitFormRequest;
 import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;

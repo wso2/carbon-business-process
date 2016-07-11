@@ -15,18 +15,13 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher.internal;
 
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
-import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsSchedulerShutdown;
-import org.wso2.carbon.bpmn.analytics.publisher.BPMNAnalyticsAxis2ConfigurationContextObserverImpl;
+import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisher;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 /**
  * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
@@ -34,8 +29,8 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  * cardinality="1..1" policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
- * @scr.reference name="server.configuration" interface="org.wso2.carbon.base.api.ServerConfigurationService"
- * cardinality="1..1" policy="dynamic" bind="setServerConfiguration" unbind="unsetServerConfiguration"
+ * @scr.reference name="bpmn.service" interface="org.wso2.carbon.bpmn.core.BPMNEngineService"
+ * cardinality="1..1" policy="dynamic" bind="setBPMNEngineService" unbind="unsetBPMNEngineService"
  */
 public class BPMNAnalyticsServiceComponent {
 	private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
@@ -47,20 +42,21 @@ public class BPMNAnalyticsServiceComponent {
 	 */
 	protected void activate(ComponentContext ctxt) {
 		log.info("Initializing the BPMN Analytics Service component...");
-		try {
-			//            AnalyticsPublisher analyticsPublisher = new AnalyticsPublisher();
-			//            analyticsPublisher.initialize();
-			ConfigurationContext cxt = new ConfigurationContext(new AxisConfiguration());
-			BPMNAnalyticsAxis2ConfigurationContextObserverImpl configCtx =
-					new BPMNAnalyticsAxis2ConfigurationContextObserverImpl();
-			configCtx.createdConfigurationContext(cxt);
+	}
 
-			ctxt.getBundleContext()
-			    .registerService(WaitBeforeShutdownObserver.class, new AnalyticsSchedulerShutdown(),
-			                     null);
+	public void setBPMNEngineService(BPMNEngineService bpmnEngineService) {
+		BPMNAnalyticsHolder.getInstance().setBpmnEngineService(bpmnEngineService);
+		try {
+			BPMNDataPublisher BPMNDataPublisher = new BPMNDataPublisher();
+			BPMNAnalyticsHolder.getInstance().setBpmnDataPublisher(BPMNDataPublisher);
+			BPMNDataPublisher.configure();
 		} catch (Throwable e) {
-			log.error("Failed to initialize the Analytics Service component.", e);
+			log.error("Failed to initialize the BPMN analytics data publishing.", e);
 		}
+	}
+
+	public void unsetBPMNEngineService(BPMNEngineService bpmnEngineService) {
+		BPMNAnalyticsHolder.getInstance().setBpmnEngineService(null);
 	}
 
 	/**
@@ -97,23 +93,5 @@ public class BPMNAnalyticsServiceComponent {
 	 */
 	public void unsetRealmService(RealmService realmService) {
 		BPMNAnalyticsHolder.getInstance().setRealmService(null);
-	}
-
-	/**
-	 * Set ServerConfigurationService instance when bundle get bind to OSGI runtime.
-	 *
-	 * @param serverConfiguration
-	 */
-	public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
-		BPMNAnalyticsHolder.getInstance().setServerConfiguration(serverConfiguration);
-	}
-
-	/**
-	 * Unset ServerConfigurationService instance when bundle get unbind from OSGI runtime.
-	 *
-	 * @param serverConfiguration
-	 */
-	public void unsetServerConfiguration(ServerConfigurationService serverConfiguration) {
-		BPMNAnalyticsHolder.getInstance().setServerConfiguration(null);
 	}
 }

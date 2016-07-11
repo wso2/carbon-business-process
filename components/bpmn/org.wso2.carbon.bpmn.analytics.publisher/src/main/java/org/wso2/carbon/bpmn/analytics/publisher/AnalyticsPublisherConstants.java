@@ -19,6 +19,10 @@ package org.wso2.carbon.bpmn.analytics.publisher;
  * AnalyticsPublisherConstants class holds all the constants which are used in the Analytics Publisher
  */
 public class AnalyticsPublisherConstants {
+
+    public static final String ANALYTICS_CONFIG_ELEMENT = "analyticsConfiguration";
+
+
     public static final String USER_NAME = "admin";
     public static final String PASSWORD = "admin";
     public static final String LOCAL_THRIFT_URL = "tcp://localhost:7611";
@@ -57,12 +61,12 @@ public class AnalyticsPublisherConstants {
     public static final String PATH_DATA_ANALYTICS_PUBLISHER =  PATH_BPMN + "/" +  "data_analytics_publisher";
     public static final String PATH_PUBLISHER_CONFIGURATION = PATH_DATA_ANALYTICS_PUBLISHER + "/"  + "publisher_configuration";
     public static final String PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
+    public static final String KPI_PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
     public static final String PUBLISHER_TYPE_PROPERTY = "type";
     public static final String PUBLISHER_RECEIVER_URL_SET_PROPERTY = "receiverURLSet";
     public static final String PUBLISHER_AUTH_URL_SET_PROPERTY = "authURLSet";
     public static final String PUBLISHER_USER_NAME_PROPERTY = "username";
     public static final String PUBLISHER_PASSWORD_PROPERTY = "password";
-	//public static final String DAS_STREAM_DEFINITION = "bpmn/data_analytics_publisher/stream_definition";
 
 
     public static final String SPRING_NAMESPACE = "http://www.springframework.org/schema/beans";
