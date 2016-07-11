@@ -27,6 +27,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * Activity Life Cycle Events DocumentBuilder.
+ */
 public class ActivityLifeCycleEventsDocumentBuilder implements BpelEventListener {
     public EventInfoListDocument getActivityLifeCycleEvents() {
         return activityLifeCycleEvents;
@@ -65,16 +68,17 @@ public class ActivityLifeCycleEventsDocumentBuilder implements BpelEventListener
     /**
      * used to get the class name for a output of BpelEvent.eventName()
      * this is not a standard way of getting the class name, so mey be need to re-impl
+     *
      * @param reflectionName Reflection name
      * @return Class name
      */
     private String getClassName(String reflectionName) {
-       if (reflectionName.contains("$"))
-        {
-        String[] splitter = reflectionName.split("\\$");
-        return splitter[splitter.length-3];
+        if (reflectionName.contains("$")) {
+            String[] splitter = reflectionName.split("\\$");
+            return splitter[splitter.length - 3];
+        } else {
+            return reflectionName;
         }
-        else return reflectionName; 
     }
 
     private Calendar convertDatetoCalendar(Date date) {

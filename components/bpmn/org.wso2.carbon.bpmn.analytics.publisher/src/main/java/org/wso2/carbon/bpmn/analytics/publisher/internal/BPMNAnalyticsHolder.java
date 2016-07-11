@@ -17,14 +17,10 @@ package org.wso2.carbon.bpmn.analytics.publisher.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisher;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisher;
+import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
-
-import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Content holder for BPMN Analytics component.
@@ -37,14 +33,10 @@ public class BPMNAnalyticsHolder {
 
 	private RegistryService registryService;
 	private RealmService realmService;
-	private ServerConfigurationService serverConfigurationService;
-	private ExecutorService executorService = null;
+	private BPMNDataPublisher bpmnDataPublisher;
+	private BPMNEngineService bpmnEngineService;
 
-	private HashMap<Integer, AnalyticsPublisher> tenantAnalyticsPublisherMap;
-
-	private BPMNAnalyticsHolder() {
-		tenantAnalyticsPublisherMap = new HashMap<>();
-	}
+	private BPMNAnalyticsHolder() {}
 
 	/**
 	 * Get the BPMNAnalyticsHolder instance.
@@ -58,15 +50,14 @@ public class BPMNAnalyticsHolder {
 		return bpmnAnalyticsHolder;
 	}
 
-	public static BPMNServerHolder getThreadSafeBPMNServerInstance() {
-		return BPMNServerInstanceHolder.INSTANCE;
+	public BPMNEngineService getBpmnEngineService() {
+		return bpmnEngineService;
 	}
 
-	/**
-	 * Get RegistryService instance.
-	 *
-	 * @return RegistryService instance
-	 */
+	public void setBpmnEngineService(BPMNEngineService bpmnEngineService) {
+		this.bpmnEngineService = bpmnEngineService;
+	}
+
 	public RegistryService getRegistryService() {
 		return registryService;
 	}
@@ -75,11 +66,6 @@ public class BPMNAnalyticsHolder {
 		this.registryService = registryService;
 	}
 
-	/**
-	 * Get RealmService instance.
-	 *
-	 * @return RealmService instance
-	 */
 	public RealmService getRealmService() {
 		return realmService;
 	}
@@ -88,78 +74,11 @@ public class BPMNAnalyticsHolder {
 		this.realmService = realmService;
 	}
 
-	/**
-	 * Get ServerConfigurationService instance.
-	 *
-	 * @return ServerConfigurationService instance
-	 */
-	public ServerConfigurationService getServerConfigurationService() {
-		return serverConfigurationService;
+	public BPMNDataPublisher getBpmnDataPublisher() {
+		return bpmnDataPublisher;
 	}
 
-	/**
-	 * Set ServerConfigurationService instance.
-	 *
-	 * @param serverConfiguration instance for BPMN analytics component
-	 */
-	public void setServerConfiguration(ServerConfigurationService serverConfiguration) {
-		this.serverConfigurationService = serverConfiguration;
-	}
-
-	/**
-	 * Get ExecutorService instance of BPMN analytics component.
-	 *
-	 * @return ExecutorService instance
-	 */
-	public ExecutorService getExecutorService() {
-		return executorService;
-	}
-
-	/**
-	 * Set ExecutorService instance for BPMN analytics component
-	 *
-	 * @param executorService instance
-	 */
-	public void setExecutorService(ExecutorService executorService) {
-		this.executorService = executorService;
-	}
-
-	/**
-	 * Add Analytics Publisher instance for given tenant ID.
-	 *
-	 * @param tenantID
-	 * @param analyticsPublisher instance
-	 */
-	public void addAnalyticsPublisher(int tenantID, AnalyticsPublisher analyticsPublisher) {
-		this.tenantAnalyticsPublisherMap.put(tenantID, analyticsPublisher);
-	}
-
-	/**
-	 * Remove Analytics Publisher instance for tenant id.
-	 *
-	 * @param tenantID
-	 */
-	public void removeAnalyticsPublisher(int tenantID) {
-		AnalyticsPublisher analyticsPublisher = tenantAnalyticsPublisherMap.get(tenantID);
-		analyticsPublisher.stopDataPublisher();
-		this.tenantAnalyticsPublisherMap.remove(tenantID);
-	}
-
-	/**
-	 * Get Analytics Publisher instance for given tenant id.
-	 *
-	 * @param tenantID
-	 * @return AnalyticsPublisher instance
-	 */
-	public AnalyticsPublisher getAnalyticsPublisher(int tenantID) {
-		return this.tenantAnalyticsPublisherMap.get(tenantID);
-	}
-
-	public HashMap<Integer, AnalyticsPublisher> getAllPublishers() {
-		return this.tenantAnalyticsPublisherMap;
-	}
-
-	private static class BPMNServerInstanceHolder {
-		private static final BPMNServerHolder INSTANCE = BPMNServerHolder.getInstance();
+	public void setBpmnDataPublisher(BPMNDataPublisher bpmnDataPublisher) {
+		this.bpmnDataPublisher = bpmnDataPublisher;
 	}
 }

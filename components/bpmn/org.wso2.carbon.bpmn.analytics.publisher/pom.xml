@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
-        <version>4.4.9-SNAPSHOT</version>
+        <version>4.4.10-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -104,6 +104,22 @@
                     </instructions>
                 </configuration>
             </plugin>
+
+            <!--<plugin>-->
+                <!--<groupId>org.apache.axis2</groupId>-->
+                <!--<artifactId>axis2-java2wsdl-maven-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<className>org.wso2.carbon.bpmn.analytics.publisher.mgt.services.BPMNAnalyticsService</className>-->
+                    <!--<outputFileName>../../../service-stubs/bpmn/org.wso2.carbon.bpmn.stub/src/main/resources/BPMNAnalyticsService.wsdl</outputFileName>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>java2wsdl</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 </project>

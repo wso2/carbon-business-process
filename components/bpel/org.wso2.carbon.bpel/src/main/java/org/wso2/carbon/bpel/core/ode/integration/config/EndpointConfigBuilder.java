@@ -26,8 +26,8 @@ import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.ode.integration.utils.Messages;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
 
-import javax.xml.namespace.QName;
 import java.util.Iterator;
+import javax.xml.namespace.QName;
 
 /**
  * Builds the endpoint configuration {@link EndpointConfiguration}
@@ -105,5 +105,3 @@ public final class EndpointConfigBuilder {
         return null;
     }
 }
-
-

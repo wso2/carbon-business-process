@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,21 +16,6 @@
  * under the License.
  */
 package org.wso2.carbon.bpel.core.ode.integration.mgt.services;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-
-import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -58,7 +43,6 @@ import org.apache.ode.bpel.evtproc.ActivityStateDocumentBuilder;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.pmapi.ActivityInfoDocument;
 import org.apache.ode.bpel.pmapi.EventInfoListDocument;
-import org.apache.ode.bpel.pmapi.ManagementException;
 import org.apache.ode.bpel.pmapi.ProcessNotFoundException;
 import org.apache.ode.bpel.pmapi.ProcessingException;
 import org.apache.ode.bpel.pmapi.TActivityInfo;
@@ -80,9 +64,56 @@ import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityLifeCycleEventsDo
 import org.wso2.carbon.bpel.core.ode.integration.utils.ActivityStateAndEventDocumentBuilder;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementException;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.InstanceManagementServiceSkeletonInterface;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Action_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivitiesWithEvents_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Activities_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityInfoWithEventsType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityLifeCycleEventsListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityLifeCycleEventsType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityRecoveryInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ActivityStatusType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ChildrenWithEvents_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Children_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationPropertyType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationSet_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CorrelationSets_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Data_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EventInfo;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EventInfoList;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailureInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FailuresInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.FaultInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceInfoWithEventsType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceStatus;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.InstanceSummaryE;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.LimitedInstanceInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.PaginatedInstanceList;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeInfoWithEventsType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeStatusType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Value_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariableInfoType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariableRefType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.VariablesWithEvents_type0;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Variables_type0;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import javax.xml.namespace.QName;
 
 /**
  * Instance Management Service Implementation.
@@ -211,7 +242,7 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
      * @param limit  The maximum number of instances to be fetched
      * @param page   The page number
      * @return Instances that are filtered through "tFilter", ordered by "order" that fits into
-     *         'page'th page
+     * 'page'th page
      * @throws InstanceManagementException When an error occurs
      */
     public PaginatedInstanceList getPaginatedInstanceList(String filter, final String order,
@@ -280,6 +311,7 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
     /**
      * Returns the maximum size for a variable to be displayed in the instance_view UI,
      * defined in bps.xml.
+     *
      * @return Maximum instance variable size
      * @throws InstanceManagementException
      */
@@ -290,12 +322,14 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
 
     /**
      * Get Failed Activities for give instance id.
+     *
      * @param instanceID
      * @return
      * @throws InstanceManagementException
      */
     @Override
-    public ActivityRecoveryInfoType[] getFailedActivitiesForInstance(final long instanceID) throws InstanceManagementException {
+    public ActivityRecoveryInfoType[] getFailedActivitiesForInstance(final long instanceID) throws
+            InstanceManagementException {
         try {
             isOperationIsValidForTheCurrentTenant(instanceID);
         } catch (IllegalAccessException ex) {
@@ -335,6 +369,7 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         }
         return activityRecoveryInfoTypes;
     }
+
     /**
      * Get long running instances with duration
      *
@@ -525,7 +560,7 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         //fillFaultAndFailure(); //TODO: to be impl
 
         if (processInstance.getRootScope() != null) {
-			eventInfoArray.setEventInfoList(getActivityLifeCycleEventsFromScope(processInstance.getRootScope()));
+            eventInfoArray.setEventInfoList(getActivityLifeCycleEventsFromScope(processInstance.getRootScope()));
         }
     }
 
@@ -555,11 +590,11 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
             ActivityLifeCycleEventsListType activityLifeCycleEventsList, ScopeDAO scope) {
 
         //List<BpelEvent> events = scope.listEvents();
-    	 Set<EventDAOImpl> eventsEntities = ((ScopeDAOImpl)scope).getEvents();
-         List<BpelEvent> events = new ArrayList<BpelEvent>();
-         for(EventDAOImpl event : eventsEntities){
-         	events.add(event.getEvent());
-         }
+        Set<EventDAOImpl> eventsEntities = ((ScopeDAOImpl) scope).getEvents();
+        List<BpelEvent> events = new ArrayList<BpelEvent>();
+        for (EventDAOImpl event : eventsEntities) {
+            events.add(event.getEvent());
+        }
         ActivityLifeCycleEventsDocumentBuilder docBuilder = new ActivityLifeCycleEventsDocumentBuilder();
 
         for (BpelEvent e : events) {
@@ -900,14 +935,16 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
                                   ProcessInstanceDAO processInstance)
             throws InstanceManagementException {
 
-        // ((ProcessConfigurationImpl) getTenantProcessForCurrentSession().getProcessConfiguration(QName.valueOf(instanceInfo.getPid()))).getEventsEnabled();
+        // ((ProcessConfigurationImpl) getTenantProcessForCurrentSession().getProcessConfiguration(QName.valueOf
+        // (instanceInfo.getPid()))).getEventsEnabled();
 
         instanceInfo.setIid(processInstance.getInstanceId().toString());
         instanceInfo.setPid(processInstance.getProcess().getProcessId().toString());
         instanceInfo.setDateStarted(toCalendar(processInstance.getCreateTime()));
         instanceInfo.setDateLastActive(toCalendar(processInstance.getLastActiveTime()));
         instanceInfo.setStatus(odeInstanceStatusToManagementAPIStatus(processInstance.getState()));
-        instanceInfo.setIsEventsEnabled(((ProcessConfigurationImpl) getTenantProcessForCurrentSession().getProcessConfiguration(QName.valueOf(instanceInfo.getPid()))).getEventsEnabled());
+        instanceInfo.setIsEventsEnabled(((ProcessConfigurationImpl) getTenantProcessForCurrentSession()
+                .getProcessConfiguration(QName.valueOf(instanceInfo.getPid()))).getEventsEnabled());
 
         fillFaultAndFailure(processInstance, instanceInfo);
 
@@ -1079,8 +1116,8 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         });*/
         /*ScopeDAO scope = conn.getScopeEagerly(siid);*/
         if (scope == null) {
-           //String errMsg = "Scope "  + siid +" not found.";
-           String errMsg = "Scope "   +" not found.";
+            //String errMsg = "Scope "  + siid +" not found.";
+            String errMsg = "Scope " + " not found.";
             log.error(errMsg);
             throw new InstanceManagementException(errMsg);
         }
@@ -1104,7 +1141,7 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
                 return null;
             }
         });*/
-        
+
         fillScopeInfoWithEvents(scopeInfoWithEvents, scope);
 
         return scopeInfoWithEvents;
@@ -1116,8 +1153,8 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         scopeInfo.setStatus(odeScopeStatusToManagementAPIStatus(scope.getState()));
 
         Children_type0 childScopes = new Children_type0();
-        if(scope.isChildrenExist()){
-        	
+        if (scope.isChildrenExist()) {
+
         }
         for (ScopeDAO childScope : scope.getChildScopes()) {
             ScopeInfoType childScopeInfo = new ScopeInfoType();
@@ -1207,10 +1244,10 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         Activities_type0 activities = new Activities_type0();
         Collection<ActivityRecoveryDAO> recoveries = scope.getProcessInstance().getActivityRecoveries();
         /*List<BpelEvent> events = scope.listEvents();*/
-        Set<EventDAOImpl> eventsEntities = ((ScopeDAOImpl)scope).getEvents();
+        Set<EventDAOImpl> eventsEntities = ((ScopeDAOImpl) scope).getEvents();
         List<BpelEvent> events = new ArrayList<BpelEvent>();
-        for(EventDAOImpl event : eventsEntities){
-        	events.add(event.getEvent());
+        for (EventDAOImpl event : eventsEntities) {
+            events.add(event.getEvent());
         }
         ActivityStateDocumentBuilder b = new ActivityStateDocumentBuilder();
 
@@ -1240,10 +1277,10 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
         ActivitiesWithEvents_type0 activitiesWithEvents = new ActivitiesWithEvents_type0();
         Collection<ActivityRecoveryDAO> recoveries = scope.getProcessInstance().getActivityRecoveries();
         //List<BpelEvent> events = scope.listEvents();
-        Set<EventDAOImpl> eventsEntities = ((ScopeDAOImpl)scope).getEvents();
+        Set<EventDAOImpl> eventsEntities = ((ScopeDAOImpl) scope).getEvents();
         List<BpelEvent> events = new ArrayList<BpelEvent>();
-        for(EventDAOImpl event : eventsEntities){
-        	events.add(event.getEvent());
+        for (EventDAOImpl event : eventsEntities) {
+            events.add(event.getEvent());
         }
         ActivityStateAndEventDocumentBuilder docBuilder = new ActivityStateAndEventDocumentBuilder();
 
@@ -1416,7 +1453,8 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
      * @throws IllegalAccessException if instance doesn't belong to the current tenant
      * @throws ProcessingException    if there a error getting instance data
      */
-    private void isOperationIsValidForTheCurrentTenant(final long iid) throws IllegalAccessException, ProcessingException {
+    private void isOperationIsValidForTheCurrentTenant(final long iid) throws IllegalAccessException,
+            ProcessingException {
         QName processId = getProcess(iid);
         TenantProcessStoreImpl processStore = getTenantProcessForCurrentSession();
         if (!processStore.containsProcess(processId)) {

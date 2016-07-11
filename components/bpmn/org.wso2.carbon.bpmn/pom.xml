@@ -14,12 +14,13 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
-        <version>4.4.9-SNAPSHOT</version>
+        <version>4.4.10-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -65,10 +66,10 @@
             <artifactId>org.wso2.carbon.tenant.mgt</artifactId>
         </dependency>
 
-	    <dependency>
-             <groupId>org.mybatis</groupId>
-             <artifactId>mybatis</artifactId>
-         </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents.wso2</groupId>
@@ -88,6 +89,14 @@
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.unifiedendpoint.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
 
     </dependencies>
@@ -126,8 +135,7 @@
                         <!--org.wso2.carbon.bpmn.core.deployment.Activator-->
                         <!--</Bundle-Activator>-->
                         <Private-Package>
-                            org.wso2.carbon.bpmn.core.internal,
-                            org.wso2.carbon.bpmn.extensions
+                            org.wso2.carbon.bpmn.core.internal
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpmn.core.internal,
@@ -139,12 +147,10 @@
                             version=${carbon.business-process.exp.pkg.version},
                             org.wso2.carbon.bpmn.core.deployment.*;
                             version=${carbon.business-process.exp.pkg.version},
-                            org.wso2.carbon.bpmn.extensions.rest.*;
-                            version=${carbon.business-process.exp.pkg.version},
+                            org.wso2.carbon.bpmn.people.substitution.*;
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
-                            !org.wso2.carbon.bpmn.extensions,
                             org.wso2.carbon.ndatasource.*,
                             *;resolution:=optional
                         </Import-Package>
@@ -158,19 +164,19 @@
             </plugin>
 
             <!--<plugin>-->
-            <!--<groupId>org.apache.axis2</groupId>-->
-            <!--<artifactId>axis2-java2wsdl-maven-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<className>org.wso2.carbon.bpmn.core.mgt.services.BPMNDeploymentService</className>-->
-            <!--<outputFileName>/home/chathura/temp/BPMNDeploymentService.wsdl</outputFileName>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<goals>-->
-            <!--<goal>java2wsdl</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
+                <!--<groupId>org.apache.axis2</groupId>-->
+                <!--<artifactId>axis2-java2wsdl-maven-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<className>org.wso2.carbon.bpmn.core.mgt.services.BPMNAnalyticsService</className>-->
+                    <!--<outputFileName>../../../service-stubs/bpmn/org.wso2.carbon.bpmn.stub/src/main/resources/BPMNAnalyticsService.wsdl</outputFileName>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>java2wsdl</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
             <!--</plugin>-->
 
         </plugins>

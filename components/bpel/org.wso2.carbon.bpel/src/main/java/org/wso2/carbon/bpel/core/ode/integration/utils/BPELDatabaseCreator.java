@@ -4,8 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
 
-import javax.sql.DataSource;
 import java.io.File;
+import javax.sql.DataSource;
 
 /**
  * To handle -Dsetup for BPEL component

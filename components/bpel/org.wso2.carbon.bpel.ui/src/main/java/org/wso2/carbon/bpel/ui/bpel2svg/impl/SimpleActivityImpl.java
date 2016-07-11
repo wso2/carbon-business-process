@@ -19,25 +19,31 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 
 /**
  * SimpleActivity tag UI implementation
  */
-public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface {
-	/**
+public class SimpleActivityImpl extends ActivityImpl {
+    /**
      * Initializes a new instance of the SimpleActivityImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public SimpleActivityImpl(String token) {
         super(token);
 
-         // Set Start and End Icon and Size
+        // Set Start and End Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	/**
+
+    /**
      * Initializes a new instance of the SimpleActivityImpl class using the specified omElement
+     *
      * @param omElement which matches the SimpleActivity tag
      */
     public SimpleActivityImpl(OMElement omElement) {
@@ -47,10 +53,13 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	 /**
+
+    /**
      * Initializes a new instance of the SimpleActivityImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an SimpleActivity Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an SimpleActivity Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the SimpleActivity tag
      * @param parent
      */
@@ -60,24 +69,24 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         //Set the parent of the activity
         setParent(parent);
 
-       // Set Start and End Icon and Size
+        // Set Start and End Icon and Size
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
     /**
-     *
      * @return String with name of the activity
      */
     @Override
     public String getId() {
         return getName();
     }
+
     /**
      * At the start: width=0, height=0
+     *
      * @return dimensions of the  activity i.e. the final width and height after doing calculations
      * After Calculations: width= startIcon width + xSpacing , height= startIcon height + ySpacing
-     *
      */
     @Override
     public SVGDimension getDimensions() {
@@ -90,8 +99,10 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
 
         return dimensions;
     }
+
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -103,12 +114,13 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
             layoutHorizontal(startXLeft, startYTop);
         }
     }
+
     /**
      * Sets the x and y positions of the activity
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         int xLeft = startXLeft + (getXSpacing() / 2);
@@ -124,12 +136,13 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
+
     /**
      * Sets the x and y positions of the activity
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutHorizontal(int startXLeft, int startYTop) {
         int xLeft = startXLeft + (getYSpacing() / 2);
@@ -145,8 +158,8 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
+
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML/HTML document) which contains the components of the SimpleActivity
      */
@@ -154,7 +167,7 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
 
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the opacity of the icons
@@ -169,9 +182,11 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
 
         return group;
     }
+
     /**
      * At the start: xLeft=Xleft of Icon + (width of icon)/2, yTop=Ytop of the Icon
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon , yTop= Ytop of the Icon + (height of startIcon)/2
      */
@@ -187,11 +202,14 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
         return coords;
     }
+
     /**
      * At the start: xLeft=Xleft of Icon + (width of icon)/2, yTop=Ytop of the Icon+ height of the icon
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
-     * After Calculations(Vertical Layout): xLeft=Xleft of Icon + width of startIcon , yTop= Ytop of the Icon + (height of startIcon)/2
+     * After Calculations(Vertical Layout): xLeft=Xleft of Icon + width of startIcon , yTop= Ytop of the Icon +
+     * (height of startIcon)/2
      */
     @Override
     public SVGCoordinates getExitArrowCoords() {
@@ -205,16 +223,18 @@ public class SimpleActivityImpl extends ActivityImpl implements ReceiveInterface
         SVGCoordinates coords = new SVGCoordinates(xLeft, yTop);
         return coords;
     }
-	 /**
+
+    /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
     public boolean isAddOpacity() {
         return isAddSimpleActivityOpacity();
     }
- 	/**
-     *
+
+    /**
      * @return String with the opacity value
      */
     @Override

@@ -23,10 +23,12 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
+import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
 import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
+
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
@@ -44,7 +46,10 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
         if(e instanceof ActivitiIllegalArgumentException){
             log.error("Exception during service invocation ", e);
             return createRestErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
-        }  else if(e instanceof ActivitiTaskAlreadyClaimedException){
+        }  else if (e instanceof BPMNForbiddenException) {
+            log.error("Forbidden operation, not sufficient permission ", e);
+            return createRestErrorResponse(Response.Status.FORBIDDEN, e.getMessage());
+        }else if(e instanceof ActivitiTaskAlreadyClaimedException){
             log.error("Exception during Task claiming ", e);
             return createRestErrorResponse(Response.Status.CONFLICT, e.getMessage());
         } else if(e instanceof ActivitiObjectNotFoundException){

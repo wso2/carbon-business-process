@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.b4p.extension;
 
+/**
+ * Task Interaction types.
+ */
 public enum InteractionType {
     TASK,
     NOTIFICATION

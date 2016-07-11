@@ -16,17 +16,18 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.bpel.ui.bpel2svg.WaitInterface;
 
 /**
  * Wait tag UI implementation
  */
 public class WaitImpl extends SimpleActivityImpl implements WaitInterface {
- 	/**
+    /**
      * Initializes a new instance of the WaitImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public WaitImpl(String token) {
@@ -37,8 +38,9 @@ public class WaitImpl extends SimpleActivityImpl implements WaitInterface {
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
-	 /**
+    /**
      * Initializes a new instance of the WaitImpl class using the specified omElement
+     *
      * @param omElement which matches the Wait tag
      */
     public WaitImpl(OMElement omElement) {
@@ -49,10 +51,11 @@ public class WaitImpl extends SimpleActivityImpl implements WaitInterface {
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
 
-	 /**
+    /**
      * Initializes a new instance of the WaitImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Wait Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Wait tag
      * @param parent
      */
@@ -68,7 +71,6 @@ public class WaitImpl extends SimpleActivityImpl implements WaitInterface {
     }
 
     /**
-     *
      * @return String with the end tag of Wait Activity
      */
     @Override

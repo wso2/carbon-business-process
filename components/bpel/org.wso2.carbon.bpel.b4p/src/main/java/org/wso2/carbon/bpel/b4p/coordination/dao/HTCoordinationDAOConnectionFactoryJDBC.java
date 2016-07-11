@@ -17,9 +17,9 @@
 package org.wso2.carbon.bpel.b4p.coordination.dao;
 
 
+import java.util.Map;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
-import java.util.Map;
 
 /**
  * JDBC specific DAO factory properties.
@@ -27,19 +27,22 @@ import java.util.Map;
 public interface HTCoordinationDAOConnectionFactoryJDBC extends HTCoordinationDAOConnectionFactory {
 
     /**
-     *  Set the datasource
+     * Set the datasource
+     *
      * @param dataSource : The datasource.
      */
     void setDataSource(DataSource dataSource);
 
     /**
      * The transaction manager.
+     *
      * @param tnxManager : The transaction manager to set.
      */
     void setTransactionManager(TransactionManager tnxManager);
 
     /**
      * TODO
+     *
      * @param propertiesMap
      */
     void setDAOConnectionFactoryProperties(Map<String, Object> propertiesMap);

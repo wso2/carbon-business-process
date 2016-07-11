@@ -29,27 +29,33 @@ import org.apache.ode.bpel.epr.EndpointFactory;
 import org.apache.ode.bpel.epr.MutableEndpoint;
 import org.apache.ode.bpel.epr.WSAEndpoint;
 import org.apache.ode.bpel.epr.WSDL11Endpoint;
-import org.apache.ode.bpel.iapi.*;
+import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.Message;
+import org.apache.ode.bpel.iapi.MessageExchange;
+import org.apache.ode.bpel.iapi.PartnerRoleChannel;
+import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
+import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.il.OMUtils;
 import org.apache.ode.utils.DOMUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.bpel.core.BPELConstants;
-import org.wso2.carbon.bpel.core.internal.BPELServerHolder;
 import org.wso2.carbon.bpel.core.ode.integration.axis2.WSDLAwareSOAPProcessor;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AxisServiceUtils;
 import org.wso2.carbon.bpel.core.ode.integration.utils.BPELMessageContextFactory;
 import org.wso2.carbon.bpel.core.ode.integration.utils.Messages;
 import org.wso2.carbon.bpel.core.ode.integration.utils.SOAPUtils;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
-import javax.wsdl.*;
+import javax.wsdl.Binding;
+import javax.wsdl.Definition;
+import javax.wsdl.Fault;
+import javax.wsdl.Operation;
+import javax.wsdl.Port;
+import javax.wsdl.Service;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.http.HTTPBinding;
 import javax.xml.namespace.QName;
@@ -103,14 +109,14 @@ public class PartnerService implements PartnerRoleChannel {
         inferBindingInformation();
 
         this.clientConfigCtx.setProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER,
-                                         connManager);
+                connManager);
         this.clientConfigCtx.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, "false");
 
         Element eprEle = BPELProcessProxy.genEPRfromWSDL(this.wsdlDefinition, this.serviceName,
-                                                         this.portName);
+                this.portName);
         if (eprEle == null) {
             throw new IllegalArgumentException("Service Port definition not found for service:"
-                                               + this.serviceName + " and port:" + this.portName);
+                    + this.serviceName + " and port:" + this.portName);
         }
         this.endpointReference = EndpointFactory.convertToWSA(
                 BPELProcessProxy.createServiceRef(eprEle));
@@ -118,7 +124,7 @@ public class PartnerService implements PartnerRoleChannel {
 
         initUEP();
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             String msg = "Process ID => " + this.processConfiguration.getProcessId() +
                     " Deployer => " + this.processConfiguration.getDeployer();
             log.debug(msg);
@@ -151,12 +157,13 @@ public class PartnerService implements PartnerRoleChannel {
 
     public void invoke(final PartnerRoleMessageExchange partnerRoleMessageExchange) {
         boolean isTwoWay = (partnerRoleMessageExchange.getMessageExchangePattern() ==
-                            MessageExchange.MessageExchangePattern.REQUEST_RESPONSE);
+                MessageExchange.MessageExchangePattern.REQUEST_RESPONSE);
         try {
             // Override options are passed to the axis MessageContext so we can
             // retrieve them in our session out changeHandler
             //
-            // Below logic is required only if tenant information from the thread local context is required here. However,
+            // Below logic is required only if tenant information from the thread local context is required here.
+            // However,
             // it does not seem required, hence commenting out.
 //            String deployer = processConfiguration.getDeployer();
 //
@@ -168,13 +175,15 @@ public class PartnerService implements PartnerRoleChannel {
 //
 //            PrivilegedCarbonContext.startTenantFlow();
 //            // Assuming that deployer should not be null
-//            String domain = BPELServerHolder.getInstance().getRealmService().getTenantManager().getDomain(Integer.parseInt(deployer));
+//            String domain = BPELServerHolder.getInstance().getRealmService().getTenantManager().getDomain(Integer
+// .parseInt(deployer));
 //            if(domain != null) {
 //                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(domain);
 //                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(Integer.parseInt(deployer));
 //
 //            } else {
-//                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+//                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants
+// .SUPER_TENANT_DOMAIN_NAME);
 //                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(Integer.parseInt(deployer));
 //            }
 
@@ -236,21 +245,21 @@ public class PartnerService implements PartnerRoleChannel {
 
                     if (messageTraceLog.isDebugEnabled()) {
                         messageTraceLog.debug("Invoking service: MEXId: " +
-                                              partnerRoleMessageExchange.getMessageExchangeId() +
-                                              " :: " + serviceName + "." +
-                                              partnerRoleMessageExchange.getOperationName());
+                                partnerRoleMessageExchange.getMessageExchangeId() +
+                                " :: " + serviceName + "." +
+                                partnerRoleMessageExchange.getOperationName());
                         if (messageTraceLog.isTraceEnabled()) {
                             messageTraceLog.trace("Request message: MEXId: " +
-                                                  partnerRoleMessageExchange.getMessageExchangeId() +
-                                                  " :: " +
-                                                  partnerInvocationContext.getInMessageContext().
-                                                          getEnvelope());
+                                    partnerRoleMessageExchange.getMessageExchangeId() +
+                                    " :: " +
+                                    partnerInvocationContext.getInMessageContext().
+                                            getEnvelope());
                         }
                     }
 
                     HTTPBindingHandler httpBindingHandler =
                             new HTTPBindingHandler(clientConfigCtx, serviceName, portName,
-                                                   wsdlDefinition
+                                    wsdlDefinition
                             );
                     HTTPBindingHandler.HTTPBindingResponse response =
                             httpBindingHandler.invoke(partnerRoleMessageExchange, partnerInvocationContext);
@@ -262,8 +271,8 @@ public class PartnerService implements PartnerRoleChannel {
 
                         if (messageTraceLog.isTraceEnabled()) {
                             messageTraceLog.trace("Response message: MEXId: " +
-                                                  partnerRoleMessageExchange.getMessageExchangeId() +
-                                                  " :: " + responseMessageContext.getEnvelope());
+                                    partnerRoleMessageExchange.getMessageExchangeId() +
+                                    " :: " + responseMessageContext.getEnvelope());
                         }
 
                         if (fltMessageContext != null) {
@@ -309,15 +318,15 @@ public class PartnerService implements PartnerRoleChannel {
 
                     if (messageTraceLog.isDebugEnabled()) {
                         messageTraceLog.debug("Invoking service: MEXId: " +
-                                              partnerRoleMessageExchange.getMessageExchangeId() +
-                                              " :: " + serviceName + "." +
-                                              partnerRoleMessageExchange.getOperationName());
+                                partnerRoleMessageExchange.getMessageExchangeId() +
+                                " :: " + serviceName + "." +
+                                partnerRoleMessageExchange.getOperationName());
                         if (messageTraceLog.isTraceEnabled()) {
                             messageTraceLog.trace("Request message: MEXId: " +
-                                                  partnerRoleMessageExchange.getMessageExchangeId() +
-                                                  " :: " +
-                                                  partnerInvocationContext.getInMessageContext().
-                                                          getEnvelope());
+                                    partnerRoleMessageExchange.getMessageExchangeId() +
+                                    " :: " +
+                                    partnerInvocationContext.getInMessageContext().
+                                            getEnvelope());
                         }
                     }
 
@@ -325,9 +334,9 @@ public class PartnerService implements PartnerRoleChannel {
 
                     if (messageTraceLog.isDebugEnabled()) {
                         messageTraceLog.debug("Service invocation completed: MEXId: " +
-                                              partnerRoleMessageExchange.getMessageExchangeId() +
-                                              " :: " + serviceName + "." +
-                                              partnerRoleMessageExchange.getOperationName());
+                                partnerRoleMessageExchange.getMessageExchangeId() +
+                                " :: " + serviceName + "." +
+                                partnerRoleMessageExchange.getOperationName());
                     }
 
                     if (isTwoWay) {
@@ -336,16 +345,16 @@ public class PartnerService implements PartnerRoleChannel {
                         MessageContext flt = partnerInvocationContext.getFaultMessageContext();
                         if (messageTraceLog.isTraceEnabled()) {
                             messageTraceLog.trace("Response message: MEXId: " +
-                                                  partnerRoleMessageExchange.getMessageExchangeId() +
-                                                  " :: " + response.getEnvelope());
+                                    partnerRoleMessageExchange.getMessageExchangeId() +
+                                    " :: " + response.getEnvelope());
                         }
 
                         if (flt != null) {
                             reply(partnerInvocationContext, partnerRoleMessageExchange, operation,
-                                  flt, true);
+                                    flt, true);
                         } else {
                             reply(partnerInvocationContext, partnerRoleMessageExchange, operation,
-                                  response, response.isFault());
+                                    response, response.isFault());
                         }
 
                     } else {  /* one-way case */
@@ -368,9 +377,8 @@ public class PartnerService implements PartnerRoleChannel {
                     partnerRoleMessageExchange.toString());
             log.error(errmsg, e);
             replyWithFailure(partnerRoleMessageExchange,
-                             MessageExchange.FailureType.COMMUNICATION_ERROR, errmsg);
+                    MessageExchange.FailureType.COMMUNICATION_ERROR, errmsg);
         }
-
 
 
     }
@@ -421,13 +429,13 @@ public class PartnerService implements PartnerRoleChannel {
                 if (fault != null) {
                     if (log.isWarnEnabled()) {
                         log.warn("Fault response: faultName=" + fault.getName() + " faultType="
-                                 + fault.getMessage().getQName() + "\n"
-                                 + DOMUtils.domToString(odeMsgEl));
+                                + fault.getMessage().getQName() + "\n"
+                                + DOMUtils.domToString(odeMsgEl));
                     }
 
                     QName faultType = fault.getMessage().getQName();
                     QName faultName = new QName(wsdlDefinition.getTargetNamespace(),
-                                                fault.getName());
+                            fault.getName());
                     Message response = odeMex.createMessage(faultType);
                     response.setMessage(odeMsgEl);
 
@@ -435,10 +443,10 @@ public class PartnerService implements PartnerRoleChannel {
                 } else {
                     SOAPFault soapFault = reply.getEnvelope().getBody().getFault();
                     QName faultType = new QName(wsdlDefinition.getTargetNamespace(),
-                                                "UnknownFault");
+                            "UnknownFault");
                     Message response = odeMex.createMessage(faultType);
                     Element actAsPart = odeMsgEl.getOwnerDocument().createElementNS(null,
-                                                                                    soapFault.getLocalName());
+                            soapFault.getLocalName());
                     odeMsgEl.appendChild(actAsPart);
 
                     if (soapFault.getCode() != null) {
@@ -462,7 +470,7 @@ public class PartnerService implements PartnerRoleChannel {
                         SOAPUtils.parseSOAPResponseFromPartner(partnerInvocationContext, odeMex);
                 if (log.isDebugEnabled()) {
                     log.debug("Response:\n" + (response.getMessage() != null ?
-                                               DOMUtils.domToString(response.getMessage()) : "empty"));
+                            DOMUtils.domToString(response.getMessage()) : "empty"));
                 }
                 odeMex.reply(response);
             }
@@ -506,7 +514,7 @@ public class PartnerService implements PartnerRoleChannel {
                         SOAPUtils.parseResponseFromRESTService(partnerInvocationContext, odeMex);
                 if (log.isDebugEnabled()) {
                     log.debug("Response:\n" + (response.getMessage() != null ?
-                                               DOMUtils.domToString(response.getMessage()) : "empty"));
+                            DOMUtils.domToString(response.getMessage()) : "empty"));
                 }
                 odeMex.reply(response);
             }

@@ -31,7 +31,7 @@ import java.util.Observable;
 /**
  * Data holder for the BPELServiceComponent
  */
-public final class BPELServerHolder extends Observable{
+public final class BPELServerHolder extends Observable {
     private static BPELServerHolder instance;
 
     private RegistryService registryService;
@@ -104,7 +104,7 @@ public final class BPELServerHolder extends Observable{
         this.realmService = realm;
     }
 
-    public RealmService getRealmService(){
+    public RealmService getRealmService() {
         return this.realmService;
     }
 
@@ -122,7 +122,7 @@ public final class BPELServerHolder extends Observable{
         this.configCtxService = configCtxService;
     }
 
-    public ConfigurationContextService getConfigCtxService(){
+    public ConfigurationContextService getConfigCtxService() {
         return this.configCtxService;
     }
 }

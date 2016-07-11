@@ -25,7 +25,13 @@ import org.apache.ode.bpel.pmapi.EventInfoListDocument;
 import org.apache.ode.bpel.pmapi.TEventInfo;
 import org.apache.ode.bpel.pmapi.TEventInfoList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Initiate, update the ActivityInfoWithEventsDocument objects so,
@@ -36,8 +42,10 @@ public class ActivityStateAndEventDocumentBuilder extends ActivityStateDocumentB
      * Keep a list of the activity info with events objects, so we can return
      * them in the order of creation.
      */
-    private List<ActivityInfoWithEventsDocument> activitiesWithEventsOrdered = new ArrayList<ActivityInfoWithEventsDocument>();
-    private Map<Long, ActivityInfoWithEventsDocument> activitiesWithEvents = new HashMap<Long, ActivityInfoWithEventsDocument>();
+    private List<ActivityInfoWithEventsDocument> activitiesWithEventsOrdered = new
+            ArrayList<ActivityInfoWithEventsDocument>();
+    private Map<Long, ActivityInfoWithEventsDocument> activitiesWithEvents = new HashMap<Long,
+            ActivityInfoWithEventsDocument>();
 
 //    private boolean removeCompleted = false;
 
@@ -54,7 +62,8 @@ public class ActivityStateAndEventDocumentBuilder extends ActivityStateDocumentB
         //Adding the event information
         if (be instanceof ActivityEvent) {
             final ActivityEvent event = (ActivityEvent) be;
-            fillActivityInfo(event, infoDocList);       //Fill the activity info to activitiesWithEvents & activitiesWithEventsOrdered
+            fillActivityInfo(event, infoDocList);       //Fill the activity info to activitiesWithEvents &
+            // activitiesWithEventsOrdered
 
             ActivityInfoWithEventsDocument actinf = lookup(event);
             assert actinf != null;

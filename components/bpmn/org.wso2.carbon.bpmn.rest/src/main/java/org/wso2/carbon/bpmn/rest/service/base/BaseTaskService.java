@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNContentNotSupportedException;
-import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
@@ -40,7 +39,6 @@ import org.wso2.carbon.bpmn.rest.model.runtime.TaskPaginateList;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 
 import javax.activation.DataHandler;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriInfo;
 import java.io.*;
 import java.util.ArrayList;

@@ -25,7 +25,11 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.context.ServiceGroupContext;
 import org.apache.axis2.deployment.util.Utils;
-import org.apache.axis2.description.*;
+import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.AxisServiceGroup;
+import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
@@ -40,7 +44,6 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.w3c.dom.Element;
 import org.wso2.carbon.CarbonConstants;
-import org.wso2.carbon.bpel.config.TMultithreadedHttpConnectionManagerConfig;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.BPELMessageContext;
@@ -51,13 +54,6 @@ import org.wso2.carbon.bpel.core.ode.integration.axis2.receivers.BPELMessageRece
 import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
 import org.wso2.carbon.utils.ServerConstants;
 
-import javax.wsdl.*;
-import javax.wsdl.extensions.http.HTTPAddress;
-import javax.wsdl.extensions.soap.SOAPAddress;
-import javax.wsdl.extensions.soap.SOAPOperation;
-import javax.wsdl.extensions.soap12.SOAP12Address;
-import javax.wsdl.extensions.soap12.SOAP12Operation;
-import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,6 +64,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.Definition;
+import javax.wsdl.Input;
+import javax.wsdl.Port;
+import javax.wsdl.Service;
+import javax.wsdl.extensions.http.HTTPAddress;
+import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap.SOAPOperation;
+import javax.wsdl.extensions.soap12.SOAP12Address;
+import javax.wsdl.extensions.soap12.SOAP12Operation;
+import javax.xml.namespace.QName;
 
 /**
  * This class contains utility functions used by ODE-Carbon Integration Layer to create,
@@ -508,13 +515,14 @@ public final class AxisServiceUtils {
         return null;
     }
 
-    public static void addCustomHeadersToMessageContext(MessageContext mctx){
+    public static void addCustomHeadersToMessageContext(MessageContext mctx) {
 
         List<Header> headers = null;
 
-        BPELServerConfiguration bpelServerConfiguration = BPELServiceComponent.getBPELServer().getBpelServerConfiguration();
+        BPELServerConfiguration bpelServerConfiguration = BPELServiceComponent.getBPELServer()
+                .getBpelServerConfiguration();
 
-        if (!bpelServerConfiguration.isKeepAlive())  {
+        if (!bpelServerConfiguration.isKeepAlive()) {
 
             headers = new ArrayList();
             headers.add(new Header(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE));
@@ -522,7 +530,7 @@ public final class AxisServiceUtils {
 
 
         //Add more custom header values in the future
-        if( (headers != null) && (headers.size() > 0) ) {
+        if ((headers != null) && (headers.size() > 0)) {
             mctx.setProperty(HTTPConstants.HTTP_HEADERS, headers);
         }
     }

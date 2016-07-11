@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.FaultHandlerInterface;
 
 /**
@@ -27,6 +27,7 @@ import org.wso2.carbon.bpel.ui.bpel2svg.FaultHandlerInterface;
 public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerInterface {
     /**
      * Initializes a new instance of the FaultHandlerImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public FaultHandlerImpl(String token) {
@@ -43,8 +44,10 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
         // Set Layout
         setVerticalChildLayout(false);
     }
+
     /**
      * Initializes a new instance of the FaultHandlerImpl class using the specified omElement
+     *
      * @param omElement which matches the FaultHandler tag
      */
     public FaultHandlerImpl(OMElement omElement) {
@@ -64,8 +67,10 @@ public class FaultHandlerImpl extends EventHandlerImpl implements FaultHandlerIn
 
     /**
      * Initializes a new instance of the FaultHandlerImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an FaultHandler Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an FaultHandler Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the FaultHandler tag
      * @param parent
      */

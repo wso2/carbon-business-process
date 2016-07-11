@@ -1,5 +1,5 @@
 /*
- * Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,6 @@
 package org.wso2.carbon.bpel.b4p.coordination.context.utils;
 
 
-import javax.xml.namespace.QName;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -29,7 +25,14 @@ import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.wso2.carbon.bpel.b4p.coordination.context.WSConstants;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import javax.xml.namespace.QName;
 
+
+/**
+ * EndPoint Reference Factory, which is a utility class converts OM to EPR, EPR to OM.
+ */
 public class EndPointReferenceFactory {
 
 

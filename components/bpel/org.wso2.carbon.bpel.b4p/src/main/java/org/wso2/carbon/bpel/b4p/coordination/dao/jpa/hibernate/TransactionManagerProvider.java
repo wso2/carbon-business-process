@@ -27,6 +27,7 @@ import javax.transaction.TransactionManager;
 /**
  * Managed Runtime provider for Humantask Transaction manager
  */
+@Deprecated
 public class TransactionManagerProvider implements ManagedRuntime {
 
     private TransactionManager txMgr;

@@ -16,12 +16,13 @@
  ~ specific language governing permissions and limitations
  ~ under the License.
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel</artifactId>
-        <version>4.4.9-SNAPSHOT</version>
+        <version>4.4.10-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -157,17 +158,18 @@
                         <configuration>
                             <tasks>
                                 <path id="h2.classpath">
-                                    <path refid="maven.compile.classpath" />
+                                    <path refid="maven.compile.classpath"/>
                                 </path>
 
-                                <echo message="########### Create B4P Coordination Database ##############" />
-                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/target/database/b4ph2db;create=true" userid="sa" password="" autocommit="true" onerror="continue">
+                                <echo message="########### Create B4P Coordination Database ##############"/>
+                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/target/database/b4ph2db;create=true"
+                                     userid="sa" password="" autocommit="true" onerror="continue">
                                     <classpath>
-                                        <path refid="h2.classpath" />
+                                        <path refid="h2.classpath"/>
                                     </classpath>
-                                    <fileset file="${basedir}/target/h2.sql" />
+                                    <fileset file="${basedir}/target/h2.sql"/>
                                 </sql>
-                                <echo message="##################### END ############################" />
+                                <echo message="##################### END ############################"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -179,19 +181,20 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="maven.runtime.classpath" refid="maven.compile.classpath" />
+                                <property name="maven.runtime.classpath" refid="maven.compile.classpath"/>
                                 <path id="classpath">
-                                    <pathelement path="${maven.runtime.classpath}" />
+                                    <pathelement path="${maven.runtime.classpath}"/>
                                 </path>
-                                <taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="classpath" />
+                                <taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask"
+                                         classpathref="classpath"/>
                                 <openjpac>
                                     <fileset dir="${basedir}/src/main">
-                                        <include name="**/dao/jpa/openjpa/entity/*.java" />
+                                        <include name="**/dao/jpa/openjpa/entity/*.java"/>
                                         <!--<include name="**/*.java" />-->
                                     </fileset>
                                     <classpath>
-                                        <pathelement location="${basedir}/target/classes" />
-                                        <pathelement path="${maven.runtime.classpath}" />
+                                        <pathelement location="${basedir}/target/classes"/>
+                                        <pathelement path="${maven.runtime.classpath}"/>
                                     </classpath>
                                 </openjpac>
                             </tasks>
@@ -302,5 +305,8 @@
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <mavan.findbugsplugin.exclude.file>${basedir}/src/main/resources/FindBug-Exclude.xml</mavan.findbugsplugin.exclude.file>
+    </properties>
 
 </project>

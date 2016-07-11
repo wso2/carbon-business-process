@@ -1,0 +1,80 @@
+<%
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+var log = new Log();
+var headers =   {
+                    "Authorization": "Basic " + auth,
+                    "getCommonErrorContentnt-Type": "application/json",
+                    "Accept" : "application/json"
+                };
+try {
+    //URLs
+    var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
+
+
+    var loggedUsersSubInfo = null;
+    var httpResponse = null;
+    var usersSubstitutionsList = null;
+    //variables for pagination
+    var paginatePageCount = 0;
+    var currentPage = 1;
+    var pagination = request.getParameter("pagination");
+    var start = 0;
+    var redirectPage = "substitutions";//for pagination
+    var queryParams = "";//for pagination
+
+    if (pagination == null || pagination == ""){
+        pagination = 1;
+    }
+
+    if(pagination > 0){
+        start = (pagination - 1)*10 ;
+    }
+    
+    //retrieve list substitution info
+    httpResponse = get(httpUrl + RUNTIME_SUBSTITUTES_URL + "?order=asc&start=" + start + "&size=10&tenantId=" + bpsTenantID, null, headers, "json");
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_URL + "?substitute=" + session.get("user")+
+                                                        "&order=asc&start="+ start+"&size=10&tenantId="+ bpsTenantID);
+        log.debug("BPS BPMN REST API response: " + stringify(httpResponse));
+    }
+
+    if (parseInt(httpResponse.xhr.status) == 200 && httpResponse.data != null) {
+
+        if (httpResponse.data.errorMessage != undefined) {
+            throw "Error " + httpResponse.data.statusCode + " : " + httpResponse.data.errorMessage;
+        }
+        usersSubstitutionsList = httpResponse.data.substituteInfoList;
+
+        //calculate pagination info
+        paginatePageCount = 10;//Math.ceil(httpResponse.data.total / 10);//TODO since still do not respond total commenting it and hardcode to 10
+        currentPage = parseInt(pagination);
+    }
+
+} catch (e) {
+    if (log.isDebugEnabled()) {
+        log.debug("User Error Occured : " + e);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = getCommonErrorContent(e);
+    errorDisplayEnable = '';
+}
+//Set current active veiw as Substitutions view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+substitutionNavActive = 'class="active"';
+%>

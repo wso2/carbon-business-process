@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -31,16 +31,16 @@ import org.wso2.carbon.bpel.stub.mgt.types.ProcessInfoType;
 import org.wso2.carbon.service.mgt.stub.types.carbon.ServiceMetaData;
 import org.wso2.carbon.service.mgt.ui.ServiceAdminClient;
 
-import javax.xml.namespace.QName;
 import java.rmi.RemoteException;
 import java.util.Locale;
+import javax.xml.namespace.QName;
 
 /**
  * Client which invokes process management service.
  */
 public class ProcessManagementServiceClient {
     private static Log log = LogFactory.getLog(ProcessManagementServiceClient.class);
-//    private static final String BUNDLE = "org.wso2.carbon.bpel.ui.i18n.Resources";
+    //    private static final String BUNDLE = "org.wso2.carbon.bpel.ui.i18n.Resources";
 //    private ResourceBundle bundle;
     private ProcessManagementServiceStub stub;
 

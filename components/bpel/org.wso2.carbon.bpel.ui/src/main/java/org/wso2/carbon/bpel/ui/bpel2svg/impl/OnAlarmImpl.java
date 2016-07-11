@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.OnAlarmInterface;
 
 /**
@@ -28,6 +28,7 @@ public class OnAlarmImpl extends OnMessageImpl implements OnAlarmInterface {
 
     /**
      * Initializes a new instance of the OnAlarmImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public OnAlarmImpl(String token) {
@@ -40,8 +41,10 @@ public class OnAlarmImpl extends OnMessageImpl implements OnAlarmInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the OnAlarmImpl class using the specified omElement
+     *
      * @param omElement which matches the OnAlarm tag
      */
     public OnAlarmImpl(OMElement omElement) {
@@ -54,10 +57,12 @@ public class OnAlarmImpl extends OnMessageImpl implements OnAlarmInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the OnAlarmImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an OnAlarm Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the OnAlarm tag
      * @param parent
      */
@@ -73,8 +78,8 @@ public class OnAlarmImpl extends OnMessageImpl implements OnAlarmInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
-     *
      * @return String with the end tag of OnAlarm Activity
      */
     @Override

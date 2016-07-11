@@ -17,11 +17,6 @@
 
 package org.wso2.carbon.bpmn.rest.common.utils;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.fileupload.MultipartStream;
 import org.apache.commons.io.IOUtils;
@@ -30,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.io.CachedOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.io.*;
 import java.util.HashMap;

@@ -22,11 +22,17 @@ import org.activiti.engine.impl.cmd.AbstractCustomSqlExecution;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.session.RowBounds;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.internal.mapper.DeploymentMapper;
+import org.wso2.carbon.bpmn.core.internal.mapper.SubstitutesMapper;
 import org.wso2.carbon.bpmn.core.mgt.model.DeploymentMetaDataModel;
+import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
+import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides the implementation interface between TenantRepository object and DeploymentMapper interface.
@@ -156,4 +162,273 @@ public class ActivitiDAO {
         return rowCount;
     }
 
+    /**
+     * Insert new substitute record. Transitive substitute field is not updated here.
+     * @param substitutesDataModel
+     * @return inserted row count. Ideally should return 1.
+     */
+    public int insertSubstitute(final SubstitutesDataModel substitutesDataModel){
+
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.insertSubstitute(substitutesDataModel);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return substitute information for the given user
+     * @param user
+     * @param tenantId
+     * @return SubstituteDataModel or null if not exist
+     */
+    public SubstitutesDataModel selectSubstituteInfo(final String user, final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper,  SubstitutesDataModel > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, SubstitutesDataModel>(SubstitutesMapper.class) {
+                    public  SubstitutesDataModel  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectSubstitute(user, tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Update the substitute record for given user
+     * @param substitutesDataModel
+     * @return updated row count. Ideally should return 1.
+     */
+    public int updateSubstituteInfo(final SubstitutesDataModel substitutesDataModel) {
+        substitutesDataModel.setUpdated(new Date());
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.updateSubstitute(substitutesDataModel);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the row count where the given user acts as the substitute
+     * @param substitute
+     * @param tenantId
+     * @return row count
+     */
+    public int countUserAsSubstitute(final String substitute, final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.countUserAsSubstitute(substitute, tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Select all substitutes for given tenant Id
+     * @param tenantId
+     * @return Map with User as key and SubstitutesDataModel as value
+     */
+    public Map<String, SubstitutesDataModel> selectAllSubstitutesByTenant(final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectAllSubstituteInfo(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+
+    /**
+     * Select all active substitutes for given tenant Id
+     * @param tenantId
+     * @return Map with User as key and SubstitutesDataModel as value
+     */
+    public Map<String, SubstitutesDataModel> selectActiveSubstitutesByTenant(final int tenantId){
+
+        CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectActiveSubstitutesInfo(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Update transitive substitute for the given user.
+     * @param user
+     * @param tenantId
+     * @param transitiveSub
+     */
+    public int updateTransitiveSub(final String user, final int tenantId, final String transitiveSub) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.updateTransitiveSub(user, tenantId, transitiveSub, new Date());
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Remove the substitute record for the given user.
+     * @param assignee
+     * @param tenantId
+     * @return
+     */
+    public int removeSubstitute(final String assignee, final int tenantId) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.removeSubstitute(assignee, tenantId);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Update the substitute of the given user.
+     * @param assignee
+     * @param substitute
+     * @param tenantId
+     * @param updated
+     * @return
+     */
+    public int updateSubstitute(final String assignee, final String substitute, final int tenantId, final Date updated) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.updateSubstituteUser(assignee, substitute, tenantId, updated);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the list of substitute info based on query parameters.
+     * @param model model with only required query parameter values. Leave others as null. By default enabled=false.
+     * @return List<SubstitutesDataModel> Result set of substitute info
+     */
+    public List<SubstitutesDataModel> querySubstituteInfo(final PaginatedSubstitutesDataModel model) {
+
+        final RowBounds rw = new RowBounds(model.getStart(), model.getSize());
+        CustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public List<SubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.querySubstitutes(rw, model);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+
+    }
+
+    /**
+     * Return the list of substitute info based on query parameters except enabled property.
+     * @param model data model with only required query parameter values. Leave others as null.
+     * @return List<PaginatedSubstitutesDataModel> Result set of substitute info
+     */
+    public List<SubstitutesDataModel> querySubstituteInfoWithoutEnabled(final PaginatedSubstitutesDataModel model) {
+        final RowBounds rw = new RowBounds(model.getStart(), model.getSize());
+        CustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public List<SubstitutesDataModel> execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.querySubstitutesWithoutEnabled(rw, model);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the list of tenant Ids that has substitutions.
+     * @return tenant ID list
+     */
+    public List<Integer> getTenantsList() {
+        CustomSqlExecution<SubstitutesMapper, List<Integer>> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, List<Integer>>(SubstitutesMapper.class) {
+                    public List<Integer> execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.getDistinctTenantList();
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Disable or enable the substitution.
+     * @param enable - true to enable, false to disable
+     * @param assignee - assignee of the substitution record
+     * @param tenantId - assignee's tenant id
+     * @return updated rpw count
+     */
+    public int enableSubstitution(final boolean enable, final String assignee, final int tenantId) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.enableSubstitution(enable, assignee, tenantId);
+                    }
+                };
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Select enabled but date expired substitute info for given tenant
+     * @param tenantId
+     * @return Map<User, SubstitutesDataModel>
+     */
+    public Map<String, SubstitutesDataModel> getEnabledExpiredRecords(final int tenantId) {
+        CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
+                    public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectEnabledExpiredRecords(tenantId);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the substitute info count based on query parameters.
+     * @param model model with only required query parameter values. Leave others as null. By default enabled=false.
+     * @return result count
+     */
+    public int selectQueryResultCount(final PaginatedSubstitutesDataModel model) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectQuerySubstitutesCount(model);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
+
+    /**
+     * Return the count of substitute info based on query parameters except enabled property.
+     * @param model data model with only required query parameter values. Leave others as null.
+     * @return int Result set count
+     */
+    public int selectQueryResultCountWithoutEnabled(final PaginatedSubstitutesDataModel model) {
+        CustomSqlExecution<SubstitutesMapper, Integer> customSqlExecution =
+                new AbstractCustomSqlExecution<SubstitutesMapper, Integer>(SubstitutesMapper.class) {
+                    public Integer execute(SubstitutesMapper substitutesMapper) {
+                        return substitutesMapper.selectQuerySubstitutesCountWithoutEnabled(model);
+                    }
+                };
+
+        return managementService.executeCustomSql(customSqlExecution);
+    }
 }

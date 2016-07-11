@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * On Event Interface.
+ */
 public interface OnEventInterface extends ActivityInterface {
 
 }

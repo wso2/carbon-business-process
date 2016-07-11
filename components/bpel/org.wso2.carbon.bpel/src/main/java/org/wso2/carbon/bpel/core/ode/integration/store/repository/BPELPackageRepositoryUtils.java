@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,9 +24,19 @@ import org.apache.ode.bpel.iapi.ProcessState;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.ode.integration.store.BPELDeploymentContext;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.ProcessManagementException;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CategoryListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Category_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EnableEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Generate_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.On_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility methods to use in BPEL package repository implementation.

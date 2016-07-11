@@ -20,7 +20,10 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.compiler.api.CompilationException;
-import org.apache.ode.bpel.dd.*;
+import org.apache.ode.bpel.dd.DeployDocument;
+import org.apache.ode.bpel.dd.TAnalyticsServerProfiles;
+import org.apache.ode.bpel.dd.TDeployment;
+import org.apache.ode.bpel.dd.TProvide;
 import org.apache.ode.bpel.engine.BpelServerImpl;
 import org.apache.ode.bpel.iapi.ContextException;
 import org.apache.ode.bpel.iapi.ProcessConf;
@@ -49,12 +52,19 @@ import org.wso2.carbon.registry.core.utils.RegistryClientUtils;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
 import org.wso2.carbon.utils.FileManipulator;
 
-import javax.xml.namespace.QName;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.namespace.QName;
 
 /**
  * Tenant specific process store.
@@ -130,7 +140,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         try {
             repository.restoreBPELArchive(repository.getBPELPackageInfo(
                     BPELConstants.REG_PATH_OF_BPEL_PACKAGES +
-                    bpelPackageName));
+                            bpelPackageName));
         } catch (Exception e) {
             log.error("Error occurred while deploying: " + bpelPackageName, e);
         }
@@ -196,13 +206,13 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         deploymentContext.setExistingPackage(isExistingPackage);
 
         if (deploymentLog.isDebugEnabled()) {
-                deploymentLog.debug("Package: " + deploymentContext.getBpelPackageName() + (isExistingPackage ?
-                                    " is already available" :
-                                    "is a new deployment"));
+            deploymentLog.debug("Package: " + deploymentContext.getBpelPackageName() + (isExistingPackage ?
+                    " is already available" :
+                    "is a new deployment"));
 
-                deploymentLog.debug("Package: " + deploymentContext.getBpelPackageName() + (isLoadOnly ?
-                                    " has already deployed. Therefore the package is reloaded" :
-                                    " is found as a new deployment"));
+            deploymentLog.debug("Package: " + deploymentContext.getBpelPackageName() + (isLoadOnly ?
+                    " has already deployed. Therefore the package is reloaded" :
+                    " is found as a new deployment"));
         }
 
         if (isExistingPackage && isLoadOnly) {
@@ -217,8 +227,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             // We do not allow packages to be deployed on slave node first in-order to have correct versioning accross
             // the cluster. Hence a package should be deployed on master node first.
             log.warn("This node is a slave node as the configuration registry is in read-only mode, " +
-                     "hence processes cannot be directly deployed in this node. " +
-                     "Please deploy the process in Master node first.");
+                    "hence processes cannot be directly deployed in this node. " +
+                    "Please deploy the process in Master node first.");
             return;
         }
 
@@ -278,8 +288,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             // so that, the archive is deleted from the repo. As a result this method get invoked.
             // to handle this case we just log the message but does not throw an exception.
             final String warningMsg = "Cannot find BPEL package with name " + bpelPackageName +
-                                      " in the repository. If the bpel package is un-deployed through the management" +
-                                      " console or if this node is a member of a cluster, please ignore this warning.";
+                    " in the repository. If the bpel package is un-deployed through the management" +
+                    " console or if this node is a member of a cluster, please ignore this warning.";
 
             if (isConfigRegistryReadOnly()) {
                 // This is for the deployment synchronizer scenarios where package un-deployment on a worker node
@@ -293,7 +303,9 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         }
 
         if (repository.isExistingBPELPackage(bpelPackageName) && isConfigRegistryReadOnly()) {
-            log.warn("This node seems to be a slave, since the configuration registry is in read-only mode, hence processes cannot be directly undeployed from this node. Please undeploy the process in Master node first.");
+            log.warn("This node seems to be a slave, since the configuration registry is in read-only mode, hence " +
+                    "processes cannot be directly undeployed from this node. Please undeploy the process in Master " +
+                    "node first.");
             return;
         }
 
@@ -303,7 +315,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             versionsOfThePackage = repository.getAllVersionsForPackage(bpelPackageName);
         } catch (RegistryException re) {
             String errMessage = "Cannot get all versions of the package " + bpelPackageName
-                                + " from registry.";
+                    + " from registry.";
             log.error(errMessage);
             throw re;
         }
@@ -319,8 +331,9 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             Utils.deleteInstances(getProcessesInPackage(nameWithVersion));
 
             //location for extracted BPEL package
-            String bpelPackageLocation = parentProcessStore.getLocalDeploymentUnitRepo().getAbsolutePath() + File.separator + tenantId + File.separator +
-                                         nameWithVersion;
+            String bpelPackageLocation = parentProcessStore.getLocalDeploymentUnitRepo().getAbsolutePath() + File
+                    .separator + tenantId + File.separator +
+                    nameWithVersion;
             File bpelPackage = new File(bpelPackageLocation);
             //removing extracted bpel package at repository/bpel/0/
             deleteBpelPackageFromRepo(bpelPackage);
@@ -338,7 +351,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             repository.handleBPELPackageUndeploy(bpelPackageName);
         } catch (RegistryException re) {
             String errMessage = "Cannot update the BPEL package repository for undeployment of" +
-                                "package " + bpelPackageName + ".";
+                    "package " + bpelPackageName + ".";
             log.error(errMessage);
             throw re;
         }
@@ -380,7 +393,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         for (String packageName : packageList) {
             //location for extracted BPEL package
             String bpelPackageLocation = parentProcessStore.getLocalDeploymentUnitRepo().getAbsolutePath() +
-                                         File.separator + tenantId + File.separator + packageName;
+                    File.separator + tenantId + File.separator + packageName;
             File bpelPackage = new File(bpelPackageLocation);
             //removing extracted bpel package at repository/bpel/tenantID/
             deleteBpelPackageFromRepo(bpelPackage);
@@ -444,8 +457,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             FileManipulator.deleteDir(bpelPackage);
         } else {
             log.warn("BPEL package " + bpelPackage.getAbsolutePath() +
-                     " not found. This can happen if you delete " +
-                     "the BPEL package from the file system.");
+                    " not found. This can happen if you delete " +
+                    "the BPEL package from the file system.");
         }
     }
 
@@ -466,7 +479,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         }
 
         parentProcessStore.updateMapsAndFireStateChangeEventsForUndeployedProcesses(tenantId,
-                                                                                    bpelPackageName, undeployedProcesses);
+                bpelPackageName, undeployedProcesses);
     }
 
     /**
@@ -477,9 +490,9 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     private void deleteBpelArchive(String bpelPackageName) {
         String bpelArchiveLocation = tenantConfigContext.getAxisConfiguration().getRepository().
                 getPath() + File.separator + BPELConstants.BPEL_REPO_DIRECTORY + File.separator +
-                                     bpelPackageName + "." + BPELConstants.BPEL_PACKAGE_EXTENSION;
+                bpelPackageName + "." + BPELConstants.BPEL_PACKAGE_EXTENSION;
         log.info("Undeploying BPEL package " + bpelPackageName + ". Deleting BPEL archive " +
-                 bpelArchiveLocation + "....");
+                bpelArchiveLocation + "....");
         File bpelArchive = new File(bpelArchiveLocation);
         if (bpelArchive.exists()) {
             if (!bpelArchive.delete()) {
@@ -488,8 +501,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             }
         } else {
             log.warn("BPEL archive " + bpelArchive.getAbsolutePath() +
-                     " not found. This can happen if you delete " +
-                     "the BPEL archive from the file system.");
+                    " not found. This can happen if you delete " +
+                    "the BPEL archive from the file system.");
         }
     }
 
@@ -582,7 +595,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             throws Exception {
         if (deploymentContext.getStackTrace() != null) {
             log.error(deploymentContext.getDeploymentFailureCause(),
-                      deploymentContext.getStackTrace());
+                    deploymentContext.getStackTrace());
         } else {
             log.error(deploymentContext.getDeploymentFailureCause());
         }
@@ -596,7 +609,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
      * of that BPEL archive.
      *
      * @param deploymentContext information about current deployment
-     * @throws RegistryException   on error loading resources from registry.
+     * @throws RegistryException                                                                     on error loading
+     * resources from registry.
      * @throws org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.ProcessManagementException
      */
     private void reloadExistingVersionsOfBPELPackage(BPELDeploymentContext deploymentContext)
@@ -604,12 +618,12 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         BPELPackageInfo bpelPackage = repository.getBPELPackageInfo(deploymentContext);
         String lastActivePackageName = null;
         for (String packageName : bpelPackage.getAvailableVersions()) {
-            if(deploymentUnits.containsKey(packageName)) {
+            if (deploymentUnits.containsKey(packageName)) {
                 lastActivePackageName = packageName;
             } else {
                 // This is to avoid the scenario where slave node is loading the package and not deactivating the older
                 // version of the package
-                if(null != lastActivePackageName && isConfigRegistryReadOnly()) {
+                if (null != lastActivePackageName && isConfigRegistryReadOnly()) {
                     loadExistingBPELPackage(lastActivePackageName);
                 }
                 loadExistingBPELPackage(packageName);
@@ -627,7 +641,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     private void deployBPELPackageInODE(BPELDeploymentContext deploymentContext) throws Exception {
         File bpelPackage = deploymentContext.getBPELPackageContent();
         log.info("Starting deployment of processes from directory "
-                 + bpelPackage.getAbsolutePath());
+                + bpelPackage.getAbsolutePath());
 
         final Date deployDate = new Date();
         // Create the DU and compile/scan it before doing any other work.
@@ -656,7 +670,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
 
         if (deploymentUnits.containsKey(deploymentUnitDir.getName())) {
             String logMessage = "Aborting deployment. Duplicate Deployment unit "
-                                + deploymentUnitDir.getName() + ".";
+                    + deploymentUnitDir.getName() + ".";
             log.error(logMessage);
             deploymentContext.setFailed(true);
             deploymentContext.setDeploymentFailureCause(logMessage);
@@ -707,7 +721,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                     processConfs);
         } catch (ContextException ce) {
             deploymentContext.setDeploymentFailureCause("BPEL Package deployment failed at " +
-                                                        "ODE layer. Possible cause: " + ce.getMessage());
+                    "ODE layer. Possible cause: " + ce.getMessage());
             deploymentContext.setStackTrace(ce);
             deploymentContext.setFailed(true);
             handleDeploymentError(deploymentContext);
@@ -739,7 +753,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
             if (cbpInfo == null) {
                 //removeDeploymentArtifacts(deploymentContext, du);
                 String logMessage = "Aborting deployment. Cannot find Process definition for type "
-                                    + processType + ".";
+                        + processType + ".";
                 log.error(logMessage);
                 throw new BPELDeploymentException(logMessage);
             }
@@ -757,12 +771,12 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     }
 
     private void loadExistingBPELPackage(String bpelPackageName) throws RegistryException,
-                                                                        ProcessManagementException,
-                                                                        BPELDeploymentException {
+            ProcessManagementException,
+            BPELDeploymentException {
         DeploymentUnitDAO duDAO = parentProcessStore.getDeploymentUnitDAO(bpelPackageName);
         if (duDAO == null) {
             String errMsg = "Cannot find DeploymentUnitDAO instance for package "
-                            + bpelPackageName + ".";
+                    + bpelPackageName + ".";
             log.error(errMsg);
             throw new BPELDeploymentException(errMsg);
         }
@@ -826,8 +840,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                                 location.substring(UnifiedEndpointConstants.VIRTUAL_FILE.length()));
                     }
                 } else if ((!location.startsWith(UnifiedEndpointConstants.VIRTUAL_CONF_REG) &&
-                            !location.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG) &&
-                            !location.startsWith(UnifiedEndpointConstants.VIRTUAL_REG))) {
+                        !location.startsWith(UnifiedEndpointConstants.VIRTUAL_GOV_REG) &&
+                        !location.startsWith(UnifiedEndpointConstants.VIRTUAL_REG))) {
                     if (EndpointConfiguration.isAbsolutePath(location)) {
                         location = UnifiedEndpointConstants.VIRTUAL_FILE + location;
                     } else {
@@ -858,32 +872,32 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                 if (tenantConfigRegistry.resourceExists(registryCollectionPath)) {
                     if (!bpelDUDirectory.exists() && !bpelDUDirectory.mkdirs()) {
                         String errMsg = "Error creating BPEL deployment unit repository for " +
-                                        "tenant " + tenantId;
+                                "tenant " + tenantId;
                         log.error(errMsg);
                         log.error("Failed to load BPEL deployment unit " + duName +
-                                  " due to above error.");
+                                " due to above error.");
                         throw new BPELDeploymentException(errMsg);
                     }
 
                     boolean deployedOnCarbon310 = false;
                     //Check whether the registry repo is of type carbon 3.1.0
                     if (tenantConfigRegistry.resourceExists(registryCollectionPath +
-                                                            RegistryConstants.PATH_SEPARATOR + duName)) {
+                            RegistryConstants.PATH_SEPARATOR + duName)) {
                         registryCollectionPath += RegistryConstants.PATH_SEPARATOR + duName;
                         deployedOnCarbon310 = true;
                         if (log.isDebugEnabled()) {
                             log.debug("Found a carbon 3.1.0 compatible deployment unit at " +
-                                      registryCollectionPath);
+                                    registryCollectionPath);
                         }
                     }
 
                     RegistryClientUtils.exportFromRegistry(bpelDUDirectory, registryCollectionPath,
-                                                           tenantConfigRegistry);
+                            tenantConfigRegistry);
 
                     if (deployedOnCarbon310) {
                         if (log.isDebugEnabled()) {
                             log.debug("Recompiling the carbon 3.1.0 compatible deployment unit at "
-                                      + bpelDUDirectory);
+                                    + bpelDUDirectory);
                         }
                         //Re-compiling to get rid of binary compatibility issues.
                         DeploymentUnitDir du = new DeploymentUnitDir(bpelDUDirectory);
@@ -898,13 +912,13 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                     return bpelDUDirectory;
                 } else {
                     String errMsg = "Expected resource: " + registryCollectionPath +
-                                    " not found in the registry";
+                            " not found in the registry";
                     log.error(errMsg);
                     throw new BPELDeploymentException(errMsg);
                 }
             } catch (RegistryException re) {
                 String errMsg = "Error while exporting deployment unit: " + duName +
-                                " to file system from the registry.";
+                        " to file system from the registry.";
                 log.error(errMsg, re);
                 throw new BPELDeploymentException(errMsg, re);
             }
@@ -965,8 +979,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                 for (TProvide provide : provideList) {
                     if (getDeployedServices().containsKey(provide.getService().getName())) {
                         String errMsg = "Service: " + provide.getService().getName() + " already " +
-                                        "used by another process. Try again with a different " +
-                                        "service name";
+                                "used by another process. Try again with a different " +
+                                "service name";
                         bpelDeploymentContext.setDeploymentFailureCause(errMsg);
                         return false;
                     }
@@ -989,8 +1003,8 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
     private void attachWithCapp(String bpelArchiveName, String bpelPackageName, int tenantId) {
         // attach with cApp
         AppDeployerUtils.attachArtifactToOwnerApp(bpelArchiveName,
-                                                  BPELConstants.BPEL_TYPE,
-                                                  bpelPackageName, tenantId);
+                BPELConstants.BPEL_TYPE,
+                bpelPackageName, tenantId);
     }
 
     public Map<QName, Object> getDeployedServices() {

@@ -474,6 +474,25 @@ function setDatePicker(dateElement) {
     });
 }
 
+function setDateTimePicker(dateElement, parentElement) {
+    var elementID = '#' + dateElement;
+    var parentID = '#' + parentElement;
+    $(elementID).daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: false,
+        timePicker: true,
+        parentEl: parentID,
+        locale: {
+            format: 'YYYY-MM-DD h:mm:ss A'
+        }
+    });
+}
+
+function epochToFormattedTime (epochTime) {
+    var time = new Date(epochTime);
+    return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
+}
+
 //Average Task duration for each process
 
 function selectProcessForChart() {
@@ -1443,5 +1462,149 @@ function validateFilter() {
 function filterResults(id) {
 
     window.location = httpUrl + "/" + CONTEXT + "/processMonitoring?instanceId=" + id;
+}
+
+
+
+function addNewSubstitute (assignee, subName, startDate, endDate) {
+
+    //create start time Date object
+    var startTimeStrArr = startDate.split(' ');
+    var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
+    var startTime = new Date(startDateTimeStr);
+
+    //create end time Date object
+    var endTimeStrArr = endDate.split(' ');
+    var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+    var endTime = new Date(endDateTimeStr);
+
+    //json request
+    var addSubRequest  =  {
+                               "assignee": assignee,
+                               "substitute" : subName,
+                               "startTime" : startTime.toISOString(),
+                               "endTime" : endTime.toISOString()
+                            };
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes";
+
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(addSubRequest),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+        },
+        error: function (xhr, status, error) {
+            var errorJson = eval("(" + xhr.responseText + ")");
+            if (errorJson != null && errorJson.errorMessage != undefined) {
+                $('#addSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+            } else {
+                $('#addSubErrMsg').html("Error occurred while adding substitute. Please try again");
+            }
+
+            $('#addSubErrorMessageArea').show();
+            //set callback to remove error message when hiding the modal
+            $('#addSubstituteModal').on('hide.bs.modal', function (e) {
+                    $('#addSubErrorMessageArea').hide();
+            });
+
+        }
+    });
+}
+
+function updateSubstitute (assignee, subName, startDate, endDate) {
+
+    //create start time Date object
+    var startTimeStrArr = startDate.split(' ');
+    var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
+    var startTime = new Date(startDateTimeStr);
+
+    //create end time Date object
+    var endTimeStrArr = endDate.split(' ');
+    var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+    var endTime = new Date(endDateTimeStr);
+
+    //json request
+    var updateSubRequest  =  {
+                               "assignee": assignee,
+                               "substitute" : subName,
+                               "startTime" : startTime.toISOString(),
+                               "endTime" : endTime.toISOString()
+                            };
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ assignee;
+
+    $.ajax({
+        type: 'PUT',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(updateSubRequest),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+        },
+        error: function (xhr, status, error) {
+            var errorJson = eval("(" + xhr.responseText + ")");
+            if (errorJson != null && errorJson.errorMessage != undefined) {
+                $('#updateSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+            } else {
+                $('#updateSubErrMsg').html("Error occurred while updating substitute. Please try again");
+            }
+
+            $('#updateSubErrorMessageArea').show();
+            //set callback to remove error message when hiding the modal
+            $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                    $('#updateSubErrorMessageArea').hide();
+            });
+        }
+    });
+}
+
+
+function deactivateSub(userName) {
+    //json request
+    var disableSubRequest  = {"action":true};
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ userName+"/disable";
+
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(disableSubRequest),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+        },
+        error: function (xhr, status, error) {
+            var errorJson = eval("(" + xhr.responseText + ")");
+            //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+
+        }
+    });
+}
+
+function activateSub(userName) {
+    //json request
+    var disableSubRequest  = {"action":false};
+
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ userName+"/disable";
+
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(disableSubRequest),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+        },
+        error: function (xhr, status, error) {
+            var errorJson = eval("(" + xhr.responseText + ")");
+            //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            
+        }
+    });
 }
 

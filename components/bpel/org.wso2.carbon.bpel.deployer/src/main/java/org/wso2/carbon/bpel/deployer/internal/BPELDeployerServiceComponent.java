@@ -39,7 +39,7 @@ public class BPELDeployerServiceComponent {
     private static Log log = LogFactory.getLog(BPELDeployerServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("BPEL Deployer bundle is activated.");
         }
     }
@@ -71,7 +71,7 @@ public class BPELDeployerServiceComponent {
         return BPELDeployerContentHolder.getInstance().getBPELServer();
     }
 
-    public static TenantRegistryLoader getTenantRegistryLoader(){
+    public static TenantRegistryLoader getTenantRegistryLoader() {
         return BPELDeployerContentHolder.getInstance().getRegistryLoader();
     }
 }

@@ -21,32 +21,61 @@ import org.apache.axis2.util.XMLPrettyPrinter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
-import org.wso2.carbon.bpel.stub.mgt.types.*;
+import org.wso2.carbon.bpel.stub.mgt.types.BpelDefinition;
+import org.wso2.carbon.bpel.stub.mgt.types.CategoryListType;
+import org.wso2.carbon.bpel.stub.mgt.types.Category_type1;
+import org.wso2.carbon.bpel.stub.mgt.types.CleanUpListType;
+import org.wso2.carbon.bpel.stub.mgt.types.CleanUpType;
+import org.wso2.carbon.bpel.stub.mgt.types.EnableEventListType;
+import org.wso2.carbon.bpel.stub.mgt.types.EndpointRef_type0;
+import org.wso2.carbon.bpel.stub.mgt.types.Generate_type1;
+import org.wso2.carbon.bpel.stub.mgt.types.InstanceStatus;
+import org.wso2.carbon.bpel.stub.mgt.types.InstanceSummaryE;
+import org.wso2.carbon.bpel.stub.mgt.types.Instances_type0;
+import org.wso2.carbon.bpel.stub.mgt.types.LimitedInstanceInfoType;
+import org.wso2.carbon.bpel.stub.mgt.types.On_type1;
+import org.wso2.carbon.bpel.stub.mgt.types.PaginatedInstanceList;
+import org.wso2.carbon.bpel.stub.mgt.types.ProcessDeployDetailsList_type0;
+import org.wso2.carbon.bpel.stub.mgt.types.ProcessEventsListType;
+import org.wso2.carbon.bpel.stub.mgt.types.ProcessInfoType;
+import org.wso2.carbon.bpel.stub.mgt.types.ProcessStatus;
+import org.wso2.carbon.bpel.stub.mgt.types.ScopeEventListType;
+import org.wso2.carbon.bpel.stub.mgt.types.ScopeEventType;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
 import org.wso2.carbon.statistics.stub.types.carbon.Metric;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Some common UI functionalities, used in org.wso2.carbon.bpel.ui
  */
 public final class BpelUIUtil {
-    private static Log log = LogFactory.getLog("bpel.ui");
     private static final String DISABLED = "disabled";
     private static final String CHECKED = "checked";
+    private static Log log = LogFactory.getLog("bpel.ui");
 
     private BpelUIUtil() {
     }
 
     /**
      * Truncates a given text to the size specified. Appends "..." to the end.
+     *
      * @param text
      * @param maxSize
      * @return Truncated string
@@ -163,7 +192,7 @@ public final class BpelUIUtil {
             log.error("Error processing the XML message " + e);
         }
 
-        return new String(stream.toByteArray()).trim();
+        return new String(stream.toByteArray(), Charset.defaultCharset()).trim();
     }
 
     public static Map<String, QName> getEndpointRefsMap(ProcessInfoType info) {
@@ -194,7 +223,7 @@ public final class BpelUIUtil {
     public static String getRetireLink(String pid, String filter, String order, int pageNumber, String packageName) {
         String encodedPid = pid;
         try {
-            encodedPid = URLEncoder.encode(pid,"UTF-8");
+            encodedPid = URLEncoder.encode(pid, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             log.error("Error encoding the url " + pid + e);
         }
@@ -207,12 +236,12 @@ public final class BpelUIUtil {
     public static String getActivateLink(String pid, String filter, String order, int pageNumber) {
         String encodedPid = pid;
         try {
-            encodedPid = URLEncoder.encode(pid,"UTF-8");
+            encodedPid = URLEncoder.encode(pid, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             log.error("Error encoding the url " + pid + e);
         }
 
-        String link =  "process_list.jsp?operation=activate&processID=" + encodedPid + "&filter=" + filter +
+        String link = "process_list.jsp?operation=activate&processID=" + encodedPid + "&filter=" + filter +
                 "&order=" + order + "&pageNumber=" + pageNumber;
 
         return link;
@@ -246,9 +275,9 @@ public final class BpelUIUtil {
             generateSuspendedActionLinks(strBuilder, rsc, iid);
         } else if (status.equals(InstanceStatus.TERMINATED)) {
             generateTerminatedActionLinks(strBuilder, rsc, iid);
-        } /*else if (status.equals(InstanceStatus.ERROR)) {
-            generateErrorActionLinks(strBuilder, rsc, iid);
-        }*/ else if (status.equals(InstanceStatus.FAILED)) {
+            // } else if (status.equals(InstanceStatus.ERROR)) {
+            //    generateErrorActionLinks(strBuilder, rsc, iid);
+        } else if (status.equals(InstanceStatus.FAILED)) {
             // For failed instances only delete operation is available.
             generateTerminatedActionLinks(strBuilder, rsc, iid);
         }
@@ -440,7 +469,6 @@ public final class BpelUIUtil {
         return totalInstances;
     }
 
-
     public static String getInstanceFilterURL(String processId) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("list_instances.jsp?filter=pid=");
@@ -524,9 +552,9 @@ public final class BpelUIUtil {
                         (new Date().getTime() -
                                 instance.getDateLastActive().getTime().getTime());
                 instanceJson.put(BPELUIConstant.INSTANCE_LIFETIME_TILL_LASTACTIVE,
-                        instanceLifetimeTillLastActive);
+                                 instanceLifetimeTillLastActive);
                 instanceJson.put(BPELUIConstant.INSTANCE_LIFETIME_FROM_LASTACTIVE_TO_NOW,
-                        instanceLifetimeFromLastActiveToNow);
+                                 instanceLifetimeFromLastActiveToNow);
                 longRunning.put(instance.getIid(), instanceJson);
             }
         }
@@ -804,12 +832,14 @@ public final class BpelUIUtil {
         return validId;
     }
 
-    /*
-    * when scope events defined in deploy.xml is changed in runtime by DD Editor this method is used to get the updated events list
-    * assigned with each scope event. It is got as a string array with the data about the events selected and
-    * categories into (5 for each) groups. Then these events list is again written back to the corresponding scope event
-    *
-    */
+
+    /**
+     * when scope events defined in deploy.xml is changed in runtime by DD Editor this method is used to get the
+     * updated events list
+     * assigned with each scope event. It is got as a string array with the data about the events selected and
+     * categories into (5 for each) groups. Then these events list is again written back to the corresponding scope
+     * event
+     */
     public static void updateScopeEvents(String[] selecttype, List<String> scopeNames,
                                          DeploymentDescriptorUpdater deployDescriptorUpdater) {
         ArrayList<String> valueArray = selecttype != null ?

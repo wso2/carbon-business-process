@@ -67,8 +67,8 @@
             <order>2</order>
             <style-class>manage</style-class>
             <icon>../bpel/images/type.gif</icon>
-             <!--<skip-authentication>false</skip-authentication>-->
-             <require-permission>/permission/admin/manage/bpel/processes</require-permission>
+            <!--<skip-authentication>false</skip-authentication>-->
+            <require-permission>/permission/admin/manage/bpel/processes</require-permission>
         </menu>
 
         <menu>
@@ -81,8 +81,8 @@
             <order>2</order>
             <style-class>manage</style-class>
             <icon>../bpel/images/type.gif</icon>
-             <!--<skip-authentication>false</skip-authentication>-->
-             <require-permission>/permission/admin/monitor/bpel</require-permission>
+            <!--<skip-authentication>false</skip-authentication>-->
+            <require-permission>/permission/admin/monitor/bpel</require-permission>
         </menu>
 
         <menu>
@@ -112,18 +112,18 @@
             <require-permission>/permission/admin/manage/bpel/add</require-permission>
         </menu>
 
-<!--        <menu>
-            <id>deploy_menu</id>
-            <i18n-key>processmgt.add.menu</i18n-key>
-            <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
-            <parent-menu>bpel_menu</parent-menu>
-            <link>../bpel/package_list.jsp</link>
-            <region>region2</region>
-            <order>4</order>
-            <style-class>manage</style-class>
-            <icon>../bpel/images/bpel-packages.gif</icon>
-            <require-permission>/permission/admin/manage/bpel/packages</require-permission>
-        </menu>-->
+        <!--        <menu>
+                    <id>deploy_menu</id>
+                    <i18n-key>processmgt.add.menu</i18n-key>
+                    <i18n-bundle>org.wso2.carbon.bpel.ui.i18n.Resources</i18n-bundle>
+                    <parent-menu>bpel_menu</parent-menu>
+                    <link>../bpel/package_list.jsp</link>
+                    <region>region2</region>
+                    <order>4</order>
+                    <style-class>manage</style-class>
+                    <icon>../bpel/images/bpel-packages.gif</icon>
+                    <require-permission>/permission/admin/manage/bpel/packages</require-permission>
+                </menu>-->
 
         <menu>
             <id>instances_menu</id>
@@ -149,8 +149,8 @@
             <region>region1</region>
             <order>36</order>
             <style-class>manage</style-class>
-             <icon>../bpel/images/bpel-instance.gif</icon>
-             <require-permission>/permission/admin/manage/bpel/instances</require-permission>
+            <icon>../bpel/images/bpel-instance.gif</icon>
+            <require-permission>/permission/admin/manage/bpel/instances</require-permission>
         </menu>
         <!--The following menu is repeated with a different permission
             But we should be able to provide several permissions to a single menu-->
@@ -164,8 +164,8 @@
             <region>region1</region>
             <order>36</order>
             <style-class>manage</style-class>
-             <icon>../bpel/images/bpel-instance.gif</icon>
-             <require-permission>/permission/admin/monitor/bpel</require-permission>
+            <icon>../bpel/images/bpel-instance.gif</icon>
+            <require-permission>/permission/admin/monitor/bpel</require-permission>
         </menu>
 
     </menus>
@@ -180,19 +180,19 @@
     </FileUploadConfig>
 
     <!--<servlets>-->
-		<!--<servlet id="SVG Servlet">-->
-			<!--<servlet-name>SVG Servlet</servlet-name>-->
-			<!--<url-pattern>/carbon/bpel/svg</url-pattern>-->
-			<!--<display-name>SVG Servlet</display-name>-->
-			<!--<servlet-class>org.wso2.carbon.bpel.ui.bpel2svg.latest.internal.frontend.SVGServlet</servlet-class>-->
-		<!--</servlet>-->
-		<!--<servlet id="ChangeSettings Servlet">-->
-			<!--<servlet-name>ChangeSettings Servlet</servlet-name>-->
-			<!--<url-pattern>/carbon/bpel/changesettings</url-pattern>-->
-			<!--<display-name>ChangeSettings Servlet</display-name>-->
-			<!--<servlet-class>org.wso2.carbon.bpel.ui.bpel2svg.latest.internal.frontend.ChangeSettings</servlet-class>-->
-		<!--</servlet>-->
-	<!--</servlets>-->
+    <!--<servlet id="SVG Servlet">-->
+    <!--<servlet-name>SVG Servlet</servlet-name>-->
+    <!--<url-pattern>/carbon/bpel/svg</url-pattern>-->
+    <!--<display-name>SVG Servlet</display-name>-->
+    <!--<servlet-class>org.wso2.carbon.bpel.ui.bpel2svg.latest.internal.frontend.SVGServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet id="ChangeSettings Servlet">-->
+    <!--<servlet-name>ChangeSettings Servlet</servlet-name>-->
+    <!--<url-pattern>/carbon/bpel/changesettings</url-pattern>-->
+    <!--<display-name>ChangeSettings Servlet</display-name>-->
+    <!--<servlet-class>org.wso2.carbon.bpel.ui.bpel2svg.latest.internal.frontend.ChangeSettings</servlet-class>-->
+    <!--</servlet>-->
+    <!--</servlets>-->
 
     <servlets>
         <servlet id="PNGGenarateServlet">
@@ -209,4 +209,4 @@
         </servlet>
     </servlets>
 </component>
-                           
+

@@ -17,6 +17,9 @@ package org.wso2.carbon.bpel.ui;
 
 import java.util.Arrays;
 
+/**
+ * Instance Filter Class.
+ */
 public class InstanceFilter {
 
     private static final String CHECKED = "checked";
@@ -50,7 +53,7 @@ public class InstanceFilter {
         if (status != null) {
             return Arrays.copyOf(status, status.length);
         }
-        return status;
+        return new String[0];
     }
 
     public void setStatus(String[] status) {

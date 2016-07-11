@@ -19,7 +19,6 @@ package org.wso2.carbon.bpel.core.ode.integration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
-import org.wso2.carbon.core.ServerStartupHandler;
 import org.wso2.carbon.core.ServerStartupObserver;
 
 /**
@@ -31,22 +30,22 @@ public class BPELSchedulerInitializer implements ServerStartupObserver {
 
     @Override
     public void completingServerStartup() {
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info("Starting BPS Scheduler");
-            if(BPELServiceComponent.getBPELServer().getBpelServerConfiguration().getUseDistributedLock()){
-                if(BPELServiceComponent.getHazelcastInstance() != null){
+            if (BPELServiceComponent.getBPELServer().getBpelServerConfiguration().getUseDistributedLock()) {
+                if (BPELServiceComponent.getHazelcastInstance() != null) {
                     log.info("HazelCast instance available and configured");
                 } else {
                     log.error("HazelCast instance not available, but distributed lock enabled");
                 }
             }
         }
-        ((BPELServerImpl)BPELServiceComponent.getBPELServer()).getScheduler().start();
+        ((BPELServerImpl) BPELServiceComponent.getBPELServer()).getScheduler().start();
     }
 
     @Override
     public void completedServerStartup() {
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Competed server startup");
         }
     }

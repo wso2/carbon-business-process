@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * OnMessage Interface.
+ */
 public interface OnMessageInterface extends ActivityInterface {
 
 }

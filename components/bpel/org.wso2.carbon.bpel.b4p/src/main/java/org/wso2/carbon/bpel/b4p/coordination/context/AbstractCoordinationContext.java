@@ -16,17 +16,18 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.context;
 
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.addressing.EndpointReference;
-import org.wso2.carbon.bpel.b4p.coordination.context.CoordinationContext;
-import org.wso2.carbon.bpel.b4p.coordination.context.WSConstants;
 import org.wso2.carbon.bpel.b4p.coordination.context.utils.EndPointReferenceFactory;
 
+import javax.xml.namespace.QName;
+
+/**
+ * Abstract Coordination context.
+ */
 public abstract class AbstractCoordinationContext implements CoordinationContext {
 
     private String identifier;
@@ -46,14 +47,16 @@ public abstract class AbstractCoordinationContext implements CoordinationContext
         this.registrationService = EndPointReferenceFactory.getInstance().eprFromOMElement(registrationServiceElement);
     }
 
-    public AbstractCoordinationContext(String identifier, String coordinationType, long expires, EndpointReference registrationService) {
+    public AbstractCoordinationContext(String identifier, String coordinationType, long expires, EndpointReference
+            registrationService) {
         this.identifier = identifier;
         this.coordinationType = coordinationType;
         this.expires = expires;
         this.registrationService = registrationService;
     }
 
-    public AbstractCoordinationContext(String identifier, String coordinationType, EndpointReference registrationService) {
+    public AbstractCoordinationContext(String identifier, String coordinationType, EndpointReference
+            registrationService) {
         this.identifier = identifier;
         this.coordinationType = coordinationType;
         this.registrationService = registrationService;
@@ -65,23 +68,13 @@ public abstract class AbstractCoordinationContext implements CoordinationContext
     }
 
     @Override
-    public String getCoordinationType() {
-        return coordinationType;
-    }
-
-    @Override
-    public long getExpires() {
-        return expires;
-    }
-
-    @Override
-    public EndpointReference getRegistrationService() {
-        return registrationService;
-    }
-
-    @Override
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    @Override
+    public String getCoordinationType() {
+        return coordinationType;
     }
 
     @Override
@@ -90,8 +83,18 @@ public abstract class AbstractCoordinationContext implements CoordinationContext
     }
 
     @Override
+    public long getExpires() {
+        return expires;
+    }
+
+    @Override
     public void setExpires(long expires) {
         this.expires = expires;
+    }
+
+    @Override
+    public EndpointReference getRegistrationService() {
+        return registrationService;
     }
 
     @Override
@@ -105,7 +108,8 @@ public abstract class AbstractCoordinationContext implements CoordinationContext
             return contextElement;
         }
         OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMNamespace wsCoordinationNS = factory.createOMNamespace(WSConstants.WS_COOR_NAMESPACE, WSConstants.WS_COOR_DEFAULT_PREFIX);
+        OMNamespace wsCoordinationNS = factory.createOMNamespace(WSConstants.WS_COOR_NAMESPACE, WSConstants
+                .WS_COOR_DEFAULT_PREFIX);
         OMElement contextElement = factory.createOMElement(WSConstants.WS_COOR_COORDINATION_CONTEXT, wsCoordinationNS);
 
         // Expires Element
@@ -126,7 +130,8 @@ public abstract class AbstractCoordinationContext implements CoordinationContext
         contextElement.addChild(coorTypeElement);
 
         //RegistrationJaxWSService Element
-        OMElement registrationServiceElement = factory.createOMElement(WSConstants.WS_COOR_REGISTRATION_SERVICE, wsCoordinationNS);
+        OMElement registrationServiceElement = factory.createOMElement(WSConstants.WS_COOR_REGISTRATION_SERVICE,
+                wsCoordinationNS);
         EndPointReferenceFactory.getInstance().omElementFromEPR(registrationService, registrationServiceElement);
         contextElement.addChild(registrationServiceElement);
 

@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 
-
 import java.text.ParseException;
 import java.util.Date;
 

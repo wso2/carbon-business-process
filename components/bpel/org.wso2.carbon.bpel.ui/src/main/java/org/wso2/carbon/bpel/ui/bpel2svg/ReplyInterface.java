@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * Reply Interface.
+ */
 public interface ReplyInterface extends ActivityInterface {
 
 }
