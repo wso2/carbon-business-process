@@ -115,4 +115,12 @@ public class SubstitutionScheduler implements ScheduledTaskRunner {
         }
 
     }
+
+    /**
+     * Get the remaining time for the next scheduled event.
+     * @return remaining time in milliseconds, very big number of no scheduled event
+     */
+    public long getNextScheduledTime() {
+        return _todo.nextJobTime();
+    }
 }

@@ -56,7 +56,6 @@ public class UserSubstitutionService {
     private static final String ASCENDING = "asc";
     private static final String DESCENDING = "desc";
     private static final String ADD_PERMISSION = "add";
-    public static final String GET_PERMISSION = "get";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
     private static final String TRUE = "true";
@@ -273,22 +272,14 @@ public class UserSubstitutionService {
 
         //validate the parameters
         try {
-            String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-            if (queryMap.get(SubstitutionQueryProperties.USER) != null) {
-                if (!queryMap.get(SubstitutionQueryProperties.USER).equals(loggedInUser) && !hasSubstitutionViewPermission()) {
+            if (!hasSubstitutionViewPermission()) {
+                String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+                if (!((queryMap.get(SubstitutionQueryProperties.USER) != null && queryMap
+                        .get(SubstitutionQueryProperties.USER).equals(loggedInUser)) || (
+                        queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null && queryMap
+                                .get(SubstitutionQueryProperties.SUBSTITUTE).equals(loggedInUser)))) {
                     throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
                 }
-            } else if (!hasSubstitutionViewPermission()) {
-                throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
-            }
-
-            if (queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
-                String substitute = queryMap.get(SubstitutionQueryProperties.SUBSTITUTE);
-                if (!substitute.equals(loggedInUser) && !hasSubstitutionViewPermission()) {
-                    throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
-                }
-            } else if (!hasSubstitutionViewPermission()) {
-                throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
             }
         } catch (UserStoreException e) {
             throw new ActivitiException("Error accessing User Store for input validations", e);
