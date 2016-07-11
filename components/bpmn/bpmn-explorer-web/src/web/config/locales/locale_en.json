@@ -148,6 +148,8 @@
    "my.substitute" : "My Substitute",
    "assingee" : "Assignee",
    "simple.active" : "Active",
-   "simple.inactive" : "Inactive"
+   "simple.inactive" : "Inactive",
+   "go.to.substitute.admin.view" : "Go To Substitute Admin View",
+   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access to Manage Substitutions"
 
 }

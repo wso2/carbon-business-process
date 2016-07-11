@@ -28,6 +28,7 @@ import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionDataHolder;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
 import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
+import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
@@ -55,11 +56,16 @@ public class UserSubstitutionService {
     private static final String ASCENDING = "asc";
     private static final String DESCENDING = "desc";
     private static final String ADD_PERMISSION = "add";
+    public static final String GET_PERMISSION = "get";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
+<<<<<<< HEAD
     private static final boolean subsFeatureEnabled = SubstitutionDataHolder.getInstance().isSubstitutionEnabled();
+=======
+    private static final boolean subsFeatureEnabled = SubstitutionDataHolder.getInstance().isSubstitutionFeatureEnabled();
+>>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 
@@ -118,7 +124,8 @@ public class UserSubstitutionService {
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
             //at this point, substitution is enabled by default
             UserSubstitutionUtils
-                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList(), tenantId);
+                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList(),
+                            tenantId);
 
             return Response.created(new URI("substitutes/" + assignee)).build();
 
@@ -141,8 +148,8 @@ public class UserSubstitutionService {
     @PUT
     @Path("/{user}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response updateSubstituteInfo(@PathParam("user") String user,
-            SubstitutionRequest request) throws URISyntaxException {
+    public Response updateSubstituteInfo(@PathParam("user") String user, SubstitutionRequest request) throws
+            URISyntaxException {
         try {
             if (!subsFeatureEnabled) {
                 return Response.status(405).build();
@@ -215,8 +222,12 @@ public class UserSubstitutionService {
     @GET
     @Path("/{user}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getSubstitute(@PathParam("user") String user) {
+    public Response getSubstitute(@PathParam("user") String user) throws UserStoreException {
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        if (!loggedInUser.equals(user) && !hasSubstitutionViewPermission()) {
+            throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
+        }
         SubstitutesDataModel model = UserSubstitutionUtils.getSubstituteOfUser(user, tenantId);
         if (model != null) {
             SubstituteInfoResponse response = new SubstituteInfoResponse();
@@ -230,6 +241,18 @@ public class UserSubstitutionService {
             return Response.status(404).build();
         }
 
+    }
+
+    /**
+     * Check the logged in user has permission for viewing other substitutions.
+     * @return true if the permission sufficient
+     * @throws UserStoreException
+     */
+    private boolean hasSubstitutionViewPermission() throws UserStoreException {
+        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        UserRealm userRealm = BPMNOSGIService.getUserRealm();
+        return userRealm.getAuthorizationManager()
+                .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
     }
 
     /**
@@ -252,34 +275,37 @@ public class UserSubstitutionService {
             }
         }
 
+        //validate the parameters
         try {
+            String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
             if (queryMap.get(SubstitutionQueryProperties.USER) != null) {
-                getRequestedAssignee(queryMap.get(SubstitutionQueryProperties.USER));
+                if (!queryMap.get(SubstitutionQueryProperties.USER).equals(loggedInUser) && !hasSubstitutionViewPermission()) {
+                    throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
+                }
+            } else if (!hasSubstitutionViewPermission()) {
+                throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
             }
 
             if (queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
                 String substitute = queryMap.get(SubstitutionQueryProperties.SUBSTITUTE);
-                String loggedUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-                if (!substitute.equals(loggedUser)) {
-                    UserRealm userRealm = BPMNOSGIService.getUserRealm();
-                    boolean isAuthorized = userRealm.getAuthorizationManager()
-                            .isUserAuthorized(loggedUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, "get");
-                    if (!isAuthorized || userRealm.getUserStoreManager().isExistingUser(substitute)) {
-                        throw new ActivitiIllegalArgumentException(
-                                "Unauthorized action or invalid parameter substitute: " + substitute);
-                    }
+                if (!substitute.equals(loggedInUser) && !hasSubstitutionViewPermission()) {
+                    throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
                 }
+            } else if (!hasSubstitutionViewPermission()) {
+                throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
             }
         } catch (UserStoreException e) {
-            throw new ActivitiException("Error accessing User Store", e);
+            throw new ActivitiException("Error accessing User Store for input validations", e);
         }
 
         //validate pagination parameters
         validatePaginationParams(queryMap);
 
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-        List<PaginatedSubstitutesDataModel> dataModelList = UserSubstitutionUtils.querySubstitutions(queryMap, tenantId);
+        List<SubstitutesDataModel> dataModelList = UserSubstitutionUtils.querySubstitutions(queryMap, tenantId);
+        int totalResultCount = UserSubstitutionUtils.getQueryResultCount(queryMap, tenantId);
         SubstituteInfoCollectionResponse collectionResponse = new SubstituteInfoCollectionResponse();
+        collectionResponse.setTotal(totalResultCount);
         List<SubstituteInfoResponse> responseList = new ArrayList<>();
 
         for (SubstitutesDataModel subsData : dataModelList) {
@@ -298,6 +324,7 @@ public class UserSubstitutionService {
         collectionResponse.setSort(sortType);
         collectionResponse.setStart(Integer.parseInt(queryMap.get(SubstitutionQueryProperties.START)));
         collectionResponse.setOrder(queryMap.get(SubstitutionQueryProperties.ORDER));
+
         return Response.ok(collectionResponse).build();
 
     }
@@ -441,8 +468,11 @@ public class UserSubstitutionService {
         if (assignee != null && !assignee.trim().isEmpty() && !assignee.equals(loggedInUser)) { //setting another users
             boolean isAuthorized = userRealm.getAuthorizationManager()
                     .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
-            if (!isAuthorized || !userRealm.getUserStoreManager().isExistingUser(assignee)) {
-                throw new ActivitiIllegalArgumentException("Unauthorized action or invalid argument for assignee");
+            if (!isAuthorized) {
+                throw new BPMNForbiddenException("Action requires BPMN substitution permission");
+            }
+            if (!userRealm.getUserStoreManager().isExistingUser(assignee)) {
+                throw new ActivitiIllegalArgumentException("Non existing user for argument assignee : " + assignee);
             }
         } else { //assignee is the logged in user
             assignee = loggedInUser;

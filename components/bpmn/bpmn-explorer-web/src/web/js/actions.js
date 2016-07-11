@@ -1493,8 +1493,17 @@ function addNewSubstitute (assignee, subName, startDate, endDate) {
         },
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
-            //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            if (errorJson != null && errorJson.errorMessage != undefined) {
+                $('#addSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+            } else {
+                $('#addSubErrMsg').html("Error occurred while adding substitute. Please try again");
+            }
+
+            $('#addSubErrorMessageArea').show();
+            //set callback to remove error message when hiding the modal
+            $('#addSubstituteModal').on('hide.bs.modal', function (e) {
+                    $('#addSubErrorMessageArea').hide();
+            });
 
         }
     });
@@ -1532,9 +1541,17 @@ function updateSubstitute (assignee, subName, startDate, endDate) {
         },
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
-            //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            if (errorJson != null && errorJson.errorMessage != undefined) {
+                $('#updateSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+            } else {
+                $('#updateSubErrMsg').html("Error occurred while updating substitute. Please try again");
+            }
 
+            $('#updateSubErrorMessageArea').show();
+            //set callback to remove error message when hiding the modal
+            $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                    $('#updateSubErrorMessageArea').hide();
+            });
         }
     });
 }
@@ -1580,8 +1597,8 @@ function activateSub(userName) {
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
             //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            
         }
     });
 }

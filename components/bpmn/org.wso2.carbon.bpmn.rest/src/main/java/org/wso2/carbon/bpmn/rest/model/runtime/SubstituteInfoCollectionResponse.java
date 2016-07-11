@@ -33,6 +33,7 @@ public class SubstituteInfoCollectionResponse {
     private int size;
     private String sort;
     private String order;
+    private int total;
 
     public int getStart() {
         return start;
@@ -76,4 +77,11 @@ public class SubstituteInfoCollectionResponse {
         this.substituteInfoList = substituteInfoList;
     }
 
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getTotal() {
+        return total;
+    }
 }

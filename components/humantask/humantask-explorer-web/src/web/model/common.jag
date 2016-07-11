@@ -41,11 +41,12 @@
         var hostServer = null;
         if(bpsHost == null || bpsHost === "" || bpsPort == null || bpsPort === "") {
             log.info('Starting Humantask-explorer in default configuration');
+            var NetworkUtils = Packages.org.wso2.carbon.utils.NetworkUtils;
             var process = require("process");
-            var localIP = process.getProperty('carbon.local.ip');
+            var hostname = NetworkUtils.getLocalHostname();
             var httpsPort = process.getProperty('mgt.transport.https.port');
-            BPSUrl = "https://" +localIP +":" + httpsPort + tenantUrlPart;
-            hostServer = "https://" +localIP +":" + httpsPort;
+            BPSUrl = "https://" + hostname + ":" + httpsPort + tenantUrlPart;
+            hostServer = "https://" + hostname + ":" + httpsPort;
         } else {
             BPSUrl = "https://" + data.server.bpsHost + ":" + data.server.bpsPort + tenantUrlPart;
             hostServer = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
