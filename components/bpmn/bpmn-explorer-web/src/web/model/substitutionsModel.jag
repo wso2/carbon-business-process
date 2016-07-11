@@ -18,7 +18,7 @@
 var log = new Log();
 var headers = 	{
                     "Authorization": "Basic " + auth,
-                    "Contentnt-Type": "application/json",
+                    "Content-Type": "application/json",
                     "Accept" : "application/json"
                 };
 try {
