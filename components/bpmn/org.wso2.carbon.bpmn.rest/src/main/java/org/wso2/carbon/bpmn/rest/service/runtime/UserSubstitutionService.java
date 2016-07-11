@@ -61,11 +61,7 @@ public class UserSubstitutionService {
     private static final String DEFAULT_PAGINATION_SIZE = "10";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
-<<<<<<< HEAD
     private static final boolean subsFeatureEnabled = SubstitutionDataHolder.getInstance().isSubstitutionEnabled();
-=======
-    private static final boolean subsFeatureEnabled = SubstitutionDataHolder.getInstance().isSubstitutionFeatureEnabled();
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 

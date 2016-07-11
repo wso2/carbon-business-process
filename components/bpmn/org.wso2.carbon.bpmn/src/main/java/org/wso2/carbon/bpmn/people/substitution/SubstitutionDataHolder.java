@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /*
-=======
-package org.wso2.carbon.bpmn.people.substitution;/*
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
  * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License, 
@@ -18,10 +14,7 @@ package org.wso2.carbon.bpmn.people.substitution;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-<<<<<<< HEAD
 package org.wso2.carbon.bpmn.people.substitution;
-=======
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +22,6 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 
-<<<<<<< HEAD
 public final class SubstitutionDataHolder {
     private static final Log log = LogFactory.getLog(SubstitutionDataHolder.class);
 
@@ -39,23 +31,10 @@ public final class SubstitutionDataHolder {
     private Boolean substitutionFeatureEnabled = null;
     public static final String TRUE = "true";
     private Boolean transitivityEnabled = null;
-=======
-public class SubstitutionDataHolder {
-
-    private static final Log log = LogFactory.getLog(SubstitutionDataHolder.class);
-
-    private static SubstitutionDataHolder dataHolder = new SubstitutionDataHolder();
-    private ActivitiDAO activitiDAO = new ActivitiDAO();
-    private TransitivityResolver resolver = new TransitivityResolver(activitiDAO);
-    private Boolean substitutionFeatureEnabled = null;
-    public Boolean transitivityEnabled = null;
-    public static final String TRUE = "true";
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
 
     private SubstitutionDataHolder(){}
 
     public static SubstitutionDataHolder getInstance() {
-<<<<<<< HEAD
         return holder;
     }
 
@@ -63,36 +42,23 @@ public class SubstitutionDataHolder {
      * Get an Activiti DAO instance
      * @return ActivitiDAO
      */
-=======
-        return dataHolder;
-    }
-
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
     public ActivitiDAO getActivitiDAO() {
         return activitiDAO;
     }
 
-<<<<<<< HEAD
     /**
      * Get a transitivity resolver instance
      * @return TransitivityResolver
      */
-=======
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
     public TransitivityResolver getTransitivityResolver() {
         return resolver;
     }
 
-<<<<<<< HEAD
     /**
      * Get the substitution feature enabled config value or default value
      * @return true if substitution enabled
      */
     public boolean isSubstitutionEnabled() {
-=======
-    public boolean isSubstitutionFeatureEnabled() {
-
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
         if (substitutionFeatureEnabled == null) {
             substitutionFeatureEnabled = false;
             BPMNActivitiConfiguration activitiConfiguration = BPMNActivitiConfiguration.getInstance();
@@ -107,14 +73,10 @@ public class SubstitutionDataHolder {
         return substitutionFeatureEnabled;
     }
 
-<<<<<<< HEAD
     /**
      * Get the transitivity enabled value for substitution from configuration.
      * @return true if transitivity enabled
      */
-=======
-
->>>>>>> 44c5edf0ccc1056955b0514775cc8cc748059f28
     public boolean isTransitivityEnabled() {
         if (transitivityEnabled != null) {
             return transitivityEnabled;
