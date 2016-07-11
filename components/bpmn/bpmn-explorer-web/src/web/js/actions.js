@@ -1630,7 +1630,7 @@ function addVariable(){
         var vLabel = document.createElement("LABEL");
         var t = document.createTextNode("\u00A0=\u00A0");
         vLabel.setAttribute("for", "equals");
-        vLabel.setAttribute("name", "variableName");
+        vLabel.setAttribute("name", "variableEqual");
         vLabel.setAttribute("class", "control-label");
         vLabel.setAttribute("style", "width: initial; float: left; font-size:25px;");
         vLabel.appendChild(t);
