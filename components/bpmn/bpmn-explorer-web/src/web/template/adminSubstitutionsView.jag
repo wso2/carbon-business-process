@@ -36,6 +36,14 @@
             </div>
         </div>
     </div>
+    <%
+        //Add addSubstituteModal
+        var addSubstituteModalConfig = {
+                            "assigneeName" : "",
+                            "assigneeEditEnable" : true
+                        }
+        include("/template/modals/addSubstituteModal.jag");
+    %>
     <br/>
     <% if (usersSubstitutionsList != null) {%>
     <div class="row">
@@ -65,9 +73,9 @@
                         <tbody>
                             <% for (var i = 0; i < usersSubstitutionsList.length; i++) { %>
                                 <% if (usersSubstitutionsList[i].enabled) {%>
-                                <tr class="danger">
+                                <tr class="danger" style="cursor:pointer;">
                                 <%} else {%>
-                                <tr class="success">
+                                <tr class="success" style="cursor:pointer;">
                                 <%}%>
                                     <td><%=usersSubstitutionsList[i].assignee%></td>
                                     <% if (usersSubstitutionsList[i].enabled) {%>
