@@ -159,7 +159,7 @@ public class SchedulerThread implements Runnable {
      * @return time until next job, 0 if one is one is scheduled to go, and some
      *         really large number if there are no jobs to speak of
      */
-    private long nextJobTime() {
+    protected long nextJobTime() {
         assert _lock.isLocked();
 
         ScheduledTask job = _todo.peek();
