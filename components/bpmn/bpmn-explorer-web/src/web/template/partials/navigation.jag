@@ -43,15 +43,17 @@
                     <i class="fw fw-ticked-box fw-lg fw-stack-1x padding-top-icon"></i>
                 </span>
               <span class="padding-left"><%=i18n.localize("claimable.tasks", "Claimable Tasks")%></span></a></li>
-              <li <%=substitutionNavActive%>>
-                <a href="substitutions">
-                  <span class="fw-stack fw-lg">
-                      <i class="fw fw-ring fw-stack-2x"></i>
-                      <i class="fw fw-own fw-lg fw-stack-1x padding-top-icon"></i>
-                  </span>
-                  <span class="padding-left"><%=i18n.localize("substitutions", "Substitutions")%></span>
-                </a>
-              </li>
+              <%if (application.get('bpsSubstitutionFeatureEN')) { //User Substitution feature enabled%>
+                <li <%=substitutionNavActive%>>
+                  <a href="substitutions">
+                    <span class="fw-stack fw-lg">
+                        <i class="fw fw-ring fw-stack-2x"></i>
+                        <i class="fw fw-own fw-lg fw-stack-1x padding-top-icon"></i>
+                    </span>
+                    <span class="padding-left"><%=i18n.localize("substitutions", "Substitutions")%></span>
+                  </a>
+                </li>
+              <%}%>
               <li <%=completedTasksNavActive%>><a href="historicTasks?pagination=1">
               <span class="fw-stack fw-lg">
                     <i class="fw fw-ring fw-stack-2x"></i>

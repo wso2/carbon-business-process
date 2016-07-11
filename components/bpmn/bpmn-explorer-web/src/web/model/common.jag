@@ -43,6 +43,9 @@ var bpsTenantUrlPart = application.get('bpsTenantUrlPart'); //this holds the ten
 //bpsTenantServiceUrl is used  as the service Url
 var bpsTenantServiceUrl = application.get('bpsTenantServiceUrl');
 
+var bpsSubstitutionFeatureEN = application.get('bpsSubstitutionFeatureEN');//variable that holds the status of 
+                                                                            //the substitution feature
+
 if (httpUrl == null || httpUrl === "") {
 
     appConfig = require('../config/config.json');
@@ -113,6 +116,52 @@ if (httpUrl == null || httpUrl === "") {
 
 if(log.isDebugEnabled()) {
     log.debug("BPS URL:"+ httpUrl);
+}
+
+//check BPS Features (eg: Substitution feature) status only for the first user login
+if (bpsSubstitutionFeatureEN == null && session.get('user') != null && session.get('authSuccess') != null && session.get('authSuccess') == true) {
+    //first most user loging to the bpmn webapp
+    log.info ("Retrieve status of BPS User Substitution features");
+    var headers =   {
+                    "Authorization": "Basic " + auth,
+                    "Contentnt-Type": "application/json",
+                    "Accept" : "application/json"
+                };
+    var RUNTIME_SUBSTITUTES_CONF_URL = "/bpmn/runtime/substitutes/configs/enabled";
+    httpResponse = get(httpUrl+ RUNTIME_SUBSTITUTES_CONF_URL, null, headers, "json");
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_CONF_URL);
+        log.debug("BPS BPMN REST API response: " + stringify(httpResponse));
+    }
+
+    if (parseInt(httpResponse.xhr.status) == 200 && httpResponse.data != null) {
+        var configStatusInfo = httpResponse.data;
+        //Check for error response
+        if (configStatusInfo.enabled != undefined) {
+            if (configStatusInfo.enabled == true) {
+                bpsSubstitutionFeatureEN = true;
+                log.info ("BPS Substitution Feature Status : Enabled");
+                application.put("bpsSubstitutionFeatureEN", bpsSubstitutionFeatureEN);
+            } else {
+                bpsSubstitutionFeatureEN = false;
+                log.info ("BPS Substitution Feature Status : Disabled");
+                application.put("bpsSubstitutionFeatureEN", bpsSubstitutionFeatureEN);
+            }
+        } else {
+            if (configStatusInfo.errorMessage != undefined) {
+                log.error("BPS Features status check failed : " + configStatusInfo.errorMessage);
+            } else {
+                log.error("BPS Features status check failed : " + parseInt(httpResponse.xhr.status));
+            }
+            //Error occurred hence assume substitution feature disabled and not updating application variable
+            bpsSubstitutionFeatureEN = false;
+        }
+    } else {
+        if (log.isDebugEnabled()) {
+            log.debug("User substitutions not available");
+        }
+    }
 }
 
 //Following variable were used to highlight current page which user is currently in.

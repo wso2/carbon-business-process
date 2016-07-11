@@ -22,10 +22,13 @@ var headers =   {
                     "Accept" : "application/json"
                 };
 try {
+    //Check whether the user substitution feature enabled
+    if (!(application.get('bpsSubstitutionFeatureEN'))) {
+        throw "User Substitution feature disabled";
+    }
+
     //URLs
     var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
-
-
     var loggedUsersSubInfo = null;
     var httpResponse = null;
     var usersSubstitutionsList = null;
