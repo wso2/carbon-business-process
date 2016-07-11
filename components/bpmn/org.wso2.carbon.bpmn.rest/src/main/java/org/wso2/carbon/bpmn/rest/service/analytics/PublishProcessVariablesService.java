@@ -25,7 +25,6 @@ import javax.ws.rs.core.Response;
 import org.json.JSONObject;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
-import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
@@ -34,20 +33,21 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 /**
  * Enables the process variable publishing from BPS to DAS
  */
-@Path("/publish-process-variables")
-public class PublishProcessVariablesService {
+@Path("/publish-process-variables") public class PublishProcessVariablesService {
     private static final Log log = LogFactory.getLog(PublishProcessVariablesService.class);
 
     /**
-     * Enables the process variable publishing from BPS to DAS by, receiving and saving analytics configuration details
-     * in config registry
+     * Enables the process variable publishing from BPS to DAS by, receiving (from WSO2 PC) and saving analytics
+     * configuration details in config registry.
      *
      * @param processId
      * @param dasConfigDetailsJson
      * @return
      */
-    @POST @Path("/{processId}") @Consumes({ MediaType.APPLICATION_JSON,
-            MediaType.TEXT_PLAIN }) public Response publishProcessVariables(@PathParam("processId") String processId,
+    @POST
+    @Path("/{processId}")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    public Response publishProcessVariables(@PathParam("processId") String processId,
             String dasConfigDetailsJson) {
         if (log.isDebugEnabled()) {
             log.debug("Recieved analytics configuration details to from PC to BPS for Process ID:" + processId
@@ -55,7 +55,7 @@ public class PublishProcessVariablesService {
         }
 
         try {
-            saveDASconfigInfoInConfigRegistry(dasConfigDetailsJson);
+            saveDASconfigInfo(dasConfigDetailsJson);
         } catch (RegistryException e) {
             String errMsg =
                     "Error in saving DAS Analytics Configuratios in BPS Config-Registry for process :" + processId
@@ -72,8 +72,7 @@ public class PublishProcessVariablesService {
      * @param dasConfigDetailsJSONString
      * @throws RegistryException
      */
-    private void saveDASconfigInfoInConfigRegistry(String dasConfigDetailsJSONString)
-            throws RegistryException {
+    private void saveDASconfigInfo(String dasConfigDetailsJSONString) throws RegistryException {
 
         RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
         JSONObject dasConfigDetailsJOb = new JSONObject(dasConfigDetailsJSONString);
@@ -83,14 +82,11 @@ public class PublishProcessVariablesService {
         //create a new resource (text file) to keep process variables
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
-        if (!configRegistry.resourceExists(resourcePath)) {
-            Resource procVariableJsonResource = configRegistry.newResource();
-            procVariableJsonResource.setContent(dasConfigDetailsJSONString);
-            procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
-            configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
-                    + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME, procVariableJsonResource);
-        } else {
-            //warning msg
-        }
+        Resource procVariableJsonResource = configRegistry.newResource();
+        procVariableJsonResource.setContent(dasConfigDetailsJSONString);
+        procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
+        configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
+                + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME, procVariableJsonResource);
+
     }
 }

@@ -61,7 +61,7 @@ public class AnalyticsPublisherConstants {
     public static final String PATH_DATA_ANALYTICS_PUBLISHER =  PATH_BPMN + "/" +  "data_analytics_publisher";
     public static final String PATH_PUBLISHER_CONFIGURATION = PATH_DATA_ANALYTICS_PUBLISHER + "/"  + "publisher_configuration";
     public static final String PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
-    public static final String KPI_PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
+    public static final String KPI_PUBLISHER_ENABLED_PROPERTY = "kpiDataPublishingEnabled";
     public static final String PUBLISHER_TYPE_PROPERTY = "type";
     public static final String PUBLISHER_RECEIVER_URL_SET_PROPERTY = "receiverURLSet";
     public static final String PUBLISHER_AUTH_URL_SET_PROPERTY = "authURLSet";

@@ -35,10 +35,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessKPIParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.TaskParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
-import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationKPIListner;
+import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationKPIListener;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationListener;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskCompletionListener;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
@@ -177,9 +178,34 @@ public class BPMNDataPublisher {
         }
 
         if (analyticsEnabled) {
+            configGenericVariablesPublishing(receiverURLSet, username, password, authURLSet, type);
+        }
+
+        if (kpiAnalyticsEnabled) {
+            configProcessVariablesPublishing(receiverURLSet, username, password, authURLSet, type);
+        }
+    }
+
+    /**
+     *
+     * @param receiverURLSet
+     * @param username
+     * @param password
+     * @param authURLSet
+     * @param type
+     * @throws DataEndpointAuthenticationException
+     * @throws DataEndpointAgentConfigurationException
+     * @throws TransportException
+     * @throws DataEndpointException
+     * @throws DataEndpointConfigurationException
+     */
+    private void configGenericVariablesPublishing(String receiverURLSet, String username, String password,
+            String authURLSet, String type)
+            throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
+            DataEndpointException, DataEndpointConfigurationException {
             if (receiverURLSet != null && username != null && password != null) {
 
-                // Configure datapublisher to be used by all data publishing listeners
+                // Configure data publisher to be used by all (generic variables) data publishing listeners
                 if (log.isDebugEnabled()) {
                     log.debug("Creating BPMN analytics data publisher with Receiver URL: " +
                             receiverURLSet + ", Auth URL: " + authURLSet + " and Data publisher type: " + type);
@@ -224,6 +250,63 @@ public class BPMNDataPublisher {
             } else {
                 log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password are mandatory. Data publishing will not be enabled.");
             }
+    }
+
+    /**
+     * @param receiverURLSet
+     * @param username
+     * @param password
+     * @param authURLSet
+     * @param type
+     * @throws DataEndpointAuthenticationException
+     * @throws DataEndpointAgentConfigurationException
+     * @throws TransportException
+     * @throws DataEndpointException
+     * @throws DataEndpointConfigurationException
+     */
+    private void configProcessVariablesPublishing(String receiverURLSet, String username, String password,
+            String authURLSet, String type)
+            throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
+            DataEndpointException, DataEndpointConfigurationException {
+        if (receiverURLSet != null && username != null && password != null) {
+            // Configure datapublisher to be used by all KPI data publishing listeners
+            if (log.isDebugEnabled()) {
+                log.debug("Creating BPMN analytics data publisher (KPI) with Receiver URL: " +
+                        receiverURLSet + ", Auth URL: " + authURLSet + " and Data publisher type: " + type);
+            }
+            dataPublisher = new DataPublisher(type, receiverURLSet, authURLSet, username, password);
+            BPMNEngineService engineService = BPMNAnalyticsHolder.getInstance().getBpmnEngineService();
+
+            // Attach data publishing listeners to all existing processes
+            if (log.isDebugEnabled()) {
+                log.debug("Attaching data publishing (KPI) listeners to already deployed processes...");
+            }
+            RepositoryService repositoryService = engineService.getProcessEngine().getRepositoryService();
+            List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+            for (ProcessDefinition processDefinition : processDefinitions) {
+                if (processDefinition instanceof ProcessDefinitionEntity) {
+                    ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) processDefinition;
+                    processDefinitionEntity
+                            .addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationKPIListener());
+                }
+            }
+
+            // Configure parse handlers, which attaches KPI data publishing listeners to new processes
+            if (log.isDebugEnabled()) {
+                log.debug("Associating parse handlers for processes and tasks, so that KPI data publishing "
+                        + "listeners will be attached to new processes.");
+            }
+            ProcessEngineConfigurationImpl engineConfig = (ProcessEngineConfigurationImpl) engineService
+                    .getProcessEngine().getProcessEngineConfiguration();
+            if (engineConfig.getPostBpmnParseHandlers() == null) {
+                engineConfig.setPostBpmnParseHandlers(new ArrayList<BpmnParseHandler>());
+            }
+            engineConfig.getPostBpmnParseHandlers().add(new ProcessKPIParseHandler());
+            engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers()
+                    .addHandler(new ProcessKPIParseHandler());
+        } else {
+            log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password are "
+                    + "mandatory. Data publishing will not be enabled.");
         }
     }
 
@@ -277,15 +360,15 @@ public class BPMNDataPublisher {
                     return;
                 }
 
-                JSONArray configedProcVarsJson = kpiConfig
-                        .getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
-                /* Example for configedProcVarsJson variable value:
+                /* Keeps configed process variabe data as a JSON. Example value:
                 [{"isAnalyzeData":false,"name":"size","isDrillDownData":false,"type":"int"},
                 {"isAnalyzeData":false,"name":"status","isDrillDownData":false,"type":"string"},
                 {"isAnalyzeData":false,"name":"pizzaTopping","isDrillDownData":false,"type":"string"},
                 {"isAnalyzeData":false,"name":"amount","isDrillDownData":false,"type":"int"},
                 {"isAnalyzeData":"false","name":"processInstanceId","isDrillDownData":"false","type":"string"}]
                  */
+                JSONArray configedProcVarsJson = kpiConfig
+                        .getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
                 int variableCount = configedProcVarsJson.length();
                 configedProcessVariables = new String[variableCount][2];
@@ -295,13 +378,11 @@ public class BPMNDataPublisher {
                     configedProcessVariables[i][1] = configedProcVarsJson.getJSONObject(i).getString("type");
                 }
 
-                kpiConfig.getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
-
                 processVariablesMap.put(processDefinitionId, configedProcessVariables);
                 eventStreamId = kpiConfig.getString("eventStreamId");
                 kpiStreamIdMap.put(processDefinitionId, eventStreamId);
 
-            } else { //if the process variables are already taken
+            } else { //if the process variables are already taken, get them from the Map
                 configedProcessVariables = processVariablesMap.get(processDefinitionId);
                 eventStreamId = kpiStreamIdMap.get(processDefinitionId);
             }
@@ -310,39 +391,69 @@ public class BPMNDataPublisher {
                     .getVariableInstances();
             payload = new Object[configedProcessVariables.length];
 
-            //set process instance id as the final payload variable value
-            payload[0] = processInstanceId;
-
             for (int i = 0; i < configedProcessVariables.length - 1; i++) {
                 String varName = configedProcessVariables[i][0];
                 String varType = configedProcessVariables[i][1];
 
                 Object varValue = variableInstances.get(varName).getValue();
-                if (varValue != null) {
-                    switch (varType) {
-                    case "int":
-                        payload[i + 1] = Integer.parseInt((String) varValue);
-                        break;
-                    case "float":
-                        payload[i + 1] = Float.parseFloat((String) varValue);
-                        break;
-                    case "long":
-                        payload[i + 1] = Long.parseLong((String) varValue);
-                        break;
-                    case "double":
-                        payload[i + 1] = Double.parseDouble((String) varValue);
-                        break;
-                    case "string":
-                        payload[i + 1] = varValue;
-                        break;
-                    case "bool":
-                        payload[i + 1] = Boolean.parseBoolean((String) varValue);
-                        break;
-                    default:
-                        break;
+
+                switch (varType) {
+                case "int":
+                    if (varValue == null) {
+                        payload[i] = -1;
+                    } else {
+                        payload[i] = Integer.parseInt((String) varValue);
                     }
+                    break;
+                case "float":
+                    if (varValue == null) {
+                        payload[i] = -1;
+                    } else {
+                        payload[i] = Float.parseFloat((String) varValue);
+                    }
+                    break;
+                case "long":
+                    if (varValue == null) {
+                        payload[i] = -1;
+                    } else {
+                        payload[i] = Long.parseLong((String) varValue);
+                    }
+                    break;
+                case "double":
+                    if (varValue == null) {
+                        payload[i] = -1;
+                    } else {
+                        payload[i] = Double.parseDouble((String) varValue);
+                    }
+                    break;
+                case "string":
+                    if (varValue == null) {
+                        payload[i] = "";
+                    } else {
+                        payload[i] = varValue;
+                    }
+                    break;
+                case "bool":
+                    if (varValue == null) {
+                        payload[i] = false;
+                    } else {
+                        payload[i] = Boolean.parseBoolean((String) varValue);
+                    }
+                    break;
+                default:
+                    log.warn("Configured process variable type is not a WSO2 DAS applicable type for the process:"
+                            + processDefinitionId);
+                    if (varValue == null) {
+                        payload[i] = "";
+                    } else {
+                        payload[i] = varValue;
+                    }
+                    break;
                 }
             }
+
+            //set process instance id as the last payload variable value
+            payload[configedProcessVariables.length-1] = processInstanceId;
 
             boolean dataPublishingSuccess = dataPublisher.tryPublish(eventStreamId, getMeta(), null, payload);
             if (dataPublishingSuccess) {

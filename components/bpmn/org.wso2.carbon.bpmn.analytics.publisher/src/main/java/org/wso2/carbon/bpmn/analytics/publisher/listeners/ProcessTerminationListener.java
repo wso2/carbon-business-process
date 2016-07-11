@@ -37,12 +37,5 @@ public class ProcessTerminationListener implements ExecutionListener {
             HistoricProcessInstance instance = historicProcessInstances.get(0);
             BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishProcessEvent(instance);
         }
-
-        List<ProcessInstance> runtimeProcessInstances = delegateExecution.getEngineServices().getRuntimeService()
-                .createProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
-        if (runtimeProcessInstances.size() == 1) {
-            ProcessInstance runtimeProcessInstance = runtimeProcessInstances.get(0);
-            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishKPIvariableData(runtimeProcessInstance);
-        }
     }
 }
