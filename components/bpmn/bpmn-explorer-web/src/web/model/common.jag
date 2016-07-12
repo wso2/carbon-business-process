@@ -121,7 +121,6 @@ if(log.isDebugEnabled()) {
 //check BPS Features (eg: Substitution feature) status only for the first user login
 if (bpsSubstitutionFeatureEN == null && session.get('user') != null && session.get('authSuccess') != null && session.get('authSuccess') == true) {
     //first most user loging to the bpmn webapp
-    log.info ("Retrieve status of BPS User Substitution features");
     var headers =   {
                     "Authorization": "Basic " + auth,
                     "Contentnt-Type": "application/json",

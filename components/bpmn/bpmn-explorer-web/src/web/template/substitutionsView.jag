@@ -36,10 +36,10 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6"><%=i18n.localize("you.have.admin.access.to.manage.substitutions","You Have Admin Access to Manage Substitutions")%></div>
+                        <div class="col-lg-6 col-md-6 col-sm-6"><%=i18n.localize("you.have.admin.access.to.manage.substitutions","You Have Admin Access To Manage Substitutions")%></div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <button type="button" class="btn btn-md btn-info float-right" onclick="window.location='substitutions_admin'">
-                                <span class="fw fw-edit"></span>&nbsp;&nbsp;<%=i18n.localize("go.to.substitute.admin.view","Go To Substitute Admin View")%>
+                                <span class="fw fw-edit"></span>&nbsp;&nbsp;<%=i18n.localize("go.to.substitutions.admin.view","Go To Substitutions Admin View")%>
                             </button>
                         </div>
                     </div>
