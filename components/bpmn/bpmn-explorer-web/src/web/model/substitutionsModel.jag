@@ -92,13 +92,14 @@ try {
         currentPage = parseInt(pagination);
     }
 
-} catch (e) {
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("User Error Occured : " + e);
+        log.debug("User Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
+    errorDisplayBackButtonsEnable = '';
 }
 //Set current active veiw as Substitutions view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar

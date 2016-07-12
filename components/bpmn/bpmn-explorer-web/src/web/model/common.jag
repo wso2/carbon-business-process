@@ -178,7 +178,9 @@ var processMonitoringNavActive = ''; //Process Monitoring view [updated at proce
 var advancedFilterNavActive = ''; //Advanced Filtering view [updated at advancedFilteringModel and refered at navigation.jag]
 
 var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErrorSection section in each view
-// errorDisplayEnable = '' to display
+                                    // errorDisplayEnable = '' to display
+var errorDisplayBackButtonsEnable = 'hidden'; //This variable is used to display back and home buttons #commonErrorSection 
+                                                //section in each view. errorDisplayBackButtonsEnable='' to display 
 var commonErrorMessage = null; //Common error message if exists
 
 //Common Constants
