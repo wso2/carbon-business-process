@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * Empty Interface.
+ */
 public interface EmptyInterface extends ActivityInterface {
 
 }

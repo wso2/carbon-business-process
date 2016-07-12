@@ -21,10 +21,12 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents Exit Protocol Message of ws-humantask coordination.
+ */
 public class ExitProtocolMessage {
 
     private static final OMFactory omFactory = OMAbstractFactory.getOMFactory();
@@ -56,18 +58,19 @@ public class ExitProtocolMessage {
             return this.payLoad;
         }
         OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMNamespace htCoordinationNS = factory.createOMNamespace(WSConstants.WS_HT_COORDINATION_PROTOCOL_NAMESPACE, WSConstants.WS_HT_COORDINATION_PROTOCOL_DEFAULT_PREFIX);
+        OMNamespace htCoordinationNS = factory.createOMNamespace(WSConstants.WS_HT_COORDINATION_PROTOCOL_NAMESPACE,
+                WSConstants.WS_HT_COORDINATION_PROTOCOL_DEFAULT_PREFIX);
         payLoad = factory.createOMElement(WSConstants.WS_HT_COORDINATION_PROTOCOL_EXIT, htCoordinationNS);
-        for(String taskID : taskIDs)
-        {
-            payLoad.addChild(createTaskIDElement(factory,htCoordinationNS,taskID));
+        for (String taskID : taskIDs) {
+            payLoad.addChild(createTaskIDElement(factory, htCoordinationNS, taskID));
         }
 
         return payLoad;
     }
 
     private OMElement createTaskIDElement(OMFactory factory, OMNamespace htCoordinationNS, String taskID) {
-        OMElement omElement = factory.createOMElement(WSConstants.WS_HT_COORDINATION_PROTOCOL_EXIT_TASK_ID, htCoordinationNS);
+        OMElement omElement = factory.createOMElement(WSConstants.WS_HT_COORDINATION_PROTOCOL_EXIT_TASK_ID,
+                htCoordinationNS);
         omElement.setText(taskID);
         return omElement;
     }

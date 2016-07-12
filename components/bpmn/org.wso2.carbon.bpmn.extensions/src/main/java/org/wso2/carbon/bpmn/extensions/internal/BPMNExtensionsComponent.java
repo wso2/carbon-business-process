@@ -37,9 +37,7 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 
 public class BPMNExtensionsComponent {
 
-    private static Log log = LogFactory.getLog(BPMNExtensionsComponent.class);
-    private static RegistryService registryService;
-    private static BPMNEngineService engineService;
+    private static final Log log = LogFactory.getLog(BPMNExtensionsComponent.class);
 
     public static RegistryService getRegistryService() {
         return BPMNExtensionsHolder.getInstance().getRegistryService();

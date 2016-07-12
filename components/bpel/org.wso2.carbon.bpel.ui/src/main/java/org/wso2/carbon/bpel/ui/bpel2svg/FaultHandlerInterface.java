@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * FaultHandler Interface.
+ */
 public interface FaultHandlerInterface extends ActivityInterface {
 
 }

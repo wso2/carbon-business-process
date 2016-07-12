@@ -28,7 +28,7 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  * ODE scheduler should be shutdown before the Hazelcast instance.
  * This class halts the carbon server shutdown until the scheduler is shut.
  */
-public class BPELSchedulerShutdown implements WaitBeforeShutdownObserver{
+public class BPELSchedulerShutdown implements WaitBeforeShutdownObserver {
 
     private static Log log = LogFactory.getLog(BPELSchedulerShutdown.class);
     private boolean status = false;

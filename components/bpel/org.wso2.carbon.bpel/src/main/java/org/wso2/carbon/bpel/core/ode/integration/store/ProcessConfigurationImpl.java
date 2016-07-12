@@ -23,9 +23,23 @@ import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ode.activityRecovery.FailureHandlingDocument;
-import org.apache.ode.bpel.dd.*;
+import org.apache.ode.bpel.dd.TCleanup;
+import org.apache.ode.bpel.dd.TDeployment;
+import org.apache.ode.bpel.dd.TInvoke;
+import org.apache.ode.bpel.dd.TMexInterceptor;
+import org.apache.ode.bpel.dd.TProcessEvents;
+import org.apache.ode.bpel.dd.TProvide;
+import org.apache.ode.bpel.dd.TSchedule;
+import org.apache.ode.bpel.dd.TScopeEvents;
+import org.apache.ode.bpel.dd.TService;
 import org.apache.ode.bpel.evt.BpelEvent;
-import org.apache.ode.bpel.iapi.*;
+import org.apache.ode.bpel.iapi.ContextException;
+import org.apache.ode.bpel.iapi.Endpoint;
+import org.apache.ode.bpel.iapi.EndpointReference;
+import org.apache.ode.bpel.iapi.EndpointReferenceContext;
+import org.apache.ode.bpel.iapi.ProcessConf;
+import org.apache.ode.bpel.iapi.ProcessState;
+import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.o.OFailureHandling;
 import org.apache.ode.store.DeploymentUnitDir;
 import org.apache.ode.store.ProcessCleanupConfImpl;
@@ -38,19 +52,37 @@ import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.ode.integration.config.EndpointConfigBuilder;
 import org.wso2.carbon.bpel.core.ode.integration.config.PackageConfiguration;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CategoryListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Category_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EnableEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessEventsListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventType;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.wsdl.Definition;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import java.io.*;
-import java.net.URI;
-import java.text.ParseException;
-import java.util.*;
 
 /**
  * The implementation for Process Configuration.
@@ -106,7 +138,8 @@ public class ProcessConfigurationImpl implements ProcessConf, MultiTenantProcess
 
     private EndpointReferenceContext eprContext;
 
-    private ProcessCleanupConfImpl processCleanupConfImpl;  // NOTE: final tag is removed from cleanuplist  set the category list with  true/false
+    private ProcessCleanupConfImpl processCleanupConfImpl;  // NOTE: final tag is removed from cleanuplist  set the
+    // category list with  true/false
 
     private PackageConfiguration bpelPackageConfiguration = new PackageConfiguration();
 
@@ -796,7 +829,8 @@ public class ProcessConfigurationImpl implements ProcessConf, MultiTenantProcess
         if (processEventsList != null) {
             events.clear();
 
-            if (processEventsList.getEnableEventsList() != null && processEventsList.getEnableEventsList().getEnableEvent() != null) {
+            if (processEventsList.getEnableEventsList() != null && processEventsList.getEnableEventsList()
+                    .getEnableEvent() != null) {
                 EnableEventListType enableEventListType = processEventsList.getEnableEventsList();
                 String[] enabledEvents = enableEventListType.getEnableEvent();
                 HashSet<BpelEvent.TYPE> enabledEvtSet = new HashSet<BpelEvent.TYPE>();
@@ -805,7 +839,8 @@ public class ProcessConfigurationImpl implements ProcessConf, MultiTenantProcess
                 }
                 events.put(null, enabledEvtSet);
             }
-            if (processEventsList.getScopeEventsList() != null && processEventsList.getScopeEventsList().getScopeEvent() != null) {
+            if (processEventsList.getScopeEventsList() != null && processEventsList.getScopeEventsList()
+                    .getScopeEvent() != null) {
                 ScopeEventListType scopeEventListType = processEventsList.getScopeEventsList();
                 ScopeEventType[] scopeEvents = scopeEventListType.getScopeEvent();
 
@@ -849,7 +884,8 @@ public class ProcessConfigurationImpl implements ProcessConf, MultiTenantProcess
                             for (Category_type1 categoryType1 : sucCategoryListType.getCategory()) {
                                 sucessCategoryList.add(TCleanup.Category.Enum.forString(categoryType1.getValue()));
                             }
-                            ProcessCleanupConfImpl.processACleanup(processCleanupConfImpl.getCleanupCategories(true), sucessCategoryList);
+                            ProcessCleanupConfImpl.processACleanup(processCleanupConfImpl.getCleanupCategories(true),
+                                    sucessCategoryList);
                         }
                     }
                     if (cleanUp.getOn().getValue().equalsIgnoreCase("failure")) {
@@ -858,7 +894,8 @@ public class ProcessConfigurationImpl implements ProcessConf, MultiTenantProcess
                             for (Category_type1 categoryType1 : failCategoryListType.getCategory()) {
                                 failCategoryList.add(TCleanup.Category.Enum.forString(categoryType1.getValue()));
                             }
-                            ProcessCleanupConfImpl.processACleanup(processCleanupConfImpl.getCleanupCategories(false), failCategoryList);
+                            ProcessCleanupConfImpl.processACleanup(processCleanupConfImpl.getCleanupCategories(false)
+                                    , failCategoryList);
                         }
                     }
                 }

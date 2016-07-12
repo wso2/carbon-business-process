@@ -23,20 +23,24 @@ import org.apache.ode.bpel.iapi.BpelEventListener;
 
 import java.util.Properties;
 
+/**
+ * JMX BPEL Event Listener.
+ */
 public class JmxBpelEventListener implements BpelEventListener {
-    private long sequenceNumber=0;
+    private long sequenceNumber = 0;
 
     @Override
     public void onEvent(BpelEvent bpelEvent) {
 
-        if(bpelEvent instanceof ActivityFailureEvent){
-            String message=((ActivityFailureEvent) bpelEvent).getProcessId()+"  has failed in  "+((ActivityFailureEvent) bpelEvent).getActivityName()+" Activity";
-            InstanceStatusMonitor statusMonitor=InstanceStatusMonitor.getInstanceStatusMonitor();
+        if (bpelEvent instanceof ActivityFailureEvent) {
+            String message = ((ActivityFailureEvent) bpelEvent).getProcessId() + "  has failed in  " + (
+                    (ActivityFailureEvent) bpelEvent).getActivityName() + " Activity";
+            InstanceStatusMonitor statusMonitor = InstanceStatusMonitor.getInstanceStatusMonitor();
             statusMonitor.setLastFailedProcessInfo(message);
-        }
-        else if(bpelEvent instanceof ScopeFaultEvent){
-            String message=((ScopeFaultEvent) bpelEvent).getProcessId()+" scope id "+((ScopeFaultEvent) bpelEvent).getScopeId()+" has failed "+ ((ScopeFaultEvent) bpelEvent).getFaultType();
-            InstanceStatusMonitor statusMonitor=InstanceStatusMonitor.getInstanceStatusMonitor();
+        } else if (bpelEvent instanceof ScopeFaultEvent) {
+            String message = ((ScopeFaultEvent) bpelEvent).getProcessId() + " scope id " + ((ScopeFaultEvent)
+                    bpelEvent).getScopeId() + " has failed " + ((ScopeFaultEvent) bpelEvent).getFaultType();
+            InstanceStatusMonitor statusMonitor = InstanceStatusMonitor.getInstanceStatusMonitor();
             statusMonitor.setLastFailedProcessInfo(message);
         }
     }

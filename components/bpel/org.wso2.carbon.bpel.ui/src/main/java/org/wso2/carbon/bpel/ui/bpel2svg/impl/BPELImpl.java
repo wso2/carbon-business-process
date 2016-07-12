@@ -25,29 +25,27 @@ import org.wso2.carbon.bpel.ui.bpel2svg.BPELInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.Link;
 import org.wso2.carbon.bpel.ui.bpel2svg.ProcessInterface;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * Parse the BPEL process definition and recursively create the process object model
  */
 public class BPELImpl implements BPELInterface {
-    private Log log = LogFactory.getLog(BPELImpl.class);
-    private ProcessInterface processActivity = null;
-    private boolean vertical = true;
-    private boolean includeAssign = true;
-
     //To handle links
     public Map<String, Link> links = new HashMap<String, Link>();
     public Set<ActivityInterface> sources = new HashSet<ActivityInterface>();
     public Set<ActivityInterface> targets = new HashSet<ActivityInterface>();
-
+    private Log log = LogFactory.getLog(BPELImpl.class);
+    private ProcessInterface processActivity = null;
+    private boolean vertical = true;
+    private boolean includeAssign = true;
     /*To create an OmElement (OMElement is how the AXIS2 Object Model (AXIOM) represents an XML element)
      from the bpel process definition
     */
@@ -58,20 +56,26 @@ public class BPELImpl implements BPELInterface {
     /**
      * Process the OmElement containing the bpel process definition
      * By passing the OmElement with the process definition a new Process Activity is created.
-     * If there any links in the process,set the link properties i.e. the link name, source of the link and the target of the link.
+     * If there any links in the process,set the link properties i.e. the link name, source of the link and the
+     * target of the link.
      * Process the subactivites of the bpel process by iterating through the omElement
+     *
      * @param om omElement containing the bpel process definition
      */
     public void processBpelString(OMElement om) {
         //Checks whether the omElement/XmlElement contains a value
         if (om != null) {
-            //Creates a new instance of the Process activity by passing the omElement with process definition as the @param
+            //Creates a new instance of the Process activity by passing the omElement with process definition as the
+            // @param
             processActivity = new ProcessImpl(bpelElement);
-            //Set the link properties i.e. the link name, source of the link and the target of the link of the bpel process
+            //Set the link properties i.e. the link name, source of the link and the target of the link of the bpel
+            // process
             processActivity.setLinkProperties(links, sources, targets);
             /**
-             * Get the subactivites in the bpel process by passing the omElement with the process definition as the @param
-             * Iterates through the omElement and processes the subActivities each one separately, if the activity name matches any of the element tags
+             * Get the subactivites in the bpel process by passing the omElement with the process definition as the
+             *          @param
+             * Iterates through the omElement and processes the subActivities each one separately, if the activity
+             *          name matches any of the element tags
              * then the constructor of that activity implementation is invoked
              */
             processActivity.processSubActivities(bpelElement);
@@ -79,23 +83,29 @@ public class BPELImpl implements BPELInterface {
     }
 
     /**
-     * Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM) represents an XML
+     * Converts the bpel process definition to an omElement which is how the AXIS2 Object Model (AXIOM) represents an
+     * XML
      * element
+     *
      * @param bpelStr bpel process definition needed to create the SVG
      * @return omElement
      */
     public OMElement load(String bpelStr) {
         try {
-            /*Creates a new instance of the XmlStreamReader class for the specified String input i.e. the bpel process definition
+            /*Creates a new instance of the XmlStreamReader class for the specified String input i.e. the bpel
+            process definition
               using the StringReader class which enables you to turn an ordinary String into a Reader.
-              This is useful if you have data as a String but need to pass that String to a component that only accepts a Reader.
+              This is useful if you have data as a String but need to pass that String to a component that only
+              accepts a Reader.
             */
             parser = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(bpelStr));
-            /*The instance of XmlStreamReader created is passed to the StAXOMBuilder which produces a pure XML infoset compliant object
+            /*The instance of XmlStreamReader created is passed to the StAXOMBuilder which produces a pure XML
+            infoset compliant object
              model which conatins the bpel process definition
              */
             builder = new StAXOMBuilder(parser);
-            //The XML object created by the StAXOMBuilder is used to build an OMElement that is added to an existing OM tree
+            //The XML object created by the StAXOMBuilder is used to build an OMElement that is added to an existing
+            // OM tree
             bpelElement = builder.getDocumentElement();
             //OmElement containing the bpel process definition is returned
             return bpelElement;
@@ -107,6 +117,7 @@ public class BPELImpl implements BPELInterface {
 
     /**
      * Gets the root activity i.e. the Process Activity
+     *
      * @return root activity i.e. Process Activity
      */
     public ProcessInterface getRootActivity() {
@@ -115,6 +126,7 @@ public class BPELImpl implements BPELInterface {
 
     /**
      * Gets the boolean value for the vertical layout
+     *
      * @return true/false
      */
     public boolean isVertical() {
@@ -123,20 +135,25 @@ public class BPELImpl implements BPELInterface {
 
     /**
      * Sets the boolean value for the vertical layout
+     *
      * @param vertical boolean value -> true/false
      */
     public void setVertical(boolean vertical) {
         this.vertical = vertical;
     }
+
     /**
      * Gets the boolean value to include the assign activities
+     *
      * @return boolean value to include the assign activities->true/false
      */
     public boolean isIncludeAssign() {
         return includeAssign;
     }
+
     /**
      * Sets the boolean value to include the assign activities
+     *
      * @param includeAssign boolean value to include the assign activities
      */
     public void setIncludeAssign(boolean includeAssign) {
@@ -145,6 +162,7 @@ public class BPELImpl implements BPELInterface {
 
     /**
      * Gets the omElement containing the bpel process definition
+     *
      * @return omElement containing the bpel process definition
      */
     public OMElement getBpelElement() {
@@ -153,6 +171,7 @@ public class BPELImpl implements BPELInterface {
 
     /**
      * Sets the omElement containing the bpel process definition
+     *
      * @param bpelElement omElement containing the bpel process definition
      */
     public void setBpelElement(OMElement bpelElement) {

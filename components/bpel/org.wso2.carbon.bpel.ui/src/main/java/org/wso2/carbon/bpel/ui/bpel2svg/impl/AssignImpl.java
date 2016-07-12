@@ -16,10 +16,10 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.AssignInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 
 /**
  * Assign tag UI implementation
@@ -28,6 +28,7 @@ public class AssignImpl extends SimpleActivityImpl implements AssignInterface {
 
     /**
      * Initializes a new instance of the AssignImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public AssignImpl(String token) {
@@ -42,6 +43,7 @@ public class AssignImpl extends SimpleActivityImpl implements AssignInterface {
 
     /**
      * Initializes a new instance of the AssignImpl class using the specified omElement
+     *
      * @param omElement which matches the Assign tag
      */
     public AssignImpl(OMElement omElement) {
@@ -58,6 +60,7 @@ public class AssignImpl extends SimpleActivityImpl implements AssignInterface {
      * Initializes a new instance of the AssignImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Assign Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Assign tag
      * @param parent
      */
@@ -67,6 +70,7 @@ public class AssignImpl extends SimpleActivityImpl implements AssignInterface {
         //Set the parent of the activity
         setParent(parent);
     }
+
     /**
      * @return- String with the end tag of Assign Activity
      */

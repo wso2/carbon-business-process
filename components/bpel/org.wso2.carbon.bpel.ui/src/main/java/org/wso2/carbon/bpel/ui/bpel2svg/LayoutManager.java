@@ -16,7 +16,11 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Manage the whole layout of the SVG graph
@@ -25,6 +29,27 @@ public class LayoutManager {
     // Variables
     // Properties
     private int svgWidth = 2800;
+    private int svgHeight = 3000;
+    private int xSpacing = 50;
+    private int ySpacing = 70;
+    private boolean includeAssigns = true;
+    private boolean showSequenceBoxes = true;
+    private boolean verticalLayout = false;
+    private boolean addCompositeActivityOpacity = false;
+    private boolean addIconOpacity = false;
+    private boolean addSimpleActivityOpacity = true;
+    private String iconOpacity = "0.25";
+    private String opacity = "0.50";
+    private String simpleActivityOpacity = "0.251";
+    private String compositeActivityOpacity = "0.10";
+    private int startIconDim = 50;
+    private int endIconDim = 50;
+    //Get Icon Width
+    private int iconWidth = 100;
+    private Map<ActivityInterface, ArrayList<ActivityInterface>> linkAdjacencyList;
+    private Set<ActivityInterface> rootLinks;
+    private int correctionCumulation = 0;
+    private int hieghestCorrectionCumulation = 0;
 
     /**
      * Gets the width of the SVG graph
@@ -44,8 +69,6 @@ public class LayoutManager {
         this.svgWidth = svgWidth;
     }
 
-    private int svgHeight = 3000;
-
     /**
      * Gets the height of the SVG graph
      *
@@ -63,8 +86,6 @@ public class LayoutManager {
     public void setSvgHeight(int svgHeight) {
         this.svgHeight = svgHeight;
     }
-
-    private int xSpacing = 50;
 
     /**
      * Gets the xSpacing which is added to the width of the activities when setting the dimensions
@@ -84,8 +105,6 @@ public class LayoutManager {
         this.xSpacing = xSpacing;
     }
 
-    private int ySpacing = 70;
-
     /**
      * Gets the ySpacing which is added to the height of the activities when setting the dimensions
      *
@@ -103,8 +122,6 @@ public class LayoutManager {
     public void setYSpacing(int ySpacing) {
         this.ySpacing = ySpacing;
     }
-
-    private boolean includeAssigns = true;
 
     /**
      * Gets the boolean value to include the assign activities
@@ -124,8 +141,6 @@ public class LayoutManager {
         this.includeAssigns = includeAssigns;
     }
 
-    private boolean showSequenceBoxes = true;
-
     /**
      * Gets the boolean value to show the Sequence box
      *
@@ -143,8 +158,6 @@ public class LayoutManager {
     public void setShowSequenceBoxes(boolean showSequenceBoxes) {
         this.showSequenceBoxes = showSequenceBoxes;
     }
-
-    private boolean verticalLayout = false;
 
     /**
      * Gets the boolean value to select the vertical layout
@@ -164,8 +177,6 @@ public class LayoutManager {
         this.verticalLayout = verticalLayout;
     }
 
-    private boolean addCompositeActivityOpacity = false;
-
     /**
      * Gets true/false to add  opacity to composite activity icons e.g:like IF, ELSE IF activities
      *
@@ -183,8 +194,6 @@ public class LayoutManager {
     public void setAddCompositeActivityOpacity(boolean addCompositeActivityOpacity) {
         this.addCompositeActivityOpacity = addCompositeActivityOpacity;
     }
-
-    private boolean addIconOpacity = false;
 
     /**
      * Gets true/false to add  opacity to activity icons
@@ -204,8 +213,6 @@ public class LayoutManager {
         this.addIconOpacity = addIconOpacity;
     }
 
-    private boolean addSimpleActivityOpacity = true;
-
     /**
      * Gets true/false to add opacity to simple activity icons e.g:like ASSIGN, THROW activities
      *
@@ -223,8 +230,6 @@ public class LayoutManager {
     public void setAddSimpleActivityOpacity(boolean addSimpleActivityOpacity) {
         this.addSimpleActivityOpacity = addSimpleActivityOpacity;
     }
-
-    private String iconOpacity = "0.25";
 
     /**
      * Gets the icon opacity amount for composite activities
@@ -244,8 +249,6 @@ public class LayoutManager {
         this.compositeActivityOpacity = compositeActivityOpacity;
     }
 
-    private String opacity = "0.50";
-
     /**
      * Gets the icon opacity amount for activities
      *
@@ -263,8 +266,6 @@ public class LayoutManager {
     public void setIconOpacity(String iconOpacity) {
         this.iconOpacity = iconOpacity;
     }
-
-    private String simpleActivityOpacity = "0.251";
 
     /**
      * Gets the icon opacity amount
@@ -284,8 +285,6 @@ public class LayoutManager {
         this.opacity = opacity;
     }
 
-    private String compositeActivityOpacity = "0.10";
-
     /**
      * Gets the icon opacity amount for simple activities
      *
@@ -303,8 +302,6 @@ public class LayoutManager {
     public void setSimpleActivityOpacity(String simpleActivityOpacity) {
         this.simpleActivityOpacity = simpleActivityOpacity;
     }
-
-    private int startIconDim = 50;
 
     /**
      * Gets the dimensions of the start icon of the activity
@@ -324,7 +321,7 @@ public class LayoutManager {
         this.startIconDim = startIconDim;
     }
 
-    private int endIconDim = 50;
+    // Methods
 
     /**
      * Gets the dimensions of the end icon of the activity
@@ -344,9 +341,6 @@ public class LayoutManager {
         this.endIconDim = endIconDim;
     }
 
-    //Get Icon Width 
-    private int iconWidth = 100;
-
     /**
      * Gets the width of the rectangle/image holder which holds the activity icon
      *
@@ -365,8 +359,6 @@ public class LayoutManager {
         this.iconWidth = endIconDim;
     }
 
-    // Methods
-
     /**
      * Layout the SVG
      * Get the dimensions i.e. width and height of the root activity, set the links of the process if there are any
@@ -381,6 +373,7 @@ public class LayoutManager {
 
     /**
      * Get the Link Adjacency List for a process (Map which contains the Source and Target activities for links )
+     *
      * @param links
      * @return
      */
@@ -416,11 +409,6 @@ public class LayoutManager {
         return linkAdjacencyList;
     }
 
-    private Map<ActivityInterface, ArrayList<ActivityInterface>> linkAdjacencyList;
-    private Set<ActivityInterface> rootLinks;
-    private int correctionCumulation = 0;
-    private int hieghestCorrectionCumulation = 0;
-
     /**
      * Set the yTop position of the Target activities
      *
@@ -438,7 +426,7 @@ public class LayoutManager {
                     //Gets the yTop position of the Target activity
                     int whereTargetIs = target.getStartIconYTop();
                     //Calculate the actual yTop position of the Target activity
-                    int correction = whereTargetShouldBe - whereTargetIs;
+//                    int correction = whereTargetShouldBe - whereTargetIs;
                     if (whereTargetIs < whereTargetShouldBe) {
                         //Set the correct yTop position of the target activity
                         target.setCorrectionY(target.getStartIconYTop());
@@ -487,7 +475,8 @@ public class LayoutManager {
             while (tempParent != null) {
                 //Get the height of the parent activity
                 int tempHeight = tempParent.getDimensions().getHeight();
-                //Set the height of the parent activity by adding the hieghestCorrectionCumulation to the activity height
+                //Set the height of the parent activity by adding the hieghestCorrectionCumulation to the activity
+                // height
                 tempParent.getDimensions().setHeight(tempHeight + hieghestCorrectionCumulation);
                 tempParent = tempParent.getParent();
             }

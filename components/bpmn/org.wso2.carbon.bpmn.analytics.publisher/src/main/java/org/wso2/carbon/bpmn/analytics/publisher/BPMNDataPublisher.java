@@ -22,6 +22,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.pvm.PvmEvent;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -387,7 +388,7 @@ public class BPMNDataPublisher {
                 eventStreamId = kpiStreamIdMap.get(processDefinitionId);
             }
 
-            Map<String, VariableInstanceEntity> variableInstances = ((ExecutionEntity) processInstance)
+            Map<String, VariableInstance> variableInstances = ((ExecutionEntity) processInstance)
                     .getVariableInstances();
             payload = new Object[configedProcessVariables.length];
 

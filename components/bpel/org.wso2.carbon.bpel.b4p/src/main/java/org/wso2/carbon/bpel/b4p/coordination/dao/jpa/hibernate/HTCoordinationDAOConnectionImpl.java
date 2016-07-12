@@ -23,10 +23,14 @@ import org.wso2.carbon.bpel.b4p.coordination.dao.HTProtocolHandlerDAO;
 import org.wso2.carbon.bpel.b4p.coordination.dao.TaskProtocolHandler;
 import org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity.HTProtocolHandler;
 
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.List;
 
+/**
+ *
+ */
+@Deprecated
 public class HTCoordinationDAOConnectionImpl implements HTCoordinationDAOConnection {
 
     private static final Log log = LogFactory.getLog(HTCoordinationDAOConnectionImpl.class);
@@ -60,10 +64,12 @@ public class HTCoordinationDAOConnectionImpl implements HTCoordinationDAOConnect
     }
 
     /**
-     * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#createCoordinatedTask(String, String, String, String)
+     * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#createCoordinatedTask(String,
+     * String, String, String)
      */
     @Override
-    public HTProtocolHandlerDAO createCoordinatedTask(String messageID, String htProtocolHandlerURL, String processInstanceID, String taskID) {
+    public HTProtocolHandlerDAO createCoordinatedTask(String messageID, String htProtocolHandlerURL, String
+            processInstanceID, String taskID) {
         HTProtocolHandlerDAO protocolHandlerDAO = new HTProtocolHandler();
         protocolHandlerDAO.setMessageID(messageID);
         protocolHandlerDAO.setProcessInstanceID(processInstanceID);
@@ -76,11 +82,14 @@ public class HTCoordinationDAOConnectionImpl implements HTCoordinationDAOConnect
     }
 
     /**
-     * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#updateProtocolHandler(String, String, String)
+     * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#updateProtocolHandler(String,
+     * String, String)
      */
     @Override
-    public void updateProtocolHandler(String messageID,  String processInstanceID,  String taskID) {
-        entityManager.createQuery("UPDATE org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity.HTProtocolHandler t SET t.taskID = :taskID, t.processInstanceID = :processInstanceID WHERE t.messageID = :messageID").
+    public void updateProtocolHandler(String messageID, String processInstanceID, String taskID) {
+        entityManager.createQuery("UPDATE org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity" +
+                ".HTProtocolHandler t SET t.taskID = :taskID, t.processInstanceID = :processInstanceID WHERE t" +
+                ".messageID = :messageID").
                 setParameter("messageID", messageID).
                 setParameter("processInstanceID", processInstanceID).
                 setParameter("taskID", taskID).executeUpdate();
@@ -91,17 +100,22 @@ public class HTCoordinationDAOConnectionImpl implements HTCoordinationDAOConnect
      */
     @Override
     public List<HTProtocolHandlerDAO> getProtocolHandlers(String processInstanceID) {
-        Query query = entityManager.createQuery("SELECT t FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity.HTProtocolHandler t WHERE t.processInstanceID = :processInstanceID");
+        Query query = entityManager.createQuery("SELECT t FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa" +
+                ".entity.HTProtocolHandler t WHERE t.processInstanceID = :processInstanceID");
         query.setParameter("processInstanceID", processInstanceID);
         return (List<HTProtocolHandlerDAO>) query.getResultList();
     }
 
     /**
-     * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#getProtocolHandlerURLsWithTasks(String)
+     * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#getProtocolHandlerURLsWithTasks
+     * (String)
      */
     @Override
     public List<TaskProtocolHandler> getProtocolHandlerURLsWithTasks(String processInstanceID) {
-        Query query = entityManager.createQuery("SELECT NEW org.wso2.carbon.bpel.b4p.coordination.dao.TaskProtocolHandler(t.protocolHandlerURL, t.taskID) FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity.HTProtocolHandler t WHERE t.processInstanceID = :processInstanceID ORDER BY t.protocolHandlerURL ASC");
+        Query query = entityManager.createQuery("SELECT NEW org.wso2.carbon.bpel.b4p.coordination.dao" +
+                ".TaskProtocolHandler(t.protocolHandlerURL, t.taskID) FROM org.wso2.carbon.bpel.b4p.coordination.dao" +
+                ".jpa.openjpa.entity.HTProtocolHandler t WHERE t.processInstanceID = :processInstanceID ORDER BY t" +
+                ".protocolHandlerURL ASC");
         query.setParameter("processInstanceID", processInstanceID);
         return (List<TaskProtocolHandler>) query.getResultList();
     }
@@ -110,9 +124,9 @@ public class HTCoordinationDAOConnectionImpl implements HTCoordinationDAOConnect
      * @see org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection#deleteCoordinationData(String)
      */
     @Override
-    public boolean deleteCoordinationData(String processInstanceID)
-    {
-        Query q = entityManager.createQuery("DELETE FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity.HTProtocolHandler t WHERE t.processInstanceID = :processInstanceID");
+    public boolean deleteCoordinationData(String processInstanceID) {
+        Query q = entityManager.createQuery("DELETE FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity" +
+                ".HTProtocolHandler t WHERE t.processInstanceID = :processInstanceID");
         q.setParameter("processInstanceID", processInstanceID);
         return q.executeUpdate() == 1;
     }
@@ -122,7 +136,8 @@ public class HTCoordinationDAOConnectionImpl implements HTCoordinationDAOConnect
      */
     @Override
     public boolean deleteTaskData(String taskID) {
-        Query q = entityManager.createQuery("DELETE FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity.HTProtocolHandler t WHERE t.taskID = :taskID");
+        Query q = entityManager.createQuery("DELETE FROM org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa.entity" +
+                ".HTProtocolHandler t WHERE t.taskID = :taskID");
         q.setParameter("taskID", taskID);
         return q.executeUpdate() == 1;
     }

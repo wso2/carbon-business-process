@@ -1,5 +1,5 @@
 /*
- * Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.context;
 
+/**
+ * HumanTask Request Context interface, contains overriding attributes which are used at task creation.
+ */
 public interface HumanTaskRequestContext {
 
     /**
@@ -24,19 +27,19 @@ public interface HumanTaskRequestContext {
 
     public int getTaskPriority();
 
-    public boolean isSkippable();
-
-    public long getTaskExpirationTime();
-
-    public long getTaskActivationDifferedTime();
-
-    //TODO Implement Actual people assignments
-
     public void setTaskPriority(int priority);
+
+    public boolean isSkippable();
 
     public void setSkippable(boolean skippable);
 
+    //TODO Implement Actual people assignments
+
+    public long getTaskExpirationTime();
+
     public void setTaskExpirationTime(long taskExpirationTime);
+
+    public long getTaskActivationDifferedTime();
 
     public void setTaskActivationDifferedTime(long taskActivationDifferedTime);
 

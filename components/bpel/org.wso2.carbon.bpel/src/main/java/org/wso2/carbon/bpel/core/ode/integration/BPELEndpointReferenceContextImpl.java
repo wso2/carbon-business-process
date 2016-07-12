@@ -24,8 +24,8 @@ import org.apache.ode.bpel.iapi.EndpointReferenceContext;
 import org.apache.ode.utils.DOMUtils;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
 import java.util.Map;
+import javax.xml.namespace.QName;
 
 /**
  * Endpoint reference context: facililates the creation of
@@ -33,18 +33,18 @@ import java.util.Map;
  *
  * In ODE, there are 4 types of {@link EndpointReference}s
  * <ul>
- *  <li>{@link org.apache.ode.bpel.epr.URLEndpoint}</li>
- *  <li>{@link org.apache.ode.bpel.epr.WSAEndpoint}</li>
- *  <li>{@link org.apache.ode.bpel.epr.WSDL11Endpoint}</li>
- *  <li>{@link org.apache.ode.bpel.epr.WSDL20Endpoint}</li>
+ * <li>{@link org.apache.ode.bpel.epr.URLEndpoint}</li>
+ * <li>{@link org.apache.ode.bpel.epr.WSAEndpoint}</li>
+ * <li>{@link org.apache.ode.bpel.epr.WSDL11Endpoint}</li>
+ * <li>{@link org.apache.ode.bpel.epr.WSDL20Endpoint}</li>
  * </ul>
  */
 public class BPELEndpointReferenceContextImpl implements EndpointReferenceContext {
     private static final Log log = LogFactory.getLog(BPELEndpointReferenceContextImpl.class);
 
     public EndpointReference resolveEndpointReference(Element element) {
-        if(log.isDebugEnabled()){
-            log.debug("Resolving endpoint reference "+ DOMUtils.domToString(element));
+        if (log.isDebugEnabled()) {
+            log.debug("Resolving endpoint reference " + DOMUtils.domToString(element));
         }
         return EndpointFactory.createEndpoint(element);
     }
@@ -54,6 +54,6 @@ public class BPELEndpointReferenceContextImpl implements EndpointReferenceContex
     }
 
     public Map getConfigLookup(EndpointReference endpointReference) {
-        return ((MutableEndpoint)endpointReference).toMap();
+        return ((MutableEndpoint) endpointReference).toMap();
     }
 }

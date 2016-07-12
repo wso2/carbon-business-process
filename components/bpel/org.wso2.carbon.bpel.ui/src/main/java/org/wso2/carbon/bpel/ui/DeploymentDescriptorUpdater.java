@@ -16,12 +16,19 @@
 
 package org.wso2.carbon.bpel.ui;
 
-import org.wso2.carbon.bpel.stub.mgt.types.*;
+import org.wso2.carbon.bpel.stub.mgt.types.InvokeServiceListType;
+import org.wso2.carbon.bpel.stub.mgt.types.MexInterpreterListType;
+import org.wso2.carbon.bpel.stub.mgt.types.PropertyListType;
+import org.wso2.carbon.bpel.stub.mgt.types.ProvideServiceListType;
+import org.wso2.carbon.bpel.stub.mgt.types.ScopeEventType;
 
-/*
- *  This is the jsp bean class used to keep the form data of the deployment descriptor editor when
- *  the form is updated at runtime
+import java.util.Arrays;
+
+/**
+ * This is the jsp bean class used to keep the form data of the deployment descriptor editor when
+ * the form is updated at runtime
  */
+@Deprecated
 public class DeploymentDescriptorUpdater {
 
     private static final String CHECKED = "checked";
@@ -49,46 +56,107 @@ public class DeploymentDescriptorUpdater {
 
     private ScopeEventType[] scopeEvents;
 
+    public DeploymentDescriptorUpdater() {
+        this.events = new String[0];
+        this.gentype = null;
+        this.successtypecleanups = new String[0];
+        this.failuretypecleanups = new String[0];
+        this.processstate = null;
+        this.inmemorystatus = null;
+        this.invokedServiceList = null;
+        this.provideServiceList = null;
+        this.mexInterceptors = null;
+        this.propertyList = null;
+        this.scopeEvents = null;
+    }
 
     public String getInmemorystatus() {
         return inmemorystatus;
     }
 
+    public void setInmemorystatus(String inmemorystatus) {
+        this.inmemorystatus = inmemorystatus;
+    }
+
     public String[] getEvents() {
-        return events;
+        return Arrays.copyOf(events, events.length);
+    }
+
+    public void setEvents(String[] events) {
+        if (events != null) {
+            this.events = Arrays.copyOf(events, events.length);
+        }
     }
 
     public String getGentype() {
         return gentype;
     }
 
-    public String[] getSuccesstypecleanups() {
-        return successtypecleanups;
+    public void setGentype(String gentype) {
+        this.gentype = gentype;
     }
 
+    public String[] getSuccesstypecleanups() {
+        return Arrays.copyOf(successtypecleanups, successtypecleanups.length);
+    }
+
+    public void setSuccesstypecleanups(String[] successtypecleanups) {
+        if (successtypecleanups != null) {
+            this.successtypecleanups = Arrays.copyOf(successtypecleanups, successtypecleanups.length);
+        }
+    }
 
     public String[] getFailuretypecleanups() {
-        return failuretypecleanups;
+        return Arrays.copyOf(failuretypecleanups, failuretypecleanups.length);
+    }
+
+    public void setFailuretypecleanups(String[] failuretypecleanups) {
+        if (failuretypecleanups != null) {
+            this.failuretypecleanups = Arrays.copyOf(failuretypecleanups, failuretypecleanups.length);
+        }
     }
 
     public InvokeServiceListType getInvokedServiceList() {
         return invokedServiceList;
     }
 
+    public void setInvokedServiceList(InvokeServiceListType invokedServiceList) {
+
+        this.invokedServiceList = invokedServiceList;
+    }
+
     public ProvideServiceListType getProvideServiceList() {
         return provideServiceList;
+    }
+
+    public void setProvideServiceList(ProvideServiceListType provideServiceList) {
+        this.provideServiceList = provideServiceList;
     }
 
     public MexInterpreterListType getMexInterceptors() {
         return mexInterceptors;
     }
 
+    public void setMexInterceptors(MexInterpreterListType mexInterceptors) {
+        this.mexInterceptors = mexInterceptors;
+    }
+
     public PropertyListType getPropertyList() {
         return propertyList;
     }
 
+    public void setPropertyList(PropertyListType propertyList) {
+        this.propertyList = propertyList;
+    }
+
     public ScopeEventType[] getScopeEvents() {
-        return scopeEvents;
+        return Arrays.copyOf(scopeEvents, scopeEvents.length);
+    }
+
+    public void setScopeEvents(ScopeEventType[] scopeEvents) {
+        if (scopeEvents != null) {
+            this.scopeEvents = Arrays.copyOf(scopeEvents, scopeEvents.length);;
+        }
     }
 
     public String getProcessstate() {
@@ -98,49 +166,6 @@ public class DeploymentDescriptorUpdater {
     public void setProcessstate(String processstate) {
         this.processstate = processstate;
     }
-
-    public void setSuccesstypecleanups(String[] successtypecleanups) {
-        this.successtypecleanups = successtypecleanups;
-    }
-
-    public void setFailuretypecleanups(String[] failuretypecleanups) {
-        this.failuretypecleanups = failuretypecleanups;
-    }
-
-    public void setScopeEvents(ScopeEventType[] scopeEvents) {
-        this.scopeEvents = scopeEvents;
-    }
-
-
-    public void setPropertyList(PropertyListType propertyList) {
-        this.propertyList = propertyList;
-    }
-
-    public void setMexInterceptors(MexInterpreterListType mexInterceptors) {
-        this.mexInterceptors = mexInterceptors;
-    }
-
-    public void setProvideServiceList(ProvideServiceListType provideServiceList) {
-        this.provideServiceList = provideServiceList;
-    }
-
-    public void setInvokedServiceList(InvokeServiceListType invokedServiceList) {
-
-        this.invokedServiceList = invokedServiceList;
-    }
-
-    public void setInmemorystatus(String inmemorystatus) {
-        this.inmemorystatus = inmemorystatus;
-    }
-
-    public void setEvents(String[] events) {
-        this.events = events;
-    }
-
-    public void setGentype(String gentype) {
-        this.gentype = gentype;
-    }
-
 
     private boolean containsEvent(String st) {
         if (events != null) {

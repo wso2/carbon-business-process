@@ -18,30 +18,29 @@ package org.wso2.carbon.bpel.b4p.coordination.dao;
 
 /**
  * The database type holder enum.
- *
  */
 public enum DatabaseType {
 
-	DEFAULT,
+    DEFAULT,
 
-	DB2,
+    DB2,
 
-	DERBY,
+    DERBY,
 
-	H2,
+    H2,
 
-	HSQL,
+    HSQL,
 
-	INFORMIX,
+    INFORMIX,
 
-	MYSQL,
+    MYSQL,
 
-	ORACLE,
+    ORACLE,
 
-	POSTGRESQL,
+    POSTGRESQL,
 
-	SQL_SERVER,
+    SQL_SERVER,
 
-	SYBASE
+    SYBASE
 
 }

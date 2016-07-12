@@ -21,7 +21,7 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 public class BPMNExtensionsHolder {
-    private static BPMNExtensionsHolder holder = new BPMNExtensionsHolder();
+    private static final BPMNExtensionsHolder holder = new BPMNExtensionsHolder();
 
     private RegistryService registryService;
     private BPMNEngineService engineService;

@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,7 +26,13 @@ import org.wso2.carbon.bpel.core.ode.integration.store.BPELDeploymentContext;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.Utils;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.ProcessManagementException;
-import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.*;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.CleanUpType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.EnableEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Generate_type1;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ProcessEventsListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventListType;
+import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ScopeEventType;
 import org.wso2.carbon.registry.core.Collection;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
@@ -99,7 +105,7 @@ public class BPELPackageRepository {
         Resource latestBPELArchive = configRegistry.newResource();
         latestBPELArchive.setContent(new FileInputStream(bpelDeploymentContext.getBpelArchive()));
         configRegistry.put(BPELPackageRepositoryUtils.
-                getBPELPackageArchiveResourcePath(bpelDeploymentContext.getBpelPackageName()),
+                        getBPELPackageArchiveResourcePath(bpelDeploymentContext.getBpelPackageName()),
                 latestBPELArchive);
     }
 
@@ -200,7 +206,7 @@ public class BPELPackageRepository {
             String packageLocation =
                     BPELPackageRepositoryUtils.getResourcePathForBPELPackage(packageName);
             if (!configRegistry.getRegistryContext().isReadOnly() &&
-                configRegistry.resourceExists(packageLocation)) {
+                    configRegistry.resourceExists(packageLocation)) {
                 configRegistry.delete(packageLocation);
             } else {
                 throw new IllegalAccessException();
@@ -208,7 +214,7 @@ public class BPELPackageRepository {
 
         } catch (RegistryException re) {
             String errMessage = "Unable to access registry for handling BPEL package " +
-                                "undeployment for Package: " + packageName;
+                    "undeployment for Package: " + packageName;
             log.error(errMessage, re);
             throw re;
         } catch (IllegalAccessException e) {
@@ -253,7 +259,7 @@ public class BPELPackageRepository {
             throws RegistryException, IOException, NoSuchAlgorithmException {
         String resourceLocation =
                 BPELPackageRepositoryUtils.getResourcePathForBPELPackage(deploymentContext);
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("BPEL Package resource location : " + resourceLocation);
         }
         if (configRegistry.resourceExists(resourceLocation)) {
@@ -300,12 +306,12 @@ public class BPELPackageRepository {
 
         List<BPELPackageInfo> sortedPackageList = new ArrayList<BPELPackageInfo>();
         Map<String, BPELPackageInfo> packageInfoMap = new HashMap<String, BPELPackageInfo>();
-        for(BPELPackageInfo packageInfo : packageList) {
+        for (BPELPackageInfo packageInfo : packageList) {
             packageInfoMap.put(packageInfo.getName(), packageInfo);
         }
         SortedSet<String> sortedPackageNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
         sortedPackageNames.addAll(packageInfoMap.keySet());
-        for ( String packageName : sortedPackageNames) {
+        for (String packageName : sortedPackageNames) {
             sortedPackageList.add(packageInfoMap.get(packageName));
         }
 
@@ -512,7 +518,7 @@ public class BPELPackageRepository {
      */
 
     private void createCollectionWithBPELPackageWithoutContentForCurrentVersion(
-            BPELDeploymentContext deploymentContext) throws RegistryException{
+            BPELDeploymentContext deploymentContext) throws RegistryException {
 
         String collectionLocation = BPELPackageRepositoryUtils.getResourcePathForBPELPackageContent(deploymentContext);
         Collection collection = configRegistry.newCollection();
@@ -595,15 +601,19 @@ public class BPELPackageRepository {
     public void createPropertiesForUpdatedDeploymentInfo(ProcessConfigurationImpl processConfiguration)
             throws RegistryException, IOException, NoSuchAlgorithmException, ProcessManagementException {
 
-        String versionlessPackageName = BPELPackageRepositoryUtils.getVersionlessPackageName(processConfiguration.getPackage());
+        String versionlessPackageName = BPELPackageRepositoryUtils.getVersionlessPackageName(processConfiguration
+                .getPackage());
         String packageLocation =
-                BPELPackageRepositoryUtils.getResourcePathForDeployInfoUpdatedBPELPackage(processConfiguration.getPackage(), versionlessPackageName);
+                BPELPackageRepositoryUtils.getResourcePathForDeployInfoUpdatedBPELPackage(processConfiguration
+                        .getPackage(), versionlessPackageName);
         Resource bpelPackage = configRegistry.get(packageLocation);
 
         bpelPackage.setProperty(BPELConstants.BPEL_INSTANCE_CLEANUP_FAILURE + processConfiguration.getProcessId(),
-                BPELPackageRepositoryUtils.getBPELPackageFailureCleanUpsAsString(processConfiguration.getCleanupCategories(false)));
+                BPELPackageRepositoryUtils.getBPELPackageFailureCleanUpsAsString(processConfiguration
+                        .getCleanupCategories(false)));
         bpelPackage.setProperty(BPELConstants.BPEL_INSTANCE_CLEANUP_SUCCESS + processConfiguration.getProcessId(),
-                BPELPackageRepositoryUtils.getBPELPackageSuccessCleanUpsInList(processConfiguration.getCleanupCategories(true)));
+                BPELPackageRepositoryUtils.getBPELPackageSuccessCleanUpsInList(processConfiguration
+                        .getCleanupCategories(true)));
         bpelPackage.setProperty(BPELConstants.BPEL_PROCESS_EVENT_GENERATE + processConfiguration.getProcessId(),
                 BPELPackageRepositoryUtils.getBPELPackageProcessGenerateType(processConfiguration.getGenerateType()));
         bpelPackage.setProperty(BPELConstants.BPEL_PROCESS_EVENTS + processConfiguration.getProcessId(),
@@ -617,7 +627,8 @@ public class BPELPackageRepository {
         scopeEvents = BPELPackageRepositoryUtils.getBPELPackageScopeEventsInList(processConfiguration.getEvents());
         if (!scopeEvents.isEmpty()) {
             for (int k = 0; k < scopeEvents.size(); k++) {
-                bpelPackage.setProperty(BPELConstants.BPEL_PROCESS_SCOPE_EVENT + (k + 1) + processConfiguration.getProcessId(),
+                bpelPackage.setProperty(BPELConstants.BPEL_PROCESS_SCOPE_EVENT + (k + 1) + processConfiguration
+                        .getProcessId(),
                         scopeEvents.get(k));
             }
         }
@@ -633,10 +644,12 @@ public class BPELPackageRepository {
      *                                    original exception we got when accessing registry
      * @throws ProcessManagementException
      */
-    public void readPropertiesOfUpdatedDeploymentInfo(ProcessConfigurationImpl processConfiguration, String bpelPackageName) throws RegistryException, ProcessManagementException {
+    public void readPropertiesOfUpdatedDeploymentInfo(ProcessConfigurationImpl processConfiguration, String
+            bpelPackageName) throws RegistryException, ProcessManagementException {
         String versionlessPackageName = BPELPackageRepositoryUtils.getVersionlessPackageName(bpelPackageName);
         String packageLocation =
-                BPELPackageRepositoryUtils.getResourcePathForDeployInfoUpdatedBPELPackage(processConfiguration.getPackage(), versionlessPackageName);
+                BPELPackageRepositoryUtils.getResourcePathForDeployInfoUpdatedBPELPackage(processConfiguration
+                        .getPackage(), versionlessPackageName);
         Resource bpelPackage = configRegistry.get(packageLocation);
 
         String stateInString = bpelPackage.getProperty(BPELConstants.BPEL_PROCESS_STATE +

@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
-        <version>4.4.9-SNAPSHOT</version>
+        <version>4.4.10-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -101,7 +101,7 @@
                         <Import-Package>
                             !org.wso2.carbon.bpmn.analytics.publisher.*,
                             org.wso2.carbon.bpmn.core.*,
-                            org.wso2.carbon.databridge.commons.*;version="${carbon.analytics.common.imp.pkg.version}",
+                            org.wso2.carbon.databridge.commons;version="5.0.11",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>

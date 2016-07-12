@@ -20,6 +20,9 @@ import org.apache.axis2.AxisFault;
 
 import javax.xml.namespace.QName;
 
+/**
+ * BPEL Fault. Wraps AxisFault.
+ */
 public class BPELFault extends AxisFault {
     public static final QName FAULT = new QName("http://wso2.org/bps", "Fault");
 
@@ -36,6 +39,6 @@ public class BPELFault extends AxisFault {
     }
 
     public BPELFault(String message, Throwable cause) {
-        super(new QName("java:"+cause.getClass().getPackage(), cause.getClass().getName(), "java"), message, cause);
+        super(new QName("java:" + cause.getClass().getPackage(), cause.getClass().getName(), "java"), message, cause);
     }
 }

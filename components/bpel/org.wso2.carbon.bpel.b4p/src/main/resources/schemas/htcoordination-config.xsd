@@ -1,6 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://wso2.org/bps/b4p/coordination/config"
             xmlns:tns="http://wso2.org/bps/b4p/coordination/config"
+            targetNamespace="http://wso2.org/bps/b4p/coordination/config"
             elementFormDefault="qualified">
     <xsd:element name="HumanTaskCoordinationConfiguration" type="tns:tHtCoordinationConfig"/>
     <xsd:complexType name="tHtCoordinationConfig">
@@ -8,14 +8,14 @@
             <xsd:element name="TaskCoordinationEnabled" type="xsd:boolean"/>
             <xsd:element name="TaskProtocolHandlerAuthentication" type="tns:tTaskAuthenticationConfig"/>
             <xsd:element name="RegistrationServiceEnabled" type="xsd:boolean"/>
-            <xsd:element name="PersistenceConfig" type="tns:tPersistenceConfig" />
+            <xsd:element name="PersistenceConfig" type="tns:tPersistenceConfig"/>
             <xsd:element name="ClusteredTaskEngines" type="tns:tClusterConfig"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="tTaskAuthenticationConfig">
         <xsd:sequence>
             <xsd:element name="Username" type="xsd:string"/>
-            <xsd:element name="Password" type="xsd:string" />
+            <xsd:element name="Password" type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="tClusterConfig">

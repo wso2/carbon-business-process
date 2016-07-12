@@ -42,15 +42,8 @@ import org.wso2.carbon.user.core.service.RealmService;
 public class B4PServiceComponent {
     private static Log log = LogFactory.getLog(B4PServiceComponent.class);
 
-    protected void activate(ComponentContext ctxt) {
-        try {
-            initHumanTaskCoordination();
-            if(log.isDebugEnabled()) {
-                log.debug("B4P bundle is activated.");
-            }
-        } catch (Throwable t) {
-            log.error("Failed to activate the B4P component.", t);
-        }
+    public static BPELServer getBPELServer() {
+        return B4PContentHolder.getInstance().getBpelServer();
     }
 
     protected void setBPELServer(BPELEngineService bpelEngineService) {
@@ -60,16 +53,23 @@ public class B4PServiceComponent {
         B4PContentHolder.getInstance().setBpelServer(bpelEngineService.getBPELServer());
     }
 
+    protected void activate(ComponentContext ctxt) {
+        try {
+            initHumanTaskCoordination();
+            if (log.isDebugEnabled()) {
+                log.debug("B4P bundle is activated.");
+            }
+        } catch (Throwable t) {
+            log.error("Failed to activate the B4P component.", t);
+        }
+    }
+
     protected void unsetBPELServer(
             BPELEngineService bpelEngineService) {
         if (log.isDebugEnabled()) {
             log.debug("BPELEngineService unbound from the B4P component");
         }
         B4PContentHolder.getInstance().setBpelServer(null);
-    }
-
-    public static BPELServer getBPELServer() {
-        return B4PContentHolder.getInstance().getBpelServer();
     }
 
     protected void setRealmService(RealmService realmService) {

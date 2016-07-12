@@ -19,9 +19,9 @@ package org.wso2.carbon.bpel.b4p.coordination.db;
 /**
  * The exception representing issues with B4P Coordination's db configuration.
  */
-public class DatabaseConfigurationException extends  Exception{
+public class DatabaseConfigurationException extends Exception {
 
-    private static final long serialVersionUID =  45L;
+    private static final long serialVersionUID = 45L;
 
     public DatabaseConfigurationException(String msg, Exception ex) {
         super(msg, ex);

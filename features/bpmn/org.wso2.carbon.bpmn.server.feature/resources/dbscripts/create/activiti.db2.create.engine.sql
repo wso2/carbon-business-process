@@ -1,3 +1,17 @@
+create table ACT_BPS_SUBSTITUTES (
+    USER varchar(255) not null,
+    SUBSTITUTE varchar(255) not null,
+    TASK_LIST varchar(1000),
+    SUBSTITUTION_START timestamp not null,
+    SUBSTITUTION_END timestamp,
+    ENABLED integer default 1,
+    CREATED timestamp,
+    UPDATED timestamp,
+    TRANSITIVE_SUBSTITUTE varchar(255),
+    TENANT_ID INT NOT NULL,
+    primary key (USER, TENANT_ID)
+);
+
 create table ACT_GE_PROPERTY (
     NAME_ varchar(64) not null,
     VALUE_ varchar(300),
@@ -6,10 +20,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.18.0.1', 1);
+values ('schema.version', '5.21.0.0', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.18.0.1)', 1);
+values ('schema.history', 'create(5.21.0.0)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);

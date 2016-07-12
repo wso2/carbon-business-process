@@ -31,7 +31,6 @@ import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerInitializer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELSchedulerShutdown;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
-import org.wso2.carbon.core.ServerStartupHandler;
 import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.ndatasource.core.DataSourceService;
 import org.wso2.carbon.registry.core.service.RegistryService;
@@ -49,7 +48,8 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
  * unbind="unsetDataSourceService"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
- * @scr.reference name="attachment.mgt.service" interface="org.wso2.carbon.attachment.mgt.server.AttachmentServerService"
+ * @scr.reference name="attachment.mgt.service"
+ * interface="org.wso2.carbon.attachment.mgt.server.AttachmentServerService"
  * cardinality="1..1" policy="dynamic"  bind="setAttachmentMgtService"
  * unbind="unsetAttachmentMgtService"
  * @scr.reference name="user.realmservice.default"
@@ -203,7 +203,7 @@ public class BPELServiceComponent {
         BPELServerHolder.getInstance().setRealmService(null);
     }
 
-    public static RealmService getRealmService(){
+    public static RealmService getRealmService() {
         return BPELServerHolder.getInstance().getRealmService();
     }
 
@@ -215,7 +215,7 @@ public class BPELServiceComponent {
         BPELServerHolder.getInstance().setHazelcastInstance(null);
     }
 
-    public static HazelcastInstance getHazelcastInstance(){
+    public static HazelcastInstance getHazelcastInstance() {
         return BPELServerHolder.getInstance().getHazelcastInstance();
     }
 

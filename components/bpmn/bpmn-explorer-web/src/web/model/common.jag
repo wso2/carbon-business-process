@@ -59,7 +59,8 @@ if (httpUrl == null || httpUrl === "") {
         //retrieve host name and the port from the deployed server assuming it's a BPS
         log.info('Starting BPMN-explorer in default configuration');
         var process = require("process");
-        bpsHost = process.getProperty('carbon.local.ip');
+        var NetworkUtils = Packages.org.wso2.carbon.utils.NetworkUtils;
+        bpsHost = NetworkUtils.getLocalHostname();
         bpsPort = process.getProperty('mgt.transport.https.port');
     }
 
@@ -119,6 +120,7 @@ if(log.isDebugEnabled()) {
 var dashboardNavActive = ''; //Dashboard veiw [updated at statsModel and refered at navigation.jag]
 var myTasksNavActive = ''; //My Tasks veiw [updated at myTasksModel, refered at navigation.jag]
 var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTaskModel, refered at navigation.jag]
+var substitutionNavActive = ''; //Task substitution view [updated at substitutionModel, refered at navigation.jag]
 var completedTasksNavActive = ''; // Completed task view [updated at historicTasksModel, refered at navigation.jag]
 var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
 var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
@@ -130,6 +132,10 @@ var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErr
 // errorDisplayEnable = '' to display
 var commonErrorMessage = null; //Common error message if exists
 
+//Common Constants
+var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/addSubstituteInfo";
+var ADD_PERMISSION = "add";
+
 
 //START COMMON FUNCTIONS
 
@@ -140,5 +146,15 @@ function getCommonErrorContent (errorMsg) {
     return errorMsg   + '<br><br> <div align="right">'
             + ' <button class="btn btn-info" onclick="window.history.back();">&lt;&lt; Go back to previous page</button> '
             + ' <a class="btn btn-info" href="stats">Go to home</a></div>';
+}
+
+function epochToFormattedTime (epochTime) {
+    var time = new Date(epochTime);
+    return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
+}
+
+function epochToVisualFormattedTime (epochTime) {
+    var time = new Date(epochTime);
+    return time;
 }
 %>

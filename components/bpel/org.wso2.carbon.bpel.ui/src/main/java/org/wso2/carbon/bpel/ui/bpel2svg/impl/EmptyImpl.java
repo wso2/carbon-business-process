@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
-import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.EmptyInterface;
 
 /**
@@ -28,6 +28,7 @@ public class EmptyImpl extends SimpleActivityImpl implements EmptyInterface {
 
     /**
      * Initializes a new instance of the EmptyImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public EmptyImpl(String token) {
@@ -39,8 +40,10 @@ public class EmptyImpl extends SimpleActivityImpl implements EmptyInterface {
         endIconPath = BPEL2SVGFactory.getInstance()
                 .getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the EmptyImpl class using the specified omElement
+     *
      * @param omElement which matches the Empty tag
      */
     public EmptyImpl(OMElement omElement) {
@@ -57,6 +60,7 @@ public class EmptyImpl extends SimpleActivityImpl implements EmptyInterface {
      * Initializes a new instance of the EmptyImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Empty Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Empty tag
      * @param parent
      */
@@ -68,7 +72,6 @@ public class EmptyImpl extends SimpleActivityImpl implements EmptyInterface {
     }
 
     /**
-     *
      * @return- String with the end tag of Empty Activity
      */
     @Override

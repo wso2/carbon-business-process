@@ -20,38 +20,38 @@ package org.wso2.carbon.bpel.core.ode.integration.config.analytics;
  */
 public interface AnalyticsConstants {
 
-	public static final String EMPTY = "";
+    public static final String EMPTY = "";
 
-	// Root level attributes.
-	public static final String NAME = "name";
-	public static final String TYPE = "type";
+    // Root level attributes.
+    public static final String NAME = "name";
+    public static final String TYPE = "type";
 
-	// Connection element and its attributes.
-	public static final String CONNECTION = "Connection";
-	public static final String CONNECTION_RECEIVER_URL_SET = "receiverURLSet";
-	public static final String CONNECTION_AUTH_URL_SET = "authURLSet";
+    // Connection element and its attributes.
+    public static final String CONNECTION = "Connection";
+    public static final String CONNECTION_RECEIVER_URL_SET = "receiverURLSet";
+    public static final String CONNECTION_AUTH_URL_SET = "authURLSet";
 
-	// Credential element and its attributes. 
-	public static final String CREDENTIAL = "Credential";
-	public static final String CREDENTIAL_USER_NAME = "userName";
-	public static final String CREDENTIAL_PASSWORD = "password";
+    // Credential element and its attributes.
+    public static final String CREDENTIAL = "Credential";
+    public static final String CREDENTIAL_USER_NAME = "userName";
+    public static final String CREDENTIAL_PASSWORD = "password";
 
-	// Streams element and its sub elements.
-	public static final String STREAMS = "Streams";
-	public static final String STREAM = "Stream";
+    // Streams element and its sub elements.
+    public static final String STREAMS = "Streams";
+    public static final String STREAM = "Stream";
 
-	public static final String STREAM_NAME = "name";
-	public static final String STREAM_VERSION = "version";
-	public static final String STREAM_NICKNAME = "nickName";
-	public static final String STREAM_DESCRIPTION = "description";
-	public static final String STREAM_DATA = "Data";
-	public static final String STREAM_DATA_KEY = "Key";
-	public static final String STREAM_DATA_KEY_NAME = "name";
-	public static final String STREAM_DATA_KEY_TYPE = "type";
-	public static final String STREAM_DATA_KEY_FROM = "From";
-	public static final String STREAM_DATA_KEY_FROM_VARIABLE = "variable";
-	public static final String STREAM_DATA_KEY_FROM_PART = "part";
-	public static final String STREAM_DATA_KEY_FROM_QUERY = "Query";
+    public static final String STREAM_NAME = "name";
+    public static final String STREAM_VERSION = "version";
+    public static final String STREAM_NICKNAME = "nickName";
+    public static final String STREAM_DESCRIPTION = "description";
+    public static final String STREAM_DATA = "Data";
+    public static final String STREAM_DATA_KEY = "Key";
+    public static final String STREAM_DATA_KEY_NAME = "name";
+    public static final String STREAM_DATA_KEY_TYPE = "type";
+    public static final String STREAM_DATA_KEY_FROM = "From";
+    public static final String STREAM_DATA_KEY_FROM_VARIABLE = "variable";
+    public static final String STREAM_DATA_KEY_FROM_PART = "part";
+    public static final String STREAM_DATA_KEY_FROM_QUERY = "Query";
 
 
 }

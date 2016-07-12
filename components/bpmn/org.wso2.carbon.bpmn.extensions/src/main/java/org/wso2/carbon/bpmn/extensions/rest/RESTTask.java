@@ -119,7 +119,6 @@ public class RESTTask implements JavaDelegate {
     private static final String POST_METHOD = "POST";
     private static final String PUT_METHOD = "PUT";
     private static final String DELETE_METHOD = "DELETE";
-    private RESTInvoker restInvoker;
 
     private Expression serviceURL;
     private Expression basicAuthUsername;
@@ -138,9 +137,9 @@ public class RESTTask implements JavaDelegate {
                     serviceURL.getValue(execution).toString());
         }
 
-        restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
+        RESTInvoker restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
 
-        String output = "";
+        String output;
         String url = null;
         String bUsername = null;
         String bPassword = null;
@@ -155,19 +154,23 @@ public class RESTTask implements JavaDelegate {
             } else if (serviceRef != null) {
                 String resourcePath = serviceRef.getValue(execution).toString();
                 String registryPath;
+                String tenantId = execution.getTenantId();
+                Registry registry;
                 if (resourcePath.startsWith(GOVERNANCE_REGISTRY_PREFIX)) {
                     registryPath = resourcePath.substring(GOVERNANCE_REGISTRY_PREFIX.length());
+                    registry = BPMNExtensionsComponent.getRegistryService().getGovernanceSystemRegistry(
+                            Integer.parseInt(tenantId));
                 } else if (resourcePath.startsWith(CONFIGURATION_REGISTRY_PREFIX)) {
                     registryPath = resourcePath.substring(CONFIGURATION_REGISTRY_PREFIX.length());
+                    registry = BPMNExtensionsComponent.getRegistryService().getConfigSystemRegistry(
+                            Integer.parseInt(tenantId));
                 } else {
                     String msg = "Registry type is not specified for service reference in " +
                             getTaskDetails(execution) +
                             ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
                     throw new RESTClientException(msg);
                 }
-                String tenantId = execution.getTenantId();
-                Registry registry = BPMNExtensionsComponent.getRegistryService().getLocalRepository(Integer.parseInt(tenantId));
-                //UserRegistry configSystemRegistry = BPMNExtensionsComponent.getRegistryService().getLocalRepository();
+
                 if (log.isDebugEnabled()) {
                     log.debug("Reading endpoint from registry location: " + registryPath + " for task " + getTaskDetails(execution));
                 }
@@ -199,14 +202,14 @@ public class RESTTask implements JavaDelegate {
 
             if (POST_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
-                output = this.restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
+                output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else if (GET_METHOD.equals(method.getValue(execution).toString().trim())) {
-                output = this.restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
+                output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
             } else if (PUT_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
-                output = this.restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
+                output = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else if (DELETE_METHOD.equals(method.getValue(execution).toString().trim())) {
-                output = this.restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
+                output = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
             } else {
                 String errorMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
                 throw new RESTClientException(errorMsg);
@@ -214,7 +217,7 @@ public class RESTTask implements JavaDelegate {
 
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
-                execution.setVariable(outVarName, output);
+                execution.setVariableLocal(outVarName, output);
             } else if (outputMappings != null) {
                 try {
                     new JSONObject(output);

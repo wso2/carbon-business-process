@@ -20,7 +20,9 @@ import org.wso2.carbon.bpel.ui.bpel2svg.impl.AssignImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.CompensateImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.CompensateScopeImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.ElseIfImpl;
-import org.wso2.carbon.bpel.ui.bpel2svg.impl.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.ElseImpl;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.EmptyImpl;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.ExitImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.FlowImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.ForEachImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.IfImpl;
@@ -28,12 +30,15 @@ import org.wso2.carbon.bpel.ui.bpel2svg.impl.InvokeImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.OnAlarmImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.OnEventImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.OnMessageImpl;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.PickImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.ProcessImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.ReThrowImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.ReceiveImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.RepeatUntilImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.ReplyImpl;
-import org.wso2.carbon.bpel.ui.bpel2svg.impl.PickImpl;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.ScopeImpl;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.ThrowImpl;
+import org.wso2.carbon.bpel.ui.bpel2svg.impl.WaitImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.WhileImpl;
 
 /**
@@ -42,88 +47,89 @@ import org.wso2.carbon.bpel.ui.bpel2svg.impl.WhileImpl;
 public class BPEL2SVGFactory {
     // Constants
     // START_TAGS
-    public final static String ASSIGN_START_TAG = "assign";
-    public final static String CATCH_START_TAG = "catch";
-    public final static String CATCHALL_START_TAG = "catchAll";
-    public final static String COMPENSATESCOPE_START_TAG = "compensateScope";
-    public final static String COMPENSATE_START_TAG = "compensate";
-    public final static String COMPENSATIONHANDLER_START_TAG = "compensationHandler";
-    public final static String ELSE_START_TAG = "else";
-    public final static String ELSEIF_START_TAG = "elseif";
-    public final static String EVENTHANDLER_START_TAG = "eventHandlers";
-    public final static String EXIT_START_TAG = "exit";
-    public final static String FAULTHANDLER_START_TAG = "faultHandlers";
-    public final static String FLOW_START_TAG = "flow";
-    public final static String FOREACH_START_TAG = "forEach";
-    public final static String IF_START_TAG = "if";
-    public final static String INVOKE_START_TAG = "invoke";
-    public final static String ONALARM_START_TAG = "onAlarm";
-    public final static String ONEVENT_START_TAG = "onEvent";
-    public final static String ONMESSAGE_START_TAG = "onMessage";
-    public final static String PICK_START_TAG = "pick";
-    public final static String PROCESS_START_TAG = "process";
-    public final static String RECEIVE_START_TAG = "receive";
-    public final static String REPEATUNTIL_START_TAG = "repeatUntil";
-    public final static String REPLY_START_TAG = "reply";
-    public final static String RETHROW_START_TAG = "rethrow";
-    public final static String SCOPE_START_TAG = "scope";
-    public final static String SEQUENCE_START_TAG = "sequence";
-    public final static String SOURCE_START_TAG = "source";
-    public final static String SOURCES_START_TAG = "sources";
-    public final static String TARGET_START_TAG = "target";
-    public final static String TARGETS_START_TAG = "targets";
-    public final static String TERMINATIONHANDLER_START_TAG = "terminationHandler";
-    public final static String THROW_START_TAG = "throw";
-    public final static String WAIT_START_TAG = "wait";
-    public final static String WHILE_START_TAG = "while";
-    public final static String EMPTY_START_TAG = "empty";
+    public static final String ASSIGN_START_TAG = "assign";
+    public static final String CATCH_START_TAG = "catch";
+    public static final String CATCHALL_START_TAG = "catchAll";
+    public static final String COMPENSATESCOPE_START_TAG = "compensateScope";
+    public static final String COMPENSATE_START_TAG = "compensate";
+    public static final String COMPENSATIONHANDLER_START_TAG = "compensationHandler";
+    public static final String ELSE_START_TAG = "else";
+    public static final String ELSEIF_START_TAG = "elseif";
+    public static final String EVENTHANDLER_START_TAG = "eventHandlers";
+    public static final String EXIT_START_TAG = "exit";
+    public static final String FAULTHANDLER_START_TAG = "faultHandlers";
+    public static final String FLOW_START_TAG = "flow";
+    public static final String FOREACH_START_TAG = "forEach";
+    public static final String IF_START_TAG = "if";
+    public static final String INVOKE_START_TAG = "invoke";
+    public static final String ONALARM_START_TAG = "onAlarm";
+    public static final String ONEVENT_START_TAG = "onEvent";
+    public static final String ONMESSAGE_START_TAG = "onMessage";
+    public static final String PICK_START_TAG = "pick";
+    public static final String PROCESS_START_TAG = "process";
+    public static final String RECEIVE_START_TAG = "receive";
+    public static final String REPEATUNTIL_START_TAG = "repeatUntil";
+    public static final String REPLY_START_TAG = "reply";
+    public static final String RETHROW_START_TAG = "rethrow";
+    public static final String SCOPE_START_TAG = "scope";
+    public static final String SEQUENCE_START_TAG = "sequence";
+    public static final String SOURCE_START_TAG = "source";
+    public static final String SOURCES_START_TAG = "sources";
+    public static final String TARGET_START_TAG = "target";
+    public static final String TARGETS_START_TAG = "targets";
+    public static final String TERMINATIONHANDLER_START_TAG = "terminationHandler";
+    public static final String THROW_START_TAG = "throw";
+    public static final String WAIT_START_TAG = "wait";
+    public static final String WHILE_START_TAG = "while";
+    public static final String EMPTY_START_TAG = "empty";
     // END_TAGS
-    public final static String ASSIGN_END_TAG = "/assign";
-    public final static String CATCH_END_TAG = "/catch";
-    public final static String CATCHALL_END_TAG = "/catchAll";
-    public final static String COMPENSATESCOPE_END_TAG = "/compensateScope";
-    public final static String COMPENSATE_END_TAG = "/compensate";
-    public final static String COMPENSATIONHANDLER_END_TAG = "/compensationHandler";
-    public final static String ELSE_END_TAG = "/else";
-    public final static String ELSEIF_END_TAG = "/elseif";
-    public final static String EVENTHANDLER_END_TAG = "/eventHandlers";
-    public final static String EXIT_END_TAG = "/exit";
-    public final static String FAULTHANDLER_END_TAG = "/faultHandlers";
-    public final static String FLOW_END_TAG = "/flow";
-    public final static String FOREACH_END_TAG = "/forEach";
-    public final static String IF_END_TAG = "/if";
-    public final static String INVOKE_END_TAG = "/invoke";
-    public final static String ONMESSAGE_END_TAG = "/onMessage";
-    public final static String ONALARM_END_TAG = "/onAlarm";
-    public final static String ONEVENT_END_TAG = "/onEvent";
-    public final static String PICK_END_TAG = "/pick";
-    public final static String PROCESS_END_TAG = "/process";
-    public final static String RECEIVE_END_TAG = "/receive";
-    public final static String REPEATUNTIL_END_TAG = "/repeatUntil";
-    public final static String REPLY_END_TAG = "/reply";
-    public final static String RETHROW_END_TAG = "/rethrow";
-    public final static String SCOPE_END_TAG = "/scope";
-    public final static String SEQUENCE_END_TAG = "/sequence";
-    public final static String SOURCE_END_TAG = "/source";
-    public final static String SOURCES_END_TAG = "/sources";
-    public final static String TARGET_END_TAG = "/target";
-    public final static String TARGETS_END_TAG = "/targets";
-    public final static String TERMINATIONHANDLER_END_TAG = "/terminationHandler";
-    public final static String THROW_END_TAG = "/throw";
-    public final static String WAIT_END_TAG = "/wait";
-    public final static String WHILE_END_TAG = "/while";
-    public final static String EMPTY_END_TAG = "/empty";
+    public static final String ASSIGN_END_TAG = "/assign";
+    public static final String CATCH_END_TAG = "/catch";
+    public static final String CATCHALL_END_TAG = "/catchAll";
+    public static final String COMPENSATESCOPE_END_TAG = "/compensateScope";
+    public static final String COMPENSATE_END_TAG = "/compensate";
+    public static final String COMPENSATIONHANDLER_END_TAG = "/compensationHandler";
+    public static final String ELSE_END_TAG = "/else";
+    public static final String ELSEIF_END_TAG = "/elseif";
+    public static final String EVENTHANDLER_END_TAG = "/eventHandlers";
+    public static final String EXIT_END_TAG = "/exit";
+    public static final String FAULTHANDLER_END_TAG = "/faultHandlers";
+    public static final String FLOW_END_TAG = "/flow";
+    public static final String FOREACH_END_TAG = "/forEach";
+    public static final String IF_END_TAG = "/if";
+    public static final String INVOKE_END_TAG = "/invoke";
+    public static final String ONMESSAGE_END_TAG = "/onMessage";
+    public static final String ONALARM_END_TAG = "/onAlarm";
+    public static final String ONEVENT_END_TAG = "/onEvent";
+    public static final String PICK_END_TAG = "/pick";
+    public static final String PROCESS_END_TAG = "/process";
+    public static final String RECEIVE_END_TAG = "/receive";
+    public static final String REPEATUNTIL_END_TAG = "/repeatUntil";
+    public static final String REPLY_END_TAG = "/reply";
+    public static final String RETHROW_END_TAG = "/rethrow";
+    public static final String SCOPE_END_TAG = "/scope";
+    public static final String SEQUENCE_END_TAG = "/sequence";
+    public static final String SOURCE_END_TAG = "/source";
+    public static final String SOURCES_END_TAG = "/sources";
+    public static final String TARGET_END_TAG = "/target";
+    public static final String TARGETS_END_TAG = "/targets";
+    public static final String TERMINATIONHANDLER_END_TAG = "/terminationHandler";
+    public static final String THROW_END_TAG = "/throw";
+    public static final String WAIT_END_TAG = "/wait";
+    public static final String WHILE_END_TAG = "/while";
+    public static final String EMPTY_END_TAG = "/empty";
 
-    public final static String SINGLE_LINE_END_TAG = "/>";
-    public final static int TEXT_ADJUST = 10;
-
+    public static final String SINGLE_LINE_END_TAG = "/>";
+    public static final int TEXT_ADJUST = 10;
+    private static volatile BPEL2SVGFactory instance = null;
     // Properties
     //Variable with the source of the images/icons
     public String iconSource = "images/bpel2svg";
-    private static BPEL2SVGFactory instance = null;
+    public LayoutManager layoutManager = null;
+    // Icon Extension for the activity icons
+    private String iconExtension = ".png";
 
     /**
-     *
      * @return instance of a BPEL2SVGFactory
      */
     public static BPEL2SVGFactory getInstance() {
@@ -133,10 +139,7 @@ public class BPEL2SVGFactory {
         return instance;
     }
 
-    public LayoutManager layoutManager = null;
-
     /**
-     *
      * @return instance of LayoutManager
      */
     public LayoutManager getLayoutManager() {
@@ -148,19 +151,18 @@ public class BPEL2SVGFactory {
 
     /**
      * Sets the layoutManager
+     *
      * @param layoutManager
      */
     public void setLayoutManager(LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
 
-    // Icon Extension for the activity icons
-    private String iconExtension = ".png";
-
     //Getter and Setter of the icon extension of the activity icons
 
     /**
      * Gets the extension of the activity icon
+     *
      * @return String with the extension of the activity icon
      */
     public String getIconExtension() {
@@ -169,6 +171,7 @@ public class BPEL2SVGFactory {
 
     /**
      * Sets the extension of the activity icon
+     *
      * @param iconExtension extension of the activity icon
      */
     public void setIconExtension(String iconExtension) {
@@ -177,6 +180,7 @@ public class BPEL2SVGFactory {
 
     /**
      * Gets the start icon path of each activity
+     *
      * @param activity String with the activity type/name
      * @return String with the start icon path relevant to each activity according to the activity type/name
      */
@@ -239,6 +243,7 @@ public class BPEL2SVGFactory {
 
     /**
      * Gets the end icon path of each activity
+     *
      * @param activity String with the activity type/name
      * @return String with the end icon path relevant to each activity according to the activity type/name
      */
@@ -269,6 +274,7 @@ public class BPEL2SVGFactory {
 
     /**
      * Gets the source of the activity icon
+     *
      * @return String with the source of the activity icon
      */
     public String getIconSource() {
@@ -277,6 +283,7 @@ public class BPEL2SVGFactory {
 
     /**
      * Sets the source of the activity icon
+     *
      * @param iconSource source of the activity icon
      */
     public void setIconSource(String iconSource) {

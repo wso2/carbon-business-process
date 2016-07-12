@@ -23,15 +23,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
+import org.wso2.carbon.bpmn.people.substitution.SubstitutionDataHolder;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
 import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
+import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteInfoCollectionResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteInfoResponse;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstituteRequest;
-import org.wso2.carbon.bpmn.rest.model.runtime.SubstitutionRequest;
+import org.wso2.carbon.bpmn.rest.model.common.BooleanResponse;
+import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -56,10 +55,12 @@ public class UserSubstitutionService {
 
     private static final String ASCENDING = "asc";
     private static final String DESCENDING = "desc";
-    public static final String ADD_PERMISSION = "add";
+    private static final String ADD_PERMISSION = "add";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
-    private static final boolean subsFeatureEnabled = UserSubstitutionUtils.isSubstitutionFeatureEnabled();
+    private static final String TRUE = "true";
+    private static final String FALSE = "false";
+    private static final boolean subsFeatureEnabled = SubstitutionDataHolder.getInstance().isSubstitutionFeatureEnabled();
 
     protected static final HashMap<String, String> propertiesMap = new HashMap<>();
 
@@ -118,7 +119,8 @@ public class UserSubstitutionService {
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
             //at this point, substitution is enabled by default
             UserSubstitutionUtils
-                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList(), tenantId);
+                    .handleNewSubstituteAddition(assignee, substitute, startTime, endTime, true, request.getTaskList(),
+                            tenantId);
 
             return Response.created(new URI("substitutes/" + assignee)).build();
 
@@ -141,8 +143,8 @@ public class UserSubstitutionService {
     @PUT
     @Path("/{user}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response updateSubstituteInfo(@PathParam("user") String user,
-            SubstitutionRequest request) throws URISyntaxException {
+    public Response updateSubstituteInfo(@PathParam("user") String user, SubstitutionRequest request) throws
+            URISyntaxException {
         try {
             if (!subsFeatureEnabled) {
                 return Response.status(405).build();
@@ -167,6 +169,7 @@ public class UserSubstitutionService {
             if (!UserSubstitutionUtils.validateTasksList(request.getTaskList(), assignee)) {
                 throw new ActivitiIllegalArgumentException("Invalid task list provided, for substitution.");
             }
+
 
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
             UserSubstitutionUtils
@@ -214,8 +217,12 @@ public class UserSubstitutionService {
     @GET
     @Path("/{user}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response getSubstitute(@PathParam("user") String user) {
+    public Response getSubstitute(@PathParam("user") String user) throws UserStoreException {
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        if (!loggedInUser.equals(user) && !hasSubstitutionViewPermission()) {
+            throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
+        }
         SubstitutesDataModel model = UserSubstitutionUtils.getSubstituteOfUser(user, tenantId);
         if (model != null) {
             SubstituteInfoResponse response = new SubstituteInfoResponse();
@@ -231,6 +238,23 @@ public class UserSubstitutionService {
 
     }
 
+    /**
+     * Check the logged in user has permission for viewing other substitutions.
+     * @return true if the permission sufficient
+     * @throws UserStoreException
+     */
+    private boolean hasSubstitutionViewPermission() throws UserStoreException {
+        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        UserRealm userRealm = BPMNOSGIService.getUserRealm();
+        return userRealm.getAuthorizationManager()
+                .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
+    }
+
+    /**
+     * Query the substitution records based on substitute, assignee and enabled or disabled.
+     * Pagination parameters, start, size, sort, order are allowed.
+     * @return paginated list of substitution info records
+     */
     @GET
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -246,34 +270,29 @@ public class UserSubstitutionService {
             }
         }
 
+        //validate the parameters
         try {
-            if (queryMap.get(SubstitutionQueryProperties.USER) != null) {
-                getRequestedAssignee(queryMap.get(SubstitutionQueryProperties.USER));
-            }
-
-            if (queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
-                String substitute = queryMap.get(SubstitutionQueryProperties.SUBSTITUTE);
-                String loggedUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-                if (!substitute.equals(loggedUser)) {
-                    UserRealm userRealm = BPMNOSGIService.getUserRealm();
-                    boolean isAuthorized = userRealm.getAuthorizationManager()
-                            .isUserAuthorized(loggedUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, "get");
-                    if (!isAuthorized || userRealm.getUserStoreManager().isExistingUser(substitute)) {
-                        throw new ActivitiIllegalArgumentException(
-                                "Unauthorized action or invalid parameter substitute: " + substitute);
-                    }
+            if (!hasSubstitutionViewPermission()) {
+                String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+                if (!((queryMap.get(SubstitutionQueryProperties.USER) != null && queryMap
+                        .get(SubstitutionQueryProperties.USER).equals(loggedInUser)) || (
+                        queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null && queryMap
+                                .get(SubstitutionQueryProperties.SUBSTITUTE).equals(loggedInUser)))) {
+                    throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
                 }
             }
         } catch (UserStoreException e) {
-            throw new ActivitiException("Error accessing User Store", e);
+            throw new ActivitiException("Error accessing User Store for input validations", e);
         }
 
         //validate pagination parameters
         validatePaginationParams(queryMap);
 
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-        List<PaginatedSubstitutesDataModel> dataModelList = UserSubstitutionUtils.querySubstitutions(queryMap, tenantId);
+        List<SubstitutesDataModel> dataModelList = UserSubstitutionUtils.querySubstitutions(queryMap, tenantId);
+        int totalResultCount = UserSubstitutionUtils.getQueryResultCount(queryMap, tenantId);
         SubstituteInfoCollectionResponse collectionResponse = new SubstituteInfoCollectionResponse();
+        collectionResponse.setTotal(totalResultCount);
         List<SubstituteInfoResponse> responseList = new ArrayList<>();
 
         for (SubstitutesDataModel subsData : dataModelList) {
@@ -292,9 +311,57 @@ public class UserSubstitutionService {
         collectionResponse.setSort(sortType);
         collectionResponse.setStart(Integer.parseInt(queryMap.get(SubstitutionQueryProperties.START)));
         collectionResponse.setOrder(queryMap.get(SubstitutionQueryProperties.ORDER));
+
         return Response.ok(collectionResponse).build();
 
     }
+
+    /**
+     * Change the status of a substitution record.
+     *
+     * @param user : assignee of the substitution
+     * @param request : format {"action" : "true/false"}
+     * @return HTTP 200 upon success
+     * @throws UserStoreException
+     */
+    @POST
+    @Path("/{user}/disable")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response disableSubstitution(@PathParam("user") String user, RestActionRequest request)
+            throws UserStoreException {
+        String assignee = getRequestedAssignee(user);
+        String action = request.getAction();
+        if (action != null) {
+            int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+            if (action.trim().equalsIgnoreCase(TRUE)) {
+                UserSubstitutionUtils.disableSubstitution(true, assignee, tenantId);
+            } else if (action.trim().equalsIgnoreCase(FALSE)) {
+                UserSubstitutionUtils.disableSubstitution(false, assignee, tenantId);
+            } else {
+                throw new ActivitiIllegalArgumentException("Invalid disable action : " + action + " specified");
+            }
+        } else {
+            throw new ActivitiIllegalArgumentException("No disable action specified");
+        }
+
+        return Response.ok().build();
+    }
+
+    @GET
+    @Path("/configs/enabled")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response isSubstitutionFeatureEnabled() {
+        BooleanResponse response = new BooleanResponse();
+        if (subsFeatureEnabled) {
+            response.setEnabled(true);
+        } else {
+            response.setEnabled(false);
+        }
+
+        return Response.ok(response).build();
+    }
+
+
 
     private String getSortType(String sortType) {
         switch (sortType) {
@@ -402,8 +469,11 @@ public class UserSubstitutionService {
         if (assignee != null && !assignee.trim().isEmpty() && !assignee.equals(loggedInUser)) { //setting another users
             boolean isAuthorized = userRealm.getAuthorizationManager()
                     .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
-            if (!isAuthorized || !userRealm.getUserStoreManager().isExistingUser(assignee)) {
-                throw new ActivitiIllegalArgumentException("Unauthorized action or invalid argument for assignee");
+            if (!isAuthorized) {
+                throw new BPMNForbiddenException("Action requires BPMN substitution permission");
+            }
+            if (!userRealm.getUserStoreManager().isExistingUser(assignee)) {
+                throw new ActivitiIllegalArgumentException("Non existing user for argument assignee : " + assignee);
             }
         } else { //assignee is the logged in user
             assignee = loggedInUser;

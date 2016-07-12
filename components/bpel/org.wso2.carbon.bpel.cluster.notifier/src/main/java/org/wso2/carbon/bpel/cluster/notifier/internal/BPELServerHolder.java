@@ -24,24 +24,25 @@ import org.wso2.carbon.utils.ConfigurationContextService;
  * Data holder for the BPELServiceComponent
  */
 public final class BPELServerHolder {
-    private static BPELServerHolder instance;
+    private static volatile BPELServerHolder instance;
 
     private ConfigurationContextService ccServiceInstance;
 
-    private BPELServerHolder() {}
+    private BPELServerHolder() {
+    }
 
     public static BPELServerHolder getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new BPELServerHolder();
         }
         return instance;
     }
 
-    public void setCcServiceInstance(ConfigurationContextService contextService) {
-        this.ccServiceInstance = contextService;
-    }
-
     public ConfigurationContextService getCcServiceInstance() {
         return ccServiceInstance;
+    }
+
+    public void setCcServiceInstance(ConfigurationContextService contextService) {
+        this.ccServiceInstance = contextService;
     }
 }

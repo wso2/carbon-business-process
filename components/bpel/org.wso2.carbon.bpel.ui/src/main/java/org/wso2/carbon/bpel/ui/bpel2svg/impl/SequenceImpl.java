@@ -16,8 +16,11 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
 import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
@@ -25,10 +28,6 @@ import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 import org.wso2.carbon.bpel.ui.bpel2svg.SequenceInterface;
 
 import java.util.Iterator;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGDocument;
-import org.apache.axiom.om.OMElement;
 
 /**
  * Sequence tag UI implementation
@@ -72,7 +71,8 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
 
     /**
      * Initializes a new instance of the SequenceImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an Sequence Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an Sequence Activity when processing the
+     * subActivities
      * of the process
      *
      * @param omElement which matches the Sequence tag
@@ -116,7 +116,8 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
     /**
      * At the start: width=0, height=0
      *
-     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
+     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by
+     * iterating
      * through the dimensions of the subActivities
      */
     @Override
@@ -142,14 +143,16 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     width += subActivityDim.getWidth();
                 }
 
-                /*As Sequence should increase in height when the number of subActivities increase, height of each subActivity
+                /*As Sequence should increase in height when the number of subActivities increase, height of each
+                subActivity
                   is added to the height of the main/composite activity.
                   If the activity is an instance of ForEach, Repeat Until, While or If activity, ySpacing = 70 is also
                   added to the height of the composite activity as the start icons of those activities are placed on
                   the scope of the composite activity, so it requires more spacing.
                 */
 
-                if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof WhileImpl
+                if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof
+                        WhileImpl
                         || activity instanceof IfImpl) {
 
                     height += subActivityDim.getHeight() + getYSpacing();
@@ -207,11 +210,12 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
         Iterator<ActivityInterface> itr = getSubActivities().iterator();
         //Adjusting the childXLeft and childYTop positions
         int childYTop = yTop;
-        int childXLeft = startXLeft;
+        int childXLeft;
         //Iterates through all the subActivities
         while (itr.hasNext()) {
             activity = itr.next();
-            //Sets the xLeft position of the iterated activity : childXleft= center of the layout - (width of the activity icon)/2
+            //Sets the xLeft position of the iterated activity : childXleft= center of the layout - (width of the
+            // activity icon)/2
             childXLeft = centreOfMyLayout - activity.getDimensions().getWidth() / 2;
 
              /* If the activity inside Sequence activity is an instance of ForEach, Repeat Until, While or If activity,
@@ -219,7 +223,8 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     on the scope/box which contains the subActivities.This requires more spacing, so the yTop of the
                     activity following it i.e. the activity after it is also increased.
                  */
-            if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof WhileImpl || activity instanceof IfImpl) {
+            if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof
+                    WhileImpl || activity instanceof IfImpl) {
                 int x = childYTop + (getYSpacing() / 2);
                 //Sets the xLeft and yTop position of the iterated activity
                 activity.layout(childXLeft, x);
@@ -267,7 +272,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
         ActivityInterface activity = null;
         Iterator<ActivityInterface> itr = getSubActivities().iterator();
         //Adjusting the childXLeft and childYTop positions
-        int childYTop = yTop;
+        int childYTop;
         int childXLeft = xLeft;
         //Iterates through all the subActivities
         while (itr.hasNext()) {
@@ -347,12 +352,13 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
 
     /**
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sequence composite activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sequence
+     * composite activity
      */
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the icon opacity
@@ -380,7 +386,7 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
         //Creating an SVG Container "g" to place the activities
-        subGroup = doc.createElementNS(SVG_Namespace.SVG_NAMESPACE, "g");
+        subGroup = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Checks for the subActivities
         if (subActivities != null) {
             ActivityInterface prevActivity = null;
@@ -401,20 +407,25 @@ public class SequenceImpl extends ActivityImpl implements SequenceInterface {
                     // id is assigned with the id of the previous activity + id of the current activity
                     id = prevActivity.getId() + "-" + activity.getId();
                     /*Check whether the activity is a Throw activity, if so setCheck()= true
-                      This check is done to remove the exit arrow coming from the Throw activity,as when the process reaches
+                      This check is done to remove the exit arrow coming from the Throw activity,as when the process
+                      reaches
                        a Throw activity, the process terminates.
                     */
                     if (activity instanceof ThrowImpl) {
                         setCheck(true);
                     }
 
-                   if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity instanceof TargetImpl
-                            || prevActivity instanceof TargetsImpl || activity instanceof SourcesImpl || activity instanceof SourceImpl ||
-                            activity instanceof TargetImpl || activity instanceof TargetsImpl || prevActivity instanceof ThrowImpl) {
+                    if (prevActivity instanceof SourcesImpl || prevActivity instanceof SourceImpl || prevActivity
+                            instanceof TargetImpl
+                            || prevActivity instanceof TargetsImpl || activity instanceof SourcesImpl || activity
+                            instanceof SourceImpl ||
+                            activity instanceof TargetImpl || activity instanceof TargetsImpl || prevActivity
+                            instanceof ThrowImpl) {
                         //No exit arrow for Source or Target as it doesn't have an icon specified.
                         // Checks whether the previous activity is a Throw activity, if so no exit arrow
                     } else {
-                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
+                        subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(),
+                                entryCoords.getXLeft(), entryCoords.getYTop(), id));
                     }
                 }
                 prevActivity = activity;

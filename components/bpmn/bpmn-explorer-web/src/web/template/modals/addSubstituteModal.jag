@@ -1,0 +1,92 @@
+<%
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+/*
+    USSAGE INSTRUCTIONS :
+    This modal is used in mutiple places 
+    User of this modal should declare and initialize following variables 
+
+    addSubstituteModalConfig json variable with following entries
+        assigneeName
+        assigneeEditEnable (this is to enable to edit assignee. values: true/false[boolean])
+
+    eg ussage:
+        var addSubstituteModalConfig = {
+                            "assigneeName" = "sampleAssignee"
+                            "assigneeEditEnable" : true
+                        }
+        include("/template/modals/addSubstituteModal.jag");
+    
+*/
+
+var addSubstituteModal_assigneeNameEnable = "";
+
+if (typeof addSubstituteModalConfig === "undefined") {
+    var addSubstituteModalConfig =  {
+                                        "assigneeName" : "",
+                                        "assigneeEditEnable" : true
+                                    }
+} 
+if (addSubstituteModalConfig.assigneeEditEnable != undefined && addSubstituteModalConfig.assigneeEditEnable == false) {
+    addSubstituteModal_assigneeNameEnable = "disabled"
+}
+
+%>
+
+<div class="modal fade" id="addSubstituteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog model-center">
+        <div class="modal-content" id="addSubstituteModalContent">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel"><%=i18n.localize("add.substitute","Add Substitute")%></h4>
+            </div>
+            <div class="modal-body">
+                    <div class="form-group">
+                        <label for="assigneeName"><%=i18n.localize("assignee.username","Assignee User Name")%></label>
+                        <input type="text" class="form-control" id="assigneeName" placeholder="Enter Assignee Name" 
+                                                    value="<%=addSubstituteModalConfig.assigneeName%>" <%=addSubstituteModal_assigneeNameEnable%>>
+                    </div>
+                    <div class="form-group">
+                        <label for="substituteName"><%=i18n.localize("substitute.username","Substitute User Name")%></label>
+                        <input type="text" class="form-control" id="substituteName" placeholder="Enter User Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="subStartDate"><%=i18n.localize("start.time","Start Time")%></label>
+                        <input type="text" class="form-control" id="subStartDate"
+                                    onfocus="setDateTimePicker('subStartDate', 'addSubstituteModalContent')"
+                                    placeholder="YYYY-MM-DD h:mm">
+                    </div>
+                    <div class="form-group">
+                        <label for="subEndDate"><%=i18n.localize("end.time","End Time")%></label>
+                        <input type="text" class="form-control" id="subEndDate"
+                                    onfocus="setDateTimePicker('subEndDate', 'addSubstituteModalContent')"
+                                    placeholder="YYYY-MM-DD h:mm">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <div id="addSubErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden>
+                    <button type="button" class="close" onclick="$('#addSubErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
+                    <p id="addSubErrMsg"></p>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
+                <button class="btn btn-default btn-info" 
+                        onclick="addNewSubstitute($('#assigneeName').val(), $('#substituteName').val(), $('#subStartDate').val(), $('#subEndDate').val())">
+                    <%=i18n.localize("add.substitute","Add Substitute")%>
+                </button>
+            </div>
+        </div><!-- /.modal-content addSubstituteModal-->
+    </div><!-- /.modal-dialog addSubstituteModal-->
+</div><!-- /.modal addSubstituteModal-->
