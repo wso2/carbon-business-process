@@ -115,12 +115,12 @@ try {
             break;
         }
     }
-} catch (e) {
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.error(e);
+        log.error(err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
 }
 //Set current active veiw as process view. 

@@ -121,7 +121,6 @@ if(log.isDebugEnabled()) {
 //check BPS Features (eg: Substitution feature) status only for the first user login
 if (bpsSubstitutionFeatureEN == null && session.get('user') != null && session.get('authSuccess') != null && session.get('authSuccess') == true) {
     //first most user loging to the bpmn webapp
-    log.info ("Retrieve status of BPS User Substitution features");
     var headers =   {
                     "Authorization": "Basic " + auth,
                     "Contentnt-Type": "application/json",
@@ -178,7 +177,9 @@ var processMonitoringNavActive = ''; //Process Monitoring view [updated at proce
 var advancedFilterNavActive = ''; //Advanced Filtering view [updated at advancedFilteringModel and refered at navigation.jag]
 
 var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErrorSection section in each view
-// errorDisplayEnable = '' to display
+                                    // errorDisplayEnable = '' to display
+var errorDisplayBackButtonsEnable = 'hidden'; //This variable is used to display back and home buttons #commonErrorSection 
+                                                //section in each view. errorDisplayBackButtonsEnable='' to display 
 var commonErrorMessage = null; //Common error message if exists
 
 //Common Constants

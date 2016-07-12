@@ -150,8 +150,10 @@
    "assingee" : "Assignee",
    "simple.active" : "Active",
    "simple.inactive" : "Inactive",
-   "go.to.substitute.admin.view" : "Go To Substitute Admin View",
-   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access to Manage Substitutions",
+   "go.to.substitutions.admin.view" : "Go To Substitutions Admin View",
+   "go.back.to.my.substitution.view" : "Go Back To My Substitution View",
+   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access To Manage Substitutions",
+   "you.are.in.the.user.substitutions.admin.view" : "You are in the User Substitutions Admin View",
    "unauthorized" : "Unauthorized"
 
 }
