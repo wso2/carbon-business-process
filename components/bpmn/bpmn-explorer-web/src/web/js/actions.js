@@ -1043,10 +1043,10 @@ function getUserTasksOfCompletedProcessInstances(id) {
                 var state = "Completed";
                 var taskDefKey = completedTaskInstances.data[k].taskDefinitionKey;
                 var taskName = completedTaskInstances.data[k].name;
-                var startTime = completedTaskInstances.data[k].startTime;
-                var endTime = completedTaskInstances.data[k].endTime;
+                var startTime = epochToFormattedTime(completedTaskInstances.data[k].startTime);
+                var endTime = epochToFormattedTime(completedTaskInstances.data[k].endTime);
                 var assignee = completedTaskInstances.data[k].assignee;
-                var duration = completedTaskInstances.data[k].durationInMillis;
+                var duration = completedTaskInstances.data[k].durationInMillis/1000;
 
                 DIV = DIV + "<tr><td>" + state + "</td><td style='word-wrap: break-word'>" + taskDefKey + "</td><td style='word-wrap: break-word'>" + taskName + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + assignee + "</td><td>" + duration + "</td></tr>";
 
@@ -1092,6 +1092,17 @@ function getVariablesOfCompletedProcessInstances(id) {
     });
 }
 
+//convert given epochTime to a readable form
+function epochToFormattedTime (epochTime) {
+    if (epochTime != null) {
+        var time = new Date(epochTime);
+        return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
+    } else {
+        return null;
+    }
+
+}
+
 //Gets the details of all the activities in a completed process instance
 function getAuditLogForCompletedProcessInstances(id) {
 
@@ -1105,21 +1116,21 @@ function getAuditLogForCompletedProcessInstances(id) {
 
             $("#auditLog").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
                 var activityName = completedTaskInstances.data[k].activityName;
                 var activityType = completedTaskInstances.data[k].activityType;
-                var activityStartTime = completedTaskInstances.data[k].startTime;
-                var activityEndTime = completedTaskInstances.data[k].endTime;
+                var activityStartTime = epochToFormattedTime(completedTaskInstances.data[k].startTime);
+                var activityEndTime = epochToFormattedTime(completedTaskInstances.data[k].endTime);
                 var taskId = completedTaskInstances.data[k].taskId;
                 var activityInstanceId = completedTaskInstances.data[k].id;
                 if (taskId == null) {
                     taskId = "N/A";
                 }
 
-                DIV = DIV + "<tr><td>" + state + "</td><td style='word-wrap: break-word'>" + activityName + "</td><td>" + activityType + "</td><td>" + activityStartTime + "</td><td>" + activityEndTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
+                DIV = DIV + "<tr><td>" + activityName + "</td><td style='word-wrap: break-word'>" + activityType + "</td><td>" + state + "</td><td>" + activityStartTime + "</td><td>" + activityEndTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
 
             }
             DIV = DIV + "</tbody></table></div>"
@@ -1161,11 +1172,11 @@ function getCalledProcessInstancesOfCompleted(id) {
 
                         var id = calledPInfo.id;
                         var processDefinitionId = calledPInfo.processDefinitionId;
-                        var startTime = calledPInfo.startTime;
-                        var endTime = calledPInfo.endTime;
-                        var durationInMillis = calledPInfo.durationInMillis;
+                        var startTime = epochToFormattedTime(calledPInfo.startTime);
+                        var endTime = epochToFormattedTime(calledPInfo.endTime);
+                        var duration = calledPInfo.durationInMillis/1000;
 
-                        DIV = DIV + "<tr><td>" + id + "</td><td style='word-wrap: break-word'>" + processDefinitionId + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + durationInMillis + "</td></tr>";
+                        DIV = DIV + "<tr><td>" + id + "</td><td style='word-wrap: break-word'>" + processDefinitionId + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + duration + "</td></tr>";
                         DIV = DIV + "</tbody></table></div>"
 
                         $("#calledInstances").html(DIV);
@@ -1212,7 +1223,7 @@ function getAuditLogForRunningProcessInstances(pid, id) {
                     $("#auditLog").html("");
                     var taskList2 = JSON.parse(data);
 
-                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
 
                     for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1223,8 +1234,8 @@ function getAuditLogForRunningProcessInstances(pid, id) {
                         for (var j = 0; j < taskList2.data.length; j++) {
 
                             var activityId = taskList2.data[j].activityId;
-                            var startTime = taskList2.data[j].startTime;
-                            var endTime = taskList2.data[j].endTime;
+                            var startTime = epochToFormattedTime(taskList2.data[j].startTime);
+                            var endTime = epochToFormattedTime(taskList2.data[j].endTime);
                             var taskId = taskList2.data[j].taskId;
                             var activityInstanceId = taskList2.data[j].id;
                             var state;
@@ -1248,7 +1259,7 @@ function getAuditLogForRunningProcessInstances(pid, id) {
 
                         }
 
-                        DIV = DIV + "<tr><td>" + state + "</td><td style='word-wrap: break-word'>" + activityName + "</td><td>" + activityType + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
+                        DIV = DIV + "<tr><td>" + activityName + "</td><td style='word-wrap: break-word'>" + activityType + "</td><td>" + state + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
 
                     }
                     DIV = DIV + "</tbody></table></div>"
@@ -1326,10 +1337,10 @@ function getUserTasksOfRunningProcessInstances(pid, id) {
                             for (var j = 0; j < taskList2.data.length; j++) {
 
                                 var activityId = taskList2.data[j].activityId;
-                                var startTime = taskList2.data[j].startTime;
-                                var endTime = taskList2.data[j].endTime;
+                                var startTime = epochToFormattedTime(taskList2.data[j].startTime);
+                                var endTime = epochToFormattedTime(taskList2.data[j].endTime);
                                 var assignee = taskList2.data[j].assignee;
-                                var duration = taskList2.data[j].durationInMillis;
+                                var duration = taskList2.data[j].durationInMillis/1000;
 
                                 if (taskDefKey == activityId && endTime !== null) {
                                     var state = "Completed";

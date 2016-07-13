@@ -91,7 +91,7 @@
 
 						     <div class="tab">
 						       <input type="radio" id="tab-4" name="tab-group-1" onclick="tabClick()"/>
-						       <label for="tab-4"><%=i18n.localize("called.instances" , "Called Instances")%></label>
+						       <label for="tab-4"><%=i18n.localize("called.instances" , "Caller Instance")%></label>
 						     
 						       <div id="calledInstances" class="content" style="display: none;">
 						           <h3> <%=i18n.localize("select.called.instances","Select a process instance to view the called process instances")%>
