@@ -218,6 +218,9 @@ public class UserSubstitutionService {
     @Path("/{user}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getSubstitute(@PathParam("user") String user) throws UserStoreException {
+        if (!subsFeatureEnabled) {
+            return Response.status(405).build();
+        }
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         if (!loggedInUser.equals(user) && !hasSubstitutionViewPermission()) {
@@ -259,6 +262,9 @@ public class UserSubstitutionService {
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response querySubstitutes() {
+        if (!subsFeatureEnabled) {
+            return Response.status(405).build();
+        }
 
         Map<String, String> queryMap = new HashedMap();
 
@@ -329,6 +335,9 @@ public class UserSubstitutionService {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response disableSubstitution(@PathParam("user") String user, RestActionRequest request)
             throws UserStoreException {
+        if (!subsFeatureEnabled) {
+            return Response.status(405).build();
+        }
         String assignee = getRequestedAssignee(user);
         String action = request.getAction();
         if (action != null) {
@@ -347,6 +356,10 @@ public class UserSubstitutionService {
         return Response.ok().build();
     }
 
+    /**
+     * Return true if the substitution feature is enabled.
+     * @return {"enabled":true/false}
+     */
     @GET
     @Path("/configs/enabled")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
