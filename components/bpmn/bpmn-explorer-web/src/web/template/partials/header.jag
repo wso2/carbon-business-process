@@ -28,8 +28,7 @@ var loggedUser = session.get("user");
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="css/daterangepicker.css">
-	<link rel="stylesheet" href="css/fontwso2-extend.css">
-	<link rel="stylesheet" href="css/fontwso2.css">
+	<link rel="stylesheet" href="css/font-wso2.css">
 	<!-- Custom theme -->
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="ICON" href="images/favicon.ico" type="image/ico" />
