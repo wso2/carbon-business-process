@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationListener;
+import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationKPIListener;
 
 import java.util.List;
 
-public class ProcessParseHandler extends AbstractBpmnParseHandler {
+public class ProcessKPIParseHandler extends AbstractBpmnParseHandler {
 
-    private static final Log log = LogFactory.getLog(ProcessParseHandler.class);
+    private static final Log log = LogFactory.getLog(ProcessKPIParseHandler.class);
 
     @Override
     protected Class<? extends BaseElement> getHandledType() {
@@ -40,22 +40,21 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler {
     protected void executeParse(BpmnParse bpmnParse, BaseElement baseElement) {
         ProcessDefinitionEntity processDefinitionEntity = bpmnParse.getCurrentProcessDefinition();
 
-        // We have to check if the data publishing listener has already been associated at server startup.
-        ExecutionListener processTerminationListener = null;
+        // We have to check if the data publishing KPI listener has already been associated at server startup.
+        ExecutionListener processTerminationKPIListener = null;
         List<ExecutionListener> endListeners = processDefinitionEntity.getExecutionListeners(PvmEvent.EVENTNAME_END);
         if (endListeners != null) {
             for (ExecutionListener listener : endListeners) {
-                if (listener instanceof ProcessTerminationListener) {
-                    processTerminationListener = listener;
-                    break;
+                if (listener instanceof ProcessTerminationKPIListener) {
+                    processTerminationKPIListener = listener;
                 }
             }
         }
-        if (processTerminationListener == null) {
+        if (processTerminationKPIListener == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Enabling data publishing for process: " + processDefinitionEntity.getName());
             }
-            processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
+            processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationKPIListener());
         }
     }
 }

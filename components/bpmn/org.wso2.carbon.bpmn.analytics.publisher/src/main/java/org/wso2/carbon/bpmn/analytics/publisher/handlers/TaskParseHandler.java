@@ -48,6 +48,7 @@ public class TaskParseHandler extends AbstractBpmnParseHandler {
             for (TaskListener listener : completionListeners) {
                 if (listener instanceof TaskCompletionListener) {
                     taskCompletionListener = listener;
+                    break;
                 }
             }
         }

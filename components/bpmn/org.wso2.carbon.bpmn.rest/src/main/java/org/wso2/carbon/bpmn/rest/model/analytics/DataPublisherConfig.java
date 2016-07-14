@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wso2.carbon.bpmn.analytics.publisher.listeners;
+package org.wso2.carbon.bpmn.rest.model.analytics;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
+public class DataPublisherConfig {
 
-public class TaskCompletionListener implements TaskListener {
-    @Override
-    public void notify(DelegateTask delegateTask) {
-        BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishTaskEvent(delegateTask);
+    boolean enabled;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
