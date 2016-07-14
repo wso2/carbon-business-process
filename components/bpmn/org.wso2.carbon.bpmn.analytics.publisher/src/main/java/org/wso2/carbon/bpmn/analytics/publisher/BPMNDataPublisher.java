@@ -16,6 +16,7 @@
 package org.wso2.carbon.bpmn.analytics.publisher;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -72,38 +73,38 @@ public class BPMNDataPublisher {
         };
 
         if (log.isDebugEnabled()) {
-            log.debug("Start to Publish BPMN process instance event... " + payload.toString());
+            log.debug("Starting to Publish BPMN process instance event: " + payload.toString());
         }
         if (dataPublisher != null) {
             dataPublisher.tryPublish(getProcessStreamId(), getMeta(), null, payload);
             if (log.isDebugEnabled()) {
-                log.debug("Published BPMN process instance event... " + payload.toString());
+                log.debug("Published BPMN process instance event: " + payload.toString());
             }
         } else {
             log.error("Data publisher is not registered. Events will not be published.");
         }
     }
 
-    public void publishTaskEvent(HistoricTaskInstance taskInstance) {
+    public void publishTaskEvent(DelegateTask delegateTask) {
         long endTime = System.currentTimeMillis();
         Object[] payload = new Object[]{
-                taskInstance.getTaskDefinitionKey(),
-                taskInstance.getId(),
-                taskInstance.getProcessInstanceId(),
-                taskInstance.getCreateTime().toString(),
-                taskInstance.getStartTime().toString(),
+                delegateTask.getTaskDefinitionKey(),
+                delegateTask.getId(),
+                delegateTask.getProcessInstanceId(),
+                delegateTask.getCreateTime().toString(),
+                delegateTask.getCreateTime().toString(),
                 new Date(endTime).toString(),
-                (endTime - taskInstance.getCreateTime().getTime()),
-                taskInstance.getAssignee()
+                (endTime - delegateTask.getCreateTime().getTime()),
+                delegateTask.getAssignee()
         };
 
         if (log.isDebugEnabled()) {
-            log.debug("Start to Publish BPMN task instance event... " + payload.toString());
+            log.debug("Starting to Publish BPMN task instance event: " + payload.toString());
         }
         if (dataPublisher != null) {
             dataPublisher.tryPublish(getTaskInstanceStreamId(), getMeta(), null, payload);
             if (log.isDebugEnabled()) {
-                log.debug("Published BPMN task instance event... " + payload.toString());
+                log.debug("Published BPMN task instance event: " + payload.toString());
             }
         } else {
             log.error("Data publisher is not registered. Events will not be published.");

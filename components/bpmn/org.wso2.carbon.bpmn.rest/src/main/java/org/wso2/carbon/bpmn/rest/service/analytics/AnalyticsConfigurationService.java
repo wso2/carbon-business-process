@@ -28,11 +28,10 @@ import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationList
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskCompletionListener;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNRestException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.model.analytics.DataPublisherConfig;
 
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +41,9 @@ public class AnalyticsConfigurationService {
     private static final Log log = LogFactory.getLog(AnalyticsConfigurationService.class);
 
     @PUT
-    @Path("/{process_id}")
-    public void configureProcessLevelEvents(@PathParam("process_id") String processDefinitionId, @QueryParam("enable") String enable) {
+    @Path("/processes/{process_id}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public void configureProcessLevelEvents(@PathParam("process_id") String processDefinitionId, DataPublisherConfig dataPublisherConfig) {
 
         try {
             RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
@@ -51,12 +51,13 @@ public class AnalyticsConfigurationService {
 
             if (process != null && process instanceof ProcessDefinitionEntity) {
                 ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) process;
-                if ("true".equalsIgnoreCase(enable)) {
+                if (dataPublisherConfig.isEnabled()) {
                     List<ExecutionListener> endListeners = processDefinitionEntity.getExecutionListeners(PvmEvent.EVENTNAME_END);
                     ExecutionListener processTerminationListener = null;
                     for (ExecutionListener listener : endListeners) {
                         if (listener instanceof ProcessTerminationListener) {
                             processTerminationListener = listener;
+                            break;
                         }
                     }
                     if (processTerminationListener == null) {
@@ -66,12 +67,13 @@ public class AnalyticsConfigurationService {
                         processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
                     }
 
-                } else if ("false".equalsIgnoreCase(enable)) {
+                } else {
                     List<ExecutionListener> endListeners = processDefinitionEntity.getExecutionListeners(PvmEvent.EVENTNAME_END);
                     ExecutionListener processTerminationListener = null;
                     for (ExecutionListener listener : endListeners) {
                         if (listener instanceof ProcessTerminationListener) {
                             processTerminationListener = listener;
+                            break;
                         }
                     }
                     if (processTerminationListener != null) {
@@ -90,8 +92,9 @@ public class AnalyticsConfigurationService {
     }
 
     @PUT
-    @Path("/{process_id}/{task_id}")
-    public void configureTaskLevelEvents(@PathParam("process_id") String processDefinitionId, @PathParam("task_id") String taskId, @QueryParam("enable") String enable) {
+    @Path("/processes/{process_id}/tasks/{task_id}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public void configureTaskLevelEvents(@PathParam("process_id") String processDefinitionId, @PathParam("task_id") String taskId, DataPublisherConfig dataPublisherConfig) {
 
         try {
             RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
@@ -103,12 +106,13 @@ public class AnalyticsConfigurationService {
                 TaskDefinition taskDefinition = taskDefinitions.get(taskId);
                 if (taskDefinition != null) {
 
-                    if ("true".equalsIgnoreCase(enable)) {
+                    if (dataPublisherConfig.isEnabled()) {
                         List<TaskListener> completionListeners = taskDefinition.getTaskListener(TaskListener.EVENTNAME_COMPLETE);
                         TaskListener taskCompletionListener = null;
                         for (TaskListener listener : completionListeners) {
                             if (listener instanceof TaskCompletionListener) {
                                 taskCompletionListener = listener;
+                                break;
                             }
                         }
                         if (taskCompletionListener == null) {
@@ -118,13 +122,14 @@ public class AnalyticsConfigurationService {
                             taskDefinition.addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
                         }
 
-                    } else if ("false".equalsIgnoreCase(enable)) {
+                    } else {
 
                         List<TaskListener> completionListeners = taskDefinition.getTaskListener(TaskListener.EVENTNAME_COMPLETE);
                         TaskListener taskCompletionListener = null;
                         for (TaskListener listener : completionListeners) {
                             if (listener instanceof TaskCompletionListener) {
                                 taskCompletionListener = listener;
+                                break;
                             }
                         }
                         if (taskCompletionListener != null) {

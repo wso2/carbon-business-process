@@ -47,6 +47,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler {
             for (ExecutionListener listener : endListeners) {
                 if (listener instanceof ProcessTerminationListener) {
                     processTerminationListener = listener;
+                    break;
                 }
             }
         }
