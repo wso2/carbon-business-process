@@ -15,6 +15,8 @@
  */
 package org.wso2.carbon.bpmn.rest.service.analytics;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -76,14 +78,11 @@ import org.wso2.carbon.registry.core.service.RegistryService;
      */
     private void saveDASconfigInfo(String dasConfigDetailsJSONString) throws RegistryException {
 
-        //RegistryService registryService = BPMNAnalyticsHolder.getInstance().getRegistryService();
-
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         Registry configRegistry = carbonContext.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
 
-        JSONObject dasConfigDetailsJOb = new JSONObject(dasConfigDetailsJSONString);
-        String processDefinitionId = dasConfigDetailsJOb.getString(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID);
-        //Registry configRegistry = registryService.getConfigSystemRegistry();
+        JsonObject dasConfigDetailsJOb = new JsonParser().parse(dasConfigDetailsJSONString).getAsJsonObject();
+        String processDefinitionId = dasConfigDetailsJOb.get(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID).getAsString();
 
         //create a new resource (text file) to keep process variables
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"

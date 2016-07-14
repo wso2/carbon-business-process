@@ -55,8 +55,8 @@
             <artifactId>mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json.wso2</groupId>
-            <artifactId>json</artifactId>
+            <groupId>com.googlecode.json-simple.wso2</groupId>
+            <artifactId>json-simple</artifactId>
         </dependency>
     </dependencies>
 
@@ -101,7 +101,7 @@
                         <Import-Package>
                             !org.wso2.carbon.bpmn.analytics.publisher.*,
                             org.wso2.carbon.bpmn.core.*,
-                            org.wso2.carbon.databridge.commons;version="5.0.11",
+                            org.wso2.carbon.databridge.commons.*;version="${carbon.analytics.common.imp.pkg.version}",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>

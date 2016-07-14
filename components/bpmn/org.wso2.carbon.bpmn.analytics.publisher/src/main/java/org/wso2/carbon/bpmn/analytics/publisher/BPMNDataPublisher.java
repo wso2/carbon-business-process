@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -23,7 +26,6 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.pvm.PvmEvent;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.parse.BpmnParseHandler;
@@ -34,8 +36,6 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessKPIParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.TaskParseHandler;
@@ -355,7 +355,7 @@ public class BPMNDataPublisher {
             // not already taken from registry
             String[][] configedProcessVariables;
             if (processVariablesMap.get(processDefinitionId) == null) {
-                JSONObject kpiConfig = getKPIConfiguration(processDefinitionId);
+                JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
                 //do not publish the KPI event if DAS configurations are not done by the PC
                 if (kpiConfig == null) {
                     return;
@@ -368,19 +368,22 @@ public class BPMNDataPublisher {
                 {"isAnalyzeData":false,"name":"amount","isDrillDownData":false,"type":"int"},
                 {"isAnalyzeData":"false","name":"processInstanceId","isDrillDownData":"false","type":"string"}]
                  */
-                JSONArray configedProcVarsJson = kpiConfig
-                        .getJSONArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
+                JsonArray configedProcVarsJson = kpiConfig
+                        .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
-                int variableCount = configedProcVarsJson.length();
+                int variableCount = configedProcVarsJson.size();
                 configedProcessVariables = new String[variableCount][2];
 
                 for (int i = 0; i < variableCount; i++) {
-                    configedProcessVariables[i][0] = configedProcVarsJson.getJSONObject(i).getString("name");
-                    configedProcessVariables[i][1] = configedProcVarsJson.getJSONObject(i).getString("type");
+                    //configedProcessVariables[i][0] = configedProcVarsJson.getJSONObject(i).getString("name");
+                    configedProcessVariables[i][0] =  ((JsonObject)configedProcVarsJson.get(i)).get("name").getAsString();
+                    //configedProcessVariables[i][1] = configedProcVarsJson.getJSONObject(i).getString("type");
+                    configedProcessVariables[i][1] =  ((JsonObject)configedProcVarsJson.get(i)).get("type").getAsString();
                 }
 
                 processVariablesMap.put(processDefinitionId, configedProcessVariables);
-                eventStreamId = kpiConfig.getString("eventStreamId");
+                //eventStreamId = kpiConfig.getString("eventStreamId");
+                eventStreamId = kpiConfig.get("eventStreamId").getAsString();
                 kpiStreamIdMap.put(processDefinitionId, eventStreamId);
 
             } else { //if the process variables are already taken, get them from the Map
@@ -493,7 +496,7 @@ public class BPMNDataPublisher {
      * "eventStreamName":"process1_77_process_stream"}
      * @throws RegistryException
      */
-    public JSONObject getKPIConfiguration(String processDefinitionId) throws RegistryException {
+    public JsonObject getKPIConfiguration(String processDefinitionId) throws RegistryException {
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
         try {
@@ -504,7 +507,7 @@ public class BPMNDataPublisher {
                 Resource processRegistryResource = configRegistry.get(resourcePath);
                 String dasConfigDetailsJSONStr = new String((byte[]) processRegistryResource.getContent(),
                         StandardCharsets.UTF_8);
-                return new JSONObject(dasConfigDetailsJSONStr);
+                return new JsonParser().parse(dasConfigDetailsJSONStr).getAsJsonObject();
             } else {
                 return null;
             }
