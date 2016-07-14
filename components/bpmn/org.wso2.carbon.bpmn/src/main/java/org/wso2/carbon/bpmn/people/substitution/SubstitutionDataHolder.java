@@ -25,7 +25,7 @@ import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 public final class SubstitutionDataHolder {
     private static final Log log = LogFactory.getLog(SubstitutionDataHolder.class);
 
-    private static SubstitutionDataHolder holder = new SubstitutionDataHolder();
+    private static SubstitutionDataHolder dataHolder = new SubstitutionDataHolder();
     private ActivitiDAO activitiDAO = new ActivitiDAO();
     private TransitivityResolver resolver = new TransitivityResolver(activitiDAO);
     private Boolean substitutionFeatureEnabled = null;
@@ -35,7 +35,7 @@ public final class SubstitutionDataHolder {
     private SubstitutionDataHolder(){}
 
     public static SubstitutionDataHolder getInstance() {
-        return holder;
+        return dataHolder;
     }
 
     /**
@@ -58,7 +58,7 @@ public final class SubstitutionDataHolder {
      * Get the substitution feature enabled config value or default value
      * @return true if substitution enabled
      */
-    public boolean isSubstitutionEnabled() {
+    public boolean isSubstitutionFeatureEnabled() {
         if (substitutionFeatureEnabled == null) {
             substitutionFeatureEnabled = false;
             BPMNActivitiConfiguration activitiConfiguration = BPMNActivitiConfiguration.getInstance();
