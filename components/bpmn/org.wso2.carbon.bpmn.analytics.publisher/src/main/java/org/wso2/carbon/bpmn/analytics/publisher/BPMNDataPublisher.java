@@ -375,14 +375,11 @@ public class BPMNDataPublisher {
                 configedProcessVariables = new String[variableCount][2];
 
                 for (int i = 0; i < variableCount; i++) {
-                    //configedProcessVariables[i][0] = configedProcVarsJson.getJSONObject(i).getString("name");
                     configedProcessVariables[i][0] =  ((JsonObject)configedProcVarsJson.get(i)).get("name").getAsString();
-                    //configedProcessVariables[i][1] = configedProcVarsJson.getJSONObject(i).getString("type");
                     configedProcessVariables[i][1] =  ((JsonObject)configedProcVarsJson.get(i)).get("type").getAsString();
                 }
 
                 processVariablesMap.put(processDefinitionId, configedProcessVariables);
-                //eventStreamId = kpiConfig.getString("eventStreamId");
                 eventStreamId = kpiConfig.get("eventStreamId").getAsString();
                 kpiStreamIdMap.put(processDefinitionId, eventStreamId);
 

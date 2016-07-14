@@ -24,20 +24,18 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONObject;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
-import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
-import org.wso2.carbon.registry.core.service.RegistryService;
 
 /**
  * Enables the process variable publishing from BPS to DAS
  */
-@Path("/publish-process-variables") public class PublishProcessVariablesService {
+@Path("/publish-process-variables")
+public class PublishProcessVariablesService {
     private static final Log log = LogFactory.getLog(PublishProcessVariablesService.class);
 
     /**
@@ -82,16 +80,14 @@ import org.wso2.carbon.registry.core.service.RegistryService;
         Registry configRegistry = carbonContext.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
 
         JsonObject dasConfigDetailsJOb = new JsonParser().parse(dasConfigDetailsJSONString).getAsJsonObject();
-        String processDefinitionId = dasConfigDetailsJOb.get(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID).getAsString();
+        String processDefinitionId = dasConfigDetailsJOb.get(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID)
+                .getAsString();
 
         //create a new resource (text file) to keep process variables
-        String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
-                + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
         Resource procVariableJsonResource = configRegistry.newResource();
         procVariableJsonResource.setContent(dasConfigDetailsJSONString);
         procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
         configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME, procVariableJsonResource);
-
     }
 }
