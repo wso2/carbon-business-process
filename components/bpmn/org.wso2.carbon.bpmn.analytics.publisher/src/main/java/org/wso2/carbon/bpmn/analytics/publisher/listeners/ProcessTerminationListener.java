@@ -28,7 +28,8 @@ import java.util.List;
 
 public class ProcessTerminationListener implements ExecutionListener {
 
-    @Override public void notify(DelegateExecution delegateExecution) throws Exception {
+    @Override
+    public void notify(DelegateExecution delegateExecution) throws Exception {
 
         HistoryService historyService = delegateExecution.getEngineServices().getHistoryService();
         List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
