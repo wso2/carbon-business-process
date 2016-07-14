@@ -19,11 +19,34 @@
 <!--Area to display common errors-->
 <div class="row" name="commonErrorSection">
     <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span></button>
-      <p id="errorMsg"><%=Encode.forJavaScript(commonErrorMessage)%></p>
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span>
+        </button>
+        <p id="errorMsg"><%=Encode.forJavaScript(commonErrorMessage)%></p>
+        <div align="right" id="errorReturnBtns" <%=errorDisplayBackButtonsEnable%>>
+            <button class="btn btn-info" onclick="window.history.back();">Go back to previous page</button>
+            <a class="btn btn-info" href="stats">Go to home</a>
+        </div>
     </div>
 </div>
 <%if (commonErrorMessage == null) {%>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="panel panel-default alert-danger">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6"><%=i18n.localize("you.are.in.the.user.substitutions.admin.view","You are in the User Substitutions Admin View")%></div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <button type="button" class="btn btn-md btn-info float-right" onclick="window.location='substitutions'">
+                                &lt;&lt;&nbsp;&nbsp;<%=i18n.localize("go.back.to.my.substitution.view","Go Back To My Substitution View")%>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">

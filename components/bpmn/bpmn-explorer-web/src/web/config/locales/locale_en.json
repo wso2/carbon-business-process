@@ -121,11 +121,11 @@
    "audit.log":"Audit Log",
    "variables":"Variables",
    "user.tasks":"User Tasks",
-   "called.instances":"Called Instances",
+   "called.instances":"Caller Instance",
    "select.audit.log":"Select a process instance to view the audit log ",
    "select.user.tasks":"Select a process instance to view the user tasks",
    "select.variables":"Select a process instance to view the variables",
-   "select.called.instances":"Select a process instance to view the called process instances",
+   "select.called.instances":"Select a process instance to view the caller process instances",
    "welcome.msg.process.monitoring":"Please deploy processes from admin view to view the details of each instance.",
    "advanced.filter":"Advanced Filter",
    "started.before":"Started Before",
@@ -150,8 +150,10 @@
    "assingee" : "Assignee",
    "simple.active" : "Active",
    "simple.inactive" : "Inactive",
-   "go.to.substitute.admin.view" : "Go To Substitute Admin View",
-   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access to Manage Substitutions",
+   "go.to.substitutions.admin.view" : "Go To Substitutions Admin View",
+   "go.back.to.my.substitution.view" : "Go Back To My Substitution View",
+   "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access To Manage Substitutions",
+   "you.are.in.the.user.substitutions.admin.view" : "You are in the User Substitutions Admin View",
    "unauthorized" : "Unauthorized"
 
 }
