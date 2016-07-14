@@ -212,6 +212,27 @@ function reassign(username, id) {
 function claim(username, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
+        "action" : "claim",
+        "assignee": username
+    };
+
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+        }
+    });
+}
+
+/**
+* Reassign the task 
+*/
+function reassign(username, id) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+    var body = {
         "assignee": username
     };
 

@@ -41,6 +41,7 @@ import java.util.concurrent.*;
 public class UserSubstitutionUtils {
 
     private static final Log log = LogFactory.getLog(UserSubstitutionUtils.class);
+
     public static final String LIST_SEPARATOR = ",";
     public static final String TRUE = "true";
 
@@ -57,7 +58,6 @@ public class UserSubstitutionUtils {
      */
     public static SubstitutesDataModel addSubstituteInfo(String assignee, String substitute, Date startDate,
             Date endDate, String taskListString, int tenantId) throws SubstitutionException {
-
         ActivitiDAO activitiDAO = SubstitutionDataHolder.getInstance().getActivitiDAO();
         //at any given time there could be only one substitute for a single user
         if (activitiDAO.selectSubstituteInfo(assignee, tenantId) != null) {
@@ -106,12 +106,12 @@ public class UserSubstitutionUtils {
                 throw new SubstitutionException( //SubstitutionException
                         "Could not find an available substitute. Use a different user to substitute");
             }
-            if (SubstitutionDataHolder.getInstance().transitivityEnabled) {
+            if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
                 //transitive substitute maybe changed, need to retrieve again.
                 dataModel = activitiDAO.selectSubstituteInfo(dataModel.getUser(), dataModel.getTenantId());
             }
 
-            if (!SubstitutionDataHolder.getInstance().transitivityEnabled || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE
+            if (!SubstitutionDataHolder.getInstance().isTransitivityEnabled() || BPMNConstants.TRANSITIVE_SUB_NOT_APPLICABLE
                     .equals(dataModel.getTransitiveSub())) {
                 bulkReassign(dataModel.getUser(), dataModel.getSubstitute(), taskList);
             } else {

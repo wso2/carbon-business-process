@@ -1319,7 +1319,13 @@ public class WorkflowTaskService extends BaseTaskService {
     protected void claimTask(Task task, TaskActionRequest actionRequest, TaskService taskService) {
         // In case the task is already claimed, a ActivitiTaskAlreadyClaimedException is thrown and converted to
         // a CONFLICT response by the ExceptionHandlerAdvice
-        taskService.claim(task.getId(), actionRequest.getAssignee());
+        List list = taskService.createTaskQuery().taskId(task.getId()).taskCandidateUser(actionRequest.getAssignee()).list();
+        if (list == null || list.isEmpty()) {//user is not a candidate
+            throw new BPMNForbiddenException("The user:" + actionRequest.getAssignee() + " is not a candidate user of this task");
+        } else {
+            taskService.claim(task.getId(), actionRequest.getAssignee());
+        }
+
     }
 
     protected void delegateTask(Task task, TaskActionRequest actionRequest, TaskService taskService) {

@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
-import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 
 import java.util.Map;
 
