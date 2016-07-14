@@ -23,13 +23,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
-import org.wso2.carbon.bpmn.core.mgt.model.PaginatedSubstitutesDataModel;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionDataHolder;
 import org.wso2.carbon.bpmn.people.substitution.SubstitutionQueryProperties;
 import org.wso2.carbon.bpmn.people.substitution.UserSubstitutionUtils;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNForbiddenException;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.model.common.BooleanResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
@@ -56,7 +56,6 @@ public class UserSubstitutionService {
     private static final String ASCENDING = "asc";
     private static final String DESCENDING = "desc";
     private static final String ADD_PERMISSION = "add";
-    public static final String GET_PERMISSION = "get";
     private static final String DEFAULT_PAGINATION_START = "0";
     private static final String DEFAULT_PAGINATION_SIZE = "10";
     private static final String TRUE = "true";
@@ -219,6 +218,9 @@ public class UserSubstitutionService {
     @Path("/{user}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response getSubstitute(@PathParam("user") String user) throws UserStoreException {
+        if (!subsFeatureEnabled) {
+            return Response.status(405).build();
+        }
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         if (!loggedInUser.equals(user) && !hasSubstitutionViewPermission()) {
@@ -260,6 +262,9 @@ public class UserSubstitutionService {
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response querySubstitutes() {
+        if (!subsFeatureEnabled) {
+            return Response.status(405).build();
+        }
 
         Map<String, String> queryMap = new HashedMap();
 
@@ -273,22 +278,14 @@ public class UserSubstitutionService {
 
         //validate the parameters
         try {
-            String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-            if (queryMap.get(SubstitutionQueryProperties.USER) != null) {
-                if (!queryMap.get(SubstitutionQueryProperties.USER).equals(loggedInUser) && !hasSubstitutionViewPermission()) {
+            if (!hasSubstitutionViewPermission()) {
+                String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+                if (!((queryMap.get(SubstitutionQueryProperties.USER) != null && queryMap
+                        .get(SubstitutionQueryProperties.USER).equals(loggedInUser)) || (
+                        queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null && queryMap
+                                .get(SubstitutionQueryProperties.SUBSTITUTE).equals(loggedInUser)))) {
                     throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
                 }
-            } else if (!hasSubstitutionViewPermission()) {
-                throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
-            }
-
-            if (queryMap.get(SubstitutionQueryProperties.SUBSTITUTE) != null) {
-                String substitute = queryMap.get(SubstitutionQueryProperties.SUBSTITUTE);
-                if (!substitute.equals(loggedInUser) && !hasSubstitutionViewPermission()) {
-                    throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
-                }
-            } else if (!hasSubstitutionViewPermission()) {
-                throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
             }
         } catch (UserStoreException e) {
             throw new ActivitiException("Error accessing User Store for input validations", e);
@@ -338,6 +335,9 @@ public class UserSubstitutionService {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response disableSubstitution(@PathParam("user") String user, RestActionRequest request)
             throws UserStoreException {
+        if (!subsFeatureEnabled) {
+            return Response.status(405).build();
+        }
         String assignee = getRequestedAssignee(user);
         String action = request.getAction();
         if (action != null) {
@@ -354,6 +354,24 @@ public class UserSubstitutionService {
         }
 
         return Response.ok().build();
+    }
+
+    /**
+     * Return true if the substitution feature is enabled.
+     * @return {"enabled":true/false}
+     */
+    @GET
+    @Path("/configs/enabled")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response isSubstitutionFeatureEnabled() {
+        BooleanResponse response = new BooleanResponse();
+        if (subsFeatureEnabled) {
+            response.setEnabled(true);
+        } else {
+            response.setEnabled(false);
+        }
+
+        return Response.ok(response).build();
     }
 
 

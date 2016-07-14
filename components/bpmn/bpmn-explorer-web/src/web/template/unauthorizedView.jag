@@ -1,0 +1,40 @@
+<%
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+%>
+<!--Area to display common errors-->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span>
+        </button>
+        <p id="errorMsg"><%=Encode.forJavaScript(commonErrorMessage)%></p>
+        <div align="right" id="errorReturnBtns" <%=errorDisplayBackButtonsEnable%>>
+            <button class="btn btn-info" onclick="window.history.back();">Go back to previous page</button>
+            <a class="btn btn-info" href="stats">Go to home</a>
+        </div>
+    </div>
+</div>
+<%if (commonErrorMessage == null) {%>
+    <div class="container">
+        <div class="align jumbotron">
+            <!--p><%=i18n.localize("unauthorized","Unauthorized")%></p-->
+            <p><h1><span class="label label-danger"><%=i18n.localize("unauthorized","Unauthorized")%></span></h1></p>
+            <br/>
+            <p><a href="stats">Go back to home &gt;&gt;</a></p>
+        </div>
+    </div>
+<%}%>

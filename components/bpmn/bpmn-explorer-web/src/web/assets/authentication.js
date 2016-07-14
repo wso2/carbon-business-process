@@ -30,3 +30,15 @@ function getRoles(username, password, bpsUrl){
 	roles = user.getRoles();
 	return roles;
 }
+
+function isUserAuthorized(username, permission, action, bpsUrl){
+   var 	carbon = require('carbon'),
+	process = require('process'),
+	srv = new carbon.server.Server({url: bpsUrl}),
+	tenantId = carbon.server.tenantId(),
+	userManager = new carbon.user.UserManager(srv, tenantId),
+	user = new carbon.user.User(userManager, username);
+
+	return user.isAuthorized(permission, action);
+
+}

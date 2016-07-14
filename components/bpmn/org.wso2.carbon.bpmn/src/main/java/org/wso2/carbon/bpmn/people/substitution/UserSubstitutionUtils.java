@@ -154,7 +154,8 @@ public class UserSubstitutionUtils {
     }
 
     private static boolean isBeforeActivationInterval(Date substitutionStart) {
-        Date bufferedTime = new Date(System.currentTimeMillis() + getActivationInterval());
+        long timeToNextScheduledEvent = BPMNServerHolder.getInstance().getSubstitutionScheduler().getNextScheduledTime();
+        Date bufferedTime = new Date(System.currentTimeMillis() + timeToNextScheduledEvent);
         if (substitutionStart.compareTo(bufferedTime) < 0) {
             return true;
         } else {
@@ -344,7 +345,7 @@ public class UserSubstitutionUtils {
                     //remove added record
                     activitiDAO.updateSubstitute(assignee, existingSub, tenantId, existingSubInfo.getUpdated());
                     throw new SubstitutionException(
-                            "Could not find an available substitute. Use a different user to substitute");
+                            "Given Substitute is not available. Provide a different user to substitute.");
                 }
             }
         } else {
