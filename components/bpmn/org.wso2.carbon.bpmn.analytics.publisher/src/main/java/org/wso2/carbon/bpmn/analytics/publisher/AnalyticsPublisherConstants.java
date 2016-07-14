@@ -61,6 +61,7 @@ public class AnalyticsPublisherConstants {
     public static final String PATH_DATA_ANALYTICS_PUBLISHER =  PATH_BPMN + "/" +  "data_analytics_publisher";
     public static final String PATH_PUBLISHER_CONFIGURATION = PATH_DATA_ANALYTICS_PUBLISHER + "/"  + "publisher_configuration";
     public static final String PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
+    public static final String KPI_PUBLISHER_ENABLED_PROPERTY = "kpiDataPublishingEnabled";
     public static final String PUBLISHER_TYPE_PROPERTY = "type";
     public static final String PUBLISHER_RECEIVER_URL_SET_PROPERTY = "receiverURLSet";
     public static final String PUBLISHER_AUTH_URL_SET_PROPERTY = "authURLSet";
@@ -77,4 +78,11 @@ public class AnalyticsPublisherConstants {
     public static final String TRUE = "true";
     public static final String VALUE = "value";
     public static final String PROPERTY = "property";
+
+    // Process variables publisher related constants
+    public static final String GREG_PATH = "/_system/governance/";
+    public static final String REG_PATH_BPMN_ANALYTICS = "/bpmn/analytics/";
+    public static final String ANALYTICS_CONFIG_FILE_NAME = "das_analytics_config_details.json";
+    public static final String PC_PROCESS_ID = "pcProcessId";
+    public static final String PROCESS_VARIABLES_JSON_ENTRY_NAME = "processVariables";
 }

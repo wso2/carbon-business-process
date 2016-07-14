@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,23 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher.listeners;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
-import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 
 import java.util.List;
 
-public class ProcessTerminationListener implements ExecutionListener {
+public class ProcessTerminationKPIListener implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
-        HistoryService historyService = delegateExecution.getEngineServices().getHistoryService();
-        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceId(delegateExecution.getProcessInstanceId()).list();
-        if (historicProcessInstances.size() == 1) {
-            HistoricProcessInstance instance = historicProcessInstances.get(0);
-            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishProcessEvent(instance);
+        List<ProcessInstance> runtimeProcessInstances = delegateExecution.getEngineServices().getRuntimeService()
+                .createProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
+        if (runtimeProcessInstances.size() == 1) {
+            ProcessInstance runtimeProcessInstance = runtimeProcessInstances.get(0);
+            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishKPIvariableData(runtimeProcessInstance);
         }
     }
 }
