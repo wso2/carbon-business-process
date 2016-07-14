@@ -17,7 +17,7 @@
 
 var headers = {"Authorization":"Basic " + auth};
 
-var deployedProcessCount = get( httpUrl +"/bpmn/stats/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
+var deployedProcessCount = get( httpUrl +"/bpmn/stats/process-instances/count" ,null, headers, "json" ).data.data;
 
 var list = [];
 

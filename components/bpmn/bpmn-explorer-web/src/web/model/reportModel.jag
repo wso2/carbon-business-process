@@ -19,7 +19,7 @@ var headers = {"Authorization": "Basic " + auth};
 var start = 0;
 var isProcessesDeployed = false;
 
-var countOfProcesses = get(httpUrl + "/bpmn/stats/processTaskServices/countOfProcesses", null, headers, "json").data;
+var countOfProcesses = get(httpUrl + "/bpmn/stats/processes/count", null, headers, "json").data;
 if (countOfProcesses == 0) {
     isProcessesDeployed = false;
 }
@@ -31,20 +31,20 @@ else {
 var processDefinitionList = [];
 
 //Get all deployed processes
-var taskListOfCompletedProcess = get(httpUrl + "/bpmn/stats/processTaskServices/allProcesses", null, headers, "json").data.data;
+var taskListOfCompletedProcess = get(httpUrl + "/bpmn/stats/processes", null, headers, "json").data.data;
 
 //Get all users
-var userList = get(httpUrl + "/bpmn/stats/userServices/allUsers", null, headers, "json").data.data;
+var userList = get(httpUrl + "/bpmn/stats/users", null, headers, "json").data.data;
 
 if (update != null && update === "true") {
     if (option === "processinstancecount" || option === "avgprocessduration" || option === "taskduration") {
 
-        var deployedProcessCount = get(httpUrl + "/bpmn/stats/processTaskServices/deployedProcessCount", null, headers, "json").data.data;
+        var deployedProcessCount = get(httpUrl + "/bpmn/stats/process-instances/count", null, headers, "json").data.data;
         var log = new Log();
         var processChart = [];
         for (var i = 0; i < deployedProcessCount.length; i++) {
             var processDefinitionId = deployedProcessCount[i].processDefinitionId;
-            var processCount = deployedProcessCount[i].deployedProcessCount;
+            var processCount = deployedProcessCount[i].instanceCount;
             processChart.push([processDefinitionId, processCount]);
         }
 
@@ -74,7 +74,7 @@ if (update != null && update === "true") {
             }
         } else if (option === "avgprocessduration") {   //check whether request for process average duration
 
-            var averageDurationOfProcess = get(httpUrl + "/bpmn/stats/processTaskServices/avgDurationToCompleteProcess", null, headers, "json").data.data;
+            var averageDurationOfProcess = get(httpUrl + "/bpmn/stats/process-instances/duration/average", null, headers, "json").data.data;
             var processAvgTimeChart = [];
             for (var i = 0; i < averageDurationOfProcess.length; i++) {
                 var processDefinitionId = averageDurationOfProcess[i].processDefinitionId;
@@ -110,9 +110,9 @@ if (update != null && update === "true") {
 
         else if (option === "taskduration") {  //check whether request for Task Durations Of Completed Process
 
-            var x = request.getParameter("id");
+            var id = request.getParameter("id");
 
-            var listOfTasks = get( httpUrl +"/bpmn/stats/processTaskServices/avgTaskDurationForCompletedProcess/"+x ,null, headers, "json" ).data.data;
+            var listOfTasks = get( httpUrl +"/bpmn/stats/task-instances/duration/avarage/" + id ,null, headers, "json" ).data.data;
             var avgTaskForProcess = [];
             if (listOfTasks != null) {
                 for(var i= 0; i < listOfTasks.length; i++){
@@ -132,7 +132,7 @@ if (update != null && update === "true") {
 
         if (option === "uservstaskscompleted") {    //User vs tasks completed uptodate         
 
-            var userVsTasksCompleted = get(httpUrl + "/bpmn/stats/userServices/userVsTaskCount", null, headers, "json").data.data;
+            var userVsTasksCompleted = get(httpUrl + "/bpmn/stats/user-performance/task-instances/count", null, headers, "json").data.data;
             var userVsTaskCount = [];
             for (var i = 0; i < userVsTasksCompleted.length; i++) {
                 var user = userVsTasksCompleted[i].userName;
@@ -142,7 +142,7 @@ if (update != null && update === "true") {
 
         } else if (option === "uservsavgtime") {    //User vs average time taken to complete tasks
 
-            var userVsTasksDuration = get(httpUrl + "/bpmn/stats/userServices/userVsAvgTimeDuration", null, headers, "json").data.data;
+            var userVsTasksDuration = get(httpUrl + "/bpmn/stats/user-performance/task-instances/duration/avarage", null, headers, "json").data.data;
             var userAvgTaskTime = [];
             for (var i = 0; i < userVsTasksDuration.length; i++) {
                 var user = userVsTasksDuration[i].userName;
@@ -160,12 +160,12 @@ if (update != null && update === "true") {
 
         if (option === "taskvariation") {   //Task Demand Variation Over Time i.e. tasks started and completed
 
-            var taskVariationList = get(httpUrl + "/bpmn/stats/processTaskServices/taskVariation", null, headers, "json").data.data;
+            var taskVariationList = get(httpUrl + "/bpmn/stats/task-instances/count/variation", null, headers, "json").data.data;
             var tasksOverMonths = [];
             for (var i = 0; i < taskVariationList.length; i++) {
                 var month = taskVariationList[i].month;
-                var startedTasks = taskVariationList[i].startedInstances;
-                var completedTasks = taskVariationList[i].completedInstances;
+                var startedTasks = taskVariationList[i].instancesStarted;
+                var completedTasks = taskVariationList[i].instancesCompleted;
                 tasksOverMonths.push([month, startedTasks, completedTasks]);
             }
 
@@ -173,12 +173,12 @@ if (update != null && update === "true") {
         } else if (option === "processvariation") { //Process Demand Variation Over Time i.e. processes started and completed
 
 
-            var processVariationList = get(httpUrl + "/bpmn/stats/processTaskServices/processVariation", null, headers, "json").data.data;
+            var processVariationList = get(httpUrl + "/bpmn/stats/process-instances/count/variation", null, headers, "json").data.data;
             var processesOverMonths = [];
             for (var i = 0; i < processVariationList.length; i++) {
                 var month = processVariationList[i].month;
-                var startedTasks = processVariationList[i].startedInstances;
-                var completedTasks = processVariationList[i].completedInstances;
+                var startedTasks = processVariationList[i].instancesStarted;
+                var completedTasks = processVariationList[i].instancesCompleted;
                 processesOverMonths.push([month, startedTasks, completedTasks]);
             }
 
@@ -188,12 +188,12 @@ if (update != null && update === "true") {
             var selectedUser = request.getParameter("id");
             var userTasksOverMonths = [];
 
-            var taskVariationOfUser = get(httpUrl + "/bpmn/stats/userServices/userTaskVariation/" + selectedUser, null, headers, "json").data.data;
+            var taskVariationOfUser = get(httpUrl + "/bpmn/stats/user-performance/variation/" + selectedUser, null, headers, "json").data.data;
 
             for (var i = 0; i < taskVariationOfUser.length; i++) {
                 var month = taskVariationOfUser[i].month;
-                var startedTasks = taskVariationOfUser[i].startedInstances;
-                var completedTasks = taskVariationOfUser[i].completedInstances;
+                var startedTasks = taskVariationOfUser[i].instancesStarted;
+                var completedTasks = taskVariationOfUser[i].instancesCompleted;
                 userTasksOverMonths.push([month, startedTasks, completedTasks]);
             }
 

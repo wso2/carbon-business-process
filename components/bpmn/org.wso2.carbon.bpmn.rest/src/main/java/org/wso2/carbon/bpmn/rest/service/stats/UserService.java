@@ -22,9 +22,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
-import org.wso2.carbon.bpmn.rest.model.stats.InstanceStatPerMonth;
+import org.wso2.carbon.bpmn.rest.model.stats.ProcessInstanceStatInfo;
 import org.wso2.carbon.bpmn.rest.model.stats.ResponseHolder;
-import org.wso2.carbon.bpmn.rest.model.stats.UserTaskCount;
+import org.wso2.carbon.bpmn.rest.model.stats.UserTaskCountInfo;
 import org.wso2.carbon.bpmn.rest.model.stats.UserTaskDuration;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -86,7 +86,7 @@ public class UserService {
         String[] users = (String[]) getUserList().getData().toArray();
 
         for (String u : users) {
-            UserTaskCount userInfo = new UserTaskCount();
+            UserTaskCountInfo userInfo = new UserTaskCountInfo();
             userInfo.setUserName(u);
             String assignee;
             if (tenantDomain.equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
@@ -154,69 +154,69 @@ public class UserService {
         return response;
     }
 
-    /**
-     * Task variation of user over time i.e. tasks started and completed by the user -- User Performance
-     *
-     * @param assignee taskAssignee/User selected to view the user performance of task completion over time
-     * @return array with the tasks started and completed of the selected user
-     */
-    @GET
-    @Path("/userTaskVariation/{assignee}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) throws UserStoreException {
-
-        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
-            throw new ActivitiObjectNotFoundException("Could not find user with id '" +
-                    assignee + "'.");
-        }
-
-        String taskAssignee;
-        if (tenantDomain.equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
-            taskAssignee = assignee;
-        } else {
-            taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
-        }
-
-        ResponseHolder response = new ResponseHolder();
-        List list = new ArrayList();
-        SimpleDateFormat ft = new SimpleDateFormat("M");
-
-        InstanceStatPerMonth[] taskStatPerMonths = new InstanceStatPerMonth[12];
-        for (int i = 0; i < taskStatPerMonths.length; i++) {
-            taskStatPerMonths[i] = new InstanceStatPerMonth();
-            taskStatPerMonths[i].setMonth(MONTHS[i]);
-            taskStatPerMonths[i].setCompletedInstances(0);
-            taskStatPerMonths[i].setStartedInstances(0);
-        }
-        // Get completed tasks
-        List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
-                .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).finished().list();
-        for (HistoricTaskInstance instance : taskList) {
-            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
-            int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
-            taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
-            taskStatPerMonths[endTime - 1].setCompletedInstances(taskStatPerMonths[endTime - 1].getCompletedInstances() + 1);
-
-        }
-        // Get active/started tasks
-        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).active().list();
-        for (Task instance : taskActive) {
-            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
-            taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
-        }
-
-        // Get suspended tasks
-        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).suspended().list();
-        for (Task instance : taskSuspended) {
-            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
-            taskStatPerMonths[startTime - 1].setStartedInstances(taskStatPerMonths[startTime - 1].getStartedInstances() + 1);
-        }
-
-        for (int i = 0; i < taskStatPerMonths.length; i++) {
-            list.add(taskStatPerMonths[i]);
-        }
-        response.setData(list);
-        return response;
-    }
+//    /**
+//     * Task variation of user over time i.e. tasks started and completed by the user -- User Performance
+//     *
+//     * @param assignee taskAssignee/User selected to view the user performance of task completion over time
+//     * @return array with the tasks started and completed of the selected user
+//     */
+//    @GET
+//    @Path("/userTaskVariation/{assignee}")
+//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+//    public ResponseHolder taskVariationOverTime(@PathParam("assignee") String assignee) throws UserStoreException {
+//
+//        if (!(BPMNOSGIService.getUserRealm().getUserStoreManager().isExistingUser(assignee))) {
+//            throw new ActivitiObjectNotFoundException("Could not find user with id '" +
+//                    assignee + "'.");
+//        }
+//
+//        String taskAssignee;
+//        if (tenantDomain.equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
+//            taskAssignee = assignee;
+//        } else {
+//            taskAssignee = assignee.concat(ADDRESS_SIGN).concat(tenantDomain);
+//        }
+//
+//        ResponseHolder response = new ResponseHolder();
+//        List list = new ArrayList();
+//        SimpleDateFormat ft = new SimpleDateFormat("M");
+//
+//        ProcessInstanceStatInfo[] taskStatPerMonths = new ProcessInstanceStatInfo[12];
+//        for (int i = 0; i < taskStatPerMonths.length; i++) {
+//            taskStatPerMonths[i] = new ProcessInstanceStatInfo();
+//            taskStatPerMonths[i].setMonth(MONTHS[i]);
+//            taskStatPerMonths[i].setInstancesCompleted(0);
+//            taskStatPerMonths[i].setInstancesStarted(0);
+//        }
+//        // Get completed tasks
+//        List<HistoricTaskInstance> taskList = BPMNOSGIService.getHistoryService()
+//                .createHistoricTaskInstanceQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).finished().list();
+//        for (HistoricTaskInstance instance : taskList) {
+//            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
+//            int endTime = Integer.parseInt(ft.format(instance.getEndTime()));
+//            taskStatPerMonths[startTime - 1].setInstancesStarted(taskStatPerMonths[startTime - 1].getInstancesStarted() + 1);
+//            taskStatPerMonths[endTime - 1].setInstancesCompleted(taskStatPerMonths[endTime - 1].getInstancesCompleted() + 1);
+//
+//        }
+//        // Get active/started tasks
+//        List<Task> taskActive = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).active().list();
+//        for (Task instance : taskActive) {
+//            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
+//            taskStatPerMonths[startTime - 1].setInstancesStarted(taskStatPerMonths[startTime - 1].getInstancesStarted() + 1);
+//        }
+//
+//        // Get suspended tasks
+//        List<Task> taskSuspended = BPMNOSGIService.getTaskService().createTaskQuery().taskTenantId(strValOfTenantId).taskAssignee(taskAssignee).suspended().list();
+//        for (Task instance : taskSuspended) {
+//            int startTime = Integer.parseInt(ft.format(instance.getCreateTime()));
+//            taskStatPerMonths[startTime - 1].setInstancesStarted(taskStatPerMonths[startTime - 1].getInstancesStarted() + 1);
+//        }
+//
+//        for (int i = 0; i < taskStatPerMonths.length; i++) {
+//            list.add(taskStatPerMonths[i]);
+//        }
+//        response.setData(list);
+//        return response;
+//    }
 
 }

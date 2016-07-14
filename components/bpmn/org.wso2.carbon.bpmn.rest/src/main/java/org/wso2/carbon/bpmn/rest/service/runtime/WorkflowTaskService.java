@@ -538,7 +538,7 @@ public class WorkflowTaskService extends BaseTaskService {
                     task.getId(), RestResponseFactory.VARIABLE_TASK, false, uriInfo.getBaseUri().toString()));
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         TaskService taskService = BPMNOSGIService.getTaskService();
 
@@ -644,7 +644,7 @@ public class WorkflowTaskService extends BaseTaskService {
                     variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         TaskService taskService = BPMNOSGIService.getTaskService();
 

@@ -20,28 +20,28 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Model that keeps details about user with the no. of tasks completed
+ * Model that keeps details about completed processes and its time durations
  */
-@XmlRootElement(name = "UserTaskCount")
+@XmlRootElement(name = "ProcessInstanceAverageInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UserTaskCount {
+public class ProcessInstanceAverageInfo {
+    private String processDefinitionId;
 
-    private String userName;
-    private long taskCount;
-
-    public String getUserName() {
-        return userName;
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    public long getTaskCount() {
-        return taskCount;
+    public double getAverageTimeForCompletion() {
+        return averageTimeForCompletion;
     }
 
-    public void setTaskCount(long taskCount) {
-        this.taskCount = taskCount;
+    public void setAverageTimeForCompletion(double averageTimeForCompletion) {
+        this.averageTimeForCompletion = averageTimeForCompletion;
     }
+
+    private double averageTimeForCompletion;
 }

@@ -20,33 +20,29 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Model object which keeps the count of process and task instances with their status i.e.
- * Completed , Active, Suspended, Failed
+ * Model object of a task instance
  */
-@XmlRootElement(name = "ProcessTaskCount")
+@XmlRootElement(name = "Task")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProcessTaskCount {
-    private String statusOfProcessOrTask;
-    private long count;
+public class TaskInstanceAverageInfo {
 
-    public String getStatusOfProcessOrTask() {
-        return statusOfProcessOrTask;
+    private String taskDefinitionKey;
+    private double averageTimeForCompletion;
+
+    public double getAverageTimeForCompletion() {
+        return averageTimeForCompletion;
     }
 
-    public void setStatusOfProcessOrTask(String statusOfProcessOrTask) {
-        this.statusOfProcessOrTask = statusOfProcessOrTask;
+    public void setAverageTimeForCompletion(double averageTimeForCompletion) {
+        this.averageTimeForCompletion = averageTimeForCompletion;
     }
 
-    public long getCount() {
-        return count;
+    public String getTaskDefinitionKey() {
+        return taskDefinitionKey;
     }
 
-    public void setCount(long count) {
-        this.count = count;
+    public void setTaskDefinitionKey(String taskDefinitionKey) {
+        this.taskDefinitionKey = taskDefinitionKey;
     }
 
-    @Override
-    public String toString() {
-        return statusOfProcessOrTask + " " + count;
-    }
 }

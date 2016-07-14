@@ -66,7 +66,7 @@ public class ExecutionService  extends BaseExecutionService {
             actionRequest) {
 
         Execution execution = getExecutionFromRequest(executionId);
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
             if (actionRequest.getVariables() != null) {
@@ -117,7 +117,7 @@ public class ExecutionService  extends BaseExecutionService {
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response getActiveActivities(@PathParam("executionId") String executionId) {
         Execution execution = getExecutionFromRequest(executionId);
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         List<String> activityIdList = runtimeService.getActiveActivityIds(execution.getId());
         ActiveActivityCollection activeActivityCollection = new ActiveActivityCollection();
@@ -224,7 +224,7 @@ public class ExecutionService  extends BaseExecutionService {
         if (actionRequest.getSignalName() == null) {
             throw new ActivitiIllegalArgumentException("Signal name is required.");
         }
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (actionRequest.getVariables() != null) {
             runtimeService.signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest));
@@ -392,7 +392,7 @@ public class ExecutionService  extends BaseExecutionService {
                     variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.removeVariableLocal(execution.getId(), variableName);
         } else {
