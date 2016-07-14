@@ -223,6 +223,13 @@ function claim(username, id) {
         data: JSON.stringify(body),
         success: function (data) {
             window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+        },
+        error: function (xhr, status, error) {
+            document.getElementById("commonErrorSection").hidden = false;
+            document.getElementById("errorMsg").innerHTML = "Task claiming failed: " + xhr.responseText;
+            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            emptyVar = false;
+            return;
         }
     });
 }
@@ -230,7 +237,7 @@ function claim(username, id) {
 /**
 * Reassign the task 
 */
-function reassign(username, id) {
+function reassignTask(username, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
         "assignee": username
@@ -243,6 +250,13 @@ function reassign(username, id) {
         data: JSON.stringify(body),
         success: function (data) {
             window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+        },
+        error: function (xhr, status, error) {
+            document.getElementById("commonErrorSection").hidden = false;
+            document.getElementById("errorMsg").innerHTML = "Task reassigning failed: " + xhr.responseText;
+            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            emptyVar = false;
+            return;
         }
     });
 }

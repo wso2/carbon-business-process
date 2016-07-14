@@ -96,7 +96,7 @@
 					</div>
 				<% } else if (taskData.assignee != taskAssignee ) { %>
 					<div class="col-lg-12 right margin-bottom-double white-bg">
-					<button onclick = "reassign(&quot;<%=taskAssignee%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double"><%=i18n.localize("assign.me","Assign to me")%></button>
+					<button onclick = "reassignTask(&quot;<%=taskAssignee%>&quot;,<%=id%>);" class = "btn btn-info margin-right-double"><%=i18n.localize("assign.me","Assign to me")%></button>
 					</div>
 				<% } else if (taskData.processState == 'ACTIVE') { %>
 					<div class="col-lg-12 right margin-bottom">
