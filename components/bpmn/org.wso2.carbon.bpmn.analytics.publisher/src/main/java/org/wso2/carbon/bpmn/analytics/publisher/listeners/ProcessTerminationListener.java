@@ -28,8 +28,11 @@ public class ProcessTerminationListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
+        // Process instance details have to be fetched from history service as some information such as process start time is not available from
+        // runtime service or delegate execution.
         HistoryService historyService = delegateExecution.getEngineServices().getHistoryService();
-        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
+        List<HistoricProcessInstance> historicProcessInstances =
+                historyService.createHistoricProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
         if (historicProcessInstances.size() == 1) {
             HistoricProcessInstance instance = historicProcessInstances.get(0);
             BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishProcessEvent(instance);

@@ -421,8 +421,17 @@ a.collapsing-h2 {
 }
 
 .navbar {
-    min-height: 45px;
+    min-height: 44px;
     overflow: hidden;
+}
+
+.navbar-default .navbar-nav > li {
+    color: #e4e4e4;
+    text-transform: uppercase;
+}
+
+.navbar-default .navbar-nav > .active > a {
+    height: 45px;
 }
 
 .navbar-default .navbar-nav > li > a {
@@ -436,6 +445,7 @@ a.collapsing-h2 {
 
 .navbar-nav>li>a {
     padding: 5px 10px;
+    line-height: 35px;
 }
 .navbar-nav>li>a:hover {
     padding-top: 5px !important;
