@@ -37,7 +37,7 @@ try {
     var currentPage = 1;
     var pagination = request.getParameter("pagination");
     var start = 0;
-    var redirectPage = "substitutions";//for pagination
+    var redirectPage = "substitutions_admin";//for pagination
     var queryParams = "";//for pagination
 
     if (pagination == null || pagination == ""){
@@ -49,11 +49,12 @@ try {
     }
     
     //retrieve list substitution info
-    httpResponse = get(httpUrl + RUNTIME_SUBSTITUTES_URL + "?order=asc&start=" + start + "&size=10&tenantId=" + bpsTenantID, null, headers, "json");
+    httpResponse = get(httpUrl + RUNTIME_SUBSTITUTES_URL + "?order=asc&sort=startTime&start=" + 
+                                                                                start + "&size=10&tenantId=" + bpsTenantID, null, headers, "json");
 
     if (log.isDebugEnabled()) {
-        log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_URL + "?substitute=" + session.get("user")+
-                                                        "&order=asc&start="+ start+"&size=10&tenantId="+ bpsTenantID);
+        log.debug("BPS BPMN REST API request: " + httpUrl + RUNTIME_SUBSTITUTES_URL + "?order=asc&sort=startTime&start=" + 
+                                                                                start + "&size=10&tenantId=" + bpsTenantID);
         log.debug("BPS BPMN REST API response: " + stringify(httpResponse));
     }
 
