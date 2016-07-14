@@ -19,11 +19,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
@@ -49,8 +47,7 @@ public class PublishProcessVariablesService {
     @POST
     @Path("/{processId}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-    public Response publishProcessVariables(@PathParam("processId") String processId,
-            String dasConfigDetailsJson) {
+    public Response publishProcessVariables(@PathParam("processId") String processId, String dasConfigDetailsJson) {
         if (log.isDebugEnabled()) {
             log.debug("Recieved analytics configuration details to from PC to BPS for Process ID:" + processId
                     + "\nRecieved Date:" + dasConfigDetailsJson);

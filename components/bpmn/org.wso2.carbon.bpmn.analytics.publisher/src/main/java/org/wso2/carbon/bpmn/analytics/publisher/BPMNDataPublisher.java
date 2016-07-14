@@ -168,7 +168,8 @@ public class BPMNDataPublisher {
                         if ("true".equalsIgnoreCase(analyticsEnabledValue)) {
                             analyticsEnabled = true;
                         }
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.KPI_PUBLISHER_ENABLED_PROPERTY)) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name"))
+                            .equals(AnalyticsPublisherConstants.KPI_PUBLISHER_ENABLED_PROPERTY)) {
                         String kpiAalyticsEnabledValue = beanProp.getAttributeValue(new QName(null, "value"));
                         if ("true".equalsIgnoreCase(kpiAalyticsEnabledValue)) {
                             kpiAnalyticsEnabled = true;
@@ -375,8 +376,10 @@ public class BPMNDataPublisher {
                 configedProcessVariables = new String[variableCount][2];
 
                 for (int i = 0; i < variableCount; i++) {
-                    configedProcessVariables[i][0] =  ((JsonObject)configedProcVarsJson.get(i)).get("name").getAsString();
-                    configedProcessVariables[i][1] =  ((JsonObject)configedProcVarsJson.get(i)).get("type").getAsString();
+                    configedProcessVariables[i][0] = ((JsonObject) configedProcVarsJson.get(i)).get("name")
+                            .getAsString();
+                    configedProcessVariables[i][1] = ((JsonObject) configedProcVarsJson.get(i)).get("type")
+                            .getAsString();
                 }
 
                 processVariablesMap.put(processDefinitionId, configedProcessVariables);
@@ -454,7 +457,7 @@ public class BPMNDataPublisher {
             }
 
             //set process instance id as the last payload variable value
-            payload[configedProcessVariables.length-1] = processInstanceId;
+            payload[configedProcessVariables.length - 1] = processInstanceId;
 
             boolean dataPublishingSuccess = dataPublisher.tryPublish(eventStreamId, getMeta(), null, payload);
             if (dataPublishingSuccess) {
@@ -510,9 +513,8 @@ public class BPMNDataPublisher {
             }
 
         } catch (RegistryException e) {
-            String errMsg =
-                    "Error in Getting DAS config details of given process definition id :" + processDefinitionId
-                            + " from the BPS Config registry-" + resourcePath;
+            String errMsg = "Error in Getting DAS config details of given process definition id :" + processDefinitionId
+                    + " from the BPS Config registry-" + resourcePath;
             throw new RegistryException(errMsg, e);
         }
     }
