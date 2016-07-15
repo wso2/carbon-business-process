@@ -39,7 +39,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-6"><%=i18n.localize("you.are.in.the.user.substitutions.admin.view","You are in the User Substitutions Admin View")%></div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <button type="button" class="btn btn-md btn-info float-right" onclick="window.location='substitutions'">
-                                &lt;&lt;&nbsp;&nbsp;<%=i18n.localize("go.back.to.my.substitution.view","Go Back To My Substitution View")%>
+                                <span class="fw fw-left"></span>&nbsp;&nbsp;<%=i18n.localize("go.back.to.my.substitution.view","Go Back To My Substitution View")%>
                             </button>
                         </div>
                     </div>
