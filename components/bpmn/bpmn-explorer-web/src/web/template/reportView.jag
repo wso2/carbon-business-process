@@ -18,7 +18,7 @@
    <div class="row">
     <h3 id="h3"><%=i18n.localize("click.to.generate.reports", "Click to generate reports")%></h3>
     <br/>
-    <button id="generate" onclick="generateReport()"><%=i18n.localize("generate.report", "Generate Report")%></button>
+    <button id="generate" onclick="generateReport('<%=session.get("user")%>')"><%=i18n.localize("generate.report", "Generate Report")%></button>
     <br/>
     <% if(isProcessesDeployed == true) { %>
     <link rel="stylesheet" href="css/tooltip.css">
@@ -80,7 +80,7 @@
             <div style="height: 20%"> </div>
             </div>
             <br>
-            <div class="table-title"  style="width:100%"><%=i18n.localize("user.vs.number.of.tasks.completed","User Vs Number Of Tasks Completed")%> </div>
+            <!--div class="table-title"  style="width:100%"><%=i18n.localize("user.vs.number.of.tasks.completed","User Vs Number Of Tasks Completed")%> </div>
             <div id="colChartUserVsTasks">
             <div style="height: 20%"> </div>
             </div>
@@ -88,7 +88,7 @@
             <div class="table-title"  style="width:100%"><%=i18n.localize("user.vs.average.time.taken.to.complete.tasks","User Vs Average Time Taken to Complete Tasks")%> </div>
             <div id="userVsAvgTaskDuration">
             <div style="height: 20%"> </div>
-            </div>
+            </div-->
             <br>
             <div class="table-title"  style="width:100%"><%=i18n.localize("task.instance.count.variation.over.time","Task Instance Count Variation Over Time")%> </div>
             <div id="taskVariationOverTime"></div>
@@ -96,16 +96,8 @@
             <div class="table-title"  style="width:100%"><%=i18n.localize("process.instance.count.variation.over.time","Process Instance Count Variation Over Time")%> </div>
             <div id="processVariationOverTime"></div>
             <br>
-            <div class="table-title"  style="width:100%"><%=i18n.localize("user.performance.of.task.instances.over.time","User Performance Of Tasks Instances Over Time")%> </div>
-                <form>
-                <select id="selectUser" name="selectUser" class="form-control" onchange="selectUserForPerformance()">
-                 <option value="" disabled selected><%=i18n.localize("select.a.user","Select a User")%></option>
-                <% for(var j = 0; j < userList.length; j++){ %>
-                <option value="<%=userList[j]%>"><%=userList[j]%></option>
-            <% } %>
-                  </select>
-                 </form>
-            <div id="taskOfUserVariation"><%=i18n.localize("select.a.user.to.view.the.performance","Select a user to view the performance")%> </div>
+            <div class="table-title"  style="width:100%"><%=i18n.localize("my.performance.of.task.instances.over.time","My Performance Of Tasks Instances Over Time")%> </div>
+            <div id="taskOfUserVariation"></div>
             <div style="height: 20%"> </div>
 
       </div>

@@ -565,9 +565,9 @@ function selectProcessForChart() {
 
 //User Performance of Tasks Completed and Tasks Started Over time i.e. months
 
-function selectUserForPerformance() {
-    var x = document.getElementById("selectUser").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + x;
+function selectUserForPerformance(userName) {
+    //var x = document.getElementById("selectUser").value;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + userName;
 
     $.ajax({
         type: 'GET',
@@ -1037,14 +1037,15 @@ function processVariationOverTime() {
 }
 
 // Generate the report view by displaying the graphs
-function generateReport() {
+function generateReport(loggedUser) {
 
     selectProcessForInstanceCount();
     selectProcessForAvgTimeDuration();
-    userVsTasksCompleted();
-    avgTimeForUserForTasks();
+    // userVsTasksCompleted();
+    // avgTimeForUserForTasks();
     taskVariationOverTime();
     processVariationOverTime();
+    selectUserForPerformance(loggedUser)
 
     var barChartDisplay = document.getElementById("barChartDisplay");
     barChartDisplay.hidden = false;
