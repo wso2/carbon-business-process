@@ -52,12 +52,9 @@ if (query1.data.length != 0) {
 
 
                            <%
-        var resource = get(httpUrl + "/bpmn/runtime/" + instanceId + "/diagram", null, headers, "json").data.data;
 
-        var imageUrl = "not supported";
-        if (resource != null) {
-            var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
-
+            var imageUrl = "not supported";
+            var BPSResponseXML = new XML(wsRequest.getBPMNInstanceDiagram(instanceId));
             if (BPSResponseXML == null || BPSResponseXML == "") {
                 if (log.isDebugEnabled()) {
                     log.debug('Session timed out for request' + wsRequest);
@@ -69,7 +66,7 @@ if (query1.data.length != 0) {
                 var imageData = BPSResponseXML.toString().split(":return")[1];
                 imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
             }
-        }
+
 
     } else {
         var instanceId = query1.data[0].id;
@@ -90,13 +87,8 @@ if (query1.data.length != 0) {
 
 
                             <%
-        var resource = get(httpUrl + "/bpmn/runtime/" + pId + "/diagram", null, headers, "json").data.data;
-
-        var imageUrl = "";
-        if (resource == null) {
             imageUrl = "not supported";
-        } else {
-            var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
+            var BPSResponseXML = new XML(wsRequest.getBPMNInstanceDiagram(instanceId));
 
             if (BPSResponseXML == null || BPSResponseXML == "") {
                 if (log.isDebugEnabled()) {
@@ -109,7 +101,7 @@ if (query1.data.length != 0) {
                 var imageData = BPSResponseXML.toString().split(":return")[1];
                 imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
             }
-        }
+
     }
 } else {
     var instanceId = '';

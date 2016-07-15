@@ -450,27 +450,6 @@ public class ProcessStatisticsService {
                 createProcessDefinitionQuery().processDefinitionTenantId(getTenantIdStr()).count();
     }
 
-//    /**
-//     * Return the bpmn resource/process diagram
-//     * @param pId process instance id
-//     * @return bpmn resource/process diagram
-//     */
-//    @GET
-//    @Path("/resourceDiagram/{pId}")
-//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    public ResponseHolder getResourceDiagram(@PathParam("pId") String pId) {
-//        //Get a list of the deployed processes
-//        List<ProcessDefinition> processDefinitionList = BPMNOSGIService.getRepositoryService().
-//                createProcessDefinitionQuery().processDefinitionTenantId(getTenantIdStr()).processDefinitionId(pId).list();
-//
-//        List list = new ArrayList<>();
-//        ResponseHolder response = new ResponseHolder();
-//        list.addAll(processDefinitionList.stream().map(ProcessDefinition::getDiagramResourceName).collect(Collectors.toList()));
-//
-//        response.setData(list);
-//        return response;
-//    }
-
     /**
      * Return all the tasks/activities in a process
      * @param pId process instance id
