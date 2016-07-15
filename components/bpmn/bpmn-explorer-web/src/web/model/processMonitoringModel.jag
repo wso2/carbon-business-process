@@ -36,72 +36,53 @@ if (query1.data.length != 0) {
 
     var endTime = query1.data[0].endTime;
 
+
     if (endTime != null) {
         var instanceId = query1.data[0].id;
         var pId = query1.data[0].processDefinitionId;
         %>
-
-
                        <script type='text/javascript'>
-
-                        var instanceId = <%=instanceId
-        %> ;
+                        var instanceId = <%=instanceId%> ;
                             setTimeout(function() { completedProcessInstances(instanceId); }, 300);
-
                            </script>
-
-
                            <%
 
-            var imageUrl = "not supported";
-            var BPSResponseXML = new XML(wsRequest.getBPMNInstanceDiagram(instanceId));
-            if (BPSResponseXML == null || BPSResponseXML == "") {
-                if (log.isDebugEnabled()) {
-                    log.debug('Session timed out for request' + wsRequest);
-                }
-                session.put('authSuccess', false);
-                response.sendRedirect('login');
-                //throw "HTTPS Session with BPS has timed out";
-            } else {
-                var imageData = BPSResponseXML.toString().split(":return")[1];
-                imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
+        var imageUrl = "not supported";
+        var BPSResponseXML = new XML(wsRequest.getBPMNProcessDiagram(pId));
+        if (BPSResponseXML == null || BPSResponseXML == "") {
+            if (log.isDebugEnabled()) {
+                log.debug('Session timed out for request' + wsRequest);
             }
-
-
+            session.put('authSuccess', false);
+            response.sendRedirect('login');
+            //throw "HTTPS Session with BPS has timed out";
+        } else {
+            var imageData = BPSResponseXML.toString().split(":return")[1];
+            imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
+        }
     } else {
         var instanceId = query1.data[0].id;
         var pId = query1.data[0].processDefinitionId;
         var processID = String(pId);
-
         %>
-
-
-   <script type='text/javascript'>
-
-     var instanceId = <%=instanceId%> ;
-                    
-                    setTimeout(function() { runningProcessInstances('<%=processID
-        %>',instanceId); }, 300);
-
-                           </script>
-
-
-                            <%
-            imageUrl = "not supported";
-            var BPSResponseXML = new XML(wsRequest.getBPMNInstanceDiagram(instanceId));
-
-            if (BPSResponseXML == null || BPSResponseXML == "") {
-                if (log.isDebugEnabled()) {
-                    log.debug('Session timed out for request' + wsRequest);
-                }
-                session.put('authSuccess', false);
-                response.sendRedirect('login');
-                // throw "HTTPS Session with BPS has timed out";
-            } else {
-                var imageData = BPSResponseXML.toString().split(":return")[1];
-                imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
+       <script type='text/javascript'>
+             var instanceId = <%=instanceId%>;
+             setTimeout(function() { runningProcessInstances('<%=processID%>',instanceId); }, 300);
+        </script>
+                    <%
+        var imageUrl = "not supported";
+        var BPSResponseXML = new XML(wsRequest.getBPMNInstanceDiagram(instanceId));
+        if (BPSResponseXML == null || BPSResponseXML == "") {
+            if (log.isDebugEnabled()) {
+                log.debug('Session timed out for request' + wsRequest);
             }
-
+            session.put('authSuccess', false);
+            response.sendRedirect('login');
+            //throw "HTTPS Session with BPS has timed out";
+        } else {
+            var imageData = BPSResponseXML.toString().split(":return")[1];
+            imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length - 4);
+        }
     }
 } else {
     var instanceId = '';
