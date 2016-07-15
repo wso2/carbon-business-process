@@ -209,9 +209,11 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
                 //update elements in the template to create output xml
                 for (int i = 0; i < valueSet.length; i++) {
                     Element outElement = getOutputElementById(valueSet[i].getId(), outputRenderingsElement);
-                    outputMsgTemplate = updateXmlByXpath(outputMsgTemplate, outElement.
-                                                                 getElementsByTagNameNS(htRenderingNS, "xpath").item(0).getTextContent(),
-                                                         valueSet[i].getString(), outputRenderingsElement.getOwnerDocument());
+                    if (outElement != null) {
+                        outputMsgTemplate = updateXmlByXpath(outputMsgTemplate, outElement.
+                                        getElementsByTagNameNS(htRenderingNS, "xpath").item(0).getTextContent(),
+                                        valueSet[i].getString(), outputRenderingsElement.getOwnerDocument());
+                    }
                 }
             } else {
                 log.error("Retrieving output renderings failed");
