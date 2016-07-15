@@ -57,7 +57,7 @@
                     <i class="cu-btn-exp-col btn-collapsed"></i>
                 </div>
                 <div>
-                	<%=i18n.localize("my.substitutions.info","My Substitutions Information")%>
+                	<%=i18n.localize("my.substitution","My Substitution")%>
                 </div>
                 </div>
             </a>
@@ -71,7 +71,7 @@
                                 <td><%=loggedUsersSubInfo.substitute%></td>
                             </tr>
                             <tr class="white-bg">
-                                <th><%=i18n.localize("substitution.status","Substitution Status")%></th>
+                                <th><%=i18n.localize("status","Status")%></th>
 
                                 <%if (loggedUsersSubInfo.enabled) {%>
                                     <td class="text-success btn-sm-bold-text">Active &nbsp;&nbsp; <button type="button" class="btn btn-info btn-sm-deactivate" onclick="deactivateSub('<%=session.get("user")%>')">Deactivate</button></td>
