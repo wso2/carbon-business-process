@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessKPIParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessParseHandler;
-import org.wso2.carbon.bpmn.analytics.publisher.handlers.ServiceTaskParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.TaskParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationKPIListener;
@@ -74,8 +73,6 @@ public class BPMNDataPublisher {
     private static final Log log = LogFactory.getLog(BPMNDataPublisher.class);
 
     private DataPublisher dataPublisher;
-    private Map<String, String[][]> processVariablesMap = new HashMap<String, String[][]>();
-    private Map<String, String> kpiStreamIdMap =  new HashMap<String, String>();
 
     public void publishProcessEvent(HistoricProcessInstance processInstance) {
         long endTime = System.currentTimeMillis();
@@ -183,7 +180,6 @@ public class BPMNDataPublisher {
         String password = "";
         boolean asyncDataPublishingEnabled=false;
 
-
         // Read analytics configuration from activiti.xml file
         String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
         String activitiConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
@@ -241,12 +237,9 @@ public class BPMNDataPublisher {
             }
         }
 
-        if (analyticsEnabled) {
-            configGenericVariablesPublishing(receiverURLSet, username, password, authURLSet, type,asyncDataPublishingEnabled);
-        }
-
-        if (kpiAnalyticsEnabled) {
-            configProcessVariablesPublishing(receiverURLSet, username, password, authURLSet, type);
+        if (analyticsEnabled || kpiAnalyticsEnabled)  {
+            configDataPublishing(receiverURLSet, username, password, authURLSet, type,
+                    asyncDataPublishingEnabled,analyticsEnabled,kpiAnalyticsEnabled);
         }
     }
 
@@ -257,142 +250,101 @@ public class BPMNDataPublisher {
      * @param password
      * @param authURLSet
      * @param type
+     * @param asyncDataPublishingEnabled
+     * @param analyticsEnabled
+     * @param kpiAnalyticsEnabled
      * @throws DataEndpointAuthenticationException
      * @throws DataEndpointAgentConfigurationException
      * @throws TransportException
      * @throws DataEndpointException
      * @throws DataEndpointConfigurationException
      */
-    private void configGenericVariablesPublishing(String receiverURLSet, String username, String password,
-            String authURLSet, String type, boolean asyncDataPublishingEnabled)
-            throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
-            DataEndpointException, DataEndpointConfigurationException {
-            if (receiverURLSet != null && username != null && password != null) {
-
-                // Configure data publisher to be used by all (generic variables) data publishing listeners
-                if (log.isDebugEnabled()) {
-                    log.debug("Creating BPMN analytics data publisher with Receiver URL: " +
-                            receiverURLSet + ", Auth URL: " + authURLSet + " and Data publisher type: " + type);
-                }
-                dataPublisher = new DataPublisher(type, receiverURLSet, authURLSet, username, password);
-                BPMNAnalyticsHolder.getInstance().setAsyncDataPublishingEnabled(asyncDataPublishingEnabled);
-                BPMNEngineService engineService = BPMNAnalyticsHolder.getInstance().getBpmnEngineService();
-
-                // Attach data publishing listeners to all existing processes
-                if (log.isDebugEnabled()) {
-                    log.debug("Attaching data publishing listeners to already deployed processes...");
-                }
-                RepositoryService repositoryService = engineService.getProcessEngine().getRepositoryService();
-                List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-                for (ProcessDefinition processDefinition : processDefinitions) {
-                    // Process definition returned by the query does not contain all details such as task definitions.
-                    // Therefore, we have to fetch the complete process definition
-                    // from the repository again.
-                    ProcessDefinition completeProcessDefinition = repositoryService.
-                            getProcessDefinition(processDefinition.getId());
-                    if (completeProcessDefinition instanceof ProcessDefinitionEntity) {
-                        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity)
-                                completeProcessDefinition;
-                        processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END,
-                                new ProcessTerminationListener());
-
-                        Map<String, TaskDefinition> tasks = processDefinitionEntity.getTaskDefinitions();
-                        List<ActivityImpl> activities = processDefinitionEntity.getActivities();
-                        for (ActivityImpl activity:activities) {
-                            if(activity.getProperty("type").toString().equalsIgnoreCase("usertask")){
-                                tasks.get(activity.getId()).addTaskListener(TaskListener.EVENTNAME_COMPLETE,
-                                        new TaskCompletionListener());
-                            }
-                            // We are publishing analutics data of service tasks in process termination ATM.
-
-//                            else if(activity.getProperty("type").toString().equalsIgnoreCase("servicetask")){
-//                                activity.addExecutionListener(PvmEvent.EVENTNAME_END,new ServiceTaskCompletionListener());
-//                            }
-                        }
-                    }
-                }
-
-                // Configure parse handlers, which attaches data publishing listeners to new processes
-                if (log.isDebugEnabled()) {
-                    log.debug("Associating parse handlers for processes and tasks, so that data publishing listeners " +
-                            "will be attached to new processes.");
-                }
-                ProcessEngineConfigurationImpl engineConfig = (ProcessEngineConfigurationImpl) engineService.
-                        getProcessEngine().getProcessEngineConfiguration();
-                if (engineConfig.getPostBpmnParseHandlers() == null) {
-                    engineConfig.setPostBpmnParseHandlers(new ArrayList<BpmnParseHandler>());
-                }
-                engineConfig.getPostBpmnParseHandlers().add(new ProcessParseHandler());
-                engineConfig.getPostBpmnParseHandlers().add(new TaskParseHandler());
-                engineConfig.getPostBpmnParseHandlers().add(new ServiceTaskParseHandler());
-                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
-                        addHandler(new ProcessParseHandler());
-                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
-                        addHandler(new TaskParseHandler());
-                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
-                        addHandler(new ServiceTaskParseHandler());
-
-            } else {
-                log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password " +
-                        "are mandatory. Data publishing will not be enabled.");
-            }
-    }
-
-    /**
-     * @param receiverURLSet
-     * @param username
-     * @param password
-     * @param authURLSet
-     * @param type
-     * @throws DataEndpointAuthenticationException
-     * @throws DataEndpointAgentConfigurationException
-     * @throws TransportException
-     * @throws DataEndpointException
-     * @throws DataEndpointConfigurationException
-     */
-    private void configProcessVariablesPublishing(String receiverURLSet, String username, String password,
-            String authURLSet, String type)
+    void configDataPublishing(String receiverURLSet, String username, String password, String authURLSet, String type,
+            boolean asyncDataPublishingEnabled, boolean analyticsEnabled, boolean kpiAnalyticsEnabled)
             throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
             DataEndpointException, DataEndpointConfigurationException {
         if (receiverURLSet != null && username != null && password != null) {
-            // Configure datapublisher to be used by all KPI data publishing listeners
+
+            // Configure data publisher to be used by all data publishing listeners
             if (log.isDebugEnabled()) {
-                log.debug("Creating BPMN analytics data publisher (KPI) with Receiver URL: " +
+                log.debug("Creating BPMN analytics data publisher with Receiver URL: " +
                         receiverURLSet + ", Auth URL: " + authURLSet + " and Data publisher type: " + type);
             }
             dataPublisher = new DataPublisher(type, receiverURLSet, authURLSet, username, password);
+            BPMNAnalyticsHolder.getInstance().setAsyncDataPublishingEnabled(asyncDataPublishingEnabled);
             BPMNEngineService engineService = BPMNAnalyticsHolder.getInstance().getBpmnEngineService();
 
             // Attach data publishing listeners to all existing processes
             if (log.isDebugEnabled()) {
-                log.debug("Attaching data publishing (KPI) listeners to already deployed processes...");
+                log.debug("Attaching data publishing listeners to already deployed processes...");
             }
             RepositoryService repositoryService = engineService.getProcessEngine().getRepositoryService();
             List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
             for (ProcessDefinition processDefinition : processDefinitions) {
-                if (processDefinition instanceof ProcessDefinitionEntity) {
-                    ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) processDefinition;
-                    processDefinitionEntity
-                            .addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationKPIListener());
+                // Process definition returned by the query does not contain all details such as task definitions.
+                // And it is also not the actual process definition, but a copy of it, so attaching listners to
+                // them is useless. Therefore, we have to fetch the complete process definition from the repository
+                // again.
+                ProcessDefinition completeProcessDefinition = repositoryService.
+                        getProcessDefinition(processDefinition.getId());
+                if (completeProcessDefinition instanceof ProcessDefinitionEntity) {
+                    ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity)
+                            completeProcessDefinition;
+                    if (analyticsEnabled) {
+                        processDefinitionEntity
+                                .addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
+                    }
+                    if (kpiAnalyticsEnabled) {
+                        processDefinitionEntity
+                                .addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationKPIListener());
+                    }
+                    Map<String, TaskDefinition> tasks = processDefinitionEntity.getTaskDefinitions();
+                    List<ActivityImpl> activities = processDefinitionEntity.getActivities();
+                    for (ActivityImpl activity : activities) {
+                        if (activity.getProperty("type").toString().equalsIgnoreCase("usertask")) {
+                            tasks.get(activity.getId())
+                                    .addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
+                        }
+                        // We are publishing analytics data of service tasks in process termination ATM.
+
+                        // else if(activity.getProperty("type").toString().equalsIgnoreCase("servicetask")){
+                        //       activity.addExecutionListener(PvmEvent.EVENTNAME_END,new
+                        // ServiceTaskCompletionListener());
+                        // }
+                    }
                 }
             }
 
-            // Configure parse handlers, which attaches KPI data publishing listeners to new processes
+            // Configure parse handlers, which attaches data publishing listeners to new processes
             if (log.isDebugEnabled()) {
-                log.debug("Associating parse handlers for processes and tasks, so that KPI data publishing "
-                        + "listeners will be attached to new processes.");
+                log.debug("Associating parse handlers for processes and tasks, so that data publishing listeners "
+                        + "will be attached to new processes.");
             }
-            ProcessEngineConfigurationImpl engineConfig = (ProcessEngineConfigurationImpl) engineService
-                    .getProcessEngine().getProcessEngineConfiguration();
+            ProcessEngineConfigurationImpl engineConfig = (ProcessEngineConfigurationImpl) engineService.
+                    getProcessEngine().getProcessEngineConfiguration();
             if (engineConfig.getPostBpmnParseHandlers() == null) {
                 engineConfig.setPostBpmnParseHandlers(new ArrayList<BpmnParseHandler>());
             }
-            engineConfig.getPostBpmnParseHandlers().add(new ProcessKPIParseHandler());
-            engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers()
-                    .addHandler(new ProcessKPIParseHandler());
+            if (analyticsEnabled) {
+                engineConfig.getPostBpmnParseHandlers().add(new ProcessParseHandler());
+                engineConfig.getPostBpmnParseHandlers().add(new TaskParseHandler());
+            }
+            if (kpiAnalyticsEnabled) {
+                engineConfig.getPostBpmnParseHandlers().add(new ProcessKPIParseHandler());
+                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers()
+                        .addHandler(new ProcessKPIParseHandler());
+            }
+            // engineConfig.getPostBpmnParseHandlers().add(new ServiceTaskParseHandler());
+            engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                    addHandler(new ProcessParseHandler());
+            engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                    addHandler(new TaskParseHandler());
+            // engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+            // addHandler(new ServiceTaskParseHandler());
+
         } else {
-            log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password are "
-                    + "mandatory. Data publishing will not be enabled.");
+            log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password "
+                    + "are mandatory. Data publishing will not be enabled.");
         }
     }
 
@@ -446,45 +398,38 @@ public class BPMNDataPublisher {
         String eventStreamId;
         Object[] payload = new Object[0];
         try {
-            //get a list of names of variables which are configured for analytics from registry for that process, if
-            // not already taken from registry
+            //get a list of names of variables which are configured for analytics from registry for that process
             String[][] configedProcessVariables;
-            if (processVariablesMap.get(processDefinitionId) == null) {
-                JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
-                //do not publish the KPI event if DAS configurations are not done by the PC
-                if (kpiConfig == null) {
-                    return;
-                }
-
-                /* Keeps configed process variabe data as a JSON. Example value:
-                [{"isAnalyzeData":false,"name":"size","isDrillDownData":false,"type":"int"},
-                {"isAnalyzeData":false,"name":"status","isDrillDownData":false,"type":"string"},
-                {"isAnalyzeData":false,"name":"pizzaTopping","isDrillDownData":false,"type":"string"},
-                {"isAnalyzeData":false,"name":"amount","isDrillDownData":false,"type":"int"},
-                {"isAnalyzeData":"false","name":"processInstanceId","isDrillDownData":"false","type":"string"}]
-                 */
-                JsonArray configedProcVarsJson = kpiConfig
-                        .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
-
-                int variableCount = configedProcVarsJson.size();
-                configedProcessVariables = new String[variableCount][2];
-
-                for (int i = 0; i < variableCount; i++) {
-                    configedProcessVariables[i][0] = ((JsonObject) configedProcVarsJson.get(i)).get("name")
-                            .getAsString();
-                    configedProcessVariables[i][1] = ((JsonObject) configedProcVarsJson.get(i)).get("type")
-                            .getAsString();
-                }
-
-                processVariablesMap.put(processDefinitionId, configedProcessVariables);
-                eventStreamId = kpiConfig.get("eventStreamId").getAsString();
-                kpiStreamIdMap.put(processDefinitionId, eventStreamId);
-
-            } else { //if the process variables are already taken, get them from the Map
-                configedProcessVariables = processVariablesMap.get(processDefinitionId);
-                eventStreamId = kpiStreamIdMap.get(processDefinitionId);
+            JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
+            //do not publish the KPI event if DAS configurations are not done by the PC
+            if (kpiConfig == null) {
+                return;
+            }
+            if (log.isDebugEnabled()) {
+                log.debug(
+                        "Publishing Process Variables (KPI) for the process instance " + processInstanceId + " of the "
+                                + "process : " + processDefinitionId);
             }
 
+            /* Keeps configed process variabe data as a JSON. Example value:
+            [{"isAnalyzeData":false,"name":"size","isDrillDownData":false,"type":"int"},
+            {"isAnalyzeData":false,"name":"status","isDrillDownData":false,"type":"string"},
+            {"isAnalyzeData":false,"name":"pizzaTopping","isDrillDownData":false,"type":"string"},
+            {"isAnalyzeData":false,"name":"amount","isDrillDownData":false,"type":"int"},
+            {"isAnalyzeData":"false","name":"processInstanceId","isDrillDownData":"false","type":"string"}]
+            */
+            JsonArray configedProcVarsJson = kpiConfig
+                    .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
+
+            int variableCount = configedProcVarsJson.size();
+            configedProcessVariables = new String[variableCount][2];
+
+            for (int i = 0; i < variableCount; i++) {
+                configedProcessVariables[i][0] = ((JsonObject) configedProcVarsJson.get(i)).get("name").getAsString();
+                configedProcessVariables[i][1] = ((JsonObject) configedProcVarsJson.get(i)).get("type").getAsString();
+            }
+
+            eventStreamId = kpiConfig.get("eventStreamId").getAsString();
             Map<String, VariableInstance> variableInstances = ((ExecutionEntity) processInstance)
                     .getVariableInstances();
             payload = new Object[configedProcessVariables.length];
@@ -498,28 +443,28 @@ public class BPMNDataPublisher {
                 switch (varType) {
                 case "int":
                     if (varValue == null) {
-                        payload[i] = -1;
+                        payload[i] = 0;
                     } else {
                         payload[i] = Integer.parseInt((String) varValue);
                     }
                     break;
                 case "float":
                     if (varValue == null) {
-                        payload[i] = -1;
+                        payload[i] = 0;
                     } else {
                         payload[i] = Float.parseFloat((String) varValue);
                     }
                     break;
                 case "long":
                     if (varValue == null) {
-                        payload[i] = -1;
+                        payload[i] = 0;
                     } else {
                         payload[i] = Long.parseLong((String) varValue);
                     }
                     break;
                 case "double":
                     if (varValue == null) {
-                        payload[i] = -1;
+                        payload[i] = 0;
                     } else {
                         payload[i] = Double.parseDouble((String) varValue);
                     }
@@ -539,15 +484,11 @@ public class BPMNDataPublisher {
                     }
                     break;
                 default:
-                    log.warn("Configured process variable type is not a WSO2 DAS applicable type for the process:"
-                            + processDefinitionId);
-                    if (varValue == null) {
-                        payload[i] = "";
-                    } else {
-                        payload[i] = varValue;
-                    }
-                    break;
+                    String errMsg = "Configured process variable type: \"" + varType + "\" of the variable \"" + varName
+                            + "\" is not a WSO2 DAS applicable type for the process:" + processDefinitionId;
+                    throw new BPMNDataPublisherException(errMsg);
                 }
+
             }
 
             //set process instance id as the last payload variable value
@@ -567,7 +508,7 @@ public class BPMNDataPublisher {
                             + ", Published Event's Payload Data :" + payload.toString());
                 }
             }
-        } catch (RegistryException | RuntimeException e) {
+        } catch (RegistryException | RuntimeException | BPMNDataPublisherException e) {
             String strMsg = "Failed Publishing BPMN process instance KPI event... Process Instance Id :" +
                     processInstanceId + ", Process Definition Id:" + processDefinitionId
                     + ", Published Event's Payload Data :" + payload.toString();
