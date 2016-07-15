@@ -45,6 +45,7 @@ if (request.isSecure()) {//check whether the request is secure or not
             data = request.getContent();
             result = post( httpUrl + url, JSON.stringify(data), headers, "text");
             if (log.isDebugEnabled()){
+                log.debug("BPMN Rest POST URL: " + (httpUrl + url));
                 log.debug("BPMN Rest POST results: " + stringify(result));
             }
     	}
@@ -54,6 +55,7 @@ if (request.isSecure()) {//check whether the request is secure or not
             data = request.getContent();
             result = put( httpUrl + url, JSON.stringify(data), headers, "text");
             if (log.isDebugEnabled()){
+                log.debug("BPMN Rest PUT URL: " + (httpUrl + url));
                 log.debug("BPMN Rest PUT results: " + stringify(result));
             }
     	}
@@ -62,7 +64,8 @@ if (request.isSecure()) {//check whether the request is secure or not
             url = req;
             result = get( httpUrl + url, null, headers, "text");
             if (log.isDebugEnabled()){
-                log.debug("BPMN Rest PUT results: " + stringify(result));
+                log.debug("BPMN Rest GET URL: " + (httpUrl + url));
+                log.debug("BPMN Rest GET results: " + stringify(result));
             }
         }
 

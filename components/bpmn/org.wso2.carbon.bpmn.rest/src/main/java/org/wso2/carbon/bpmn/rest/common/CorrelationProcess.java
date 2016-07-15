@@ -31,7 +31,7 @@ public class CorrelationProcess {
 
     public Response getQueryResponse(CorrelationActionRequest correlationActionRequest, UriInfo uriInfo) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         String value = correlationActionRequest.getProcessDefinitionId();

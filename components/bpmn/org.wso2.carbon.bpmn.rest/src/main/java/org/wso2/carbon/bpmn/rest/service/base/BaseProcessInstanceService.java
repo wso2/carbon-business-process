@@ -89,7 +89,7 @@ public class BaseProcessInstanceService {
     }
 
     protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().
                 processInstanceId(processInstanceId).singleResult();
         if (processInstance == null) {
@@ -100,7 +100,7 @@ public class BaseProcessInstanceService {
     }
 
     protected Execution getExecutionInstanceFromRequest(String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Execution execution = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         if (execution == null) {
             throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" +
@@ -116,7 +116,7 @@ public class BaseProcessInstanceService {
                     processInstance.getId() + "' is already active.");
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response = new RestResponseFactory().createProcessInstanceResponse(processInstance,
@@ -134,7 +134,7 @@ public class BaseProcessInstanceService {
                     processInstance.getId() + "' is already suspended.");
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         runtimeService.suspendProcessInstanceById(processInstance.getId());
 
         ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance, uriInfo
@@ -148,7 +148,7 @@ public class BaseProcessInstanceService {
     protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest,
                                             Map<String, String> requestParams, UriInfo uriInfo) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
         // Populate query based on request
@@ -362,7 +362,7 @@ public class BaseProcessInstanceService {
     }
 
     protected IdentityLink getIdentityLink(String identityId, String type, String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         // Perhaps it would be better to offer getting a single identity link from the API
         List<IdentityLink> allLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
         for (IdentityLink link : allLinks) {

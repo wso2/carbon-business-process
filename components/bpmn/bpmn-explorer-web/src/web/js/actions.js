@@ -1237,7 +1237,7 @@ function completedProcessInstances(id) {
 //Gets the details of all the activities in a running/active process instance
 function getAuditLogForRunningProcessInstances(pid, id) {
 
-    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/task-instances/" + pid;
 
     $.ajax({
         type: 'GET',
@@ -1340,7 +1340,7 @@ function getVariablesOfRunningProcessInstances(id) {
 //Gets the details of the user-tasks in a running/active process instance
 function getUserTasksOfRunningProcessInstances(pid, id) {
 
-    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/task-instances/" + pid;
 
     $.ajax({
         type: 'GET',

@@ -24,11 +24,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "InstanceVariation")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class InstanceStatPerMonth {
+public class ProcessInstanceStatInfo {
 
     private String month;
-    private int startedInstances;
-    private int completedInstances;
+    private int instancesStarted;
+    private int instancesCompleted;
+
+    public ProcessInstanceStatInfo(String  month, int instancesStarted, int instancesCompleted) {
+        this.month = month;
+        this.instancesStarted = instancesStarted;
+        this.instancesCompleted = instancesCompleted;
+    }
 
     public String getMonth() {
         return month;
@@ -38,19 +44,19 @@ public class InstanceStatPerMonth {
         this.month = month;
     }
 
-    public int getStartedInstances() {
-        return startedInstances;
+    public int getInstancesStarted() {
+        return instancesStarted;
     }
 
-    public void setStartedInstances(int startedInstances) {
-        this.startedInstances = startedInstances;
+    public void setInstancesStarted(int instancesStarted) {
+        this.instancesStarted = instancesStarted;
     }
 
-    public int getCompletedInstances() {
-        return completedInstances;
+    public int getInstancesCompleted() {
+        return instancesCompleted;
     }
 
-    public void setCompletedInstances(int completedInstances) {
-        this.completedInstances = completedInstances;
+    public void setInstancesCompleted(int instancesCompleted) {
+        this.instancesCompleted = instancesCompleted;
     }
 }

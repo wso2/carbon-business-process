@@ -18,35 +18,35 @@
 var headers = {"Authorization":"Basic " + auth};
 var   isProcessesDeployed = false;
 
-var countOfProcesses = get( httpUrl +"/bpmn/stats/processTaskServices/countOfProcesses" ,null, headers, "json" ).data;
+var countOfProcesses = get( httpUrl +"/bpmn/stats/processes/count" ,null, headers, "json" ).data;
 if(countOfProcesses == 0){
     isProcessesDeployed = false;
 }
 else{
     isProcessesDeployed =true;
 }
-var deployedProcessCount = get( httpUrl +"/bpmn/stats/processTaskServices/deployedProcessCount" ,null, headers, "json" ).data.data;
+var processInstanceCount = get( httpUrl +"/bpmn/stats/process-instances/count" ,null, headers, "json" ).data.data;
 
 var processChart = [];
 
-for(var i= 0; i < deployedProcessCount.length; i++){
-    var processDefinitionId = deployedProcessCount[i].processDefinitionId;
-    var processCount = deployedProcessCount[i].deployedProcessCount;
+for(var i= 0; i < processInstanceCount.length; i++){
+    var processDefinitionId = processInstanceCount[i].processDefinitionId;
+    var processCount = processInstanceCount[i].instanceCount;
     processChart.push([processDefinitionId, processCount]);
 }
 
-var processStatusCount = get( httpUrl +"/bpmn/stats/processTaskServices/processStatusCount" ,null, headers, "json" ).data.data;
+var processStatusCount = get( httpUrl +"/bpmn/stats/process-instances/state/all/count" ,null, headers, "json" ).data.data;
 var processStatusChart = [];
 for(var i= 0; i < processStatusCount.length; i++){
-    var status = processStatusCount[i].statusOfProcessOrTask;
+    var status = processStatusCount[i].status;
     var processCount = processStatusCount[i].count;
     processStatusChart.push([status, processCount]);
 }
 
-var taskStatusCount = get( httpUrl +"/bpmn/stats/processTaskServices/taskStatusCount" ,null, headers, "json" ).data.data;
+var taskStatusCount = get( httpUrl +"/bpmn/stats/task-instances/status/all/count" ,null, headers, "json" ).data.data;
 var taskStatusChart = [];
 for(var i= 0; i < taskStatusCount.length; i++){
-    var status = taskStatusCount[i].statusOfProcessOrTask;
+    var status = taskStatusCount[i].status;
     var processCount = taskStatusCount[i].count;
     taskStatusChart.push([status, processCount]);
 }

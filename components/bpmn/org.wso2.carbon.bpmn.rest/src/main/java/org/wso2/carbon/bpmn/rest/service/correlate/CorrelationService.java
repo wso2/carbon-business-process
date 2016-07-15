@@ -77,7 +77,7 @@ public class CorrelationService/* extends BaseExecutionService */{
 
    /* protected Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         String value = correlationActionRequest.getProcessDefinitionId();

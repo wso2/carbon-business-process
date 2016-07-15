@@ -505,7 +505,7 @@ public class BaseTaskService {
 
     protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap, String baseUri) {
         if (task.getExecutionId() != null) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
             Map<String, Object> rawVariables = runtimeService.getVariables(task.getExecutionId());
             List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables, task
@@ -529,7 +529,7 @@ public class BaseTaskService {
         Object value = null;
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         TaskService taskService = BPMNOSGIService.getTaskService();
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (variableScope == null) {
             // First, check local variables (which have precedence when no scope is supplied)
@@ -819,7 +819,7 @@ public class BaseTaskService {
         }
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             taskService.setVariableLocal(task.getId(), name, value);
@@ -839,7 +839,7 @@ public class BaseTaskService {
         boolean variableFound = false;
 
         TaskService taskService = BPMNOSGIService.getTaskService();
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
             if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
                 variableFound = true;

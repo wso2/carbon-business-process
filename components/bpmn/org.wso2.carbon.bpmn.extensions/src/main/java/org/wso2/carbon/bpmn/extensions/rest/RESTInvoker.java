@@ -251,7 +251,6 @@ public class RESTInvoker {
                         " - Input payload: " + payload + " - Response message: " + output);
             }
             EntityUtils.consume(response.getEntity());
-
         } finally {
             if (response != null) {
                 IOUtils.closeQuietly(response);

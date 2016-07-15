@@ -228,7 +228,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
 
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         ProcessInstanceResponse processInstanceResponse;
         // Actually start the instance based on key or id
@@ -293,7 +293,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
         if (pde != null && pde.hasGraphicalNotation()) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
             InputStream diagramStream = new DefaultProcessDiagramGenerator().generateDiagram(repositoryService
                             .getBpmnModel(pde.getId()), "png",
@@ -328,7 +328,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteProcessInstance(@PathParam("processInstanceId") String processInstanceId) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         String deleteReason = uriInfo.getQueryParameters().getFirst("deleteReason");
         if (deleteReason == null) {
             deleteReason = "";
@@ -363,7 +363,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     @Path("/{processInstanceId}/identitylinks")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<RestIdentityLink> getIdentityLinks(@PathParam("processInstanceId") String processInstanceId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
         return new RestResponseFactory().createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance
                 (processInstance.getId()), uriInfo.getBaseUri().toString());
@@ -389,7 +389,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             throw new ActivitiIllegalArgumentException("The identity link type is required.");
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         runtimeService.addUserIdentityLink(processInstance.getId(), identityLink.getUser(), identityLink.getType());
 
         RestIdentityLink restIdentityLink = new RestResponseFactory().createRestIdentityLink(identityLink.getType(),
@@ -425,7 +425,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         validateIdentityLinkArguments(identityId, type);
 
         getIdentityLink(identityId, type, processInstance.getId());
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         runtimeService.deleteUserIdentityLink(processInstance.getId(), identityId, type);
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
@@ -597,6 +597,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
     @GET
     @Path("/{processInstanceId}/variables/{variableName}/data")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getVariableData(@PathParam("processInstanceId") String processInstanceId,
                                     @PathParam("variableName") String variableName,
                                     @Context HttpServletRequest request) {
@@ -625,7 +626,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                     variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.removeVariableLocal(execution.getId(), variableName);
@@ -785,7 +786,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
 
         if (!variablesToSet.isEmpty()) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
             if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
                 runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
@@ -994,7 +995,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '" + name + "'.", null);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.setVariableLocal(execution.getId(), name, value);
         } else {
@@ -1012,7 +1013,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             log.debug("invoked hasVariableOnScope" + scope);
         }
         boolean variableFound = false;
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
 
@@ -1050,7 +1051,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             throw new ActivitiObjectNotFoundException("Could not find an execution", Execution.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
@@ -1114,7 +1115,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawLocalvariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL, uriInfo.getBaseUri().toString());
@@ -1125,7 +1126,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
     }
 
     protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());
