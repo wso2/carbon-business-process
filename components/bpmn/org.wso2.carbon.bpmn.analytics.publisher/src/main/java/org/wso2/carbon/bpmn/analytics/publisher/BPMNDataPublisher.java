@@ -21,13 +21,15 @@ import com.google.gson.JsonParser;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.pvm.PvmEvent;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -39,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessKPIParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessParseHandler;
+import org.wso2.carbon.bpmn.analytics.publisher.handlers.ServiceTaskParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.TaskParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationKPIListener;
@@ -126,8 +129,50 @@ public class BPMNDataPublisher {
         }
     }
 
+    /**
+     * @param activityInstanceQuery
+     */
+    public void publishServiceTaskEvent(HistoricActivityInstanceQuery activityInstanceQuery){
+
+        if (log.isDebugEnabled()) {
+            log.debug("Start to Publish BPMN service task instance event... ");
+        }
+        List<HistoricActivityInstance> historicActivityInstances = activityInstanceQuery.list();
+        for(HistoricActivityInstance instance:historicActivityInstances) {
+            if (instance.getActivityType().equals(AnalyticsPublisherConstants.SERVICE_TASK)) {
+                Object[] payload = new Object[]{
+                        //Service task definition Id
+                        instance.getActivityId(),
+                        //task instance Id
+                        instance.getId(),
+                        //process instance Id
+                        instance.getProcessInstanceId(),
+                        //task created time
+                        instance.getStartTime().toString(),
+                        //task started time
+                        instance.getStartTime().toString(),
+                        //task end time
+                        instance.getEndTime().toString(),
+                        //task duration
+                        instance.getDurationInMillis(),
+                        //task assignee - NA as this is a service task
+                        "NA"
+                };
+                if (dataPublisher != null) {
+                    dataPublisher.tryPublish(getServiceTaskInstanceStreamId(), getMeta(), null, payload);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Published BPMN service task instance event... " + payload.toString());
+                    }
+                } else {
+                    log.error("Data publisher is not registered. Events will not be published.");
+                }
+            }
+        }
+    }
+
     public void configure() throws IOException, XMLStreamException, DataEndpointAuthenticationException,
-            DataEndpointAgentConfigurationException, TransportException, DataEndpointException, DataEndpointConfigurationException {
+            DataEndpointAgentConfigurationException, TransportException, DataEndpointException,
+            DataEndpointConfigurationException {
 
         boolean analyticsEnabled = false;
         boolean kpiAnalyticsEnabled = false;
@@ -136,6 +181,8 @@ public class BPMNDataPublisher {
         String type = null;
         String username = "";
         String password = "";
+        boolean asyncDataPublishingEnabled=false;
+
 
         // Read analytics configuration from activiti.xml file
         String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
@@ -146,25 +193,33 @@ public class BPMNDataPublisher {
         File configFile = new File(activitiConfigPath);
         String configContent = FileUtils.readFileToString(configFile);
         OMElement configElement = AXIOMUtil.stringToOM(configContent);
-        Iterator beans = configElement.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "bean"));
+        Iterator beans = configElement.getChildrenWithName(new QName("http://www.springframework.org/schema/beans",
+                "bean"));
         while (beans.hasNext()) {
             OMElement bean = (OMElement) beans.next();
             String beanId = bean.getAttributeValue(new QName(null, "id"));
             if (beanId.equals(AnalyticsPublisherConstants.ANALYTICS_CONFIG_ELEMENT)) {
-                Iterator beanProps = bean.getChildrenWithName(new QName("http://www.springframework.org/schema/beans", "property"));
+                Iterator beanProps = bean.getChildrenWithName(new QName("http://www.springframework.org/schema/beans",
+                        "property"));
                 while (beanProps.hasNext()) {
                     OMElement beanProp = (OMElement) beanProps.next();
-                    if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.PUBLISHER_RECEIVER_URL_SET_PROPERTY)) {
+                    if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_RECEIVER_URL_SET_PROPERTY)) {
                         receiverURLSet = beanProp.getAttributeValue(new QName(null, "value"));
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.PUBLISHER_USER_NAME_PROPERTY)) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_USER_NAME_PROPERTY)) {
                         username = beanProp.getAttributeValue(new QName(null, "value"));
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.PUBLISHER_PASSWORD_PROPERTY)) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_PASSWORD_PROPERTY)) {
                         password = beanProp.getAttributeValue(new QName(null, "value"));
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.PUBLISHER_AUTH_URL_SET_PROPERTY)) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_AUTH_URL_SET_PROPERTY)) {
                         authURLSet = beanProp.getAttributeValue(new QName(null, "value"));
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.PUBLISHER_TYPE_PROPERTY)) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_TYPE_PROPERTY)) {
                         type = beanProp.getAttributeValue(new QName(null, "value"));
-                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.PUBLISHER_ENABLED_PROPERTY)) {
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_ENABLED_PROPERTY)) {
                         String analyticsEnabledValue = beanProp.getAttributeValue(new QName(null, "value"));
                         if ("true".equalsIgnoreCase(analyticsEnabledValue)) {
                             analyticsEnabled = true;
@@ -175,13 +230,19 @@ public class BPMNDataPublisher {
                         if ("true".equalsIgnoreCase(kpiAalyticsEnabledValue)) {
                             kpiAnalyticsEnabled = true;
                         }
+                    } else if(beanProp.getAttributeValue(new QName(null,"name")).equals(AnalyticsPublisherConstants.
+                            ASYNC_DATA_PUBLISHING_ENABLED)) {
+                        String asyncDataPublishEnableValue = beanProp.getAttributeValue(new QName(null, "value"));
+                        if("true".equalsIgnoreCase(asyncDataPublishEnableValue)){
+                            asyncDataPublishingEnabled =true;
+                        }
                     }
                 }
             }
         }
 
         if (analyticsEnabled) {
-            configGenericVariablesPublishing(receiverURLSet, username, password, authURLSet, type);
+            configGenericVariablesPublishing(receiverURLSet, username, password, authURLSet, type,asyncDataPublishingEnabled);
         }
 
         if (kpiAnalyticsEnabled) {
@@ -203,7 +264,7 @@ public class BPMNDataPublisher {
      * @throws DataEndpointConfigurationException
      */
     private void configGenericVariablesPublishing(String receiverURLSet, String username, String password,
-            String authURLSet, String type)
+            String authURLSet, String type, boolean asyncDataPublishingEnabled)
             throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
             DataEndpointException, DataEndpointConfigurationException {
             if (receiverURLSet != null && username != null && password != null) {
@@ -214,6 +275,7 @@ public class BPMNDataPublisher {
                             receiverURLSet + ", Auth URL: " + authURLSet + " and Data publisher type: " + type);
                 }
                 dataPublisher = new DataPublisher(type, receiverURLSet, authURLSet, username, password);
+                BPMNAnalyticsHolder.getInstance().setAsyncDataPublishingEnabled(asyncDataPublishingEnabled);
                 BPMNEngineService engineService = BPMNAnalyticsHolder.getInstance().getBpmnEngineService();
 
                 // Attach data publishing listeners to all existing processes
@@ -223,35 +285,56 @@ public class BPMNDataPublisher {
                 RepositoryService repositoryService = engineService.getProcessEngine().getRepositoryService();
                 List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
                 for (ProcessDefinition processDefinition : processDefinitions) {
-                    // Process definition returned by the query does not contain all details such as task definitions. Therefore, we have to fetch the complete process definition
+                    // Process definition returned by the query does not contain all details such as task definitions.
+                    // Therefore, we have to fetch the complete process definition
                     // from the repository again.
-                    ProcessDefinition completeProcessDefinition = repositoryService.getProcessDefinition(processDefinition.getId());
+                    ProcessDefinition completeProcessDefinition = repositoryService.
+                            getProcessDefinition(processDefinition.getId());
                     if (completeProcessDefinition instanceof ProcessDefinitionEntity) {
-                        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) completeProcessDefinition;
-                        processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
+                        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity)
+                                completeProcessDefinition;
+                        processDefinitionEntity.addExecutionListener(PvmEvent.EVENTNAME_END,
+                                new ProcessTerminationListener());
 
                         Map<String, TaskDefinition> tasks = processDefinitionEntity.getTaskDefinitions();
-                        for (TaskDefinition task : tasks.values()) {
-                            task.addTaskListener(TaskListener.EVENTNAME_COMPLETE, new TaskCompletionListener());
+                        List<ActivityImpl> activities = processDefinitionEntity.getActivities();
+                        for (ActivityImpl activity:activities) {
+                            if(activity.getProperty("type").toString().equalsIgnoreCase("usertask")){
+                                tasks.get(activity.getId()).addTaskListener(TaskListener.EVENTNAME_COMPLETE,
+                                        new TaskCompletionListener());
+                            }
+                            // We are publishing analutics data of service tasks in process termination ATM.
+
+//                            else if(activity.getProperty("type").toString().equalsIgnoreCase("servicetask")){
+//                                activity.addExecutionListener(PvmEvent.EVENTNAME_END,new ServiceTaskCompletionListener());
+//                            }
                         }
                     }
                 }
 
                 // Configure parse handlers, which attaches data publishing listeners to new processes
                 if (log.isDebugEnabled()) {
-                    log.debug("Associating parse handlers for processes and tasks, so that data publishing listeners will be attached to new processes.");
+                    log.debug("Associating parse handlers for processes and tasks, so that data publishing listeners " +
+                            "will be attached to new processes.");
                 }
-                ProcessEngineConfigurationImpl engineConfig = (ProcessEngineConfigurationImpl) engineService.getProcessEngine().getProcessEngineConfiguration();
+                ProcessEngineConfigurationImpl engineConfig = (ProcessEngineConfigurationImpl) engineService.
+                        getProcessEngine().getProcessEngineConfiguration();
                 if (engineConfig.getPostBpmnParseHandlers() == null) {
                     engineConfig.setPostBpmnParseHandlers(new ArrayList<BpmnParseHandler>());
                 }
                 engineConfig.getPostBpmnParseHandlers().add(new ProcessParseHandler());
                 engineConfig.getPostBpmnParseHandlers().add(new TaskParseHandler());
-                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().addHandler(new ProcessParseHandler());
-                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().addHandler(new TaskParseHandler());
+                engineConfig.getPostBpmnParseHandlers().add(new ServiceTaskParseHandler());
+                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                        addHandler(new ProcessParseHandler());
+                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                        addHandler(new TaskParseHandler());
+                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                        addHandler(new ServiceTaskParseHandler());
 
             } else {
-                log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password are mandatory. Data publishing will not be enabled.");
+                log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password " +
+                        "are mandatory. Data publishing will not be enabled.");
             }
     }
 
@@ -329,6 +412,16 @@ public class BPMNDataPublisher {
      */
     private String getTaskInstanceStreamId() {
         return DataBridgeCommonsUtils.generateStreamId(AnalyticsPublisherConstants.TASK_STREAM_NAME,
+                AnalyticsPublisherConstants.STREAM_VERSION);
+    }
+
+    /**
+     * Get StreamId for Service Task instances
+     *
+     * @return StreamId
+     */
+    private String getServiceTaskInstanceStreamId() {
+        return DataBridgeCommonsUtils.generateStreamId(AnalyticsPublisherConstants.SERVICE_TASK_STREAM_NAME,
                 AnalyticsPublisherConstants.STREAM_VERSION);
     }
 

@@ -35,6 +35,7 @@ public class AnalyticsPublisherConstants {
 
     public static final String PROCESS_STREAM_NAME = "BPMN_Process_Instance_Data_Publish";
     public static final String TASK_STREAM_NAME = "BPMN_Task_Instance_Data_Publish";
+    public static final String SERVICE_TASK_STREAM_NAME = "BPMN_Service_Task_Instance_Data_Publish";
     public static final String STREAM_VERSION = "1.0.0";
     public static final String PROCESS_STREAM_DESCRIPTION = "BPMN process instances data";
     public static final String TASK_STREAM_DESCRIPTION = "BPMN user tasks data";
@@ -59,7 +60,8 @@ public class AnalyticsPublisherConstants {
 	// Data publisher related constants.
     public static final String PATH_BPMN = "bpmn";
     public static final String PATH_DATA_ANALYTICS_PUBLISHER =  PATH_BPMN + "/" +  "data_analytics_publisher";
-    public static final String PATH_PUBLISHER_CONFIGURATION = PATH_DATA_ANALYTICS_PUBLISHER + "/"  + "publisher_configuration";
+    public static final String PATH_PUBLISHER_CONFIGURATION = PATH_DATA_ANALYTICS_PUBLISHER + "/"  +
+            "publisher_configuration";
     public static final String PUBLISHER_ENABLED_PROPERTY = "dataPublishingEnabled";
     public static final String KPI_PUBLISHER_ENABLED_PROPERTY = "kpiDataPublishingEnabled";
     public static final String PUBLISHER_TYPE_PROPERTY = "type";
@@ -67,6 +69,8 @@ public class AnalyticsPublisherConstants {
     public static final String PUBLISHER_AUTH_URL_SET_PROPERTY = "authURLSet";
     public static final String PUBLISHER_USER_NAME_PROPERTY = "username";
     public static final String PUBLISHER_PASSWORD_PROPERTY = "password";
+    public static final String ASYNC_DATA_PUBLISHING_ENABLED = "asyncDataPublishingEnabled";
+    public static final String SERVICE_TASK = "serviceTask";
 
 
     public static final String SPRING_NAMESPACE = "http://www.springframework.org/schema/beans";

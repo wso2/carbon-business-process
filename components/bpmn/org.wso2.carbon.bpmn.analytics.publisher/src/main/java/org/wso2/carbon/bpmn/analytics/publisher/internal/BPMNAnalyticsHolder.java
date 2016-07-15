@@ -35,6 +35,7 @@ public class BPMNAnalyticsHolder {
 	private RealmService realmService;
 	private BPMNDataPublisher bpmnDataPublisher;
 	private BPMNEngineService bpmnEngineService;
+	private boolean asyncDataPublishingEnabled;
 
 	private BPMNAnalyticsHolder() {}
 
@@ -81,4 +82,14 @@ public class BPMNAnalyticsHolder {
 	public void setBpmnDataPublisher(BPMNDataPublisher bpmnDataPublisher) {
 		this.bpmnDataPublisher = bpmnDataPublisher;
 	}
+
+	public boolean isAsyncDataPublishingEnabled() {
+		return asyncDataPublishingEnabled;
+	}
+
+	public void setAsyncDataPublishingEnabled(boolean asyncDataPublishingEnabled) {
+		this.asyncDataPublishingEnabled = asyncDataPublishingEnabled;
+	}
+
+	public boolean getAsyncDataPublishingEnabled(){ return asyncDataPublishingEnabled; }
 }
