@@ -89,6 +89,11 @@ function displayAttachmentData(id) {
     window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
 }
 
+function displayComments(id) {
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+}
+
+
 function completeTask(data, id) {
     document.getElementById("completeButton").style.display = 'none';
     document.getElementById("loadingCompleteButton").hidden = false;
@@ -499,7 +504,7 @@ function setDatePicker(dateElement) {
         singleDatePicker: true,
         showDropdowns: true,
         locale: {
-            format: 'MM/DD/YYYY'
+            format: 'YYYY-MM-DD'
         }
     });
 }
@@ -565,9 +570,9 @@ function selectProcessForChart() {
 
 //User Performance of Tasks Completed and Tasks Started Over time i.e. months
 
-function selectUserForPerformance() {
-    var x = document.getElementById("selectUser").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + x;
+function selectUserForPerformance(userName) {
+    //var x = document.getElementById("selectUser").value;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + userName;
 
     $.ajax({
         type: 'GET',
@@ -1037,14 +1042,15 @@ function processVariationOverTime() {
 }
 
 // Generate the report view by displaying the graphs
-function generateReport() {
+function generateReport(loggedUser) {
 
     selectProcessForInstanceCount();
     selectProcessForAvgTimeDuration();
-    userVsTasksCompleted();
-    avgTimeForUserForTasks();
+    // userVsTasksCompleted();
+    // avgTimeForUserForTasks();
     taskVariationOverTime();
     processVariationOverTime();
+    selectUserForPerformance(loggedUser)
 
     var barChartDisplay = document.getElementById("barChartDisplay");
     barChartDisplay.hidden = false;
@@ -1731,4 +1737,48 @@ function activateSub(userName) {
         }
     });
 }
+
+/**
+*  Function to add more variable names and values to filter for instances
+*/
+function addVariable(){
+    var vNames = document.getElementsByName("variableName");
+    if (vNames[vNames.length - 1].value !== "" && vNames[vNames.length - 1].value !== undefined) {
+        var vRow = document.getElementById("variablesRow");
+
+        var vBr = document.createElement("BR");
+        vRow.appendChild(vBr);
+
+        var vNameNode = document.createElement("INPUT");
+        vNameNode.setAttribute("type", "text");
+        vNameNode.setAttribute("name", "variableName");
+        vNameNode.setAttribute("class", "form-control");
+        vNameNode.setAttribute("placeholder", "Variable Name");
+        vNameNode.setAttribute("style", "width: initial; float: left;");
+        vRow.appendChild(vNameNode);
+
+        var vLabel = document.createElement("LABEL");
+        var t = document.createTextNode("\u00A0=\u00A0");
+        vLabel.setAttribute("for", "equals");
+        vLabel.setAttribute("name", "variableEqual");
+        vLabel.setAttribute("class", "control-label");
+        vLabel.setAttribute("style", "width: initial; float: left; font-size:25px;");
+        vLabel.appendChild(t);
+        vRow.appendChild(vLabel);
+
+        var vValueNode = document.createElement("INPUT");
+        vValueNode.setAttribute("type", "text");
+        vValueNode.setAttribute("name", "variableValue");
+        vValueNode.setAttribute("class", "form-control");
+        vValueNode.setAttribute("placeholder", "Variable value like");
+        vValueNode.setAttribute("style", "width: initial;");
+        vRow.appendChild(vValueNode);
+    }
+}
+
+function resetForm() {
+    window.location = httpUrl + "/" + CONTEXT + "/advancedFilter";
+
+}
+
 

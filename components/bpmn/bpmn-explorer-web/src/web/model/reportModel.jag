@@ -34,7 +34,7 @@ var processDefinitionList = [];
 var taskListOfCompletedProcess = get(httpUrl + "/bpmn/stats/processes", null, headers, "json").data.data;
 
 //Get all users
-var userList = get(httpUrl + "/bpmn/stats/users", null, headers, "json").data.data;
+<!--var userList = get(httpUrl + "/bpmn/stats/users", null, headers, "json").data.data;-->
 
 if (update != null && update === "true") {
     if (option === "processinstancecount" || option === "avgprocessduration" || option === "taskduration") {
@@ -130,7 +130,7 @@ if (update != null && update === "true") {
         //var users = [];
         //Task information related to the user [task count, task duration, average time per task]
 
-        if (option === "uservstaskscompleted") {    //User vs tasks completed uptodate         
+        /*if (option === "uservstaskscompleted") {    //User vs tasks completed uptodate
 
             var userVsTasksCompleted = get(httpUrl + "/bpmn/stats/user-performance/task-instances/count", null, headers, "json").data.data;
             var userVsTaskCount = [];
@@ -153,7 +153,7 @@ if (update != null && update === "true") {
             if (log.isDebugEnabled()) {
                 log.debug("User Vs Average Time Taken to Complete Tasks chart data: " + stringify(userAvgTaskTime));
             }
-        }
+        } */
 
 
     } else if (option === "taskvariation" || option === "processvariation" || option === "userperformance") {
