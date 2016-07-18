@@ -411,22 +411,22 @@ public class BPMNDataPublisher {
                                 + "process : " + processDefinitionId);
             }
 
-            /* Keeps configed process variabe data as a JSON. Example value:
-            [{"isAnalyzeData":false,"name":"size","isDrillDownData":false,"type":"int"},
-            {"isAnalyzeData":false,"name":"status","isDrillDownData":false,"type":"string"},
-            {"isAnalyzeData":false,"name":"pizzaTopping","isDrillDownData":false,"type":"string"},
-            {"isAnalyzeData":false,"name":"amount","isDrillDownData":false,"type":"int"},
-            {"isAnalyzeData":"false","name":"processInstanceId","isDrillDownData":"false","type":"string"}]
+            /* Keeps configured process variable data as a JSON. Example value:
+            [{"name":"processInstanceId","type":"string","isAnalyzeData":"false","isDrillDownData":"false"},
+            {"name":"valuesAvailability","type":"string","isAnalyzeData":"false","isDrillDownData":"false"},
+            {"name":"custid","type":"string","isAnalyzeData":false,"isDrillDownData":false},
+            {"name":"amount","type":"long","isAnalyzeData":false,"isDrillDownData":false},
+            {"name":"confirm","type":"bool","isAnalyzeData":false,"isDrillDownData":false}]
             */
-            JsonArray configedProcVarsJson = kpiConfig
+            JsonArray fieldsConfigedForStreamPayload = kpiConfig
                     .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
-            int variableCount = configedProcVarsJson.size();
+            int variableCount = fieldsConfigedForStreamPayload.size();
             configedProcessVariables = new String[variableCount][2];
 
             for (int i = 0; i < variableCount; i++) {
-                configedProcessVariables[i][0] = ((JsonObject) configedProcVarsJson.get(i)).get("name").getAsString();
-                configedProcessVariables[i][1] = ((JsonObject) configedProcVarsJson.get(i)).get("type").getAsString();
+                configedProcessVariables[i][0] = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("name").getAsString();
+                configedProcessVariables[i][1] = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("type").getAsString();
             }
 
             eventStreamId = kpiConfig.get("eventStreamId").getAsString();
@@ -434,7 +434,14 @@ public class BPMNDataPublisher {
                     .getVariableInstances();
             payload = new Object[configedProcessVariables.length];
 
-            for (int i = 0; i < configedProcessVariables.length - 1; i++) {
+            //set process instance id as the 1st payload variable value
+            payload[0] = processInstanceId;
+
+            //availability of values for each process variable is represented by this char array as 1 (value available)
+            // or 0 (not available) in respective array index
+            char[] valueAvailabiliy = new char[configedProcessVariables.length-2];
+
+            for (int i = 2; i < configedProcessVariables.length; i++) {
                 String varName = configedProcessVariables[i][0];
                 String varType = configedProcessVariables[i][1];
 
@@ -444,43 +451,55 @@ public class BPMNDataPublisher {
                 case "int":
                     if (varValue == null) {
                         payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
                     } else {
                         payload[i] = Integer.parseInt((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
                     }
                     break;
                 case "float":
                     if (varValue == null) {
                         payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
                     } else {
                         payload[i] = Float.parseFloat((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
                     }
                     break;
                 case "long":
                     if (varValue == null) {
                         payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
                     } else {
                         payload[i] = Long.parseLong((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
                     }
                     break;
                 case "double":
                     if (varValue == null) {
                         payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
                     } else {
                         payload[i] = Double.parseDouble((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
                     }
                     break;
                 case "string":
                     if (varValue == null) {
-                        payload[i] = "";
+                        payload[i] = "NA";
+                        valueAvailabiliy[i-2] = '0';
                     } else {
                         payload[i] = varValue;
+                        valueAvailabiliy[i-2] = '1';
                     }
                     break;
                 case "bool":
                     if (varValue == null) {
                         payload[i] = false;
+                        valueAvailabiliy[i-2] = '0';
                     } else {
                         payload[i] = Boolean.parseBoolean((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
                     }
                     break;
                 default:
@@ -488,11 +507,10 @@ public class BPMNDataPublisher {
                             + "\" is not a WSO2 DAS applicable type for the process:" + processDefinitionId;
                     throw new BPMNDataPublisherException(errMsg);
                 }
-
             }
 
-            //set process instance id as the last payload variable value
-            payload[configedProcessVariables.length - 1] = processInstanceId;
+            //set meta data string value representing availability of values for each process variable
+            payload[1] = String.valueOf(valueAvailabiliy);
 
             boolean dataPublishingSuccess = dataPublisher.tryPublish(eventStreamId, getMeta(), null, payload);
             if (dataPublishingSuccess) {
@@ -521,14 +539,15 @@ public class BPMNDataPublisher {
      *
      * @param processDefinitionId
      * @return KPI configuration details in JSON format. Ex:<p>
-     * {"eventReceiverName":"process1_77_process_receiver",
-     * "processDefinitionId":"manualTaskProcess111:1:22509","pcProcessId":"process1:77",
-     * "eventStreamNickName":"process1_77_process_stream","eventStreamDescription":"This is the event stream
-     * generated to configure process analytics with DAS, for the processprocess1_77","eventStreamVersion":"1.0.0",
-     * "eventStreamId":"process1_77_process_stream:1.0.0","processVariables":[{"isAnalyzeData":false,"name":"size",
-     * "isDrillDownData":false,"type":"int"},{"isAnalyzeData":false,"name":"pizzaTopping","isDrillDownData":false,
-     * "type":"string"},{"isAnalyzeData":false,"name":"amount","isDrillDownData":false,"type":"int"},
-     * "eventStreamName":"process1_77_process_stream"}
+     * {"processDefinitionId":"myProcess3:1:32518","eventStreamName":"t_666_process_stream","eventStreamVersion":"1.0.0"
+     * ,"eventStreamDescription":"This is the event stream generated to configure process analytics with DAS, for the
+     * processt_666","eventStreamNickName":"t_666_process_stream","eventStreamId":"t_666_process_stream:1.0.0",
+     * "eventReceiverName":"t_666_process_receiver","pcProcessId":"t:666",
+     * "processVariables":[{"name":"processInstanceId","type":"string","isAnalyzeData":"false","isDrillDownData":"false"}
+     * ,{"name":"valuesAvailability","type":"string","isAnalyzeData":"false","isDrillDownData":"false"}
+     * ,{"name":"custid","type":"string","isAnalyzeData":false,"isDrillDownData":false}
+     * ,{"name":"amount","type":"long","isAnalyzeData":false,"isDrillDownData":false}
+     * ,{"name":"confirm","type":"bool","isAnalyzeData":false,"isDrillDownData":false}]}
      * @throws RegistryException
      */
     public JsonObject getKPIConfiguration(String processDefinitionId) throws RegistryException {
