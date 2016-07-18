@@ -160,7 +160,7 @@
                         </ul>
                         <div id="addComment" style="float:right;">
                             <a href="#commentTab" data-toggle="modal" data-target="#addCommentModal">
-                                <span class="glyphicon glyphicon-plus"></span>
+                                <button class="btn btn-info">Add Comment</button>
                             </a>
                         </div>
                 	</div>
