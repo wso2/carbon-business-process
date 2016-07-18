@@ -171,7 +171,7 @@ public class BPMNDataPublisher {
             DataEndpointAgentConfigurationException, TransportException, DataEndpointException,
             DataEndpointConfigurationException {
 
-        boolean analyticsEnabled = false;
+        boolean genericAnalyticsEnabled = false;
         boolean kpiAnalyticsEnabled = false;
         String receiverURLSet = "";
         String authURLSet = null;
@@ -218,7 +218,7 @@ public class BPMNDataPublisher {
                             PUBLISHER_ENABLED_PROPERTY)) {
                         String analyticsEnabledValue = beanProp.getAttributeValue(new QName(null, "value"));
                         if ("true".equalsIgnoreCase(analyticsEnabledValue)) {
-                            analyticsEnabled = true;
+                            genericAnalyticsEnabled = true;
                         }
                     } else if (beanProp.getAttributeValue(new QName(null, "name"))
                             .equals(AnalyticsPublisherConstants.KPI_PUBLISHER_ENABLED_PROPERTY)) {
@@ -237,21 +237,20 @@ public class BPMNDataPublisher {
             }
         }
 
-        if (analyticsEnabled || kpiAnalyticsEnabled)  {
+        if (genericAnalyticsEnabled || kpiAnalyticsEnabled)  {
             configDataPublishing(receiverURLSet, username, password, authURLSet, type,
-                    asyncDataPublishingEnabled,analyticsEnabled,kpiAnalyticsEnabled);
+                    asyncDataPublishingEnabled,genericAnalyticsEnabled,kpiAnalyticsEnabled);
         }
     }
 
     /**
-     *
      * @param receiverURLSet
      * @param username
      * @param password
      * @param authURLSet
      * @param type
      * @param asyncDataPublishingEnabled
-     * @param analyticsEnabled
+     * @param genericAnalyticsEnabled
      * @param kpiAnalyticsEnabled
      * @throws DataEndpointAuthenticationException
      * @throws DataEndpointAgentConfigurationException
@@ -260,7 +259,7 @@ public class BPMNDataPublisher {
      * @throws DataEndpointConfigurationException
      */
     void configDataPublishing(String receiverURLSet, String username, String password, String authURLSet, String type,
-            boolean asyncDataPublishingEnabled, boolean analyticsEnabled, boolean kpiAnalyticsEnabled)
+            boolean asyncDataPublishingEnabled, boolean genericAnalyticsEnabled, boolean kpiAnalyticsEnabled)
             throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
             DataEndpointException, DataEndpointConfigurationException {
         if (receiverURLSet != null && username != null && password != null) {
@@ -290,7 +289,7 @@ public class BPMNDataPublisher {
                 if (completeProcessDefinition instanceof ProcessDefinitionEntity) {
                     ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity)
                             completeProcessDefinition;
-                    if (analyticsEnabled) {
+                    if (genericAnalyticsEnabled) {
                         processDefinitionEntity
                                 .addExecutionListener(PvmEvent.EVENTNAME_END, new ProcessTerminationListener());
                     }
@@ -325,7 +324,7 @@ public class BPMNDataPublisher {
             if (engineConfig.getPostBpmnParseHandlers() == null) {
                 engineConfig.setPostBpmnParseHandlers(new ArrayList<BpmnParseHandler>());
             }
-            if (analyticsEnabled) {
+            if (genericAnalyticsEnabled) {
                 engineConfig.getPostBpmnParseHandlers().add(new ProcessParseHandler());
                 engineConfig.getPostBpmnParseHandlers().add(new TaskParseHandler());
             }
