@@ -39,6 +39,10 @@ import org.wso2.carbon.bpmn.core.mgt.model.BPMNDeployment;
 import org.wso2.carbon.bpmn.core.mgt.model.BPMNProcess;
 import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.api.Resource;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -129,6 +133,31 @@ public class BPMNDeploymentService {
         query = query.deploymentTenantId(tenantId.toString());
         List<Deployment> deployments = query.list();
         for(Deployment deployment: deployments){
+            BPMNDeployment bpmnDeployment = new BPMNDeployment();
+            bpmnDeployment.setDeploymentId(deployment.getId());
+            bpmnDeployment.setDeploymentName(deployment.getName());
+            bpmnDeployment.setDeploymentTime(deployment.getDeploymentTime());
+            bpmnDeploymentList.add(bpmnDeployment);
+        }
+        return bpmnDeploymentList.toArray(new BPMNDeployment[bpmnDeploymentList.size()]);
+    }
+
+    /**
+     * Get the deployments for given package name , order by deploymentID
+     *
+     * @param deploymentName
+     * @return
+     */
+    public BPMNDeployment[] getDeploymentsByName(String deploymentName) {
+        List<BPMNDeployment> bpmnDeploymentList = new ArrayList<>();
+        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        DeploymentQuery query = BPMNServerHolder.getInstance().getEngine().getRepositoryService()
+                .createDeploymentQuery();
+        // Set deployment name and order by ID
+        query = query.deploymentTenantId(tenantId.toString()).deploymentName(deploymentName).orderByDeploymentId()
+                .desc();
+        List<Deployment> deployments = query.list();
+        for (Deployment deployment : deployments) {
             BPMNDeployment bpmnDeployment = new BPMNDeployment();
             bpmnDeployment.setDeploymentId(deployment.getId());
             bpmnDeployment.setDeploymentName(deployment.getName());
@@ -387,5 +416,31 @@ public class BPMNDeploymentService {
         return imageString;
     }
 
+    /**
+     * Get the checksum of latest deployment for given deployment name
+     *
+     * @param deploymentName
+     * @return
+     * @throws BPSFault
+     */
+    public String getLatestChecksum(String deploymentName) throws BPSFault {
+
+        try {
+            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            RegistryService registryService = BPMNServerHolder.getInstance().getRegistryService();
+            Registry tenantRegistry = registryService.getConfigSystemRegistry(tenantId);
+            String deploymentRegistryPath = BPMNConstants.BPMN_REGISTRY_PATH + BPMNConstants.REGISTRY_PATH_SEPARATOR
+                    + deploymentName;
+            if (tenantRegistry.resourceExists(deploymentRegistryPath)) {
+                Resource deploymentEntry = tenantRegistry.get(deploymentRegistryPath);
+                return deploymentEntry.getProperty(BPMNConstants.LATEST_CHECKSUM_PROPERTY);
+            } else {
+                return null;
+            }
+        } catch (RegistryException e) {
+            String msg = "Error while accessing registry to get latest checksum for package : " + deploymentName;
+            throw new BPSFault(msg, e);
+        }
+    }
 
 }
