@@ -104,110 +104,139 @@
 					<%=i18n.localize("complete.task","Complete task")%></button>
 					<div id="loadingCompleteButton" hidden><img src="images/loader.gif"></img></div></div>
 				<% } %>
-				</div>
-	      		</div>
-	</div>
- </div>
- <!-- Adding attachments tab -->
 
+				<div class="row" name="additionalInfoSection">
+                    <input type="hidden" id="pagCount" value="<%=pagination%>"></input>
+                    <input type="hidden" id="tabOutput" value="<%=tabPage%>"></input>
+                    <ul class="nav nav-tabs" role="tablist">
+                		<li>
+                            <a href="task?id=<%=id%>&tab=attachmentTab#attachmentTab"  class="tablinks"><%=i18n.localize("attachments", "Attachments")%></a>
+                        </li>
+                        <li>
+                            <a href="task?id=<%=id%>&tab=commentTab#commentTab"  class="tablinks"><%=i18n.localize("comments", "Comments")%>
+                                <span class="glyphicon glyphicon-comment"></span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="commentTab" class="tabcontent" style="display:block;">
+                		<%if (commentList != null && commentList.length > 10) { %>
+                            <input type="hidden" id="hiddenCmtCount" value="<%=hiddenCmtCount.toString()%>"></input>
+                            <li class="list-group-item center">
+                                <button type="button" class="btn btn-default" id="collapsebtn" data-toggle="collapse" href="#collapseList">
+                                    <span class="glyphicon glyphicon-collapse-down"></span>
+                                    <h3>Number of hidden Comments : <%=hiddenCmtCount.toString()%></h3>
+                                </button>
+                            </li>
+                		<% } %>
+                        <ul class="list-group" id="commentList">
+                		    <%if(commentList.length > 10) { %>
+                			    <div id="collapseList" class="panel-collapse collapse">
+                		    <% }
+                		    if (commentList != null) {
+                                for (var i=0; i < commentList.length; i++) {
+                                    var commentID = commentList[i].id;
+                                    var commentLiID = "comment_" + commentID;
+                                    %>
+                                    <li class="list-group-item" id="<%=commentLiID%>">
+                                        <div><%=i18n.localize("comment.added", "Added a comment on")%> -
+                                            <time id="time">
+                                                <script>
+                                                    var d = new Date(parseInt(<%=commentList[i].time%>.toString()));
+                                                    document.write(d);
+                                                </script>
+                                            </time>
+                                            <a href="#commentTab" onclick="deleteComment(<%=id%>, <%=commentID%>)">
+                                                <span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>
+                                            </a>
+                                        </div>
+                                        <div><%=commentList[i].message%></div>
+                                    </li>
+                                    <%if( i == commentList.length - 11) { %>
+                			            </div>
+                			        <% }
+                		        }
+                            }
+                            %>
+                        </ul>
+                        <div id="addComment" style="float:right;">
+                            <a href="#commentTab" data-toggle="modal" data-target="#addCommentModal">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+                        </div>
+                	</div>
 
-  	<div class="table-title margin-left-double margin-right-double">
-	 	<a onclick="displayAttachmentData(<%=id%>);"><%=i18n.localize("attachments","Attachments")%></a>
-	</div>
+                 	<div id="attachmentTab" class="tabcontent" style="display:block;">
+                		<div id="addAttachment" class="addAttachment padding-double">
+                            <form id="attachForm" style="margin-left: 10px;" method="POST" action="<%=application.get('bpsTenantUrlPart')%>/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
+                                <div class="col-lg-3"><%=i18n.localize("file.name","File Name:")%>
+                                    <span class="padding-left">
+                                        <input type="text" id="name" name="name" <%=taskInputsDisabled%>/>
+                                    </span>
+                                </div>
+                                <div class="col-lg-8">
+                                    <span class="float-left padding-right"><%=i18n.localize("select.file","Select File:")%></span>
+                                    <div class="float-left">
+                                        <input type="file" id="files" name="file" onchange="javascript:document.getElementById('name').value = this.value.split(/[\/\\]/).pop();"<%=taskInputsDisabled%>/>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info <%=taskInputsDisabled%>"><%=i18n.localize("upload","Upload")%></button></div>
+                            </form>
+                        </div>
 
-	<div id="addAttachment" class="addAttachment padding-double">
-   		<form id="attachForm" style="margin-left: 10px;" method="POST" action="<%=application.get('bpsTenantUrlPart')%>/bpmn/runtime/tasks/<%=id%>/attachments" enctype="multipart/form-data">
-	   		<div class="col-lg-3"><%=i18n.localize("file.name","File Name:")%>
-	   			<span class="padding-left">
-	   				<input type="text" id="name" name="name" <%=taskInputsDisabled%>/>
-	   			</span>
-	   		</div>
-	   		<div class="col-lg-8">
-	   			<span class="float-left padding-right"><%=i18n.localize("select.file","Select File:")%></span>
-	   			<div class="float-left">
-	   				<input type="file" id="files" name="file" onchange="javascript:document.getElementById('name').value = this.value.split(/[\/\\]/).pop();" <%=taskInputsDisabled%>/>
-	   			</div>
-	   		</div>
-	   		<div class="col-lg-1 right" id="submit-attachment-div"><button type="submit" id="submit-attachment"  class="btn btn-info <%=taskInputsDisabled%>"><%=i18n.localize("upload","Upload")%></button></div>
-  		</form>
-   </div>
-  <!--  <ul class="nav nav-tabs" role="tablist">
-	   <li id="attachmentsTab">
-			<a onclick="displayAttachmentData(<%=id%>);">Attachments</a>
-		</li>
-   </ul>-->
-<!--content of attachments-->
-   <ul class="list-group" id="attachmentList">
+                        <!--content of attachments-->
+                        <ul class="list-group" id="attachmentList">
 
-   <!--Attachment List Table -->
-   <% if(attachmentList.length > 0 ){ %>
-    	<div class="table-body margin-left-double float-left">
-	  	<!-- Table -->
-		  <table class="table">
-		    <thead>
-		    	<tr class="table-title-row">
-		    		<th><%=i18n.localize("name","Name")%></th>
-		    		<th><%=i18n.localize("type","Type")%></th>
-		    		<th><%=i18n.localize("link","Link")%></th>
-		    	</tr>
-		    </thead>
-		    <tbody>
-		    	<% for (var i=0; i<attachmentList.length; i++) { %>
-		    	  	<tr class="white-bg" style="cursor:pointer;"
-	                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-		    			<td><%=attachmentList[i].name%></td>
-						<td><%=attachmentList[i].type%></td>
-						<td> <a href="<%=application.get('bpsTenantUrlPart') + "/bpmn/runtime/tasks/"+ taskData.id +"/attachments/"+ 
-                                                                                        attachmentList[i].id + "/content"%>" target="_blank"><%=i18n.localize("download","Download")%></a></td>
-			    	</tr>
-		    	<% } %>
-		    </tbody>
-		  </table>
-		</div>
+                            <!--Attachment List Table -->
+                                <% if(attachmentList.length > 0 ){ %>
+                                    <div class="table-body margin-left-double float-left">
+                                    <!-- Table -->
+                                      <table class="table">
+                                        <thead>
+                                            <tr class="table-title-row">
+                                                <th><%=i18n.localize("name","Name")%></th>
+                                                <th><%=i18n.localize("type","Type")%></th>
+                                                <th><%=i18n.localize("link","Link")%></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for (var i=0; i<attachmentList.length; i++) { %>
+                                                <tr class="white-bg" style="cursor:pointer;"
+                                                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                                                    <td><%=attachmentList[i].name%></td>
+                                                    <td><%=attachmentList[i].type%></td>
+                                                    <td> <a href="<%=application.get('bpsTenantUrlPart') + "/bpmn/runtime/tasks/"+ taskData.id +"/attachments/"+
+                                                                                                                    attachmentList[i].id + "/content"%>" target="_blank"><%=i18n.localize("download","Download")%></a></td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                      </table>
+                                    </div>
 
-		<!--Pagination for attachment table -->
-		<%
-			var numberOfPages = paginatePageCount;
-			var currentPage = parseInt(pagination);
-			var redirectPage = "task";
-			var queryParams = "id=" + id;
+                                <!--Pagination for attachment table -->
+                                <%
+                                    var numberOfPages = paginatePageCount;
+                                    var currentPage = parseInt(pagination);
+                                    var redirectPage = "task";
+                                    var queryParams = "id=" + id;
+                                %>
+                                <% include("/template/partials/pagination.jag"); %>
+                            <!--End of Attachment List Table-->
 
-		%>
-		<% include("/template/partials/pagination.jag"); %>
+                            <% } else{ %>
+                                <div><span style="display:block; margin:20px;"><%=i18n.localize("no.attachments.found","No attachments found")%></span></div>
+                            <%} %>
 
-   <!--End of Attachment List Table-->
+                             <div id="error_content" style="visibility:hidden; margin-left: 70px; position: absolute; left: 30%;
+                                top: 80%;"><%=i18n.localize("failed.to.upload.attachment","Failed to  upload attachment")%></div>
 
-<% }
-else{%>
- <div><span style="display:block; margin:20px;"><%=i18n.localize("no.attachments.found","No attachments found")%></span></div>
-<%}
-%>
- <div id="error_content" style="visibility:hidden; margin-left: 70px; position: absolute; left: 30%;
-    top: 80%;"><%=i18n.localize("failed.to.upload.attachment","Failed to  upload attachment")%></div>
-    <!-- add Attachment content -->
-
-   <!-- end of add Attachment content -->
-   </ul>
-</div>
-<!--End of attachments tab -->
-
-<!-- Adding comments panel -->
- <div class="row secondry-table" name="additionalInfoSection">
-  	<div class="table-title margin-left-double margin-right-double">
-	 	<a onclick="displayComments(<%=id%>);"><%=i18n.localize("comments","Comments")%></a>
-	</div>
-
-	<div id="addComments" class="addComments padding-double">
-   		<form id="commentForm" style="margin-left: 10px;" method="POST" action="<%=application.get('bpsTenantUrlPart')%>/bpmn/runtime/tasks/<%=id%>/comments" enctype="multipart/form-data">
-	   		<div class="col-lg-3"><%=i18n.localize("file.name","File Name:")%>
-	   			<span class="padding-left">
-	   				<input type="textarea" id="comments" name="comments" <%=taskInputsDisabled%>/>
-	   			</span>
-	   		</div>
-	   		<div class="col-lg-1 right" id="submit-comment-div"><button type="submit" id="submit-comment"  class="btn btn-info <%=taskInputsDisabled%>"><%=i18n.localize("add","Add")%></button></div>
-  		</form>
-   </div>
-
+                             <!-- add Attachment content -->
+                             <!-- end of add Attachment content -->
+                        </ul>
+                    </div>
+		        </div>
+	      </div>
+	    </div>
+    </div>
 
 
 	<div class="modal fade" id="transfer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -253,6 +282,32 @@ else{%>
 		            </div>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><%=i18n.localize("close","Close")%></button>
                     <button type="button" class="btn btn-default" onclick="reassign($('#reassignName').val(), <%=id%>);"><%=i18n.localize("save","Save")%></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="addCommentModal" tabindex="-1" role="dialog" aria-labelledby="addCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog model-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                       data-dismiss="modal" aria-hidden="true"
+                       onclick="document.getElementById('addCommentTextArea').value  = '';">
+                          &times;
+                    </button>
+                    <h4 class="modal-title" id="addCommentModalLabel">
+                       <%=i18n.localize("new.comment", "Add New Comment")%>
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    <textarea id="addCommentTextArea" class="form-control" placeholder="<%=i18n.localize("comment.here", "Add comment here")%> ..." style="resize:vertical"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="document.getElementById('addCommentTextArea').value  = '';"><%=i18n.localize("cancel", "Cancel")%></button>
+                    <button type="button" class="btn btn-default" onclick="addComment(<%=id%>)"><%=i18n.localize("submit", "Submit")%></button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
