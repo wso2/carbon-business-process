@@ -244,6 +244,8 @@ public class BPMNDataPublisher {
     }
 
     /**
+     * Configure for data publishing to DAS for analytics
+     *
      * @param receiverURLSet
      * @param username
      * @param password
