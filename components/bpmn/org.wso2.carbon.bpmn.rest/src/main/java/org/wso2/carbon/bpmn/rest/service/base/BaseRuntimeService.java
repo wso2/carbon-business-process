@@ -63,7 +63,7 @@ public class BaseRuntimeService {
         allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
     }
 
-    protected RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+    protected RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 

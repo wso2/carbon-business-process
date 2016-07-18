@@ -24,11 +24,6 @@ import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 public class TaskCompletionListener implements TaskListener {
     @Override
     public void notify(DelegateTask delegateTask) {
-
-        HistoryService historyService = delegateTask.getExecution().getEngineServices().getHistoryService();
-        HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(delegateTask.getId()).singleResult();
-        if (taskInstance != null) {
-            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishTaskEvent(taskInstance);
-        }
+        BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishTaskEvent(delegateTask);
     }
 }

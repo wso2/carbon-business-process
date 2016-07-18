@@ -138,8 +138,7 @@
 
     <jaxrs:server id="statsService" address="/stats">
         <jaxrs:serviceBeans>
-            <bean class="org.wso2.carbon.bpmn.rest.service.stats.ProcessAndTaskService"/>
-            <bean class="org.wso2.carbon.bpmn.rest.service.stats.UserService"/>
+            <bean class="org.wso2.carbon.bpmn.rest.service.stats.ProcessStatisticsService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="authenticationBean"/>
@@ -151,6 +150,7 @@
 
     <jaxrs:server id="analyticsService" address="/analytics">
         <jaxrs:serviceBeans>
+            <bean class="org.wso2.carbon.bpmn.rest.service.analytics.PublishProcessVariablesService"/>
             <bean class="org.wso2.carbon.bpmn.rest.service.analytics.AnalyticsConfigurationService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>

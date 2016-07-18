@@ -59,12 +59,12 @@ try {
     var paginatePageCount = Math.ceil(taskCount / 10);
     */
     var paginatePageCount = Math.ceil(tasks.total / 10);
-} catch (e) {
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("Error Occured : " + e);
+        log.debug("Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
 }
 //Set current active veiw as completed task view. 

@@ -1,4 +1,4 @@
-package org.wso2.carbon.bpmn.people.substitution;/*
+/*
  * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License, 
@@ -14,6 +14,7 @@ package org.wso2.carbon.bpmn.people.substitution;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wso2.carbon.bpmn.people.substitution;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,16 +22,15 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 
-public class SubstitutionDataHolder {
-
+public final class SubstitutionDataHolder {
     private static final Log log = LogFactory.getLog(SubstitutionDataHolder.class);
 
     private static SubstitutionDataHolder dataHolder = new SubstitutionDataHolder();
     private ActivitiDAO activitiDAO = new ActivitiDAO();
     private TransitivityResolver resolver = new TransitivityResolver(activitiDAO);
     private Boolean substitutionFeatureEnabled = null;
-    public Boolean transitivityEnabled = null;
     public static final String TRUE = "true";
+    private Boolean transitivityEnabled = null;
 
     private SubstitutionDataHolder(){}
 
@@ -38,16 +38,27 @@ public class SubstitutionDataHolder {
         return dataHolder;
     }
 
+    /**
+     * Get an Activiti DAO instance
+     * @return ActivitiDAO
+     */
     public ActivitiDAO getActivitiDAO() {
         return activitiDAO;
     }
 
+    /**
+     * Get a transitivity resolver instance
+     * @return TransitivityResolver
+     */
     public TransitivityResolver getTransitivityResolver() {
         return resolver;
     }
 
+    /**
+     * Get the substitution feature enabled config value or default value
+     * @return true if substitution enabled
+     */
     public boolean isSubstitutionFeatureEnabled() {
-
         if (substitutionFeatureEnabled == null) {
             substitutionFeatureEnabled = false;
             BPMNActivitiConfiguration activitiConfiguration = BPMNActivitiConfiguration.getInstance();
@@ -62,7 +73,10 @@ public class SubstitutionDataHolder {
         return substitutionFeatureEnabled;
     }
 
-
+    /**
+     * Get the transitivity enabled value for substitution from configuration.
+     * @return true if transitivity enabled
+     */
     public boolean isTransitivityEnabled() {
         if (transitivityEnabled != null) {
             return transitivityEnabled;

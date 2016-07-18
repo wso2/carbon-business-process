@@ -93,7 +93,7 @@ public class BaseExecutionService {
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
                                             Map<String, String> requestParams, UriInfo uriInfo) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         // Populate query based on request
@@ -238,7 +238,7 @@ public class BaseExecutionService {
     }
 
     protected Execution getExecutionFromRequest(String executionId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
         if (execution == null) {
             throw new ActivitiObjectNotFoundException("Could not find an execution with id '" + executionId + "'.", Execution.class);
@@ -300,7 +300,7 @@ public class BaseExecutionService {
 
     protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap,
                                      UriInfo uriInfo) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawLocalvariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL, uriInfo.getBaseUri().toString());
@@ -311,7 +311,7 @@ public class BaseExecutionService {
     }
 
     protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, UriInfo uriInfo) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());
@@ -326,7 +326,7 @@ public class BaseExecutionService {
     }
 
     public void deleteAllLocalVariables(Execution execution) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
         runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
     }
@@ -589,7 +589,7 @@ public class BaseExecutionService {
         }
 
         if (!variablesToSet.isEmpty()) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
             if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
                 runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
             } else {
@@ -694,7 +694,7 @@ public class BaseExecutionService {
             throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '" + name + "'.", null);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.setVariableLocal(execution.getId(), name, value);
         } else {
@@ -708,7 +708,7 @@ public class BaseExecutionService {
 
     protected boolean hasVariableOnScope(Execution execution, String variableName, RestVariable.RestVariableScope scope) {
         boolean variableFound = false;
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
             if (execution.getParentId() != null && runtimeService.hasVariable(execution.getParentId(), variableName)) {
                 variableFound = true;
@@ -731,7 +731,7 @@ public class BaseExecutionService {
         if (execution == null) {
             throw new ActivitiObjectNotFoundException("Could not find an execution", Execution.class);
         }
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
             // First, check local variables (which have precedence when no scope is supplied)

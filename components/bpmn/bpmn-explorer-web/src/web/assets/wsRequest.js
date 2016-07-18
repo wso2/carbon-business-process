@@ -81,3 +81,32 @@ function getBPMNProcessDiagram(processId) {
         return BPSResponse;
     }
 }
+
+/*
+ * Function to make WS-HT simplequery request with basic limited parameters
+ *
+ * @returns response payload
+ * @throws {exception java.net.ConnectException} if connection error occurred
+ */
+function getBPMNInstanceDiagram(instanceId) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                        xmlns:ser="http://services.mgt.core.bpmn.carbon.wso2.org">\
+                       <soapenv:Header/>\
+                       <soapenv:Body>\
+                          <ser:getProcessInstanceDiagram>\
+                             <ser:instanceId>' + instanceId + '</ser:instanceId>\
+                          </ser:getProcessInstanceDiagram>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
+
+    var soapAction = 'urn:getProcessInstanceDiagram';
+    var BPSResponse;
+    var ep = this.URL + "/services/BPMNInstanceService/"
+    BPSResponse = requestBPS(ep, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    }
+    else {
+        return BPSResponse;
+    }
+}

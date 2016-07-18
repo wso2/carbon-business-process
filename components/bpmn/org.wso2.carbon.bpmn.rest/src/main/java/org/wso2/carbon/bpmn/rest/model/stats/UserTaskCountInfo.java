@@ -20,27 +20,28 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Model class that keeps details about deployed processes and its counts
+ * Model that keeps details about user with the no. of tasks completed
  */
-@XmlRootElement(name = "DeployedProcess")
+@XmlRootElement(name = "UserTaskCountInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeployedProcesses {
-    private String processDefinitionId;
-    private long deployedProcessCount;
+public class UserTaskCountInfo {
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    private String userName;
+    private long taskCount;
+
+    public String getUserName() {
+        return userName;
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public long getDeployedProcessCount() {
-        return deployedProcessCount;
+    public long getTaskCount() {
+        return taskCount;
     }
 
-    public void setDeployedProcessCount(long deployedProcessCount) {
-        this.deployedProcessCount = deployedProcessCount;
+    public void setTaskCount(long taskCount) {
+        this.taskCount = taskCount;
     }
 }

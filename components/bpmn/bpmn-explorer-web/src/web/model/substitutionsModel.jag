@@ -18,13 +18,16 @@
 var log = new Log();
 var headers = 	{
                     "Authorization": "Basic " + auth,
-                    "getCommonErrorContentnt-Type": "application/json",
+                    "Content-Type": "application/json",
                     "Accept" : "application/json"
                 };
 try {
+    //Check whether the user substitution feature enabled
+    if (!(application.get('bpsSubstitutionFeatureEN'))) {
+        throw "User Substitution feature disabled";
+    }
     //URLs
     var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
-
 
     var loggedUsersSubInfo = null;
     var httpResponse = null;
@@ -85,17 +88,18 @@ try {
         usersSubstitutedByLoggedUser = httpResponse.data.substituteInfoList;
 
         //calculate pagination info
-        paginatePageCount = 10;//Math.ceil(httpResponse.data.total / 10);//TODO since still do not respond total commenting it and hardcode to 10
+        paginatePageCount = Math.ceil(httpResponse.data.total / 10);
         currentPage = parseInt(pagination);
     }
 
-} catch (e) {
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("User Error Occured : " + e);
+        log.debug("User Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
+    errorDisplayBackButtonsEnable = '';
 }
 //Set current active veiw as Substitutions view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar

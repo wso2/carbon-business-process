@@ -30,6 +30,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.ProcessInstanceResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskResponse;
 
 import javax.xml.bind.annotation.*;
+import java.util.List;
 
 @XmlRootElement(name = "DataResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -61,7 +62,7 @@ public class DataResponse {
             @XmlElement(name = "ExecutionResponse",
                     type = ExecutionResponse.class)
     })
-    Object data;
+    List<Object> data;
     long total;
     int start;
     String sort;
@@ -81,7 +82,7 @@ public class DataResponse {
         return data;
     }
 
-    public DataResponse setData(Object data) {
+    public DataResponse setData(List<Object> data) {
         this.data = data;
         return this;
     }

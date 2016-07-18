@@ -89,6 +89,11 @@ function displayAttachmentData(id) {
     window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
 }
 
+function displayComments(id) {
+    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+}
+
+
 function completeTask(data, id) {
     document.getElementById("completeButton").style.display = 'none';
     document.getElementById("loadingCompleteButton").hidden = false;
@@ -212,6 +217,34 @@ function reassign(username, id) {
 function claim(username, id) {
     var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
     var body = {
+        "action" : "claim",
+        "assignee": username
+    };
+
+    $.ajax({
+        type: 'POST',
+        contentType: "application/json",
+        url: httpUrl + url,
+        data: JSON.stringify(body),
+        success: function (data) {
+            window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+        },
+        error: function (xhr, status, error) {
+            document.getElementById("commonErrorSection").hidden = false;
+            document.getElementById("errorMsg").innerHTML = "Task claiming failed: " + xhr.responseText;
+            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            emptyVar = false;
+            return;
+        }
+    });
+}
+
+/**
+* Reassign the task 
+*/
+function reassignTask(username, id) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id;
+    var body = {
         "assignee": username
     };
 
@@ -222,6 +255,13 @@ function claim(username, id) {
         data: JSON.stringify(body),
         success: function (data) {
             window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+        },
+        error: function (xhr, status, error) {
+            document.getElementById("commonErrorSection").hidden = false;
+            document.getElementById("errorMsg").innerHTML = "Task reassigning failed: " + xhr.responseText;
+            $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            emptyVar = false;
+            return;
         }
     });
 }
@@ -464,7 +504,7 @@ function setDatePicker(dateElement) {
         singleDatePicker: true,
         showDropdowns: true,
         locale: {
-            format: 'MM/DD/YYYY'
+            format: 'YYYY-MM-DD'
         }
     });
 }
@@ -530,9 +570,9 @@ function selectProcessForChart() {
 
 //User Performance of Tasks Completed and Tasks Started Over time i.e. months
 
-function selectUserForPerformance() {
-    var x = document.getElementById("selectUser").value;
-    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + x;
+function selectUserForPerformance(userName) {
+    //var x = document.getElementById("selectUser").value;
+    var url = httpUrl + "/" + CONTEXT + "/reports?update=true&option=userperformance&id=" + userName;
 
     $.ajax({
         type: 'GET',
@@ -1002,14 +1042,15 @@ function processVariationOverTime() {
 }
 
 // Generate the report view by displaying the graphs
-function generateReport() {
+function generateReport(loggedUser) {
 
     selectProcessForInstanceCount();
     selectProcessForAvgTimeDuration();
-    userVsTasksCompleted();
-    avgTimeForUserForTasks();
+    // userVsTasksCompleted();
+    // avgTimeForUserForTasks();
     taskVariationOverTime();
     processVariationOverTime();
+    selectUserForPerformance(loggedUser)
 
     var barChartDisplay = document.getElementById("barChartDisplay");
     barChartDisplay.hidden = false;
@@ -1043,10 +1084,10 @@ function getUserTasksOfCompletedProcessInstances(id) {
                 var state = "Completed";
                 var taskDefKey = completedTaskInstances.data[k].taskDefinitionKey;
                 var taskName = completedTaskInstances.data[k].name;
-                var startTime = completedTaskInstances.data[k].startTime;
-                var endTime = completedTaskInstances.data[k].endTime;
+                var startTime = epochToFormattedTime(completedTaskInstances.data[k].startTime);
+                var endTime = epochToFormattedTime(completedTaskInstances.data[k].endTime);
                 var assignee = completedTaskInstances.data[k].assignee;
-                var duration = completedTaskInstances.data[k].durationInMillis;
+                var duration = completedTaskInstances.data[k].durationInMillis/1000;
 
                 DIV = DIV + "<tr><td>" + state + "</td><td style='word-wrap: break-word'>" + taskDefKey + "</td><td style='word-wrap: break-word'>" + taskName + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + assignee + "</td><td>" + duration + "</td></tr>";
 
@@ -1092,6 +1133,17 @@ function getVariablesOfCompletedProcessInstances(id) {
     });
 }
 
+//convert given epochTime to a readable form
+function epochToFormattedTime (epochTime) {
+    if (epochTime != null) {
+        var time = new Date(epochTime);
+        return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
+    } else {
+        return null;
+    }
+
+}
+
 //Gets the details of all the activities in a completed process instance
 function getAuditLogForCompletedProcessInstances(id) {
 
@@ -1105,21 +1157,21 @@ function getAuditLogForCompletedProcessInstances(id) {
 
             $("#auditLog").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
                 var activityName = completedTaskInstances.data[k].activityName;
                 var activityType = completedTaskInstances.data[k].activityType;
-                var activityStartTime = completedTaskInstances.data[k].startTime;
-                var activityEndTime = completedTaskInstances.data[k].endTime;
+                var activityStartTime = epochToFormattedTime(completedTaskInstances.data[k].startTime);
+                var activityEndTime = epochToFormattedTime(completedTaskInstances.data[k].endTime);
                 var taskId = completedTaskInstances.data[k].taskId;
                 var activityInstanceId = completedTaskInstances.data[k].id;
                 if (taskId == null) {
                     taskId = "N/A";
                 }
 
-                DIV = DIV + "<tr><td>" + state + "</td><td style='word-wrap: break-word'>" + activityName + "</td><td>" + activityType + "</td><td>" + activityStartTime + "</td><td>" + activityEndTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
+                DIV = DIV + "<tr><td>" + activityName + "</td><td style='word-wrap: break-word'>" + activityType + "</td><td>" + state + "</td><td>" + activityStartTime + "</td><td>" + activityEndTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
 
             }
             DIV = DIV + "</tbody></table></div>"
@@ -1161,11 +1213,11 @@ function getCalledProcessInstancesOfCompleted(id) {
 
                         var id = calledPInfo.id;
                         var processDefinitionId = calledPInfo.processDefinitionId;
-                        var startTime = calledPInfo.startTime;
-                        var endTime = calledPInfo.endTime;
-                        var durationInMillis = calledPInfo.durationInMillis;
+                        var startTime = epochToFormattedTime(calledPInfo.startTime);
+                        var endTime = epochToFormattedTime(calledPInfo.endTime);
+                        var duration = calledPInfo.durationInMillis/1000;
 
-                        DIV = DIV + "<tr><td>" + id + "</td><td style='word-wrap: break-word'>" + processDefinitionId + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + durationInMillis + "</td></tr>";
+                        DIV = DIV + "<tr><td>" + id + "</td><td style='word-wrap: break-word'>" + processDefinitionId + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + duration + "</td></tr>";
                         DIV = DIV + "</tbody></table></div>"
 
                         $("#calledInstances").html(DIV);
@@ -1191,7 +1243,7 @@ function completedProcessInstances(id) {
 //Gets the details of all the activities in a running/active process instance
 function getAuditLogForRunningProcessInstances(pid, id) {
 
-    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/task-instances/" + pid;
 
     $.ajax({
         type: 'GET',
@@ -1212,7 +1264,7 @@ function getAuditLogForRunningProcessInstances(pid, id) {
                     $("#auditLog").html("");
                     var taskList2 = JSON.parse(data);
 
-                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Activity Name</td><td>Activity Type</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
 
                     for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1223,8 +1275,8 @@ function getAuditLogForRunningProcessInstances(pid, id) {
                         for (var j = 0; j < taskList2.data.length; j++) {
 
                             var activityId = taskList2.data[j].activityId;
-                            var startTime = taskList2.data[j].startTime;
-                            var endTime = taskList2.data[j].endTime;
+                            var startTime = epochToFormattedTime(taskList2.data[j].startTime);
+                            var endTime = epochToFormattedTime(taskList2.data[j].endTime);
                             var taskId = taskList2.data[j].taskId;
                             var activityInstanceId = taskList2.data[j].id;
                             var state;
@@ -1248,7 +1300,7 @@ function getAuditLogForRunningProcessInstances(pid, id) {
 
                         }
 
-                        DIV = DIV + "<tr><td>" + state + "</td><td style='word-wrap: break-word'>" + activityName + "</td><td>" + activityType + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
+                        DIV = DIV + "<tr><td>" + activityName + "</td><td style='word-wrap: break-word'>" + activityType + "</td><td>" + state + "</td><td>" + startTime + "</td><td>" + endTime + "</td><td>" + taskId + "</td><td>" + activityInstanceId + "</td></tr>";
 
                     }
                     DIV = DIV + "</tbody></table></div>"
@@ -1294,7 +1346,7 @@ function getVariablesOfRunningProcessInstances(id) {
 //Gets the details of the user-tasks in a running/active process instance
 function getUserTasksOfRunningProcessInstances(pid, id) {
 
-    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/processTaskServices/allTasks/" + pid;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/stats/task-instances/" + pid;
 
     $.ajax({
         type: 'GET',
@@ -1326,10 +1378,10 @@ function getUserTasksOfRunningProcessInstances(pid, id) {
                             for (var j = 0; j < taskList2.data.length; j++) {
 
                                 var activityId = taskList2.data[j].activityId;
-                                var startTime = taskList2.data[j].startTime;
-                                var endTime = taskList2.data[j].endTime;
+                                var startTime = epochToFormattedTime(taskList2.data[j].startTime);
+                                var endTime = epochToFormattedTime(taskList2.data[j].endTime);
                                 var assignee = taskList2.data[j].assignee;
-                                var duration = taskList2.data[j].durationInMillis;
+                                var duration = taskList2.data[j].durationInMillis/1000;
 
                                 if (taskDefKey == activityId && endTime !== null) {
                                     var state = "Completed";
@@ -1463,97 +1515,175 @@ function filterResults(id) {
 
 function addNewSubstitute (assignee, subName, startDate, endDate) {
 
-    //create start time Date object
-    var startTimeStrArr = startDate.split(' ');
-    var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
-    var startTime = new Date(startDateTimeStr);
-
-    //create end time Date object
-    var endTimeStrArr = endDate.split(' ');
-    var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-    var endTime = new Date(endDateTimeStr);
-
-    //json request
-    var addSubRequest  =  {
-                               "assignee": assignee,
-                               "substitute" : subName,
-                               "startTime" : startTime.toISOString(),
-                               "endTime" : endTime.toISOString()
-                            };
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes";
-
-    $.ajax({
-        type: 'POST',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(addSubRequest),
-        success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-        },
-        error: function (xhr, status, error) {
-            var errorJson = eval("(" + xhr.responseText + ")");
-            if (errorJson != null && errorJson.errorMessage != undefined) {
-                $('#addSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
-            } else {
-                $('#addSubErrMsg').html("Error occurred while adding substitute. Please try again");
-            }
-
-            $('#addSubErrorMessageArea').show();
-            //set callback to remove error message when hiding the modal
-            $('#addSubstituteModal').on('hide.bs.modal', function (e) {
-                    $('#addSubErrorMessageArea').hide();
-            });
-
+    try {
+        if (assignee.length == 0) {
+            throw "Please enter assignee name";
         }
-    });
+        if (subName.length == 0) {
+            throw "Please enter substitute name";
+        }
+        //create start time Date object
+        var startTimeStrArr = startDate.split(' ');
+        var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
+        var startTime = new Date(startDateTimeStr);
+        var startTimeStr = "";
+        try {
+            startTimeStr = startTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid start time";
+        }
+
+        //create end time Date object
+        var endTimeStrArr = endDate.split(' ');
+        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+        var endTime = new Date(endDateTimeStr);
+        var endTimeStr = "";
+        try {
+            endTimeStr = endTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid end time";
+        }
+
+        //json request
+        var addSubRequest  =  {
+                                   "assignee": assignee,
+                                   "substitute" : subName,
+                                   "startTime" : startTimeStr,
+                                   "endTime" : endTimeStr
+                                };
+
+        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes";
+
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: httpUrl + url,
+            data: JSON.stringify(addSubRequest),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                if (xhr.responseText.length > 0) {
+                    var errorJson = eval("(" + xhr.responseText + ")");
+                    if (errorJson != null && errorJson.errorMessage != undefined) {
+                        $('#addSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+                    } else {
+                        $('#addSubErrMsg').html("Error occurred while adding substitute. Please try again");
+                    }
+                } else if (xhr.status == 405) {
+                    $('#addSubErrMsg').html("User Substitution not enabled");
+                } else {
+                    $('#addSubErrMsg').html("Error occurred while adding substitute user. Please try again");
+                }
+                
+                $('#addSubErrorMessageArea').show();
+                //set callback to remove error message when hiding the modal
+                $('#addSubstituteModal').on('hide.bs.modal', function (e) {
+                        $('#addSubErrorMessageArea').hide();
+                });
+
+            }
+        });
+    } catch (error) {
+        $('#addSubErrMsg').html(error);
+        $('#addSubErrorMessageArea').show();
+        //set callback to remove error message when hiding the modal
+        $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                $('#addSubErrorMessageArea').hide();
+        });
+    }
 }
 
 function updateSubstitute (assignee, subName, startDate, endDate) {
+    try {
 
-    //create start time Date object
-    var startTimeStrArr = startDate.split(' ');
-    var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
-    var startTime = new Date(startDateTimeStr);
-
-    //create end time Date object
-    var endTimeStrArr = endDate.split(' ');
-    var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-    var endTime = new Date(endDateTimeStr);
-
-    //json request
-    var updateSubRequest  =  {
-                               "assignee": assignee,
-                               "substitute" : subName,
-                               "startTime" : startTime.toISOString(),
-                               "endTime" : endTime.toISOString()
-                            };
-
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ assignee;
-
-    $.ajax({
-        type: 'PUT',
-        contentType: "application/json",
-        url: httpUrl + url,
-        data: JSON.stringify(updateSubRequest),
-        success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-        },
-        error: function (xhr, status, error) {
-            var errorJson = eval("(" + xhr.responseText + ")");
-            if (errorJson != null && errorJson.errorMessage != undefined) {
-                $('#updateSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
-            } else {
-                $('#updateSubErrMsg').html("Error occurred while updating substitute. Please try again");
-            }
-
-            $('#updateSubErrorMessageArea').show();
-            //set callback to remove error message when hiding the modal
-            $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
-                    $('#updateSubErrorMessageArea').hide();
-            });
+        if (assignee.length == 0) {
+            throw "Please enter assignee name";
         }
-    });
+        if (subName.length == 0) {
+            throw "Please enter substitute name";
+        }
+
+        //create start time Date object
+        var startTimeStrArr = startDate.split(' ');
+        var startDateTimeStr = startTimeStrArr[0] + ' ' + startTimeStrArr[1] + ' ' + startTimeStrArr[2];
+        var startTime = new Date(startDateTimeStr);
+        var startTimeStr = "";
+        try {
+            startTimeStr = startTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid start time";
+        }
+
+        //create end time Date object
+        var endTimeStrArr = endDate.split(' ');
+        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+        var endTime = new Date(endDateTimeStr);
+        var endTimeStr = "";
+        try {
+            endTimeStr = endTime.toISOString()
+        } catch (error) {
+            throw "Please provide valid end time";
+        }
+
+        //json request
+        var updateSubRequest  =  {
+                                   "assignee": assignee,
+                                   "substitute" : subName,
+                                   "startTime" : startTimeStr,
+                                   "endTime" : endTimeStr
+                                };
+
+        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/substitutes/"+ assignee;
+
+        $.ajax({
+            type: 'PUT',
+            contentType: "application/json",
+            url: httpUrl + url,
+            data: JSON.stringify(updateSubRequest),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                if (xhr.responseText.length > 0) {
+                    var errorJson = eval("(" + xhr.responseText + ")");
+                    if (errorJson != null && errorJson.errorMessage != undefined) {
+                        $('#updateSubErrMsg').html("Error "+ errorJson.statusCode+ ": " + errorJson.errorMessage);
+                    } else {
+                        $('#updateSubErrMsg').html("Error occurred while updating substitute. Please try again");
+                    }
+                } else if (xhr.status == 405) {
+                    $('#updateSubErrMsg').html("User Substitution not enabled");
+                } else {
+                    $('#updateSubErrMsg').html("Error occurred while adding substitute user. Please try again");
+                }
+                
+                $('#updateSubErrorMessageArea').show();
+                //set callback to remove error message when hiding the modal
+                $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                        $('#updateSubErrorMessageArea').hide();
+                });
+            }
+        });
+
+    } catch (error) {
+        $('#updateSubErrMsg').html(error);
+        $('#updateSubErrorMessageArea').show();
+        //set callback to remove error message when hiding the modal
+        $('#updateSubstituteModal').on('hide.bs.modal', function (e) {
+                $('#updateSubErrorMessageArea').hide();
+        });
+    }
+}
+
+function populateupdateSubstituteModal(assignee, substitute, startTime, endTime) {
+
+    $('#updatedAssigneeName').val(assignee);
+    $('#updatedSubstituteName').val(substitute);
+    $('#updatedSubStartDate').val(startTime);
+    $('#updatedSubEndDate').val(endTime);
+
+    $('#updateSubstituteModal').modal('show')
 }
 
 
@@ -1569,12 +1699,15 @@ function deactivateSub(userName) {
         url: httpUrl + url,
         data: JSON.stringify(disableSubRequest),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            location.reload();
         },
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
             //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //TODO show error instead of reload
+            location.reload();
 
         }
     });
@@ -1592,14 +1725,60 @@ function activateSub(userName) {
         url: httpUrl + url,
         data: JSON.stringify(disableSubRequest),
         success: function (data) {
-            window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
+            location.reload();
         },
         error: function (xhr, status, error) {
             var errorJson = eval("(" + xhr.responseText + ")");
             //window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
             //window.location = httpUrl + "/" + CONTEXT + "/substitutions";
-            
+            //TODO show error instead of reload
+            location.reload();
         }
     });
 }
+
+/**
+*  Function to add more variable names and values to filter for instances
+*/
+function addVariable(){
+    var vNames = document.getElementsByName("variableName");
+    if (vNames[vNames.length - 1].value !== "" && vNames[vNames.length - 1].value !== undefined) {
+        var vRow = document.getElementById("variablesRow");
+
+        var vBr = document.createElement("BR");
+        vRow.appendChild(vBr);
+
+        var vNameNode = document.createElement("INPUT");
+        vNameNode.setAttribute("type", "text");
+        vNameNode.setAttribute("name", "variableName");
+        vNameNode.setAttribute("class", "form-control");
+        vNameNode.setAttribute("placeholder", "Variable Name");
+        vNameNode.setAttribute("style", "width: initial; float: left;");
+        vRow.appendChild(vNameNode);
+
+        var vLabel = document.createElement("LABEL");
+        var t = document.createTextNode("\u00A0=\u00A0");
+        vLabel.setAttribute("for", "equals");
+        vLabel.setAttribute("name", "variableEqual");
+        vLabel.setAttribute("class", "control-label");
+        vLabel.setAttribute("style", "width: initial; float: left; font-size:25px;");
+        vLabel.appendChild(t);
+        vRow.appendChild(vLabel);
+
+        var vValueNode = document.createElement("INPUT");
+        vValueNode.setAttribute("type", "text");
+        vValueNode.setAttribute("name", "variableValue");
+        vValueNode.setAttribute("class", "form-control");
+        vValueNode.setAttribute("placeholder", "Variable value like");
+        vValueNode.setAttribute("style", "width: initial;");
+        vRow.appendChild(vValueNode);
+    }
+}
+
+function resetForm() {
+    window.location = httpUrl + "/" + CONTEXT + "/advancedFilter";
+
+}
+
 
