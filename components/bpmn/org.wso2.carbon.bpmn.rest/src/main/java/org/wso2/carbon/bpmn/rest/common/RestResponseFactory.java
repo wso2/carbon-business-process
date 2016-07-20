@@ -571,7 +571,7 @@ public class RestResponseFactory {
         }
 
         if (comment.getProcessInstanceId() != null) {
-            String historyUri = baseUri.replace("/runtime", "");
+            String historyUri = baseUri.replace("runtime", "history");
             RestUrlBuilder historyuUrlBuilder = createUrlBuilder(historyUri);
             result.setProcessInstanceUrl(historyuUrlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, comment.getProcessInstanceId(), comment.getId()));
         }
