@@ -329,6 +329,10 @@ public class BPMNDataPublisher {
             if (genericAnalyticsEnabled) {
                 engineConfig.getPostBpmnParseHandlers().add(new ProcessParseHandler());
                 engineConfig.getPostBpmnParseHandlers().add(new TaskParseHandler());
+                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                        addHandler(new ProcessParseHandler());
+                engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
+                        addHandler(new TaskParseHandler());
             }
             if (kpiAnalyticsEnabled) {
                 engineConfig.getPostBpmnParseHandlers().add(new ProcessKPIParseHandler());
@@ -336,10 +340,6 @@ public class BPMNDataPublisher {
                         .addHandler(new ProcessKPIParseHandler());
             }
             // engineConfig.getPostBpmnParseHandlers().add(new ServiceTaskParseHandler());
-            engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
-                    addHandler(new ProcessParseHandler());
-            engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
-                    addHandler(new TaskParseHandler());
             // engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
             // addHandler(new ServiceTaskParseHandler());
 
@@ -399,9 +399,10 @@ public class BPMNDataPublisher {
         String eventStreamId;
         Object[] payload = new Object[0];
         try {
-            //get a list of names of variables which are configured for analytics from registry for that process
-            String[][] configedProcessVariables;
             JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
+            JsonArray configedProcessVariables = kpiConfig.getAsJsonArray(AnalyticsPublisherConstants
+                        .PROCESS_VARIABLES_JSON_ENTRY_NAME);
+
             //do not publish the KPI event if DAS configurations are not done by the PC
             if (kpiConfig == null) {
                 return;
@@ -412,7 +413,8 @@ public class BPMNDataPublisher {
                                 + "process : " + processDefinitionId);
             }
 
-            /* Keeps configured process variable data as a JSON. Example value:
+            /* Keeps configured process variable data as a JSON. These variables are sent as payload data to DAS.
+            Example value:
             [{"name":"processInstanceId","type":"string","isAnalyzeData":"false","isDrillDownData":"false"},
             {"name":"valuesAvailability","type":"string","isAnalyzeData":"false","isDrillDownData":"false"},
             {"name":"custid","type":"string","isAnalyzeData":false,"isDrillDownData":false},
@@ -422,29 +424,21 @@ public class BPMNDataPublisher {
             JsonArray fieldsConfigedForStreamPayload = kpiConfig
                     .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
-            int variableCount = fieldsConfigedForStreamPayload.size();
-            configedProcessVariables = new String[variableCount][2];
-
-            for (int i = 0; i < variableCount; i++) {
-                configedProcessVariables[i][0] = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("name").getAsString();
-                configedProcessVariables[i][1] = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("type").getAsString();
-            }
-
             eventStreamId = kpiConfig.get("eventStreamId").getAsString();
             Map<String, VariableInstance> variableInstances = ((ExecutionEntity) processInstance)
                     .getVariableInstances();
-            payload = new Object[configedProcessVariables.length];
+            payload = new Object[fieldsConfigedForStreamPayload.size()];
 
             //set process instance id as the 1st payload variable value
             payload[0] = processInstanceId;
 
             //availability of values for each process variable is represented by this char array as 1 (value available)
             // or 0 (not available) in respective array index
-            char[] valueAvailabiliy = new char[configedProcessVariables.length-2];
+            char[] valueAvailabiliy = new char[fieldsConfigedForStreamPayload.size()-2];
 
-            for (int i = 2; i < configedProcessVariables.length; i++) {
-                String varName = configedProcessVariables[i][0];
-                String varType = configedProcessVariables[i][1];
+            for (int i = 2; i < configedProcessVariables.size(); i++) {
+                String varName = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("name").getAsString();
+                String varType = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("type").getAsString();
 
                 Object varValue = variableInstances.get(varName).getValue();
 
