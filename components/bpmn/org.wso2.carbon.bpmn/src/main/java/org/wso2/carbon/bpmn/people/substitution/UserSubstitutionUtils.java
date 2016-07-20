@@ -23,6 +23,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
@@ -32,10 +34,10 @@ import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class UserSubstitutionUtils {
@@ -70,7 +72,7 @@ public class UserSubstitutionUtils {
             dataModel.setSubstitute(MultitenantUtils.getTenantAwareUsername(substitute));
             dataModel.setSubstitutionStart(startDate);
             if (endDate == null) {
-                endDate = new Date(Long.MAX_VALUE);
+                endDate = getEndTimeMaxDate();
             }
             dataModel.setSubstitutionEnd(endDate);
             dataModel.setEnabled(true); //by default enabled
@@ -362,7 +364,20 @@ public class UserSubstitutionUtils {
      */
     public static SubstitutesDataModel getSubstituteOfUser(String assignee, int tenantId) {
         SubstitutesDataModel dataModel = SubstitutionDataHolder.getInstance().getActivitiDAO().selectSubstituteInfo(assignee, tenantId);
+
+        Date maxDate = getEndTimeMaxDate();
+
+        //set null if max end date
+        if (dataModel != null && maxDate.compareTo(dataModel.getSubstitutionEnd()) == 0) {
+            dataModel.setSubstitutionEnd(null);
+        }
         return dataModel;
+    }
+
+    private static Date getEndTimeMaxDate() {
+        DateTime dateTime = new DateTime(SubstitutionDataHolder.getInstance().getSubstitutionMaxEpoch(), DateTimeZone.UTC);
+        Date maxDate = new Date(dateTime.toDateTime(DateTimeZone.getDefault()).getMillis());
+        return maxDate;
     }
 
     /**
@@ -382,11 +397,26 @@ public class UserSubstitutionUtils {
             enabledProvided = true;
         }
         if (!enabledProvided) {
-            return activitiDAO.querySubstituteInfoWithoutEnabled(model);
+            return prepareEndTime(activitiDAO.querySubstituteInfoWithoutEnabled(model));
         } else {
-            return activitiDAO.querySubstituteInfo(model);
+            return prepareEndTime(activitiDAO.querySubstituteInfo(model));
         }
 
+    }
+
+    /**
+     * If the endDate is set to BPMNConstants.SUBSTITUTION_MAX_END_DATE_EPOCH, it is changed to null
+     * @param modelList
+     * @return
+     */
+    private static List<SubstitutesDataModel> prepareEndTime(List<SubstitutesDataModel> modelList) {
+        for (SubstitutesDataModel model : modelList) {
+            if (model.getSubstitutionEnd()!= null && getEndTimeMaxDate().compareTo(model.getSubstitutionEnd()) == 0) {
+                model.setSubstitutionEnd(null);
+            }
+        }
+
+        return modelList;
     }
 
     /**

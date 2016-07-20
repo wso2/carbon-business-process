@@ -65,5 +65,8 @@ public class BPMNConstants {
     public static final boolean SUBSTITUTION_TRANSITIVITY_DEFAULT = false;
     public static final int DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES = 60 * 24;
     public static final String SUBSTITUTION_ENABLED = "enabled";
-
+    public static final String DBMS_MYSQL = "mysql";
+    public static final long MYSQL_SUBSTITUTION_MAX_END_DATE_EPOCH = 2147365800000L; //Date 2038/jan/18, max timestamp allowed in mysql
+    public static final long DEFAULT_SUBSTITUTION_MAX_END_DATE = 95617564200000L; //5000/1/1
 }
+
