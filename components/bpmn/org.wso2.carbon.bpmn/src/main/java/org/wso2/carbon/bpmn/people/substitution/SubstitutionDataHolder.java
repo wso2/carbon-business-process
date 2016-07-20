@@ -38,7 +38,7 @@ public final class SubstitutionDataHolder {
     static {
         if (BPMNConstants.DBMS_MYSQL.equalsIgnoreCase(
                 BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration().getDatabaseType())) {
-            substitutionMaxEpoch = BPMNConstants.MYSQL_SUBSTITUTION_MAX_END_DATE_EPOCH;
+            substitutionMaxEpoch = BPMNConstants.MYSQL_SUBSTITUTION_MAX_END_DATE;
         } else {
             substitutionMaxEpoch = BPMNConstants.DEFAULT_SUBSTITUTION_MAX_END_DATE;
         }
