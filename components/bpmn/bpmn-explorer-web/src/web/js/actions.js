@@ -379,7 +379,7 @@ function startProcessWithData(data, id) {
             for (var i = 0; i < data.length; i++) {
 
                 for (var j = 0; j < vData.length; j++) {
-                    if (vData[j].name == data[i].name) {
+                    if (vData[j].id == data[i].name) {
                         if (vData[j].required && vData[j].writable && data[i].value == "") {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";

@@ -68,6 +68,7 @@ function genCheckbox(data, disabled) {
          else {
              content += "<input value=\"true\" name=\"" + data.id + "\"  type=\"checkbox\" "+checked +" /> " + data.name;
          }
+    }
     content += "</td></tr>";
     return content;
 }
