@@ -19,6 +19,7 @@ package org.wso2.carbon.bpmn.people.substitution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.bpmn.core.BPMNServerHolder;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.utils.BPMNActivitiConfiguration;
 
@@ -31,6 +32,17 @@ public final class SubstitutionDataHolder {
     private Boolean substitutionFeatureEnabled = null;
     public static final String TRUE = "true";
     private Boolean transitivityEnabled = null;
+
+    private static long substitutionMaxEpoch;
+
+    static {
+        if (BPMNConstants.DBMS_MYSQL.equalsIgnoreCase(
+                BPMNServerHolder.getInstance().getEngine().getProcessEngineConfiguration().getDatabaseType())) {
+            substitutionMaxEpoch = BPMNConstants.MYSQL_SUBSTITUTION_MAX_END_DATE;
+        } else {
+            substitutionMaxEpoch = BPMNConstants.DEFAULT_SUBSTITUTION_MAX_END_DATE;
+        }
+    }
 
     private SubstitutionDataHolder(){}
 
@@ -105,6 +117,10 @@ public final class SubstitutionDataHolder {
             return transitivityEnabled;
         }
 
+    }
+
+    public static long getSubstitutionMaxEpoch() {
+        return substitutionMaxEpoch;
     }
 
 }
