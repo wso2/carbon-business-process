@@ -118,8 +118,46 @@
                     </div>
                 </div>
                 <hr>
+                <div class="col-lg-12 margin-bottom padding-left-none">
+                    <div class="col-lg-2 padding-left-none"><h3><%=i18n.localize("comments", "Comments")%></h3></div>
+                    <div class="col-lg-10 capitalize">
+                       <!--Comment List-->
+                       <%if (commentList != null && commentList.length > 10) { %>
+                           <input type="hidden" id="hiddenCmtCount" value="<%=hiddenCmtCount.toString()%>"></input>
+                           <li class="list-group-item center">
+                               <button type="button" class="btn btn-default" id="collapsebtn" data-toggle="collapse" href="#collapseList">
+                                   <span class="glyphicon glyphicon-collapse-down"></span>
+                                   <h3>Number of hidden Comments : <%=hiddenCmtCount.toString()%></h3>
+                               </button>
+                           </li>
+                       <% } %>
+                       <ul class="list-group" id="commentList">
+                            <%if(commentList.length > 10) { %>
+                                <div id="collapseList" class="panel-collapse collapse">
+                            <% }
+                            if (commentList != null) {
+                               for (var i=0; i < commentList.length; i++) { %>
+                                   <li class="list-group-item">
+                                       <div><%=i18n.localize("comment.added", "Added a comment on")%> -
+                                           <time id="time">
+                                               <script>
+                                                   var d = new Date(parseInt(<%=commentList[i].time%>.toString()));
+                                                   document.write(d);
+                                               </script>
+                                           </time>
+                                       </div>
+                                       <div><%=commentList[i].message%></div>
+                                   </li>
+                                   <%if( i == commentList.length - 11) { %>
+                                       </div>
+                                   <%}
+                               }
+                            } %>
+                       </ul>
+                    </div>
                 </div>
-            </div>
+          </div>
         </div>
     </div>
-    <%}%>
+</div>
+<%}%>
