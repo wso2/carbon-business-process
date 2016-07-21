@@ -34,6 +34,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -221,6 +222,7 @@ public class UserSubstitutionService {
         if (!subsFeatureEnabled) {
             return Response.status(405).build();
         }
+        user = getTenantAwareUser(user);
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         if (!loggedInUser.equals(user) && !hasSubstitutionViewPermission()) {
@@ -278,6 +280,12 @@ public class UserSubstitutionService {
 
         //validate the parameters
         try {
+            //replace with tenant aware user names
+            String tenantAwareUser = getTenantAwareUser(queryMap
+                    .get(SubstitutionQueryProperties.USER));
+            queryMap.put(SubstitutionQueryProperties.USER, tenantAwareUser);
+            String tenantAwareSub = getTenantAwareUser(queryMap.get(SubstitutionQueryProperties.SUBSTITUTE));
+            queryMap.put(SubstitutionQueryProperties.SUBSTITUTE, tenantAwareSub);
             if (!hasSubstitutionViewPermission()) {
                 String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
                 if (!((queryMap.get(SubstitutionQueryProperties.USER) != null && queryMap
@@ -476,7 +484,8 @@ public class UserSubstitutionService {
     private String getRequestedAssignee(final String user) throws UserStoreException {
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
-        String assignee = user;
+        String assignee = getTenantAwareUser(user);
+
 
         //validate the assignee
         if (assignee != null && !assignee.trim().isEmpty() && !assignee.equals(loggedInUser)) { //setting another users
@@ -506,7 +515,10 @@ public class UserSubstitutionService {
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
         if (substitute == null || substitute.trim().isEmpty()) {
             throw new ActivitiIllegalArgumentException("The substitute must be specified");
-        } else if (assignee.equalsIgnoreCase(substitute)) {
+        } else {
+            substitute = getTenantAwareUser(substitute);
+        }
+        if (assignee.equalsIgnoreCase(substitute)) {
             throw new ActivitiIllegalArgumentException("Substitute and assignee should be different users");
         } else if (!userRealm.getUserStoreManager().isExistingUser(substitute.trim())) {
             throw new ActivitiIllegalArgumentException("Cannot substitute a non existing user: " + substitute);
@@ -514,4 +526,17 @@ public class UserSubstitutionService {
         return substitute;
     }
 
+    private String getTenantAwareUser(String user) {
+        String assignee = null;
+        if (user != null && !user.trim().isEmpty()) {
+            String currentDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain(true);
+            String userDomain = MultitenantUtils.getTenantDomain(user);
+            if (!userDomain.equals(currentDomain)) {
+                throw new BPMNForbiddenException("Forbidden operation, tenancy violation.");
+            }
+            assignee = MultitenantUtils.getTenantAwareUsername(user);
+        }
+
+        return assignee;
+    }
 }
