@@ -608,7 +608,7 @@ public class HTRenderingApiImpl implements HumanTaskRenderingAPISkeletonInterfac
             xPath.setNamespaceContext(nsResolver);
             Node result = (Node) xPath.evaluate(xPathExpression, targetXmlElement, XPathConstants.NODE);
 
-            if (result != null && result.getFirstChild().hasChildNodes() == false) {
+            if (result != null && !result.getFirstChild().hasChildNodes()) {
                 return result.getTextContent();
             }
         }
