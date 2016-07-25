@@ -104,12 +104,8 @@ public class BPELPackageRepository {
 
         Resource latestBPELArchive = configRegistry.newResource();
 
-        try(FileInputStream stream = new FileInputStream(bpelDeploymentContext.getBpelArchive())) {
-            latestBPELArchive.setContent(stream);
-        } catch (IOException exception) {
-            log.error("Error reading bpel archive " +
-                        bpelDeploymentContext.getBpelArchive().getName() , exception);
-        }
+        FileInputStream stream = new FileInputStream(bpelDeploymentContext.getBpelArchive());
+        latestBPELArchive.setContent(stream);
         configRegistry.put(BPELPackageRepositoryUtils.
                         getBPELPackageArchiveResourcePath(bpelDeploymentContext.getBpelPackageName()),
                 latestBPELArchive);
