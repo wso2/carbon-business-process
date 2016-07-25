@@ -83,16 +83,45 @@ $(document).ready(function () {
             document.getElementById("error_content").style.visibility = 'visible';
         }
     });
+
+    $("#collapseList").on("hide.bs.collapse", function(){
+        var hiddencnt = document.getElementById("hiddenCmtCount").value;
+        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-down"></span><h3>Number of hidden Comments : ' +hiddencnt +'</h3>');
+    });
+
+    $("#collapseList").on("show.bs.collapse", function(){
+        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-up"></span><h3>No hidden Comments</h3>');
+    });
+
+    var pagination = document.getElementById("pagCount").value;
+    var tab = document.getElementById("tabOutput").value;
+    if (pagination >= 0 && tab == "attachmentTab") {
+        display(event, "attachmentTab");
+    }
+    else if(pagination >= 0 && tab == "commentTab"){
+        display(event, "commentTab");
+    }
+    else {
+        display(event, "attachmentTab");
+    }
 });
 
-function displayAttachmentData(id) {
-    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
+function display(evt, tabId) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        if (tabcontent[i].style.display === 'block') {
+            tabcontent[i].style.display = 'none';
+        }
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabId).style.display = 'block';
+    document.getElementById("tabOutput").value = tabId;
+    evt.currentTarget.className += " active";
 }
-
-function displayComments(id) {
-    window.location = httpUrl + "/" + CONTEXT + "/task?id=" + id;
-}
-
 
 function completeTask(data, id) {
     document.getElementById("completeButton").style.display = 'none';
@@ -350,7 +379,7 @@ function startProcessWithData(data, id) {
             for (var i = 0; i < data.length; i++) {
 
                 for (var j = 0; j < vData.length; j++) {
-                    if (vData[j].name == data[i].name) {
+                    if (vData[j].id == data[i].name) {
                         if (vData[j].required && vData[j].writable && data[i].value == "") {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
@@ -1778,7 +1807,85 @@ function addVariable(){
 
 function resetForm() {
     window.location = httpUrl + "/" + CONTEXT + "/advancedFilter";
-
 }
+
+/**
+ * function to make ajax call to add comment
+ * @param id task id
+ */
+function addComment(id) {
+    var text = document.getElementById("addCommentTextArea").value;
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id +"/comments";
+    if (text !== "" && text !== undefined) {
+        var body = {
+            "message": text,
+            "saveProcessInstanceId" : true
+        };
+
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: httpUrl + url,
+            data: JSON.stringify(body),
+            success: function (data) {
+                document.getElementById("addCommentTextArea").value='';
+                var listData = JSON.parse(data);
+                var commentID = listData.id;
+                var commentLiID = "comment_" + commentID;
+                var commentViewList = '';
+                var list = document.getElementById("commentList");
+                commentViewList = commentViewList + '<li class="list-group-item" id="'+commentLiID +'">\
+                                          <div> Added a comment on - \
+                                          <time>' + new Date(listData.time) + '</time>\
+                                          <a href="#commentTab" onclick="deleteComment(' + id + ',' + commentID + ')">\
+                                          <span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>\
+                                          </a>\
+                                          </div>\
+                                          <div>' + listData.message + '</div>\
+                                          </li>';
+                list.insertAdjacentHTML('beforeEnd',commentViewList);
+            },
+            error: function (xhr, status, error) {
+                document.getElementById("commonErrorSection").hidden = false;
+                document.getElementById("errorMsg").innerHTML = "Adding comment failed: " + xhr.responseText;
+                $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            }
+        });
+    }
+    $('#addCommentModal').modal('hide');
+}
+
+/**
+ * function to make ajax call to delete comment
+ * @param id task id
+ * @param commentId comment id
+ */
+function deleteComment(id, commentId) {
+    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id +"/comments/" +commentId;
+    $.ajax({
+        type: 'DELETE',
+        url: httpUrl + url,
+	    statusCode: {
+            204: function () {
+                var commentElementId = "comment_" + commentId;
+                var element = document.getElementById(commentElementId);
+                if (element != null) {
+                    element.parentNode.removeChild(element);
+			    } else {
+                    document.getElementById("commonErrorSection").hidden = false;
+                    document.getElementById("errorMsg").innerHTML = "ERROR : element " + commentElementId + " not found. Please refresh the page";
+                    $(document.body).scrollTop($('#commonErrorSection').offset().top);
+			    }
+		    },
+
+            404: function () {
+                document.getElementById("commonErrorSection").hidden = false;
+                document.getElementById("errorMsg").innerHTML = "ERROR : Deleting comment failed.Please refresh the page";
+                $(document.body).scrollTop($('#commonErrorSection').offset().top);
+            }
+        }
+    });
+}
+
 
 

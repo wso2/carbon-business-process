@@ -68,6 +68,19 @@ if (request.isSecure()) {//check whether the request is secure or not
                 log.debug("BPMN Rest GET results: " + stringify(result));
             }
         }
+        if (run == "DELETE") {
+            req = request.getParameter("req");
+            url = httpUrl + req;
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", url);
+            xhr.setRequestHeader("Authorization","Basic " + auth);
+            xhr.send();
+            result = {"data": null,"xhr": xhr}
+            if (log.isDebugEnabled()){
+                log.debug("BPMN Rest DELETE URL: " + url);
+                log.debug("BPMN Rest DELETE results: " + stringify(result));
+            }
+        }
 
         response.status = result.xhr.status;
 
