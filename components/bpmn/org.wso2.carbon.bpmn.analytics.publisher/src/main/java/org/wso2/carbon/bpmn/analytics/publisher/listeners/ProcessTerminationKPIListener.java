@@ -18,20 +18,29 @@ package org.wso2.carbon.bpmn.analytics.publisher.listeners;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 
 import java.util.List;
 
 public class ProcessTerminationKPIListener implements ExecutionListener {
+    private static final Log log = LogFactory.getLog(ProcessTerminationKPIListener.class);
 
     @Override
-    public void notify(DelegateExecution delegateExecution) throws Exception {
-
-        List<ProcessInstance> runtimeProcessInstances = delegateExecution.getEngineServices().getRuntimeService()
-                .createProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
-        if (runtimeProcessInstances.size() == 1) {
-            ProcessInstance runtimeProcessInstance = runtimeProcessInstances.get(0);
-            BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishKPIvariableData(runtimeProcessInstance);
+    public void notify(DelegateExecution delegateExecution) {
+        try {
+            List<ProcessInstance> runtimeProcessInstances = delegateExecution.getEngineServices().getRuntimeService()
+                    .createProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();
+            if (runtimeProcessInstances.size() == 1) {
+                ProcessInstance runtimeProcessInstance = runtimeProcessInstances.get(0);
+                BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishKPIvariableData(runtimeProcessInstance);
+            }
+        } catch (Exception e) {
+            String errMsg = "Process Variable Data Publishing failed.";
+            log.error(errMsg, e);
+            // Caught exception is not thrown as we do not need to stop the process termination, due to an error in
+            // process data publishing (for analytics)
         }
     }
 }
