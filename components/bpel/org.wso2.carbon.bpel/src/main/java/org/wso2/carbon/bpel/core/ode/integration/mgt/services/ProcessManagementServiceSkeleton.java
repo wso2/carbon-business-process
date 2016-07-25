@@ -405,7 +405,7 @@ public class ProcessManagementServiceSkeleton extends AbstractAdmin
                         }
                     }
 
-                    return null;
+                    return true;
                 }
             });
 

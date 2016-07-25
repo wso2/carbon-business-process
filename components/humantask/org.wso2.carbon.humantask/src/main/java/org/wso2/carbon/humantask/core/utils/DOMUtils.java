@@ -74,6 +74,7 @@ public final class DOMUtils {
                 try {
                     builder = documentBuilderFactory.newDocumentBuilder();
                     builder.setErrorHandler(new SAXLoggingErrorHandler());
+
                 } catch (ParserConfigurationException e) {
                     log.error(e.getMessage(), e);
                     throw new RuntimeException(e);

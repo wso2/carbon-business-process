@@ -26,9 +26,7 @@ public final class HumanTaskUIConstants {
     /**
      * Client constants.
      */
-    public final class CLIENTS {
-        private  CLIENTS() {
-        }
+    public static final class CLIENTS {
 
         public static final String CARBON = "carbon";
 
@@ -39,9 +37,7 @@ public final class HumanTaskUIConstants {
     /**
      * JSP pages to be referred throughout the ui module.
      */
-    public final class PAGES {
-        private PAGES() {
-        }
+    public static final class PAGES {
 
         public static final String PACKAGE_LIST_PAGE = "/humantask/humantask_definition_list.jsp";
 
@@ -56,10 +52,7 @@ public final class HumanTaskUIConstants {
     /**
      * Service names to be referred throughout the ui module.
      */
-    public final class SERVICE_NAMES {
-
-        private SERVICE_NAMES() {
-        }
+    public static final class SERVICE_NAMES {
 
         public static final String TASK_OPERATIONS_SERVICE = "HumanTaskClientAPIAdmin";
 
@@ -75,9 +68,7 @@ public final class HumanTaskUIConstants {
     /**
      * File names to be referred throughout the ui module.
      */
-    public final class FILE_NAMES {
-        private FILE_NAMES() {
-        }
+    public static final class FILE_NAMES {
 
         public static final String HT_CONFIG_NAME = "htconfig.xml";
 

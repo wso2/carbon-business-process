@@ -1034,7 +1034,7 @@ public final class BPELServerImpl implements BPELServer, Observer {
     /**
      * MemberShipListener class is added to fix BPS-675
      */
-    class MemberShipListener implements MembershipListener {
+    static class MemberShipListener implements MembershipListener {
 
         @Override
         public void memberAdded(MembershipEvent membershipEvent) {

@@ -74,14 +74,14 @@ public class Utils {
 
         DocumentBuilderFactory docBuilderFactory = getSecuredDocumentBuilder();
         DocumentBuilder builder = docBuilderFactory.newDocumentBuilder();
-
-        InputStream inputStream = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
-        Document doc = builder.parse(inputStream);
-        if (doc != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Parsing to XMLDocument Success. Src string: " + str);
+        try(InputStream inputStream = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8))) {
+            Document doc = builder.parse(inputStream);
+            if (doc != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Parsing to XMLDocument Success. Src string: " + str);
+                }
+                return new XMLDocument(doc);
             }
-            return new XMLDocument(doc);
         }
         return null;
     }
@@ -142,6 +142,8 @@ public class Utils {
 
     public static Object evaluateXPath(Document doc, String xpathStr, QName returnType) throws XPathExpressionException {
         XPath xPath = XPathFactory.newInstance().newXPath();
+        // Possible xpath injection attack. However this code is reached only when executing a bpmn process
+        // BPMN process implementor should know the security risk and should evaluate only valid measures
         return xPath.evaluate(xpathStr, doc, returnType);
     }
 

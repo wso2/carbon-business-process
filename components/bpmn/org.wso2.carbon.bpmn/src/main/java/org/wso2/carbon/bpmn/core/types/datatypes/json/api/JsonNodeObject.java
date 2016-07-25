@@ -140,7 +140,7 @@ public class JsonNodeObject {
         if (jsonNode != null) {
             return jsonNode.toString();
         }
-        return null;
+        return "";
     }
 
     public boolean equals(Object obj) {

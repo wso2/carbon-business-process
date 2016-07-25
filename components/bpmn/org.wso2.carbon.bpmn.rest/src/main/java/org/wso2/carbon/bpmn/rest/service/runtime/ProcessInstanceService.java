@@ -954,11 +954,14 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
             } else {
                 // Try deserializing the object
-                InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
-                ObjectInputStream stream = new ObjectInputStream(inputStream);
-                Object value = stream.readObject();
-                setVariable(execution, variableName, value, scope, isNew);
-                stream.close();
+                try(
+                        InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
+                        ObjectInputStream stream = new ObjectInputStream(inputStream);
+                ) {
+                    Object value = stream.readObject();
+                    setVariable(execution, variableName, value, scope, isNew);
+                }
+
             }
 
             RestResponseFactory restResponseFactory = new RestResponseFactory();

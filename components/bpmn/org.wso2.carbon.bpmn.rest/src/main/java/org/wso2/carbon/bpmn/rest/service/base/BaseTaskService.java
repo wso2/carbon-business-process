@@ -713,17 +713,20 @@ public class BaseTaskService {
                 scope = RestVariable.getScopeFromString(variableScope);
             }
 
-            if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
+            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType)) {
                 // Use raw bytes as variable value
                 setVariable(task, variableName, attachmentArray, scope, isNew);
 
             } else {
                 // Try deserializing the object
-                InputStream inputStream = new ByteArrayInputStream(attachmentArray);
-                ObjectInputStream stream = new ObjectInputStream(inputStream);
-                Object value = stream.readObject();
-                setVariable(task, variableName, value, scope, isNew);
-                stream.close();
+                try (
+                        InputStream inputStream = new ByteArrayInputStream(attachmentArray);
+                        ObjectInputStream stream = new ObjectInputStream(inputStream);
+                ) {
+                    Object value = stream.readObject();
+                    setVariable(task, variableName, value, scope, isNew);
+                }
+
             }
 
             return new RestResponseFactory().createBinaryRestVariable(variableName, scope, variableType, task.getId(),

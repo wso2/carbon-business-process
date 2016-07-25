@@ -27,7 +27,6 @@ import java.util.Properties;
  * JMX BPEL Event Listener.
  */
 public class JmxBpelEventListener implements BpelEventListener {
-    private long sequenceNumber = 0;
 
     @Override
     public void onEvent(BpelEvent bpelEvent) {

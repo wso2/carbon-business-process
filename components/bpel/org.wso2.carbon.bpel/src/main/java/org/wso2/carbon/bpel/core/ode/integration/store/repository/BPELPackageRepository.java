@@ -103,7 +103,13 @@ public class BPELPackageRepository {
             throws FileNotFoundException, RegistryException {
 
         Resource latestBPELArchive = configRegistry.newResource();
-        latestBPELArchive.setContent(new FileInputStream(bpelDeploymentContext.getBpelArchive()));
+
+        try(FileInputStream stream = new FileInputStream(bpelDeploymentContext.getBpelArchive())) {
+            latestBPELArchive.setContent(stream);
+        } catch (IOException exception) {
+            log.error("Error reading bpel archive " +
+                        bpelDeploymentContext.getBpelArchive().getName() , exception);
+        }
         configRegistry.put(BPELPackageRepositoryUtils.
                         getBPELPackageArchiveResourcePath(bpelDeploymentContext.getBpelPackageName()),
                 latestBPELArchive);

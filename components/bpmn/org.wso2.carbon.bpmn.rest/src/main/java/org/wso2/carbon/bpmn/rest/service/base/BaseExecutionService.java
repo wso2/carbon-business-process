@@ -473,17 +473,19 @@ public class BaseExecutionService {
                 scope = RestVariable.getScopeFromString(variableScope);
             }
 
-            if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
+            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType)) {
                 // Use raw bytes as variable value
                 setVariable(execution, variableName, attachmentDataHolder.getAttachmentArray(), scope, isNew);
 
             } else {
                 // Try deserializing the object
-                InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
-                ObjectInputStream stream = new ObjectInputStream(inputStream);
-                Object value = stream.readObject();
-                setVariable(execution, variableName, value, scope, isNew);
-                stream.close();
+                try(
+                        InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
+                        ObjectInputStream stream = new ObjectInputStream(inputStream);
+                ) {
+                    Object value = stream.readObject();
+                    setVariable(execution, variableName, value, scope, isNew);
+                }
             }
 
             if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {
