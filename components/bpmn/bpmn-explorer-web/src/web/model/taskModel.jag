@@ -47,6 +47,7 @@ try {
     if (pagination > 0) {
         start = (pagination - 1) * 10;
     }
+    var tabPage = request.getParameter("tab");
 
     var attachments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments", null, headers, "json").data;
 
@@ -143,6 +144,35 @@ try {
         throw "Error " + formData.statusCode + " : " + formData.errorMessage;
     }
     var formContent = formGenTool.generateForm(formData.formProperties, false);
+
+    //get data for comments for tasks
+    var comments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/comments", null, headers, "json").data;
+        var commentList = [];
+        if (comments) {
+            for (var i = (comments.commentResponseList.length - 1); i >= 0 ; i--) {
+                var commentId = comments.commentResponseList[i].id;
+                var commentAuthor = comments.commentResponseList[i].author;
+                var commentTime = JSON.parse(comments.commentResponseList[i].time);
+                var commentText = comments.commentResponseList[i].message;
+
+                commentList.push({
+                    id: commentId,
+                    author: commentAuthor,
+                    time: commentTime,
+                    message: commentText
+                });
+
+            }
+
+            if(commentList.length > 10) {
+    		var hiddenCmtCount = commentList.length - 10;
+    	}
+
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("No comments found for task" + id);
+            }
+        }
 
 } catch (err) {
     if (log.isDebugEnabled()) {
