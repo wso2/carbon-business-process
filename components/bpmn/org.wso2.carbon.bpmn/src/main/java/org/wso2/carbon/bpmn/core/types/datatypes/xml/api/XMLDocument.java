@@ -254,7 +254,7 @@ public class XMLDocument implements Document {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    public static Element createNewElement(String elementStr) throws IOException, SAXException, ParserConfigurationException {
+    public Element createNewElement(String elementStr) throws IOException, SAXException, ParserConfigurationException {
         XMLDocument document = Utils.parse(elementStr);
         if (document != null) {
             return document.getDocumentElement();

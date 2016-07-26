@@ -118,6 +118,7 @@ function genTextBoxWithValues(data,disabled) {
     content += "</td><td style='padding-top:10px'>";
     if (disabled == true || data.writable == false) {
         content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"text\" class=\"form-control\" disabled=\"true\"/>";
+        content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"hidden\" class=\"form-control\" />";
     } else {
         if(data.required == true) {
             content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"text\" class=\"form-control\" required/>";
@@ -155,6 +156,7 @@ function genNumberBoxWithValues(data, disabled) {
     content += "</td><td style='padding-top:10px'>";
     if (disabled == true || data.writable == false) {
         content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"number\"  class=\"form-control\" disabled=\"true\"/>";
+        content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"hidden\" class=\"form-control\" />";
     } else {
         if(data.required == true) {
             content += "<input name=\"" + data.id + "\" value=\"" + data.value + "\" type=\"number\"  class=\"form-control\" required/>";
