@@ -29,54 +29,54 @@ import java.util.Map;
 public interface SubstitutesMapper {
 
     final String INSERT_SUBSTITUTE = "INSERT INTO " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  (USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, CREATED, UPDATED, TENANT_ID, TASK_LIST) VALUES (#{user}, #{substitute}, #{substitutionStart}, #{substitutionEnd}, #{enabled}, #{transitiveSub}, #{created}, #{updated}, #{tenantId}, #{taskList})";
+            "  (USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, CREATED, UPDATED, TENANT_ID, TASK_LIST) VALUES (#{user}, #{substitute}, #{substitutionStart}, #{substitutionEnd}, #{enabled}, #{transitiveSub, jdbcType=VARCHAR}, #{created}, #{updated, jdbcType=TIMESTAMP}, #{tenantId}, #{taskList, jdbcType=VARCHAR})";
     final String SELECT_ALL_BY_USER = "SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            " WHERE USER = #{user} AND TENANT_ID = #{tenantId}";
+            " WHERE USERNAME = #{user} AND TENANT_ID = #{tenantId}";
     final String UPDATE_ENABLED = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  SET ENABLED = #{enabled} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+            "  SET ENABLED = #{enabled} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String UPDATE_INFO = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
-            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated}, TASK_LIST = #{taskList} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, TRANSITIVE_SUBSTITUTE = #{transitiveSub, jdbcType=VARCHAR}, UPDATED = #{updated, jdbcType=TIMESTAMP}, TASK_LIST = #{taskList, jdbcType=VARCHAR} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String COUNT_USER_AS_SUBSTITUTE = "SELECT COUNT(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
             + " WHERE SUBSTITUTE = #{substitute} AND TENANT_ID = #{tenantId}";
-    final String SELECT_ALL_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
+    final String SELECT_ALL_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
             + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
-    final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
-            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = TRUE  AND now() > SUBSTITUTION_START AND now() < SUBSTITUTION_END";
+    final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST, TENANT_ID from "
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = 1  AND #{currentTime} > SUBSTITUTION_START AND #{currentTime} < SUBSTITUTION_END";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+            "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
-            + " WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+            + " WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String UPDATE_SUBSTITUTE_USER = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  SET SUBSTITUTE = #{substitute}, UPDATED = #{updated} WHERE USER = #{user} AND TENANT_ID=#{tenantId}";
+            "  SET SUBSTITUTE = #{substitute}, UPDATED = #{updated} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String QUERY_SUBSTITUTES = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             " WHERE " +
-            " <if test=\"user != null\"> USER = #{user} AND </if> " +
+            " <if test=\"user != null\"> USERNAME = #{user} AND </if> " +
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
             " <if test=\"enabled != null\"> ENABLED = #{enabled} AND </if> " +
             " TENANT_ID = #{tenantId}" +
             " ORDER BY ${sort} ${order} </script>";
     final String QUERY_SUBSTITUTES_COUNT = "<script> SELECT count(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             " WHERE " +
-            " <if test=\"user != null\"> USER = #{user} AND </if> " +
+            " <if test=\"user != null\"> USERNAME = #{user} AND </if> " +
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
             " <if test=\"enabled != null\"> ENABLED = #{enabled} AND </if> " +
             " TENANT_ID = #{tenantId}" +
             " </script>";
     final String QUERY_SUBSTITUTES_NO_ENABLED = "<script> SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             " WHERE " +
-            " <if test=\"user != null\"> USER = #{user} AND </if> " +
+            " <if test=\"user != null\"> USERNAME = #{user} AND </if> " +
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
             " TENANT_ID = #{tenantId}" +
             " ORDER BY ${sort} ${order} </script>";
     final String QUERY_SUBSTITUTES_NO_ENABLED_COUNT = "<script> SELECT count(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             " WHERE " +
-            " <if test=\"user != null\"> USER = #{user} AND </if> " +
+            " <if test=\"user != null\"> USERNAME = #{user} AND </if> " +
             " <if test=\"substitute != null\"> SUBSTITUTE = #{substitute} AND </if> " +
             " TENANT_ID = #{tenantId}" +
             " </script>";
     final String SELECT_DISTINCT_TENANT_LIST = "SELECT DISTINCT TENANT_ID FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE;
-    final String SELECT_ENABLED_EXPIRED_SUBSTITUTES = "SELECT USER, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
-            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = TRUE  AND now() > SUBSTITUTION_END";
+    final String SELECT_ENABLED_EXPIRED_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = 1  AND #{currentTime} > SUBSTITUTION_END";
 
     /**
      * Insert new row in ACT_BPS_SUBSTITUTES table
@@ -93,7 +93,7 @@ public interface SubstitutesMapper {
      */
     @Select(SELECT_ALL_BY_USER)
     @Results(value = {
-            @Result(property = "user", column = "USER"),
+            @Result(property = "user", column = "USERNAME"),
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
@@ -131,7 +131,7 @@ public interface SubstitutesMapper {
     @Select(SELECT_ALL_SUBSTITUTES)
     @MapKey("user")
     @Results(value = {
-            @Result(property = "user", column = "USER"),
+            @Result(property = "user", column = "USERNAME"),
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
@@ -148,15 +148,16 @@ public interface SubstitutesMapper {
     @Select(SELECT_ACTIVE_SUBSTITUTES)
     @MapKey("user")
     @Results(value = {
-            @Result(property = "user", column = "USER"),
+            @Result(property = "user", column = "USERNAME"),
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
             @Result(property = "enabled", column = "ENABLED"),
             @Result(property = "enabled", column = "ENABLED"),
-            @Result(property = "taskList", column = "TASK_LIST")
+            @Result(property = "taskList", column = "TASK_LIST"),
+            @Result(property = "tenantId", column = "TENANT_ID")
     })
-    Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId);
+    Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId, @Param("currentTime") Date currentTime);
 
     /**
      * Update Transitive substitute for the given user and tenant
@@ -196,7 +197,7 @@ public interface SubstitutesMapper {
      */
     @Select(QUERY_SUBSTITUTES)
     @Results(value = {
-            @Result(property = "user", column = "USER"),
+            @Result(property = "user", column = "USERNAME"),
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
@@ -212,7 +213,7 @@ public interface SubstitutesMapper {
      */
     @Select(QUERY_SUBSTITUTES_NO_ENABLED)
     @Results(value = {
-            @Result(property = "user", column = "USER"),
+            @Result(property = "user", column = "USERNAME"),
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
@@ -246,13 +247,13 @@ public interface SubstitutesMapper {
     @Select(SELECT_ENABLED_EXPIRED_SUBSTITUTES)
     @MapKey("user")
     @Results(value = {
-            @Result(property = "user", column = "USER"),
+            @Result(property = "user", column = "USERNAME"),
             @Result(property = "substitute", column = "SUBSTITUTE"),
             @Result(property = "substitutionStart", column = "SUBSTITUTION_START"),
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
             @Result(property = "enabled", column = "ENABLED")
     })
-    Map<String, SubstitutesDataModel> selectEnabledExpiredRecords(@Param("tenantId") int tenantId);
+    Map<String, SubstitutesDataModel> selectEnabledExpiredRecords(@Param("tenantId") int tenantId, @Param("currentTime") Date currentTime);
 
     /**
      * Return the count of substitute info based on query parameters.

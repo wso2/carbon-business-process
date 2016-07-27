@@ -254,12 +254,12 @@ public class ActivitiDAO {
      * @param tenantId
      * @return Map with User as key and SubstitutesDataModel as value
      */
-    public Map<String, SubstitutesDataModel> selectActiveSubstitutesByTenant(final int tenantId){
+    public Map<String, SubstitutesDataModel> selectActiveSubstitutesByTenant(final int tenantId, final Date currentTime){
 
         CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
                 new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
                     public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
-                        return substitutesMapper.selectActiveSubstitutesInfo(tenantId);
+                        return substitutesMapper.selectActiveSubstitutesInfo(tenantId, currentTime);
                     }
                 };
 
@@ -389,11 +389,11 @@ public class ActivitiDAO {
      * @param tenantId
      * @return Map<User, SubstitutesDataModel>
      */
-    public Map<String, SubstitutesDataModel> getEnabledExpiredRecords(final int tenantId) {
+    public Map<String, SubstitutesDataModel> getEnabledExpiredRecords(final int tenantId, final Date currentTime) {
         CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
                 new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
                     public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
-                        return substitutesMapper.selectEnabledExpiredRecords(tenantId);
+                        return substitutesMapper.selectEnabledExpiredRecords(tenantId, currentTime);
                     }
                 };
 

@@ -1,5 +1,5 @@
 create table ACT_BPS_SUBSTITUTES (
-  USER varchar(255) not null,
+  USERNAME varchar(255) not null,
   SUBSTITUTE varchar(255) not null,
   TASK_LIST varchar(1000),
   UPDATED timestamp on UPDATE CURRENT_TIMESTAMP,
@@ -9,7 +9,7 @@ create table ACT_BPS_SUBSTITUTES (
   CREATED timestamp,
   TRANSITIVE_SUBSTITUTE varchar(255) null,
   TENANT_ID int NOT NULL,
-  primary key (USER, TENANT_ID)
+  primary key (USERNAME, TENANT_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_GE_PROPERTY (

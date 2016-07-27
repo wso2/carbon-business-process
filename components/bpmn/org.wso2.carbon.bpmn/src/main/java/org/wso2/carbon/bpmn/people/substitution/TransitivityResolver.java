@@ -22,6 +22,7 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.mgt.dao.ActivitiDAO;
 import org.wso2.carbon.bpmn.core.mgt.model.SubstitutesDataModel;
 
+import java.util.Date;
 import java.util.Map;
 
 public class TransitivityResolver {
@@ -44,7 +45,7 @@ public class TransitivityResolver {
      */
     protected synchronized boolean resolveTransitiveSubs(boolean isScheduler, int tenantId) {
         if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
-            subsMap = dao.selectActiveSubstitutesByTenant(tenantId);//get only enabled
+            subsMap = dao.selectActiveSubstitutesByTenant(tenantId, new Date(System.currentTimeMillis()));//get only enabled
             for (Map.Entry<String, SubstitutesDataModel> entry : subsMap.entrySet()) {
                 String transitiveSub = entry.getValue().getTransitiveSub();
                 if (transitiveSub == null) {
@@ -132,7 +133,7 @@ public class TransitivityResolver {
 
     protected boolean resolveSubstituteForSingleUser(SubstitutesDataModel dataModel, int tenantId) {
         if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
-            subsMap = dao.selectActiveSubstitutesByTenant(tenantId);
+            subsMap = dao.selectActiveSubstitutesByTenant(tenantId, new Date(System.currentTimeMillis()));
             SubstitutesDataModel subDataModel = dao.selectSubstituteInfo(dataModel.getSubstitute(), tenantId);
             if (subDataModel != null) {
                 String newSub = calculateTransitiveSubstitute(dataModel, dataModel.getUser(),
