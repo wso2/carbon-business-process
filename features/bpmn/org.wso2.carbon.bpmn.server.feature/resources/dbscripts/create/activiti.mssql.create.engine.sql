@@ -1,5 +1,5 @@
 create table ACT_BPS_SUBSTITUTES (
-  USER nvarchar(255) not null,
+  USERNAME nvarchar(255) not null,
   SUBSTITUTE nvarchar(255) not null,
   TASK_LIST nvarchar(1000),
   SUBSTITUTION_START datetime not null,
@@ -9,7 +9,7 @@ create table ACT_BPS_SUBSTITUTES (
   UPDATED datetime,
   TRANSITIVE_SUBSTITUTE nvarchar(255),
   TENANT_ID int NOT NULL,
-  primary key (USER, TENANT_ID)
+  primary key (USERNAME, TENANT_ID)
 );
 
 create table ACT_GE_PROPERTY (

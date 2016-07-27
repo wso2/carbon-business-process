@@ -503,13 +503,14 @@ public class UserSubstitutionUtils {
     }
 
     public synchronized static boolean handleScheduledEventByTenant(int tenantId) {
+
         boolean result = true;
         TransitivityResolver resolver = SubstitutionDataHolder.getInstance().getTransitivityResolver();
         ActivitiDAO activitiDAO = SubstitutionDataHolder.getInstance().getActivitiDAO();
         if (SubstitutionDataHolder.getInstance().isTransitivityEnabled()) {
             result = resolver.resolveTransitiveSubs(true, tenantId); //update transitives, only the map is updated here
         } else {
-            resolver.subsMap = activitiDAO.selectActiveSubstitutesByTenant(tenantId);
+            resolver.subsMap = activitiDAO.selectActiveSubstitutesByTenant(tenantId, new Date(System.currentTimeMillis()));
         }
 
         //bulk reassign
@@ -546,6 +547,7 @@ public class UserSubstitutionUtils {
                         }
                     }
                     model.setTaskList(BPMNConstants.BULK_REASSIGN_PROCESSED);
+                    activitiDAO.updateSubstituteInfo(model);
                 }
 
             } finally {
@@ -569,7 +571,7 @@ public class UserSubstitutionUtils {
      */
     public static void disableExpiredRecords(int tenantId) {
         ActivitiDAO activitiDAO = SubstitutionDataHolder.getInstance().getActivitiDAO();
-        Map<String, SubstitutesDataModel> map = activitiDAO.getEnabledExpiredRecords(tenantId);
+        Map<String, SubstitutesDataModel> map = activitiDAO.getEnabledExpiredRecords(tenantId, new Date(System.currentTimeMillis()));
         for (Map.Entry<String, SubstitutesDataModel> entry : map.entrySet()) {
             activitiDAO.enableSubstitution(false, entry.getKey(), tenantId);
         }
