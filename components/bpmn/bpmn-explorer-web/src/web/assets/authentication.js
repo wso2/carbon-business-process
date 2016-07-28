@@ -31,7 +31,7 @@ function getRoles(username, password, bpsUrl){
 	return roles;
 }
 
-function isUserAuthorized(username, permission, action, bpsUrl){
+function isUserAuthorized(username, permission, bpsUrl){
    var 	carbon = require('carbon'),
 	process = require('process'),
 	srv = new carbon.server.Server({url: bpsUrl}),
@@ -39,6 +39,11 @@ function isUserAuthorized(username, permission, action, bpsUrl){
 	userManager = new carbon.user.UserManager(srv, tenantId),
 	user = new carbon.user.User(userManager, username);
 
-	return user.isAuthorized(permission, action);
+	//get all permissions that 
+	var permissionList = userManager.getAllowedUIResources(username, permission);
+	if (permissionList != null && permissionList.length > 0) {
+		return true;
+	}
+	return false;
 
 }
