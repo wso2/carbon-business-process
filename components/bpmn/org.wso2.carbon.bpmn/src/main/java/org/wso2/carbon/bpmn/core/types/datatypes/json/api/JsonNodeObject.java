@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * This is wrapper class for com.fasterxml.jackson.databind.JsonNode
- * this is to introduce WSO2 BPS specific functions : evalJsonPath()
+ * this is to introduce WSO2 BPS specific functions : jsonPath()
  */
 public class JsonNodeObject {
 

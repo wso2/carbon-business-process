@@ -68,6 +68,12 @@ try {
         //calculate pagination info
         paginatePageCount = Math.ceil(httpResponse.data.total / 10);
         currentPage = parseInt(pagination);
+
+    } else if (httpResponse.data != null && httpResponse.data.errorMessage != undefined) {
+        throw "Error " + httpResponse.data.statusCode + " : " + httpResponse.data.errorMessage;
+    } else {
+        //Unknown error : not reported by rest API
+        throw "Error " + httpResponse.xhr.status + " : " + httpResponse.xhr.statusText;
     }
 
 } catch (err) {

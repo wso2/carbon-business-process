@@ -183,9 +183,7 @@ var errorDisplayBackButtonsEnable = 'hidden'; //This variable is used to display
 var commonErrorMessage = null; //Common error message if exists
 
 //Common Constants
-var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/addSubstituteInfo";
-var ADD_PERMISSION = "add";
-
+var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/substitute";
 
 //START COMMON FUNCTIONS
 
