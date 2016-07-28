@@ -105,6 +105,7 @@ public class BPMNDataPublisher {
         Object[] payload = new Object[]{
                 delegateTask.getTaskDefinitionKey(),
                 delegateTask.getId(),
+                delegateTask.getProcessDefinitionId(),
                 delegateTask.getProcessInstanceId(),
                 delegateTask.getCreateTime().toString(),
                 delegateTask.getCreateTime().toString(),
@@ -142,6 +143,8 @@ public class BPMNDataPublisher {
                         instance.getActivityId(),
                         //task instance Id
                         instance.getId(),
+                        //process definition id
+                        instance.getProcessDefinitionId(),
                         //process instance Id
                         instance.getProcessInstanceId(),
                         //task created time
@@ -400,13 +403,14 @@ public class BPMNDataPublisher {
         Object[] payload = new Object[0];
         try {
             JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
-            JsonArray configedProcessVariables = kpiConfig.getAsJsonArray(AnalyticsPublisherConstants
-                        .PROCESS_VARIABLES_JSON_ENTRY_NAME);
-
-            //do not publish the KPI event if DAS configurations are not done by the PC
+            // do not publish the KPI event if DAS configurations are not done by the PC
             if (kpiConfig == null) {
                 return;
             }
+
+            JsonArray configedProcessVariables = kpiConfig.getAsJsonArray(AnalyticsPublisherConstants
+                        .PROCESS_VARIABLES_JSON_ENTRY_NAME);
+
             if (log.isDebugEnabled()) {
                 log.debug(
                         "Publishing Process Variables (KPI) for the process instance " + processInstanceId + " of the "
