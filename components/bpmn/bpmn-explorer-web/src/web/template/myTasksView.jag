@@ -32,7 +32,7 @@
 	  <li><a href="stats">Home</a></li>
 	  <li class="active">Inbox</li>
 	</ol-->
-      	<div class=" margin-left-double table-title"><%=i18n.localize("my.tasks.title","My Tasks")%></div>
+      	<div class="margin-left table-title"><%=i18n.localize("my.tasks.title","My Tasks")%></div>
     	<div class="table-body margin-left-double">
 
 	  	<!-- Table -->
