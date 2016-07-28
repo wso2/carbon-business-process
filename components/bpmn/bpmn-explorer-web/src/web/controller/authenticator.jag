@@ -56,7 +56,7 @@ if (request.isSecure()) {//check whether the request is secure or not
         } else {
             var roles = authentication.getRoles(username,password,httpServiceUrl);
             //get user substitution permission
-            var subAddPermission = authentication.isUserAuthorized(username, SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION, httpServiceUrl);
+            var subAddPermission = authentication.isUserAuthorized(username, SUBSTITUTION_PERMISSION_PATH, httpServiceUrl);
 
             var encoder = require("/assets/encoder.js");
             var auth = encoder.encode(username+':'+password);
