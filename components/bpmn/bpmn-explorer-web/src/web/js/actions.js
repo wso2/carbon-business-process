@@ -86,14 +86,16 @@ $(document).ready(function () {
 
     $("#collapseList").on("hide.bs.collapse", function(){
         var hiddencnt = document.getElementById("hiddenCmtCount").value;
-        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-down"></span><h3>Number of hidden Comments : ' +hiddencnt +'</h3>');
+        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-down"></span><span> ' + hiddencnt + 
+                                    ' Hidden Comments </span><span class="text-danger" style="font-size: 10px;"> (Click to view) </span>');
     });
 
     $("#collapseList").on("show.bs.collapse", function(){
-        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-up"></span><h3>No hidden Comments</h3>');
+        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-up"></span> <span> No hidden Comments </span>' + 
+                                    '<span class="text-danger" style="font-size: 10px;"> (Click to collapse) </span>');
     });
 
-    var pagination = document.getElementById("pagCount").value;
+    /*var pagination = document.getElementById("pagCount").value;
     var tab = document.getElementById("tabOutput").value;
     if (pagination >= 0 && tab == "attachmentTab") {
         event= window.event;
@@ -106,7 +108,7 @@ $(document).ready(function () {
     else {
         event= window.event;
         display(event, "attachmentTab");
-    }
+    }*/
 });
 
 function display(evt, tabId) {

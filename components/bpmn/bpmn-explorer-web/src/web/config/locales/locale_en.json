@@ -37,6 +37,7 @@
    "status":"Status",
    "attachments":"Attachments",
    "comments":"Comments",
+   "hidden.comments":"Hidden Comments",
    "new.comment":"Add New Comment",
    "comment.here":"Add comment here",
    "comment.added": "Added a comment on",
