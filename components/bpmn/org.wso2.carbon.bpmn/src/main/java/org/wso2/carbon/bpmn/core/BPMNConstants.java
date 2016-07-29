@@ -58,7 +58,7 @@ public class BPMNConstants {
     public static final String TRANSITIVE_SUB_NOT_APPLICABLE ="_N/A";
     public static final String TRANSITIVE_SUB_UNDEFINED = "_UNDEFINED";
     public static final String BULK_REASSIGN_PROCESSED = "_PROCESSED";
-    public static final String SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/addSubstituteInfo";
+    public static final String SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/substitute";
     public static final String SUBSTITUTION_CONFIG = "userSubstitutionConfiguration";
     public static final String SUBSTITUTION_TRANSITIVITY_PROPERTY = "enableTransitivity";
     public static final String SUBSTITUTION_SCHEDULER_INTERVAL = "activationInterval";

@@ -29,13 +29,19 @@ import java.util.Map;
 public interface SubstitutesMapper {
 
     final String INSERT_SUBSTITUTE = "INSERT INTO " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
-            "  (USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, CREATED, UPDATED, TENANT_ID, TASK_LIST) VALUES (#{user}, #{substitute}, #{substitutionStart}, #{substitutionEnd}, #{enabled}, #{transitiveSub, jdbcType=VARCHAR}, #{created}, #{updated, jdbcType=TIMESTAMP}, #{tenantId}, #{taskList, jdbcType=VARCHAR})";
+            "  (USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TRANSITIVE_SUBSTITUTE, "
+            + "CREATED, UPDATED, TENANT_ID, TASK_LIST) VALUES (#{user}, #{substitute}, #{substitutionStart}, "
+            + "#{substitutionEnd}, #{enabled}, #{transitiveSub, jdbcType=VARCHAR}, #{created}, "
+            + "#{updated, jdbcType=TIMESTAMP}, #{tenantId}, #{taskList, jdbcType=VARCHAR})";
     final String SELECT_ALL_BY_USER = "SELECT * FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             " WHERE USERNAME = #{user} AND TENANT_ID = #{tenantId}";
     final String UPDATE_ENABLED = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET ENABLED = #{enabled} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String UPDATE_INFO = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
-            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, TRANSITIVE_SUBSTITUTE = #{transitiveSub, jdbcType=VARCHAR}, UPDATED = #{updated, jdbcType=TIMESTAMP}, TASK_LIST = #{taskList, jdbcType=VARCHAR} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
+            + " SET SUBSTITUTE = #{substitute}, SUBSTITUTION_START = #{substitutionStart}, "
+            + "SUBSTITUTION_END = #{substitutionEnd}, ENABLED = #{enabled}, "
+            + "TRANSITIVE_SUBSTITUTE = #{transitiveSub, jdbcType=VARCHAR}, UPDATED = #{updated, jdbcType=TIMESTAMP}, "
+            + "TASK_LIST = #{taskList, jdbcType=VARCHAR} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String COUNT_USER_AS_SUBSTITUTE = "SELECT COUNT(*) FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
             + " WHERE SUBSTITUTE = #{substitute} AND TENANT_ID = #{tenantId}";
     final String SELECT_ALL_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "

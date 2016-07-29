@@ -225,7 +225,7 @@ public class UserSubstitutionService {
         user = getTenantAwareUser(user);
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-        if (!loggedInUser.equals(user) && !hasSubstitutionViewPermission()) {
+        if (!loggedInUser.equals(user) && !isUserAuthorizedForSubstitute(loggedInUser)) {
             throw new BPMNForbiddenException("Not allowed to view others substitution details. No sufficient permission");
         }
         SubstitutesDataModel model = UserSubstitutionUtils.getSubstituteOfUser(user, tenantId);
@@ -248,11 +248,15 @@ public class UserSubstitutionService {
      * @return true if the permission sufficient
      * @throws UserStoreException
      */
-    private boolean hasSubstitutionViewPermission() throws UserStoreException {
-        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+    private boolean isUserAuthorizedForSubstitute(String username) throws UserStoreException {
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
-        return userRealm.getAuthorizationManager()
-                .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
+        String[] permissionArray = userRealm.getAuthorizationManager()
+                .getAllowedUIResourcesForUser(username, BPMNConstants.SUBSTITUTION_PERMISSION_PATH);
+        if (permissionArray != null && permissionArray.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -286,7 +290,7 @@ public class UserSubstitutionService {
             queryMap.put(SubstitutionQueryProperties.USER, tenantAwareUser);
             String tenantAwareSub = getTenantAwareUser(queryMap.get(SubstitutionQueryProperties.SUBSTITUTE));
             queryMap.put(SubstitutionQueryProperties.SUBSTITUTE, tenantAwareSub);
-            if (!hasSubstitutionViewPermission()) {
+            if (!isUserAuthorizedForSubstitute(PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername())) {
                 String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
                 if (!((queryMap.get(SubstitutionQueryProperties.USER) != null && queryMap
                         .get(SubstitutionQueryProperties.USER).equals(loggedInUser)) || (
@@ -489,8 +493,7 @@ public class UserSubstitutionService {
 
         //validate the assignee
         if (assignee != null && !assignee.trim().isEmpty() && !assignee.equals(loggedInUser)) { //setting another users
-            boolean isAuthorized = userRealm.getAuthorizationManager()
-                    .isUserAuthorized(loggedInUser, BPMNConstants.SUBSTITUTION_PERMISSION_PATH, ADD_PERMISSION);
+            boolean isAuthorized = isUserAuthorizedForSubstitute(loggedInUser);
             if (!isAuthorized) {
                 throw new BPMNForbiddenException("Action requires BPMN substitution permission");
             }
