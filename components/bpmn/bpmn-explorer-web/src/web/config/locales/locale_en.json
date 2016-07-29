@@ -40,6 +40,8 @@
    "new.comment":"Add New Comment",
    "comment.here":"Add comment here",
    "comment.added": "Added a comment on",
+   "delete.confirm.message":"Do you need to delete the comment",
+   "ok":"OK",
    "cancel":"Cancel",
    "submit":"Submit",
    "start.time":"Start Time",

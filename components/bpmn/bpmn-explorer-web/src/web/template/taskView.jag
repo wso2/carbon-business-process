@@ -312,6 +312,20 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog model-center">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4><%=i18n.localize("delete.confirm.message","Do you need to delete the comment")%> ?<h4>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmCancel" type="button" class="btn btn-default"><%=i18n.localize("cancel", "Cancel")%></button>
+                    <button id="confirmOk" type="button" class="btn btn-default"><%=i18n.localize("ok", "OK")%></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 
 <%}%>

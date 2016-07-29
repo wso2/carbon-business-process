@@ -96,12 +96,15 @@ $(document).ready(function () {
     var pagination = document.getElementById("pagCount").value;
     var tab = document.getElementById("tabOutput").value;
     if (pagination >= 0 && tab == "attachmentTab") {
+        event= window.event;
         display(event, "attachmentTab");
     }
     else if(pagination >= 0 && tab == "commentTab"){
+        event= window.event;
         display(event, "commentTab");
     }
     else {
+        event= window.event;
         display(event, "attachmentTab");
     }
 });
@@ -1861,30 +1864,37 @@ function addComment(id) {
  * @param commentId comment id
  */
 function deleteComment(id, commentId) {
-    var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id +"/comments/" +commentId;
-    $.ajax({
-        type: 'DELETE',
-        url: httpUrl + url,
-	    statusCode: {
-            204: function () {
-                var commentElementId = "comment_" + commentId;
-                var element = document.getElementById(commentElementId);
-                if (element != null) {
-                    element.parentNode.removeChild(element);
-			    } else {
-                    document.getElementById("commonErrorSection").hidden = false;
-                    document.getElementById("errorMsg").innerHTML = "ERROR : element " + commentElementId + " not found. Please refresh the page";
-                    $(document.body).scrollTop($('#commonErrorSection').offset().top);
-			    }
-		    },
+    $('#deleteConfirmModal').modal('show');
+    document.getElementById('confirmOk').onclick = function() {
+        var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/tasks/" + id +"/comments/" +commentId;
+        $.ajax({
+            type: 'DELETE',
+            url: httpUrl + url,
+            statusCode: {
+                204: function () {
+                    var commentElementId = "comment_" + commentId;
+                    var element = document.getElementById(commentElementId);
+                    if (element != null) {
+                        element.parentNode.removeChild(element);
+                    } else {
+                        document.getElementById("commonErrorSection").hidden = false;
+                        document.getElementById("errorMsg").innerHTML = "ERROR : element " + commentElementId + " not found. Please refresh the page";
+                        $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                    }
+                },
 
-            404: function () {
-                document.getElementById("commonErrorSection").hidden = false;
-                document.getElementById("errorMsg").innerHTML = "ERROR : Deleting comment failed.Please refresh the page";
-                $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                404: function () {
+                    document.getElementById("commonErrorSection").hidden = false;
+                    document.getElementById("errorMsg").innerHTML = "ERROR : Deleting comment failed.Please refresh the page";
+                    $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                }
             }
-        }
-    });
+        });
+        $('#deleteConfirmModal').modal('hide');
+    }
+    document.getElementById('confirmCancel').onclick = function() {
+        $('#deleteConfirmModal').modal('hide');
+    }
 }
 
 
