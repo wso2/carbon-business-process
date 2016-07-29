@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisherException;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class ProcessTerminationKPIListener implements ExecutionListener {
                 ProcessInstance runtimeProcessInstance = runtimeProcessInstances.get(0);
                 BPMNAnalyticsHolder.getInstance().getBpmnDataPublisher().publishKPIvariableData(runtimeProcessInstance);
             }
-        } catch (Exception e) {
+        } catch (BPMNDataPublisherException e) {
             String errMsg = "Process Variable Data Publishing failed.";
             log.error(errMsg, e);
             // Caught exception is not thrown as we do not need to stop the process termination, due to an error in
