@@ -126,6 +126,7 @@
    "reassign.task":"Reassign Task",
    "no.sub.tasks":"No subtasks",
    "process.Monitoring":"Process Monitoring",
+   "process.details":"Process Details",
    "view.details":"View Details",
    "filter.instances":"Filter the instances",
    "audit.log":"Audit Log",
