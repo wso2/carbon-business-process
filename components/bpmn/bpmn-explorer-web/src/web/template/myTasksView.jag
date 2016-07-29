@@ -27,35 +27,41 @@
 </div>
 <%if (commonErrorMessage == null) {%>
 <div class="row">
- 	<div class="panel-inbox">
-	<!--ol class="breadcrumb">
-	  <li><a href="stats">Home</a></li>
-	  <li class="active">Inbox</li>
-	</ol-->
-      	<div class="margin-left table-title"><%=i18n.localize("my.tasks.title","My Tasks")%></div>
-    	<div class="table-body margin-left-double">
-
-	  	<!-- Table -->
-		  <table class="table">
-		    <thead>
-		    	<tr class="table-title-row">
-		    		<th><%=i18n.localize("task.id", "Task ID")%></th>
-		    		<th><%=i18n.localize("task.name", "Task Name")%></th>
-		    		<th><%=i18n.localize("due.date", "Due Date")%></th>
-		    	</tr>
-		    </thead>
-		    <tbody>
-		    	<% for (var i=0; i<task.length; i++) { %>
-		    	  	<tr class="white-bg" style="cursor:pointer;" onclick="window.location='task?id=<%=task[i].id%>'"
-	                    onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-		    			<td><%=task[i].id%></td>
-						<td><%=task[i].name%></td>
-						<td><%=task[i].date%></td>
-			    	</tr>
-		    	<% } %>
-		    </tbody>
-		  </table>
-		</div>
+ 	<div class="col-lg-12 col-md-12 col-sm-12">
+        <a data-toggle="collapse" href="#myTasksList" aria-expanded="true" class="collapsing-h2">
+            <div class="table-title" style="width:100%">
+                <div style="float: left;">
+                    <i class="cu-btn-exp-col btn-collapsed"></i>
+                </div>
+                <div>
+                    <%=i18n.localize("my.tasks.title","My Tasks")%>
+                </div>
+            </div>
+        </a>
+        <div class="collapse in" id="myTasksList" aria-expanded="true">
+            <div class="panel panel-default" style="width:100%">
+                <!-- Table -->
+                <table class="table table-condensed table-hover">
+                    <thead>
+                        <tr class="table-title-row">
+                            <th><%=i18n.localize("task.id", "Task ID")%></th>
+                            <th><%=i18n.localize("task.name", "Task Name")%></th>
+                            <th><%=i18n.localize("due.date", "Due Date")%></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i=0; i<task.length; i++) { %>
+                        <tr class="white-bg" style="cursor:pointer;" onclick="window.location='task?id=<%=task[i].id%>'"
+                                onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                            <td><%=task[i].id%></td>
+                            <td><%=task[i].name%></td>
+                            <td><%=task[i].date%></td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 		<%
 			var numberOfPages = paginatePageCount;
 			var currentPage = parseInt(pagination);
