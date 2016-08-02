@@ -15,9 +15,8 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
@@ -396,19 +395,19 @@ public class BPMNDataPublisher {
      *
      * @param processInstance
      */
-    public void publishKPIvariableData(ProcessInstance processInstance) throws BPMNDataPublisherException {
+    public void publishKPIvariableData(ProcessInstance processInstance) throws BPMNDataPublisherException, IOException {
         String processDefinitionId = processInstance.getProcessDefinitionId();
         String processInstanceId = processInstance.getId();
         String eventStreamId;
         Object[] payload = new Object[0];
         try {
-            JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
+            JsonNode kpiConfig = getKPIConfiguration(processDefinitionId);
             // do not publish the KPI event if DAS configurations are not done by the PC
             if (kpiConfig == null) {
                 return;
             }
 
-            JsonArray configedProcessVariables = kpiConfig.getAsJsonArray(AnalyticsPublisherConstants
+            JsonNode configedProcessVariables = kpiConfig.withArray(AnalyticsPublisherConstants
                         .PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
             if (log.isDebugEnabled()) {
@@ -425,10 +424,10 @@ public class BPMNDataPublisher {
             {"name":"amount","type":"long","isAnalyzeData":false,"isDrillDownData":false},
             {"name":"confirm","type":"bool","isAnalyzeData":false,"isDrillDownData":false}]
             */
-            JsonArray fieldsConfigedForStreamPayload = kpiConfig
-                    .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
+            JsonNode fieldsConfigedForStreamPayload = kpiConfig
+                    .withArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
-            eventStreamId = kpiConfig.get("eventStreamId").getAsString();
+            eventStreamId = kpiConfig.get("eventStreamId").textValue();
             Map<String, VariableInstance> variableInstances = ((ExecutionEntity) processInstance)
                     .getVariableInstances();
             payload = new Object[fieldsConfigedForStreamPayload.size()];
@@ -441,8 +440,8 @@ public class BPMNDataPublisher {
             char[] valueAvailabiliy = new char[fieldsConfigedForStreamPayload.size()-2];
 
             for (int i = 2; i < configedProcessVariables.size(); i++) {
-                String varName = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("name").getAsString();
-                String varType = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("type").getAsString();
+                String varName = (fieldsConfigedForStreamPayload.get(i)).get("name").textValue();
+                String varType = (fieldsConfigedForStreamPayload.get(i)).get("type").textValue();
 
                 Object varValue = variableInstances.get(varName).getValue();
 
@@ -549,7 +548,7 @@ public class BPMNDataPublisher {
      * ,{"name":"confirm","type":"bool","isAnalyzeData":false,"isDrillDownData":false}]}
      * @throws RegistryException
      */
-    public JsonObject getKPIConfiguration(String processDefinitionId) throws RegistryException {
+    public JsonNode getKPIConfiguration(String processDefinitionId) throws RegistryException, IOException {
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
         try {
@@ -560,7 +559,8 @@ public class BPMNDataPublisher {
                 Resource processRegistryResource = configRegistry.get(resourcePath);
                 String dasConfigDetailsJSONStr = new String((byte[]) processRegistryResource.getContent(),
                         StandardCharsets.UTF_8);
-                return new JsonParser().parse(dasConfigDetailsJSONStr).getAsJsonObject();
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readTree(dasConfigDetailsJSONStr);
             } else {
                 return null;
             }
