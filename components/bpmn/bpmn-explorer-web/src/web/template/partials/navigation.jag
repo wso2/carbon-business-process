@@ -71,6 +71,15 @@
                       </li>
                   </ul>
               </li>
+              <li <%=processesNavActive%>>
+                  <a href="process">
+                      <span class="fw-stack">
+                          <i class="fw fw-circle-outline fw-stack-2x"></i>
+                          <i class="fw fw-bpmn fw-stack-1x"></i>
+                      </span>
+                      <span class="padding-left"><%=i18n.localize("processes", "Processes")%></span>
+                  </a>
+              </li>
               <%
               if (application.get('bpsSubstitutionFeatureEN')) { //User Substitution feature enabled
               %>
@@ -86,12 +95,6 @@
               <%
               }
               %>
-              <li <%=processesNavActive%>><a href="process">
-                <span class="fw-stack">
-                    <i class="fw fw-circle-outline fw-stack-2x"></i>
-                    <i class="fw fw-bpmn fw-stack-1x"></i>
-                </span>
-                <span class="padding-left"><%=i18n.localize("processes", "Processes")%></span></a></li>
               <li class="dropdown <%=monitoringMenuNavActive%>">
                   <a id="monitoringTabDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                       <span class="fw-stack">
@@ -122,18 +125,24 @@
                       </li>
                   </ul>
               </li>
-              <li <%=searchNavActive%>><a href="search">
-                <span class="fw-stack">
-                    <i class="fw fw-circle-outline fw-stack-2x"></i>
-                    <i class="fw fw-search fw-stack-1x"></i>
-                </span>
-                <span class="padding-left"><%=i18n.localize("search", "Search")%></span></a></li>
-              <li <%=reportNavActive%>><a href="reports">
-                <span class="fw-stack">
-                    <i class="fw fw-circle-outline fw-stack-2x"></i>
-                    <i class="fw fw-document fw-stack-1x"></i>
-                </span>
-              <span class="padding-left"><%=i18n.localize("reports", "Reports")%></span></a></li>
+              <li <%=reportNavActive%>>
+                  <a href="reports">
+                      <span class="fw-stack">
+                          <i class="fw fw-circle-outline fw-stack-2x"></i>
+                          <i class="fw fw-document fw-stack-1x"></i>
+                      </span>
+                      <span class="padding-left"><%=i18n.localize("reports", "Reports")%></span>
+                  </a>
+              </li>
+              <li <%=searchNavActive%>>
+                  <a href="search">
+                      <span class="fw-stack">
+                          <i class="fw fw-circle-outline fw-stack-2x"></i>
+                          <i class="fw fw-search fw-stack-1x"></i>
+                      </span>
+                      <span class="padding-left"><%=i18n.localize("search", "Search")%></span>
+                  </a>
+              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
