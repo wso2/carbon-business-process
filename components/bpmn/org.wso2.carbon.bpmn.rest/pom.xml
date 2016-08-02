@@ -151,6 +151,14 @@
                     <artifactId>geronimo-javamail_1.4_spec</artifactId>
                     <groupId>org.apache.geronimo.specs</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema.wso2</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -167,6 +175,10 @@
                 <exclusion>
                     <groupId>commons-fileupload.wso2</groupId>
                     <artifactId>commons-fileupload</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema.wso2</groupId>
+                    <artifactId>XmlSchema</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -201,7 +213,7 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
             <version>2.7.6</version>
-             <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
