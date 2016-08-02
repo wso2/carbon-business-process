@@ -422,7 +422,7 @@ a.collapsing-h2 {
 
 .navbar {
     min-height: 44px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .navbar-default .navbar-nav > li {
@@ -496,6 +496,17 @@ a.collapsing-h2 {
     //float: left;
     width: 99.9%;
 }
+
+.sub-tab-table-title-icon {
+    padding-right: 5px;
+    font-size: 16;
+}
+
+.sub-tab-dropdown-items > .active > a{
+    background-color: #9b221e;
+    background-image: none;
+}
+
 .table-title>a {
     color: #333;
 }

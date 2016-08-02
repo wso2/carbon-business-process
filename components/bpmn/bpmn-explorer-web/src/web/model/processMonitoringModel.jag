@@ -103,6 +103,7 @@ if (query1.data.length != 0) {
 
 //Set current active veiw as process view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
-processMonitoringNavActive = 'class="active"';
+processMonitoringNavActive = 'active';
+monitoringMenuNavActive = 'active'; //This will highlight Monitoring menu tab
 %>
 
