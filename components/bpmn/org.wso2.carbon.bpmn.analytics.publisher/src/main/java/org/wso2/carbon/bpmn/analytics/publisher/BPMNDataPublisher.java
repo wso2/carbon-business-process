@@ -561,7 +561,6 @@ public class BPMNDataPublisher {
                         StandardCharsets.UTF_8);
                 ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.readTree(dasConfigDetailsJSONStr);
-                //return new JsonParser().parse(dasConfigDetailsJSONStr).getAsJsonObject();
             } else {
                 return null;
             }
