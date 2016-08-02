@@ -31,12 +31,13 @@
         <script src="js/bootstrap-select.min.js"></script>
         <a data-toggle="collapse" href="#processImage" aria-expanded="true" class="collapsing-h2">
             <div class="table-title" style="width:100%">
-                <div style="float: left;">
-                    <i class="cu-btn-exp-col btn-collapsed"></i>
-                </div>
-                <div>
-                    <%=i18n.localize("process.Monitoring" , "Process Monitoring")%>
-                </div>
+                <span class="fw-stack sub-tab-table-title-icon">
+                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                    <i class="fw fw-file-browse fw-stack-1x"></i>
+                </span>
+                <span>
+                    <%=i18n.localize("process.monitoring" , "Process Monitoring")%>
+                </span>
             </div>
         </a>
         <div class="collapse in" id="processImage" aria-expanded="true">

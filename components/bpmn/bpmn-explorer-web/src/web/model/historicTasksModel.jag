@@ -69,5 +69,6 @@ try {
 }
 //Set current active veiw as completed task view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
-completedTasksNavActive = 'class="active"';
+completedTasksNavActive = 'active';
+taskMenuNavActive = 'active'; //This will highlight Tasks menu tab
 %>
