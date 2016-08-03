@@ -28,7 +28,6 @@ import org.apache.xerces.util.SecurityManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
-import org.wso2.carbon.bpmn.core.types.datatypes.xml.api.XML;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.api.XMLDocument;
 import org.xml.sax.SAXException;
 
@@ -58,7 +57,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class Utils {
 
-    private static final Log log = LogFactory.getLog(XML.class);
+    private static final Log log = LogFactory.getLog(Utils.class);
     private static final int ENTITY_EXPANSION_LIMIT = 0;
 
     /**

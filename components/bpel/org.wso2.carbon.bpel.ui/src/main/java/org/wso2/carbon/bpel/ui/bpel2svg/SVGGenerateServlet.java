@@ -27,6 +27,7 @@ import org.wso2.carbon.bpel.stub.mgt.ProcessManagementException;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.BPELImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.SVGImpl;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
+import org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder;
 import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.utils.ServerConstants;
 
@@ -65,7 +66,7 @@ public class SVGGenerateServlet extends HttpServlet {
         Log log = LogFactory.getLog(SVGGenerateServlet.class);
         HttpSession session = request.getSession(true);
         //Get the bpel process id
-        String pid = (String) request.getParameter("pid");
+        String pid = CharacterEncoder.getSafeText(request.getParameter("pid"));
         ServletConfig config = getServletConfig();
         String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
         ConfigurationContext configContext =

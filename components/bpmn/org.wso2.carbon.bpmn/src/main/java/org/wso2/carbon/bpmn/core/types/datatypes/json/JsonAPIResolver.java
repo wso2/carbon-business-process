@@ -30,7 +30,7 @@ import org.wso2.carbon.bpmn.core.types.datatypes.xml.XmlAPIResolver;
  */
 public class JsonAPIResolver implements Resolver{
 
-    private static final Log log = LogFactory.getLog(XmlAPIResolver.class);
+    private static final Log log = LogFactory.getLog(JsonAPIResolver.class);
 
     private static final String APIkey = "JSONUtil";
     private static final JSON jsonAPIObject = new JSON();

@@ -96,11 +96,17 @@
                         </thead>
                         <tbody>
                             <% for (var i = 0; i < usersSubstitutionsList.length; i++) { %>
-                                <% if (usersSubstitutionsList[i].enabled) {%>
-                                <tr class="danger" style="cursor:pointer;" 
-                                    onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%>')">
+                                <% 
+                                var enabledViewClass = "success";
+                                if (usersSubstitutionsList[i].enabled) {
+                                    enabledViewClass = "danger";
+                                }
+                                if (usersSubstitutionsList[i].endTime == null) {
+                                %>
+                                <tr class="<%=enabledViewClass%>" style="cursor:pointer;" 
+                                    onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '')">
                                 <%} else {%>
-                                <tr class="success" style="cursor:pointer;" 
+                                <tr class="<%=enabledViewClass%>" style="cursor:pointer;" 
                                     onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%>')">
                                 <%}%>
                                     <td><%=usersSubstitutionsList[i].assignee%></td>

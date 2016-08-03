@@ -76,9 +76,15 @@ if (updateSubstituteModalConfig.assigneeEditEnable != undefined && updateSubstit
                     </div>
                     <div class="form-group">
                         <label for="updatedSubEndDate"><%=i18n.localize("end.time","End Time")%></label>
+                        <% if (updateSubstituteModalConfig.updatedSubEndDate == null) { %>
+                        <input type="text" class="form-control" id="updatedSubEndDate"
+                                    onfocus="setDateTimePicker('updatedSubEndDate', 'updateSubstituteModalContent')"
+                                    placeholder="YYYY-MM-DD h:mm" value="">
+                        <% } else { %>
                         <input type="text" class="form-control" id="updatedSubEndDate"
                                     onfocus="setDateTimePicker('updatedSubEndDate', 'updateSubstituteModalContent')"
                                     placeholder="YYYY-MM-DD h:mm" value="<%=epochToFormattedTime(updateSubstituteModalConfig.updatedSubEndDate)%>">
+                        <% } %>
                     </div>
             </div>
             <div class="modal-footer">

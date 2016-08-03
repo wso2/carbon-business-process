@@ -100,5 +100,6 @@ try {
 }
 //Set current active veiw as claimable task view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
-claimableTasksNavActive = 'class="active"';
+claimableTasksNavActive = 'active';
+taskMenuNavActive = 'active'; //This will highlight Tasks menu tab
 %>

@@ -1112,7 +1112,7 @@ function getUserTasksOfCompletedProcessInstances(id) {
 
             $("#userTasks").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
+            var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
@@ -1149,7 +1149,7 @@ function getVariablesOfCompletedProcessInstances(id) {
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
             } else {
-                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.data.length; k++) {
                     var name = variableInfo.data[k].variable.name;
                     var type = variableInfo.data[k].variable.type;
@@ -1191,7 +1191,7 @@ function getAuditLogForCompletedProcessInstances(id) {
 
             $("#auditLog").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+            var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
@@ -1243,7 +1243,7 @@ function getCalledProcessInstancesOfCompleted(id) {
 
                         var calledPInfo = JSON.parse(data);
                         $("#calledInstances").html("");
-                        var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
+                        var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
 
                         var id = calledPInfo.id;
                         var processDefinitionId = calledPInfo.processDefinitionId;
@@ -1298,7 +1298,7 @@ function getAuditLogForRunningProcessInstances(pid, id) {
                     $("#auditLog").html("");
                     var taskList2 = JSON.parse(data);
 
-                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+                    var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
 
                     for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1361,7 +1361,7 @@ function getVariablesOfRunningProcessInstances(id) {
             var variableInfo = JSON.parse(data);
             var DIV = "<h3> No variables for this process instance </h3>";
             if (variableInfo.restVariables.length > 0) {
-                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.restVariables.length; k++) {
                     var name = variableInfo.restVariables[k].name;
                     var type = variableInfo.restVariables[k].type;
@@ -1400,7 +1400,7 @@ function getUserTasksOfRunningProcessInstances(pid, id) {
                     $("#userTasks").html("");
                     var taskList2 = JSON.parse(data);
 
-                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
+                    var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
 
                     for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1568,14 +1568,17 @@ function addNewSubstitute (assignee, subName, startDate, endDate) {
         }
 
         //create end time Date object
-        var endTimeStrArr = endDate.split(' ');
-        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-        var endTime = new Date(endDateTimeStr);
-        var endTimeStr = "";
-        try {
-            endTimeStr = endTime.toISOString()
-        } catch (error) {
-            throw "Please provide valid end time";
+        var endTimeStr = null;
+        if (endDate.length > 0) {
+            var endTimeStrArr = endDate.split(' ');
+            var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+            var endTime = new Date(endDateTimeStr);
+            
+            try {
+                endTimeStr = endTime.toISOString()
+            } catch (error) {
+                throw "Please provide valid end time";
+            }
         }
 
         //json request
@@ -1650,14 +1653,16 @@ function updateSubstitute (assignee, subName, startDate, endDate) {
         }
 
         //create end time Date object
-        var endTimeStrArr = endDate.split(' ');
-        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-        var endTime = new Date(endDateTimeStr);
-        var endTimeStr = "";
-        try {
-            endTimeStr = endTime.toISOString()
-        } catch (error) {
-            throw "Please provide valid end time";
+        var endTimeStr = null;
+        if (endDate.length > 0) {
+            var endTimeStrArr = endDate.split(' ');
+            var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+            var endTime = new Date(endDateTimeStr);
+            try {
+                endTimeStr = endTime.toISOString()
+            } catch (error) {
+                throw "Please provide valid end time";
+            }
         }
 
         //json request

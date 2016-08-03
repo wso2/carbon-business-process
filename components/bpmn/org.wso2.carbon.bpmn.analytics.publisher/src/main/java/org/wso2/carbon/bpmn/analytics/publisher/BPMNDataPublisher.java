@@ -15,9 +15,8 @@
  */
 package org.wso2.carbon.bpmn.analytics.publisher;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
@@ -34,9 +33,11 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.bpmn.analytics.publisher.config.BPSAnalyticsConfiguration;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessKPIParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.ProcessParseHandler;
 import org.wso2.carbon.bpmn.analytics.publisher.handlers.TaskParseHandler;
@@ -44,6 +45,7 @@ import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationKPIListener;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.ProcessTerminationListener;
 import org.wso2.carbon.bpmn.analytics.publisher.listeners.TaskCompletionListener;
+import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointAgentConfigurationException;
@@ -56,14 +58,14 @@ import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.utils.CarbonUtils;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BPMNDataPublisher {
 
@@ -127,13 +129,13 @@ public class BPMNDataPublisher {
     /**
      * @param activityInstanceQuery
      */
-    public void publishServiceTaskEvent(HistoricActivityInstanceQuery activityInstanceQuery) {
+    public void publishServiceTaskEvent(HistoricActivityInstanceQuery activityInstanceQuery){
 
         if (log.isDebugEnabled()) {
             log.debug("Start to Publish BPMN service task instance event... ");
         }
         List<HistoricActivityInstance> historicActivityInstances = activityInstanceQuery.list();
-        for (HistoricActivityInstance instance : historicActivityInstances) {
+        for(HistoricActivityInstance instance:historicActivityInstances) {
             if (instance.getActivityType().equals(AnalyticsPublisherConstants.SERVICE_TASK)) {
                 Object[] payload = new Object[]{
                         //Service task definition Id
@@ -171,18 +173,75 @@ public class BPMNDataPublisher {
             DataEndpointAgentConfigurationException, TransportException, DataEndpointException,
             DataEndpointConfigurationException {
 
-        BPSAnalyticsConfiguration bpsAnalyticsConfiguration = BPMNAnalyticsHolder.getInstance().getBPSAnalyticsServer
-                ().getBPSAnalyticsConfiguration();
+        boolean genericAnalyticsEnabled = false;
+        boolean kpiAnalyticsEnabled = false;
+        String receiverURLSet = "";
+        String authURLSet = null;
+        String type = null;
+        String username = "";
+        String password = "";
+        boolean asyncDataPublishingEnabled=false;
 
-        if (bpsAnalyticsConfiguration.isDataPublishingEnabled() || bpsAnalyticsConfiguration
-                .isKpiDataPublishingEnabled()) {
-            configDataPublishing(bpsAnalyticsConfiguration.getBpmnAnalyticsReceiverURLSet(),
-                    bpsAnalyticsConfiguration.getBpmnAnalyticsServerUsername(), bpsAnalyticsConfiguration
-                            .getBpmnAnalyticsServerPassword(),
-                    bpsAnalyticsConfiguration.getBpmnAnalyticsAuthURLSet(), null,
-                    bpsAnalyticsConfiguration.isAsyncDataPublishingEnabled(), bpsAnalyticsConfiguration
-                            .isDataPublishingEnabled(),
-                    bpsAnalyticsConfiguration.isKpiDataPublishingEnabled());
+        // Read analytics configuration from activiti.xml file
+        String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
+        String activitiConfigPath = carbonConfigDirPath + File.separator + BPMNConstants.ACTIVITI_CONFIGURATION_FILE_NAME;
+        if (log.isDebugEnabled()) {
+            log.debug("Reading BPMN analytics configuration from " + activitiConfigPath);
+        }
+        File configFile = new File(activitiConfigPath);
+        String configContent = FileUtils.readFileToString(configFile);
+        OMElement configElement = AXIOMUtil.stringToOM(configContent);
+        Iterator beans = configElement.getChildrenWithName(new QName("http://www.springframework.org/schema/beans",
+                "bean"));
+        while (beans.hasNext()) {
+            OMElement bean = (OMElement) beans.next();
+            String beanId = bean.getAttributeValue(new QName(null, "id"));
+            if (beanId.equals(AnalyticsPublisherConstants.ANALYTICS_CONFIG_ELEMENT)) {
+                Iterator beanProps = bean.getChildrenWithName(new QName("http://www.springframework.org/schema/beans",
+                        "property"));
+                while (beanProps.hasNext()) {
+                    OMElement beanProp = (OMElement) beanProps.next();
+                    if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_RECEIVER_URL_SET_PROPERTY)) {
+                        receiverURLSet = beanProp.getAttributeValue(new QName(null, "value"));
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_USER_NAME_PROPERTY)) {
+                        username = beanProp.getAttributeValue(new QName(null, "value"));
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_PASSWORD_PROPERTY)) {
+                        password = beanProp.getAttributeValue(new QName(null, "value"));
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_AUTH_URL_SET_PROPERTY)) {
+                        authURLSet = beanProp.getAttributeValue(new QName(null, "value"));
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_TYPE_PROPERTY)) {
+                        type = beanProp.getAttributeValue(new QName(null, "value"));
+                    } else if (beanProp.getAttributeValue(new QName(null, "name")).equals(AnalyticsPublisherConstants.
+                            PUBLISHER_ENABLED_PROPERTY)) {
+                        String analyticsEnabledValue = beanProp.getAttributeValue(new QName(null, "value"));
+                        if ("true".equalsIgnoreCase(analyticsEnabledValue)) {
+                            genericAnalyticsEnabled = true;
+                        }
+                    } else if (beanProp.getAttributeValue(new QName(null, "name"))
+                            .equals(AnalyticsPublisherConstants.KPI_PUBLISHER_ENABLED_PROPERTY)) {
+                        String kpiAalyticsEnabledValue = beanProp.getAttributeValue(new QName(null, "value"));
+                        if ("true".equalsIgnoreCase(kpiAalyticsEnabledValue)) {
+                            kpiAnalyticsEnabled = true;
+                        }
+                    } else if(beanProp.getAttributeValue(new QName(null,"name")).equals(AnalyticsPublisherConstants.
+                            ASYNC_DATA_PUBLISHING_ENABLED)) {
+                        String asyncDataPublishEnableValue = beanProp.getAttributeValue(new QName(null, "value"));
+                        if("true".equalsIgnoreCase(asyncDataPublishEnableValue)){
+                            asyncDataPublishingEnabled =true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (genericAnalyticsEnabled || kpiAnalyticsEnabled)  {
+            configDataPublishing(receiverURLSet, username, password, authURLSet, type,
+                    asyncDataPublishingEnabled,genericAnalyticsEnabled,kpiAnalyticsEnabled);
         }
     }
 
@@ -204,8 +263,7 @@ public class BPMNDataPublisher {
      * @throws DataEndpointConfigurationException
      */
     void configDataPublishing(String receiverURLSet, String username, String password, String authURLSet, String type,
-                              boolean asyncDataPublishingEnabled, boolean genericAnalyticsEnabled, boolean
-                                      kpiAnalyticsEnabled)
+            boolean asyncDataPublishingEnabled, boolean genericAnalyticsEnabled, boolean kpiAnalyticsEnabled)
             throws DataEndpointAuthenticationException, DataEndpointAgentConfigurationException, TransportException,
             DataEndpointException, DataEndpointConfigurationException {
         if (receiverURLSet != null && username != null && password != null) {
@@ -337,20 +395,20 @@ public class BPMNDataPublisher {
      *
      * @param processInstance
      */
-    public void publishKPIvariableData(ProcessInstance processInstance) throws BPMNDataPublisherException {
+    public void publishKPIvariableData(ProcessInstance processInstance) throws BPMNDataPublisherException, IOException {
         String processDefinitionId = processInstance.getProcessDefinitionId();
         String processInstanceId = processInstance.getId();
         String eventStreamId;
         Object[] payload = new Object[0];
         try {
-            JsonObject kpiConfig = getKPIConfiguration(processDefinitionId);
+            JsonNode kpiConfig = getKPIConfiguration(processDefinitionId);
             // do not publish the KPI event if DAS configurations are not done by the PC
             if (kpiConfig == null) {
                 return;
             }
 
-            JsonArray configedProcessVariables = kpiConfig.getAsJsonArray(AnalyticsPublisherConstants
-                    .PROCESS_VARIABLES_JSON_ENTRY_NAME);
+            JsonNode configedProcessVariables = kpiConfig.withArray(AnalyticsPublisherConstants
+                        .PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
             if (log.isDebugEnabled()) {
                 log.debug(
@@ -366,10 +424,10 @@ public class BPMNDataPublisher {
             {"name":"amount","type":"long","isAnalyzeData":false,"isDrillDownData":false},
             {"name":"confirm","type":"bool","isAnalyzeData":false,"isDrillDownData":false}]
             */
-            JsonArray fieldsConfigedForStreamPayload = kpiConfig
-                    .getAsJsonArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
+            JsonNode fieldsConfigedForStreamPayload = kpiConfig
+                    .withArray(AnalyticsPublisherConstants.PROCESS_VARIABLES_JSON_ENTRY_NAME);
 
-            eventStreamId = kpiConfig.get("eventStreamId").getAsString();
+            eventStreamId = kpiConfig.get("eventStreamId").textValue();
             Map<String, VariableInstance> variableInstances = ((ExecutionEntity) processInstance)
                     .getVariableInstances();
             payload = new Object[fieldsConfigedForStreamPayload.size()];
@@ -379,74 +437,73 @@ public class BPMNDataPublisher {
 
             //availability of values for each process variable is represented by this char array as 1 (value available)
             // or 0 (not available) in respective array index
-            char[] valueAvailabiliy = new char[fieldsConfigedForStreamPayload.size() - 2];
+            char[] valueAvailabiliy = new char[fieldsConfigedForStreamPayload.size()-2];
 
             for (int i = 2; i < configedProcessVariables.size(); i++) {
-                String varName = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("name").getAsString();
-                String varType = ((JsonObject) fieldsConfigedForStreamPayload.get(i)).get("type").getAsString();
+                String varName = (fieldsConfigedForStreamPayload.get(i)).get("name").textValue();
+                String varType = (fieldsConfigedForStreamPayload.get(i)).get("type").textValue();
 
                 Object varValue = variableInstances.get(varName).getValue();
 
                 switch (varType) {
-                    case "int":
-                        if (varValue == null) {
-                            payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
-                        } else {
-                            payload[i] = Integer.parseInt((String) varValue);
-                            valueAvailabiliy[i - 2] = '1';
-                        }
-                        break;
-                    case "float":
-                        if (varValue == null) {
-                            payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
-                        } else {
-                            payload[i] = Float.parseFloat((String) varValue);
-                            valueAvailabiliy[i - 2] = '1';
-                        }
-                        break;
-                    case "long":
-                        if (varValue == null) {
-                            payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
-                        } else {
-                            payload[i] = Long.parseLong((String) varValue);
-                            valueAvailabiliy[i - 2] = '1';
-                        }
-                        break;
-                    case "double":
-                        if (varValue == null) {
-                            payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
-                        } else {
-                            payload[i] = Double.parseDouble((String) varValue);
-                            valueAvailabiliy[i - 2] = '1';
-                        }
-                        break;
-                    case "string":
-                        if (varValue == null) {
-                            payload[i] = "NA";
-                            valueAvailabiliy[i - 2] = '0';
-                        } else {
-                            payload[i] = varValue;
-                            valueAvailabiliy[i - 2] = '1';
-                        }
-                        break;
-                    case "bool":
-                        if (varValue == null) {
-                            payload[i] = false;
-                            valueAvailabiliy[i - 2] = '0';
-                        } else {
-                            payload[i] = Boolean.parseBoolean((String) varValue);
-                            valueAvailabiliy[i - 2] = '1';
-                        }
-                        break;
-                    default:
-                        String errMsg = "Configured process variable type: \"" + varType + "\" of the variable \"" +
-                                varName
-                                + "\" is not a WSO2 DAS applicable type for the process:" + processDefinitionId;
-                        throw new BPMNDataPublisherException(errMsg);
+                case "int":
+                    if (varValue == null) {
+                        payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
+                    } else {
+                        payload[i] = Integer.parseInt((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
+                    }
+                    break;
+                case "float":
+                    if (varValue == null) {
+                        payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
+                    } else {
+                        payload[i] = Float.parseFloat((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
+                    }
+                    break;
+                case "long":
+                    if (varValue == null) {
+                        payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
+                    } else {
+                        payload[i] = Long.parseLong((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
+                    }
+                    break;
+                case "double":
+                    if (varValue == null) {
+                        payload[i] = 0;
+                        valueAvailabiliy[i-2] = '0';
+                    } else {
+                        payload[i] = Double.parseDouble((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
+                    }
+                    break;
+                case "string":
+                    if (varValue == null) {
+                        payload[i] = "NA";
+                        valueAvailabiliy[i-2] = '0';
+                    } else {
+                        payload[i] = varValue;
+                        valueAvailabiliy[i-2] = '1';
+                    }
+                    break;
+                case "bool":
+                    if (varValue == null) {
+                        payload[i] = false;
+                        valueAvailabiliy[i-2] = '0';
+                    } else {
+                        payload[i] = Boolean.parseBoolean((String) varValue);
+                        valueAvailabiliy[i-2] = '1';
+                    }
+                    break;
+                default:
+                    String errMsg = "Configured process variable type: \"" + varType + "\" of the variable \"" + varName
+                            + "\" is not a WSO2 DAS applicable type for the process:" + processDefinitionId;
+                    throw new BPMNDataPublisherException(errMsg);
                 }
             }
 
@@ -484,15 +541,14 @@ public class BPMNDataPublisher {
      * ,"eventStreamDescription":"This is the event stream generated to configure process analytics with DAS, for the
      * processt_666","eventStreamNickName":"t_666_process_stream","eventStreamId":"t_666_process_stream:1.0.0",
      * "eventReceiverName":"t_666_process_receiver","pcProcessId":"t:666",
-     * "processVariables":[{"name":"processInstanceId","type":"string","isAnalyzeData":"false",
-     * "isDrillDownData":"false"}
+     * "processVariables":[{"name":"processInstanceId","type":"string","isAnalyzeData":"false","isDrillDownData":"false"}
      * ,{"name":"valuesAvailability","type":"string","isAnalyzeData":"false","isDrillDownData":"false"}
      * ,{"name":"custid","type":"string","isAnalyzeData":false,"isDrillDownData":false}
      * ,{"name":"amount","type":"long","isAnalyzeData":false,"isDrillDownData":false}
      * ,{"name":"confirm","type":"bool","isAnalyzeData":false,"isDrillDownData":false}]}
      * @throws RegistryException
      */
-    public JsonObject getKPIConfiguration(String processDefinitionId) throws RegistryException {
+    public JsonNode getKPIConfiguration(String processDefinitionId) throws RegistryException, IOException {
         String resourcePath = AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME;
         try {
@@ -503,7 +559,8 @@ public class BPMNDataPublisher {
                 Resource processRegistryResource = configRegistry.get(resourcePath);
                 String dasConfigDetailsJSONStr = new String((byte[]) processRegistryResource.getContent(),
                         StandardCharsets.UTF_8);
-                return new JsonParser().parse(dasConfigDetailsJSONStr).getAsJsonObject();
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readTree(dasConfigDetailsJSONStr);
             } else {
                 return null;
             }

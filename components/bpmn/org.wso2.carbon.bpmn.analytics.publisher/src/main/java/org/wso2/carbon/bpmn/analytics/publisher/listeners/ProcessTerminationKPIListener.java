@@ -23,13 +23,14 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisherException;
 import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ProcessTerminationKPIListener implements ExecutionListener {
     private static final Log log = LogFactory.getLog(ProcessTerminationKPIListener.class);
 
     @Override
-    public void notify(DelegateExecution delegateExecution) {
+    public void notify(DelegateExecution delegateExecution) throws IOException {
         try {
             List<ProcessInstance> runtimeProcessInstances = delegateExecution.getEngineServices().getRuntimeService()
                     .createProcessInstanceQuery().processInstanceId(delegateExecution.getProcessInstanceId()).list();

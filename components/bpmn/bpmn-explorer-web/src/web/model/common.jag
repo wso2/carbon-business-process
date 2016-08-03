@@ -176,6 +176,9 @@ var reportNavActive = ''; //Report view [updated at reportModel and refered at n
 var processMonitoringNavActive = ''; //Process Monitoring view [updated at processMonitoringModel and refered at navigation.jag]
 var advancedFilterNavActive = ''; //Advanced Filtering view [updated at advancedFilteringModel and refered at navigation.jag]
 
+var taskMenuNavActive = ''; //Task Menu tab selection [updated at myTasksModel, claimableTaskModel, historicTasksModel  and refered at navigation.jag]
+var monitoringMenuNavActive = ''; //Monitoring Menu tab selection [updated at processMonitoringModel, advancedFilteringModel, and refered at navigation.jag]
+
 var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErrorSection section in each view
                                     // errorDisplayEnable = '' to display
 var errorDisplayBackButtonsEnable = 'hidden'; //This variable is used to display back and home buttons #commonErrorSection 
@@ -197,6 +200,9 @@ function getCommonErrorContent (errorMsg) {
 }
 
 function epochToFormattedTime (epochTime) {
+    if (epochTime == null) {
+        return i18n.localize("not.available","Not available")
+    }
     var time = new Date(epochTime);
     return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
 }
