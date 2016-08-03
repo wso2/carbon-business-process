@@ -138,6 +138,7 @@ public class RESTTask implements JavaDelegate {
     private Expression outputMappings;
     private Expression headers;
     private Expression responseHeaderVariable;
+    private Expression httpStatusVariable;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -252,7 +253,7 @@ public class RESTTask implements JavaDelegate {
                     } else {
                         value = ((XMLDocument) output).xPath(expression);
                     }
-                    execution.setVariable(varName, value);
+                    execution.setVariableLocal(varName, value);
                 }
             } else {
                 String outputNotFoundErrorMsg = "An outputVariable or outputMappings is not provided. " +
@@ -275,7 +276,11 @@ public class RESTTask implements JavaDelegate {
                 }
                 headerJsonStr.append("}");
                 JsonNodeObject headerJson = JSONUtils.parse(headerJsonStr.toString());
-                execution.setVariable(responseHeaderVariable.getValue(execution).toString(), headerJson);
+                execution.setVariableLocal(responseHeaderVariable.getValue(execution).toString(), headerJson);
+            }
+
+            if (httpStatusVariable != null) {
+                execution.setVariableLocal(httpStatusVariable.getValue(execution).toString(), response.getHttpStatus());
             }
         } catch (RegistryException | XMLStreamException | URISyntaxException | IOException
                 | SAXException | ParserConfigurationException e) {
@@ -331,6 +336,10 @@ public class RESTTask implements JavaDelegate {
 
     public void setResponseHeaderVariable(Expression responseHeaderVariable) {
         this.responseHeaderVariable = responseHeaderVariable;
+    }
+
+    public void setHttpStatusVariable(Expression httpStatusVariable) {
+        this.httpStatusVariable = httpStatusVariable;
     }
 
     public void setBasicAuthUsername(Expression basicAuthUsername) {
