@@ -1568,14 +1568,17 @@ function addNewSubstitute (assignee, subName, startDate, endDate) {
         }
 
         //create end time Date object
-        var endTimeStrArr = endDate.split(' ');
-        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-        var endTime = new Date(endDateTimeStr);
-        var endTimeStr = "";
-        try {
-            endTimeStr = endTime.toISOString()
-        } catch (error) {
-            throw "Please provide valid end time";
+        var endTimeStr = null;
+        if (endDate.length > 0) {
+            var endTimeStrArr = endDate.split(' ');
+            var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+            var endTime = new Date(endDateTimeStr);
+            
+            try {
+                endTimeStr = endTime.toISOString()
+            } catch (error) {
+                throw "Please provide valid end time";
+            }
         }
 
         //json request
@@ -1650,14 +1653,16 @@ function updateSubstitute (assignee, subName, startDate, endDate) {
         }
 
         //create end time Date object
-        var endTimeStrArr = endDate.split(' ');
-        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-        var endTime = new Date(endDateTimeStr);
-        var endTimeStr = "";
-        try {
-            endTimeStr = endTime.toISOString()
-        } catch (error) {
-            throw "Please provide valid end time";
+        var endTimeStr = null;
+        if (endDate.length > 0) {
+            var endTimeStrArr = endDate.split(' ');
+            var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+            var endTime = new Date(endDateTimeStr);
+            try {
+                endTimeStr = endTime.toISOString()
+            } catch (error) {
+                throw "Please provide valid end time";
+            }
         }
 
         //json request

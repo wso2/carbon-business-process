@@ -200,6 +200,9 @@ function getCommonErrorContent (errorMsg) {
 }
 
 function epochToFormattedTime (epochTime) {
+    if (epochTime == null) {
+        return i18n.localize("not.available","Not available")
+    }
     var time = new Date(epochTime);
     return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
 }
