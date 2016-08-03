@@ -27,6 +27,7 @@ import org.wso2.carbon.bpel.stub.mgt.ProcessManagementException;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.BPELImpl;
 import org.wso2.carbon.bpel.ui.bpel2svg.impl.SVGImpl;
 import org.wso2.carbon.bpel.ui.clients.ProcessManagementServiceClient;
+import org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder;
 import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.utils.ServerConstants;
 
@@ -62,7 +63,7 @@ public class PNGGenarateServlet extends HttpServlet {
 
         Log log = LogFactory.getLog(PNGGenarateServlet.class);
         HttpSession session = request.getSession(true);
-        String pid = (String) request.getParameter("pid");
+        String pid = CharacterEncoder.getSafeText(request.getParameter("pid"));
         ServletConfig config = getServletConfig();
         String backendServerURL = CarbonUIUtil.getServerURL(config.getServletContext(), session);
         ConfigurationContext configContext =
