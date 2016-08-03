@@ -15,24 +15,30 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
-import com.jayway.jsonpath.JsonPath;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
+import org.apache.http.Header;
+import org.wso2.carbon.bpmn.core.types.datatypes.json.BPMNJsonException;
+import org.wso2.carbon.bpmn.core.types.datatypes.json.JSONUtils;
+import org.wso2.carbon.bpmn.core.types.datatypes.json.api.JsonNodeObject;
+import org.wso2.carbon.bpmn.core.types.datatypes.xml.BPMNXmlException;
+import org.wso2.carbon.bpmn.core.types.datatypes.xml.Utils;
+import org.wso2.carbon.bpmn.core.types.datatypes.xml.api.XMLDocument;
 import org.wso2.carbon.bpmn.extensions.internal.BPMNExtensionsComponent;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URI;
@@ -119,6 +125,8 @@ public class RESTTask implements JavaDelegate {
     private static final String POST_METHOD = "POST";
     private static final String PUT_METHOD = "PUT";
     private static final String DELETE_METHOD = "DELETE";
+    private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_XML = "application/xml";
 
     private Expression serviceURL;
     private Expression basicAuthUsername;
@@ -129,6 +137,7 @@ public class RESTTask implements JavaDelegate {
     private Expression outputVariable;
     private Expression outputMappings;
     private Expression headers;
+    private Expression responseHeaderVariable;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -139,7 +148,7 @@ public class RESTTask implements JavaDelegate {
 
         RESTInvoker restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
 
-        String output;
+        RESTResponse response;
         String url = null;
         String bUsername = null;
         String bPassword = null;
@@ -202,52 +211,82 @@ public class RESTTask implements JavaDelegate {
 
             if (POST_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
-                output = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
+                response = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else if (GET_METHOD.equals(method.getValue(execution).toString().trim())) {
-                output = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
+                response = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
             } else if (PUT_METHOD.equals(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
-                output = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
+                response = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
             } else if (DELETE_METHOD.equals(method.getValue(execution).toString().trim())) {
-                output = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
+                response = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
             } else {
                 String errorMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
                 throw new RESTClientException(errorMsg);
             }
 
+            Object output = response.getContent();
+            boolean contentAvailable = !response.getContent().equals("");
+
+            if (contentAvailable && response.getContentType().contains(APPLICATION_JSON)) {
+                output = JSONUtils.parse(String.valueOf(output));
+            } else if (contentAvailable && response.getContentType().contains(APPLICATION_XML)) {
+                output = Utils.parse(String.valueOf(output));
+            } else {
+                output = StringEscapeUtils.escapeXml(String.valueOf(output));
+            }
+
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
                 execution.setVariableLocal(outVarName, output);
-
             } else if (outputMappings != null) {
-
-                try {
-                    new JSONObject(output);
-                } catch (JSONException e) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("The payload is XML, hence converting to json before mapping");
-                    }
-                    output = XML.toJSONObject(output).toString();
-                }
                 String outMappings = outputMappings.getValue(execution).toString();
                 outMappings = outMappings.trim();
                 String[] mappings = outMappings.split(",");
                 for (String mapping : mappings) {
                     String[] mappingParts = mapping.split(":");
                     String varName = mappingParts[0];
-                    String jsonExpression = mappingParts[1];
-                    Object value = JsonPath.read(output, jsonExpression);
+                    String expression = mappingParts[1];
+                    Object value;
+                    if (output instanceof JsonNodeObject) {
+                        value = ((JsonNodeObject) output).jsonPath(expression);
+                    } else {
+                        value = ((XMLDocument) output).xPath(expression);
+                    }
                     execution.setVariable(varName, value);
                 }
             } else {
-                String outputNotFoundErrorMsg = "An output variable or outmappings is not provided. " +
-                        "Either an output variable or outmappings  must be provided to save " +
+                String outputNotFoundErrorMsg = "An outputVariable or outputMappings is not provided. " +
+                        "Either an output variable or output mappings  must be provided to save " +
                         "the response.";
                 throw new RESTClientException(outputNotFoundErrorMsg);
             }
-        } catch (RegistryException | XMLStreamException | URISyntaxException | IOException e) {
+
+            if (responseHeaderVariable != null) {
+                StringBuilder headerJsonStr = new StringBuilder();
+                headerJsonStr.append("{");
+                String prefix = "";
+                for (Header header : response.getHeaders()) {
+                    headerJsonStr.append(prefix);
+                    String name = header.getName().replaceAll("\"", "");
+                    String value = header.getValue().replaceAll("\"", "");
+                    headerJsonStr.append("\"").append(name).append("\":\"")
+                            .append(value).append("\"");
+                    prefix = ",";
+                }
+                headerJsonStr.append("}");
+                JsonNodeObject headerJson = JSONUtils.parse(headerJsonStr.toString());
+                execution.setVariable(responseHeaderVariable.getValue(execution).toString(), headerJson);
+            }
+        } catch (RegistryException | XMLStreamException | URISyntaxException | IOException
+                | SAXException | ParserConfigurationException e) {
             String errorMessage = "Failed to execute " + method.getValue(execution).toString() +
                     " " + url + " within task " + getTaskDetails(execution);
+            log.error(errorMessage, e);
+            throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
+        } catch (BPMNJsonException | BPMNXmlException e) {
+            String errorMessage = "Failed to extract values for output mappings, the response content" +
+                    " doesn't support the expression" + method.getValue(execution).toString() + " " +
+                    url + " within task " + getTaskDetails(execution);
             log.error(errorMessage, e);
             throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         }
@@ -288,6 +327,10 @@ public class RESTTask implements JavaDelegate {
 
     public void setOutputMappings(Expression outputMappings) {
         this.outputMappings = outputMappings;
+    }
+
+    public void setResponseHeaderVariable(Expression responseHeaderVariable) {
+        this.responseHeaderVariable = responseHeaderVariable;
     }
 
     public void setBasicAuthUsername(Expression basicAuthUsername) {
