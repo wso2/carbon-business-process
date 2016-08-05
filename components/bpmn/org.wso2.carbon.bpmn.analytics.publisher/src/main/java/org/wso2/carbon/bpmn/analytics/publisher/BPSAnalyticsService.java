@@ -16,27 +16,27 @@
 package org.wso2.carbon.bpmn.analytics.publisher;
 
 /**
- * OSGI service exposing Process Center Services
+ * OSGI service exposing BPS Analytics Services
  */
 public class BPSAnalyticsService {
 
-    private AnalyticsServer processCenter;
+    private BPSAnalyticsServer bpsAnalyticsServer;
 
     /**
-     * Get Process Center
+     * Get BPS Analytics Server
      *
      * @return
      */
-    public AnalyticsServer getProcessCenter() {
-        return processCenter;
+    public BPSAnalyticsServer getBPSAnalyticsServer() {
+        return bpsAnalyticsServer;
     }
 
     /**
-     * Set Process Center
+     * Set BPS Analytics
      *
-     * @param processCenter
+     * @param bpsAnalyticsServer
      */
-    public void setProcessCenter(AnalyticsServer processCenter) {
-        this.processCenter = processCenter;
+    public void setBPSAnalyticsServer(BPSAnalyticsServer bpsAnalyticsServer) {
+        this.bpsAnalyticsServer = bpsAnalyticsServer;
     }
 }

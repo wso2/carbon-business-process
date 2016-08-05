@@ -89,4 +89,10 @@ public class AnalyticsPublisherConstants {
     public static final String ANALYTICS_CONFIG_FILE_NAME = "das_analytics_config_details.json";
     public static final String PC_PROCESS_ID = "pcProcessId";
     public static final String PROCESS_VARIABLES_JSON_ENTRY_NAME = "processVariables";
+
+    /*
+    BPS Analytics Configurations related constants
+     */
+    public static final String BPS_BPMN_ANALYTICS_SERVER_PASSWORD_SECRET_ALIAS = "BPS.Analytics.Server.Password";
+    public static final String BPS_ANALYTICS_CONFIGURATION_FILE_NAME = "bps-analytics.xml";
 }
