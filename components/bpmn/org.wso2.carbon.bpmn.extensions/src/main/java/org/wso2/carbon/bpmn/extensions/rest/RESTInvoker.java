@@ -36,6 +36,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.wso2.carbon.bpmn.core.BPMNConstants;
+import org.wso2.carbon.bpmn.core.types.datatypes.json.api.JsonNodeObject;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.namespace.QName;
@@ -177,15 +178,13 @@ public class RESTInvoker {
         return response;
     }
 
-    private void processHeaderList(HttpRequestBase request, String headerList[]) {
-        if (headerList != null) {
-            for (String header : headerList) {
-                String pair[] = header.split(":");
-                if (pair.length == 1) {
-                    request.addHeader(pair[0], "");
-                } else {
-                    request.addHeader(pair[0], pair[1]);
-                }
+    private void processHeaderList(HttpRequestBase request, JsonNodeObject jsonHeaders) {
+        if (jsonHeaders != null) {
+            Iterator<String> iterator = jsonHeaders.fieldNames();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                String value = jsonHeaders.findValue(key).textValue();
+                request.addHeader(key, value);
             }
         }
     }
@@ -194,13 +193,13 @@ public class RESTInvoker {
      * Invokes the http GET method
      *
      * @param uri        endpoint/service url
-     * @param headerList header list
+     * @param jsonHeaders header list
      * @param username   username for authentication
      * @param password   password for authentication
      * @return RESTResponse of the GET request (can be the response body or the response status code)
      * @throws Exception
      */
-    public RESTResponse invokeGET(URI uri, String headerList[], String username, String password) throws IOException {
+    public RESTResponse invokeGET(URI uri, JsonNodeObject jsonHeaders, String username, String password) throws IOException {
 
         HttpGet httpGet = null;
         CloseableHttpResponse response = null;
@@ -210,7 +209,7 @@ public class RESTInvoker {
         String output;
         try {
             httpGet = new HttpGet(uri);
-            processHeaderList(httpGet, headerList);
+            processHeaderList(httpGet, jsonHeaders);
             response = sendReceiveRequest(httpGet, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             headers = response.getAllHeaders();
@@ -235,14 +234,14 @@ public class RESTInvoker {
      * Invokes the http POST method
      *
      * @param uri        endpoint/service url
-     * @param headerList header list
+     * @param jsonHeaders header list
      * @param username   username for authentication
      * @param password   password for authentication
      * @param payload    payload body passed
      * @return RESTResponse of the POST request (can be the response body or the response status code)
      * @throws Exception
      */
-    public RESTResponse invokePOST(URI uri, String headerList[], String username, String password, String payload) throws IOException {
+    public RESTResponse invokePOST(URI uri, JsonNodeObject jsonHeaders, String username, String password, String payload) throws IOException {
 
         HttpPost httpPost = null;
         CloseableHttpResponse response = null;
@@ -253,7 +252,7 @@ public class RESTInvoker {
         try {
             httpPost = new HttpPost(uri);
             httpPost.setEntity(new StringEntity(payload));
-            processHeaderList(httpPost, headerList);
+            processHeaderList(httpPost, jsonHeaders);
             response = sendReceiveRequest(httpPost, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             headers = response.getAllHeaders();
@@ -279,14 +278,14 @@ public class RESTInvoker {
      * Invokes the http PUT method
      *
      * @param uri        endpoint/service url
-     * @param headerList header list
+     * @param jsonHeaders header list
      * @param username   username for authentication
      * @param password   password for authentication
      * @param payload    payload body passed
      * @return RESTResponse of the PUT request (can be the response body or the response status code)
      * @throws Exception
      */
-    public RESTResponse invokePUT(URI uri, String headerList[], String username, String password,
+    public RESTResponse invokePUT(URI uri, JsonNodeObject jsonHeaders, String username, String password,
                                            String payload) throws IOException {
 
         HttpPut httpPut = null;
@@ -298,7 +297,7 @@ public class RESTInvoker {
         try {
             httpPut = new HttpPut(uri);
             httpPut.setEntity(new StringEntity(payload));
-            processHeaderList(httpPut, headerList);
+            processHeaderList(httpPut, jsonHeaders);
             response = sendReceiveRequest(httpPut, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             headers = response.getAllHeaders();
@@ -323,13 +322,13 @@ public class RESTInvoker {
      * Invokes the http DELETE method
      *
      * @param uri        endpoint/service url
-     * @param headerList header list
+     * @param jsonHeaders header list
      * @param username   username for authentication
      * @param password   password for authentication
      * @return RESTResponse of the DELETE (can be the response status code or the response body)
      * @throws Exception
      */
-    public RESTResponse invokeDELETE(URI uri, String headerList[], String username, String password) throws IOException {
+    public RESTResponse invokeDELETE(URI uri, JsonNodeObject jsonHeaders, String username, String password) throws IOException {
 
         HttpDelete httpDelete = null;
         CloseableHttpResponse response = null;
@@ -339,7 +338,7 @@ public class RESTInvoker {
         String output;
         try {
             httpDelete = new HttpDelete(uri);
-            processHeaderList(httpDelete, headerList);
+            processHeaderList(httpDelete, jsonHeaders);
             response = sendReceiveRequest(httpDelete, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
             headers = response.getAllHeaders();
