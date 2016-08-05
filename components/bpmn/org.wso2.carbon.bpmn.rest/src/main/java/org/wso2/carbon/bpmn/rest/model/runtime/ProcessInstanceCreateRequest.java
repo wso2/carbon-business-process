@@ -39,11 +39,12 @@ public class ProcessInstanceCreateRequest {
     @XmlElementWrapper(name = "Variables")
     @XmlElement(name = "Variable", type = RestVariable.class)
     private List<RestVariable> variables;
-    @XmlElementWrapper(name = "AdditionalVariabls")
+    @XmlElementWrapper(name = "additionalVariables")
     @XmlElement(name = "AdditionalVariable", type = RestVariable.class)
     private List<RestVariable> additionalVariables;
     private String tenantId;
     private Boolean skipInstanceCreationIfExist = false;
+    private Boolean skipInstanceCreation = false;
     private Boolean correlate = false;
 
     public ProcessInstanceCreateRequest(){}
@@ -120,12 +121,21 @@ public class ProcessInstanceCreateRequest {
         this.returnVariables = returnVariables;
     }
 
+    @Deprecated
     public Boolean getSkipInstanceCreationIfExist() {
         return skipInstanceCreationIfExist;
     }
-
+    @Deprecated
     public void setSkipInstanceCreationIfExist(Boolean skipInstanceCreationIfExist) {
         this.skipInstanceCreationIfExist = skipInstanceCreationIfExist;
+    }
+
+    public Boolean getSkipInstanceCreation() {
+        return skipInstanceCreation;
+    }
+
+    public void setSkipInstanceCreation(Boolean skipInstanceCreation) {
+        this.skipInstanceCreation = skipInstanceCreation;
     }
 
     public boolean isReturnVariables() {

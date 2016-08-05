@@ -161,7 +161,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             throw new RestApiBasicAuthenticationException("User doesn't have the necessary permission to start the process");
         }
 
-        if (processInstanceCreateRequest.getSkipInstanceCreationIfExist()) {
+        if (processInstanceCreateRequest.getSkipInstanceCreation() || processInstanceCreateRequest.getSkipInstanceCreationIfExist()) {
+
             ProcessInstanceQueryRequest processInstanceQueryRequest = processInstanceCreateRequest
                     .cloneInstanceCreationRequest();
             Map<String, String> allRequestParams = allRequestParams(uriInfo);
