@@ -81,6 +81,7 @@ public class ProcessDefinitionFormPropertyService {
                                 formPropertyEnumDataHolder.setName(valuesMap.get(key));
                                 formPropertyEnumDataHoldersList.add(formPropertyEnumDataHolder);
                             }
+                            formPropertyResponse.setEnumValues(formPropertyEnumDataHoldersList);
                         }
                     }
 
