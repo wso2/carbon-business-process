@@ -80,7 +80,7 @@ import java.nio.charset.Charset;
  * <activiti:string><![CDATA[v1]]></activiti:string>
  * </activiti:field>
  * <activiti:field name="headers">
- * <activiti:string><![CDATA[key1:value1,key2:value2]]></activiti:string>
+ * <activiti:string><![CDATA[{"key1":"value1","key2":"value2"}]]></activiti:string>
  * </activiti:field>
  * </extensionElements>
  * </serviceTask>
@@ -153,7 +153,7 @@ public class RESTTask implements JavaDelegate {
         String url = null;
         String bUsername = null;
         String bPassword = null;
-        String headerList[] = null;
+        JsonNodeObject jsonHeaders = null;
         try {
             if (serviceURL != null) {
                 url = serviceURL.getValue(execution).toString();
@@ -207,19 +207,19 @@ public class RESTTask implements JavaDelegate {
 
             if (headers != null) {
                 String headerContent = headers.getValue(execution).toString();
-                headerList = headerContent.split(",");
+                jsonHeaders = JSONUtils.parse(headerContent);
             }
 
-            if (POST_METHOD.equals(method.getValue(execution).toString().trim())) {
+            if (POST_METHOD.equals(method.getValue(execution).toString().trim().toUpperCase())) {
                 String inputContent = input.getValue(execution).toString();
-                response = restInvoker.invokePOST(new URI(url), headerList, bUsername, bPassword, inputContent);
-            } else if (GET_METHOD.equals(method.getValue(execution).toString().trim())) {
-                response = restInvoker.invokeGET(new URI(url), headerList, bUsername, bPassword);
-            } else if (PUT_METHOD.equals(method.getValue(execution).toString().trim())) {
+                response = restInvoker.invokePOST(new URI(url), jsonHeaders, bUsername, bPassword, inputContent);
+            } else if (GET_METHOD.equals(method.getValue(execution).toString().trim().toUpperCase())) {
+                response = restInvoker.invokeGET(new URI(url), jsonHeaders, bUsername, bPassword);
+            } else if (PUT_METHOD.equals(method.getValue(execution).toString().trim().toUpperCase())) {
                 String inputContent = input.getValue(execution).toString();
-                response = restInvoker.invokePUT(new URI(url), headerList, bUsername, bPassword, inputContent);
-            } else if (DELETE_METHOD.equals(method.getValue(execution).toString().trim())) {
-                response = restInvoker.invokeDELETE(new URI(url), headerList, bUsername, bPassword);
+                response = restInvoker.invokePUT(new URI(url), jsonHeaders, bUsername, bPassword, inputContent);
+            } else if (DELETE_METHOD.equals(method.getValue(execution).toString().trim().toUpperCase())) {
+                response = restInvoker.invokeDELETE(new URI(url), jsonHeaders, bUsername, bPassword);
             } else {
                 String errorMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
                 throw new RESTClientException(errorMsg);
