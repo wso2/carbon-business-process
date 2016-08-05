@@ -164,7 +164,6 @@
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
             <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
-            <version>4.4.10-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
