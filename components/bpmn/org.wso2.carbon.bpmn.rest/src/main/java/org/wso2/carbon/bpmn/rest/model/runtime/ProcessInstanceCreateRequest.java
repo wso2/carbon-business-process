@@ -39,7 +39,7 @@ public class ProcessInstanceCreateRequest {
     @XmlElementWrapper(name = "Variables")
     @XmlElement(name = "Variable", type = RestVariable.class)
     private List<RestVariable> variables;
-    @XmlElementWrapper(name = "additionalVariables")
+    @XmlElementWrapper(name = "AdditionalVariables")
     @XmlElement(name = "AdditionalVariable", type = RestVariable.class)
     private List<RestVariable> additionalVariables;
     private String tenantId;
