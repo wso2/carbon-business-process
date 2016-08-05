@@ -15,13 +15,13 @@
  */
 function genSelect(data, disabled) {
     var content = "<tr>";
-    var selected='';
     content += "<td style='padding-right:15px; padding-top:10px;'>";
     content += data.name + ": ";
     content += "</td><td style='padding-top:10px'>";
     if (disabled == true || data.writable == false) {
         content += "<select name=\"" + data.id + "\" class=\"form-control\" disabled=\"true\">";
         for (var i = 0; i < data.enumValues.length; i++) {
+            var selected='';
             if (data.value == data.enumValues[i].name) {
              selected = 'selected';
             }
@@ -31,6 +31,7 @@ function genSelect(data, disabled) {
          if(data.required == true) {
              content += "<select name=\"" + data.id + "\" class=\"form-control\" required>";
              for (var i = 0; i < data.enumValues.length; i++) {
+                var selected='';
                 if (data.value == data.enumValues[i].name) {
                  selected = 'selected';
                 }
@@ -40,10 +41,11 @@ function genSelect(data, disabled) {
          else {
               content += "<select name=\"" + data.id + "\" class=\"form-control\">";
               for (var i = 0; i < data.enumValues.length; i++) {
-                 if (data.value == data.enumValues[i].name) {
-                  selected = 'selected';
-                 }
-                 content += "<option value=\"" + data.enumValues[i].id + "\" "+selected +">" + data.enumValues[i].name + "</option>"
+                var selected='';
+                if (data.value == data.enumValues[i].name) {
+                 selected = 'selected';
+                }
+                content += "<option value=\"" + data.enumValues[i].id + "\" "+selected +">" + data.enumValues[i].name + "</option>"
               }
          }
     }
