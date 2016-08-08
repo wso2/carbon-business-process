@@ -142,9 +142,8 @@ function completeTask(data, id) {
             var variables = [];
             var emptyVar = true;
             for (var i = 0; i < data.length; i++) {
-
                 for (var j = 0; j < vData.length; j++) {
-                    if (vData[j].name == data[i].name) {
+                    if (vData[j].id == data[i].name) {
                         if (vData[j].required && vData[j].writable && data[i].value == "") {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
@@ -153,13 +152,29 @@ function completeTask(data, id) {
                             document.getElementById("loadingCompleteButton").hidden = true;
                             document.getElementById("completeButton").style.display = '';
                             return;
+                        } else {
+                            if (vData[j].type === "string") {
+
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                                "type" : "string"
+                                            });
+                            } else if (vData[j].type === "enum") {
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                            });
+                            } else {
+                                variables.push({
+                                                "name": data[i].name,
+                                                "value": JSON.parse(data[i].value),
+                                                "type" : vData[j].type
+                                            });
+                            }
                         }
                     }
                 }
-                variables.push({
-                    "name": data[i].name,
-                    "value": data[i].value
-                });
             }
             if (emptyVar == true) {
                 var body = {
@@ -393,14 +408,31 @@ function startProcessWithData(data, id) {
                             document.getElementById("startProcessButton").style.display = '';
                             document.getElementById("loadingStartProcessButton").hidden = true;
                             return;
+                        } else {
+
+                            if (vData[j].type === "string") {
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                                "type" : "string"
+                                            });
+                            } else if (vData[j].type === "enum") {
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                            });
+                            } else {
+                                variables.push({
+                                                "name": data[i].name,
+                                                "value": JSON.parse(data[i].value),
+                                                "type" : vData[j].type
+                                            });
+                            }
                         }
                     }
                 }
-                variables.push({
-                    "name": data[i].name,
-                    "value": data[i].value
-                });
             }
+
             var body = {
                 "processDefinitionId": id,
                 "variables": variables
