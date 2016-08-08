@@ -23,18 +23,12 @@
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ page
         import="org.wso2.carbon.authenticator.stub.AuthenticationAdminStub" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TSimpleQueryCategory" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TSimpleQueryInput" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskSimpleQueryResultRow" %>
-<%@ page
-        import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.TTaskSimpleQueryResultSet" %>
 <%@ page import="org.wso2.carbon.humantask.ui.clients.HumanTaskClientAPIServiceClient" %>
 <%@ page import="org.wso2.carbon.humantask.ui.util.HumanTaskUIUtil" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
+<%@ page import="java.io.File" %>
+<%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.*" %>
 <%
 
     response.setHeader("Cache-Control",
@@ -43,7 +37,9 @@
     response.addHeader("Cache-Control", "post-check=0, pre-check=0");
     // Set standard HTTP/1.0 no-cache header.
     response.setHeader("Pragma", "no-cache");
-
+    final String HUMANTASK_REPO = "repository/humantasks/";
+    final String JSP_DIR = "/web/";
+    final String INPUT_JSP = "-input.jsp";
 
     // Pagination related;
     int numberOfPages = 0;
@@ -350,6 +346,10 @@
                     <% if (taskResults != null && taskResults.getRow() != null && taskResults.getRow().length > 0) {
                         TTaskSimpleQueryResultRow[] rows = taskResults.getRow();
                         for (TTaskSimpleQueryResultRow row : rows) {
+                            taskAPIClient = new HumanTaskClientAPIServiceClient(cookie, backendServerURL, configContext);
+                            TTaskAbstract task = taskAPIClient.loadTask(row.getId());
+                            File jspFile = new File(HUMANTASK_REPO + task.getTenantId() + "/" + task.getPackageName() + JSP_DIR + task.getName().getLocalPart() + INPUT_JSP);
+                            if (jspFile.exists()) {
                     %>
 
                     <tr>
@@ -376,6 +376,31 @@
                     </tr>
 
                     <%
+                                } else {
+                    %>
+                    <tr>
+                        <td>
+                            <%=row.getId().toString()%>-<%=row.getName().getLocalPart()%>
+                        </td>
+                        <td>
+                            <%
+                                String presentationName = HumanTaskUIUtil.getTaskPresentationHeader(row.getPresentationSubject(),
+                                        row.getPresentationName());
+                            %>
+                            <%=presentationName%>
+                        </td>
+                        <td>
+                            <%= row.getStatus().toString() %>
+                        </td>
+                        <td>
+                            <%= row.getPriority() %>
+                        </td>
+                        <td>
+                            <%= row.getCreatedTime().getTime().toString() %>
+                        </td>
+                    </tr>
+                    <%
+                                }
                             }
                         }
                     %>
