@@ -228,7 +228,8 @@ HUMANTASK.populateAttachments = function (attachmentsJSONMap, taskId) {
     attachmentUploadForm += '</form>';
     attachmentUploadForm += '</div>';
 
-    jQuery('#attachmentsTab').append(attachmentUploadForm);
+    //removing to make HT UI read only to avoid security issues
+    //jQuery('#attachmentsTab').append(attachmentUploadForm);
 };
 
 HUMANTASK.uploadAttachment= function() {
