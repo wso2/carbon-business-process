@@ -75,31 +75,32 @@
     <div class="contentPlacer">
         <div class="tabLinks" id="tabs_task">
             <ul>
-                <li id="claimLinkLi" style="display:none;"><a id="claimLink"><fmt:message key="humantask.taskview.claim"/></a></li>
-                <li id="startLinkLi" style="display:none;"><a id="startLink"><fmt:message key="humantask.taskview.start"/></a></li>
-                <li id="stopLinkLi" style="display:none;"><a id="stopLink"><fmt:message key="humantask.taskview.stop"/></a></li>
-                <li id="releaseLinkLi" style="display:none;"><a id="releaseLink"><fmt:message key="humantask.taskview.release"/></a></li>
-                <li id="suspendLinkLi" style="display:none;"><a id="suspendLink"><fmt:message key="humantask.taskview.suspend"/></a></li>
-                <li id="resumeLinkLi" style="display:none;"><a id="resumeLink"><fmt:message key="humantask.taskview.resume"/></a></li>
-                <li id="commentLinkLi" style="display:none;"><a onclick="toggleMe('commentSection')"><fmt:message key="humantask.taskview.comment"/></a></li>
-                <li id="delegateLinkLi" style="display:none;"><a onclick="HUMANTASK.handleDelegateSelection('delegateSection')"><fmt:message key="humantask.taskview.assign"/></a></li>
-                <li id="changePriorityLinkLi" style="display:none;"><a onclick="HUMANTASK.handleChangePrioritySelection('changePrioritySection')"><fmt:message key="humantask.taskview.change.priority"/></a></li>
-                <li id="removeLinkLi" style="display:none;"><a id="removeLink"><fmt:message key="humantask.taskview.remove"/></a></li>
-                <li id="skipLinkLi" style="display:none;"><a id="skipLink"><fmt:message key="humantask.taskview.skip"/></a></li>
-                <li id="failLinkLi" style="display:none;"><a id="failLink"><fmt:message key="humantask.taskview.fail"/></a></li>
-                <li id="moreActionsLinkLi" style="display:none;"><a id="moreActionsLink"><fmt:message key="humantask.taskview.more.actions"/></a></li>
+                <%--making task view readonly due to security issues--%>
+                <%--<li id="claimLinkLi" style="display:none;"><a id="claimLink"><fmt:message key="humantask.taskview.claim"/></a></li>--%>
+                <%--<li id="startLinkLi" style="display:none;"><a id="startLink"><fmt:message key="humantask.taskview.start"/></a></li>--%>
+                <%--<li id="stopLinkLi" style="display:none;"><a id="stopLink"><fmt:message key="humantask.taskview.stop"/></a></li>--%>
+                <%--<li id="releaseLinkLi" style="display:none;"><a id="releaseLink"><fmt:message key="humantask.taskview.release"/></a></li>--%>
+                <%--<li id="suspendLinkLi" style="display:none;"><a id="suspendLink"><fmt:message key="humantask.taskview.suspend"/></a></li>--%>
+                <%--<li id="resumeLinkLi" style="display:none;"><a id="resumeLink"><fmt:message key="humantask.taskview.resume"/></a></li>--%>
+                <%--<li id="commentLinkLi" style="display:none;"><a onclick="toggleMe('commentSection')"><fmt:message key="humantask.taskview.comment"/></a></li>--%>
+                <%--<li id="delegateLinkLi" style="display:none;"><a onclick="HUMANTASK.handleDelegateSelection('delegateSection')"><fmt:message key="humantask.taskview.assign"/></a></li>--%>
+                <%--<li id="changePriorityLinkLi" style="display:none;"><a onclick="HUMANTASK.handleChangePrioritySelection('changePrioritySection')"><fmt:message key="humantask.taskview.change.priority"/></a></li>--%>
+                <%--<li id="removeLinkLi" style="display:none;"><a id="removeLink"><fmt:message key="humantask.taskview.remove"/></a></li>--%>
+                <%--<li id="skipLinkLi" style="display:none;"><a id="skipLink"><fmt:message key="humantask.taskview.skip"/></a></li>--%>
+                <%--<li id="failLinkLi" style="display:none;"><a id="failLink"><fmt:message key="humantask.taskview.fail"/></a></li>--%>
+                <%--<li id="moreActionsLinkLi" style="display:none;"><a id="moreActionsLink"><fmt:message key="humantask.taskview.more.actions"/></a></li>--%>
             </ul>
         </div>
         <div id="commentSection" style="display:none">
             <textarea id="commentTextAreaId" class="commentTextArea"></textarea>
-            <input id="addCommentButton" type="button" class="button" value="Add Comment" />
+            <%--<input id="addCommentButton" type="button" class="button" value="Add Comment" />--%>
             <div style="clear:both;"></div>
         </div>
         <div id="delegateSection" class="delegateDiv" style="display:none">
-            <select id="assignableUserList"></select><input id="delegateButton" type="button" class="button" value="Assign" />
+            <%--<select id="assignableUserList"></select><input id="delegateButton" type="button" class="button" value="Assign" />--%>
         </div>
         <div id="changePrioritySection" class="delegateDiv" style="display:none">
-            <select id="priorityList"></select><input id="changePriorityButton" type="button" class="button" value="Set Priority" />
+            <%--<select id="priorityList"></select><input id="changePriorityButton" type="button" class="button" value="Set Priority" />--%>
         </div>
         <div class="tabLessContent-noBorder" id="tabContent">
             <div id="actionTab" class="tabContentData">
@@ -179,8 +180,8 @@
                         <jsp:include page="<%=outputJspContextPath%>"/>
                     </div>
                     <div id="completeButtonDiv">
-                        <button id="saveTaskButton" value="Save" style="float: left; margin-right:10px;"><fmt:message key="humantask.taskview.save"/></button>
-                        <button id="completeTaskButton" value="Complete" style="float: left;"><fmt:message key="humantask.taskview.complete"/></button>
+                        <%--<button id="saveTaskButton" value="Save" style="float: left; margin-right:10px;"><fmt:message key="humantask.taskview.save"/></button>--%>
+                        <%--<button id="completeTaskButton" value="Complete" style="float: left;"><fmt:message key="humantask.taskview.complete"/></button>--%>
                     </div>
                     <%} catch (Exception ex) {%>
                     <div id="responseFormDiv" class="dynamicContent">
