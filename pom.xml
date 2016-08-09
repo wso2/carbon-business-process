@@ -436,16 +436,16 @@
         <carbon.datasources.import.version>[1.0.0,2.0.0)</carbon.datasources.import.version>
         <carbon.jndi.version>1.0.0</carbon.jndi.version>
         <carbon.jndi.import.version>[1.0.0,2.0.0)</carbon.jndi.import.version>
-        <carbon.msf4j.version>1.1.0-SNAPSHOT</carbon.msf4j.version>
-        <carbon.msf4j.impl.version.range>[1.1.0,2.0.0)</carbon.msf4j.impl.version.range>
+        <carbon.msf4j.version>2.0.0</carbon.msf4j.version>
+        <carbon.msf4j.impl.version.range>[2.0.0,3.0.0)</carbon.msf4j.impl.version.range>
         <carbon.http.netty.version>2.1.0</carbon.http.netty.version>
         <carbon.deployment.version>5.0.0</carbon.deployment.version>
         <carbon.deployment.import.version>[5.0.0,6.0.0)</carbon.deployment.import.version>
         <carbon.messaging.version>1.0.3</carbon.messaging.version>
         <carbon.messaging.import.version>[1.0.2,2.0.0)</carbon.messaging.import.version>
-        <carbon.security.caas.version>1.0.0-m2</carbon.security.caas.version>
+        <carbon.security.caas.version>1.0.0-SNAPSHOT</carbon.security.caas.version>
         <carbon.security.caas.import.version>[1.0.0,2.0.0)</carbon.security.caas.import.version>
-        <carbon.security.userstore.jdbc.version>1.0.0-m2</carbon.security.userstore.jdbc.version>
+        <carbon.security.userstore.jdbc.version>1.0.0-SNAPSHOT</carbon.security.userstore.jdbc.version>
         <carbon.security.userstore.jdbc.import.version>[1.0.0,2.0.0)</carbon.security.userstore.jdbc.import.version>
         <carbon.caching.version>1.0.0</carbon.caching.version>
         <carbon.caching.import.version>[1.0.0,2.0.0)</carbon.caching.import.version>
