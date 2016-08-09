@@ -172,16 +172,17 @@
                             <tr>
                                 <% if(firstRow){ %>
                                     <td rowspan=<%=processes.length%>><a href=<%="process_list_view.jsp?operation=packageInfo&deploymentName=" + deployment.getDeploymentName()%>><%=deployment.getDeploymentName() + "-" + deployment.getDeploymentId()%></a></td>
-
-                                    <% firstRow = false; %>
+                                    <td rowspan=<%=processes.length%>><%=process.getDeploymentId()%></td>
                                 <% } %>
-                                <td><%=process.getDeploymentId()%></td>
                                 <td><%=process.getName()%></td>
                                 <td><a href=<%="process_list_view.jsp?operation=processDef&processID=" + process.getProcessId()%>>
                                        <%=process.getProcessId()%></a></td>
-                                <td><%=process.getVersion()%></td>
-                                <% DateFormat dateOutputFormatter = new SimpleDateFormat("MM/dd/yyyy"); %>
-                                <td><%=dateOutputFormatter.format(deployment.getDeploymentTime())%></td>
+                                <% if(firstRow){ %>
+                                    <td rowspan=<%=processes.length%>><%=process.getVersion()%></td>
+                                    <% DateFormat dateOutputFormatter = new SimpleDateFormat("MM/dd/yyyy"); %>
+                                    <td rowspan=<%=processes.length%>><%=dateOutputFormatter.format(deployment.getDeploymentTime())%></td>
+                                    <% firstRow = false; %>
+                                <% } %>
                                 <!--td><a class="bpmn-icon-link" style="background-image:url(images/start.gif);" href="#" onclick="startProcess('<%=process.getProcessId()%>');"><fmt:message key="bpmn.process.start"/></a></td-->
                             </tr>
                         <% }} %>
