@@ -70,20 +70,16 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
             log.debug("Stream configuration is invalid");
             return;
         }
-
 	    DataPublisher dataPublisher = getDataPublisher(extensionContext, tenantId, analyticsServerProfileName);
-
 	    if (dataPublisher == null) {
 		    String msg = "Error while creating data publisher";
 		    handleException(msg);
 	    }
-
 	    String streamId = DataBridgeCommonsUtils.generateStreamId(stream.getName(), stream.getVersion());
 
 	    dataPublisher.tryPublish(streamId, createMetadata(stream, extensionContext, element),
 	                             createCorrelationData(stream, extensionContext, element),
 	                             createPayloadData(stream, extensionContext, element));
-
     }
 
     private Integer getTenantId(ExtensionContext context) {
@@ -126,10 +122,10 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
     private Object[] createCorrelationData(AnalyticsStreamConfiguration stream, ExtensionContext context, Element element)
             throws FaultException {
         List<AnalyticsKey> correlationAnalyticsKeyList = stream.getCorrelationAnalyticsKeyList();
-        int objectListSize = correlationAnalyticsKeyList.size() + 1;
+        int objectListSize = correlationAnalyticsKeyList.size();
         Object[] dataArray = new Object[objectListSize];
-        dataArray[0] = context.getInternalInstance().getPid().toString();
-        int startIndex = 1;
+//        dataArray[0] = context.getInternalInstance().getPid().toString();
+        int startIndex = 0;
         fillDataArray(dataArray, correlationAnalyticsKeyList, startIndex, context, element);
         return dataArray;
     }
@@ -138,11 +134,11 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
             throws FaultException {
         List<AnalyticsKey> metaAnalyticsKeyList = stream.getMetaAnalyticsKeyList();
 
-        int objectListSize = metaAnalyticsKeyList.size() + 2;
+        int objectListSize = metaAnalyticsKeyList.size();
         Object[] dataArray = new Object[objectListSize];
-        dataArray[0] = getTenantId(context);
-        dataArray[1] = context.getProcessModel().getQName().toString();
-        int startIndex = 2;
+//        dataArray[0] = getTenantId(context);
+//        dataArray[1] = context.getProcessModel().getQName().toString();
+        int startIndex = 0;
         fillDataArray(dataArray, metaAnalyticsKeyList, startIndex, context, element);
         return dataArray;
     }
@@ -162,11 +158,16 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
         for (int i = 0; i < payloadAnalyticsKeyList.size(); i++) {
             AnalyticsKey analyticsKey = payloadAnalyticsKeyList.get(i);
             if (analyticsKey.getExpression() != null) {
-                dataArray[i + startIndex] = evaluateXPathExpression(context, analyticsKey.getExpression(), element);
+                String expression = evaluateXPathExpression(context, analyticsKey.getExpression(), element);
+                convertDataType(dataArray, (i + startIndex) , analyticsKey, expression);
+
             } else if (analyticsKey.getVariable() != null && analyticsKey.getPart() == null) {
                 if (analyticsKey.getQuery() == null) {
+                    String variable = context.readVariable(analyticsKey.getVariable()).getTextContent();
+
+                    convertDataType(dataArray, ( i + startIndex) , analyticsKey, variable);
                     /* simple types should be specified for here */
-                    dataArray[i + startIndex] = context.readVariable(analyticsKey.getVariable()).getTextContent();
+
                 } else {
                     String errMsg = "This functionality is currently not supported";
                     log.error(errMsg);
@@ -183,6 +184,7 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
                         result = DOMUtils.domToString(DOMUtils.getFirstChildElement(item));
                     }
                 }
+                convertDataType(dataArray, ( i + startIndex) , analyticsKey, result);
                 dataArray[i + startIndex] = result;
             }
         }
@@ -288,8 +290,34 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
                 tenantsProcessStore.addDataPublisher(processName, dataPublisher);
             }
         }
-
         return dataPublisher;
+    }
+
+    public void convertDataType(Object[] dataArray, int index, AnalyticsKey key, String value) {
+        AnalyticsKey.AnalyticsKeyDataType dataType = key.getDataType();
+        switch (dataType) {
+            case  INTEGER :
+                dataArray[index] = Integer.valueOf(value);
+                break;
+            case LONG:
+                dataArray[index] = Long.valueOf(value);
+                break;
+            case DOUBLE:
+                dataArray[index] = Double.valueOf(value);
+                break;
+            case FLOAT:
+                dataArray[index] = Float.valueOf(value);
+                break;
+            case BOOL:
+                dataArray[index] = Boolean.valueOf(value);
+                break;
+            case STRING:
+                dataArray[index] = String.valueOf(value);
+                break;
+            default:
+                dataArray[index] = String.valueOf(value);
+                break;
+        }
     }
 }
 

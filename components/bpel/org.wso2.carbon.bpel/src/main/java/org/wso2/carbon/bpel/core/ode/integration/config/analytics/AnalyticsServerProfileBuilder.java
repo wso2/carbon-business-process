@@ -381,6 +381,7 @@ public class AnalyticsServerProfileBuilder {
         String expression;
         String part = null;
         String query = null;
+        AnalyticsKey.AnalyticsKeyDataType dataType = AnalyticsKey.AnalyticsKeyDataType.STRING;
 
         OMAttribute nameAttribute = keyElement.getAttribute(new QName(AnalyticsConstants.STREAM_DATA_KEY_NAME));
         if (nameAttribute == null || nameAttribute.getAttributeValue() == null ||
@@ -403,6 +404,20 @@ public class AnalyticsServerProfileBuilder {
             type = AnalyticsKey.AnalyticsKeyType.valueOf(typeAttribute.getAttributeValue().trim().toUpperCase());
         } catch (IllegalArgumentException e) {
             String errMsg = "Invalid key type specified for key name " + name;
+            handleError(errMsg, e);
+        }
+
+        OMAttribute dataTypeAttribute = keyElement.getAttribute(new QName(AnalyticsConstants.STREAM_DATA_KEY_DATA_TYPE));
+        if (dataTypeAttribute == null || dataTypeAttribute.getAttributeValue() == null ||
+                AnalyticsConstants.EMPTY.equals((dataTypeAttribute.getAttributeValue().trim()))) {
+            dataType = AnalyticsKey.AnalyticsKeyDataType.STRING;
+            log.debug("dataType attribute of Key element: " + name + " is not available. " +
+                    "dataType default STRING set");
+        }
+        try {
+            dataType = AnalyticsKey.AnalyticsKeyDataType.valueOf(dataTypeAttribute.getAttributeValue().trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            String errMsg = "Invalid key data type specified for key data type " + name;
             handleError(errMsg, e);
         }
 
@@ -433,7 +448,7 @@ public class AnalyticsServerProfileBuilder {
             if (queryElement != null && !AnalyticsConstants.EMPTY.equals(queryElement.getText().trim())) {
                 query = queryElement.getText();
             }
-            analyticsKey = new AnalyticsKey(name, variable, part, query, type);
+            analyticsKey = new AnalyticsKey(name, variable, part, query, type, dataType);
         } else {
             if (fromElement.getText() == null || AnalyticsConstants.EMPTY.equals(fromElement.getText())) {
                 String errMsg = "Variable name or XPath expression not found for From of Key: " +
@@ -441,7 +456,7 @@ public class AnalyticsServerProfileBuilder {
                 handleError(errMsg);
             }
             expression = fromElement.getText().trim();
-            analyticsKey = new AnalyticsKey(name, type);
+            analyticsKey = new AnalyticsKey(name, type, dataType);
             analyticsKey.setExpression(expression);
         }
 

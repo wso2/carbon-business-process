@@ -20,23 +20,23 @@ package org.wso2.carbon.bpel.core.ode.integration.config.analytics;
  * Represents the From elements in the analytics publisher for BPEL
  * <p/>
  * <Data>
- * <Key name="NCName1" type="meta|correlation|payload">
+ * <Key name="NCName1" type="meta|correlation|payload" dataType="integer,long,double,float,string,bool">
  * <From variable="myVar" part="partName"/>
  * </Key>
- * <Key name="NCName2" type="meta|correlation|payload">
+ * <Key name="NCName2" type="meta|correlation|payload" dataType="integer,long,double,float,string,bool">
  * <From variable="myVar2"/>
  * </Key>
- * <Key name="NCName3" type="meta|correlation|payload">
+ * <Key name="NCName3" type="meta|correlation|payload" dataType="integer,long,double,float,string,bool">
  * <From variable="myVar3">
  * <Query>XPath expression</Query>
  * </From>
  * </Key>
- * <Key name="NCName4" type="meta|correlation|payload">
+ * <Key name="NCName4" type="meta|correlation|payload" dataType="integer,long,double,float,string,bool">
  * <From variable="myVar4" part="partName">
  * <Query>XPath expression</Query>
  * </From>
  * </Key>
- * <Key name="NCName5" type="meta|correlation|payload">
+ * <Key name="NCName5" type="meta|correlation|payload" dataType="integer,long,double,float,string,bool">
  * <From>XPath expression</From>
  * </Key>
  * </Data>
@@ -44,35 +44,41 @@ package org.wso2.carbon.bpel.core.ode.integration.config.analytics;
 public class AnalyticsKey {
     private String name;
     private AnalyticsKeyType type;
+    private AnalyticsKeyDataType dataType;
     private String variable;
     private String part;
     private String query;
     private String expression;
 
-    public AnalyticsKey(String name, AnalyticsKeyType type) {
+    public AnalyticsKey(String name, AnalyticsKeyType type, AnalyticsKeyDataType dataType) {
         this.name = name;
         this.type = type;
+        this.dataType = dataType;
     }
 
-    public AnalyticsKey(String name, String variable, AnalyticsKeyType type) {
+    public AnalyticsKey(String name, String variable, AnalyticsKeyType type, AnalyticsKeyDataType dataType) {
         this.name = name;
         this.variable = variable;
         this.type = type;
+        this.dataType = dataType;
     }
 
-    public AnalyticsKey(String name, String variable, String part, AnalyticsKeyType type) {
+    public AnalyticsKey(String name, String variable, String part, AnalyticsKeyType type, AnalyticsKeyDataType dataType) {
         this.name = name;
         this.variable = variable;
         this.part = part;
         this.type = type;
+        this.dataType = dataType;
     }
 
-    public AnalyticsKey(String name, String variable, String part, String query, AnalyticsKeyType type) {
+    public AnalyticsKey(String name, String variable, String part, String query, AnalyticsKeyType type,
+                        AnalyticsKeyDataType dataType) {
         this.name = name;
         this.variable = variable;
         this.part = part;
         this.query = query;
         this.type = type;
+        this.dataType = dataType;
     }
 
     public String getVariable() {
@@ -103,10 +109,18 @@ public class AnalyticsKey {
         return type;
     }
 
+    public AnalyticsKeyDataType getDataType() {
+        return dataType;
+    }
+
     /**
      * Analytics Key Types.
      */
     public enum AnalyticsKeyType {
         META, CORRELATION, PAYLOAD, NONE
+    }
+
+    public enum AnalyticsKeyDataType {
+        INTEGER, LONG, DOUBLE, FLOAT, STRING, BOOL
     }
 }
