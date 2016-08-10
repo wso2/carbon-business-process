@@ -99,7 +99,7 @@ import javax.ws.rs.core.Response;
         name = "org.wso2.carbon.bpmn.rest.service.BPMNRestAPI",
         service = Microservice.class,
         immediate = true)
-@Path("/")
+@Path("/api/bps/bpmn/v1")
 public class BPMNRestAPI implements Microservice {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNRestAPI.class);
@@ -183,7 +183,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/receive")
+    @Path("/runtime/receive")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response receiveMessage(CorrelationActionRequest correlationActionRequest, @Context Request request) {
@@ -195,7 +195,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/form-data")
+    @Path("/form/form-data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getFormData(@Context Request request, @QueryParam("taskId") String taskId,
                                 @QueryParam("processDefinitionId") String processDefinitionId) {
@@ -208,7 +208,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/form-data")
+    @Path("/form/form-data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response submitForm(SubmitFormRequest submitRequest, @Context Request request) {
         if (formDataService != null) {
@@ -219,7 +219,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/{process-definition-id}/properties")
+    @Path("/process-definition/{process-definition-id}/properties")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getStartFormProperties(@PathParam("process-definition-id") String processDefinitionId) {
 
@@ -227,7 +227,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-activity-instances")
+    @Path("/history/historic-activity-instances")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricActivityInstances(@Context Request request) {
 
@@ -235,7 +235,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-detail")
+    @Path("/history/historic-detail")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricDetailInfo(@Context Request request) {
 
@@ -243,14 +243,14 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-detail/{detail-id}/data")
+    @Path("/history/historic-detail/{detail-id}/data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricVariableData(@PathParam("detail-id") String detailId, @Context Request request) {
         return historicDetailService.getVariableData(detailId, request);
     }
 
     @GET
-    @Path("/historic-process-instances")
+    @Path("/history/historic-process-instances")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricProcessInstances(@Context Request request) {
@@ -259,7 +259,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-process-instances/{process-instance-id}")
+    @Path("/history/historic-process-instances/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricProcessInstance(@PathParam("process-instance-id") String processInstanceId,
@@ -270,14 +270,14 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/historic-process-instances/{process-instance-id}")
+    @Path("/history/historic-process-instances/{process-instance-id}")
     public Response deleteHistoricProcessInstance(
             @PathParam("process-instance-id") String processInstanceId) {
         return historicProcessInstanceService.deleteProcessInstance(processInstanceId);
     }
 
     @GET
-    @Path("/historic-process-instances/{process-instance-id}/identity-links")
+    @Path("/history/historic-process-instances/{process-instance-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricProcessIdentityLinks(
@@ -288,7 +288,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-process-instances/{process-instance-id}/variables/{variable-name}/data")
+    @Path("/history/historic-process-instances/{process-instance-id}/variables/{variable-name}/data")
     public Response getHistoricProcessVariableData(@PathParam("process-instance-id") String processInstanceId,
                                                    @PathParam("variable-name") String variableName,
                                                    @Context Request request) {
@@ -297,7 +297,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-process-instances/{process-instance-id}/comments")
+    @Path("/history/historic-process-instances/{process-instance-id}/comments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricProcessComments(@PathParam("process-instance-id") String processInstanceId,
                                                @Context Request request) {
@@ -305,7 +305,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/historic-process-instances/{process-instance-id}/comments")
+    @Path("/history/historic-process-instances/{process-instance-id}/comments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createHistoricProcessComment(@PathParam("process-instance-id") String processInstanceId,
@@ -315,7 +315,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-process-instances/{process-instance-id}/comments/{comment-id}")
+    @Path("/history/historic-process-instances/{process-instance-id}/comments/{comment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricProcessComment(@PathParam("process-instance-id") String processInstanceId,
                                               @PathParam("comment-id") String commentId,
@@ -325,7 +325,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/historic-process-instances/{process-instance-id}/comments/{comment-id}")
+    @Path("/history/historic-process-instances/{process-instance-id}/comments/{comment-id}")
     public Response deleteHistoricProcessComment(@PathParam("process-instance-id") String processInstanceId,
                                                  @PathParam("comment-id") String commentId) {
 
@@ -333,7 +333,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-task-instances")
+    @Path("/history/historic-task-instances")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricTaskInstances(@Context Request request) {
 
@@ -341,7 +341,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-task-instances/{task-id}")
+    @Path("/history/historic-task-instances/{task-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricTaskInstance(@PathParam("task-id") String taskId,
                                             @Context Request request) {
@@ -349,13 +349,13 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/historic-task-instances/{task-id}")
+    @Path("/history/historic-task-instances/{task-id}")
     public Response deleteHistoricTaskInstance(@PathParam("task-id") String taskId) {
         return historicTaskInstanceService.deleteTaskInstance(taskId);
     }
 
     @GET
-    @Path("/historic-task-instances/{task-id}/identitylinks")
+    @Path("/history/historic-task-instances/{task-id}/identitylinks")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricTaskIdentityLinks(@PathParam("task-id") String taskId,
                                                  @Context Request request) {
@@ -363,7 +363,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-task-instances/{task-id}/variables/{variable-name}/data")
+    @Path("/history/historic-task-instances/{task-id}/variables/{variable-name}/data")
     public byte[] getHistoricskTaVariableData(@PathParam("task-id") String taskId,
                                               @PathParam("variable-name") String variableName,
                                               @QueryParam("scope") String scope, @Context Request request) {
@@ -372,7 +372,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/historic-variable-instances")
+    @Path("/history/historic-variable-instances")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getHistoricVariableInstances(@Context Request request) {
         return historicVariableInstanceService.getHistoricVariableInstances(request);
@@ -428,14 +428,14 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/jobs")
+    @Path("/management/jobs")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DataResponse getJobs(@Context Request request) {
         return managementService.getJobs(request);
     }
 
     @GET
-    @Path("/jobs/{job-id}/exception-stacktrace")
+    @Path("/management/jobs/{job-id}/exception-stacktrace")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public String getJobStacktrace(@PathParam("job-id") String jobId) {
         return managementService.getJobStacktrace(jobId);
@@ -443,20 +443,20 @@ public class BPMNRestAPI implements Microservice {
 
 
     @GET
-    @Path("/jobs/{job-id}")
+    @Path("/management/jobs/{job-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JobResponse getJob(@PathParam("job-id") String jobId, @Context Request request) {
         return managementService.getJob(jobId, request);
     }
 
     @DELETE
-    @Path("/jobs/{job-id}")
+    @Path("/management/jobs/{job-id}")
     public void deleteJob(@PathParam("job-id") String jobId) {
         managementService.deleteJob(jobId);
     }
 
     @POST
-    @Path("/jobs/{job-id}")
+    @Path("/management/jobs/{job-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void executeJobAction(@PathParam("job-id") String jobId,
@@ -465,35 +465,35 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/engine")
+    @Path("/management/engine")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ProcessEngineInfoResponse getEngineInfo() {
         return managementService.getEngineInfo();
     }
 
     @GET
-    @Path("/properties")
+    @Path("/management/properties")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Map<String, String> getProperties() {
         return managementService.getProperties();
     }
 
     @GET
-    @Path("/tables")
+    @Path("/management/tables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<TableResponse> getTables(@Context Request request) {
         return managementService.getTables(request);
     }
 
     @GET
-    @Path("/tables/{table-name}/columns")
+    @Path("/management/tables/{table-name}/columns")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public TableMetaData getTableMetaData(@PathParam("table-name") String tableName) {
         return managementService.getTableMetaData(tableName);
     }
 
     @GET
-    @Path("/tables/{table-name}/data")
+    @Path("/management/tables/{table-name}/data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DataResponse getTableData(@PathParam("table-name") String tableName,
                                      @Context Request request,
@@ -504,7 +504,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tables/{table-name}")
+    @Path("/management/tables/{table-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public TableResponse getTable(@PathParam("table-name") String tableName,
                                   @Context Request request) {
@@ -513,14 +513,14 @@ public class BPMNRestAPI implements Microservice {
 
 
     @GET
-    @Path("/deployments")
+    @Path("/repository/deployments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeployments(@Context Request request) {
         return deploymentService.getDeployments(request);
     }
 
     @GET
-    @Path("/deployments/{deployment-id}")
+    @Path("/repository/deployments/{deployment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeployment(@PathParam("deployment-id") String deploymentId,
                                   @Context Request request) {
@@ -529,7 +529,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/deployments/{deployment-id}/resources/{resource-path:.*}")
+    @Path("/repository/deployments/{deployment-id}/resources/{resource-path:.*}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeploymentResourceForDifferentUrl(
             @PathParam("deployment-id") String deploymentId,
@@ -540,7 +540,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/deployments/{deployment-id}/resources")
+    @Path("/repository/deployments/{deployment-id}/resources")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getDeploymentResources(@PathParam("deployment-id") String deploymentId,
                                            @Context Request request) {
@@ -549,14 +549,14 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/deployments/{deployment-id}/resource-data/{resource-id}")
+    @Path("/repository/deployments/{deployment-id}/resource-data/{resource-id}")
     public Response getDeploymentResource(@PathParam("deployment-id") String deploymentId,
                                           @PathParam("resource-id") String resourceId) {
         return deploymentService.getDeploymentResource(deploymentId, resourceId);
     }
 
     @GET
-    @Path("/models")
+    @Path("/repository/models")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getModels(@Context Request request) {
 
@@ -564,7 +564,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-definitions")
+    @Path("/repository/process-definitions")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefinitions(@Context Request request) {
 
@@ -572,7 +572,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-definitions/{process-definition-id}")
+    @Path("/repository/process-definitions/{process-definition-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ProcessDefinitionResponse getProcessDefinition(
             @PathParam("process-definition-id") String processDefinitionId,
@@ -581,7 +581,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-definitions/{process-definition-id}/resource-data")
+    @Path("/repository/process-definitions/{process-definition-id}/resource-data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefinitionResource(
             @PathParam("process-definition-id") String processDefinitionId) {
@@ -590,7 +590,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-definitions/{process-definition-id}/identity-links")
+    @Path("/repository/process-definitions/{process-definition-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessDefintionsIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                                       @Context Request request) {
@@ -599,7 +599,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-definitions/{process-definition-id}/identity-links/{family}/{identity-id}")
+    @Path("/repository/process-definitions/{process-definition-id}/identity-links/{family}/{identity-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLinks(@PathParam("process-definition-id") String processDefinitionId,
                                      @PathParam("family") String family,
@@ -617,7 +617,7 @@ public class BPMNRestAPI implements Microservice {
      * @return ExecutionResponse
      */
     @GET
-    @Path("/executions/{execution-id}")
+    @Path("/runtime/executions/{execution-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getExecution(@PathParam("execution-id") String executionId,
                                  @Context Request request) {
@@ -633,7 +633,7 @@ public class BPMNRestAPI implements Microservice {
      * @return Response
      */
     @PUT
-    @Path("/executions/{execution-id}")
+    @Path("/runtime/executions/{execution-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response performExecutionAction(@PathParam("execution-id") String executionId,
@@ -644,27 +644,27 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/executions/{execution-id}/activities")
+    @Path("/runtime/executions/{execution-id}/activities")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getActiveActivities(@PathParam("execution-id") String executionId) {
         return executionService.getActiveActivities(executionId);
     }
 
     @GET
-    @Path("/executions")
+    @Path("/runtime/executions")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getExecutionsProcessInstances(@Context Request request) {
         return executionService.getProcessInstances(request);
     }
 
     @PUT
-    @Path("/executions")
+    @Path("/runtime/executions")
     public Response executeExecutionAction(ExecutionActionRequest actionRequest) {
         return executionService.executeExecutionAction(actionRequest);
     }
 
     @GET
-    @Path("/executions/{execution-id}/variables")
+    @Path("/runtime/executions/{execution-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getExecutionVariables(@PathParam("execution-id") String executionId,
                                           @QueryParam("scope") String scope, @Context Request req) {
@@ -718,13 +718,13 @@ public class BPMNRestAPI implements Microservice {
 //    }
 
     @DELETE
-    @Path("/executions/{execution-id}/variables")
+    @Path("/runtime/executions/{execution-id}/variables")
     public Response deleteLocalVariables(@PathParam("execution-id") String executionId) {
         return executionService.deleteLocalVariables(executionId);
     }
 
     @GET
-    @Path("/executions/{execution-id}/variables/{variable-name}")
+    @Path("/runtime/executions/{execution-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RestVariable getExecutionVariable(@PathParam("execution-id") String executionId,
                                              @PathParam("variable-name") String variableName,
@@ -756,7 +756,7 @@ public class BPMNRestAPI implements Microservice {
 //    }
 
     @DELETE
-    @Path("/executions/{execution-id}/variables/{variable-name}")
+    @Path("/runtime/executions/{execution-id}/variables/{variable-name}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteVariable(@PathParam("execution-id") String executionId,
                                    @PathParam("variable-name") String variableName,
@@ -765,7 +765,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/executions/{execution-id}/variables/{variable-name}/data")
+    @Path("/runtime/executions/{execution-id}/variables/{variable-name}/data")
     public Response getExecutionVariableData(@PathParam("execution-id") String executionId,
                                              @PathParam("variable-name") String variableName,
                                              @QueryParam("scope") String scope, @Context Request req) {
@@ -775,7 +775,7 @@ public class BPMNRestAPI implements Microservice {
 
 
     @GET
-    @Path("/process-instances")
+    @Path("/runtime/process-instances")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessInstances(@Context Request request) {
 
@@ -783,7 +783,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/process-instances")
+    @Path("/runtime/process-instances")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response startInstance(ProcessInstanceCreateRequest processInstanceCreateRequest,
@@ -793,7 +793,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-instances/{process-instance-id}/diagram")
+    @Path("/runtime/process-instances/{process-instance-id}/diagram")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProcessInstanceDiagram(
             @PathParam("process-instance-id") String processInstanceId) {
@@ -801,7 +801,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-instances/{process-instance-id}")
+    @Path("/runtime/process-instances/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProcessInstance(@PathParam("process-instance-id") String processInstanceId,
                                        @Context Request request) {
@@ -810,7 +810,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/process-instances/{process-instance-id}")
+    @Path("/runtime/process-instances/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteProcessInstance(
             @PathParam("process-instance-id") String processInstanceId,
@@ -820,7 +820,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @PUT
-    @Path("/process-instances/{process-instance-id}")
+    @Path("/runtime/process-instances/{process-instance-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response performProcessInstanceAction(
             @PathParam("process-instance-id") String processInstanceId,
@@ -830,7 +830,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-instances/{process-instance-id}/identity-links")
+    @Path("/runtime/process-instances/{process-instance-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<RestIdentityLink> getIdentityLinks(
             @PathParam("process-instance-id") String processInstanceId,
@@ -839,7 +839,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/process-instances/{process-instance-id}/identity-links")
+    @Path("/runtime/process-instances/{process-instance-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createIdentityLink(@PathParam("process-instance-id") String processInstanceId,
                                        RestIdentityLink identityLink,
@@ -849,7 +849,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-instances/{process-instance-id}/identity-links/users/{identity-id}/{type}")
+    @Path("/runtime/process-instances/{process-instance-id}/identity-links/users/{identity-id}/{type}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getIdentityLink(@PathParam("process-instance-id") String processInstanceId,
                                     @PathParam("identity-id") String identityId,
@@ -859,7 +859,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/process-instances/{process-instance-id}/identity-links/users/{identity-id}/{type}")
+    @Path("/runtime/process-instances/{process-instance-id}/identity-links/users/{identity-id}/{type}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteIdentityLink(@PathParam("process-instance-id") String processInstanceId,
                                        @PathParam("identity-id") String identityId,
@@ -869,7 +869,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-instances/{process-instance-id}/variables")
+    @Path("/runtime/process-instances/{process-instance-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getVariables(@PathParam("process-instance-id") String processInstanceId,
                                  @QueryParam("scope") String scope, @Context Request request) {
@@ -878,7 +878,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/process-instances/{process-instance-id}/variables/{variable-name}")
+    @Path("/runtime/process-instances/{process-instance-id}/variables/{variable-name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getVariable(@PathParam("process-instance-id") String processInstanceId,
@@ -975,7 +975,7 @@ public class BPMNRestAPI implements Microservice {
 //    }
 
     @DELETE
-    @Path("/process-instances/{process-instance-id}/variables/{variable-name}")
+    @Path("/runtime/process-instances/{process-instance-id}/variables/{variable-name}")
     public Response deleteVariable(@PathParam("process-instance-id") String processInstanceId,
                                    @PathParam("variable-name") String variableName,
                                    @QueryParam("scope") String scope,
@@ -986,7 +986,7 @@ public class BPMNRestAPI implements Microservice {
 
 
     @GET
-    @Path("/tasks")
+    @Path("/runtime/tasks")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasks(@Context Request currentRequest) {
 
@@ -995,14 +995,14 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}")
+    @Path("/runtime/tasks/{task-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTask(@PathParam("task-id") String taskId, @Context Request request) {
         return workflowTaskService.getTask(taskId, request);
     }
 
     @PUT
-    @Path("/tasks/{task-id}")
+    @Path("/runtime/tasks/{task-id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response updateTask(@PathParam("task-id") String taskId, TaskRequest taskRequest,
@@ -1012,7 +1012,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/tasks/{task-id}")
+    @Path("/runtime/tasks/{task-id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response executeTaskAction(@PathParam("task-id") String taskId,
                                       TaskActionRequest actionRequest) {
@@ -1020,7 +1020,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/tasks/{task-id}")
+    @Path("/runtime/tasks/{task-id}")
     public Response deleteTask(@PathParam("task-id") String taskId,
                                @DefaultValue("false") @QueryParam("cascadeHistory") Boolean cascadeHistory,
                                @DefaultValue("false") @QueryParam("deleteReason") String deleteReason) {
@@ -1028,7 +1028,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/variables")
+    @Path("/runtime/tasks/{task-id}/variables")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTaskVariables(@PathParam("task-id") String taskId,
@@ -1039,7 +1039,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/variables/{variable-name}")
+    @Path("/runtime/tasks/{task-id}/variables/{variable-name}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RestVariable getTaskVariable(@PathParam("task-id") String taskId,
@@ -1051,7 +1051,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/variables/{variable-name}/data")
+    @Path("/runtime/tasks/{task-id}/variables/{variable-name}/data")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response geTaskTaVariableData(@PathParam("task-id") String taskId,
                                          @PathParam("variable-name") String variableName,
@@ -1119,14 +1119,14 @@ public class BPMNRestAPI implements Microservice {
 //    }
 
     @DELETE
-    @Path("/tasks/{task-id}/variables")
+    @Path("/runtime/tasks/{task-id}/variables")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteAllLocalTaskVariables(@PathParam("task-id") String taskId) {
         return workflowTaskService.deleteAllLocalTaskVariables(taskId);
     }
 
     @GET
-    @Path("/tasks/{task-id}/identity-links")
+    @Path("/runtime/tasks/{task-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasksIdentityLinks(@PathParam("task-id") String taskId,
                                           @Context Request request) {
@@ -1134,7 +1134,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/identity-links/{family}")
+    @Path("/runtime/tasks/{task-id}/identity-links/{family}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasksIdentityLinksForFamily(@PathParam("task-id") String taskId,
                                                    @PathParam("family") String family,
@@ -1158,7 +1158,7 @@ public class BPMNRestAPI implements Microservice {
 //    }
 
     @DELETE
-    @Path("/tasks/{task-id}/identity-links/{family}/{identity-id}/{type}")
+    @Path("/runtime/tasks/{task-id}/identity-links/{family}/{identity-id}/{type}")
     public Response deleteTasksIdentityLink(@PathParam("task-id") String taskId,
                                             @PathParam("family") String family,
                                             @PathParam("identity-id") String identityId,
@@ -1168,7 +1168,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/tasks/{task-id}/identity-links")
+    @Path("/runtime/tasks/{task-id}/identity-links")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createTasksIdentityLink(@PathParam("task-id") String taskId,
                                             RestIdentityLink identityLink,
@@ -1203,7 +1203,7 @@ public class BPMNRestAPI implements Microservice {
 //    }
 
     @GET
-    @Path("/tasks/{task-id}/attachments")
+    @Path("/runtime/tasks/{task-id}/attachments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAttachments(@PathParam("task-id") String taskId,
                                    @Context Request request) {
@@ -1211,7 +1211,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/attachments/{attachment-id}")
+    @Path("/runtime/tasks/{task-id}/attachments/{attachment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAttachment(@PathParam("task-id") String taskId,
                                   @PathParam("attachment-id") String attachmentId,
@@ -1221,7 +1221,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/tasks/{task-id}/attachments/{attachment-id}")
+    @Path("/runtime/tasks/{task-id}/attachments/{attachment-id}")
     public Response deleteAttachment(@PathParam("task-id") String taskId,
                                      @PathParam("attachment-id") String attachmentId) {
 
@@ -1229,7 +1229,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/attachments/{attachment-id}/content")
+    @Path("/runtime/tasks/{task-id}/attachments/{attachment-id}/content")
     public Response getAttachmentContent(@PathParam("task-id") String taskId,
                                          @PathParam("attachment-id") String attachmentId) {
 
@@ -1237,7 +1237,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/comments")
+    @Path("/runtime/tasks/{task-id}/comments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasksComments(@PathParam("task-id") String taskId, @Context Request request) {
 
@@ -1245,7 +1245,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @POST
-    @Path("/tasks/{task-id}/comments")
+    @Path("/runtime/tasks/{task-id}/comments")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createTasksComment(@PathParam("task-id") String taskId, CommentRequest comment,
@@ -1255,7 +1255,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/comments/{comment-id}")
+    @Path("/runtime/tasks/{task-id}/comments/{comment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasksComment(@PathParam("task-id") String taskId,
                                     @PathParam("comment-id") String commentId,
@@ -1265,7 +1265,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/tasks/{task-id}/comments/{comment-id}")
+    @Path("/runtime/tasks/{task-id}/comments/{comment-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteTasksComment(@PathParam("task-id") String taskId,
                                        @PathParam("comment-id") String commentId) {
@@ -1274,14 +1274,14 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @GET
-    @Path("/tasks/{task-id}/events")
+    @Path("/runtime/tasks/{task-id}/events")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasksEvents(@PathParam("task-id") String taskId, @Context Request request) {
         return workflowTaskService.getEvents(taskId, request);
     }
 
     @GET
-    @Path("/tasks/{task-id}/events/{event-id}")
+    @Path("/runtime/tasks/{task-id}/events/{event-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getTasksEvent(@PathParam("task-id") String taskId,
                                   @PathParam("event-id") String eventId, @Context Request request) {
@@ -1290,7 +1290,7 @@ public class BPMNRestAPI implements Microservice {
     }
 
     @DELETE
-    @Path("/tasks/{task-id}/events/{event-id}")
+    @Path("/runtime/tasks/{task-id}/events/{event-id}")
     public Response deleteTasksEvent(@PathParam("task-id") String taskId,
                                      @PathParam("event-id") String eventId) {
 
@@ -1304,7 +1304,7 @@ public class BPMNRestAPI implements Microservice {
      * @return a list of deployed processes with their instance count
      */
     @GET
-    @Path("/process-task-services/deployed-process-count/")
+    @Path("/stats/process-task-services/deployed-process-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getDeployedProcesses() {
         return processAndTaskService.getDeployedProcesses();
@@ -1319,7 +1319,7 @@ public class BPMNRestAPI implements Microservice {
      * @return list with the states and the count of process instances in each state
      */
     @GET
-    @Path("/process-task-services/process-status-count/")
+    @Path("/stats/process-task-services/process-status-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getCountOfProcessInstanceStatus() {
         return processAndTaskService.getCountOfProcessInstanceStatus();
@@ -1332,7 +1332,7 @@ public class BPMNRestAPI implements Microservice {
      * @return list with the states and the count of task instances in each state
      */
     @GET
-    @Path("/process-task-services/task-status-count/")
+    @Path("/stats/process-task-services/task-status-count/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getCountOfTaskInstanceStatus() {
 
@@ -1345,7 +1345,7 @@ public class BPMNRestAPI implements Microservice {
      * @return list with the completed processes and the average time duration taken for each process
      */
     @GET
-    @Path("/process-task-services/avg-duration-to-complete-process/")
+    @Path("/stats/process-task-services/avg-duration-to-complete-process/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAvgTimeDurationForCompletedProcesses() {
         return processAndTaskService.getAvgTimeDurationForCompletedProcesses();
@@ -1359,7 +1359,7 @@ public class BPMNRestAPI implements Microservice {
      * @return list of completed tasks with the average time duration for the selected process
      */
     @GET
-    @Path("/process-task-services/avg-task-duration-for-completed-process/{p-id}")
+    @Path("/stats/process-task-services/avg-task-duration-for-completed-process/{p-id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("p-id") String pId) {
         return processAndTaskService.avgTaskTimeDurationForCompletedProcesses(pId);
@@ -1371,7 +1371,7 @@ public class BPMNRestAPI implements Microservice {
      * @return array with the no. of tasks started and completed over the months
      */
     @GET
-    @Path("/process-task-services/task-variation/")
+    @Path("/stats/process-task-services/task-variation/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime() {
         return processAndTaskService.taskVariationOverTime();
@@ -1383,7 +1383,8 @@ public class BPMNRestAPI implements Microservice {
      * @return array with the no. of processes started and completed over the months
      */
     @GET
-    @Path("/process-task-services/process-variation/")
+
+    @Path("/stats/process-task-services/process-variation/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder processVariationOverTime() {
         return processAndTaskService.processVariationOverTime();
@@ -1395,7 +1396,7 @@ public class BPMNRestAPI implements Microservice {
      * @return list with the processDefinitions of all deployed processes
      */
     @GET
-    @Path("/process-task-services/all-processes/")
+    @Path("/stats/process-task-services/all-processes/")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAllProcesses() {
         return processAndTaskService.getAllProcesses();
@@ -1407,7 +1408,7 @@ public class BPMNRestAPI implements Microservice {
      * @return list with the processDefinitions of all deployed processes
      */
     @GET
-    @Path("/process-task-services/count-of-processes/")
+    @Path("/stats/process-task-services/count-of-processes/")
     @Produces(MediaType.APPLICATION_JSON)
     public long getProcessCount() {
         return processAndTaskService.getProcessCount();
