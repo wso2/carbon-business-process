@@ -75,6 +75,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -594,6 +595,16 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         }
         return result;
     }
+
+    @DELETE
+    @Path(value="/{processInstanceId}/variables")
+    public Response deleteLocalVariables(@PathParam("processInstanceId") String processInstanceId) {
+        Execution execution = getProcessInstanceFromRequest(processInstanceId);
+        deleteAllLocalVariables(execution);
+        return Response.ok().status(Response.Status.NO_CONTENT).build();
+    }
+
+
 
     @GET
     @Path("/{processInstanceId}/variables/{variableName}/data")
@@ -1348,4 +1359,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         correlationActionRequest.setAction(CorrelationActionRequest.ACTION_MESSAGE_EVENT_RECEIVED);
         return new CorrelationProcess().getQueryResponse(correlationActionRequest, uriInfo);
     }
+
+    protected void deleteAllLocalVariables(Execution execution) {
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
+        Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
+        runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
+    }
+
+
 }
