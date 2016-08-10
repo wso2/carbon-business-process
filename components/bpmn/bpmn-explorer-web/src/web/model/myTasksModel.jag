@@ -67,5 +67,6 @@ try {
 }
 //Set current active veiw as myTasks view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
-myTasksNavActive = 'class="active"';
+myTasksNavActive = 'active';
+taskMenuNavActive = 'active';
 %>

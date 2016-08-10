@@ -188,7 +188,6 @@ public class TenantRepository {
                 return;
             }
             deploymentEntry.setProperty(BPMNConstants.LATEST_CHECKSUM_PROPERTY, checksum);
-            tenantRegistry.put(deploymentRegistryPath, deploymentEntry);
 
             // Deploy the package in the Activiti engine
             ProcessEngine engine = BPMNServerHolder.getInstance().getEngine();
@@ -197,9 +196,14 @@ public class TenantRepository {
             archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
             deploymentBuilder.addZipInputStream(archiveStream);
             deploymentBuilder.deploy();
+            tenantRegistry.put(deploymentRegistryPath, deploymentEntry);
         } catch (Exception e) {
             String errorMessage = "Failed to deploy the archive: " + deploymentContext.getBpmnArchive().getName();
             log.error(errorMessage, e);
+            // Remove the deployment archive from the tenant's deployment folder
+            File deploymentArchive = new File(repoFolder, deploymentContext.getBpmnArchive().getName());
+            FileUtils.deleteQuietly(deploymentArchive);
+            log.info("Removing the faulty archive : " + deploymentContext.getBpmnArchive().getName());
             throw new DeploymentException(errorMessage, e);
         } finally {
             if (archiveStream != null) {

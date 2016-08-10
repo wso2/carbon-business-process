@@ -19,7 +19,7 @@
 package org.wso2.carbon.bpmn.core.types.datatypes.json.api;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.wso2.carbon.bpmn.core.types.datatypes.json.JSONUtils;
 
 import java.io.IOException;
 
@@ -27,8 +27,6 @@ import java.io.IOException;
  * Json API for BPMN JSON data type support
  */
 public class JSON {
-    
-    private ObjectMapper objectMapper = null;
 
     /**
      * Function to parse string to JsonNode
@@ -37,10 +35,7 @@ public class JSON {
      * @throws IOException thrown when error occurred during parsing the string
      */
     public JsonNodeObject parse (String jsonStr) throws IOException {
-        if (objectMapper == null) {
-            objectMapper = new ObjectMapper();
-        }
-        return new JsonNodeObject(objectMapper.readTree(jsonStr));
+        return JSONUtils.parse(jsonStr);
     }
 
     /**
@@ -49,9 +44,6 @@ public class JSON {
      * @return serialized jsonNode
      */
     public String stringify (JsonNodeObject jsonObj) {
-        if (jsonObj != null) {
-            return jsonObj.toString();
-        }
-        return null;
+        return JSONUtils.stringify(jsonObj);
     }
 }

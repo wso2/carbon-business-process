@@ -162,7 +162,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             throw new RestApiBasicAuthenticationException("User doesn't have the necessary permission to start the process");
         }
 
-        if (processInstanceCreateRequest.getSkipInstanceCreationIfExist()) {
+        if (processInstanceCreateRequest.getSkipInstanceCreation() || processInstanceCreateRequest.getSkipInstanceCreationIfExist()) {
+
             ProcessInstanceQueryRequest processInstanceQueryRequest = processInstanceCreateRequest
                     .cloneInstanceCreationRequest();
             Map<String, String> allRequestParams = allRequestParams(uriInfo);
@@ -179,7 +180,7 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                 if(processInstanceCreateRequest.getCorrelate()){
 
                     if(dataResponseSize != 1){
-                        String responseMessage = "Join correlation failed as there are more than one instances with " +
+                        String responseMessage = "Correlation matching failed as there are more than one matching instance with " +
                                 "given variables state";
                         throw new NotFoundException(Response.ok().entity(responseMessage).status(Response.Status
                                 .NOT_FOUND).build());
@@ -188,13 +189,14 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
                     //process the correlation aspect now
 
                     if(processInstanceCreateRequest.getMessageName() == null){
-                        String responseMessage = "Join correlation failed as message name has not been mentioned";
+                        String responseMessage = "Correlation matching failed as messageName property is not specified";
                         throw new ActivitiIllegalArgumentException(responseMessage);
                     }
 
                     return performCorrelation(processInstanceCreateRequest);
                 } else {
-                    dataResponse.setMessage("Returned the existing instances");
+
+                    dataResponse.setMessage("Instance information corresponding to the request");
                     return Response.ok().entity(dataResponse).build();
                 }
             }

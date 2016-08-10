@@ -202,7 +202,6 @@ public class ProcessStatisticsService {
      * @return list with the completed processes and the average time duration taken for each process
      */
     @GET
-//    @Path("/avgDurationToCompleteProcess/")
     @Path("/process-instances/duration/average")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder getAvgTimeDurationForCompletedProcesses() {
@@ -251,7 +250,6 @@ public class ProcessStatisticsService {
      * @return list of completed tasks with the average time duration for the selected process
      */
     @GET
-//    @Path("/avgTaskDurationForCompletedProcess/{pId}")
     @Path("/task-instances/duration/avarage/{pid}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder avgTaskTimeDurationForCompletedProcesses(@PathParam("pid") String pId) {
@@ -327,7 +325,6 @@ public class ProcessStatisticsService {
      * @return array with the no. of tasks started and completed over the months
      */
     @GET
-//    @Path("/taskVariation/
     @Path("/task-instances/count/variation")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public ResponseHolder taskVariationOverTime() {
@@ -541,105 +538,6 @@ public class ProcessStatisticsService {
         response.setData(list);
         return response;
     }
-
-//    /**
-//     * @return list of users retrieved from the UserStore
-//     */
-//    @GET
-//    @Path("/users/")
-//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    public ResponseHolder getUserList() throws UserStoreException {
-//        Object[] users = null;
-//        ResponseHolder response = new ResponseHolder();
-//        users = (Object[]) BPMNOSGIService.getUserRealm().getUserStoreManager().listUsers("*", -1);
-//        response.setData(Arrays.asList(users));
-//        return response;
-//    }
-
-    /**
-     * Get the No.of tasks completed by each user
-     *
-     * @return list with the no.of tasks completed by each user
-     */
-//    @GET
-//    @Path("/user-performance/task-instances/count")
-//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    public ResponseHolder getNoOfTasksCompletedByUser() throws UserStoreException {
-//
-//        List listOfUsers = new ArrayList<>();
-//        ResponseHolder response = new ResponseHolder();
-//        String[] users = (String[]) getUserList().getData().toArray();
-//        for (String u : users) {
-//            UserTaskCountInfo userInfo = new UserTaskCountInfo();
-//            userInfo.setUserName(u);
-//            String assignee;
-//            if (getTenantDomain().equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
-//                assignee = u;
-//            } else {
-//                assignee = u.concat("@").concat(getTenantDomain());
-//            }
-//            long count = BPMNOSGIService.getHistoryService()
-//                    .createHistoricTaskInstanceQuery().taskTenantId(getTenantIdStr()).taskAssignee(assignee).finished().count();
-//
-//            userInfo.setTaskCount(count);
-//            listOfUsers.add(userInfo);
-//        }
-//        response.setData(listOfUsers);
-//
-//        return response;
-//    }
-//
-//    /**
-//     * Get the average time duration taken by each user to complete tasks
-//     *
-//     * @return list with the average time duration taken by each user to complete tasks
-//     */
-//    @GET
-//    @Path("/user-performance/task-instances/duration/avarage/")
-//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    public ResponseHolder getAvgDurationForTasksCompletedByUser() throws UserStoreException {
-//
-//        HistoryService historyService = BPMNOSGIService.getHistoryService();
-//        List listOfUsers = new ArrayList<>();
-//        ResponseHolder response = new ResponseHolder();
-//
-//        String[] users = (String[]) getUserList().getData().toArray();
-//        for (String u : users) {
-//
-//            UserTaskDuration userInfo = new UserTaskDuration();
-//            userInfo.setUserName(u);
-//
-//            String assignee;
-//            if (getTenantDomain().equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
-//                assignee = u;
-//            } else {
-//                assignee = u.concat("@").concat(getTenantDomain());
-//            }
-//
-//            long count = historyService.createHistoricTaskInstanceQuery()
-//                            .taskTenantId(getTenantIdStr()).taskAssignee(assignee).finished().count();
-//            if (count == 0) {
-//                userInfo.setAvgTimeDuration(0);
-//            } else {
-//                List<HistoricTaskInstance> taskList = historyService.createHistoricTaskInstanceQuery()
-//                        .taskTenantId(getTenantIdStr()).taskAssignee(assignee).finished().list();
-//                double totalTime = 0;
-//                double avgTime = 0;
-//                for (HistoricTaskInstance instance : taskList) {
-//                    double taskDuration = instance.getDurationInMillis();
-//                    totalTime = totalTime + taskDuration;
-//                }
-//                avgTime = (totalTime / count) / 1000;
-//                userInfo.setAvgTimeDuration(avgTime);
-//            }
-//            listOfUsers.add(userInfo);
-//        }
-//        response.setData(listOfUsers);
-//
-//        return response;
-//    }
-
-
 
     private int getTenantId() {
         return PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId(true);

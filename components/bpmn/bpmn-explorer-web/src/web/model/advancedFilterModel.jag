@@ -214,5 +214,6 @@ if (request.getQueryString() != null) {
 
 //Set current active view as advancedFilter view.
 //This is used to highlight current view which the user currently viewing in the navigation bar
-advancedFilterNavActive = 'class="active"';
+advancedFilterNavActive = 'active';
+monitoringMenuNavActive = 'active'; //This will highlight Monitoring menu tab
 %>

@@ -27,65 +27,91 @@
 </div>
 <% if(isProcessesDeployed == true) { %>
 <div class="row">
-	
-	<script src="js/bootstrap-select.min.js"></script>
-    <div class="margin-left-double table-title"> <%=i18n.localize("process.Monitoring" , "Process Monitoring")%> </div>
-  	<div class="margin-left-double">
-	    <div class="col-sm-2 col-md-2 col-lg-2 table-status-column" style="height:50%">   
-	    	<br/>
-	    	<label for="instanceId"><%=i18n.localize( "process.instance.id" , "Process instance ID")%> </label>
-	    	<br/>
-            <input id="instanceId" name="instanceId" type="text" value="<%=instanceId%>" class="form-control" 
-            placeholder='<%=i18n.localize("enter.process.instance.id","Enter Process Instance ID")%>'>
-            <br/>
-            <input type="button" class="btn btn-default btn-info" onclick="filterResults((document.getElementById('instanceId').value).replace(/ /g,''))"
-             value='<%=i18n.localize("view.details" , "View Details")%>'>
-             <br/>
-             <a href="advancedFilter"> <%=i18n.localize("filter.instances" , "Filter the instances")%>  </a>
-             <br/>
-             <div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden style="display: none;">
-	                <button type="button" class="close" onclick="$('#transferErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"> <%=i18n.localize("close" , "Close")%> </span></button>
-	                <p id="transferErrMsg"></p>		              
-	          </div>		    	
-	    </div>
-	
-    	<div class="col-sm-10 col-md-10 col-lg-10">
-    		<div style="border:4px solid black; height:50%; overflow-y: scroll; overflow-x: scroll">
-    			<img id="imageHolder"  src="<%=imageUrl%>"/>
-    		</div>
-        </div> 
-    </div>  
+	<div class="col-lg-12 col-md-12 col-sm-12">
+        <script src="js/bootstrap-select.min.js"></script>
+        <a data-toggle="collapse" href="#processImage" aria-expanded="true" class="collapsing-h2">
+            <div class="table-title" style="width:100%">
+                <span class="fw-stack sub-tab-table-title-icon">
+                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                    <i class="fw fw-file-browse fw-stack-1x"></i>
+                </span>
+                <span>
+                    <%=i18n.localize("process.monitoring" , "Process Monitoring")%>
+                </span>
+            </div>
+        </a>
+        <div class="collapse in" id="processImage" aria-expanded="true">
+            <div class="panel panel-default" style="width:100%">
+                <div class="col-sm-2 col-md-2 col-lg-2 table-status-column" style="height:50%">   
+                	<br/>
+                	<label for="instanceId"><%=i18n.localize( "process.instance.id" , "Process instance ID")%> </label>
+                	<br/>
+                    <input id="instanceId" name="instanceId" type="text" value="<%=instanceId%>" class="form-control" 
+                    placeholder='<%=i18n.localize("enter.process.instance.id","Enter Process Instance ID")%>'>
+                    <br/>
+                    <input type="button" class="btn btn-default btn-info" onclick="filterResults((document.getElementById('instanceId').value).replace(/ /g,''))"
+                     value='<%=i18n.localize("view.details" , "View Details")%>'>
+                    <br/>
+                    <a href="advancedFilter"><%=i18n.localize("filter.instances" , "Filter the instances")%></a>
+                    <br/>
+                    <div id="transferErrorMessageArea" class="alert alert-danger alert-dismissible" role="alert" align="left" hidden style="display: none;">
+                        <button type="button" class="close" onclick="$('#transferErrorMessageArea').hide();"><span aria-hidden="true">&times;</span><span class="sr-only"> <%=i18n.localize("close" , "Close")%> </span></button>
+                        <p id="transferErrMsg"></p>		              
+                    </div>	    	
+                </div>
+
+                <div class="col-sm-10 col-md-10 col-lg-10">
+                    <div style="border:4px solid black; height:50%; overflow-y: scroll; overflow-x: scroll">
+                        <img id="imageHolder"  src="<%=imageUrl%>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>  
 <div class="row">        
-	<div class="col-sm-12 col-md-12 col-lg-12">
-        <br/>
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#auditLog" aria-controls="auditLog" role="tab" data-toggle="tab"><%=i18n.localize("audit.log" , "Audit Log")%></a>
-            </li>
-            <li role="presentation">
-                <a href="#variables" aria-controls="variables" role="tab" data-toggle="tab"><%=i18n.localize("variables" , "Variables")%></a>
-            </li>
-            <li role="presentation">
-                <a href="#userTasks" aria-controls="userTasks" role="tab" data-toggle="tab"><%=i18n.localize("user.tasks" , "User Tasks")%></a>
-            </li>
-            <li role="presentation">
-                <a href="#calledInstances" aria-controls="calledInstances" role="tab" data-toggle="tab"><%=i18n.localize("called.instances" , "Caller Instance")%></a>
-            </li>
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="auditLog">
-                <h3><%=i18n.localize("select.audit.log" , "Select a process instance to view the audit log ")%></h3>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <a data-toggle="collapse" href="#processDetails" aria-expanded="true" class="collapsing-h2">
+            <div class="table-title" style="width:100%">
+                <div style="float: left;">
+                    <i class="cu-btn-exp-col btn-collapsed"></i>
+                </div>
+                <div>
+                    <%=i18n.localize("process.details" , "Process Details")%>
+                </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="variables">
-                <h3><%=i18n.localize("select.variables" , "Select a process instance to view the variables")%></h3>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="userTasks">
-                <h3><%=i18n.localize("select.user.tasks" , "Select a process instance to view the user tasks")%></h3>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="calledInstances">
-                <h3><%=i18n.localize("select.called.instances","Select a process instance to view the called process instances")%></h3>
+        </a>
+        <div class="collapse in" id="processDetails" aria-expanded="true">
+            <div class="panel panel-default" style="width:100%">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#auditLog" aria-controls="auditLog" role="tab" data-toggle="tab"><%=i18n.localize("audit.log" , "Audit Log")%></a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#variables" aria-controls="variables" role="tab" data-toggle="tab"><%=i18n.localize("variables" , "Variables")%></a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#userTasks" aria-controls="userTasks" role="tab" data-toggle="tab"><%=i18n.localize("user.tasks" , "User Tasks")%></a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#calledInstances" aria-controls="calledInstances" role="tab" data-toggle="tab"><%=i18n.localize("called.instances" , "Caller Instance")%></a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="auditLog">
+                        <h3><%=i18n.localize("select.audit.log" , "Select a process instance to view the audit log ")%></h3>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="variables">
+                        <h3><%=i18n.localize("select.variables" , "Select a process instance to view the variables")%></h3>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="userTasks">
+                        <h3><%=i18n.localize("select.user.tasks" , "Select a process instance to view the user tasks")%></h3>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="calledInstances">
+                        <h3><%=i18n.localize("select.called.instances","Select a process instance to view the called process instances")%></h3>
+                    </div>
+                </div>
             </div>
         </div>
 	</div>	

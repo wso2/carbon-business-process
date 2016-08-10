@@ -19,12 +19,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisher;
+import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisherException;
+import org.wso2.carbon.bpmn.analytics.publisher.BPSAnalyticsServer;
+import org.wso2.carbon.bpmn.analytics.publisher.BPSAnalyticsService;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
- * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent" immediate="true"
+ * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent"
+ * immediate="true"
  * @scr.reference name="realm.service" interface="org.wso2.carbon.user.core.service.RealmService"
  * cardinality="1..1" policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
@@ -33,65 +37,80 @@ import org.wso2.carbon.user.core.service.RealmService;
  * cardinality="1..1" policy="dynamic" bind="setBPMNEngineService" unbind="unsetBPMNEngineService"
  */
 public class BPMNAnalyticsServiceComponent {
-	private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
+    private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
 
-	/**
-	 * Activate BPMN analytics component.
-	 *
-	 * @param ctxt ComponentContext
-	 */
-	protected void activate(ComponentContext ctxt) {
-		log.info("Initializing the BPMN Analytics Service component...");
-	}
+    /**
+     * Activate BPMN analytics component.
+     *
+     * @param ctxt ComponentContext
+     */
+    protected void activate(ComponentContext ctxt) {
 
-	public void setBPMNEngineService(BPMNEngineService bpmnEngineService) {
-		BPMNAnalyticsHolder.getInstance().setBpmnEngineService(bpmnEngineService);
-		try {
-			BPMNDataPublisher BPMNDataPublisher = new BPMNDataPublisher();
-			BPMNAnalyticsHolder.getInstance().setBpmnDataPublisher(BPMNDataPublisher);
-			BPMNDataPublisher.configure();
-		} catch (Throwable e) {
-			log.error("Failed to initialize the BPMN analytics data publishing.", e);
-		}
-	}
+        try {
+            BPMNAnalyticsHolder bpmnAnalyticsHolder = BPMNAnalyticsHolder.getInstance();
+            initAnalyticsServer(bpmnAnalyticsHolder);
+            BPSAnalyticsService bpsAnalyticsService = new BPSAnalyticsService();
+            bpsAnalyticsService.setBPSAnalyticsServer(bpmnAnalyticsHolder.getBPSAnalyticsServer());
+            // Register BPS analytics Service OSGI Service
+            ctxt.getBundleContext().registerService(BPSAnalyticsService.class.getName(),
+                    bpsAnalyticsService, null);
+            BPMNDataPublisher BPMNDataPublisher = new BPMNDataPublisher();
+            BPMNAnalyticsHolder.getInstance().setBpmnDataPublisher(BPMNDataPublisher);
+            BPMNDataPublisher.configure();
+            log.info("Initializing the BPMN Analytics Service component...");
+        } catch (Throwable e) {
+            log.error("Failed to initialize the BPMN Analytics Service component.", e);
+        }
+    }
 
-	public void unsetBPMNEngineService(BPMNEngineService bpmnEngineService) {
-		BPMNAnalyticsHolder.getInstance().setBpmnEngineService(null);
-	}
+    public void setBPMNEngineService(BPMNEngineService bpmnEngineService) {
+        BPMNAnalyticsHolder.getInstance().setBpmnEngineService(bpmnEngineService);
+    }
 
-	/**
-	 * Set RegistryService instance when bundle get bind to OSGI runtime.
-	 *
-	 * @param registryService
-	 */
-	public void setRegistryService(RegistryService registryService) {
-		BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
-	}
+    public void unsetBPMNEngineService(BPMNEngineService bpmnEngineService) {
+        BPMNAnalyticsHolder.getInstance().setBpmnEngineService(null);
+    }
 
-	/**
-	 * Unset RegistryService instance when bundle get unbind from OSGI runtime.
-	 *
-	 * @param registryService
-	 */
-	public void unsetRegistryService(RegistryService registryService) {
-		BPMNAnalyticsHolder.getInstance().setRegistryService(null);
-	}
+    /**
+     * Set RegistryService instance when bundle get bind to OSGI runtime.
+     *
+     * @param registryService
+     */
+    public void setRegistryService(RegistryService registryService) {
+        BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
+    }
 
-	/**
-	 * Set RealmService instance when bundle get bind to OSGI runtime.
-	 *
-	 * @param realmService
-	 */
-	public void setRealmService(RealmService realmService) {
-		BPMNAnalyticsHolder.getInstance().setRealmService(realmService);
-	}
+    /**
+     * Unset RegistryService instance when bundle get unbind from OSGI runtime.
+     *
+     * @param registryService
+     */
+    public void unsetRegistryService(RegistryService registryService) {
+        BPMNAnalyticsHolder.getInstance().setRegistryService(null);
+    }
 
-	/**
-	 * Unset RealmService instance when bundle get unbind from OSGI runtime.
-	 *
-	 * @param realmService
-	 */
-	public void unsetRealmService(RealmService realmService) {
-		BPMNAnalyticsHolder.getInstance().setRealmService(null);
-	}
+    /**
+     * Set RealmService instance when bundle get bind to OSGI runtime.
+     *
+     * @param realmService
+     */
+    public void setRealmService(RealmService realmService) {
+        BPMNAnalyticsHolder.getInstance().setRealmService(realmService);
+    }
+
+    /**
+     * Unset RealmService instance when bundle get unbind from OSGI runtime.
+     *
+     * @param realmService
+     */
+    public void unsetRealmService(RealmService realmService) {
+        BPMNAnalyticsHolder.getInstance().setRealmService(null);
+    }
+
+    // Initializing the analytics server .
+    private void initAnalyticsServer(BPMNAnalyticsHolder bpmnAnalyticsHolder)
+            throws BPMNDataPublisherException {
+        bpmnAnalyticsHolder.setBPSAnalyticsServer(new BPSAnalyticsServer());
+        bpmnAnalyticsHolder.getBPSAnalyticsServer().init();
+    }
 }

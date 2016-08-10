@@ -27,29 +27,40 @@
 </div>
 <%if (commonErrorMessage == null) {%>
 <div class="row">
- 	<div class="panel-inbox">
-      	<div class=" margin-left-double table-title"><%=i18n.localize("claimable.tasks", "Claimable Tasks")%></div>
-    	<div class="table-body margin-left-double">
-	  	  <!-- Table -->
-		  <table class="table">
-		    <thead>
-		    	<tr class="table-title-row">
-		    		<th><%=i18n.localize("id", "ID")%></th>
-		    		<th><%=i18n.localize("task.name", "Task Name")%></th>
-		    	</tr
-		    </thead>
-		    <tbody>
-		    	<% for (var i = 0; i < task.length; i++) { %>
-			    	<tr class="white-bg" style="cursor:pointer;" onclick="window.location='claimTask?id=<%=task[i].id%>'"
-		                onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
-			    		<td><%=task[i].id%></td>
-						<td><%=task[i].name%></td>
-					</tr>
-		    	<% } %>
-		    </tbody>
-		  </table>
-		</div>
-
+ 	<div class="col-lg-12 col-md-12 col-sm-12">
+        <a data-toggle="collapse" href="#claimableTaskList" aria-expanded="true" class="collapsing-h2">
+            <div class="table-title" style="width:100%">
+                <span class="fw-stack sub-tab-table-title-icon">
+                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                    <i class="fw fw-list fw-stack-1x"></i>
+                </span>
+                <span>
+                    <%=i18n.localize("claimable.tasks", "Claimable Tasks")%>
+                </span>
+            </div>
+        </a>
+        <div class="collapse in" id="claimableTaskList" aria-expanded="true">
+            <div class="panel panel-default" style="width:100%">
+                <!-- Table -->
+                <table class="table table-condensed table-hover">
+                    <thead>
+                        <tr class="table-title-row">
+                            <th><%=i18n.localize("id", "ID")%></th>
+                            <th><%=i18n.localize("task.name", "Task Name")%></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% for (var i = 0; i < task.length; i++) { %>
+                        <tr class="white-bg" style="cursor:pointer;" onclick="window.location='claimTask?id=<%=task[i].id%>'"
+                            onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                            <td><%=task[i].id%></td>
+                            <td><%=task[i].name%></td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 		<%
 			var numberOfPages = paginatePageCount;
 			var currentPage = parseInt(pagination);

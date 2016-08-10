@@ -86,14 +86,16 @@ $(document).ready(function () {
 
     $("#collapseList").on("hide.bs.collapse", function(){
         var hiddencnt = document.getElementById("hiddenCmtCount").value;
-        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-down"></span><h3>Number of hidden Comments : ' +hiddencnt +'</h3>');
+        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-down"></span><span> ' + hiddencnt + 
+                                    ' Hidden Comments </span><span class="text-danger" style="font-size: 10px;"> (Click to view) </span>');
     });
 
     $("#collapseList").on("show.bs.collapse", function(){
-        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-up"></span><h3>No hidden Comments</h3>');
+        $("#collapsebtn").html('<span class="glyphicon glyphicon-collapse-up"></span> <span> No hidden Comments </span>' + 
+                                    '<span class="text-danger" style="font-size: 10px;"> (Click to collapse) </span>');
     });
 
-    var pagination = document.getElementById("pagCount").value;
+    /*var pagination = document.getElementById("pagCount").value;
     var tab = document.getElementById("tabOutput").value;
     if (pagination >= 0 && tab == "attachmentTab") {
         event= window.event;
@@ -106,7 +108,7 @@ $(document).ready(function () {
     else {
         event= window.event;
         display(event, "attachmentTab");
-    }
+    }*/
 });
 
 function display(evt, tabId) {
@@ -140,9 +142,8 @@ function completeTask(data, id) {
             var variables = [];
             var emptyVar = true;
             for (var i = 0; i < data.length; i++) {
-
                 for (var j = 0; j < vData.length; j++) {
-                    if (vData[j].name == data[i].name) {
+                    if (vData[j].id == data[i].name) {
                         if (vData[j].required && vData[j].writable && data[i].value == "") {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
@@ -151,13 +152,29 @@ function completeTask(data, id) {
                             document.getElementById("loadingCompleteButton").hidden = true;
                             document.getElementById("completeButton").style.display = '';
                             return;
+                        } else {
+                            if (vData[j].type === "string") {
+
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                                "type" : "string"
+                                            });
+                            } else if (vData[j].type === "enum") {
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                            });
+                            } else {
+                                variables.push({
+                                                "name": data[i].name,
+                                                "value": JSON.parse(data[i].value),
+                                                "type" : vData[j].type
+                                            });
+                            }
                         }
                     }
                 }
-                variables.push({
-                    "name": data[i].name,
-                    "value": data[i].value
-                });
             }
             if (emptyVar == true) {
                 var body = {
@@ -391,14 +408,31 @@ function startProcessWithData(data, id) {
                             document.getElementById("startProcessButton").style.display = '';
                             document.getElementById("loadingStartProcessButton").hidden = true;
                             return;
+                        } else {
+
+                            if (vData[j].type === "string") {
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                                "type" : "string"
+                                            });
+                            } else if (vData[j].type === "enum") {
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value" : data[i].value,
+                                            });
+                            } else {
+                                variables.push({
+                                                "name": data[i].name,
+                                                "value": JSON.parse(data[i].value),
+                                                "type" : vData[j].type
+                                            });
+                            }
                         }
                     }
                 }
-                variables.push({
-                    "name": data[i].name,
-                    "value": data[i].value
-                });
             }
+
             var body = {
                 "processDefinitionId": id,
                 "variables": variables
@@ -1110,7 +1144,7 @@ function getUserTasksOfCompletedProcessInstances(id) {
 
             $("#userTasks").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
+            var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Definition Key</td><td>Task Name</td><td>Start time</td><td>End time</td><td>Assignee</td><td>Duration</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
@@ -1147,7 +1181,7 @@ function getVariablesOfCompletedProcessInstances(id) {
                 var DIV = "<h3> No variables for this process instance </h3>";
                 $("#variables").html(DIV);
             } else {
-                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.data.length; k++) {
                     var name = variableInfo.data[k].variable.name;
                     var type = variableInfo.data[k].variable.type;
@@ -1189,7 +1223,7 @@ function getAuditLogForCompletedProcessInstances(id) {
 
             $("#auditLog").html("");
             var completedTaskInstances = JSON.parse(data);
-            var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+            var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
             for (var k = 0; k < completedTaskInstances.data.length; k++) {
 
                 var state = "Completed";
@@ -1241,7 +1275,7 @@ function getCalledProcessInstancesOfCompleted(id) {
 
                         var calledPInfo = JSON.parse(data);
                         $("#calledInstances").html("");
-                        var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
+                        var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Instance Id </td><td>Process Definition</td><td>Start Time</td><td>End Time</td><td>Time Duration</td></thead><tbody>"
 
                         var id = calledPInfo.id;
                         var processDefinitionId = calledPInfo.processDefinitionId;
@@ -1296,7 +1330,7 @@ function getAuditLogForRunningProcessInstances(pid, id) {
                     $("#auditLog").html("");
                     var taskList2 = JSON.parse(data);
 
-                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
+                    var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Activity Name</td><td>Activity Type</td><td>State</td><td>Start Time</td><td>End Time</td><td>Task Id</td><td>Activity Instance Id</td></thead><tbody>"
 
                     for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1359,7 +1393,7 @@ function getVariablesOfRunningProcessInstances(id) {
             var variableInfo = JSON.parse(data);
             var DIV = "<h3> No variables for this process instance </h3>";
             if (variableInfo.restVariables.length > 0) {
-                var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
+                var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.restVariables.length; k++) {
                     var name = variableInfo.restVariables[k].name;
                     var type = variableInfo.restVariables[k].type;
@@ -1398,7 +1432,7 @@ function getUserTasksOfRunningProcessInstances(pid, id) {
                     $("#userTasks").html("");
                     var taskList2 = JSON.parse(data);
 
-                    var DIV = "<div style='height:100%;overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
+                    var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>State</td><td>Task Name</td><td>Task Definition Key</td><td>Start Time</td><td>End Time</td><td>Time Duration</td><td>Assignee</td></thead><tbody>"
 
                     for (var k = 0; k < taskList.data.length; k++) {
 
@@ -1566,14 +1600,17 @@ function addNewSubstitute (assignee, subName, startDate, endDate) {
         }
 
         //create end time Date object
-        var endTimeStrArr = endDate.split(' ');
-        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-        var endTime = new Date(endDateTimeStr);
-        var endTimeStr = "";
-        try {
-            endTimeStr = endTime.toISOString()
-        } catch (error) {
-            throw "Please provide valid end time";
+        var endTimeStr = null;
+        if (endDate.length > 0) {
+            var endTimeStrArr = endDate.split(' ');
+            var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+            var endTime = new Date(endDateTimeStr);
+            
+            try {
+                endTimeStr = endTime.toISOString()
+            } catch (error) {
+                throw "Please provide valid end time";
+            }
         }
 
         //json request
@@ -1648,14 +1685,16 @@ function updateSubstitute (assignee, subName, startDate, endDate) {
         }
 
         //create end time Date object
-        var endTimeStrArr = endDate.split(' ');
-        var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
-        var endTime = new Date(endDateTimeStr);
-        var endTimeStr = "";
-        try {
-            endTimeStr = endTime.toISOString()
-        } catch (error) {
-            throw "Please provide valid end time";
+        var endTimeStr = null;
+        if (endDate.length > 0) {
+            var endTimeStrArr = endDate.split(' ');
+            var endDateTimeStr = endTimeStrArr[0] + ' ' + endTimeStrArr[1] + ' ' + endTimeStrArr[2];
+            var endTime = new Date(endDateTimeStr);
+            try {
+                endTimeStr = endTime.toISOString()
+            } catch (error) {
+                throw "Please provide valid end time";
+            }
         }
 
         //json request
