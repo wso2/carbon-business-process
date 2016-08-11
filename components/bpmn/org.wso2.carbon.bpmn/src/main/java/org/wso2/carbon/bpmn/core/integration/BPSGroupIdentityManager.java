@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class BPSGroupIdentityManager extends GroupEntityManager {
 
-    private static Logger log = LoggerFactory.getLogger(BPSUserIdentityManager.class);
+    private static Logger log = LoggerFactory.getLogger(BPSGroupIdentityManager.class);
 
     private IdentityStore identityStore;
 
