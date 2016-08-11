@@ -124,7 +124,6 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
         List<AnalyticsKey> correlationAnalyticsKeyList = stream.getCorrelationAnalyticsKeyList();
         int objectListSize = correlationAnalyticsKeyList.size();
         Object[] dataArray = new Object[objectListSize];
-//        dataArray[0] = context.getInternalInstance().getPid().toString();
         int startIndex = 0;
         fillDataArray(dataArray, correlationAnalyticsKeyList, startIndex, context, element);
         return dataArray;
@@ -133,11 +132,8 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
     private Object[] createMetadata(AnalyticsStreamConfiguration stream, ExtensionContext context, Element element)
             throws FaultException {
         List<AnalyticsKey> metaAnalyticsKeyList = stream.getMetaAnalyticsKeyList();
-
         int objectListSize = metaAnalyticsKeyList.size();
         Object[] dataArray = new Object[objectListSize];
-//        dataArray[0] = getTenantId(context);
-//        dataArray[1] = context.getProcessModel().getQName().toString();
         int startIndex = 0;
         fillDataArray(dataArray, metaAnalyticsKeyList, startIndex, context, element);
         return dataArray;

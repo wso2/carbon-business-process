@@ -35,6 +35,7 @@ public interface AnalyticsConstants {
     String CREDENTIAL = "Credential";
     String CREDENTIAL_USER_NAME = "userName";
     String CREDENTIAL_PASSWORD = "password";
+    String CREDENTIAL_ENCRYPT_PASSWORD = "securePassword";
 
     // Streams element and its sub elements.
     String STREAMS = "Streams";

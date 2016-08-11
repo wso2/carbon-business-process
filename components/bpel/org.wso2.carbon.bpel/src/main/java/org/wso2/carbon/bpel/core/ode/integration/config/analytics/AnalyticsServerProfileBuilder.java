@@ -234,14 +234,22 @@ public class AnalyticsServerProfileBuilder {
             OMAttribute passwordAttr =
                     credentialElement.getAttribute(new QName(AnalyticsConstants.CREDENTIAL_PASSWORD));
 
+            OMAttribute encryptPasswordAttr =
+                    credentialElement.getAttribute(new QName(AnalyticsConstants.CREDENTIAL_ENCRYPT_PASSWORD));
+
             if (userNameAttr != null && passwordAttr != null && userNameAttr.getAttributeValue() != null &&
                     passwordAttr.getAttributeValue() != null &&
                     !AnalyticsConstants.EMPTY.equals(userNameAttr.getAttributeValue().trim()) &&
                     !AnalyticsConstants.EMPTY.equals(passwordAttr.getAttributeValue().trim())) {
 
                 analyticsServerProfile.setUserName(userNameAttr.getAttributeValue().trim());
-                analyticsServerProfile.setPassword(new String(CryptoUtil.getDefaultCryptoUtil().
-                        base64DecodeAndDecrypt(passwordAttr.getAttributeValue())));
+                if (encryptPasswordAttr != null && encryptPasswordAttr.getAttributeValue() != null &&
+                        "TRUE".equals(encryptPasswordAttr.getAttributeValue().trim().toUpperCase())) {
+                    analyticsServerProfile.setPassword(new String(CryptoUtil.getDefaultCryptoUtil().
+                            base64DecodeAndDecrypt(passwordAttr.getAttributeValue())));
+                } else {
+                    analyticsServerProfile.setPassword(passwordAttr.getAttributeValue().trim());
+                }
             } else {
                 String errMsg =
                         AnalyticsConstants.CREDENTIAL_USER_NAME + " or " + AnalyticsConstants.CREDENTIAL_PASSWORD +
