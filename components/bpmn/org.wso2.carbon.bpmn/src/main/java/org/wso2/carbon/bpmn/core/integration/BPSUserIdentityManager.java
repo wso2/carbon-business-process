@@ -20,6 +20,7 @@ package org.wso2.carbon.bpmn.core.integration;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -133,133 +134,108 @@ public class BPSUserIdentityManager extends UserEntityManager {
         throw new UnsupportedOperationException(msg);
     }
 
-//  @Override
-    //   public List<User> findUserByQueryCriteria(UserQueryImpl userQuery, Page page) {
-//
-//todo:
-//    private List<User> generateFinalUserList(List<String[]> resultUserList) {
-//        List<String> mergedList = new ArrayList<>();
-//        //first result list is considered as merged list first
-//        for (String user : resultUserList.get(0)) {
-//            mergedList.add(user);
-//        }
-//        for (int i = 1; i < resultUserList.size(); i++) {
-//            List<String> newList = new ArrayList<>();
-//            for (String user : resultUserList.get(i)) {
-//                if (mergedList.contains(user)) {
-//                    newList.add(user);
-//                }
-//            }
-//            //make new list the merged list
-//            mergedList = newList;
-//        }
-//
-//        List<User> result = new ArrayList<>();
-//        //prepare User list
-//        for (String userName : mergedList) {
-//            result.add(new UserEntity(userName));
-//        }
-//        return result;
-//    }
-//
-//    private List<User> pageUserList(Page page, String[] users)
-//            throws RegistryException, org.wso2.carbon.user.core.UserStoreException {
-//        List<User> userList = new ArrayList<>();
-//        int resultLength = users.length;
-//        int max;
-//        if (page != null) {
-//            if (page.getFirstResult() > resultLength) {
-//                //no more result left, sending empty list
-//                return new ArrayList<>();
-//            }
-//
-//            if (page.getMaxResults() > resultLength) {
-//                max = resultLength;
-//            } else {
-//                max = page.getMaxResults();
-//            }
-//            for (int i = page.getFirstResult(); i < max; i++) {
-//                userList.add(new UserEntity(users[i]));
-//            }
-//        } else {
-//            for (int i = 0; i < resultLength; i++) {
-//                userList.add(new UserEntity(users[i]));
-//            }
-//        }
-//
-//        return userList;
-//    }
-//
-//    private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
-//        List<String,String> claimList = new ArrayList<String,String>();
-//
-//        if (userQuery.getEmail() != null) {
-//             claimList.add
-//
-//            Claim claim = new Claim();
-//            claim.setClaimUri(EMAIL_CLAIM_URI);
-//            claim.setValue(userQuery.getEmail());
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getEmailLike() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(EMAIL_CLAIM_URI);
-//            claim.setValue("*" + userQuery.getEmailLike() + "*");
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getFirstName() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(FIRST_NAME_CLAIM_URI);
-//            claim.setValue(userQuery.getFirstName());
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getFirstNameLike() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(FIRST_NAME_CLAIM_URI);
-//            claim.setValue("*" + userQuery.getFirstNameLike() + "*");
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getFullNameLike() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(FULL_NAME_CLAIM_URI);
-//            claim.setValue("*" + userQuery.getFullNameLike() + "*");
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getGroupId() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(ROLE_CLAIM_URI);
-//            claim.setValue(userQuery.getGroupId());
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getId() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(ID_CLAIM_URI);
-//            claim.setValue(userQuery.getId());
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getLastName() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(LAST_NAME_CLAIM_URI);
-//            claim.setValue(userQuery.getLastName());
-//            claimList.add(claim);
-//        }
-//
-//        if (userQuery.getLastNameLike() != null) {
-//            Claim claim = new Claim();
-//            claim.setClaimUri(LAST_NAME_CLAIM_URI);
-//            claim.setValue("*" + userQuery.getLastNameLike() + "*");
-//            claimList.add(claim);
-//        }
-//
-//        return claimList;
-//    }
+    @Override
+    public List<User> findUserByQueryCriteria(UserQueryImpl userQuery, Page page) {
+        try {
+            int offset = 0;
+            int length = -1;
+            if (page != null) {
+                offset = page.getFirstResult();
+                length = page.getMaxResults();
+            }
+            List<Claim> claimList = transformQueryToClaim(userQuery);
+            if (claimList.size() > 0) {
+                //todo: need to add support to search by query
+                String msg = "Invoked UserIdentityManager method is not implemented in BPSUserIdentityManager.";
+                throw new UnsupportedOperationException(msg);
+            } else {
+                //return all users
+                List<org.wso2.carbon.security.caas.user.core.bean.User> userList = identityStore.listUsers("*", offset, length);
+                return transformToActivitiUserList(userList);
+            }
+
+        } catch (IdentityStoreException e) {
+            log.error("Error getting user list", e);
+            return new ArrayList<>();
+        }
+    }
+
+    private List<User> transformToActivitiUserList(List<org.wso2.carbon.security.caas.user.core.bean.User> userList) {
+        List<User> activitiUserList = new ArrayList<>();
+        for (org.wso2.carbon.security.caas.user.core.bean.User user : userList) {
+             activitiUserList.add(new UserEntity(user.getUserName()));
+        }
+        return activitiUserList;
+    }
+
+    private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
+        List<Claim> claimList = new ArrayList<>();
+
+        if (userQuery.getEmail() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(EMAIL_CLAIM_URI);
+            claim.setValue(userQuery.getEmail());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getEmailLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(EMAIL_CLAIM_URI);
+            claim.setValue("*" + userQuery.getEmailLike() + "*");
+            claimList.add(claim);
+        }
+
+        if (userQuery.getFirstName() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(FIRST_NAME_CLAIM_URI);
+            claim.setValue(userQuery.getFirstName());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getFirstNameLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(FIRST_NAME_CLAIM_URI);
+            claim.setValue("*" + userQuery.getFirstNameLike() + "*");
+            claimList.add(claim);
+        }
+
+        if (userQuery.getFullNameLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(FULL_NAME_CLAIM_URI);
+            claim.setValue("*" + userQuery.getFullNameLike() + "*");
+            claimList.add(claim);
+        }
+
+        if (userQuery.getGroupId() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(ROLE_CLAIM_URI);
+            claim.setValue(userQuery.getGroupId());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getId() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(ID_CLAIM_URI);
+            claim.setValue(userQuery.getId());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getLastName() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(LAST_NAME_CLAIM_URI);
+            claim.setValue(userQuery.getLastName());
+            claimList.add(claim);
+        }
+
+        if (userQuery.getLastNameLike() != null) {
+            Claim claim = new Claim();
+            claim.setClaimURI(LAST_NAME_CLAIM_URI);
+            claim.setValue("*" + userQuery.getLastNameLike() + "*");
+            claimList.add(claim);
+        }
+
+        return claimList;
+    }
 
 
     @Override
