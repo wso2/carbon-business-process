@@ -26,9 +26,9 @@
                     <!-- validation -->
 					<form method="POST" action="auth">
                         <div class="wr-input-control padding-double">
-                          <input name="username" type="text" class="form-control" placeholder='<%=i18n.localize("user.name", "Username")%>' autofocus/>
+                          <input name="username" autocomplete="off" type="text" class="form-control" placeholder='<%=i18n.localize("user.name", "Username")%>' autofocus/>
                             <br>
-                           <input name="password" type="password" class="form-control" placeholder='<%=i18n.localize("password", "Password")%>'/>
+                           <input name="password" autocomplete="off" type="password" class="form-control" placeholder='<%=i18n.localize("password", "Password")%>'/>
                         </div>
 
                         <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
