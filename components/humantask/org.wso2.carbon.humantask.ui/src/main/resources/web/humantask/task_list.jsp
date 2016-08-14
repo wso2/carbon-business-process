@@ -29,6 +29,7 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.wso2.carbon.humantask.stub.ui.task.client.api.types.*" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%
 
     response.setHeader("Cache-Control",
@@ -57,7 +58,7 @@
 
     }
 
-    String queryType =  CharacterEncoder.getSafeText(request.getParameter("queryType"));
+    String queryType =  Encode.forJavaScript(request.getParameter("queryType"));
 
     boolean isAuthorisedToViewTaskList = CarbonUIUtil.isUserAuthorized(request, "/permission/admin/manage/humantask/viewtasks");
 
