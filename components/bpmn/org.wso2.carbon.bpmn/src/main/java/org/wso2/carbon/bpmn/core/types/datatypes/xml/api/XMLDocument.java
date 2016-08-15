@@ -134,6 +134,15 @@ public class XMLDocument implements Document {
                 targetNode.setNodeValue((String) obj);
                 //return updated Text Node
                 return targetNode;
+
+            } else if ((obj instanceof Integer || obj instanceof Byte ||
+                    obj instanceof Character || obj instanceof Short || obj instanceof Long ||
+                    obj instanceof Float || obj instanceof Double || obj instanceof Boolean) && targetNode instanceof Text) {
+                //need to replace the node value
+                targetNode.setNodeValue(obj.toString());
+                //return updated Text Node
+                return targetNode;
+
             } else if (obj instanceof Element && targetNode instanceof Element && targetNode.getParentNode() != null) { //if the user provides Node object,
                 // assume that need to replace the target node
                 Node targetParent = targetNode.getParentNode();
