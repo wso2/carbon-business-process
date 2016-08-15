@@ -259,7 +259,7 @@ public class ActivitiDAO {
         CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
                 new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
                     public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
-                        return substitutesMapper.selectActiveSubstitutesInfo(tenantId, currentTime);
+                        return substitutesMapper.selectActiveSubstitutesInfo(tenantId, currentTime, true);
                     }
                 };
 
@@ -393,7 +393,7 @@ public class ActivitiDAO {
         CustomSqlExecution<SubstitutesMapper,  Map<String, SubstitutesDataModel> > customSqlExecution =
                 new AbstractCustomSqlExecution<SubstitutesMapper, Map<String, SubstitutesDataModel>>(SubstitutesMapper.class) {
                     public  Map<String, SubstitutesDataModel>  execute(SubstitutesMapper substitutesMapper) {
-                        return substitutesMapper.selectEnabledExpiredRecords(tenantId, currentTime);
+                        return substitutesMapper.selectEnabledExpiredRecords(tenantId, currentTime, true);
                     }
                 };
 
