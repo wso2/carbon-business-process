@@ -150,7 +150,8 @@ public class BPSUserIdentityManager extends UserEntityManager {
                 throw new UnsupportedOperationException(msg);
             } else {
                 //return all users
-                List<org.wso2.carbon.security.caas.user.core.bean.User> userList = identityStore.listUsers("*", offset, length);
+                List<org.wso2.carbon.security.caas.user.core.bean.User> userList =
+                        identityStore.listUsers("*", offset, length);
                 return transformToActivitiUserList(userList);
             }
 
