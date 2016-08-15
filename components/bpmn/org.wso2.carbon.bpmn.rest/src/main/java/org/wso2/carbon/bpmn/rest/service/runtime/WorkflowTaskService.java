@@ -19,6 +19,7 @@ package org.wso2.carbon.bpmn.rest.service.runtime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.*;
 import org.apache.commons.io.IOUtils;
@@ -40,6 +41,7 @@ import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -238,6 +240,23 @@ public class WorkflowTaskService extends BaseTaskService {
         DataResponse dataResponse = getTasksFromQueryRequest(request, uriInfo, requestParams);
         return Response.ok().entity(dataResponse).build();
         //return getTasksFromQueryRequest(request, requestParams);
+    }
+
+    @POST
+    @Path("/")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createTask(TaskRequest taskRequest) {
+        TaskService taskService = BPMNOSGIService.getTaskService();
+        Task task = taskService.newTask();
+
+        // Populate the task properties based on the request
+        populateTaskFromRequest(task, taskRequest);
+        if (taskRequest.isTenantIdSet()) {
+            ((TaskEntity) task).setTenantId(taskRequest.getTenantId());
+        }
+        taskService.saveTask(task);
+        return Response.ok().entity(new RestResponseFactory().createTaskResponse(task, uriInfo.getBaseUri().toString())).build();
     }
 
     @GET
