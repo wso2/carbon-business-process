@@ -47,7 +47,7 @@ public interface SubstitutesMapper {
     final String SELECT_ALL_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST from "
             + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId}";
     final String SELECT_ACTIVE_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED, TASK_LIST, TENANT_ID from "
-            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = 1  AND #{currentTime} > SUBSTITUTION_START AND #{currentTime} < SUBSTITUTION_END";
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = #{enabled}  AND #{currentTime} > SUBSTITUTION_START AND #{currentTime} < SUBSTITUTION_END";
     final String UPDATE_TRANSITIVE_SUB = "UPDATE " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE +
             "  SET TRANSITIVE_SUBSTITUTE = #{transitiveSub}, UPDATED = #{updated} WHERE USERNAME = #{user} AND TENANT_ID=#{tenantId}";
     final String DELETE_SUBSTITUTE = "DELETE FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE
@@ -82,7 +82,7 @@ public interface SubstitutesMapper {
             " </script>";
     final String SELECT_DISTINCT_TENANT_LIST = "SELECT DISTINCT TENANT_ID FROM " + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE;
     final String SELECT_ENABLED_EXPIRED_SUBSTITUTES = "SELECT USERNAME, SUBSTITUTE, SUBSTITUTION_START, SUBSTITUTION_END, ENABLED from "
-            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = 1  AND #{currentTime} > SUBSTITUTION_END";
+            + BPMNConstants.ACT_BPS_SUBSTITUTES_TABLE + " WHERE TENANT_ID = #{tenantId} AND ENABLED = #{enabled}  AND #{currentTime} > SUBSTITUTION_END";
 
     /**
      * Insert new row in ACT_BPS_SUBSTITUTES table
@@ -163,7 +163,7 @@ public interface SubstitutesMapper {
             @Result(property = "taskList", column = "TASK_LIST"),
             @Result(property = "tenantId", column = "TENANT_ID")
     })
-    Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId, @Param("currentTime") Date currentTime);
+    Map<String, SubstitutesDataModel> selectActiveSubstitutesInfo(@Param("tenantId") int tenantId, @Param("currentTime") Date currentTime, @Param("enabled") boolean enabled);
 
     /**
      * Update Transitive substitute for the given user and tenant
@@ -259,7 +259,7 @@ public interface SubstitutesMapper {
             @Result(property = "substitutionEnd", column = "SUBSTITUTION_END"),
             @Result(property = "enabled", column = "ENABLED")
     })
-    Map<String, SubstitutesDataModel> selectEnabledExpiredRecords(@Param("tenantId") int tenantId, @Param("currentTime") Date currentTime);
+    Map<String, SubstitutesDataModel> selectEnabledExpiredRecords(@Param("tenantId") int tenantId, @Param("currentTime") Date currentTime, @Param("enabled") boolean enabled);
 
     /**
      * Return the count of substitute info based on query parameters.
