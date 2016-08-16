@@ -206,9 +206,9 @@ public class XMLDocument implements Document {
 
     /**
      * Inserts the node newChild node before the existing node
-     * @param xPathToTargetNode
-     * @param element
-     * @return
+     * @param xPathToTargetNode xPath to target node
+     * @param element element to insert
+     * @return returns the node get inserted on success
      * @throws XPathExpressionException
      * @throws BPMNXmlException
      */
