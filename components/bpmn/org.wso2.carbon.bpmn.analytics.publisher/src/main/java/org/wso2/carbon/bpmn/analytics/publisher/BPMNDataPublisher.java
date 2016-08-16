@@ -391,7 +391,7 @@ public class BPMNDataPublisher {
                             payload[i] = 0;
                             valueAvailabiliy[i - 2] = '0';
                         } else {
-                            payload[i] = Integer.parseInt((String) varValue);
+                            payload[i] = Integer.parseInt(varValue.toString());
                             valueAvailabiliy[i - 2] = '1';
                         }
                         break;
@@ -400,7 +400,7 @@ public class BPMNDataPublisher {
                             payload[i] = 0;
                             valueAvailabiliy[i - 2] = '0';
                         } else {
-                            payload[i] = Float.parseFloat((String) varValue);
+                            payload[i] = Float.parseFloat(varValue.toString());
                             valueAvailabiliy[i - 2] = '1';
                         }
                         break;
@@ -409,7 +409,7 @@ public class BPMNDataPublisher {
                             payload[i] = 0;
                             valueAvailabiliy[i - 2] = '0';
                         } else {
-                            payload[i] = Long.parseLong((String) varValue);
+                            payload[i] = Long.parseLong(varValue.toString());
                             valueAvailabiliy[i - 2] = '1';
                         }
                         break;
@@ -418,7 +418,7 @@ public class BPMNDataPublisher {
                             payload[i] = 0;
                             valueAvailabiliy[i - 2] = '0';
                         } else {
-                            payload[i] = Double.parseDouble((String) varValue);
+                            payload[i] = Double.parseDouble(varValue.toString());
                             valueAvailabiliy[i - 2] = '1';
                         }
                         break;
@@ -436,7 +436,7 @@ public class BPMNDataPublisher {
                             payload[i] = false;
                             valueAvailabiliy[i - 2] = '0';
                         } else {
-                            payload[i] = Boolean.parseBoolean((String) varValue);
+                            payload[i] = Boolean.parseBoolean(varValue.toString());
                             valueAvailabiliy[i - 2] = '1';
                         }
                         break;
