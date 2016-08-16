@@ -257,8 +257,8 @@ public class XMLDocument implements Document {
     /**
      * Function to create new XML Element (this is a util method)
      *
-     * @param elementStr
-     * @return
+     * @param elementStr xml string that need to convert to representing xml element object
+     * @return returns created xml element
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
