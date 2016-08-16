@@ -188,6 +188,12 @@ var commonErrorMessage = null; //Common error message if exists
 //Common Constants
 var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/substitute";
 
+
+
+//Common HTTP response headers
+response.addHeader('X-XSS-Protection', '1; mode=block');//Enable Web Browser XSS Protection
+
+
 //START COMMON FUNCTIONS
 
 /**
