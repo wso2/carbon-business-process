@@ -250,13 +250,35 @@ public class UserSubstitutionService {
      */
     private boolean isUserAuthorizedForSubstitute(String username) throws UserStoreException {
         UserRealm userRealm = BPMNOSGIService.getUserRealm();
+        //check with bpmn permission path
         String[] permissionArray = userRealm.getAuthorizationManager()
-                .getAllowedUIResourcesForUser(username, BPMNConstants.SUBSTITUTION_PERMISSION_PATH);
+                .getAllowedUIResourcesForUser(username, BPMNConstants.BPMN_PERMISSION_PATH);
         if (permissionArray != null && permissionArray.length > 0) {
-            return true;
-        } else {
-            return false;
+            if (permissionArray[0].equals(BPMNConstants.BPMN_PERMISSION_PATH) || isPermissionExist(permissionArray,
+                    BPMNConstants.SUBSTITUTION_PERMISSION_PATH)) {
+                return true;
+            }
         }
+        //check for admin permission
+        String[] adminPermissionArray = userRealm.getAuthorizationManager()
+                .getAllowedUIResourcesForUser(username, BPMNConstants.ROOT_PERMISSION_PATH);
+        if (adminPermissionArray != null && adminPermissionArray.length > 0) {
+            if (adminPermissionArray[0].equals(BPMNConstants.ROOT_PERMISSION_PATH) || adminPermissionArray[0]
+                    .equals(BPMNConstants.ADMIN_PERMISSION_PATH)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isPermissionExist(String[] permissionArray, String path) {
+        for (int i = 0; i < permissionArray.length; i++) {
+            if (permissionArray[i].contains(BPMNConstants.SUBSTITUTION_PERMISSION_PATH)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
