@@ -36,8 +36,7 @@ function isUserAuthorized(username, permission, bpsUrl){
 	process = require('process'),
 	srv = new carbon.server.Server({url: bpsUrl}),
 	tenantId = carbon.server.tenantId(),
-	userManager = new carbon.user.UserManager(srv, tenantId),
-	user = new carbon.user.User(userManager, username);
+	userManager = new carbon.user.UserManager(srv, tenantId);
 
 	//get all permissions that 
 	var permissionList = userManager.getAllowedUIResources(username, permission);
@@ -47,3 +46,24 @@ function isUserAuthorized(username, permission, bpsUrl){
 	return false;
 
 }
+
+function getAllowedUIResources (username, permissionRootPath, bpsUrl) {
+	var 	carbon = require('carbon'),
+	process = require('process'),
+	srv = new carbon.server.Server({url: bpsUrl}),
+	tenantId = carbon.server.tenantId(),
+	userManager = new carbon.user.UserManager(srv, tenantId);
+
+	//get all permissions that 
+	return userManager.getAllowedUIResources(username, permissionRootPath);
+}
+
+function isPermissionExist(permissionArray, path) {
+	for (var i = 0; i < permissionArray.length; i++) {
+		if (permissionArray[i] == path || permissionArray[i] === path) {
+			return true;
+		}
+	}
+	return false;
+}
+
