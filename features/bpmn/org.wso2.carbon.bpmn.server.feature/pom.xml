@@ -82,7 +82,7 @@
                                     <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.engine.sql" />
                                     <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.history.sql" />
                                     <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.identity.sql" />
-                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.bps.sql" />
+                                    <fileset file="${basedir}/resources/dbscripts/create/activiti.h2.create.substitute.sql" />
                                 </sql>
                                 <echo message="##################### END ############################" />
                                 <echo message="********Version of H2: " />
