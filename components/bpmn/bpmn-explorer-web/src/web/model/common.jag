@@ -187,7 +187,9 @@ var commonErrorMessage = null; //Common error message if exists
 
 //Common Constants
 var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/substitute";
-
+var BPMN_PERMISSION_PATH = "/permission/admin/manage/bpmn";
+var ADMIN_PERMISSION_PATH = "/permission/admin";
+var ROOT_PERMISSION_PATH = "/permission";
 
 
 //Common HTTP response headers

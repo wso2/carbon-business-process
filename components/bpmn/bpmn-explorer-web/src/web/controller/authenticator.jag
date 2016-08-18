@@ -56,7 +56,7 @@ if (request.isSecure()) {//check whether the request is secure or not
         } else {
             var roles = authentication.getRoles(username,password,httpServiceUrl);
             //get user substitution permission
-            var subAddPermission = authentication.isUserAuthorized(username, SUBSTITUTION_PERMISSION_PATH, httpServiceUrl);
+            var subAddPermission = isUserAuthorizedForSubstitute(username.split("@")[0], authentication);
 
             var encoder = require("/assets/encoder.js");
             var auth = encoder.encode(username+':'+password);
@@ -171,5 +171,31 @@ if (request.isSecure()) {//check whether the request is secure or not
             session.put("loginFailed" ,true);
             response.sendRedirect(requestUrl);
         }
+    }
+
+
+    /**
+     * Check the logged in user has permission for viewing other substitutions.
+     * @return true if the permission sufficient
+     */
+    function isUserAuthorizedForSubstitute(username, authenticationObj) {
+        
+        //check with bpmn permission path
+        var permissionList = authenticationObj.getAllowedUIResources(username, BPMN_PERMISSION_PATH, httpServiceUrl);
+        if (permissionList != null && permissionList.length > 0) {
+            if (permissionList[0] == BPMN_PERMISSION_PATH || 
+                            authenticationObj.isPermissionExist(permissionList, SUBSTITUTION_PERMISSION_PATH)) {
+                return true;
+            }
+        }
+        
+        //check for admin permission
+        var adminPermissionList = authenticationObj.getAllowedUIResources(username, ROOT_PERMISSION_PATH, httpServiceUrl);
+        if (adminPermissionList != null && adminPermissionList.length > 0) {
+            if (adminPermissionList[0] == ROOT_PERMISSION_PATH || adminPermissionList[0] == ADMIN_PERMISSION_PATH) {
+                return true;
+            }
+        }
+        return false;
     }
 %>
