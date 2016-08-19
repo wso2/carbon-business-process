@@ -45,11 +45,11 @@
             var process = require("process");
             var hostname = NetworkUtils.getLocalHostname();
             var httpsPort = process.getProperty('mgt.transport.https.port');
-            BPSUrl = "https://" + hostname + ":" + httpsPort + tenantUrlPart;
             hostServer = "https://" + hostname + ":" + httpsPort;
+            BPSUrl = hostServer + tenantUrlPart;
         } else {
-            BPSUrl = "https://" + data.server.bpsHost + ":" + data.server.bpsPort + tenantUrlPart;
-            hostServer = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
+            hostServer = "https://" + bpsHost + ":" + bpsPort;
+            BPSUrl = hostServer + tenantUrlPart;
         }
 
 
