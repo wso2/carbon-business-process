@@ -471,7 +471,7 @@ public class BaseTaskService {
 
     protected Task getTaskFromRequest(String taskId) {
         TaskService taskService = BPMNOSGIService.getTaskService();
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        Task task = taskService.createTaskQuery().taskId(taskId).includeTaskLocalVariables().singleResult();
         if (task == null) {
             throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
         }

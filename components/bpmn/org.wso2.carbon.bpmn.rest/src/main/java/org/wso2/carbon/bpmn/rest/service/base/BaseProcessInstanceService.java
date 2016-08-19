@@ -91,7 +91,7 @@ public class BaseProcessInstanceService {
     protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) {
         RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().
-                processInstanceId(processInstanceId).singleResult();
+                processInstanceId(processInstanceId).includeProcessVariables().singleResult();
         if (processInstance == null) {
             throw new ActivitiObjectNotFoundException(" Could not find a process instance with id " +
                     processInstanceId + "'.", ProcessInstance.class);
