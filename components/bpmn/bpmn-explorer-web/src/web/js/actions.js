@@ -166,11 +166,24 @@ function completeTask(data, id) {
                                                 "value" : data[i].value,
                                             });
                             } else {
-                                variables.push({
+                                try {
+                                    //if length is 0, then that input is not a mandatory input and user haven't enter anything
+                                    if (data[i].value.length > 0) {
+                                        variables.push({
                                                 "name": data[i].name,
-                                                "value": JSON.parse(data[i].value),
+                                                "value": eval(data[i].value),
                                                 "type" : vData[j].type
                                             });
+                                    }
+                                } catch  (error) {
+                                    document.getElementById("commonErrorSection").hidden = false;
+                                    document.getElementById("errorMsg").innerHTML = "Enter valid input for \"" + vData[j].type +"\" input";
+                                    $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                                    emptyVar = false;
+                                    document.getElementById("loadingCompleteButton").hidden = true;
+                                    document.getElementById("completeButton").style.display = '';
+                                    return;
+                                }
                             }
                         }
                     }
@@ -393,9 +406,8 @@ function startProcessWithData(data, id) {
         url: httpUrl + url,
         success: function (responseData) {
             var vData = JSON.parse(responseData).data;
-
             var variables = [];
-            var emptyVar = true;
+            var noError = true;
             for (var i = 0; i < data.length; i++) {
 
                 for (var j = 0; j < vData.length; j++) {
@@ -404,9 +416,9 @@ function startProcessWithData(data, id) {
                             document.getElementById("commonErrorSection").hidden = false;
                             document.getElementById("errorMsg").innerHTML = "Enter valid inputs for all the required fields";
                             $(document.body).scrollTop($('#commonErrorSection').offset().top);
-                            emptyVar = false;
                             document.getElementById("startProcessButton").style.display = '';
                             document.getElementById("loadingStartProcessButton").hidden = true;
+                            noError = false;
                             return;
                         } else {
 
@@ -422,40 +434,54 @@ function startProcessWithData(data, id) {
                                                 "value" : data[i].value,
                                             });
                             } else {
-                                variables.push({
-                                                "name": data[i].name,
-                                                "value": JSON.parse(data[i].value),
-                                                "type" : vData[j].type
-                                            });
+                                try {
+                                    //if length is 0, then that input is not a mandatory input and user haven't enter anything
+                                    if (data[i].value.length > 0) {
+                                        variables.push({
+                                                        "name": data[i].name,
+                                                        "value": eval(data[i].value),
+                                                        "type" : vData[j].type
+                                                    });
+                                    }
+                                } catch  (error) {
+                                    document.getElementById("commonErrorSection").hidden = false;
+                                    document.getElementById("errorMsg").innerHTML = "Enter valid input for \"" + vData[j].name + "\" input";
+                                    $(document.body).scrollTop($('#commonErrorSection').offset().top);
+                                    document.getElementById("loadingStartProcessButton").hidden = true;
+                                    document.getElementById("startProcessButton").style.display = '';
+                                    noError = false;
+                                    return;
+                                }
                             }
                         }
                     }
                 }
             }
-
-            var body = {
-                "processDefinitionId": id,
-                "variables": variables
-            };
-            var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
-            $.ajax({
-                type: 'POST',
-                contentType: "application/json",
-                url: httpUrl + url,
-                data: JSON.stringify(body),
-                success: function (data) {
-                    document.getElementById("startProcessButton").style.display = '';
-                    document.getElementById("loadingStartProcessButton").hidden = true;
-                    window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
-                },
-                error: function (xhr, status, error) {
-                    document.getElementById("startProcessButton").style.display = '';
-                    document.getElementById("loadingStartProcessButton").hidden = true;
-                    var errorJson = eval("(" + xhr.responseText + ")");
-                    var errorJson = eval("(" + xhr.responseText + ")");
-                    window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
-                }
-            });
+            if (noError) {
+                var body = {
+                    "processDefinitionId": id,
+                    "variables": variables
+                };
+                var url = "/" + CONTEXT + "/send?req=/bpmn/runtime/process-instances";
+                $.ajax({
+                    type: 'POST',
+                    contentType: "application/json",
+                    url: httpUrl + url,
+                    data: JSON.stringify(body),
+                    success: function (data) {
+                        document.getElementById("startProcessButton").style.display = '';
+                        document.getElementById("loadingStartProcessButton").hidden = true;
+                        window.location = httpUrl + "/" + CONTEXT + "/process?startProcess=" + id;
+                    },
+                    error: function (xhr, status, error) {
+                        document.getElementById("startProcessButton").style.display = '';
+                        document.getElementById("loadingStartProcessButton").hidden = true;
+                        var errorJson = eval("(" + xhr.responseText + ")");
+                        var errorJson = eval("(" + xhr.responseText + ")");
+                        window.location = httpUrl + "/" + CONTEXT + "/process?errorProcess=" + id + "&errorMessage=" + errorJson.errorMessage;
+                    }
+                });
+            }
         },
         error: function (xhr, status, error) {
             document.getElementById("loadingCompleteButton").hidden = true;
@@ -548,8 +574,6 @@ function processSearch() {
         endDateTemp.setHours(23);
         endDateTemp.setMinutes(59);
         endDateTemp.setSeconds(59);
-        console.log(endDateTemp);
-        console.log(endDateTemp.toISOString());
         var endDateISOTemp = document.getElementById("endDateISO");
         endDateISOTemp.value = endDateTemp.toISOString();
         endDateISOTemp.value = endDateTemp.toISOString().split('.')[0] + 'Z';
@@ -1559,8 +1583,6 @@ function validateFilter() {
         endDateTemp.setHours(23);
         endDateTemp.setMinutes(59);
         endDateTemp.setSeconds(59);
-        console.log(endDateTemp);
-        console.log(endDateTemp.toISOString());
         var endDateISOTemp = document.getElementById("endDateISO");
         endDateISOTemp.value = endDateTemp.toISOString().split('.')[0] + 'Z';
     } else {
