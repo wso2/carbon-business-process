@@ -38,6 +38,7 @@ import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.msf4j.Interceptor;
 import org.wso2.msf4j.Request;
 import org.wso2.msf4j.ServiceMethodInfo;
+import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -64,6 +65,7 @@ public class AuthenticationHandler implements Interceptor {
     private static final String AUTH_TYPE_NONE = "None";
     private static final String AUTH_TYPE_OAuth = "Bearer";
     private Logger log = LoggerFactory.getLogger(AuthenticationHandler.class);
+    private OAuth2SecurityInterceptor oAuth2SecurityInterceptor = new OAuth2SecurityInterceptor();
 
     @Override
     public boolean preCall(Request request, org.wso2.msf4j.Response responder,
@@ -81,9 +83,11 @@ public class AuthenticationHandler implements Interceptor {
                 handleBasicAuth(username, password);
 
             } else if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
+                //TODO : this should be read from a config file
+                System.setProperty("AUTH_SERVER_URL", "http://localhost:9763/introspect");
                 //todo: set AUTH_URL
                 log.info("Authorization type used in OAuth");
-                // OAuth2SecurityInterceptor i = new OAuth2SecurityInterceptor();
+                oAuth2SecurityInterceptor.preCall(request, responder, serviceMethodInfo);
             } else {
                 //todo:
                 log.info("No authorization type is specified.");
@@ -96,7 +100,11 @@ public class AuthenticationHandler implements Interceptor {
     @Override
     public void postCall(Request request, int status, ServiceMethodInfo serviceMethodInfo)
             throws Exception {
-
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
+                log.info("Authorization type used in OAuth");
+                oAuth2SecurityInterceptor.postCall(request, status, serviceMethodInfo);
+        }
     }
 
     //Authenticate Basic auth type request
