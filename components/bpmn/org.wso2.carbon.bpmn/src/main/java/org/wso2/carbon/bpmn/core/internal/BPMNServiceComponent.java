@@ -156,12 +156,15 @@ public class BPMNServiceComponent {
                     yamlBasedProcessEngineConfigurationFactory.getProcessEngineConfiguration();
             holder.setProcessEngineConfiguration(processEngineConfiguration);
 
+
+
             ActivitiEngineBuilder.getInstance();
             holder.setEngine(ActivitiEngineBuilder.getInstance().buildEngine());
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService
                     .setProcessEngine(ActivitiEngineBuilder.getInstance().getProcessEngine());
             bpmnEngineService.setCarbonRealmService(holder.getInstance().getCarbonRealmService());
+            bpmnEngineService.setProcessEngineConfiguration(processEngineConfiguration);
             bundleContext
                     .registerService(BPMNEngineService.class.getName(), bpmnEngineService, null);
 

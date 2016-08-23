@@ -43,3 +43,6 @@ activitiEngineConfiguration:
 
   # End of Activiti Configuration.
 
+##Identity Server URL for OAuth 2.0 based authorization
+authServerUrl: http://localhost:9763/introspect
+

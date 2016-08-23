@@ -30,6 +30,7 @@ public class ProcessEngineConfiguration {
     private StandaloneProcessEngineConfiguration activitiEngineConfiguration;
 
     // Define other configuration here.
+    private String authServerUrl;
 
     /**
      * Default process engine configuration.
@@ -44,5 +45,13 @@ public class ProcessEngineConfiguration {
 
     public void setActivitiEngineConfiguration(StandaloneProcessEngineConfiguration activitiEngineConfiguration) {
         this.activitiEngineConfiguration = activitiEngineConfiguration;
+    }
+
+    public String getAuthServerUrl() {
+        return authServerUrl;
+    }
+
+    public void setAuthServerUrl(String authServerUrl) {
+        this.authServerUrl = authServerUrl;
     }
 }

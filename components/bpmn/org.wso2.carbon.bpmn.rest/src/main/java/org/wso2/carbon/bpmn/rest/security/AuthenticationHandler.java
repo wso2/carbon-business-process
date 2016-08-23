@@ -38,15 +38,13 @@ import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.msf4j.Interceptor;
 import org.wso2.msf4j.Request;
 import org.wso2.msf4j.ServiceMethodInfo;
+import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-//import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
-
 
 /**
  * Handle  REST Request authentication
@@ -63,12 +61,14 @@ public class AuthenticationHandler implements Interceptor {
     private static final String AUTH_TYPE_BASIC = "Basic";
     private static final String AUTH_TYPE_NONE = "None";
     private static final String AUTH_TYPE_OAuth = "Bearer";
+    private static final String AUTH_URL_KEY = "AUTH_SERVER_URL";
     private Logger log = LoggerFactory.getLogger(AuthenticationHandler.class);
+    private OAuth2SecurityInterceptor oAuth2SecurityInterceptor = null;
 
     @Override
     public boolean preCall(Request request, org.wso2.msf4j.Response responder,
                            ServiceMethodInfo serviceMethodInfo) throws Exception {
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(AUTHORIZATION_HEADER_NAME);
         if (authHeader != null) {
             if (authHeader.startsWith(AUTH_TYPE_BASIC)) {
 
@@ -81,9 +81,14 @@ public class AuthenticationHandler implements Interceptor {
                 handleBasicAuth(username, password);
 
             } else if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
-                //todo: set AUTH_URL
-                log.info("Authorization type used in OAuth");
-                // OAuth2SecurityInterceptor i = new OAuth2SecurityInterceptor();
+                log.debug("OAuth Authentication is used");
+                if (oAuth2SecurityInterceptor == null) {
+                    String authUrl = RestServiceContentHolder.getInstance().getRestService().getBPMNEngineService()
+                            .getProcessEngineConfiguration().getAuthServerUrl();
+                    System.setProperty(AUTH_URL_KEY, authUrl);
+                    oAuth2SecurityInterceptor = new OAuth2SecurityInterceptor();
+                }
+                oAuth2SecurityInterceptor.preCall(request, responder, serviceMethodInfo);
             } else {
                 //todo:
                 log.info("No authorization type is specified.");
@@ -96,7 +101,11 @@ public class AuthenticationHandler implements Interceptor {
     @Override
     public void postCall(Request request, int status, ServiceMethodInfo serviceMethodInfo)
             throws Exception {
-
+        String authHeader = request.getHeader(AUTHORIZATION_HEADER_NAME);
+        if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
+                log.info("Authorization type used in OAuth");
+                oAuth2SecurityInterceptor.postCall(request, status, serviceMethodInfo);
+        }
     }
 
     //Authenticate Basic auth type request
@@ -112,22 +121,6 @@ public class AuthenticationHandler implements Interceptor {
         return authenticationFail();
     }
 
-
-//    @Reference(
-//            name = "org.wso2.carbon.bpmn.core.BPMNEngineService",
-//            service = BPMNEngineService.class,
-//            cardinality = ReferenceCardinality.MANDATORY,
-//            policy = ReferencePolicy.DYNAMIC,
-//            unbind = "unRegisterBPMNEngineService")
-//    public void setBpmnEngineService(BPMNEngineService engineService) {
-//        log.info("Setting BPMN engine Authernticator." + engineService);
-//
-//    }
-//
-//    protected void unRegisterBPMNEngineService(BPMNEngineService engineService) {
-//        log.info("Unregister BPMNEngineService..");
-//    }
-
     @Activate
     protected void activate(BundleContext bundleContext) {
         // Nothing to do
@@ -137,20 +130,6 @@ public class AuthenticationHandler implements Interceptor {
     protected void deactivate(BundleContext bundleContext) {
         // Nothing to do
     }
-
-
-//todo:
-/*protected Response handleOAuth(Message message) {
-        ArrayList<String> headers = ((Map<String, ArrayList>) message.get(Message.PROTOCOL_HEADERS))
-        .get(AUTHORIZATION_HEADER_NAME);
-        if (headers != null) {
-        String authHeader = headers.get(0);
-        if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
-        return authenticationFail(AUTH_TYPE_OAuth);
-        }
-        }
-        return authenticationFail(AUTH_TYPE_OAuth);
-        }*/
 
     /**
      * Checks whether a given userName:password combination authenticates correctly against

@@ -1,6 +1,7 @@
 package org.wso2.carbon.bpmn.core;
 
 import org.activiti.engine.ProcessEngine;
+import org.wso2.carbon.bpmn.core.config.ProcessEngineConfiguration;
 import org.wso2.carbon.bpmn.core.deployment.BPMNDeployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
 
@@ -12,6 +13,7 @@ public class BPMNEngineServiceImpl implements BPMNEngineService {
     private ProcessEngine processEngine;
     private RealmService carbonRealmService;
     private BPMNDeployer bpmnDeployer;
+    private ProcessEngineConfiguration processEngineConfiguration;
 
     @Override
     public ProcessEngine getProcessEngine() {
@@ -37,5 +39,14 @@ public class BPMNEngineServiceImpl implements BPMNEngineService {
 
     public void setBpmnDeployer(BPMNDeployer bpmnDeployer) {
         this.bpmnDeployer = bpmnDeployer;
+    }
+
+    @Override
+    public ProcessEngineConfiguration getProcessEngineConfiguration() {
+        return processEngineConfiguration;
+    }
+
+    public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
     }
 }
