@@ -78,7 +78,7 @@
         %>
         <tr>
             <td rowspan="<%= packageMetadata.getProcessList().length%>">
-                <%= packageMetadata.getPackageName()%>
+                <a href="../bpel/package_dashboard.jsp?packageName=<%= packageMetadata.getPackageName()%>"><%= packageMetadata.getPackageName()%></a>
             </td>
         <%
                 int processCount = 0;
@@ -89,7 +89,7 @@
         <%
                      }
         %>
-            <td><a href="../bpel/process_view.jsp?pid=<%= process%>"><%= process%></a></td>
+            <td><a href="../bpel/process_info.jsp?Pid=<%= process%>"><%= process%></a></td>
 
         <%           if (processCount != 0) {%>
 

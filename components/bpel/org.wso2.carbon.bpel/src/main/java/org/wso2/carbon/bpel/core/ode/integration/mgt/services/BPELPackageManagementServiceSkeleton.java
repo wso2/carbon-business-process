@@ -51,9 +51,21 @@ public class BPELPackageManagementServiceSkeleton extends AbstractAdmin
         TenantProcessStoreImpl tenantProcessStore = getTenantProcessStore();
         BPELPackageRepository packageRepo = tenantProcessStore.getBPELPackageRepository();
         try {
-            return getPackageInfo(packageRepo.getBPELPackageInfoForPackage(packageName));
+            return getPackageInfo(packageRepo.getBPELPackageInfoForPackage(packageName.substring(0,packageName.lastIndexOf("-"))));
         } catch (Exception e) {
             String errMsg = "BPEL package: " + packageName + " failed to load from registry.";
+            log.error(errMsg, e);
+            throw new PackageManagementException(errMsg, e);
+        }
+    }
+
+    public String getLatestVersionInPackage(String packageName) throws PackageManagementException {
+        TenantProcessStoreImpl tenantProcessStore = getTenantProcessStore();
+        BPELPackageRepository packageRepo = tenantProcessStore.getBPELPackageRepository();
+        try {
+            return packageRepo.getBPELPackageInfoForPackage(packageName).getLatestVersion();
+        } catch (Exception e) {
+            String errMsg = "BPEL package: " + packageName + " failed to get latest version.";
             log.error(errMsg, e);
             throw new PackageManagementException(errMsg, e);
         }
