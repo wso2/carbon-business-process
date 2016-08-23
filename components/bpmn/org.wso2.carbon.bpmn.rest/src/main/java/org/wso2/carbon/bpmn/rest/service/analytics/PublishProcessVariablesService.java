@@ -69,6 +69,33 @@ public class PublishProcessVariablesService {
     }
 
     /**
+     * Removing published process variable publishing from BPS to DAS
+     *
+     * @param processId process name_version
+     * @param processDefinitionIdJSONString JSON string contains process definition id
+     * @return
+     */
+    @DELETE
+    @Path("/{processId}")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    public Response deleteProcessVariables(@PathParam("processId") String processId, String processDefinitionIdJSONString)
+            throws IOException {
+        if (log.isDebugEnabled()) {
+            log.debug("Recieved analytics configuration delete request from PC to BPS for Process ID:" + processId);
+        }
+
+        try {
+            deleteDASConfigInfo(processDefinitionIdJSONString);
+        } catch (RegistryException e) {
+            String errMsg =
+                    "Error in deleting DAS Analytics Configuratios from BPS Config-Registry for process :" + processId;
+            log.error(errMsg, e);
+            return Response.status(500).entity(errMsg + " : " + e.getMessage()).build();
+        }
+        return Response.ok().build();
+    }
+
+    /**
      * Save DAS configuration details (received from PC), in config registry
      *
      * @param dasConfigDetailsJSONString
@@ -90,5 +117,24 @@ public class PublishProcessVariablesService {
         procVariableJsonResource.setMediaType(MediaType.APPLICATION_JSON);
         configRegistry.put(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
                 + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME, procVariableJsonResource);
+    }
+
+    /**
+     * Delete DAS configuration details (received from PC), from config registry
+     *
+     * @param processDefinitionIdJSONString JSON string contains process definition id
+     * @throws RegistryException
+     */
+    private void deleteDASConfigInfo(String processDefinitionIdJSONString) throws RegistryException, IOException {
+
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        Registry configRegistry = carbonContext.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode dasConfigDetailsJOb = objectMapper.readTree(processDefinitionIdJSONString);
+        String processDefinitionId = dasConfigDetailsJOb.get(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID)
+                .textValue();
+        configRegistry.delete(AnalyticsPublisherConstants.REG_PATH_BPMN_ANALYTICS + processDefinitionId + "/"
+                + AnalyticsPublisherConstants.ANALYTICS_CONFIG_FILE_NAME);
     }
 }

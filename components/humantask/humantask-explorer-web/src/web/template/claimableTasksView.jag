@@ -26,7 +26,7 @@
 <div class="row">
  <div class="panel-inbox">
     <!-- Default panel contents -->
-    <div class=" margin-left-double table-title"><%=i18n.localize("claimable.task", "Claimable Tasks")%></div>
+    <div class=" margin-left-double table-title"><%=i18n.localize("claimable.tasks", "Claimable Tasks")%></div>
     <div class="table-body margin-left-double">
         <!-- Table -->
         <table class="table">

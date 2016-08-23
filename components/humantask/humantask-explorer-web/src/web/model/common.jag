@@ -24,7 +24,19 @@
     i18n.init(request,localeResourcesBasePath);
     // owasp encoder to prevent XSS attacks
     var Encode = Packages.org.owasp.encoder.Encode;
-
+    var reqUrl = request.getRequestURL();
+    var qparameters = request.getQueryString();
+    if (reqUrl.indexOf("localhost") > 0) {
+        var carbon = require('carbon');
+        var serverIP = carbon.server.address('https').split("//")[1].split(":")[0];
+        var redirectUrl = reqUrl.replace("localhost", serverIP);
+        if (qparameters != null && qparameters != "") {
+            redirectUrl += "?" + qparameters;
+        }
+        response.sendRedirect(redirectUrl);
+        log.info("Browser host has been redirected from locahost to server IP.");
+        exit();
+    }
     //construct backend URI using config.json
     var BPSUrl = application.get('bpsURI');
     if (BPSUrl == null || BPSUrl === "") {
@@ -45,11 +57,11 @@
             var process = require("process");
             var hostname = NetworkUtils.getLocalHostname();
             var httpsPort = process.getProperty('mgt.transport.https.port');
-            BPSUrl = "https://" + hostname + ":" + httpsPort + tenantUrlPart;
             hostServer = "https://" + hostname + ":" + httpsPort;
+            BPSUrl = hostServer + tenantUrlPart;
         } else {
-            BPSUrl = "https://" + data.server.bpsHost + ":" + data.server.bpsPort + tenantUrlPart;
-            hostServer = "https://" + data.server.bpsHost + ":" + data.server.bpsPort;
+            hostServer = "https://" + bpsHost + ":" + bpsPort;
+            BPSUrl = hostServer + tenantUrlPart;
         }
 
 
