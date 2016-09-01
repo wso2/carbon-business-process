@@ -38,7 +38,6 @@ import org.wso2.carbon.security.caas.user.core.exception.UserNotFoundException;
 import org.wso2.msf4j.Interceptor;
 import org.wso2.msf4j.Request;
 import org.wso2.msf4j.ServiceMethodInfo;
-import org.wso2.msf4j.security.oauth2.OAuth2SecurityInterceptor;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -61,9 +60,7 @@ public class AuthenticationHandler implements Interceptor {
     private static final String AUTH_TYPE_BASIC = "Basic";
     private static final String AUTH_TYPE_NONE = "None";
     private static final String AUTH_TYPE_OAuth = "Bearer";
-    private static final String AUTH_URL_KEY = "AUTH_SERVER_URL";
     private Logger log = LoggerFactory.getLogger(AuthenticationHandler.class);
-    private OAuth2SecurityInterceptor oAuth2SecurityInterceptor = null;
 
     @Override
     public boolean preCall(Request request, org.wso2.msf4j.Response responder,
@@ -82,30 +79,34 @@ public class AuthenticationHandler implements Interceptor {
 
             } else if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
                 log.debug("OAuth Authentication is used");
-                if (oAuth2SecurityInterceptor == null) {
-                    String authUrl = RestServiceContentHolder.getInstance().getRestService().getBPMNEngineService()
-                            .getProcessEngineConfiguration().getAuthServerUrl();
-                    System.setProperty(AUTH_URL_KEY, authUrl);
-                    oAuth2SecurityInterceptor = new OAuth2SecurityInterceptor();
-                }
-                oAuth2SecurityInterceptor.preCall(request, responder, serviceMethodInfo);
+                handleOAuth2(request);
             } else {
                 //todo:
-                log.info("No authorization type is specified.");
+                log.info("Unsupported authorization type is specified.");
+
             }
-        }
+        } /*else {//commented until security stuff completed.
+            authenticationFail(AUTH_TYPE_NONE);
+        }*/
 
         return true;
+    }
+
+    private Response handleOAuth2(Request request) throws Exception {
+        OAuth2SecurityHandler oAuth2SecurityHandler = new OAuth2SecurityHandler();
+        String username =  oAuth2SecurityHandler.getAuthenticatedUser(request);
+
+        if (username != null) {
+            updateCarbonContext(username);
+            return null;
+        } else {
+            return authenticationFail(AUTH_TYPE_OAuth);
+        }
     }
 
     @Override
     public void postCall(Request request, int status, ServiceMethodInfo serviceMethodInfo)
             throws Exception {
-        String authHeader = request.getHeader(AUTHORIZATION_HEADER_NAME);
-        if (authHeader.startsWith(AUTH_TYPE_OAuth)) {
-                log.info("Authorization type used in OAuth");
-                oAuth2SecurityInterceptor.postCall(request, status, serviceMethodInfo);
-        }
     }
 
     //Authenticate Basic auth type request
@@ -162,23 +163,7 @@ public class AuthenticationHandler implements Interceptor {
             throw new RestApiBasicAuthenticationException(e.getMessage(), e);
         }
 
-            /* Upon successful authentication existing thread local carbon context
-             * is updated to mimic the authenticated user */
-        try {
-            PrivilegedCarbonContext privilegedCarbonContext =
-                    (PrivilegedCarbonContext) PrivilegedCarbonContext.getCurrentContext();
-
-            User authenticatedUser = RestServiceContentHolder.getInstance().getRestService().getUserRealm()
-                    .getIdentityStore().
-                            getUser(userName);
-
-            CarbonPrincipal principal = new CarbonPrincipal(authenticatedUser);
-            privilegedCarbonContext.setUserPrincipal(principal);
-        } catch (IdentityStoreException | UserNotFoundException e) {
-            //todo:
-            String msg = "Error occured while ";
-            log.error(msg, e);
-        }
+        updateCarbonContext(userName);
 
 
         return true;
@@ -208,6 +193,28 @@ public class AuthenticationHandler implements Interceptor {
                         authType).entity(jsonString).build();
     }
 
+    /**
+     * Existing thread local carbon context
+     * is updated to mimic the authenticated user
+     * @param userName - authenticated username
+     */
+    private void updateCarbonContext(String userName) {
+        try {
+            PrivilegedCarbonContext privilegedCarbonContext =
+                    (PrivilegedCarbonContext) PrivilegedCarbonContext.getCurrentContext();
+
+            User authenticatedUser = RestServiceContentHolder.getInstance().getRestService().getUserRealm()
+                    .getIdentityStore().
+                            getUser(userName);
+
+            CarbonPrincipal principal = new CarbonPrincipal(authenticatedUser);
+            privilegedCarbonContext.setUserPrincipal(principal);
+        } catch (IdentityStoreException | UserNotFoundException e) {
+            //did no throw the error, since authentication is success
+            String msg = "Error occured while updating user";
+            log.error(msg, e);
+        }
+    }
 
 }
 
