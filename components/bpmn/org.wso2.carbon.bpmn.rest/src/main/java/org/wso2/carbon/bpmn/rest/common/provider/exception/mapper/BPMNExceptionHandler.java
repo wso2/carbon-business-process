@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
 import org.wso2.carbon.bpmn.rest.common.exception.BPMNOSGIServiceException;
 import org.wso2.carbon.bpmn.rest.common.exception.RestApiBasicAuthenticationException;
+import org.wso2.carbon.bpmn.rest.common.exception.RestApiOauthAuthenticationException;
 //import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.ws.rs.ClientErrorException;
@@ -67,6 +68,9 @@ public class BPMNExceptionHandler implements ExceptionMapper<Exception> {
             return createRestErrorResponse(Response.Status.NOT_FOUND, "unsupported operation");
         } else if (e instanceof RestApiBasicAuthenticationException) {
             log.error("Authentication failed ", e);
+            return createRestErrorResponse(Response.Status.UNAUTHORIZED, e.getMessage());
+        } else if (e instanceof RestApiOauthAuthenticationException) {
+            log.debug("OAuth1 Authentication failed ", e);
             return createRestErrorResponse(Response.Status.UNAUTHORIZED, e.getMessage());
         } else if (e instanceof ClientErrorException) {
             log.error("unsupported operation", e);
