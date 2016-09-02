@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.bpmn.core.internal;
 
+
 import org.activiti.engine.ProcessEngines;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
@@ -40,7 +41,6 @@ import org.wso2.carbon.datasource.core.api.DataSourceService;
 import org.wso2.carbon.datasource.core.exception.DataSourceException;
 import org.wso2.carbon.deployment.engine.Deployer;
 import org.wso2.carbon.security.caas.user.core.service.RealmService;
-
 import javax.naming.Context;
 import javax.naming.NamingException;
 
@@ -171,7 +171,6 @@ public class BPMNServiceComponent {
             BPMNDeployer deployer = new BPMNDeployer();
             bpmnEngineService.setBpmnDeployer(deployer);
             bundleContext.registerService(Deployer.class.getName(), deployer, null);
-
         } catch (Throwable t) {
             log.error("Error initializing bpmn component " + t);
         }
