@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.bpmn.uuf.ui;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -51,6 +52,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
 
     private CloseableHttpClient client;
     private String baseUrl;
+    private String userName;
+    private String passWord;
 
     /**
      * Initialize the HttpClient
@@ -68,6 +71,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             log.error("Exception : ", e);
         }
         baseUrl = "https://" + host + ":" + port;
+        //Need to change this part after introducing user managemnet module
+        userName = "admin";
+        passWord = "admin";
     }
 
     /**
@@ -105,7 +111,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             httpGet = new HttpGet(
                     new URI(baseUrl + "/bpmn/repository/deployments?tenantId=" + tenantId + "&start=" + start));
             httpGet.addHeader("Content-type", "application/json");
-            httpGet.addHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            String authString = userName + ":" + password;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
             response = client.execute(httpGet);
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -131,7 +139,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     httpGet = new HttpGet(
                             new URI(baseUrl + "/bpmn/repository/process-definitions?deploymentId=" + deploymentId));
                     httpGet.addHeader("Content-type", "application/json");
-                    httpGet.addHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+                    String authString = userName + ":" + password;
+                    byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+                    httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
                     response = client.execute(httpGet);
                     rd = new BufferedReader(
                             new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -319,7 +329,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         try {
             httpGet = new HttpGet(baseUrl + "/bpmn/process-definition/" + processDefId + "/properties");
             httpGet.addHeader("Content-type", "application/json");
-            httpGet.addHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            String authString = userName + ":" + password;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
             response = client.execute(httpGet);
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -381,7 +393,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
             httpPost.addHeader("Content-Type", "application/json");
-            httpPost.addHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            String authString = userName + ":" + password;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
             JSONObject bodyObj = new JSONObject();
             bodyObj.put("processDefinitionId", processDefId);
@@ -460,7 +474,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
             httpPost.addHeader("Content-Type", "application/json");
-            httpPost.addHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            String authString = userName + ":" + password;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
             JSONObject bodyObj = new JSONObject();
             bodyObj.put("processDefinitionId", splitFirst[splitFirst.length - 1].split("=")[1]);
