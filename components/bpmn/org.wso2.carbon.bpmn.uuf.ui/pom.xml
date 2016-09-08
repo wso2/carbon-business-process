@@ -22,7 +22,7 @@
 
     <groupId>org.wso2.carbon.business-process</groupId>
     <artifactId>org.wso2.carbon.bpmn.uuf.ui</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
 
     <properties>
         <import.package>
