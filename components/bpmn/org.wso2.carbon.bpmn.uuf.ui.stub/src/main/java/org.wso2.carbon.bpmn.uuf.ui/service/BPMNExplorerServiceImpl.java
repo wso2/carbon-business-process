@@ -43,6 +43,9 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Class to call BPMN backend
+ */
 public class BPMNExplorerServiceImpl implements BPMNExplorerService {
     private static final Logger log = LoggerFactory.getLogger(BPMNExplorerServiceImpl.class);
 
