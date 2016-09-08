@@ -1,0 +1,219 @@
+<%/*<!--
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+ -->*/%>
+<%
+
+var headers = {"Authorization":"Basic " + auth};
+
+var deployedProcessCount = get( httpUrl +"/bpmn/stats/process-instances/count" ,null, headers, "json" ).data.data;
+
+var list = [];
+
+for (var i= 0; i < deployedProcessCount.length; i++) {
+    var processDefinitionId = deployedProcessCount[i].processDefinitionId;
+    var instanceList = {
+        deployment: processDefinitionId       
+    };
+
+    list.push(instanceList);
+    
+}
+//Advanced Filter  Model
+
+var queryReceived = false; //At first request (or without query parameters) no need to load task list
+var onclickUrl = 'processMonitoring'; 
+
+if (request.getQueryString() != null) {
+
+    //If query received need to process query
+    queryReceived = true;
+    var pagination = request.getParameter("pagination");    
+    var requestParameters = request.getAllParameters();
+    var newQueryString = ""; //query string used for pagination
+    var pageSize = 10;//page size (currently it's hard coded to 10 untill we make it configurable)
+    var searchActiveInstances = true;//state that the user is searching for active tasks or completed historic tasks
+    var requestUrl = '';//BPS BPMN REST API call url
+
+    if (log.isDebugEnabled()) {
+        log.debug("Request parameters:" +stringify(requestParameters));
+        log.debug("Request parameters:" +request.getQueryString());
+    }
+
+    //set pagination
+    if (pagination == null || pagination == "") {
+        pagination = 1;
+    } else {
+        pagination = parseInt(pagination);
+    }
+
+    //remove pagiantion parameter if exists
+    if (request.getParameter("pagination") !== null) {
+        //split query string with "&" to remove pagination part from the query string
+        var qs = request.getQueryString();
+        newQueryString = qs.substring( qs.indexOf('&') + 1 );
+    } else {
+        newQueryString = request.getQueryString();
+    }
+
+    var bodyOfRequest = {};
+    var vCollection = {};
+
+    if (request.getParameter("instanceStatus") === "COMPLETED") {
+
+        searchActiveInstances = false;              
+    
+
+        if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
+            vCollection["processInstanceId"] = requestParameters.processInstanceId;
+        }
+
+        if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
+            vCollection["processDefinitionId"] = requestParameters.processDefinitionNameLike;           
+        }       
+           
+       if (requestParameters.createdBefore !== undefined && requestParameters.createdBefore.length > 0) {
+            var dateArray = requestParameters.createdBefore.split("T")[0].split("-");
+            var date = dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2];
+            vCollection["startedBefore"] = date;
+        }
+
+        if (requestParameters.createdAfter !== undefined && requestParameters.createdAfter.length > 0) {
+            var dateArray = requestParameters.createdAfter.split("T")[0].split("-");
+            var date = dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2];
+            vCollection["startedAfter"] = date;
+        }      
+       
+       if (requestParameters.variableName !== undefined && requestParameters.variableName.length > 0 && 
+            requestParameters.variableValue !== undefined && requestParameters.variableValue.length > 0) {
+            var variableNames = requestParameters.variableName;      
+            var values = requestParameters.variableValue;
+            var variables = [];
+            if (typeof variableNames == 'string') {
+                   variables.push({
+                            "name":variableNames,
+                            "value":values,
+                            "operation" : "equals"
+                });
+            } else {               
+                for (var i = 0; i < variableNames.length; i++) {
+                    if (variableNames[i] != null && variableNames[i] !== "") {                    
+                          variables.push({
+                            "name":variableNames[i],
+                            "value":values[i],
+                            "operation" : "equals"
+                        });
+                    } else {
+                         break;
+                    }
+                }
+            }             
+           
+        }
+        vCollection["variables"] = variables;
+        vCollection["start"] = ((pagination - 1) * pageSize);
+        vCollection["size"] = pageSize;
+        vCollection["finished"] =  "true";
+        vCollection["tenantId"] =  bpsTenantID;
+        bodyOfRequest= vCollection;
+        requestUrl = httpUrl + "/bpmn/query/historic-process-instances";
+    } else {
+        if (requestParameters.processInstanceId !== undefined && requestParameters.processInstanceId.length > 0) {
+            vCollection["processInstanceId"] = requestParameters.processInstanceId;
+        }
+
+        if (requestParameters.processDefinitionNameLike !== undefined && requestParameters.processDefinitionNameLike.length > 0) {
+            vCollection["processDefinitionId"] = requestParameters.processDefinitionNameLike;         
+        }      
+     
+       if (requestParameters.variableName !== undefined && requestParameters.variableName.length > 0 && 
+            requestParameters.variableValue !== undefined && requestParameters.variableValue.length > 0) {
+            var variableNames = requestParameters.variableName;        
+            var values = requestParameters.variableValue;
+            var variables = [];
+            if (typeof variableNames == 'string') {
+                variables.push({
+                    "name":variableNames,
+                    "value":values,
+                    "operation" : "equals"
+                });
+            } else {
+                for (var i = 0; i < variableNames.length; i++) {
+                    if (variableNames[i] != null && variableNames[i] !== "") {
+                       variables.push({
+                            "name":variableNames[i],
+                            "value":values[i],
+                            "operation" : "equals"
+                        });
+                    } else {
+                         break;
+                    }
+                }
+            }        
+                        
+        }
+        vCollection["variables"] = variables;
+        vCollection["start"] = ((pagination - 1) * pageSize);
+        vCollection["size"] = pageSize;
+        vCollection["tenantId"] =  bpsTenantID;
+        bodyOfRequest= vCollection;  
+       
+        requestUrl = httpUrl + "/bpmn/query/process-instances";      
+    }
+
+    var headers = {"Content-Type": "application/json","Authorization":"Basic " + auth};
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPMN Rest API Request: " + requestUrl);
+    }
+
+    try {
+        //make rest call
+        var instanceListResponse = post(requestUrl, stringify(bodyOfRequest), headers, "json").data;        
+        
+        var numOfTasks = 0;//used to display tasks in searchView
+        var paginatePageCount = 0; //used to display tasks in pagination
+
+        if (log.isDebugEnabled()) {
+            log.debug("BPMN Rest API Response: " + stringify(instanceListResponse));
+        }
+
+        //Check for error response
+        if (instanceListResponse.errorMessage != undefined) {
+            throw "Error " + instanceListResponse.statusCode + " : " + instanceListResponse.errorMessage;
+        }
+
+        if (instanceListResponse.data !== undefined) {
+            numOfTasks = instanceListResponse.data.length;
+            //calculate pagination page count
+            paginatePageCount = parseInt(instanceListResponse.total / 10);
+            if ((instanceListResponse.total % pageSize) > 0) {
+                paginatePageCount += 1;
+            }
+        }
+    } catch (err) {
+        if (log.isDebugEnabled()) {
+            log.debug("User Error Occured : " + err);
+        }
+        //Enable and display error in common error display area in view
+        commonErrorMessage = err;
+        errorDisplayEnable = '';
+    }
+}
+
+//Set current active view as advancedFilter view.
+//This is used to highlight current view which the user currently viewing in the navigation bar
+advancedFilterNavActive = 'active';
+monitoringMenuNavActive = 'active'; //This will highlight Monitoring menu tab
+%>

@@ -20,18 +20,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.dom.DOMOutputImpl;
 import org.apache.xerces.impl.Constants;
-import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.apache.xerces.util.SecurityManager;
 import org.apache.xml.serialize.DOMSerializerImpl;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * DOM Utility Methods
@@ -39,15 +43,16 @@ import java.io.StringWriter;
 public final class DOMUtils {
 
     private static ThreadLocal<DocumentBuilder> builders = new ThreadLocal();
-    private static final DocumentBuilderFactory documentBuilderFactory =
-            new DocumentBuilderFactoryImpl();
+    private static final DocumentBuilderFactory documentBuilderFactory ;
+
     private static Log log = LogFactory.getLog(DOMUtils.class);
 
     public static final String NS_URI_XMLNS = "http://www.w3.org/2000/xmlns/";
+    private static final int ENTITY_EXPANSION_LIMIT = 0;
 
 
     static {
-        initDocumentBuilderFactory();
+        documentBuilderFactory = getSecuredDocumentBuilder();
     }
 
     private DOMUtils() {
@@ -56,11 +61,6 @@ public final class DOMUtils {
     /**
      * Initialize the document-builder factory.                 documentBuilderFactory = f;
      */
-    private static void initDocumentBuilderFactory() {
-//        DocumentBuilderFactory f = XMLParserUtils.getDocumentBuilderFactory();
-//        DocumentBuilderFactory f = new DocumentBuilderFactoryImpl();
-        documentBuilderFactory.setNamespaceAware(true);
-    }
 
     public static Document newDocument() {
         DocumentBuilder db = getBuilder();
@@ -74,6 +74,7 @@ public final class DOMUtils {
                 try {
                     builder = documentBuilderFactory.newDocumentBuilder();
                     builder.setErrorHandler(new SAXLoggingErrorHandler());
+
                 } catch (ParserConfigurationException e) {
                     log.error(e.getMessage(), e);
                     throw new RuntimeException(e);
@@ -158,6 +159,8 @@ public final class DOMUtils {
      */
     public static Document parse(InputSource inputSource) throws SAXException, IOException {
         DocumentBuilder db = getBuilder();
+        // Findbug false positive XXE_DOCUMENT warning. Here we are taking Secured DocumentBuilder factory to build
+        // DocumentBuilder.
         return db.parse(inputSource);
     }
 
@@ -343,7 +346,7 @@ public final class DOMUtils {
             log.warn("Object is not an Element. Trying to create the Element explicitly.", e);
             try {
                 //We need a Document
-                DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+                DocumentBuilderFactory dbfac = getSecuredDocumentBuilder();
                 DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
                 Document doc = docBuilder.newDocument();
 
@@ -368,5 +371,36 @@ public final class DOMUtils {
         }
 
         return dataElement;
+    }
+
+    /**
+     * Create DocumentBuilderFactory with the XXE and XEE prevention measurements.
+     *
+     * @return DocumentBuilderFactory instance
+     */
+    public static DocumentBuilderFactory getSecuredDocumentBuilder() {
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+        try {
+            dbf.setFeature(Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE, false);
+            dbf.setFeature(Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE, false);
+            dbf.setFeature(Constants.XERCES_FEATURE_PREFIX + Constants.LOAD_EXTERNAL_DTD_FEATURE, false);
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+        } catch (ParserConfigurationException e) {
+            log.error("Failed to load XML Processor Feature " + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE + " or " +
+                    Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE + " or " + Constants.LOAD_EXTERNAL_DTD_FEATURE +
+                    " or secure-processing.");
+        }
+
+        SecurityManager securityManager = new SecurityManager();
+        securityManager.setEntityExpansionLimit(ENTITY_EXPANSION_LIMIT);
+        dbf.setAttribute(Constants.XERCES_PROPERTY_PREFIX + Constants.SECURITY_MANAGER_PROPERTY, securityManager);
+
+        return dbf;
+
     }
 }

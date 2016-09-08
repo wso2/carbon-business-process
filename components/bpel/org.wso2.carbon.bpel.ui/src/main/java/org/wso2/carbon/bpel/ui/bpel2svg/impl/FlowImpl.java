@@ -19,7 +19,11 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.FlowInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 
 import java.util.Iterator;
 
@@ -98,7 +102,8 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
     /**
      * At the start: width=0, height=0
      *
-     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
+     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by
+     * iterating
      * through the dimensions of the subActivities
      */
     @Override
@@ -181,7 +186,8 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
             //Iterates through all the subActivities
             while (itr.hasNext()) {
                 activity = itr.next();
-                /* If the activity inside Flow activity is an instance of If activity, then setCheckIfinFlow becomes true.
+                /* If the activity inside Flow activity is an instance of If activity, then setCheckIfinFlow becomes
+                true.
                 This If check is done to space the subActivities when an If activity is inside a Flow activity.
                 This is a special case.
                  */
@@ -193,7 +199,8 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
                     on the scope/box which contains the subActivities.This requires more spacing, so the yTop of the
                     activity following it i.e. the activity after it is also increased.
                  */
-                if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof WhileImpl || activity instanceof IfImpl) {
+                if (activity instanceof RepeatUntilImpl || activity instanceof ForEachImpl || activity instanceof
+                        WhileImpl || activity instanceof IfImpl) {
                     int x = childYTop + (getYSpacing() / 2);
                     //Sets the xLeft and yTop position of the iterated activity
                     activity.layout(childXLeft, x);
@@ -321,7 +328,8 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
      * Calculates the coordinates of the arrow which leaves the start Flow Icon
      *
      * @return coordinates of the exit arrow for the start icon
-     * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
+     * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon +
+     * height of the icon
      */
     protected SVGCoordinates getStartIconExitArrowCoords() {
         int xLeft = 0;
@@ -366,12 +374,13 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
 
     /**
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the Flow composite activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the Flow
+     * composite activity
      */
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         // Check if Layer & Opacity required
@@ -402,7 +411,7 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Gets the coordinates of the Flow start icon
         SVGCoordinates myStartCoords = getStartIconExitArrowCoords();
         //Gets the coordinates of the Flow end icon
@@ -411,11 +420,13 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
         //Arrow Flow Coordinates of the Start Flow Icon
         subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(),
                 myStartCoords.getXLeft(), (myStartCoords.getYTop() + 30), "Flow_Top", true));
-        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth() / 2 + getXSpacing()),
+        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth() / 2 +
+                getXSpacing()),
                 (myStartCoords.getYTop() + 30), (myStartCoords.getXLeft() + dimensions.getWidth() / 2 - getXSpacing()),
                 (myStartCoords.getYTop() + 30), "Flow_TopH", true));
         //Arrow Flow Coordinates of the End Flow Icon
-        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth() / 2 + getXSpacing()),
+        subGroup.appendChild(getArrowDefinition(doc, (myStartCoords.getXLeft() - dimensions.getWidth() / 2 +
+                getXSpacing()),
                 (myExitCoords.getYTop() - 20), (myStartCoords.getXLeft() + dimensions.getWidth() / 2 - getXSpacing()),
                 (myExitCoords.getYTop() - 20), "Flow_DownH", true));
         subGroup.appendChild(getArrowDefinition(doc, myExitCoords.getXLeft(), myExitCoords.getYTop() - 20,
@@ -436,10 +447,12 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
      * @param to     true/false for the arrow style
      * @return An element which contains the arrow flows/paths of the Flow activity and its subActivities
      */
-    public Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id, boolean to) {         //here we have to find whether
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+    public Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id, boolean
+            to) {         //here we have to find whether
+        Element path = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "path");
 
-         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively few
+         /*Arrows are created using  <path> : An element in svg used to create smooth, flowing lines using relatively
+          few
           control points.
           A path element is defined by attribute: d. This attribute contains a series of commands for path data :
           M = move to
@@ -453,16 +466,22 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
             if (to) {
                 if (layoutManager.isVerticalLayout()) {
                     path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + startX + "," +
-                            ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3));                            //use constants for these propotions
+                            ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3));
+                    //use constants for these propotions
                 } else {
                     path.setAttributeNS(null, "d", "M " + startX + "," + startY + " L " + ((startX + 1 * endX) / 2) +
-                            "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY);                              //use constants for these propotions
+                            "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY);
+                    //use constants for these propotions
                 }
             } else {
                 if (layoutManager.isVerticalLayout()) {
-                    path.setAttributeNS(null, "d", "M " + startX + "," + ((startY + 2 * endY) / 3) + " L " + endX + "," + ((startY + 2 * endY) / 3) + " L " + endX + "," + endY);                            //use constants for these propotions
+                    path.setAttributeNS(null, "d", "M " + startX + "," + ((startY + 2 * endY) / 3) + " L " + endX +
+                            "," + ((startY + 2 * endY) / 3) + " L " + endX + "," + endY);
+                    //use constants for these propotions
                 } else {
-                    path.setAttributeNS(null, "d", "M " + ((startX + 1 * endX) / 2) + "," + startY + " L " + ((startX + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);                              //use constants for these propotions
+                    path.setAttributeNS(null, "d", "M " + ((startX + 1 * endX) / 2) + "," + startY + " L " + ((startX
+                            + 1 * endX) / 2) + "," + endY + " L " + endX + "," + endY);
+                    //use constants for these propotions
                 }
 
             }
@@ -480,8 +499,10 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
      */
     private String getArrowStyle(boolean to) {
         if (to) {
-            String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
-            String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
+            String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;" +
+                    "stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
+            String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;" +
+                    "stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
 
             if (isLargeArrow()) {
                 return largeArrowStr;
@@ -489,8 +510,12 @@ public class FlowImpl extends ActivityImpl implements FlowInterface {
                 return mediumArrowStr;
             }
         } else {
-            String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;stroke-linejoin:round;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
-            String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;stroke-linejoin:round;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1";
+            String largeArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;" +
+                    "stroke-linejoin:round;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;" +
+                    "stroke-opacity:1";
+            String mediumArrowStr = "fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0;stroke-linecap:butt;" +
+                    "stroke-linejoin:round;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none;" +
+                    "stroke-opacity:1";
 
             if (isLargeArrow()) {
                 return largeArrowStr;

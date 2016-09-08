@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -66,12 +66,12 @@ try {
 
     var formContent = formGenTool.generateForm(formData, true);
 
-} catch (e) {
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("User Error Occured : " + e);
+        log.debug("User Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
 }
 %>

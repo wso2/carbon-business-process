@@ -19,10 +19,14 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.OnMessageInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 
-import javax.xml.namespace.QName;
 import java.util.Iterator;
+import javax.xml.namespace.QName;
 
 /**
  * OnMessage tag UI implementation
@@ -30,6 +34,7 @@ import java.util.Iterator;
 public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
     /**
      * Initializes a new instance of the OnMessageImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public OnMessageImpl(String token) {
@@ -68,8 +73,10 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the OnMessageImpl class using the specified omElement
+     *
      * @param omElement which matches the OnMessage tag
      */
     public OnMessageImpl(OMElement omElement) {
@@ -78,11 +85,13 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         String partnerLink = null;
         String operation = null;
         // Get the Partner Link Name
-        if (omElement.getAttribute(new QName("partnerLink")) != null)
+        if (omElement.getAttribute(new QName("partnerLink")) != null) {
             partnerLink = omElement.getAttribute(new QName("partnerLink")).getAttributeValue();
+        }
         // Get the operation Name
-        if (omElement.getAttribute(new QName("operation")) != null)
+        if (omElement.getAttribute(new QName("operation")) != null) {
             operation = omElement.getAttribute(new QName("operation")).getAttributeValue();
+        }
         //Set the name by combining the partnerLink and operation Names
         setName(partnerLink + "." + operation);
 
@@ -90,10 +99,13 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the OnMessageImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an OnMessage Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an OnMessage Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the OnMessage tag
      * @param parent
      */
@@ -106,11 +118,13 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         String partnerLink = null;
         String operation = null;
         // Get the Partner Link Name
-        if (omElement.getAttribute(new QName("partnerLink")) != null)
+        if (omElement.getAttribute(new QName("partnerLink")) != null) {
             partnerLink = omElement.getAttribute(new QName("partnerLink")).getAttributeValue();
+        }
         // Get the operation Name
-        if (omElement.getAttribute(new QName("operation")) != null)
+        if (omElement.getAttribute(new QName("operation")) != null) {
             operation = omElement.getAttribute(new QName("operation")).getAttributeValue();
+        }
         //Set the name by combining the partnerLink and operation Names
         setName(partnerLink + "." + operation);
 
@@ -120,7 +134,6 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
     }
 
     /**
-     *
      * @return String with name of the activity
      */
     @Override
@@ -129,18 +142,18 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
     }
 
     /**
-     *
      * @return- String with the end tag of OnMessage Activity
      */
     @Override
     public String getEndTag() {
         return BPEL2SVGFactory.ONMESSAGE_END_TAG;
     }
-	
-	 /**
+
+    /**
      * At the start: width=0, height=0
+     *
      * @return dimensions of the activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -164,12 +177,13 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
                 if (subActivityDim.getWidth() > width) {
                     width += subActivityDim.getWidth();
                 }
-                /*As OnMessage should increase in height when the number of subActivities increase, height of each subActivity
+                /*As OnMessage should increase in height when the number of subActivities increase, height of each
+                subActivity
                   is added to the height of the main activity
                 */
                 height += subActivityDim.getHeight();
             }
-			/*After iterating through all the subActivities and altering the dimensions of the  activity
+            /*After iterating through all the subActivities and altering the dimensions of the  activity
               to get more spacing , Xspacing and Yspacing is added to the height and the width of the  activity
             */
             height += getYSpacing() + getStartIconHeight() + (getYSpacing() / 2);
@@ -185,6 +199,7 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
 
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -196,13 +211,14 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
             layoutHorizontal(startXLeft, startYTop);
         }
     }
- 	/**
+
+    /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
      * centreOfMyLayout- center of the the SVG
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -211,15 +227,16 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         int xLeft = centreOfMyLayout - (getStartIconWidth() / 2);
         int yTop = startYTop + (getYSpacing() / 2);
 
-        ActivityInterface activity = null;
+        ActivityInterface activity;
         Iterator<ActivityInterface> itr = getSubActivities().iterator();
         //Adjusting the childXLeft and childYTop positions
         int childYTop = yTop + getStartIconHeight() + (getYSpacing() / 2);
-        int childXLeft = startXLeft;
+        int childXLeft;
         //Iterates through all the subActivities
         while (itr.hasNext()) {
             activity = itr.next();
-            //Sets the xLeft position of the iterated activity : childXleft= center of the layout - (width of the activity icon)/2
+            //Sets the xLeft position of the iterated activity : childXleft= center of the layout - (width of the
+            // activity icon)/2
             childXLeft = centreOfMyLayout - activity.getDimensions().getWidth() / 2;
             //Sets the xLeft and yTop position of the iterated activity
             activity.layout(childXLeft, childYTop);
@@ -236,12 +253,14 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         getDimensions().setYTop(startYTop);
 
     }
-  	/**
+
+    /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     public void layoutHorizontal(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -250,10 +269,10 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         int xLeft = startXLeft + (getYSpacing() / 2);
         int yTop = centreOfMyLayout - (getStartIconHeight() / 2);
 
-        ActivityInterface activity = null;
+        ActivityInterface activity;
         Iterator<ActivityInterface> itr = getSubActivities().iterator();
         //Adjusting the childXLeft and childYTop positions
-        int childYTop = yTop;
+        int childYTop;
         int childXLeft = xLeft + getStartIconWidth() + (getYSpacing() / 2);
         //Iterates through all the subActivities
         while (itr.hasNext()) {
@@ -275,9 +294,11 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         getDimensions().setYTop(startYTop);
 
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -302,6 +323,7 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -320,8 +342,10 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves the start OnMessage Icon
+     *
      * @return coordinates of the exit arrow for the start icon
-     * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
+     * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon +
+     * height of the icon
      */
     protected SVGCoordinates getStartIconExitArrowCoords() {
         int xLeft = 0;
@@ -339,15 +363,16 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
 
         return coords;
     }
+
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the OnMessage  activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the OnMessage
+     * activity
      */
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the opacity of the icons
@@ -367,15 +392,16 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
         return group;
     }
 
-	 /**
+    /**
      * Get the arrow coordinates of the activities
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return An element which contains the arrow coordinates of the OnMessage activity and its subActivities
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
-		//Checks for the subActivities
+        subGroup = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
+        //Checks for the subActivities
         if (subActivities != null) {
             ActivityInterface prevActivity = null;
             ActivityInterface activity = null;
@@ -396,33 +422,38 @@ public class OnMessageImpl extends ActivityImpl implements OnMessageInterface {
                     entryCoords = activity.getEntryArrowCoords();
                     // id is assigned with the id of the previous activity + id of the current activity
                     id = prevActivity.getId() + "-" + activity.getId();
-                    /*If the previous activity is not null, then arrow flow is from the previous activity to the current activity
+                    /*If the previous activity is not null, then arrow flow is from the previous activity to the
+                    current activity
                       This gives the coordinates of the start point and the end point
                     */
-                    subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
+                    subGroup.appendChild(getArrowDefinition(doc, exitCoords.getXLeft(), exitCoords.getYTop(),
+                            entryCoords.getXLeft(), entryCoords.getYTop(), id));
                 } else {
                     //Get the entry arrow coordinates of the current activity
                     entryCoords = activity.getEntryArrowCoords();
                       /*If the previous activity is null, then arrow flow is directly from the startIcon to the activity
                       This gives the coordinates of the start point and the end point
                     */
-                    subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), entryCoords.getXLeft(), entryCoords.getYTop(), id));
+                    subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(),
+                            entryCoords.getXLeft(), entryCoords.getYTop(), id));
                 }
                 prevActivity = activity;
             }
         }
         return subGroup;
     }
+
     /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
     public boolean isAddOpacity() {
         return isAddCompositeActivityOpacity();
     }
+
     /**
-     *
      * @return String with the opacity value
      */
     @Override

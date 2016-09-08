@@ -1,5 +1,5 @@
 <%
-/* ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+/* ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ if (request.isSecure()) {//check whether the request is secure or not
         var process = require('process'),
     	encoder = require("/assets/encoder.js"),
     	auth = session.get('auth'),
-    	contentType = request.getContentType(),	
+    	contentType = request.getContentType(),
     	headers = {
     		"Content-Type": contentType,
     		"Authorization":"Basic " + auth,
@@ -45,6 +45,7 @@ if (request.isSecure()) {//check whether the request is secure or not
             data = request.getContent();
             result = post( httpUrl + url, JSON.stringify(data), headers, "text");
             if (log.isDebugEnabled()){
+                log.debug("BPMN Rest POST URL: " + (httpUrl + url));
                 log.debug("BPMN Rest POST results: " + stringify(result));
             }
     	}
@@ -54,6 +55,7 @@ if (request.isSecure()) {//check whether the request is secure or not
             data = request.getContent();
             result = put( httpUrl + url, JSON.stringify(data), headers, "text");
             if (log.isDebugEnabled()){
+                log.debug("BPMN Rest PUT URL: " + (httpUrl + url));
                 log.debug("BPMN Rest PUT results: " + stringify(result));
             }
     	}
@@ -62,7 +64,21 @@ if (request.isSecure()) {//check whether the request is secure or not
             url = req;
             result = get( httpUrl + url, null, headers, "text");
             if (log.isDebugEnabled()){
-                log.debug("BPMN Rest PUT results: " + stringify(result));
+                log.debug("BPMN Rest GET URL: " + (httpUrl + url));
+                log.debug("BPMN Rest GET results: " + stringify(result));
+            }
+        }
+        if (run == "DELETE") {
+            req = request.getParameter("req");
+            url = httpUrl + req;
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", url);
+            xhr.setRequestHeader("Authorization","Basic " + auth);
+            xhr.send();
+            result = {"data": null,"xhr": xhr}
+            if (log.isDebugEnabled()){
+                log.debug("BPMN Rest DELETE URL: " + url);
+                log.debug("BPMN Rest DELETE results: " + stringify(result));
             }
         }
 

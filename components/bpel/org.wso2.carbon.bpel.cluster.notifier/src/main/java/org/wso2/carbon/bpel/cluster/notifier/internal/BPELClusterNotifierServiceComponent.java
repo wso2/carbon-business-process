@@ -32,8 +32,13 @@ import org.wso2.carbon.utils.ConfigurationContextService;
 public class BPELClusterNotifierServiceComponent {
     private static Log log = LogFactory.getLog(BPELClusterNotifierServiceComponent.class);
 
+    public static AxisConfiguration getAxisConfiguration() {
+        return BPELServerHolder.getInstance().getCcServiceInstance().getServerConfigContext().
+                getAxisConfiguration();
+    }
+
     protected void activate(ComponentContext ctxt) {
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("BPEL BPELClusterNotifier bundle is activated.");
         }
     }
@@ -50,10 +55,5 @@ public class BPELClusterNotifierServiceComponent {
             log.debug("ConfigurationContextService unbound from the BPEL component");
         }
         BPELServerHolder.getInstance().setCcServiceInstance(null);
-    }
-
-    public static AxisConfiguration getAxisConfiguration() {
-        return BPELServerHolder.getInstance().getCcServiceInstance().getServerConfigContext().
-                getAxisConfiguration();
     }
 }

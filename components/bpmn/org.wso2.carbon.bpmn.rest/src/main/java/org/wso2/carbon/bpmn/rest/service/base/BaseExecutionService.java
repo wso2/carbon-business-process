@@ -44,7 +44,6 @@ import org.wso2.carbon.bpmn.rest.model.runtime.*;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
@@ -94,7 +93,7 @@ public class BaseExecutionService {
     protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest,
                                             Map<String, String> requestParams, UriInfo uriInfo) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         // Populate query based on request
@@ -239,7 +238,7 @@ public class BaseExecutionService {
     }
 
     protected Execution getExecutionFromRequest(String executionId) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
         if (execution == null) {
             throw new ActivitiObjectNotFoundException("Could not find an execution with id '" + executionId + "'.", Execution.class);
@@ -301,7 +300,7 @@ public class BaseExecutionService {
 
     protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap,
                                      UriInfo uriInfo) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
         List<RestVariable> localVariables = new RestResponseFactory().createRestVariables(rawLocalvariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.LOCAL, uriInfo.getBaseUri().toString());
@@ -312,7 +311,7 @@ public class BaseExecutionService {
     }
 
     protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, UriInfo uriInfo) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
         List<RestVariable> globalVariables = new RestResponseFactory().createRestVariables(rawVariables,
                 execution.getId(), variableType, RestVariable.RestVariableScope.GLOBAL, uriInfo.getBaseUri().toString());
@@ -327,7 +326,7 @@ public class BaseExecutionService {
     }
 
     public void deleteAllLocalVariables(Execution execution) {
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
         runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
     }
@@ -474,17 +473,19 @@ public class BaseExecutionService {
                 scope = RestVariable.getScopeFromString(variableScope);
             }
 
-            if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
+            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType)) {
                 // Use raw bytes as variable value
                 setVariable(execution, variableName, attachmentDataHolder.getAttachmentArray(), scope, isNew);
 
             } else {
                 // Try deserializing the object
-                InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
-                ObjectInputStream stream = new ObjectInputStream(inputStream);
-                Object value = stream.readObject();
-                setVariable(execution, variableName, value, scope, isNew);
-                stream.close();
+                try(
+                        InputStream inputStream = new ByteArrayInputStream(attachmentDataHolder.getAttachmentArray());
+                        ObjectInputStream stream = new ObjectInputStream(inputStream);
+                ) {
+                    Object value = stream.readObject();
+                    setVariable(execution, variableName, value, scope, isNew);
+                }
             }
 
             if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {
@@ -514,9 +515,8 @@ public class BaseExecutionService {
 
         List<RestVariable> inputVariables = new ArrayList<>();
         List<RestVariable> resultVariables = new ArrayList<>();
-        String contentType = httpServletRequest.getContentType();
 
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 @SuppressWarnings("unchecked")
@@ -528,7 +528,7 @@ public class BaseExecutionService {
             } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
             }
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
             JAXBContext jaxbContext = null;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
@@ -591,7 +591,7 @@ public class BaseExecutionService {
         }
 
         if (!variablesToSet.isEmpty()) {
-            RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+            RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
             if (sharedScope == RestVariable.RestVariableScope.LOCAL) {
                 runtimeService.setVariablesLocal(execution.getId(), variablesToSet);
             } else {
@@ -696,7 +696,7 @@ public class BaseExecutionService {
             throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable with name: '" + name + "'.", null);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (scope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.setVariableLocal(execution.getId(), name, value);
         } else {
@@ -710,7 +710,7 @@ public class BaseExecutionService {
 
     protected boolean hasVariableOnScope(Execution execution, String variableName, RestVariable.RestVariableScope scope) {
         boolean variableFound = false;
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (scope == RestVariable.RestVariableScope.GLOBAL) {
             if (execution.getParentId() != null && runtimeService.hasVariable(execution.getParentId(), variableName)) {
                 variableFound = true;
@@ -733,7 +733,7 @@ public class BaseExecutionService {
         if (execution == null) {
             throw new ActivitiObjectNotFoundException("Could not find an execution", Execution.class);
         }
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
         if (variableScope == null) {
             // First, check local variables (which have precedence when no scope is supplied)

@@ -59,16 +59,16 @@ public class AnalyticsStreamConfiguration {
         return metaAnalyticsKeyList;
     }
 
-    public void addMetaAnalyticsKey(AnalyticsKey AnalyticsKey) {
-        metaAnalyticsKeyList.add(AnalyticsKey);
+    public void addMetaAnalyticsKey(AnalyticsKey analyticsKey) {
+        metaAnalyticsKeyList.add(analyticsKey);
     }
 
     /**
      * Add a list of meta analytics keys.
-     * @param AnalyticsKeys
+     * @param analyticsKeys
      */
-    public void addAllMetaAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
-        metaAnalyticsKeyList.addAll(AnalyticsKeys);
+    public void addAllMetaAnalyticsKeys(Collection<AnalyticsKey> analyticsKeys) {
+        metaAnalyticsKeyList.addAll(analyticsKeys);
     }
 
     public List<AnalyticsKey> getCorrelationAnalyticsKeyList() {
@@ -77,18 +77,18 @@ public class AnalyticsStreamConfiguration {
 
     /**
      * Add the given correlation key to the configuration.
-     * @param AnalyticsKey
+     * @param analyticsKey
      */
-    public void addCorrelationAnalyticsKey(AnalyticsKey AnalyticsKey) {
-        correlationAnalyticsKeyList.add(AnalyticsKey);
+    public void addCorrelationAnalyticsKey(AnalyticsKey analyticsKey) {
+        correlationAnalyticsKeyList.add(analyticsKey);
     }
 
     /**
      * Add a list of correlation keys to the configuration.
-     * @param AnalyticsKeys
+     * @param analyticsKeys
      */
-    public void addAllCorrelationAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
-        correlationAnalyticsKeyList.addAll(AnalyticsKeys);
+    public void addAllCorrelationAnalyticsKeys(Collection<AnalyticsKey> analyticsKeys) {
+        correlationAnalyticsKeyList.addAll(analyticsKeys);
     }
 
     /**
@@ -101,17 +101,17 @@ public class AnalyticsStreamConfiguration {
 
     /**
      * Add a payload analytics key to the key list.
-     * @param AnalyticsKey
+     * @param analyticsKey
      */
-    public void addPayloadAnalyticsKey(AnalyticsKey AnalyticsKey) {
-        payloadAnalyticsKeyList.add(AnalyticsKey);
+    public void addPayloadAnalyticsKey(AnalyticsKey analyticsKey) {
+        payloadAnalyticsKeyList.add(analyticsKey);
     }
 
     /**
      * Add a list of AnalyticsKeys to the payload analytics list.
-     * @param AnalyticsKeys
+     * @param analyticsKey
      */
-    public void addAllPayloadAnalyticsKeys(Collection<AnalyticsKey> AnalyticsKeys) {
-        payloadAnalyticsKeyList.addAll(AnalyticsKeys);
+    public void addAllPayloadAnalyticsKeys(Collection<AnalyticsKey> analyticsKey) {
+        payloadAnalyticsKeyList.addAll(analyticsKey);
     }
 }

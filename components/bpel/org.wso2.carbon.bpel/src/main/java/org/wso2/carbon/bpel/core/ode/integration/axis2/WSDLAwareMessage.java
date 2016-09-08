@@ -17,24 +17,27 @@ package org.wso2.carbon.bpel.core.ode.integration.axis2;
 
 import org.apache.axiom.om.OMElement;
 
-import javax.wsdl.Binding;
 import java.util.HashMap;
 import java.util.Map;
+import javax.wsdl.Binding;
 
+/**
+ * WSDL Aware Message for ODE integration.
+ */
 public class WSDLAwareMessage {
     private Map<String, OMElement> headerParts = new HashMap<String, OMElement>();
     private Map<String, OMElement> bodyParts = new HashMap<String, OMElement>();
 
     private boolean isRPC = false;
-//    private String serviceName;
+    //    private String serviceName;
 //    private String portName;
     private Binding binding;
 
-    public void addBodyPart(String partName, OMElement partElement){
+    public void addBodyPart(String partName, OMElement partElement) {
         bodyParts.put(partName, partElement);
     }
 
-    public void addHeaderPart(String partName, OMElement partElement){
+    public void addHeaderPart(String partName, OMElement partElement) {
         headerParts.put(partName, partElement);
     }
 
@@ -46,11 +49,11 @@ public class WSDLAwareMessage {
 //        return OMUtils.toDOM(headerParts.get(partName));
 //    }
 
-    public Map<String, OMElement> getBodyParts(){
+    public Map<String, OMElement> getBodyParts() {
         return bodyParts;
     }
 
-    public Map<String, OMElement> getHeaderParts(){
+    public Map<String, OMElement> getHeaderParts() {
         return headerParts;
     }
 

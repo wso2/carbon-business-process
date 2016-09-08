@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * Termination Handler Interface.
+ */
 public interface TerminationHandlerInterface extends ActivityInterface {
 
 }

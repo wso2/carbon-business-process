@@ -26,8 +26,12 @@ import org.wso2.carbon.bpel.deployer.services.types.UploadedFileItem;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.utils.CarbonUtils;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import javax.activation.DataHandler;
-import java.io.*;
 
 /**
  * BPEL package uploader admin service
@@ -76,8 +80,8 @@ public class BPELUploader extends AbstractAdmin {
                 }
             } else {
                 throw new AxisFault("Invalid file type : " + uploadedFile.getFileType() + " ." +
-                                    BPELConstants.BPEL_PACKAGE_EXTENSION +
-                                    " file type is expected");
+                        BPELConstants.BPEL_PACKAGE_EXTENSION +
+                        " file type is expected");
             }
         }
 
@@ -107,7 +111,7 @@ public class BPELUploader extends AbstractAdmin {
         boolean isDeleted = tempDestFile.delete();
         if (!isDeleted) {
             log.warn("temp file: " + tempDestFile.getAbsolutePath() +
-                     " deletion failed, scheduled deletion on server exit.");
+                    " deletion failed, scheduled deletion on server exit.");
             tempDestFile.deleteOnExit();
         }
     }

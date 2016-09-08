@@ -51,9 +51,13 @@ import java.math.BigInteger;
  * </pre>
  */
 public final class GUID implements Cloneable, Comparable, java.io.Serializable {
+
+    private static final Log log = LogFactory.getLog(GUID.class);
+
+
     static final long serialVersionUID = -7977671257884186039L;
 
-    private static Log log = LogFactory.getLog(GUID.class);
+
 
     private static String propertyPort = "org.wso2.carbon.humantask.uid.port";
 

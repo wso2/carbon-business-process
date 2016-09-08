@@ -1,0 +1,261 @@
+<%
+/*
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ %>
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span>
+        </button>
+        <p id="errorMsg"><%=Encode.forJavaScript(commonErrorMessage)%></p>
+        <div align="right" id="errorReturnBtns" <%=errorDisplayBackButtonsEnable%>>
+            <button class="btn btn-info" onclick="window.history.back();">Go back to previous page</button>
+            <a class="btn btn-info" href="stats">Go to home</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <a data-toggle="collapse" href="#filterForm" aria-expanded="true" class="collapsing-h2">
+            <div class="table-title" style="width:100%">
+                <span class="fw-stack sub-tab-table-title-icon">
+                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                    <i class="fw fw-filter fw-stack-1x"></i>
+                </span>
+                <span>
+                    <%=i18n.localize("advanced.filter" , "Advanced Filter")%>
+                </span>
+            </div>
+        </a>
+        <div class="collapse in col-lg-12 white-bg" id="filterForm" aria-expanded="true">
+            <form role="form" class="white-bg" action="advancedFilter" method="GET">
+
+                <div class="col-lg-3 margin-top-double white-bg">
+                    <div class="form-group">
+                        <label for="instanceId" class="control-label"> <%=i18n.localize("process.instance.id" , "Process instance ID")%>
+                         </label>                        
+                            <input type="text" class="form-control" id="instanceId" name="processInstanceId" 
+                                placeholder='<%=i18n.localize("enter.process.instance.id","Enter Process Instance ID")%>'
+                                <% if (queryReceived == true && vCollection["processInstanceId"] !== undefined) { %>
+                                   value='<%=vCollection["processInstanceId"]%>'
+                                <% } %>
+                            />
+                    </div>
+                </div>
+
+                <div class="col-lg-3 margin-top-double white-bg">
+                    <div class="form-group">
+                        <label for="instanceStatus" class="control-label"> 
+                            <%=i18n.localize("process.instance.status" , "Process Instance Status")%> 
+                        </label>
+
+                        <select id="instanceStatus" name="instanceStatus" class="form-control" 
+                        onchange="instanceStatusChange(this.value)">
+                            <option value="IN_PROGRESS"><%=i18n.localize("in.progress","In-Progress")%></option>
+                            <option value="COMPLETED"
+                            <% if (queryReceived == true && searchActiveInstances == false) { %>
+                                selected
+                            <% } %>
+                            ><%=i18n.localize("completed","Completed")%></option>
+                        </select>
+                    </div>
+                </div>
+
+                  <!--Script to disable change elements depending on the task status selection in #instanceStatus-->
+                <script>
+                    function instanceStatusChange(val) {
+                        if (val === "COMPLETED"){
+                            //disable #startDate
+                            document.getElementById("startDate").disabled = false;
+                            //disable #endDate
+                            document.getElementById("endDate").disabled = false;                           
+                            
+                        } else {
+                             //disable #startDate
+                            document.getElementById("startDate").disabled = true;
+                             //disable #endDate
+                            document.getElementById("endDate").disabled = true;                           
+                        }
+
+                    }
+                </script>
+
+                 <div class="col-lg-3 margin-top-double white-bg">
+                    <div class="form-group">
+                        <label for="endDate"><%=i18n.localize("started.before" , "Started Before")%></label>
+                        <input id="endDate" name="endDate" type="text" class="form-control" onfocus="setDatePicker('endDate')" placeholder='<%=i18n.localize("yyyy.mm.dd","YYYY-MM-DD")%>'
+                        <% if (queryReceived == true && searchActiveInstances == false && vCollection["startedBefore"] !== undefined)  { %>
+                            value='<%=vCollection["startedBefore"]%>'
+                        <% } else { %>
+                            disabled
+                        <% } %>
+                        />
+                        <input id="endDateISO" name="createdBefore" type="hidden" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-lg-3 margin-top-double white-bg">
+                    <div class="form-group">
+                        <label for="startDate"><%=i18n.localize("started.after", "Started After")%></label>
+                        <input id="startDate" name="startDate" type="text" class="form-control" onfocus="setDatePicker('startDate')" placeholder='<%=i18n.localize("yyyy.mm.dd","YYYY-MM-DD")%>'
+                        <% if (queryReceived == true && searchActiveInstances == false && vCollection["startedAfter"] !== undefined) { %>
+                            value='<%=vCollection["startedAfter"]%>'
+                        <% } else { %>
+                            disabled
+                        <% } %>
+                        />
+                        <input id="startDateISO" name="createdAfter" type="hidden" class="form-control">
+                    </div>
+                </div>               
+              
+                <div class="col-lg-4 margin-top-double">
+                    <div class="form-group">
+                        <label for="processDefs" class="control-label"> 
+                            <%=i18n.localize("process.definition.id" , "Process Definition ID")%>
+                        </label>                        
+                        <select id="processId" name="processDefinitionNameLike" class="selectpicker show-tick form-control" data-size="6" data-live-search="true"
+                         onchange="">
+                         <option class="placeholder" selected disabled value="0">
+                            <%=i18n.localize("select.a.process" , "Select a process")%>
+                        </option>
+                            <% for (var i=0; i<list.length; i++) { %>
+                                <% var dataObj = list[i];%>
+                                <option value= '<%=dataObj.deployment%>'
+                                <% if (queryReceived == true && vCollection["processDefinitionId"] !== undefined && vCollection["processDefinitionId"] === dataObj.deployment) { %>
+                                    selected
+                                <% } %>
+                                ><%=dataObj.deployment%></option>
+                           <%}%>
+                    </select>     
+                    </div>
+                </div>   
+               
+                <div class="col-lg-6 margin-top-double">
+                    <div class="form-group">
+                        <label for="variable" class="control-label"><%=i18n.localize("variable.value.like" , "Variable Value Like")%>
+                         </label>
+                        <input type="button" id="addVar" onclick="addVariable()" 
+                            value='<%=i18n.localize("plus.button" , " + ")%>'/>
+
+                        <div id="variablesRow">
+                        <input type="text" class="form-control" id="variableName" name="variableName"
+                            placeholder='<%=i18n.localize("variable.name" , "Variable Name")%>' style="width: initial; float: left;"
+                            <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
+                                value='<%=vCollection["variables"][0].name%>'
+                            <% } %>
+                        />
+
+                        <label for="equals" class="control-label" style="width: initial; float: left; font-size:25px;">
+                            &nbsp;<%=i18n.localize("equals" , " = ")%>&nbsp; </label>
+
+                        <input type="text" id="variableValue" name="variableValue" class="form-control"
+                            placeholder='<%=i18n.localize("variable.value.like" , "Variable Value Like")%>' style="width: initial;"
+                            <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
+                                value='<%=vCollection["variables"][0].value%>'
+                            <% } %>
+                        />
+
+                        <% if (queryReceived == true && vCollection["variables"] !== undefined && vCollection["variables"].length > 1) {
+                            <%for(var i=1; i<vCollection["variables"].length; i++) {%>
+                            <br>
+                            <input type="text" class="form-control" id="variableName" name="variableName"
+                             placeholder='<%=i18n.localize("variable.name" , "Variable Name")%>' style="width: initial; float: left;"
+                             <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
+                                value='<%=vCollection["variables"][i].name%>'
+                             <% } %>
+                             />
+
+                             <label for="equals" class="control-label" style="width: initial; float: left; font-size:25px;">
+                              &nbsp;<%=i18n.localize("equals" , " = ")%>&nbsp; </label>
+
+                              <input type="text" id="variableValue" name="variableValue" class="form-control"
+                              placeholder='<%=i18n.localize("variable.value.like" , "Variable Value Like")%>' style="width: initial;"
+                              <% if (queryReceived == true && vCollection["variables"] !== undefined) { %>
+                                value='<%=vCollection["variables"][i].value%>'
+                              <% } %>
+                              />
+                        <% } } %>
+
+                        </div>   
+                        <br/>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 margin-top margin-bottom-double">                   
+                    <button type="submit" class="btn btn-default btn-info" onclick="validateFilter()">
+                        <%=i18n.localize("search" , "Search")%></button>
+                    <input type="reset" value='<%=i18n.localize("reset" , "Reset")%>' class="btn btn-default btn-info" onclick="resetForm()"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Search Results -->
+<% if (commonErrorMessage == null && queryReceived == true && numOfTasks > 0) { %>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">            
+        <a data-toggle="collapse" href="#filterResultList" aria-expanded="true" class="collapsing-h2">
+            <div class="table-title" style="width:100%">
+                <div style="float: left;">
+                    <i class="cu-btn-exp-col btn-collapsed"></i>
+                </div>
+                <div>
+                    <%=i18n.localize("search.results","Search Results")%>
+                </div>
+            </div>
+        </a>
+        <div class="collapse in" id="filterResultList" aria-expanded="true">
+            <!-- Table -->
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr class="table-title-row">
+                        <th><%=i18n.localize("instance.id" , " Instance ID ")%></th>                        
+                        <th><%=i18n.localize("process.definition.id" , "Process Definition ID")%></th>
+                        <th><%=i18n.localize("start.time" , "Start Time")%></th>
+                        <th><%=i18n.localize( "end.time" , "End Time")%></th>                        
+                    </tr>
+                </thead>
+                 <tbody>
+                    <% for (var i=0; i < numOfTasks; i++) { %>
+                        <tr class="white-bg" style="cursor:pointer;"  onclick="window.location='<%=onclickUrl%>?instanceId=<%=instanceListResponse.data[i].id%>'"
+                            onmouseover="this.style.backgroundColor='#F5F5F5';" onmouseout="this.style.backgroundColor='';">
+                            <td><%=instanceListResponse.data[i].id%></td>
+                            <td><%=instanceListResponse.data[i].processDefinitionId%></td>
+                            <td><%=instanceListResponse.data[i].startTime%></td>
+                            <td><%=instanceListResponse.data[i].endTime%></td>                        
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>               
+        </div>  
+    </div>
+
+    <%
+        var numberOfPages = paginatePageCount;
+        var currentPage = parseInt(pagination);
+        var redirectPage = "advancedFilter";
+        var queryParams = newQueryString;
+
+    %>
+    <% include("/template/partials/pagination.jag"); %>
+
+</div>
+<% } %>
+
+

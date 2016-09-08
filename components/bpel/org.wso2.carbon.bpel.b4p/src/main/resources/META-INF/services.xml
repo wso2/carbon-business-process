@@ -22,12 +22,14 @@
             <transport>https</transport>
         </transports>
         <messageReceivers>
-            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.wso2.carbon.bpel.skeleton.b4p.coordination.RegistrationServiceMessageReceiverInOut" />
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.wso2.carbon.bpel.skeleton.b4p.coordination.RegistrationServiceMessageReceiverInOut"/>
         </messageReceivers>
         <parameter name="ServiceClass">org.wso2.carbon.bpel.b4p.coordination.service.RegistrationService</parameter>
         <parameter name="useOriginalwsdl">true</parameter>
         <parameter name="modifyUserWSDLPortAddress">true</parameter>
-        <operation name="RegisterOperation" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06">
+        <operation name="RegisterOperation" mep="http://www.w3.org/ns/wsdl/in-out"
+                   namespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06">
             <actionMapping>http://docs.oasis-open.org/ws-tx/wscoor/2006/06/Register</actionMapping>
             <outputActionMapping>http://docs.oasis-open.org/ws-tx/wscoor/2006/06/RegisterResponse</outputActionMapping>
             <parameter name="AuthorizationAction" locked="true">/permission/admin/manage/humantask/viewtasks</parameter>

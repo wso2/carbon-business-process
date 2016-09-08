@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ try {
     if (pagination > 0) {
         start = (pagination - 1) * 10;
     }
+    var tabPage = request.getParameter("tab");
 
     var attachments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/attachments", null, headers, "json").data;
 
@@ -144,12 +145,41 @@ try {
     }
     var formContent = formGenTool.generateForm(formData.formProperties, false);
 
-} catch (e) {
+    //get data for comments for tasks
+    var comments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/comments", null, headers, "json").data;
+        var commentList = [];
+        if (comments) {
+            for (var i = (comments.commentResponseList.length - 1); i >= 0 ; i--) {
+                var commentId = comments.commentResponseList[i].id;
+                var commentAuthor = comments.commentResponseList[i].author;
+                var commentTime = JSON.parse(comments.commentResponseList[i].time);
+                var commentText = comments.commentResponseList[i].message;
+
+                commentList.push({
+                    id: commentId,
+                    author: commentAuthor,
+                    time: commentTime,
+                    message: commentText
+                });
+
+            }
+
+            if(commentList.length > 10) {
+    		var hiddenCmtCount = commentList.length - 10;
+    	}
+
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("No comments found for task" + id);
+            }
+        }
+
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("User Error Occured : " + e);
+        log.debug("User Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
 }
 %>

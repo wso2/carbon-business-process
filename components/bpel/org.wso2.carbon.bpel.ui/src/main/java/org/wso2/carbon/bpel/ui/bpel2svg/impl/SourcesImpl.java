@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,29 +18,83 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
-import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
+import org.wso2.carbon.bpel.ui.bpel2svg.SourcesInterface;
 
 /**
  * Sources tag UI implementation
  */
 public class SourcesImpl extends ActivityImpl implements SourcesInterface {
 
-    //Making the height and the width of the start and end icons to zero
-    protected int startIconHeight = 0;
-    protected int endIconHeight = 0;
-    protected int startIconWidth = 0;
-    protected int endIconWidth = 0;
-
     //Getters and Setters of height and width of the Start and End Icons
+
+    /**
+     * Initializes a new instance of the SourcesImpl class using the specified omElement
+     * Constructor that is invoked when the omElement type matches an Sources Activity when processing the subActivities
+     * of the process
+     * @param omElement which matches the Sources tag
+     * @param parent
+     */
+    public SourcesImpl(OMElement omElement, ActivityInterface parent) {
+        super(omElement);
+
+        //Set the parent of the activity
+        setParent(parent);
+
+        // Set Start and End Icons and their Sizes
+        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+        //Making the height and the width of the start and end icons to zero
+        startIconHeight = 0;
+        endIconHeight = 0;
+        startIconWidth = 0;
+        endIconWidth = 0;
+    }
+
+    /**
+     * Initializes a new instance of the SourcesImpl class using the specified omElement
+     * @param omElement which matches the Sources tag
+     */
+    public SourcesImpl(OMElement omElement) {
+        super(omElement);
+
+        // Set Start and End Icons and their Sizes
+        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
+        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+        //Making the height and the width of the start and end icons to zero
+        startIconHeight = 0;
+        endIconHeight = 0;
+        startIconWidth = 0;
+        endIconWidth = 0;
+    }
+
+    /**
+     * Gets the height of the end icon of the activity
+     * @return height of the end icon of the activity
+     */
+    public int getEndIconHeight() {
+        return endIconHeight;
+    }
+
     /**
      * Sets the height of the end icon of the activity
      * @param iconHeightEnd height of the end icon of the activity
      */
     public void setEndIconHeight(int iconHeightEnd) {
         this.endIconHeight = iconHeightEnd;
+    }
+
+    /**
+     * Gets the height of the start icon of the activity
+     * @return height of the start icon of the activity
+     */
+    public int getStartIconHeight() {
+        return startIconHeight;
     }
 
     /**
@@ -52,41 +106,19 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
     }
 
     /**
-     * Sets the width of the start icon of the activity
-     * @param iconWidth width of the start icon of the activity
-     */
-    public void setStartIconWidth(int iconWidth) {
-        this.startIconWidth = iconWidth;
-    }
-
-    /**
-     * Sets the width of the end icon of the activity
-     * @param iconWidthEnd width of the end icon of the activity
-     */
-    public void setEndIconWidth(int iconWidthEnd) {
-        this.endIconWidth = iconWidthEnd;
-    }
-    /**
-     * Gets the height of the end icon of the activity
-     * @return height of the end icon of the activity
-     */
-    public int getEndIconHeight() {
-        return endIconHeight;
-    }
-    /**
-     * Gets the height of the start icon of the activity
-     * @return height of the start icon of the activity
-     */
-    public int getStartIconHeight() {
-        return startIconHeight;
-    }
-
-    /**
      * Gets the width of the start icon of the activity
      * @return width of the start icon of the activity
      */
     public int getStartIconWidth() {
         return startIconWidth;
+    }
+
+    /**
+     * Sets the width of the start icon of the activity
+     * @param iconWidth width of the start icon of the activity
+     */
+    public void setStartIconWidth(int iconWidth) {
+        this.startIconWidth = iconWidth;
     }
 
     /**
@@ -97,35 +129,14 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
         return endIconWidth;
     }
 
- 	/**
-     * Initializes a new instance of the SourcesImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an Sources Activity when processing the subActivities
-     * of the process
-     * @param omElement which matches the Sources tag
-     * @param parent
+    /**
+     * Sets the width of the end icon of the activity
+     * @param iconWidthEnd width of the end icon of the activity
      */
-    public SourcesImpl(OMElement omElement, ActivityInterface parent) {
-        super(omElement);
-
-		//Set the parent of the activity
-        setParent(parent);
-
-        // Set Start and End Icons and their Sizes
-        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
+    public void setEndIconWidth(int iconWidthEnd) {
+        this.endIconWidth = iconWidthEnd;
     }
 
-	 /**
-     * Initializes a new instance of the SourcesImpl class using the specified omElement
-     * @param omElement which matches the Sources tag
-     */
-    public SourcesImpl(OMElement omElement) {
-        super(omElement);
-
-        // Set Start and End Icons and their Sizes
-        startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
-        endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
-    }
     /**
      *
      * @return String with the end tag of Sources Activity
@@ -145,10 +156,12 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
 
 
     //Different Implementations for start and end scope icons
-	/**
+
+    /**
      * Gets the End Image Definition
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sources activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sources
+     * activity
      */
     @Override
     protected Element getEndImageDefinition(SVGDocument doc) {
@@ -156,10 +169,12 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
                 getEndIconYTop(), getEndIconWidth(), getEndIconHeight(),
                 getEndImageId());
     }
+
     /**
      * Gets the Start Image Definition
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sources activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sources
+     * activity
      */
     protected Element getStartImageDefinition(SVGDocument doc) {
         return getStartEndImageDef(doc, getStartIconPath(), getStartIconXLeft(),
@@ -183,7 +198,7 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
                                           int imgWidth, int imgHeight, String id) {
 
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         return group;
     }
 
@@ -195,7 +210,7 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
      */
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         return subGroup;
     }
 
@@ -208,10 +223,11 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
      * @param endY = null
      * @param id = null
      * @return Empty element which contains the components of the Sources activity.
-     *         In this case the Sources activity doesn't contain any components, so no arrow definitions/paths from activities
+     *         In this case the Sources activity doesn't contain any components, so no arrow definitions/paths from
+     *         activities
      */
     protected Element getArrowDefinition(SVGDocument doc, int startX, int startY, int endX, int endY, String id) {
-        Element path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+        Element path = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "path");
         return path;
     }
 
@@ -229,11 +245,12 @@ public class SourcesImpl extends ActivityImpl implements SourcesInterface {
     /**
      *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sources activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the Sources
+     * activity
      */
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         group.appendChild(getBoxDefinition(doc));

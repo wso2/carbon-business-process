@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
  * This command is used to change the state of a BPEL process
  * i.e. When activating and retiring processes
  */
-public class BPELProcessStateChangedCommand  extends StateClusteringCommand {
+public class BPELProcessStateChangedCommand extends StateClusteringCommand {
     private static final Log log = LogFactory.getLog(BPELConstants.LOGGER_DEPLOYMENT);
 
     private Integer tenantId;
@@ -35,10 +35,10 @@ public class BPELProcessStateChangedCommand  extends StateClusteringCommand {
     public void execute(ConfigurationContext configurationContext) throws ClusteringFault {
         if (log.isDebugEnabled()) {
             log.debug("New state changed command received. Process: " + pid + " New state: " +
-                    processState + " Tenant: " + tenantId );
+                    processState + " Tenant: " + tenantId);
         }
         ProcessStoreImpl parentProcessStore =
-                (ProcessStoreImpl)configurationContext.getAxisConfiguration()
+                (ProcessStoreImpl) configurationContext.getAxisConfiguration()
                         .getParameter(BPELConstants.PARAM_PARENT_PROCESS_STORE).getValue();
         TenantProcessStore tenantProcessStore = parentProcessStore.getTenantsProcessStore(tenantId);
         tenantProcessStore.handleBPELProcessStateChangedNotification(pid, processState);

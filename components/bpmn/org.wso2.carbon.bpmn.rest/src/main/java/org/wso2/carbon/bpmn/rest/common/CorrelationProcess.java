@@ -11,7 +11,6 @@ import org.wso2.carbon.bpmn.rest.engine.variable.QueryVariable;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
-import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -32,7 +31,7 @@ public class CorrelationProcess {
 
     public Response getQueryResponse(CorrelationActionRequest correlationActionRequest, UriInfo uriInfo) {
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         ExecutionQuery query = runtimeService.createExecutionQuery();
 
         String value = correlationActionRequest.getProcessDefinitionId();

@@ -33,7 +33,7 @@ public interface HTProtocolHandlerDAO {
 
     void setTaskID(String taskID);
 
-    String  getHumanTaskProtocolHandlerURL();
+    String getHumanTaskProtocolHandlerURL();
 
     void setHumanTaskProtocolHandlerURL(String protocolHandlerURL);
 }

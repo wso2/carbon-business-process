@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package org.wso2.carbon.bpel.core.ode.integration.utils;
-
-import org.apache.ode.bpel.evt.BpelEvent;
-import org.apache.ode.bpel.iapi.BpelEventListener;
-
-import java.util.Properties;
-
-public class ScopeEventDocumentBuilder implements BpelEventListener {
-    public void onEvent(BpelEvent bpelEvent) {
-        
-    }
-
-    public void startup(Properties properties) {
-        //Do nothing
-    }
-
-    public void shutdown() {
-        //Do nothing
-    }
-}
+//package org.wso2.carbon.bpel.core.ode.integration.utils;
+//
+//import org.apache.ode.bpel.evt.BpelEvent;
+//import org.apache.ode.bpel.iapi.BpelEventListener;
+//
+//import java.util.Properties;
+//
+//
+//public class ScopeEventDocumentBuilder implements BpelEventListener {
+//    public void onEvent(BpelEvent bpelEvent) {
+//
+//    }
+//
+//    public void startup(Properties properties) {
+//        //Do nothing
+//    }
+//
+//    public void shutdown() {
+//        //Do nothing
+//    }
+//}

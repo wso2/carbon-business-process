@@ -19,7 +19,11 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.EventHandlerInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 
 import java.util.Iterator;
 
@@ -29,6 +33,7 @@ import java.util.Iterator;
 public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterface {
     /**
      * Initializes a new instance of the EventHandlerImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public EventHandlerImpl(String token) {
@@ -46,8 +51,10 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         // Set Layout
         setVerticalChildLayout(false);
     }
+
     /**
      * Initializes a new instance of the EventHandlerImpl class using the specified omElement
+     *
      * @param omElement which matches the EventHandler tag
      */
     public EventHandlerImpl(OMElement omElement) {
@@ -67,8 +74,10 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
     /**
      * Initializes a new instance of the EventHandlerImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an EventHandler Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an EventHandler Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the EventHandler tag
      * @param parent
      */
@@ -90,7 +99,6 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
     }
 
     /**
-     *
      * @return String with name of the activity
      */
     @Override
@@ -99,7 +107,6 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
     }
 
     /**
-     *
      * @return- String with the end tag of Else Activity
      */
     @Override
@@ -109,8 +116,10 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
     /**
      * At the start: width=0, height=0
-     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
-     *         through the dimensions of the subActivities
+     *
+     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by
+     * iterating
+     * through the dimensions of the subActivities
      */
     @Override
     public SVGDimension getDimensions() {
@@ -147,8 +156,10 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
         return dimensions;
     }
+
     /**
      * Sets the layout of the process drawn
+     *
      * @param startXLeft x-coordinate of the activity
      * @param startYTop  y-coordinate of the activity
      */
@@ -165,9 +176,9 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
      * centreOfMyLayout- center of the the SVG
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     *
      */
     public void layoutVertical(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -205,12 +216,14 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
         getDimensions().setXLeft(startXLeft);
         getDimensions().setYTop(startYTop);
     }
+
     /**
      * Sets the x and y positions of the activities
      * At the start: startXLeft=0, startYTop=0
+     *
      * @param startXLeft x-coordinate
      * @param startYTop  y-coordinate
-     * centreOfMyLayout- center of the the SVG
+     *                   centreOfMyLayout- center of the the SVG
      */
     private void layoutHorizontal(int startXLeft, int startYTop) {
         //Aligns the activities to the center of the layout
@@ -252,6 +265,7 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which enters an activity
+     *
      * @return coordinates/entry point of the entry arrow for the activities
      * After Calculations(Vertical Layout): xLeft=Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon
      */
@@ -272,9 +286,11 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
         return coords;
     }
+
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the arrow which leaves an activity
+     *
      * @return coordinates/exit point of the exit arrow for the activities
      */
     @Override
@@ -296,14 +312,14 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
     }
 
     /**
-     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the EventHandler composite activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the
+     * EventHandler composite activity
      */
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Get the scope/box of the EventHandler which surrounds all its subActivities
@@ -319,8 +335,10 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
         return group;
     }
+
     /**
      * Get the arrow coordinates of the activities
+     *
      * @return String which contains the arrow coordinates of the EventHandler activity and its subActivities
      */
     protected String getArrows() {
@@ -330,6 +348,7 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
 
     /**
      * Adds opacity to icons
+     *
      * @return true or false
      */
     @Override
@@ -338,7 +357,6 @@ public class EventHandlerImpl extends ActivityImpl implements EventHandlerInterf
     }
 
     /**
-     *
      * @return String with the opacity value
      */
     @Override

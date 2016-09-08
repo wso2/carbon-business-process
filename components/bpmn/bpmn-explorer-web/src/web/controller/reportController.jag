@@ -1,5 +1,5 @@
 <%/*<!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -12,20 +12,20 @@
  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
--->*/%>
+ -->*/%>
 <%
 include("/model/common.jag");
 
 if (request.isSecure()) {//check whether the request is secure or not
 
-	var authSuccess = session.get("authSuccess");
+    var authSuccess = session.get("authSuccess");
 
-	if(!authSuccess){
-		var queryParameters = request.getQueryString();
-        	if(queryParameters == "null" || queryParameters == null){
-        			response.sendRedirect("login?requestUrl=" + request.getRequestURI());
-        	} else{
-        			response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
+    if (!authSuccess) {
+        var queryParameters = request.getQueryString();
+        if (queryParameters == "null" || queryParameters == null) {
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI());
+        } else {
+            response.sendRedirect("login?requestUrl=" + request.getRequestURI() + "%3F" + request.getQueryString());
         	}
 	} else {
 

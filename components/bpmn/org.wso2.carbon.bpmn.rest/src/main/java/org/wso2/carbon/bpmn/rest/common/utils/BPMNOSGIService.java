@@ -17,14 +17,17 @@
 
 package org.wso2.carbon.bpmn.rest.common.utils;
 
-import org.activiti.engine.*;
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupIdentityManager;
 import org.wso2.carbon.bpmn.core.integration.BPSGroupManagerFactory;
@@ -39,8 +42,9 @@ public class BPMNOSGIService {
     }
 
     public static BPMNEngineService getBPMNEngineService() {
-        BPMNEngineService bpmnEngineService = (BPMNEngineService) PrivilegedCarbonContext.
-                getThreadLocalCarbonContext().getOSGiService(BPMNEngineService.class, null);
+        BPMNEngineService bpmnEngineService =
+                (BPMNEngineService) PrivilegedCarbonContext.
+                        getThreadLocalCarbonContext().getOSGiService(BPMNEngineService.class, null);
 
         if (bpmnEngineService == null) {
             throw new BPMNOSGIServiceException("BPMNEngineService service couldn't be identified");
@@ -48,22 +52,18 @@ public class BPMNOSGIService {
         return bpmnEngineService;
     }
 
-    public static RuntimeService getRumtimeService() {
-
+    public static RuntimeService getRuntimeService() {
         RuntimeService runtimeService = null;
-
         if (getBPMNEngineService().getProcessEngine() != null) {
             runtimeService = getBPMNEngineService().getProcessEngine().getRuntimeService();
             if (runtimeService == null) {
                 throw new BPMNOSGIServiceException("Runtime service couldn't be identified");
             }
         }
-
         return runtimeService;
     }
 
     public static HistoryService getHistoryService() {
-
         HistoryService historyService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
             historyService = getBPMNEngineService().getProcessEngine().getHistoryService();
@@ -75,7 +75,6 @@ public class BPMNOSGIService {
     }
 
     public static TaskService getTaskService() {
-
         TaskService taskService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
             taskService = getBPMNEngineService().getProcessEngine().getTaskService();
@@ -83,28 +82,21 @@ public class BPMNOSGIService {
                 throw new BPMNOSGIServiceException("Taskservice couldn't be identified");
             }
         }
-
-
         return taskService;
     }
 
     public static ProcessEngineConfiguration getProcessEngineConfiguration() {
-
         ProcessEngineConfiguration processEngineConfiguration = null;
-
         if (getBPMNEngineService().getProcessEngine() != null) {
             processEngineConfiguration = getBPMNEngineService().getProcessEngine().getProcessEngineConfiguration();
-
             if (processEngineConfiguration == null) {
                 throw new BPMNOSGIServiceException("ProcessEngineConfiguration couldn't be identified");
             }
         }
-
         return processEngineConfiguration;
     }
 
     public static FormService getFormService() {
-
         FormService formService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
             formService = getBPMNEngineService().getProcessEngine().getFormService();
@@ -112,12 +104,10 @@ public class BPMNOSGIService {
                 throw new BPMNOSGIServiceException("FormService couldn't be identified");
             }
         }
-
         return formService;
     }
 
     public static IdentityService getIdentityService() {
-
         IdentityService identityService = null;
         if (getBPMNEngineService().getProcessEngine() != null) {
             identityService = getBPMNEngineService().getProcessEngine().getIdentityService();
@@ -125,7 +115,6 @@ public class BPMNOSGIService {
                 throw new BPMNOSGIServiceException("IdentityService couldn't be identified");
             }
         }
-
         return identityService;
     }
 
@@ -134,30 +123,25 @@ public class BPMNOSGIService {
         return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserRealm();
     }
 
-    public static  ManagementService getManagementService() {
+    public static ManagementService getManagementService() {
         return getBPMNEngineService().getProcessEngine().getManagementService();
-   }
+    }
 
-    public static BPSGroupIdentityManager getGroupIdentityManager(){
-
+    public static BPSGroupIdentityManager getGroupIdentityManager() {
         ProcessEngineImpl processEngine = (ProcessEngineImpl) getBPMNEngineService().getProcessEngine();
-
-        ProcessEngineConfigurationImpl processEngineConfigurationImpl= null;
-
-        if(processEngine != null){
+        ProcessEngineConfigurationImpl processEngineConfigurationImpl = null;
+        if (processEngine != null) {
             processEngineConfigurationImpl = processEngine.getProcessEngineConfiguration();
-
-            if(processEngineConfigurationImpl != null){
+            if (processEngineConfigurationImpl != null) {
                 BPSGroupIdentityManager bpsGroupIdentityManager = null;
-                if(processEngineConfigurationImpl.getSessionFactories() != null) {
-                    BPSGroupManagerFactory bpsGroupManagerFactory = (BPSGroupManagerFactory) processEngineConfigurationImpl.getSessionFactories().get
-                            (GroupIdentityManager.class);
-                    return (BPSGroupIdentityManager)bpsGroupManagerFactory.openSession();
+                if (processEngineConfigurationImpl.getSessionFactories() != null) {
+                    BPSGroupManagerFactory bpsGroupManagerFactory =
+                            (BPSGroupManagerFactory) processEngineConfigurationImpl.
+                                    getSessionFactories().get(GroupIdentityManager.class);
+                    return (BPSGroupIdentityManager) bpsGroupManagerFactory.openSession();
                 }
             }
         }
-
         throw new BPMNOSGIServiceException("Business Process Server Group manager couldn't be identified");
-
     }
 }

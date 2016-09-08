@@ -30,7 +30,6 @@ import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.CarbonUtils;
-
 import java.io.File;
 
 /**
@@ -83,8 +82,6 @@ public class BPMNDeployer extends AbstractDeployer {
 	    // Deployment logic is dependent on whether a given node is a worker node or not.Since process
 	    // information is shared though a persistence db and process is stored into the database, there
 	    // is no need to deploy process in worker nodes.
-
-
         // Worker nodes cannot deploy BPMN packages, hence return
         if (isWorkerNode()) {
             return;

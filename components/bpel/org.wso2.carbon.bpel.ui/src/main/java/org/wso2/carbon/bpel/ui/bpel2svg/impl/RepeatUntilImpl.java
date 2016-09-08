@@ -25,8 +25,9 @@ import org.wso2.carbon.bpel.ui.bpel2svg.RepeatUntilInterface;
  * RepeatUntil tag UI implementation
  */
 public class RepeatUntilImpl extends ForEachImpl implements RepeatUntilInterface {
-	/**
+    /**
      * Initializes a new instance of the RepeatUntilImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public RepeatUntilImpl(String token) {
@@ -36,8 +37,10 @@ public class RepeatUntilImpl extends ForEachImpl implements RepeatUntilInterface
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	 /**
+
+    /**
      * Initializes a new instance of the RepeatUntilImpl class using the specified omElement
+     *
      * @param omElement which matches the RepeatUntil tag
      */
     public RepeatUntilImpl(OMElement omElement) {
@@ -47,10 +50,13 @@ public class RepeatUntilImpl extends ForEachImpl implements RepeatUntilInterface
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	/**
+
+    /**
      * Initializes a new instance of the RepeatUntilImpl class using the specified omElement
-     * Constructor that is invoked when the omElement type matches an RepeatUntil Activity when processing the subActivities
+     * Constructor that is invoked when the omElement type matches an RepeatUntil Activity when processing the
+     * subActivities
      * of the process
+     *
      * @param omElement which matches the RepeatUntil tag
      * @param parent
      */
@@ -64,8 +70,8 @@ public class RepeatUntilImpl extends ForEachImpl implements RepeatUntilInterface
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
-	 /**
-     *
+
+    /**
      * @return String with the end tag of RepeatUntil Activity
      */
     @Override

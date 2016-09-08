@@ -19,10 +19,13 @@ package org.wso2.carbon.bpel.b4p.coordination.dao.jpa.openjpa;
 import org.wso2.carbon.bpel.b4p.coordination.dao.DatabaseType;
 import org.wso2.carbon.bpel.b4p.coordination.dao.jpa.AbstractJPAVendorAdapter;
 
-import javax.transaction.TransactionManager;
 import java.util.HashMap;
 import java.util.Map;
+import javax.transaction.TransactionManager;
 
+/**
+ * OpenJPAVendorAdapter generate JPA properties related to configured JDBC driver.
+ */
 public class OpenJPAVendorAdapter extends AbstractJPAVendorAdapter {
 
     @Override

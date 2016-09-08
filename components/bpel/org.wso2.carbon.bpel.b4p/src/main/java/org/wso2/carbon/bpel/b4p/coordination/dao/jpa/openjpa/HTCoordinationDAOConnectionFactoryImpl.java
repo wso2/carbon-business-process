@@ -21,6 +21,8 @@ import org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnection;
 import org.wso2.carbon.bpel.b4p.coordination.dao.HTCoordinationDAOConnectionFactoryJDBC;
 import org.wso2.carbon.bpel.b4p.coordination.dao.jpa.JPAVendorAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -29,31 +31,21 @@ import javax.transaction.RollbackException;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * JPA Implementation
  */
 public class HTCoordinationDAOConnectionFactoryImpl implements HTCoordinationDAOConnectionFactoryJDBC {
 
+    private static ThreadLocal<HTCoordinationDAOConnectionImpl> connections = new
+            ThreadLocal<HTCoordinationDAOConnectionImpl>();
     private EntityManagerFactory entityManagerFactory;
-
     private DataSource dataSource;
-
     private TransactionManager tnxManager;
-
     private Map<String, Object> jpaPropertiesMap;
-
-    private static ThreadLocal<HTCoordinationDAOConnectionImpl> connections = new ThreadLocal<HTCoordinationDAOConnectionImpl>();
 
     public HTCoordinationDAOConnectionFactoryImpl() {
 
-    }
-
-    @Override
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
     }
 
     @Override
@@ -81,7 +73,9 @@ public class HTCoordinationDAOConnectionFactoryImpl implements HTCoordinationDAO
                     }
                     connections.set(null);
                 }
-                public void beforeCompletion() { }
+
+                public void beforeCompletion() {
+                }
             });
         } catch (RollbackException e) {
             throw new RuntimeException("Coulnd't register synchronizer!", e);
@@ -113,7 +107,6 @@ public class HTCoordinationDAOConnectionFactoryImpl implements HTCoordinationDAO
                 vendorAdapter.getJpaPropertyMap(tnxManager));
 
     }
-
 
     /**
      * Returns the JPA Vendor adapter based on user preference
@@ -149,6 +142,11 @@ public class HTCoordinationDAOConnectionFactoryImpl implements HTCoordinationDAO
     @Override
     public DataSource getDataSource() {
         return this.dataSource;
+    }
+
+    @Override
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override

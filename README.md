@@ -1,6 +1,15 @@
 carbon-business-process
 =======================
 
+---
+
+|  Branch | Build Status |
+| :------------ |:-------------
+| master      | [![Build Status](https://wso2.org/jenkins/job/carbon-business-process/badge/icon)](https://wso2.org/jenkins/job/carbon-business-process/badge) |
+
+
+---
+
 This project contains the modules implementing BPEL , WS-Human Tasks and BPMN support for WSO2 Business Process Server Product.
 The project structure consist of service-stubs, components and features.
 

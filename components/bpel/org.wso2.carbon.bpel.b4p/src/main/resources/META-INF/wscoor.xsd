@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) OASIS Open 2006.  -->
-<xsd:schema targetNamespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
-            xmlns:wscoor="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
-            xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<xsd:schema xmlns:wscoor="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
+            xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
             elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
     <!-- Replaced wsa:endpointnreference with xsd:any due to Axis2 ADB not being able parse ws-addr.xsd..  -->
     <xsd:import namespace="http://schemas.xmlsoap.org/ws/2004/08/addressing" schemaLocation="addr.xsd"/>

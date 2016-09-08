@@ -571,7 +571,7 @@ public class RestResponseFactory {
         }
 
         if (comment.getProcessInstanceId() != null) {
-            String historyUri = baseUri.replace("/runtime", "");
+            String historyUri = baseUri.replace("runtime", "history");
             RestUrlBuilder historyuUrlBuilder = createUrlBuilder(historyUri);
             result.setProcessInstanceUrl(historyuUrlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, comment.getProcessInstanceId(), comment.getId()));
         }
@@ -897,6 +897,9 @@ public class RestResponseFactory {
         variableConverters.add(new DoubleRestVariableConverter());
         variableConverters.add(new BooleanRestVariableConverter());
         variableConverters.add(new DateRestVariableConverter());
+        //Add WSO2 XML and JSON variable type converters
+        variableConverters.add(new JsonVariableConverter());
+        variableConverters.add(new XmlVariableConverter());
     }
 
     public List<GroupResponse> createGroupResponseList(List<Group> groups, String baseUrl) {

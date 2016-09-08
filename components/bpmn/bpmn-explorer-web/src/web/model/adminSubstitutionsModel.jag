@@ -1,0 +1,91 @@
+<%
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+var log = new Log();
+var headers =   {
+                    "Authorization": "Basic " + auth,
+                    "Content-Type": "application/json",
+                    "Accept" : "application/json"
+                };
+try {
+    //Check whether the user substitution feature enabled
+    if (!(application.get('bpsSubstitutionFeatureEN'))) {
+        throw "User Substitution feature disabled";
+    }
+
+    //URLs
+    var RUNTIME_SUBSTITUTES_URL = "/bpmn/runtime/substitutes";
+    var loggedUsersSubInfo = null;
+    var httpResponse = null;
+    var usersSubstitutionsList = null;
+    //variables for pagination
+    var paginatePageCount = 0;
+    var currentPage = 1;
+    var pagination = request.getParameter("pagination");
+    var start = 0;
+    var redirectPage = "substitutions_admin";//for pagination
+    var queryParams = "";//for pagination
+
+    if (pagination == null || pagination == ""){
+        pagination = 1;
+    }
+
+    if(pagination > 0){
+        start = (pagination - 1)*10 ;
+    }
+    
+    //retrieve list substitution info
+    httpResponse = get(httpUrl + RUNTIME_SUBSTITUTES_URL + "?order=asc&sort=startTime&start=" + 
+                                                                                start + "&size=10&tenantId=" + bpsTenantID, null, headers, "json");
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl + RUNTIME_SUBSTITUTES_URL + "?order=asc&sort=startTime&start=" + 
+                                                                                start + "&size=10&tenantId=" + bpsTenantID);
+        log.debug("BPS BPMN REST API response: " + stringify(httpResponse));
+    }
+
+    if (parseInt(httpResponse.xhr.status) == 200 && httpResponse.data != null) {
+
+        if (httpResponse.data.errorMessage != undefined) {
+            throw "Error " + httpResponse.data.statusCode + " : " + httpResponse.data.errorMessage;
+        }
+        usersSubstitutionsList = httpResponse.data.substituteInfoList;
+
+        //calculate pagination info
+        paginatePageCount = Math.ceil(httpResponse.data.total / 10);
+        currentPage = parseInt(pagination);
+
+    } else if (httpResponse.data != null && httpResponse.data.errorMessage != undefined) {
+        throw "Error " + httpResponse.data.statusCode + " : " + httpResponse.data.errorMessage;
+    } else {
+        //Unknown error : not reported by rest API
+        throw "Error " + httpResponse.xhr.status + " : " + httpResponse.xhr.statusText;
+    }
+
+} catch (err) {
+    if (log.isDebugEnabled()) {
+        log.debug("User Error Occured : " + err);
+    }
+    //Enable and display error in common error display area in view
+    commonErrorMessage = err;
+    errorDisplayEnable = '';
+    errorDisplayBackButtonsEnable = '';
+}
+//Set current active veiw as Substitutions view. 
+//This is used to highlight current view which the user currently viewing in the navigation bar
+substitutionNavActive = 'class="active"';
+%>

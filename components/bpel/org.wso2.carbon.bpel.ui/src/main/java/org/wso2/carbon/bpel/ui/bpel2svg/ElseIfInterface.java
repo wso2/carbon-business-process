@@ -16,10 +16,14 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg;
 
+/**
+ * ElseIf Interface.
+ */
 public interface ElseIfInterface extends ActivityInterface {
     /**
      * At the start: xLeft=0, yTop=0
      * Calculates the coordinates of the exit arrow of Else Activity
+     *
      * @return coordinates of the exit arrow for the Else Activity
      */
     public SVGCoordinates getNextElseExitArrowCoords();

@@ -16,10 +16,10 @@
 
 package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
+import org.apache.axiom.om.OMElement;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
 import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
 import org.wso2.carbon.bpel.ui.bpel2svg.InvokeInterface;
-import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
-import org.apache.axiom.om.OMElement;
 
 /**
  * Invoke tag UI implementation
@@ -27,6 +27,7 @@ import org.apache.axiom.om.OMElement;
 public class InvokeImpl extends SimpleActivityImpl implements InvokeInterface {
     /**
      * Initializes a new instance of the InvokeImpl class using the specified string i.e. the token
+     *
      * @param token
      */
     public InvokeImpl(String token) {
@@ -36,8 +37,10 @@ public class InvokeImpl extends SimpleActivityImpl implements InvokeInterface {
         startIconPath = BPEL2SVGFactory.getInstance().getIconPath(this.getClass().getName());
         endIconPath = BPEL2SVGFactory.getInstance().getEndIconPath(this.getClass().getName());
     }
+
     /**
      * Initializes a new instance of the InvokeImpl class using the specified omElement
+     *
      * @param omElement which matches the Invoke tag
      */
     public InvokeImpl(OMElement omElement) {
@@ -52,6 +55,7 @@ public class InvokeImpl extends SimpleActivityImpl implements InvokeInterface {
      * Initializes a new instance of the InvokeImpl class using the specified omElement
      * Constructor that is invoked when the omElement type matches an Invoke Activity when processing the subActivities
      * of the process
+     *
      * @param omElement which matches the Invoke tag
      * @param parent
      */
@@ -65,7 +69,6 @@ public class InvokeImpl extends SimpleActivityImpl implements InvokeInterface {
     }
 
     /**
-     *
      * @return String with the end tag of Invoke Activity
      */
     @Override

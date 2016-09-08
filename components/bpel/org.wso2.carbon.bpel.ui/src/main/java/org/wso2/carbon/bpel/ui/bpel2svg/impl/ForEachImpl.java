@@ -19,7 +19,11 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.wso2.carbon.bpel.ui.bpel2svg.*;
+import org.wso2.carbon.bpel.ui.bpel2svg.ActivityInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.BPEL2SVGFactory;
+import org.wso2.carbon.bpel.ui.bpel2svg.ForEachInterface;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGCoordinates;
+import org.wso2.carbon.bpel.ui.bpel2svg.SVGDimension;
 
 import java.util.Iterator;
 
@@ -93,7 +97,8 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
     /**
      * At the start: width=0, height=0
      *
-     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by iterating
+     * @return dimensions of the composite activity i.e. the final width and height after doing calculations by
+     * iterating
      * through the dimensions of the subActivities
      */
     @Override
@@ -118,7 +123,8 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
                 if (subActivityDim.getWidth() > width) {
                     width += subActivityDim.getWidth();
                 }
-                /*As ForEach should increase in height when the number of subActivities increase, height of each subActivity
+                /*As ForEach should increase in height when the number of subActivities increase, height of each
+                subActivity
                   is added to the height of the main/composite activity
                 */
                 height += subActivityDim.getHeight();
@@ -295,7 +301,8 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
      * Calculates the coordinates of the arrow which leaves the start ForEach Icon
      *
      * @return coordinates of the exit arrow for the start icon
-     * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon + height of the icon
+     * After Calculations(Vertical Layout): xLeft= Xleft of Icon + (width of icon)/2 , yTop= Ytop of the Icon +
+     * height of the icon
      */
     protected SVGCoordinates getStartIconExitArrowCoords() {
         int xLeft = 0;
@@ -340,12 +347,13 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
 
     /**
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
-     * @return Element(represents an element in a XML/HTML document) which contains the components of the ForEach composite activity
+     * @return Element(represents an element in a XML/HTML document) which contains the components of the ForEach
+     * composite activity
      */
     @Override
     public Element getSVGString(SVGDocument doc) {
         Element group = null;
-        group = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        group = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Get the id of the activity
         group.setAttributeNS(null, "id", getLayerId());
         //Checks for the icon opacity
@@ -377,7 +385,7 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
     protected Element getArrows(SVGDocument doc) {
         Element subGroup = null;
         //Creating an SVG Container "g"
-        subGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        subGroup = doc.createElementNS(SVGNamespace.SVG_NAMESPACE, "g");
         //Checks for the subActivities
         if (subActivities != null) {
             ActivityInterface activity = null;
@@ -390,13 +398,16 @@ public class ForEachImpl extends ActivityImpl implements ForEachInterface {
             //Iterates through all the subActivities
             while (itr.hasNext()) {
                 activity = itr.next();
+                id = activity.getId();
                 //Gets the entry and exit coordinates of the iterated activity
                 activityExitCoords = activity.getExitArrowCoords();
                 activityEntryCoords = activity.getEntryArrowCoords();
                 //Gives the coordinates of the entry arrow to the first activity from the startIcon
-                subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(), activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
+                subGroup.appendChild(getArrowDefinition(doc, myStartCoords.getXLeft(), myStartCoords.getYTop(),
+                        activityEntryCoords.getXLeft(), activityEntryCoords.getYTop(), id));
                 //Gives the coordinates of the entry arrow to the endIcon of ForEach
-                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords.getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
+                subGroup.appendChild(getArrowDefinition(doc, activityExitCoords.getXLeft(), activityExitCoords
+                        .getYTop(), myExitCoords.getXLeft(), myExitCoords.getYTop(), id));
             }
         }
         return subGroup;

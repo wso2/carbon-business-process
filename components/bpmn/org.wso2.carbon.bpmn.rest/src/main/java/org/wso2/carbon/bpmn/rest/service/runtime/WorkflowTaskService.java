@@ -19,6 +19,7 @@ package org.wso2.carbon.bpmn.rest.service.runtime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.*;
 import org.apache.commons.io.IOUtils;
@@ -40,6 +41,7 @@ import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -238,6 +240,23 @@ public class WorkflowTaskService extends BaseTaskService {
         DataResponse dataResponse = getTasksFromQueryRequest(request, uriInfo, requestParams);
         return Response.ok().entity(dataResponse).build();
         //return getTasksFromQueryRequest(request, requestParams);
+    }
+
+    @POST
+    @Path("/")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createTask(TaskRequest taskRequest) {
+        TaskService taskService = BPMNOSGIService.getTaskService();
+        Task task = taskService.newTask();
+
+        // Populate the task properties based on the request
+        populateTaskFromRequest(task, taskRequest);
+        if (taskRequest.isTenantIdSet()) {
+            ((TaskEntity) task).setTenantId(taskRequest.getTenantId());
+        }
+        taskService.saveTask(task);
+        return Response.ok().entity(new RestResponseFactory().createTaskResponse(task, uriInfo.getBaseUri().toString())).build();
     }
 
     @GET
@@ -448,15 +467,12 @@ public class WorkflowTaskService extends BaseTaskService {
             httpServletRequest) {
 
         Task task = getTaskFromRequest(taskId);
-
-        Object result = null;
         List<RestVariable> inputVariables = new ArrayList<>();
         List<RestVariable> resultVariables = new ArrayList<>();
-        result = resultVariables;
+        Response.ResponseBuilder responseBuilder = Response.ok();
 
         try {
-            String contentType = httpServletRequest.getContentType();
-            if (contentType.equals(MediaType.APPLICATION_JSON)) {
+            if (Utils.isApplicationJsonRequest(httpServletRequest)) {
                 try {
                     @SuppressWarnings("unchecked")
                     List<Object> variableObjects = (List<Object>) new ObjectMapper().readValue(httpServletRequest.getInputStream(),
@@ -470,7 +486,7 @@ public class WorkflowTaskService extends BaseTaskService {
                             "instance.", e);
                 }
 
-            } else if (contentType.equals(MediaType.APPLICATION_XML)) {
+            } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
 
                 JAXBContext jaxbContext = null;
                 try {
@@ -541,7 +557,7 @@ public class WorkflowTaskService extends BaseTaskService {
                     task.getId(), RestResponseFactory.VARIABLE_TASK, false, uriInfo.getBaseUri().toString()));
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         TaskService taskService = BPMNOSGIService.getTaskService();
 
@@ -559,7 +575,11 @@ public class WorkflowTaskService extends BaseTaskService {
             }
         }
 
-        return Response.ok().status(Response.Status.CREATED).build();
+        RestVariableCollection restVariableCollection = new RestVariableCollection();
+        restVariableCollection.setRestVariables(resultVariables);
+        responseBuilder.entity(restVariableCollection);
+
+        return responseBuilder.status(Response.Status.CREATED).build();
     }
 
     @PUT
@@ -593,15 +613,14 @@ public class WorkflowTaskService extends BaseTaskService {
         Task task = getTaskFromRequest(taskId);
 
         RestVariable restVariable = null;
-        String contentType = httpServletRequest.getContentType();
 
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
             try {
                 restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
             } catch (Exception e) {
                 throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
             }
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
             JAXBContext jaxbContext = null;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
@@ -644,7 +663,7 @@ public class WorkflowTaskService extends BaseTaskService {
                     variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         TaskService taskService = BPMNOSGIService.getTaskService();
 
@@ -1325,7 +1344,13 @@ public class WorkflowTaskService extends BaseTaskService {
     protected void claimTask(Task task, TaskActionRequest actionRequest, TaskService taskService) {
         // In case the task is already claimed, a ActivitiTaskAlreadyClaimedException is thrown and converted to
         // a CONFLICT response by the ExceptionHandlerAdvice
-        taskService.claim(task.getId(), actionRequest.getAssignee());
+        List list = taskService.createTaskQuery().taskId(task.getId()).taskCandidateUser(actionRequest.getAssignee()).list();
+        if (list == null || list.isEmpty()) {//user is not a candidate
+            throw new BPMNForbiddenException("The user:" + actionRequest.getAssignee() + " is not a candidate user of this task");
+        } else {
+            taskService.claim(task.getId(), actionRequest.getAssignee());
+        }
+
     }
 
     protected void delegateTask(Task task, TaskActionRequest actionRequest, TaskService taskService) {

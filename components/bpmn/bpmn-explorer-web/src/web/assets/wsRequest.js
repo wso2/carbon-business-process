@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * 
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -74,6 +74,35 @@ function getBPMNProcessDiagram(processId) {
     var soapAction = 'urn:getProcessDiagram';
     var BPSResponse;
     BPSResponse = requestBPS(this.endPoint, soapAction, this.cookie, payload);
+    if (BPSResponse == null) {
+        return null;
+    }
+    else {
+        return BPSResponse;
+    }
+}
+
+/*
+ * Function to make WS-HT simplequery request with basic limited parameters
+ *
+ * @returns response payload
+ * @throws {exception java.net.ConnectException} if connection error occurred
+ */
+function getBPMNInstanceDiagram(instanceId) {
+    var payload = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                        xmlns:ser="http://services.mgt.core.bpmn.carbon.wso2.org">\
+                       <soapenv:Header/>\
+                       <soapenv:Body>\
+                          <ser:getProcessInstanceDiagram>\
+                             <ser:instanceId>' + instanceId + '</ser:instanceId>\
+                          </ser:getProcessInstanceDiagram>\
+                       </soapenv:Body>\
+                    </soapenv:Envelope>';
+
+    var soapAction = 'urn:getProcessInstanceDiagram';
+    var BPSResponse;
+    var ep = this.URL + "/services/BPMNInstanceService/"
+    BPSResponse = requestBPS(ep, soapAction, this.cookie, payload);
     if (BPSResponse == null) {
         return null;
     }

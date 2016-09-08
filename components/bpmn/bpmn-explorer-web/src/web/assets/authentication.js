@@ -1,5 +1,5 @@
 /*
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -30,3 +30,40 @@ function getRoles(username, password, bpsUrl){
 	roles = user.getRoles();
 	return roles;
 }
+
+function isUserAuthorized(username, permission, bpsUrl){
+   var 	carbon = require('carbon'),
+	process = require('process'),
+	srv = new carbon.server.Server({url: bpsUrl}),
+	tenantId = carbon.server.tenantId(),
+	userManager = new carbon.user.UserManager(srv, tenantId);
+
+	//get all permissions that 
+	var permissionList = userManager.getAllowedUIResources(username, permission);
+	if (permissionList != null && permissionList.length > 0) {
+		return true;
+	}
+	return false;
+
+}
+
+function getAllowedUIResources (username, permissionRootPath, bpsUrl) {
+	var 	carbon = require('carbon'),
+	process = require('process'),
+	srv = new carbon.server.Server({url: bpsUrl}),
+	tenantId = carbon.server.tenantId(),
+	userManager = new carbon.user.UserManager(srv, tenantId);
+
+	//get all permissions that 
+	return userManager.getAllowedUIResources(username, permissionRootPath);
+}
+
+function isPermissionExist(permissionArray, path) {
+	for (var i = 0; i < permissionArray.length; i++) {
+		if (permissionArray[i] == path || permissionArray[i] === path) {
+			return true;
+		}
+	}
+	return false;
+}
+

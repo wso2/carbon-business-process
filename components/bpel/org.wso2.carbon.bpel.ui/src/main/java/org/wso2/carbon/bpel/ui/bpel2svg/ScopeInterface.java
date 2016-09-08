@@ -19,27 +19,37 @@ package org.wso2.carbon.bpel.ui.bpel2svg;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
+/**
+ * Scope Interface.
+ */
 public interface ScopeInterface extends ActivityInterface {
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the TerminationHandler icon and arrow flows
      */
     public Element getTerminationHandlerIcon(SVGDocument doc);
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the FaultHandler icon and arrow flows
      */
     public Element getFaultHandlerIcon(SVGDocument doc);
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the CompensationHandler icon and arrow flows
      */
     public Element getCompensationHandlerIcon(SVGDocument doc);
+
     /**
      * At start: xLeft=0, yTop=0
+     *
      * @param doc SVG document which defines the components including shapes, gradients etc. of the activity
      * @return Element(represents an element in a XML) which contains the EventHandler icon and arrow flows
      */

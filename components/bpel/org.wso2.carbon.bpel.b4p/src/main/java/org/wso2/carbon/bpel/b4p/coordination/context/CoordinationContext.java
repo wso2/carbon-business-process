@@ -1,5 +1,5 @@
 /*
- * Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,38 +26,41 @@ import org.wso2.carbon.bpel.b4p.coordination.context.impl.SimpleCoordinationCont
  */
 public interface CoordinationContext {
 
-    public static final class Factory {
-        public static CoordinationContext newContext(OMElement context)
-        {
-            return new SimpleCoordinationContext(context);
-        }
-
-        public static CoordinationContext newContext(String identifier, String coordinationType, EndpointReference endpointReference) {
-            return new SimpleCoordinationContext(identifier, coordinationType, endpointReference);
-        }
-
-        public static CoordinationContext newContext(String identifier, String coordinationType, long expires, EndpointReference endpointReference) {
-            return new SimpleCoordinationContext(identifier, coordinationType, expires, endpointReference);
-        }
-    }
-
     public abstract String getIdentifier();
-
-    public abstract String getCoordinationType();
-
-    public abstract long getExpires();
-
-    public abstract EndpointReference getRegistrationService();
 
     public abstract void setIdentifier(String identifier);
 
+    public abstract String getCoordinationType();
+
     public abstract void setCoordinationType(String coordinationType);
 
+    public abstract long getExpires();
+
     public abstract void setExpires(long expires);
+
+    public abstract EndpointReference getRegistrationService();
 
     public abstract void getRegistrationService(EndpointReference endpointReference);
 
     public abstract OMElement toOM();
 
-    ;
+    /**
+     * Factory method for creating Coordination Context.
+     */
+    public static final class Factory {
+        public static CoordinationContext newContext(OMElement context) {
+            return new SimpleCoordinationContext(context);
+        }
+
+        public static CoordinationContext newContext(String identifier, String coordinationType, EndpointReference
+                endpointReference) {
+            return new SimpleCoordinationContext(identifier, coordinationType, endpointReference);
+        }
+
+        public static CoordinationContext newContext(String identifier, String coordinationType, long expires,
+                                                     EndpointReference endpointReference) {
+            return new SimpleCoordinationContext(identifier, coordinationType, expires, endpointReference);
+        }
+    }
+
 }

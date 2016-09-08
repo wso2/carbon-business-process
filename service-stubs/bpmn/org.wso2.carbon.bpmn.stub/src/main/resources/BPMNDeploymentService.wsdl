@@ -41,6 +41,34 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="getDeploymentsByName">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="deploymentName" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDeploymentsByNameResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax217:BPMNDeployment"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestChecksum">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="deploymentName" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestChecksumResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="BPMNDeploymentServiceBPSFault">
                 <xs:complexType>
                     <xs:sequence>
@@ -208,6 +236,18 @@
     <wsdl:message name="getDeploymentsResponse">
         <wsdl:part name="parameters" element="ns:getDeploymentsResponse"/>
     </wsdl:message>
+    <wsdl:message name="getDeploymentsByNameRequest">
+        <wsdl:part name="parameters" element="ns:getDeploymentsByName"/>
+    </wsdl:message>
+    <wsdl:message name="getDeploymentsByNameResponse">
+        <wsdl:part name="parameters" element="ns:getDeploymentsByNameResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getLatestChecksumRequest">
+        <wsdl:part name="parameters" element="ns:getLatestChecksum"/>
+    </wsdl:message>
+    <wsdl:message name="getLatestChecksumResponse">
+        <wsdl:part name="parameters" element="ns:getLatestChecksumResponse"/>
+    </wsdl:message>
     <wsdl:portType name="BPMNDeploymentServicePortType">
         <wsdl:operation name="getProcessesByDeploymentId">
             <wsdl:input message="ns:getProcessesByDeploymentIdRequest" wsaw:Action="urn:getProcessesByDeploymentId"/>
@@ -248,6 +288,14 @@
         <wsdl:operation name="getDeployments">
             <wsdl:input message="ns:getDeploymentsRequest" wsaw:Action="urn:getDeployments"/>
             <wsdl:output message="ns:getDeploymentsResponse" wsaw:Action="urn:getDeploymentsResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDeploymentsByName">
+            <wsdl:input message="ns:getDeploymentsByNameRequest" wsaw:Action="urn:getDeploymentsByName"/>
+            <wsdl:output message="ns:getDeploymentsByNameResponse" wsaw:Action="urn:getDeploymentsByNameResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getLatestChecksum">
+            <wsdl:input message="ns:getLatestChecksumRequest" wsaw:Action="urn:getLatestChecksum"/>
+            <wsdl:output message="ns:getLatestChecksumResponse" wsaw:Action="urn:getLatestChecksumResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="BPMNDeploymentServiceSoap11Binding" type="ns:BPMNDeploymentServicePortType">
@@ -338,6 +386,24 @@
         </wsdl:operation>
         <wsdl:operation name="getDeployments">
             <soap:operation soapAction="urn:getDeployments" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getDeploymentsByName">
+            <soap:operation soapAction="urn:getDeploymentsByName" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getLatestChecksum">
+            <soap:operation soapAction="urn:getLatestChecksum" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -441,6 +507,24 @@
                 <soap12:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getDeploymentsByName">
+            <soap12:operation soapAction="urn:getDeploymentsByName" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getLatestChecksum">
+            <soap12:operation soapAction="urn:getLatestChecksum" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
     </wsdl:binding>
     <wsdl:binding name="BPMNDeploymentServiceHttpBinding" type="ns:BPMNDeploymentServicePortType">
         <http:binding verb="POST"/>
@@ -515,6 +599,24 @@
         </wsdl:operation>
         <wsdl:operation name="getDeployments">
             <http:operation location="getDeployments"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getDeploymentsByName">
+            <http:operation location="getDeploymentsByName"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getLatestChecksum">
+            <http:operation location="getLatestChecksum"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>

@@ -21,7 +21,6 @@ package org.wso2.carbon.humantask.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.core.ServerStartupHandler;
 import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 

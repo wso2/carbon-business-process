@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * 
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -421,8 +421,17 @@ a.collapsing-h2 {
 }
 
 .navbar {
-    min-height: 45px;
-    overflow: hidden;
+    min-height: 44px;
+    overflow: visible;
+}
+
+.navbar-default .navbar-nav > li {
+    color: #e4e4e4;
+    text-transform: uppercase;
+}
+
+.navbar-default .navbar-nav > .active > a {
+    height: 45px;
 }
 
 .navbar-default .navbar-nav > li > a {
@@ -431,11 +440,12 @@ a.collapsing-h2 {
 }
 
 .nav>li>a {
-    padding: 5px 15px;
+    padding: 15px 15px;
 }
 
 .navbar-nav>li>a {
     padding: 5px 10px;
+    line-height: 35px;
 }
 .navbar-nav>li>a:hover {
     padding-top: 5px !important;
@@ -486,6 +496,17 @@ a.collapsing-h2 {
     //float: left;
     width: 99.9%;
 }
+
+.sub-tab-table-title-icon {
+    padding-right: 5px;
+    font-size: 16;
+}
+
+.sub-tab-dropdown-items > .active > a{
+    background-color: #9b221e;
+    background-image: none;
+}
+
 .table-title>a {
     color: #333;
 }
@@ -504,21 +525,21 @@ a.collapsing-h2 {
 }
 
 .table-status-column {
-    background: #282828;
-    height: 440px;
-    color: #fff;
+    background: #ADA8A8;
+    color: #000000;   
 }
 
-.table-status-column a {
-    color: #fff;
-    font-size: 16px;
+.table-status-column tr{
+    color: #000000;
+    font-size: 18px;
 }
+
 .addAttachment{
     margin:0px 20px;
     float:left;
     background-color: #fff;
     border: 1px solid #cccccc;
-    width: 99.9%;
+    width: 97.5%;
 }
 .main {
     height: 440px;
@@ -885,7 +906,10 @@ i.cu-btn-exp-col {
 
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
     background-color: #be2d28;
-    border-color: #be2d28;}
+    border-color: #be2d28;
+    z-index:0;
+}
+
 
 .pagination > li > a, .pagination > li > span {
     color: #333;
@@ -927,6 +951,25 @@ i.cu-btn-exp-col {
     font-weight: 300;
     padding: 5px 15px;
 }
+
+.btn-sm-activate {
+    background: #1C6C0B;
+    border-color: #0C3703;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.btn-sm-deactivate {
+    background: #be2d28;
+    border-color: #be2d28;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.btn-sm-bold-text {
+    font-weight: bold;
+}
+
 a {
     color: #6a0400;
     text-decoration: none;
@@ -1008,3 +1051,86 @@ hr {
     float:right;
     margin-top: 4px;
 }
+
+.tabs {
+  position: relative;   
+  min-height: 200px; 
+  clear: both;
+  margin: 25px 0;
+}
+.tab {
+  float: left;
+}
+.tab label {
+  background: #eee; 
+  padding: 10px; 
+  border: 1px solid #ccc; 
+  margin-left: -1px; 
+  position: relative;
+  left: 1px; 
+  width:150px;
+}
+.tab [type=radio] {
+  display: none;   
+}
+
+.content {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  background: white;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  border: 1px solid #ccc; 
+  height: 200%;
+  
+}
+[type=radio]:checked ~ label {
+  background: #666666;
+  border-bottom: 1px solid white;
+ 
+}
+[type=radio]:checked ~ label ~ .content {
+   
+}
+
+.process-title,.panel-heading {   
+    font-size: 16px;    
+    width: 99.9%;
+    color: #ffffff;
+}
+
+#table1 {
+    border: 1px solid black;
+    width: 100%;
+    table-layout:fixed;
+}
+
+#table1 td, #table1 th, #table1 tr {
+    border: 1px solid black;
+    padding: 4px;
+    table-layout:fixed;
+}
+#table1 tr:hover{background-color:#f5f5f5}
+
+#table1 thead {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.footer {
+    z-index: 1;
+}
+
+.table-status-column a {
+    color: #000000;
+    font-size: 18px;
+}
+
+.table-status-column a:hover {
+     color : red;
+}
+

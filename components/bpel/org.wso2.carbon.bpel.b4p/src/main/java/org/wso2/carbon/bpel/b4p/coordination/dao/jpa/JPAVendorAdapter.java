@@ -16,11 +16,11 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.dao.jpa;
 
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
-import java.util.Map;
 
 /**
  * Handle JPA implementation specific EntityManager creation.
@@ -51,8 +51,8 @@ public interface JPAVendorAdapter {
     /**
      * Returns the current JPA vendor specific property map
      *
-     * @return property map
      * @param tnxManager TransactionManager
+     * @return property map
      */
     Map<String, ?> getJpaPropertyMap(TransactionManager tnxManager);
 

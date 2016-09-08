@@ -29,6 +29,23 @@
 <%
     String deploymentName = CharacterEncoder.getSafeText(request.getParameter("deploymentName"));
 %>
+    <script type="text/javascript">
+        function deletePackage() {
+            function deleteYes() {
+                $.ajax({
+                    type: 'POST',
+                    url: location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu&operation=undeploy&deploymentName=<%=deploymentName%>",
+                    success: function(data){
+                        window.location = location.protocol + "//" + location.host + "/carbon/bpmn/process_list_view.jsp?region=region1&item=bpmn_menu";
+                    }
+                });
+            }
+            sessionAwareFunction(function() {
+                CARBON.showConfirmationDialog('<fmt:message key="do.you.want.to.delete.package"/>' + ' <%=deploymentName%>?', deleteYes, null);
+            }, "<fmt:message key="session.timed.out"/>");
+            return false;
+        }
+    </script>
     <carbon:breadcrumb
             label="bpmn.package.dashboard"
             resourceBundle="org.wso2.carbon.bpmn.ui.i18n.Resources"
@@ -47,8 +64,8 @@
             </thead>
             <tbody>
             <tr>
-                <td><a href=<%="process_list_view.jsp?region=region1&item=bpmn_menu&operation=undeploy&deploymentName=" + deploymentName%>
-                        ><img src="images/undeploy.gif">&nbsp;<fmt:message key="bpmn.package.undeploy"/></a></td>
+                <td><a href="javascript:deletePackage();">
+                    <img src="images/undeploy.gif">&nbsp;<fmt:message key="bpmn.package.undeploy"/></a></td>
             </tr>
             </tbody>
         </table>

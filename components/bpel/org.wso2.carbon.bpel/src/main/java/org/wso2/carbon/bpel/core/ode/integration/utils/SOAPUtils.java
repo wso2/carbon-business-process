@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,15 @@ package org.wso2.carbon.bpel.core.ode.integration.utils;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMNode;
-import org.apache.axiom.soap.*;
+import org.apache.axiom.soap.SOAPBody;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.SOAPFault;
+import org.apache.axiom.soap.SOAPFaultCode;
+import org.apache.axiom.soap.SOAPFaultDetail;
+import org.apache.axiom.soap.SOAPFaultReason;
+import org.apache.axiom.soap.SOAPHeader;
+import org.apache.axiom.soap.SOAPHeaderBlock;
 import org.apache.axis2.AxisFault;
 import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
@@ -31,17 +39,34 @@ import org.apache.ode.utils.NSContext;
 import org.apache.ode.utils.Namespaces;
 import org.apache.ode.utils.stl.CollectionsX;
 import org.apache.ode.utils.wsdl.WsdlUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.wso2.carbon.bpel.core.ode.integration.BPELFault;
 import org.wso2.carbon.bpel.core.ode.integration.BPELMessageContext;
 
-import javax.wsdl.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.wsdl.BindingInput;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.BindingOutput;
+import javax.wsdl.Definition;
+import javax.wsdl.Fault;
+import javax.wsdl.Message;
+import javax.wsdl.Operation;
+import javax.wsdl.OperationType;
+import javax.wsdl.Part;
 import javax.wsdl.extensions.ElementExtensible;
 import javax.wsdl.extensions.mime.MIMEContent;
 import javax.wsdl.extensions.soap12.SOAP12Body;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
-import java.util.*;
 
 /**
  * Utility class which contains methods for creating response SOAP messages and
@@ -434,7 +459,8 @@ public final class SOAPUtils {
         // Refer SOAP Binding specification at http://www.w3.org/TR/wsdl#_soap-b.
         final boolean isHeaderElementAPartOfPayload =
                 soapHeaderElementDefinition.getMessage() == null
-                        || ((wsdlOperation.getStyle() !=  OperationType.ONE_WAY) && soapHeaderElementDefinition.getMessage().equals(
+                        || ((wsdlOperation.getStyle() != OperationType.ONE_WAY) && soapHeaderElementDefinition
+                        .getMessage().equals(
                         responseMessageDefinition.getQName()));
 
         if (soapHeaderElementDefinition.getPart() == null) {
@@ -443,7 +469,8 @@ public final class SOAPUtils {
         }
 
         if (isHeaderElementAPartOfPayload
-                && (responseMessageDefinition != null && responseMessageDefinition.getPart(soapHeaderElementDefinition.getPart())
+                && (responseMessageDefinition != null && responseMessageDefinition.getPart
+                (soapHeaderElementDefinition.getPart())
                 == null)) {
             // If SOAP Header element is part of the actual payload and
             // if we couldn't find part in the response message definition equals to
@@ -475,11 +502,12 @@ public final class SOAPUtils {
 
         // Handle headers defined as abstract message parts. In this scenario, the header is not part of the payload,
         // and can be found and extracted from the odeMessage object
-        if(partElement == null && messageFromOde.getParts().size() > 0 && !isHeaderElementAPartOfPayload) {
-            try{
-            partElement = (Element)messageFromOde.getPart(soapHeaderElementDefinition.getPart());
-            }catch (ClassCastException e) {
-               throw new BPELFault("Soap header must be an element" + messageFromOde.getPart(soapHeaderElementDefinition.getPart()));
+        if (partElement == null && messageFromOde.getParts().size() > 0 && !isHeaderElementAPartOfPayload) {
+            try {
+                partElement = (Element) messageFromOde.getPart(soapHeaderElementDefinition.getPart());
+            } catch (ClassCastException e) {
+                throw new BPELFault("Soap header must be an element" + messageFromOde.getPart
+                        (soapHeaderElementDefinition.getPart()));
 
             }
         }
@@ -636,14 +664,17 @@ public final class SOAPUtils {
 
     }
 
-    public static org.apache.ode.bpel.iapi.Message parseResponseFromRESTService(BPELMessageContext partnerInvocationContext,
-                                                                                PartnerRoleMessageExchange odePartnerMex) {
+    public static org.apache.ode.bpel.iapi.Message parseResponseFromRESTService(BPELMessageContext
+                                                                                        partnerInvocationContext,
+                                                                                PartnerRoleMessageExchange
+                                                                                        odePartnerMex) {
         org.apache.ode.bpel.iapi.Message messageToODE = odePartnerMex.createMessage(
                 odePartnerMex.getOperation().getOutput().getMessage().getQName());
         BindingOperation bindingOp = getBindingOperation(partnerInvocationContext,
                 odePartnerMex.getOperationName());
         BindingOutput bindingOutPut = getBindingOutPut(bindingOp);
-        javax.wsdl.extensions.mime.MIMEContent mimeContent = getFirstExtensibilityElement(bindingOutPut, MIMEContent.class);
+        javax.wsdl.extensions.mime.MIMEContent mimeContent = getFirstExtensibilityElement(bindingOutPut, MIMEContent
+                .class);
         if (mimeContent != null) {
             SOAPEnvelope soapEnv = partnerInvocationContext.getOutMessageContext().getEnvelope();
 

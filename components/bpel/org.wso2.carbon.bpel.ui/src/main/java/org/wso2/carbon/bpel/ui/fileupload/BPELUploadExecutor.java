@@ -32,28 +32,61 @@ import org.wso2.carbon.ui.transports.fileupload.AbstractFileUploadExecutor;
 import org.wso2.carbon.utils.FileItemData;
 import org.wso2.carbon.utils.ServerConstants;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  *
  */
 public class BPELUploadExecutor extends AbstractFileUploadExecutor {
-    private static Log log = LogFactory.getLog(BPELUploadExecutor.class);
-
     private static final String[] ALLOWED_FILE_EXTENSIONS =
             new String[]{".zip"};
+    private static Log log = LogFactory.getLog(BPELUploadExecutor.class);
 
+    private static void addDir(File dirObj, ZipOutputStream out, int basePathLen) throws Exception {
+        if (dirObj != null && out != null) {
+            File[] files = dirObj.listFiles();
+            byte[] tmpBuf = new byte[2048];
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        addDir(file, out, basePathLen);
+                        continue;
+                    }
+                    FileInputStream in = null;
+                    try {
+                        in = new FileInputStream(file.getAbsolutePath());
+                        if (log.isDebugEnabled()) {
+                            log.debug("Adding: " + file.getAbsolutePath());
+                        }
+                        out.putNextEntry(new ZipEntry(file.getAbsolutePath().substring(basePathLen)));
+                        int len;
+                        while ((len = in.read(tmpBuf)) > 0) {
+                            out.write(tmpBuf, 0, len);
+                        }
+                    } finally {
+                        if (in != null) {
+                            in.close();
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public boolean execute(HttpServletRequest request,
                            HttpServletResponse response) throws CarbonException, IOException {
@@ -85,9 +118,11 @@ public class BPELUploadExecutor extends AbstractFileUploadExecutor {
                 String fileName = getFileName(fieldData.getFileItem().getName());
                 //Check filename for \ charactors. This cannot be handled at the lower stages.
                 if (fileName.matches("(.*[\\\\].*[/].*|.*[/].*[\\\\].*)")) {
-                    log.error("BPEL Package Validation Failure: one or many of the following illegal characters are in " +
+                    log.error("BPEL Package Validation Failure: one or many of the following illegal characters are " +
+                            "in " +
                             "the package.\n ~!@#$;%^*()+={}[]| \\<>");
-                    throw new Exception("BPEL Package Validation Failure: one or many of the following illegal characters " +
+                    throw new Exception("BPEL Package Validation Failure: one or many of the following illegal " +
+                            "characters " +
                             "are in the package. ~!@#$;%^*()+={}[]| \\<>");
                 }
                 //Check file extension.
@@ -169,7 +204,8 @@ public class BPELUploadExecutor extends AbstractFileUploadExecutor {
             throw new Exception(e);
         }
 
-        // Handling backward compatibility issues. If user upload BPEL archive which follows the BPS 1.0.1 archive format
+        // Handling backward compatibility issues. If user upload BPEL archive which follows the BPS 1.0.1 archive
+        // format
         // we need to convert it to new format and upload.
         File deployXml = new File(destinationDir, "deploy.xml");
         if (!deployXml.exists()) {
@@ -199,7 +235,7 @@ public class BPELUploadExecutor extends AbstractFileUploadExecutor {
             }
 
             throw new Exception("BPEL Archive format error.Please confirm that the file being uploaded is a " +
-                                "valid BPEL archive.");
+                    "valid BPEL archive.");
         }
 
         return new SaveExtractReturn(uploadedFile.getAbsolutePath(), destinationDir);
@@ -222,34 +258,6 @@ public class BPELUploadExecutor extends AbstractFileUploadExecutor {
         }
     }
 
-    private static void addDir(File dirObj, ZipOutputStream out, int basePathLen) throws Exception {
-        File[] files = dirObj.listFiles();
-        byte[] tmpBuf = new byte[2048];
-
-        for (File file : files) {
-            if (file.isDirectory()) {
-                addDir(file, out, basePathLen);
-                continue;
-            }
-            FileInputStream in = null;
-            try {
-                in = new FileInputStream(file.getAbsolutePath());
-                if (log.isDebugEnabled()) {
-                    log.debug("Adding: " + file.getAbsolutePath());
-                }
-                out.putNextEntry(new ZipEntry(file.getAbsolutePath().substring(basePathLen)));
-                int len;
-                while ((len = in.read(tmpBuf)) > 0) {
-                    out.write(tmpBuf, 0, len);
-                }
-            } finally {
-                if (in != null) {
-                    in.close();
-                }
-            }
-        }
-    }
-
     private String getTempUploadDir() {
         String uuid = generateUUID();
         String tmpDir = "bpelTemp";
@@ -257,11 +265,13 @@ public class BPELUploadExecutor extends AbstractFileUploadExecutor {
     }
 
     private boolean onlyOneChildDir(String location, String dirNameToCheck) {
-        File parentDir = new File(location);
-        if (parentDir.isDirectory()) {
-            String[] entries = parentDir.list();
-            if (entries.length == 1 && entries[0].equals(dirNameToCheck)) {
-                return true;
+        if (location != null && dirNameToCheck != null) {
+            File parentDir = new File(location);
+            if (parentDir.isDirectory()) {
+                String[] entries = parentDir.list();
+                if (entries != null && entries.length == 1 && entries[0].equals(dirNameToCheck)) {
+                    return true;
+                }
             }
         }
 
@@ -280,10 +290,12 @@ public class BPELUploadExecutor extends AbstractFileUploadExecutor {
         //check package for illegal charactors which registry does not support. (~!@#$;%^*()+={}[]|\<>)
         List<File> packageFiles = du.allFiles();
         for (File packageFile : packageFiles) {
-            if (!packageFile.getName().matches("[^\\~\\!\\@\\#\\$\\;\\%\\^\\*\\(\\)\\+ /\\=\\{\\}\\[\\]\\\\|\\<\\>\"\\'\\`]+")) {
+            if (!packageFile.getName().matches("[^\\~\\!\\@\\#\\$\\;\\%\\^\\*\\(\\)\\+ " +
+                    "/\\=\\{\\}\\[\\]\\\\|\\<\\>\"\\'\\`]+")) {
                 log.error("BPEL Package Validation Failure: one or many of the following illegal characters are in " +
                         "the package.\n ~!@#$;%^*()+={}[]| \\<>\"'`");
-                throw new Exception("BPEL Package Validation Failure: one or many of the following illegal characters " +
+                throw new Exception("BPEL Package Validation Failure: one or many of the following illegal characters" +
+                        " " +
                         "are in the package. ~!@#$;%^*()+={}[]| \\<>\"'`");
             }
         }

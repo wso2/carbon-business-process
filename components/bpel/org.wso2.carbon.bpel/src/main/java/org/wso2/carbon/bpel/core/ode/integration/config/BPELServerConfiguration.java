@@ -24,7 +24,20 @@ import org.apache.ode.il.config.OdeConfigProperties;
 import org.apache.ode.utils.CronExpression;
 import org.apache.ode.utils.GUID;
 import org.apache.xmlbeans.XmlException;
-import org.wso2.carbon.bpel.config.*;
+import org.wso2.carbon.bpel.config.SimpleSchedulerConfig;
+import org.wso2.carbon.bpel.config.TBPS;
+import org.wso2.carbon.bpel.config.TBpelUI;
+import org.wso2.carbon.bpel.config.TCleanup;
+import org.wso2.carbon.bpel.config.TDataBaseConfig;
+import org.wso2.carbon.bpel.config.TEventListeners;
+import org.wso2.carbon.bpel.config.TExtensionBundles;
+import org.wso2.carbon.bpel.config.TMexInterceptors;
+import org.wso2.carbon.bpel.config.TMultithreadedHttpConnectionManagerConfig;
+import org.wso2.carbon.bpel.config.TOpenJPAConfig;
+import org.wso2.carbon.bpel.config.TProcessDehydration;
+import org.wso2.carbon.bpel.config.TSchedule;
+import org.wso2.carbon.bpel.config.TSchedules;
+import org.wso2.carbon.bpel.config.WSO2BPSDocument;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -32,7 +45,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * The class which represents the BPEL configuration file, bps.xml
@@ -41,80 +61,47 @@ public class BPELServerConfiguration {
     private static final Log log = LogFactory.getLog(BPELServerConfiguration.class);
 
     private WSO2BPSDocument bpsConfigDocument;
-
-    public static enum DataSourceType {
-        EMBEDDED,
-        EXTERNAL,
-        INTERNAL
-    }
-
     private DataSourceType dsType = DataSourceType.EMBEDDED;
-
     // If data source type is external following three fields must be not null
     // Name of the data source created in the JNDI repo
     private String dataSourceName;
-
     private String dataSourceJNDIRepoInitialContextFactory;
-
     private String dataSourceJNDIRepoProviderURL;
-
     private int processDehydrationMaxAge;
-
     private boolean isProcessDehydrationEnabled = false;
-
     private int processDehydraionMaxCount;
-
     private String transactionFactoryClass = "org.apache.ode.il.EmbeddedGeronimoFactory";
-
     private List<String> eventListeners = new ArrayList<String>();
-
     private List<String> mexInterceptors = new ArrayList<String>();
-
     private List<String> extensionBundleRuntimes = new ArrayList<String>();
-
     private List<String> extensionCorrelationFilters = new ArrayList<String>();
-
     private List<String> extensionBundleValidators = new ArrayList<String>();
-
     private Map<String, String> openJpaProperties = new HashMap<String, String>();
-
     // Message exchange timeout in milliseconds
     private int mexTimeOut = BPELConstants.DEFAULT_TIMEOUT;
-
     // External Service timeout in milliseconds
     private int externalServiceTimeOut = BPELConstants.DEFAULT_TIMEOUT;
-
     private int maxConnectionsPerHost = 10;
-
     private int maxTotalConnections = 100;
-
     private String nodeId = new GUID().toString();
+    // Use Debug on transaction manager or not
+    private boolean debugOnTransactionManager = false;
 
-//    // Life time in days
+    //    // Life time in days
 //    private int completedInstanceLifeTime = 3;
 //
 //    // Life time in days
 //    private int failedInstanceLifeTime = 5;
-
-    // Use Debug on transaction manager or not
-    private boolean debugOnTransactionManager = false;
-
     private boolean syncWithRegistry = false;
-
     private boolean keepAlive = true;
-
     private long inMemoryInstanceTTL = 600000;
     // scheduler thread pool size
     private int odeSchedulerThreadPoolSize = 0;
-
     // whether to use hazelcast based distributed lock in ode
     private boolean useDistributedLock = false;
-
     // Whether to use hazelcast based state cache in ode
     private boolean useInstanceStateCache = false;
-
     private String persistenceProvider = "jpadb";
-
     private String driverClass = null;
     private String jdbcUrl = null;
     private String username = null;
@@ -122,21 +109,17 @@ public class BPELServerConfiguration {
     private int maxPoolSize = 100;
     private int minPoolSize = 5;
     private int bpelInstanceDeletionLimit = BPELConstants.DEFAULT_INSTANCE_DELETION_LIMIT;
-
-
     //SimpleScheduler Configuration
-    private int odeSchedulerQueueLength  = 10000;
-    private long odeSchedulerImmediateInterval  = 30000;
-    private long odeSchedulerNearFutureInterval  = 10 * 60 * 1000;
-    private long odeSchedulerStaleInterval  = 10000;
-    private int odeSchedulerTransactionsPerSecond  = 100;
-    private long odeSchedulerWarningDelay  = 5*60*1000;
-    private int odeSchedulerImmediateTransactionRetryLimit  = 3;
-    private long odeSchedulerImmediateTransactionRetryInterval  = 1000;
-
+    private int odeSchedulerQueueLength = 10000;
+    private long odeSchedulerImmediateInterval = 30000;
+    private long odeSchedulerNearFutureInterval = 10 * 60 * 1000;
+    private long odeSchedulerStaleInterval = 10000;
+    private int odeSchedulerTransactionsPerSecond = 100;
+    private long odeSchedulerWarningDelay = 5 * 60 * 1000;
+    private int odeSchedulerImmediateTransactionRetryLimit = 3;
+    private long odeSchedulerImmediateTransactionRetryInterval = 1000;
     //Maximum length of a instance variable in instance view.
     private int instanceViewVariableLength = BPELConstants.DEFAULT_INSTANCE_VIEW_VARIABLE_LENGTH;
-
     private int transactionManagerTimeout = -1;
 
     public BPELServerConfiguration() {
@@ -146,6 +129,27 @@ public class BPELServerConfiguration {
 
         populateDefaultOpenJPAProps();
         loadBPELServerConfigurationFile();
+    }
+
+    public static void processACleanup(Set<ProcessConf.CLEANUP_CATEGORY> categories,
+                                       List<TCleanup.Category.Enum> categoryList) {
+        if (categoryList.isEmpty()) {
+            // add all categories
+            categories.addAll(EnumSet.allOf(ProcessConf.CLEANUP_CATEGORY.class));
+        } else {
+            for (TCleanup.Category.Enum aCategory : categoryList) {
+                if (aCategory == TCleanup.Category.ALL) {
+                    // add all categories
+                    categories.addAll(EnumSet.allOf(ProcessConf.CLEANUP_CATEGORY.class));
+                } else {
+                    categories.add(ProcessConf.CLEANUP_CATEGORY.fromString(aCategory.toString()));
+                }
+            }
+        }
+    }
+
+    private static String addPrefix(String prop) {
+        return BPELConstants.BPS_PROPERTY_PREFIX + prop;
     }
 
     public DataSourceType getDsType() {
@@ -204,17 +208,18 @@ public class BPELServerConfiguration {
         this.keepAlive = keepAlive;
     }
 
+//    public List<String> getExtensionBundleValidators() {
+//        return extensionBundleValidators;
+//    }
+
     /**
      * Returns the maximum length of a variable that is displayed in the UI
+     *
      * @return variable length
      */
     public int getInstanceViewVariableLength() {
         return instanceViewVariableLength;
     }
-
-//    public List<String> getExtensionBundleValidators() {
-//        return extensionBundleValidators;
-//    }
 
     public Map<String, String> getOpenJpaProperties() {
         return openJpaProperties;
@@ -232,10 +237,6 @@ public class BPELServerConfiguration {
         return maxConnectionsPerHost;
     }
 
-    public int getMaxTotalConnections() {
-        return maxTotalConnections;
-    }
-
 //    public int getCompletedInstanceLifeTime() {
 //        return completedInstanceLifeTime;
 //    }
@@ -243,6 +244,10 @@ public class BPELServerConfiguration {
 //    public int getFailedInstanceLifeTime() {
 //        return failedInstanceLifeTime;
 //    }
+
+    public int getMaxTotalConnections() {
+        return maxTotalConnections;
+    }
 
     public boolean isDebugOnTransactionManager() {
         return debugOnTransactionManager;
@@ -255,7 +260,7 @@ public class BPELServerConfiguration {
         if (schedules != null &&
                 schedules.getScheduleArray() != null &&
                 schedules.getScheduleArray().length > 0) {
-            for (org.wso2.carbon.bpel.config.TSchedule schedule : schedules.getScheduleArray()) {
+            for (TSchedule schedule : schedules.getScheduleArray()) {
                 ProcessConf.CronJob job = new ProcessConf.CronJob();
 
                 try {
@@ -291,29 +296,12 @@ public class BPELServerConfiguration {
     /**
      * Returns the maximum number of instances that can be deleted in a delete instance request as defined in bps.xml.
      * Default is 1000.
+     *
      * @return bpelInstanceDeletionLimit - maximum number of instance that can delete in single request
      */
     public int getBpelInstanceDeletionLimit() {
         return bpelInstanceDeletionLimit;
     }
-
-    public static void processACleanup(Set<ProcessConf.CLEANUP_CATEGORY> categories,
-                                       List<TCleanup.Category.Enum> categoryList) {
-        if (categoryList.isEmpty()) {
-            // add all categories
-            categories.addAll(EnumSet.allOf(ProcessConf.CLEANUP_CATEGORY.class));
-        } else {
-            for (TCleanup.Category.Enum aCategory : categoryList) {
-                if (aCategory == TCleanup.Category.ALL) {
-                    // add all categories
-                    categories.addAll(EnumSet.allOf(ProcessConf.CLEANUP_CATEGORY.class));
-                } else {
-                    categories.add(ProcessConf.CLEANUP_CATEGORY.fromString(aCategory.toString()));
-                }
-            }
-        }
-    }
-
 
     /**
      * Make the BPEL Configuration file ODE readable
@@ -336,7 +324,7 @@ public class BPELServerConfiguration {
                         dataSourceJNDIRepoProviderURL);
             }
         }
-        if(dsType == DataSourceType.INTERNAL) {
+        if (dsType == DataSourceType.INTERNAL) {
             odeConfig.setProperty(addPrefix(OdeConfigProperties.PROP_DB_INTERNAL_DRIVER),
                     driverClass);
             odeConfig.setProperty(addPrefix(OdeConfigProperties.PROP_DB_INTERNAL_URL),
@@ -388,7 +376,7 @@ public class BPELServerConfiguration {
         odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_TPS,
                 Integer.toString(this.odeSchedulerTransactionsPerSecond));
 
-        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_WARNING_DELAY ,
+        odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_WARNING_DELAY,
                 Long.toString(this.odeSchedulerWarningDelay));
 
         odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_LIMIT,
@@ -402,6 +390,7 @@ public class BPELServerConfiguration {
 
     /**
      * Returns the Transaction manager timeout set for ODE in bps configuration. Returns -1 if not available.
+     *
      * @return transactionManagerTimeout
      */
     public int getTransactionManagerTimeout() {
@@ -636,7 +625,7 @@ public class BPELServerConfiguration {
                     getValue();
             this.maxTotalConnections = multiThreadedConManagerConfig.getMaxTotalConnections().
                     getValue();
-            if(multiThreadedConManagerConfig.getConnectionKeepAlive() != null) {
+            if (multiThreadedConManagerConfig.getConnectionKeepAlive() != null) {
                 this.keepAlive = multiThreadedConManagerConfig.getConnectionKeepAlive().getValue();
             }
         }
@@ -665,39 +654,39 @@ public class BPELServerConfiguration {
     }
 
     private void populateUseDistributedLock() {
-        if(bpsConfigDocument.getWSO2BPS().isSetUseDistributedLock()) {
+        if (bpsConfigDocument.getWSO2BPS().isSetUseDistributedLock()) {
             String distributedLockValue = bpsConfigDocument.getWSO2BPS().getUseDistributedLock();
-            if(distributedLockValue != null && distributedLockValue.toLowerCase().equals("true")) {
+            if (distributedLockValue != null && distributedLockValue.toLowerCase().equals("true")) {
                 useDistributedLock = true;
             }
         }
     }
 
-    public boolean  getUseDistributedLock() {
+    public boolean getUseDistributedLock() {
         return useDistributedLock;
     }
-    
+
     private void populateUseInstanceStateCache() {
-        if(bpsConfigDocument.getWSO2BPS().isSetUseInstanceStateCache()) {
+        if (bpsConfigDocument.getWSO2BPS().isSetUseInstanceStateCache()) {
             String useInstanceStateCache = bpsConfigDocument.getWSO2BPS().getUseInstanceStateCache();
-            if(useInstanceStateCache != null && useInstanceStateCache.toLowerCase().equals("true")){
+            if (useInstanceStateCache != null && useInstanceStateCache.toLowerCase().equals("true")) {
                 this.useInstanceStateCache = true;
             }
         }
     }
 
-    public boolean  getUseInstanceStateCache(){
+    public boolean getUseInstanceStateCache() {
         return this.useInstanceStateCache;
     }
 
     private void populatePersistenceProvider() {
-        if(bpsConfigDocument.getWSO2BPS().isSetPersistenceProvider()) {
+        if (bpsConfigDocument.getWSO2BPS().isSetPersistenceProvider()) {
             String persistenceProvider = bpsConfigDocument.getWSO2BPS().getPersistenceProvider();
             this.persistenceProvider = persistenceProvider;
-            if(persistenceProvider.toLowerCase().equals("hibernate")) {
+            if (persistenceProvider.toLowerCase().equals("hibernate")) {
                 // Setting property hibernate. This will be looked up within the ode engine
                 System.setProperty("ode.persistence", "hibernate");
-                if(populatePropertiesInfo()) {
+                if (populatePropertiesInfo()) {
                     dsType = DataSourceType.INTERNAL;
                     log.info("Using INTERNAL DB MODE");
                 }
@@ -719,37 +708,32 @@ public class BPELServerConfiguration {
         return this.persistenceProvider;
     }
 
-    private static String addPrefix(String prop) {
-        return BPELConstants.BPS_PROPERTY_PREFIX + prop;
-    }
-
     public boolean isSyncWithRegistry() {
         return syncWithRegistry;
     }
 
-
     private boolean populatePropertiesInfo() {
         Properties prop = readDataSourcePropertiesFile();
-        if(prop != null) {
-            String synapseDatasource =  "synapse.datasources." + dataSourceName + ".";
+        if (prop != null) {
+            String synapseDatasource = "synapse.datasources." + dataSourceName + ".";
             String driveClass = prop.getProperty(synapseDatasource + "driverClassName");
             String jdbcUrl = prop.getProperty(synapseDatasource + "url");
             String username = prop.getProperty(synapseDatasource + "username");
             String password = prop.getProperty(synapseDatasource + "password");
 
-            if(driveClass != null && driveClass.trim().length() > 0){
+            if (driveClass != null && driveClass.trim().length() > 0) {
                 this.driverClass = driveClass;
             }
-            if(username!= null && username.trim().length() > 0) {
+            if (username != null && username.trim().length() > 0) {
                 this.username = username;
             }
 
-            if(password != null && password.trim().length() > 0) {
-                this.password =  password;
+            if (password != null && password.trim().length() > 0) {
+                this.password = password;
             }
 
-            if(jdbcUrl != null && jdbcUrl.trim().length() > 0) {
-                this.jdbcUrl =  jdbcUrl;
+            if (jdbcUrl != null && jdbcUrl.trim().length() > 0) {
+                this.jdbcUrl = jdbcUrl;
             }
             return true;
         }
@@ -762,7 +746,7 @@ public class BPELServerConfiguration {
                 "datasources.properties";
 
         File file = new File(propetiesFile);
-        if(!file.exists()) {
+        if (!file.exists()) {
             return null;
         }
         FileInputStream in = null;
@@ -774,7 +758,7 @@ public class BPELServerConfiguration {
             log.warn(" Properties file loading failed");
             return properties;
         } finally {
-            if(in != null) {
+            if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
@@ -786,17 +770,21 @@ public class BPELServerConfiguration {
     }
 
     private void populateNodeId() {
-        if(bpsConfigDocument.getWSO2BPS().isSetNodeId()) {
+        if (bpsConfigDocument.getWSO2BPS().isSetNodeId()) {
             String node = bpsConfigDocument.getWSO2BPS().getNodeId();
-            if(node != null && node.trim().length() > 0)
+            if (node != null && node.trim().length() > 0) {
                 this.nodeId = node;
+            }
         }
     }
 
-    public String getNodeId(){
+    public String getNodeId() {
         return this.nodeId;
     }
 
+    /**
+     * Populate ODE scheduler configuration.
+     */
     private void populateODESchedulerConfiguration() {
         if (bpsConfigDocument.getWSO2BPS().getODESchedulerConfiguration() != null) {
             SimpleSchedulerConfig config = bpsConfigDocument.getWSO2BPS().getODESchedulerConfiguration();
@@ -823,7 +811,17 @@ public class BPELServerConfiguration {
                     config.getODESchedulerImmediateTransactionRetryLimit() : odeSchedulerImmediateTransactionRetryLimit;
 
             odeSchedulerImmediateTransactionRetryInterval = config.getODESchedulerImmediateInterval() > 0 ?
-                    config.getODESchedulerImmediateTransactionRetryInterval() : odeSchedulerImmediateTransactionRetryInterval;
+                    config.getODESchedulerImmediateTransactionRetryInterval() :
+                    odeSchedulerImmediateTransactionRetryInterval;
         }
+    }
+
+    /**
+     * DataSource type.
+     */
+    public enum DataSourceType {
+        EMBEDDED,
+        EXTERNAL,
+        INTERNAL
     }
 }

@@ -21,23 +21,20 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.AxisEngine;
-import org.apache.axis2.receivers.AbstractInMessageReceiver;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.attachment.mgt.skeleton.AttachmentMgtException;
 import org.wso2.carbon.attachment.mgt.skeleton.types.TAttachment;
-import org.wso2.carbon.bpel.core.internal.BPELServerHolder;
 import org.wso2.carbon.bpel.core.BPELConstants;
+import org.wso2.carbon.bpel.core.internal.BPELServerHolder;
 import org.wso2.carbon.bpel.core.ode.integration.BPELMessageContext;
 import org.wso2.carbon.bpel.core.ode.integration.BPELProcessProxy;
 import org.wso2.carbon.bpel.core.ode.integration.utils.BPELMessageContextFactory;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 
-import javax.activation.DataHandler;
 import java.util.ArrayList;
 import java.util.List;
+import javax.activation.DataHandler;
 
 import static org.wso2.carbon.bpel.core.ode.integration.utils.BPELMessageContextFactory.hasResponse;
 
@@ -50,9 +47,9 @@ import static org.wso2.carbon.bpel.core.ode.integration.utils.BPELMessageContext
  * basic things.
  */
 public class BPELMessageReceiver extends AbstractMessageReceiver {
+    private static final String REQ_RES_TRACE = "org.wso2.carbon.bpel.ReqResTraceLog";
     private static Log log = LogFactory.getLog(BPELMessageReceiver.class);
     private static Log messageTraceLog = LogFactory.getLog(BPELConstants.MESSAGE_TRACE);
-    private static final String REQ_RES_TRACE = "org.wso2.carbon.bpel.ReqResTraceLog";
     private static Log reqResTraceLog = LogFactory.getLog(REQ_RES_TRACE);
 
     private BPELProcessProxy processProxy;
@@ -90,7 +87,7 @@ public class BPELMessageReceiver extends AbstractMessageReceiver {
         attachment.setName(attachmentName);
 
         log.warn("Couldn't determine the name of BPEL client. So the owner of the attachment:" + attachmentName + " " +
-                 "will be the default bpel client" + org.wso2.carbon.bpel.core.BPELConstants.DAFAULT_BPEL_CLIENT);
+                "will be the default bpel client" + org.wso2.carbon.bpel.core.BPELConstants.DAFAULT_BPEL_CLIENT);
         attachment.setCreatedBy(org.wso2.carbon.bpel.core.BPELConstants.DAFAULT_BPEL_CLIENT);
 
         attachment.setContentType(attachmentHandler.getContentType());
@@ -105,11 +102,11 @@ public class BPELMessageReceiver extends AbstractMessageReceiver {
 
         if (messageTraceLog.isDebugEnabled()) {
             messageTraceLog.debug("Message received: " +
-                                  inMessageContext.getAxisService().getName() + "." +
-                                  inMessageContext.getAxisOperation().getName());
+                    inMessageContext.getAxisService().getName() + "." +
+                    inMessageContext.getAxisOperation().getName());
             if (messageTraceLog.isTraceEnabled()) {
-                 messageTraceLog.trace("Request message: " +
-                                      inMessageContext.getEnvelope());
+                messageTraceLog.trace("Request message: " +
+                        inMessageContext.getEnvelope());
             }
         }
 
@@ -129,11 +126,11 @@ public class BPELMessageReceiver extends AbstractMessageReceiver {
             handleInOutOperation(bpelMessageContext);
             if (messageTraceLog.isDebugEnabled()) {
                 messageTraceLog.debug("Reply Sent: " +
-                                      inMessageContext.getAxisService().getName() + "." +
-                                      inMessageContext.getAxisOperation().getName());
+                        inMessageContext.getAxisService().getName() + "." +
+                        inMessageContext.getAxisOperation().getName());
                 if (messageTraceLog.isTraceEnabled()) {
                     messageTraceLog.trace("Response message: " +
-                                          bpelMessageContext.getOutMessageContext().getEnvelope());
+                            bpelMessageContext.getOutMessageContext().getEnvelope());
                 }
             }
         } else {
@@ -159,7 +156,7 @@ public class BPELMessageReceiver extends AbstractMessageReceiver {
             traceStatus(bpelMessageContext.getInMessageContext().getMessageID(), "response");
             throw e;
         }
-        status = bpelMessageContext.getOutMessageContext().isFault()? "FAIL" : "SUCCESS";
+        status = bpelMessageContext.getOutMessageContext().isFault() ? "FAIL" : "SUCCESS";
         if (log.isDebugEnabled()) {
             log.debug("Reply for "
                     + bpelMessageContext.getInMessageContext().getAxisService().getName() + "."
@@ -199,9 +196,9 @@ public class BPELMessageReceiver extends AbstractMessageReceiver {
     private void traceStatus(String messageId, String direction) {
         if (reqResTraceLog.isTraceEnabled()) {
             reqResTraceLog.trace("UUID=" + messageId +
-                                  ",Direction:" + direction +
-                                  ",Status=" + status +
-                                  ",timeSpentForResponse=" + (System.currentTimeMillis() - requestTime));
+                    ",Direction:" + direction +
+                    ",Status=" + status +
+                    ",timeSpentForResponse=" + (System.currentTimeMillis() - requestTime));
         }
     }
 
@@ -212,9 +209,9 @@ public class BPELMessageReceiver extends AbstractMessageReceiver {
             String epName = axisService.getEndpointName();
             epName = axisService.getEndpoint(epName).getEndpointURL();
             reqResTraceLog.trace("To:" + epName +
-                                  ",MessageID:" + inMessageContext.getMessageID() +
-                                  ",Direction:request" +
-                                  ",requestTime:" + requestTime);
+                    ",MessageID:" + inMessageContext.getMessageID() +
+                    ",Direction:request" +
+                    ",requestTime:" + requestTime);
         }
     }
 

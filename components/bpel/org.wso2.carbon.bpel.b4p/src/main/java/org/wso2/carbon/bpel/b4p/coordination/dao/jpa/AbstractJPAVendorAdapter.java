@@ -20,15 +20,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.b4p.coordination.dao.DatabaseType;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import javax.transaction.TransactionManager;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import javax.transaction.TransactionManager;
 
 /**
  * A container for vendor specific JPA properties.
@@ -42,13 +42,13 @@ public class AbstractJPAVendorAdapter implements JPAVendorAdapter {
 
     private boolean showSQL;
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
     @Override
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public DataSource getDataSource() {
-        return dataSource;
     }
 
     @Override

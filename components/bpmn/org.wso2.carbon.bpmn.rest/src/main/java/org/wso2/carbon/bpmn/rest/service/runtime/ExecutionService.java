@@ -10,6 +10,7 @@ import org.activiti.engine.runtime.Execution;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
+import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.engine.variable.RestVariable;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.*;
@@ -21,6 +22,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -62,7 +66,7 @@ public class ExecutionService  extends BaseExecutionService {
             actionRequest) {
 
         Execution execution = getExecutionFromRequest(executionId);
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())) {
             if (actionRequest.getVariables() != null) {
@@ -113,7 +117,7 @@ public class ExecutionService  extends BaseExecutionService {
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response getActiveActivities(@PathParam("executionId") String executionId) {
         Execution execution = getExecutionFromRequest(executionId);
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         List<String> activityIdList = runtimeService.getActiveActivityIds(execution.getId());
         ActiveActivityCollection activeActivityCollection = new ActiveActivityCollection();
@@ -220,7 +224,7 @@ public class ExecutionService  extends BaseExecutionService {
         if (actionRequest.getSignalName() == null) {
             throw new ActivitiIllegalArgumentException("Signal name is required.");
         }
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
 
         if (actionRequest.getVariables() != null) {
             runtimeService.signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest));
@@ -340,10 +344,22 @@ public class ExecutionService  extends BaseExecutionService {
 
         RestVariable restVariable = null;
 
-        try {
-            restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
-        } catch (Exception e) {
-            throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+        if (Utils.isApplicationJsonRequest(httpServletRequest)) {
+            try {
+                restVariable = new ObjectMapper().readValue(httpServletRequest.getInputStream(), RestVariable.class);
+            } catch (Exception e) {
+                throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+            }
+        } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
+            JAXBContext jaxbContext;
+            try {
+                jaxbContext = JAXBContext.newInstance(RestVariable.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(httpServletRequest.getInputStream());
+
+            } catch (JAXBException | IOException e) {
+                throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a RestVariable instance.", e);
+            }
         }
 
         if (restVariable == null) {
@@ -376,7 +392,7 @@ public class ExecutionService  extends BaseExecutionService {
                     variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
         }
 
-        RuntimeService runtimeService = BPMNOSGIService.getRumtimeService();
+        RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         if (variableScope == RestVariable.RestVariableScope.LOCAL) {
             runtimeService.removeVariableLocal(execution.getId(), variableName);
         } else {

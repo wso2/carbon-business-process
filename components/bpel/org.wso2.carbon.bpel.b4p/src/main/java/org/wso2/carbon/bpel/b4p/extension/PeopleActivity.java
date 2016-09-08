@@ -63,19 +63,26 @@ import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.NetworkUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
-import javax.wsdl.*;
-import javax.wsdl.extensions.ExtensibilityElement;
-import javax.wsdl.extensions.http.HTTPBinding;
-import javax.wsdl.extensions.soap.SOAPBinding;
-import javax.wsdl.extensions.soap12.SOAP12Binding;
-import javax.xml.namespace.QName;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import javax.wsdl.Binding;
+import javax.wsdl.Definition;
+import javax.wsdl.Operation;
+import javax.wsdl.Port;
+import javax.wsdl.Service;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.http.HTTPBinding;
+import javax.wsdl.extensions.soap.SOAPBinding;
+import javax.wsdl.extensions.soap12.SOAP12Binding;
+import javax.xml.namespace.QName;
 
+/**
+ * ws-HumanTask PeopleActivity implementation.
+ */
 public class PeopleActivity {
     private static final long serialVersionUID = -89894857418738012L;
     private final Log log = LogFactory.getLog(PeopleActivity.class);
@@ -344,7 +351,8 @@ public class PeopleActivity {
             this.attachmentPropagation =
                     new AttachmentPropagation((Element) attachmentPropagationElement);
         } else if (attachmentElementList.getLength() == 0) {
-            //As the BPEL4PeopleConstants.ATTACHMENT_PROPAGATION_ACTIVITY is not declared. So handling the default behavior
+            //As the BPEL4PeopleConstants.ATTACHMENT_PROPAGATION_ACTIVITY is not declared. So handling the default
+            // behavior
             if (log.isDebugEnabled()) {
                 log.debug("No " + BPEL4PeopleConstants.ATTACHMENT_PROPAGATION_ACTIVITY + " " +
                         "activities found. Hence " +
@@ -578,7 +586,7 @@ public class PeopleActivity {
      * @param extensionContext
      * @param taskMessageContext
      * @return a list of attachment ids. The list can be empty if attachment propagation is not allowed from process to
-     *         human task
+     * human task
      */
     private List<Long> extractAttachmentIDsToBeSentToHumanTask(ExtensionContext extensionContext,
                                                                BPELMessageContext taskMessageContext) {
@@ -647,9 +655,11 @@ public class PeopleActivity {
 
                 //Adding HumanTask Coordination context.
                 //Note: If registration service is not enabled, we don't need to send coor-context.
-                if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() && CoordinationConfiguration.getInstance().isRegistrationServiceEnabled()) {
+                if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() &&
+                        CoordinationConfiguration.getInstance().isRegistrationServiceEnabled()) {
                     messageID = UUID.randomUUID();
-                    soapHelper.addCoordinationContext(messageContext, messageID.toString(), getRegistrationServiceURL());
+                    soapHelper.addCoordinationContext(messageContext, messageID.toString(), getRegistrationServiceURL
+                            ());
                 }
 
                 //  Adding HumanTask Context overriding attributes.
@@ -693,7 +703,8 @@ public class PeopleActivity {
                 taskMessageContext.getOutMessageContext().getEnvelope().getBody());
         // HT-Coordination - Persisting taskID against message ID
         // Ignore Notifications, since we are ignore coordination context for notification.
-        if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() && InteractionType.TASK.equals(activityType)) {
+        if (CoordinationConfiguration.getInstance().isHumantaskCoordinationEnabled() && InteractionType.TASK.equals
+                (activityType)) {
             Long instanceID = extensionContext.getProcessId();
             if (CoordinationConfiguration.getInstance().isRegistrationServiceEnabled()) {
                 try { // Already coordinated with Registration service.
@@ -725,26 +736,34 @@ public class PeopleActivity {
         return plink.partnerLink.getName() + "." + callbackOperationName;
     }
 
-    private void updateCoordinationData(final String messageID, final String instanceID, final String taskID) throws Exception {
-        ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer()).getScheduler().execTransaction(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController().getDaoConnectionFactory().getConnection();
-                daoConnection.updateProtocolHandler(messageID, instanceID, taskID);
-                return null;
-            }
-        });
+    private void updateCoordinationData(final String messageID, final String instanceID, final String taskID) throws
+            Exception {
+        ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer()).getScheduler()
+                .execTransaction(new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance()
+                                .getCoordinationController
+                                ().getDaoConnectionFactory().getConnection();
+                        daoConnection.updateProtocolHandler(messageID, instanceID, taskID);
+                        return null;
+                    }
+                });
     }
 
     private HTProtocolHandlerDAO createCoordinationData(final String messageID, final String participantProtocolService,
                                                         final String instanceID, final String taskID) throws Exception {
-        HTProtocolHandlerDAO htProtocolHandlerDAO = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer()).getScheduler().execTransaction(new Callable<HTProtocolHandlerDAO>() {
-            @Override
-            public HTProtocolHandlerDAO call() throws Exception {
-                HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance().getCoordinationController().getDaoConnectionFactory().getConnection();
-                return daoConnection.createCoordinatedTask(messageID, participantProtocolService, instanceID, taskID);
-            }
-        });
+        HTProtocolHandlerDAO htProtocolHandlerDAO = ((BPELServerImpl) B4PContentHolder.getInstance().getBpelServer())
+                .getScheduler().execTransaction(new Callable<HTProtocolHandlerDAO>() {
+                    @Override
+                    public HTProtocolHandlerDAO call() throws Exception {
+                        HTCoordinationDAOConnection daoConnection = B4PContentHolder.getInstance()
+                                .getCoordinationController
+                                        ().getDaoConnectionFactory().getConnection();
+                        return daoConnection.createCoordinatedTask(messageID, participantProtocolService, instanceID,
+                                taskID);
+                    }
+                });
         return htProtocolHandlerDAO;
     }
 
@@ -795,7 +814,8 @@ public class PeopleActivity {
         return registrationServiceURL;
     }
 
-    private String generateTaskProtocolHandlerURL(BPELMessageContext taskMessageContext) throws FaultException, B4PCoordinationException {
+    private String generateTaskProtocolHandlerURL(BPELMessageContext taskMessageContext) throws FaultException,
+            B4PCoordinationException {
         String tenantTaskService = taskMessageContext.getUep().getAddress();
         int tenantDelimiterIndex = tenantTaskService.indexOf("/t/");
         String tenantIdentifier = "";
@@ -858,8 +878,10 @@ public class PeopleActivity {
          * Initializes the default values for the &lt;attachmentPropagation/&gt; child element
          */
         private void init() throws FaultException {
-            this.fromProcess = extractFromProcessValue(FromProcessSpec.all.toString());    //Default value is : FromProcessSpec.all
-            this.toProcess = extractToProcessValue(ToProcessSpec.newOnly.toString());      //Default value is : ToProcessSpec.newOnly
+            this.fromProcess = extractFromProcessValue(FromProcessSpec.all.toString());    //Default value is :
+            // FromProcessSpec.all
+            this.toProcess = extractToProcessValue(ToProcessSpec.newOnly.toString());      //Default value is :
+            // ToProcessSpec.newOnly
 
             isInitialized = true;
         }

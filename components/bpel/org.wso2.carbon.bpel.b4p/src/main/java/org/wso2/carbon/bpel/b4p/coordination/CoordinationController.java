@@ -1,5 +1,5 @@
 /*
- * Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,16 @@ import org.wso2.carbon.bpel.b4p.internal.B4PContentHolder;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServer;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
 
-
-import javax.transaction.TransactionManager;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import javax.transaction.TransactionManager;
 
+/**
+ * CoordinationController, which initiate and execute humantask coordination.
+ */
 public class CoordinationController {
 
     private static final Log log = LogFactory.getLog(CoordinationController.class);
@@ -146,6 +150,11 @@ public class CoordinationController {
     }
 
     public void runTask(CoordinationTask task) {
-        this.executorService.submit(task);
+        Future future = this.executorService.submit(task);
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("Error while executing coordination Task. ", e);
+        }
     }
 }

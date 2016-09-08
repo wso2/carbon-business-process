@@ -16,14 +16,15 @@
 
 package org.wso2.carbon.bpel.core.ode.integration.jmx.annotation;
 
-import org.apache.abdera.protocol.server.TargetType;
-
-import javax.management.DescriptorKey;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.management.DescriptorKey;
 
+/**
+ * Bean Param Name.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 public @interface ParaName {

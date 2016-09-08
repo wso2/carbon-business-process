@@ -1,5 +1,5 @@
 <!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -59,15 +59,16 @@ try {
     var paginatePageCount = Math.ceil(taskCount / 10);
     */
     var paginatePageCount = Math.ceil(tasks.total / 10);
-} catch (e) {
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("Error Occured : " + e);
+        log.debug("Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
 }
 //Set current active veiw as completed task view. 
 //This is used to highlight current view which the user currently viewing in the navigation bar
-completedTasksNavActive = 'class="active"';
+completedTasksNavActive = 'active';
+taskMenuNavActive = 'active'; //This will highlight Tasks menu tab
 %>

@@ -1,6 +1,6 @@
 <%
 /*<!--
- ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ var carbon = require('carbon');
 var i18n = require("i18n");
 var localeResourcesBasePath ="../config/locales/";
 i18n.init(request,localeResourcesBasePath);
+// Encoder to handle xss attacks
+var Encode = Packages.org.owasp.encoder.Encode;
 
 
 var data = application.get('appConfig');
@@ -41,6 +43,9 @@ var bpsTenantUrlPart = application.get('bpsTenantUrlPart'); //this holds the ten
 //bpsTenantServiceUrl is used  as the service Url
 var bpsTenantServiceUrl = application.get('bpsTenantServiceUrl');
 
+var bpsSubstitutionFeatureEN = application.get('bpsSubstitutionFeatureEN');//variable that holds the status of 
+                                                                            //the substitution feature
+
 if (httpUrl == null || httpUrl === "") {
 
     appConfig = require('../config/config.json');
@@ -57,7 +62,8 @@ if (httpUrl == null || httpUrl === "") {
         //retrieve host name and the port from the deployed server assuming it's a BPS
         log.info('Starting BPMN-explorer in default configuration');
         var process = require("process");
-        bpsHost = process.getProperty('carbon.local.ip');
+        var NetworkUtils = Packages.org.wso2.carbon.utils.NetworkUtils;
+        bpsHost = NetworkUtils.getLocalHostname();
         bpsPort = process.getProperty('mgt.transport.https.port');
     }
 
@@ -112,19 +118,82 @@ if(log.isDebugEnabled()) {
     log.debug("BPS URL:"+ httpUrl);
 }
 
+//check BPS Features (eg: Substitution feature) status only for the first user login
+if (bpsSubstitutionFeatureEN == null && session.get('user') != null && session.get('authSuccess') != null && session.get('authSuccess') == true) {
+    //first most user loging to the bpmn webapp
+    var headers =   {
+                    "Authorization": "Basic " + auth,
+                    "Contentnt-Type": "application/json",
+                    "Accept" : "application/json"
+                };
+    var RUNTIME_SUBSTITUTES_CONF_URL = "/bpmn/runtime/substitutes/configs/enabled";
+    httpResponse = get(httpUrl+ RUNTIME_SUBSTITUTES_CONF_URL, null, headers, "json");
+
+    if (log.isDebugEnabled()) {
+        log.debug("BPS BPMN REST API request: " + httpUrl+ RUNTIME_SUBSTITUTES_CONF_URL);
+        log.debug("BPS BPMN REST API response: " + stringify(httpResponse));
+    }
+
+    if (parseInt(httpResponse.xhr.status) == 200 && httpResponse.data != null) {
+        var configStatusInfo = httpResponse.data;
+        //Check for error response
+        if (configStatusInfo.enabled != undefined) {
+            if (configStatusInfo.enabled == true) {
+                bpsSubstitutionFeatureEN = true;
+                log.info ("BPS Substitution Feature Status : Enabled");
+                application.put("bpsSubstitutionFeatureEN", bpsSubstitutionFeatureEN);
+            } else {
+                bpsSubstitutionFeatureEN = false;
+                log.info ("BPS Substitution Feature Status : Disabled");
+                application.put("bpsSubstitutionFeatureEN", bpsSubstitutionFeatureEN);
+            }
+        } else {
+            if (configStatusInfo.errorMessage != undefined) {
+                log.error("BPS Features status check failed : " + configStatusInfo.errorMessage);
+            } else {
+                log.error("BPS Features status check failed : " + parseInt(httpResponse.xhr.status));
+            }
+            //Error occurred hence assume substitution feature disabled and not updating application variable
+            bpsSubstitutionFeatureEN = false;
+        }
+    } else {
+        if (log.isDebugEnabled()) {
+            log.debug("User substitutions not available");
+        }
+    }
+}
+
 //Following variable were used to highlight current page which user is currently in.
 //these were set as 'active' at each corresponding task Model
 var dashboardNavActive = ''; //Dashboard veiw [updated at statsModel and refered at navigation.jag]
 var myTasksNavActive = ''; //My Tasks veiw [updated at myTasksModel, refered at navigation.jag]
 var claimableTasksNavActive = ''; //Claimable Tasks view [updated at claimableTaskModel, refered at navigation.jag]
+var substitutionNavActive = ''; //Task substitution view [updated at substitutionModel, refered at navigation.jag]
 var completedTasksNavActive = ''; // Completed task view [updated at historicTasksModel, refered at navigation.jag]
 var processesNavActive = ''; // Processes view [updated at myTasksModel, refered at navigation.jag]
 var searchNavActive = ''; // Search view [updated at searchModel, refered at navigation.jag]
 var reportNavActive = ''; //Report view [updated at reportModel and refered at navigation.jag]
+var processMonitoringNavActive = ''; //Process Monitoring view [updated at processMonitoringModel and refered at navigation.jag]
+var advancedFilterNavActive = ''; //Advanced Filtering view [updated at advancedFilteringModel and refered at navigation.jag]
+
+var taskMenuNavActive = ''; //Task Menu tab selection [updated at myTasksModel, claimableTaskModel, historicTasksModel  and refered at navigation.jag]
+var monitoringMenuNavActive = ''; //Monitoring Menu tab selection [updated at processMonitoringModel, advancedFilteringModel, and refered at navigation.jag]
 
 var errorDisplayEnable = 'hidden'; //This variable is used to display #commonErrorSection section in each view
-// errorDisplayEnable = '' to display
+                                    // errorDisplayEnable = '' to display
+var errorDisplayBackButtonsEnable = 'hidden'; //This variable is used to display back and home buttons #commonErrorSection 
+                                                //section in each view. errorDisplayBackButtonsEnable='' to display 
 var commonErrorMessage = null; //Common error message if exists
+
+//Common Constants
+var SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/substitute";
+var BPMN_PERMISSION_PATH = "/permission/admin/manage/bpmn";
+var ADMIN_PERMISSION_PATH = "/permission/admin";
+var ROOT_PERMISSION_PATH = "/permission";
+
+
+//Common HTTP response headers
+response.addHeader('X-XSS-Protection', '1; mode=block');//Enable Web Browser XSS Protection
 
 
 //START COMMON FUNCTIONS
@@ -136,5 +205,18 @@ function getCommonErrorContent (errorMsg) {
     return errorMsg   + '<br><br> <div align="right">'
             + ' <button class="btn btn-info" onclick="window.history.back();">&lt;&lt; Go back to previous page</button> '
             + ' <a class="btn btn-info" href="stats">Go to home</a></div>';
+}
+
+function epochToFormattedTime (epochTime) {
+    if (epochTime == null) {
+        return i18n.localize("not.available","Not available")
+    }
+    var time = new Date(epochTime);
+    return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.toLocaleTimeString();
+}
+
+function epochToVisualFormattedTime (epochTime) {
+    var time = new Date(epochTime);
+    return time;
 }
 %>

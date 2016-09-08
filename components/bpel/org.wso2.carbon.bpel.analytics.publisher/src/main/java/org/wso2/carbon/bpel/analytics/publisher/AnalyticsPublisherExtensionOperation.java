@@ -64,27 +64,22 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
         String streamName = element.getAttribute(AnalyticsPublisherConstants.STREAM_NAME_ATTR);
         String streamVersion = element.getAttribute(AnalyticsPublisherConstants.STREAM_VERSION);
         Integer tenantId = getTenantId(extensionContext);
-        AnalyticsServerProfile analyticsServerProfile = getAnalyticsServerProfile(tenantId, analyticsServerProfileName);
         AnalyticsStreamConfiguration stream = getEventStream(tenantId, analyticsServerProfileName, streamName, streamVersion);
 
         if(stream == null) {
             log.debug("Stream configuration is invalid");
             return;
         }
-
 	    DataPublisher dataPublisher = getDataPublisher(extensionContext, tenantId, analyticsServerProfileName);
-
 	    if (dataPublisher == null) {
 		    String msg = "Error while creating data publisher";
 		    handleException(msg);
 	    }
-
 	    String streamId = DataBridgeCommonsUtils.generateStreamId(stream.getName(), stream.getVersion());
 
 	    dataPublisher.tryPublish(streamId, createMetadata(stream, extensionContext, element),
 	                             createCorrelationData(stream, extensionContext, element),
 	                             createPayloadData(stream, extensionContext, element));
-
     }
 
     private Integer getTenantId(ExtensionContext context) {
@@ -102,130 +97,6 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
                 getMultiTenantProcessStore().getTenantsProcessStore(tenantId);
         return tenantsProcessStore.getAnalyticsServerProfile(analyticsServerProfileName);
     }
-
-//    private String defineEventStream(DataPublisher dataPublisher, AnalyticsStreamConfiguration stream)
-//            throws FaultException {
-//        String streamDefinition = "{" +
-//                "  'name':'" + stream.getName() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_VERSION + "':'" + stream.getVersion() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_NICK_NAME + "': '" + stream.getNickName() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_DESCRIPTION + "': '" + stream.getDescription() + "'," +
-//                "  'metaData':[" +
-//                    "{'name':'" + AnalyticsPublisherConstants.TENANT_ID + "','type':'INT'}" +
-//                    ", {'name':'" + AnalyticsPublisherConstants.PROCESS_ID + "','type':'STRING'}" +
-//                    getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.META, stream) +
-//                "  ]," +
-//                "  'payloadData':[" +
-//                    getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.PAYLOAD, stream) +
-//                "  ]," +
-//                "  'correlationData':[" +
-//                "{'name':'" + AnalyticsPublisherConstants.INSTANCE_ID + "','type':'STRING'}" +
-//                    getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.CORRELATION, stream) +
-//                "  ]" +
-//                "}";
-//        try {
-//            return dataPublisher.defineStream(streamDefinition);
-//        } catch (AgentException e) {
-//            String errorMsg = "Problem using creating the Agent.";
-//            handleException(errorMsg, e);
-//        } catch (MalformedStreamDefinitionException e) {
-//            String errorMsg = "Invalid Stream definition: " + streamDefinition;
-//            handleException(errorMsg, e);
-//        } catch (StreamDefinitionException e) {
-//            String errorMsg = "Problem with Stream Definition: " + streamDefinition;
-//            handleException(errorMsg, e);
-//        } catch (DifferentStreamDefinitionAlreadyDefinedException ignore) {
-//            //TODO If the stream is already defined, just ignore and continue.
-//            // Also check whether streams are defined while deploying the process and keep the status,
-//            // so that we can check it before call define stream method.
-//            // String errorMsg = "Already there is a different Stream Definition exists
-//            // for the Name and Version. " + e.getMessage();
-//        }
-//        handleException("Error occurred while defining the stream: " + stream.getName());
-//        return null;
-//    }
-
-//    private void addEventStream(LoadBalancingDataPublisher dataPublisher, AnalyticsStreamConfiguration stream)
-//            throws FaultException {
-//        String streamDefinition = "{" +
-//                "  'name':'" + stream.getName() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_VERSION + "':'" + stream.getVersion() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_NICK_NAME + "': '" + stream.getNickName() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_DESCRIPTION + "': '" + stream.getDescription() + "'," +
-//                "  'metaData':[" +
-//                "{'name':'" + AnalyticsPublisherConstants.TENANT_ID + "','type':'INT'}" +
-//                ", {'name':'" + AnalyticsPublisherConstants.PROCESS_ID + "','type':'STRING'}" +
-//                getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.META, stream) +
-//                "  ]," +
-//                "  'payloadData':[" +
-//                getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.PAYLOAD, stream) +
-//                "  ]," +
-//                "  'correlationData':[" +
-//                "{'name':'" + AnalyticsPublisherConstants.INSTANCE_ID + "','type':'STRING'}" +
-//                getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.CORRELATION, stream) +
-//                "  ]" +
-//                "}";
-//
-//        if (!dataPublisher.isStreamDefinitionAdded(stream.getName(), stream.getVersion())) {
-//            dataPublisher.addStreamDefinition(streamDefinition, stream.getName(), stream.getVersion());
-//        }
-//    }
-//
-//    private void addEventStream(AsyncDataPublisher dataPublisher, AnalyticsStreamConfiguration stream)
-//            throws FaultException {
-//        String streamDefinition = "{" +
-//                "  'name':'" + stream.getName() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_VERSION + "':'" + stream.getVersion() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_NICK_NAME + "': '" + stream.getNickName() + "'," +
-//                "  '" + AnalyticsPublisherConstants.STREAM_DESCRIPTION + "': '" + stream.getDescription() + "'," +
-//                "  'metaData':[" +
-//                "{'name':'" + AnalyticsPublisherConstants.TENANT_ID + "','type':'INT'}" +
-//                ", {'name':'" + AnalyticsPublisherConstants.PROCESS_ID + "','type':'STRING'}" +
-//                getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.META, stream) +
-//                "  ]," +
-//                "  'payloadData':[" +
-//                getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.PAYLOAD, stream) +
-//                "  ]," +
-//                "  'correlationData':[" +
-//                "{'name':'" + AnalyticsPublisherConstants.INSTANCE_ID + "','type':'STRING'}" +
-//                getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType.CORRELATION, stream) +
-//                "  ]" +
-//                "}";
-//
-//            dataPublisher.addStreamDefinition(streamDefinition, stream.getName(), stream.getVersion());
-//    }
-
-//    private String getStreamDefinitionString(AnalyticsKey.AnalyticsKeyType type, AnalyticsStreamConfiguration stream) throws FaultException {
-//        String keyString = "";
-//        List<AnalyticsKey> keys = null;
-//        switch (type) {
-//            case PAYLOAD:
-//                keys = stream.getPayloadAnalyticsKeyList();
-//                break;
-//            case META:
-//                keys = stream.getMetaAnalyticsKeyList();
-//                break;
-//            case CORRELATION:
-//                keys = stream.getCorrelationAnalyticsKeyList();
-//                break;
-//            default:
-//                String errMsg = "Unknown Analytics key type: " + type;
-//                handleException(errMsg);
-//        }
-//        for(int i = 0 ; i < keys.size(); i++)  {
-//            AnalyticsKey key = keys.get(i);
-//            if(type == AnalyticsKey.AnalyticsKeyType.CORRELATION || type == AnalyticsKey.AnalyticsKeyType.META) {
-//                keyString = "," ;
-//            }
-//            if(i == 0) {
-//                keyString = keyString + "{'name':'" + key.getName() + "','type':'STRING'}";
-//            } else {
-//                keyString = keyString + ", {'name':'" + key.getName() + "','type':'STRING'}";
-//            }
-//        }
-//
-//        return keyString;
-//    }
 
     private AnalyticsStreamConfiguration getEventStream(int tenantId, String analyticsServerProfileName,
                                                   String streamName, String streamVersion) {
@@ -248,25 +119,12 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
         throw new FaultException(AnalyticsPublisherConstants.ANALYTICS_FAULT, errMsg);
     }
 
-//    private Event createEvent(String streamId, AnalyticsStreamConfiguration stream,
-//                              ExtensionContext context, Element element)
-//            throws FaultException {
-//        Event e = new Event();
-//        e.setStreamId(streamId);
-//        e.setTimeStamp(System.currentTimeMillis());
-//        e.setCorrelationData(createCorrelationData(stream, context, element));
-//        e.setMetaData(createMetadata(stream, context, element));
-//        e.setPayloadData(createPayloadData(stream, context, element));
-//        return e;
-//    }
-
     private Object[] createCorrelationData(AnalyticsStreamConfiguration stream, ExtensionContext context, Element element)
             throws FaultException {
         List<AnalyticsKey> correlationAnalyticsKeyList = stream.getCorrelationAnalyticsKeyList();
-        int objectListSize = correlationAnalyticsKeyList.size() + 1;
+        int objectListSize = correlationAnalyticsKeyList.size();
         Object[] dataArray = new Object[objectListSize];
-        dataArray[0] = context.getInternalInstance().getPid().toString();
-        int startIndex = 1;
+        int startIndex = 0;
         fillDataArray(dataArray, correlationAnalyticsKeyList, startIndex, context, element);
         return dataArray;
     }
@@ -274,12 +132,9 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
     private Object[] createMetadata(AnalyticsStreamConfiguration stream, ExtensionContext context, Element element)
             throws FaultException {
         List<AnalyticsKey> metaAnalyticsKeyList = stream.getMetaAnalyticsKeyList();
-
-        int objectListSize = metaAnalyticsKeyList.size() + 2;
+        int objectListSize = metaAnalyticsKeyList.size();
         Object[] dataArray = new Object[objectListSize];
-        dataArray[0] = getTenantId(context);
-        dataArray[1] = context.getProcessModel().getQName().toString();
-        int startIndex = 2;
+        int startIndex = 0;
         fillDataArray(dataArray, metaAnalyticsKeyList, startIndex, context, element);
         return dataArray;
     }
@@ -299,11 +154,16 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
         for (int i = 0; i < payloadAnalyticsKeyList.size(); i++) {
             AnalyticsKey analyticsKey = payloadAnalyticsKeyList.get(i);
             if (analyticsKey.getExpression() != null) {
-                dataArray[i + startIndex] = evaluateXPathExpression(context, analyticsKey.getExpression(), element);
+                String expression = evaluateXPathExpression(context, analyticsKey.getExpression(), element);
+                convertDataType(dataArray, (i + startIndex) , analyticsKey, expression);
+
             } else if (analyticsKey.getVariable() != null && analyticsKey.getPart() == null) {
                 if (analyticsKey.getQuery() == null) {
+                    String variable = context.readVariable(analyticsKey.getVariable()).getTextContent();
+
+                    convertDataType(dataArray, ( i + startIndex) , analyticsKey, variable);
                     /* simple types should be specified for here */
-                    dataArray[i + startIndex] = context.readVariable(analyticsKey.getVariable()).getTextContent();
+
                 } else {
                     String errMsg = "This functionality is currently not supported";
                     log.error(errMsg);
@@ -320,6 +180,7 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
                         result = DOMUtils.domToString(DOMUtils.getFirstChildElement(item));
                     }
                 }
+                convertDataType(dataArray, ( i + startIndex) , analyticsKey, result);
                 dataArray[i + startIndex] = result;
             }
         }
@@ -383,56 +244,6 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
         return result;
     }
 
-//    private Agent getAnalyticsAgent(int tenantId, String analyticsServerProfileName) throws FaultException{
-//        Agent agent = TenantAnalyticsAgentHolder.getInstance().getAgent(tenantId);
-//        if(agent == null) {
-//            // Check whether setting security properties is necessary
-//            AnalyticsServerProfile analyticsServerProfile = getAnalyticsServerProfile(tenantId, analyticsServerProfileName);
-//            AgentConfiguration agentConfiguration = new AgentConfiguration();
-//            if(analyticsServerProfile.getKeyStoreLocation() != null && analyticsServerProfile.getKeyStorePassword() != null) {
-//                agentConfiguration.setTrustStore(analyticsServerProfile.getKeyStoreLocation());
-//                agentConfiguration.setTrustStorePassword(analyticsServerProfile.getKeyStorePassword());
-//                System.setProperty("javax.net.ssl.trustStore", analyticsServerProfile.getKeyStoreLocation());
-//                System.setProperty("javax.net.ssl.trustStorePassword", analyticsServerProfile.getKeyStorePassword());
-//            } else {
-//                String errMsg = "Key store location not found";
-//                handleException(errMsg);
-//            }
-//            agent = TenantAnalyticsAgentHolder.getInstance().createAgent(agentConfiguration);
-//        }
-//        return agent;
-//    }
-//
-//
-//    private String handleEventStream(DataPublisher publisher, AnalyticsStreamConfiguration stream) throws FaultException{
-//        String streamName = stream.getName();
-//        String streamVersion = stream.getVersion();
-//
-//        try {
-//            return publisher.findStream(streamName, streamVersion);
-//        } catch (NoStreamDefinitionExistException e) {
-//            return defineEventStream(publisher, stream);
-//        } catch (StreamDefinitionException e) {
-//            String errorMsg = "Problem with Stream Definition";
-//            handleException(errorMsg, e);
-//        } catch (AgentException e) {
-//            String errorMsg = "Problem using the Agent with data publisher.";
-//            handleException(errorMsg, e);
-//        }
-//        return null;
-//    }
-//
-//
-//    private Agent createAgent(int tenantId, String analyticsServerProfileName) {
-//        AnalyticsServerProfile analyticsServerProfile = getAnalyticsServerProfile(tenantId, analyticsServerProfileName);
-//        AgentConfiguration agentConfiguration = new AgentConfiguration();
-//        agentConfiguration.setTrustStore(analyticsServerProfile.getKeyStoreLocation());
-//        agentConfiguration.setTrustStorePassword(analyticsServerProfile.getKeyStorePassword());
-//        System.setProperty("javax.net.ssl.trustStore", analyticsServerProfile.getKeyStoreLocation());
-//        System.setProperty("javax.net.ssl.trustStorePassword", analyticsServerProfile.getKeyStorePassword());
-//        return new Agent(agentConfiguration);
-//    }
-
 	private DataPublisher getDataPublisher(ExtensionContext context, int tenantId, String analyticsServerProfileName)
 			throws FaultException {
 
@@ -475,8 +286,34 @@ public class AnalyticsPublisherExtensionOperation extends AbstractSyncExtensionO
                 tenantsProcessStore.addDataPublisher(processName, dataPublisher);
             }
         }
-
         return dataPublisher;
+    }
+
+    public void convertDataType(Object[] dataArray, int index, AnalyticsKey key, String value) {
+        AnalyticsKey.AnalyticsKeyDataType dataType = key.getDataType();
+        switch (dataType) {
+            case  INTEGER :
+                dataArray[index] = Integer.valueOf(value);
+                break;
+            case LONG:
+                dataArray[index] = Long.valueOf(value);
+                break;
+            case DOUBLE:
+                dataArray[index] = Double.valueOf(value);
+                break;
+            case FLOAT:
+                dataArray[index] = Float.valueOf(value);
+                break;
+            case BOOL:
+                dataArray[index] = Boolean.valueOf(value);
+                break;
+            case STRING:
+                dataArray[index] = String.valueOf(value);
+                break;
+            default:
+                dataArray[index] = String.valueOf(value);
+                break;
+        }
     }
 }
 

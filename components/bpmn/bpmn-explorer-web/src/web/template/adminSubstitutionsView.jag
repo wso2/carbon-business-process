@@ -1,0 +1,149 @@
+<%
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+%>
+
+<!--Area to display common errors-->
+<div class="row" name="commonErrorSection">
+    <div id="commonErrorSection" class="alert alert-danger alert-dismissible margin-left-double margin-right-double" role="alert" <%=errorDisplayEnable%>>
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span><span class="sr-only"><%=i18n.localize("close","Close")%></span>
+        </button>
+        <p id="errorMsg"><%=Encode.forJavaScript(commonErrorMessage)%></p>
+        <div align="right" id="errorReturnBtns" <%=errorDisplayBackButtonsEnable%>>
+            <button class="btn btn-info" onclick="window.history.back();">Go back to previous page</button>
+            <a class="btn btn-info" href="stats">Go to home</a>
+        </div>
+    </div>
+</div>
+<%if (commonErrorMessage == null) {%>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="panel panel-default alert-danger">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6"><%=i18n.localize("you.are.in.the.user.substitutions.admin.view","You are in the User Substitutions Admin View")%></div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <button type="button" class="btn btn-md btn-info float-right" onclick="window.location='substitutions'">
+                                <span class="fw fw-left"></span>&nbsp;&nbsp;<%=i18n.localize("go.back.to.my.substitution.view","Go Back To My Substitution View")%>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default btn-info" data-toggle="modal" data-target="#addSubstituteModal">
+                        <span class="fw fw-add"></span>&nbsp;&nbsp;<%=i18n.localize("add.substitute","Add Substitute")%>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%
+        //Add addSubstituteModal
+        var addSubstituteModalConfig = {
+                            "assigneeName" : "",
+                            "assigneeEditEnable" : true
+                        }
+        include("/template/modals/addSubstituteModal.jag");
+    %>
+    <br/>
+    <% if (usersSubstitutionsList != null) {%>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <a data-toggle="collapse" href="#substitutedAssigneeList" aria-expanded="true" class="collapsing-h2">
+                <div class="table-title" style="width:100%">
+                    <div style="float: left;">
+                        <i class="cu-btn-exp-col btn-collapsed"></i>
+                    </div>
+                    <div>
+                        <%=i18n.localize("substituted.assignees","Substituted Assignees")%>
+                    </div>
+                </div>
+            </a>
+            <div class="collapse in" id="substitutedAssigneeList" aria-expanded="true">
+                <div class="panel panel-default" style="width:100%">
+                    <!-- Table -->
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                            <tr class="table-title-row">
+                                <th class="col-lg-2 col-md-2 col-sm-2"><%=i18n.localize("assignee", "Assignee")%></th>
+                                <th class="col-lg-2 col-md-2 col-sm-2"><%=i18n.localize("substitute", "Substitute")%></th>
+                                <th class="col-lg-2 col-md-2 col-sm-2"><%=i18n.localize("status", "Status")%></th>
+                                <th class="col-lg-3 col-md-3 col-sm-3"><%=i18n.localize("start.time","Start Time")%></th>
+                                <th class="col-lg-3 col-md-3 col-sm-3"><%=i18n.localize("end.time","End Time")%></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (var i = 0; i < usersSubstitutionsList.length; i++) { %>
+                                <% 
+                                var enabledViewClass = "success";
+                                if (usersSubstitutionsList[i].enabled) {
+                                    enabledViewClass = "danger";
+                                }
+                                if (usersSubstitutionsList[i].endTime == null) {
+                                %>
+                                <tr class="<%=enabledViewClass%>" style="cursor:pointer;" 
+                                    onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '')">
+                                <%} else {%>
+                                <tr class="<%=enabledViewClass%>" style="cursor:pointer;" 
+                                    onclick="populateupdateSubstituteModal('<%=usersSubstitutionsList[i].assignee%>', '<%=usersSubstitutionsList[i].substitute%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%>', '<%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%>')">
+                                <%}%>
+                                    <td><%=usersSubstitutionsList[i].assignee%></td>
+                                    <td><%=usersSubstitutionsList[i].substitute%></td>
+                                    <% if (usersSubstitutionsList[i].enabled) {%>
+                                        <td>
+                                            <span class="text-success btn-sm-bold-text"><%=i18n.localize("simple.active","Active")%></span>&nbsp;&nbsp; 
+                                            <button type="button" class="btn btn-info btn-sm-deactivate" onclick="deactivateSub('<%=usersSubstitutionsList[i].assignee%>')">Deactivate</button>
+                                        </td>
+                                    <%} else {%>
+                                        <td>
+                                            <span class="text-danger btn-sm-bold-text"><%=i18n.localize("simple.inactive","Inactive")%></span>&nbsp;&nbsp;
+                                            <button type="button" class="btn btn-info btn-sm-activate" onclick="activateSub('<%=usersSubstitutionsList[i].assignee%>')">Activate</button>
+                                        </td>
+                                    <%}%>
+                                    <td><%=epochToFormattedTime(usersSubstitutionsList[i].startTime)%></td>
+                                    <td><%=epochToFormattedTime(usersSubstitutionsList[i].endTime)%></td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <% include("/template/partials/pagination.jag"); %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%
+        //Add updateSubstituteModal
+        var updateSubstituteModalConfig =  {
+                        "updatedAssigneeName" : "",
+                        "updatedSubstituteName" : "",
+                        "updatedSubStartDate" : "",
+                        "updatedSubEndDate" : "",
+                        "assigneeEditEnable" : false
+                    }
+        include("/template/modals/updateSubstituteModal.jag");
+    %>
+
+    <% } %>
+<%}%>

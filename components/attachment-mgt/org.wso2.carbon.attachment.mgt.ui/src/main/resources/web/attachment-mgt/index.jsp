@@ -23,6 +23,7 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <script type="text/javascript">
     function uploadAttachment() {
@@ -37,7 +38,7 @@
 
         <div id="workArea">
             <div id="attachment_uploader">
-                <form id="attachment_upload_form" method="post" name="attachmentUpload" action="../../fileupload/attachment-mgt"
+                <form id="attachment_upload_form" method="post" name="attachmentUpload" action="../../fileupload/attachment-mgt?<csrf:tokenname/>=<csrf:tokenvalue/>"
                       enctype="multipart/form-data" target="_self">
                     <table>
                         <tbody>

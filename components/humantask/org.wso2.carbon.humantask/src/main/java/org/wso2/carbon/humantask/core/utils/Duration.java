@@ -25,15 +25,16 @@ import java.util.regex.Pattern;
  * XML Schema Duration
  */
 public class Duration {
-    static final Pattern PATTERN =
+    // TODO: Fix this with Java.time.Duration from java 8.
+    private static final Pattern PATTERN =
             Pattern.compile("P(\\d+Y)?(\\d+M)?(\\d+D)?(T(\\d+H)?(\\d+M)?((\\d+\\.?\\d*|\\.\\d+)S)?)?");
 
-    static final int YEAR_MG = 1;
-    static final int MONTH_MG = 2;
-    static final int DAY_MG = 3;
-    static final int HOUR_MG = 5;
-    static final int MIN_MG = 6;
-    static final int SEC_MG = 8;
+    private static final int YEAR_MG = 1;
+    private static final int MONTH_MG = 2;
+    private static final int DAY_MG = 3;
+    private static final int HOUR_MG = 5;
+    private static final int MIN_MG = 6;
+    private static final int SEC_MG = 8;
 
     private int years;
     private int months;

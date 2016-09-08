@@ -88,11 +88,11 @@ try {
 
     var attachmentList = [];
     if (attachments) {
-        for (var i = 0; i < attachments.length; i++) {
-            var attachmentId = JSON.parse(attachments[i].id);
-            var attachmentName = attachments[i].name;
-            var attachmentType = attachments[i].type;
-            var contentUrl = attachments[i].contentUrl;
+        for (var i = 0; i < attachments.attachmentResponseList.length; i++) {
+            var attachmentId = JSON.parse(attachments.attachmentResponseList[i].id);
+            var attachmentName = attachments.attachmentResponseList[i].name;
+            var attachmentType = attachments.attachmentResponseList[i].type;
+            var contentUrl = attachments.attachmentResponseList[i].contentUrl;
 
             attachmentList.push({
                 id: attachmentId,
@@ -106,12 +106,41 @@ try {
             log.debug("No attachments found for task" + id);
         }
     }
-} catch (e) {
+
+    //get data for comments for tasks
+    var comments = get(httpUrl + "/bpmn/runtime/tasks/" + id + "/comments", null, headers, "json").data;
+    var commentList = [];
+    if (comments) {
+        for (var i = (comments.commentResponseList.length - 1); i >= 0 ; i--) {
+            var commentId = comments.commentResponseList[i].id;
+            var commentAuthor = comments.commentResponseList[i].author;
+            var commentTime = JSON.parse(comments.commentResponseList[i].time);
+            var commentText = comments.commentResponseList[i].message;
+
+            commentList.push({
+                id: commentId,
+                author: commentAuthor,
+                time: commentTime,
+                message: commentText
+            });
+
+        }
+
+        if(commentList.length > 10) {
+        var hiddenCmtCount = commentList.length - 10;
+    }
+
+    } else {
+        if (log.isDebugEnabled()) {
+            log.debug("No comments found for task" + id);
+        }
+    }
+} catch (err) {
     if (log.isDebugEnabled()) {
-        log.debug("User Error Occured : " + e);
+        log.debug("User Error Occured : " + err);
     }
     //Enable and display error in common error display area in view
-    commonErrorMessage = getCommonErrorContent(e);
+    commonErrorMessage = err;
     errorDisplayEnable = '';
 }
 %>

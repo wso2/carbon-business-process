@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.bpmn.rest.service.query;
 
-import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;

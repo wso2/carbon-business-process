@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
-        <version>4.4.7</version>
+        <version>4.4.11-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -96,6 +96,7 @@
                         </resource>
                     </webResources>
                     <warName>bpmn</warName>
+                    <packagingExcludes>WEB-INF/lib/axis2-kernel-1.6.1-wso2v19.jar</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>
@@ -146,7 +147,24 @@
                     <groupId>commons-fileupload.wso2</groupId>
                     <artifactId>commons-fileupload</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema.wso2</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.bpmn.analytics.publisher</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
@@ -156,6 +174,10 @@
                 <exclusion>
                     <groupId>commons-fileupload.wso2</groupId>
                     <artifactId>commons-fileupload</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema.wso2</groupId>
+                    <artifactId>XmlSchema</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -179,12 +201,18 @@
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
             <version>2.7.6</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
             <version>2.7.6</version>
-             <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -213,7 +241,10 @@
             <artifactId>commons-lang3</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.geronimo.javamail</groupId>
+            <artifactId>geronimo-javamail_1.4_provider</artifactId>
+            <version>1.8.4</version>
+        </dependency>
     </dependencies>
-
 </project>

@@ -1,12 +1,12 @@
 /**
- *  Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,8 +22,12 @@ package org.wso2.carbon.bpel.ui.bpel2svg;
  * Attributes of a link i.e. the source and the target activity
  */
 public class Link {
+    private ActivityInterface source;
+    private ActivityInterface target;
+
     /**
      * Gets the Start/Source activity of the link
+     *
      * @return Start/Source Activity of the link
      */
     public ActivityInterface getSource() {
@@ -32,26 +36,28 @@ public class Link {
 
     /**
      * Sets the Start/Source activity of the link
+     *
      * @param source Start/Source activity of the link
      */
     public void setSource(ActivityInterface source) {
         this.source = source;
     }
+
     /**
      * Gets the End/Target activity of the link
+     *
      * @return End/Target Activity of the link
      */
     public ActivityInterface getTarget() {
         return target;
     }
+
     /**
      * Sets the End/Target activity of the link
+     *
      * @param target End/Target activity of the link
      */
     public void setTarget(ActivityInterface target) {
         this.target = target;
     }
-
-    private ActivityInterface source;
-    private ActivityInterface target;
 }

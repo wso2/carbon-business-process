@@ -47,11 +47,29 @@ public class BPMNConstants {
 
     public static final String NOT_DEFINED_VAR = "NOT_DEFINED";
 
-    public static final int ACTIVITI_INSTANCE_MAX_DELETE_COUNT = 1000;
+    public static final int    ACTIVITI_INSTANCE_MAX_DELETE_COUNT = 1000;
     public static final String ACTIVITI_INSTANCE_MAX_DELETE_CONFIG = "activitiInstanceDeleteConfig";
     public static final String ACTIVITI_INSTANCE_MAX_DELETE_CONFIG_MAX_COUNT_PROPERTY = "maxCount";
 
-	public static final String REST_CLIENT_CONFIG_ELEMENT = "restClientConfiguration";
-	public static final String REST_CLIENT_MAX_TOTAL_CONNECTIONS = "maxTotalConnections";
-	public static final String REST_CLIENT_MAX_CONNECTIONS_PER_ROUTE = "maxConnectionsPerRoute";
+
+
+
+    public static final String ACT_BPS_SUBSTITUTES_TABLE = "ACT_BPS_SUBSTITUTES";
+    public static final String TRANSITIVE_SUB_NOT_APPLICABLE ="_N/A";
+    public static final String TRANSITIVE_SUB_UNDEFINED = "_UNDEFINED";
+    public static final String BULK_REASSIGN_PROCESSED = "_PROCESSED";
+    public static final String SUBSTITUTION_PERMISSION_PATH = "/permission/admin/manage/bpmn/substitute";
+    public static final String BPMN_PERMISSION_PATH = "/permission/admin/manage/bpmn";
+    public static final String ADMIN_PERMISSION_PATH = "/permission/admin";
+    public static final String ROOT_PERMISSION_PATH = "/permission";
+    public static final String SUBSTITUTION_CONFIG = "userSubstitutionConfiguration";
+    public static final String SUBSTITUTION_TRANSITIVITY_PROPERTY = "enableTransitivity";
+    public static final String SUBSTITUTION_SCHEDULER_INTERVAL = "activationInterval";
+    public static final boolean SUBSTITUTION_TRANSITIVITY_DEFAULT = false;
+    public static final int DEFAULT_SUBSTITUTION_INTERVAL_IN_MINUTES = 60 * 24;
+    public static final String SUBSTITUTION_ENABLED = "enabled";
+    public static final String DBMS_MYSQL = "mysql";
+    public static final long MYSQL_SUBSTITUTION_MAX_END_DATE = 2147365800000L; //Date 2038/jan/18, max timestamp allowed in mysql
+    public static final long DEFAULT_SUBSTITUTION_MAX_END_DATE = 95617564200000L; //5000/1/1
 }
+

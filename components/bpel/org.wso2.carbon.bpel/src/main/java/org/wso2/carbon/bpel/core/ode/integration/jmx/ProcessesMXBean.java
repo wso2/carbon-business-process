@@ -16,17 +16,20 @@
 
 package org.wso2.carbon.bpel.core.ode.integration.jmx;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.wso2.carbon.bpel.core.ode.integration.jmx.annotation.ParaName;
-import org.wso2.carbon.bpel.core.ode.integration.store.MultiTenantProcessStore;
 
 import javax.management.DescriptorKey;
-import javax.xml.namespace.QName;
 
+/**
+ * Bean interface class for Processes.
+ */
 public interface ProcessesMXBean {
     @DescriptorKey("number of cache slots in use")
     public String[] getProcessStates();
-    public String retireProcess(@ParaName("Local name of the process-version")String processQnameLocalPart);
-    public String activateProcess(@ParaName("Local name of the process-version")String processQnameLocalPart);
-    public String disableProcess(@ParaName("Local name of the process-version")String processQnameLocalPart);
+
+    public String retireProcess(@ParaName("Local name of the process-version") String processQnameLocalPart);
+
+    public String activateProcess(@ParaName("Local name of the process-version") String processQnameLocalPart);
+
+    public String disableProcess(@ParaName("Local name of the process-version") String processQnameLocalPart);
 }
