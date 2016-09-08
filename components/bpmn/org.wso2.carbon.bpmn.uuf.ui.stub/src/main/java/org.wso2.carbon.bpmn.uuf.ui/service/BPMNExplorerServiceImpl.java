@@ -61,14 +61,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     .setSSLSocketFactory(new SSLConnectionSocketFactory(
                             SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build()))
                     .build();
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Exception : ", e);
-        } catch (KeyManagementException e) {
-            log.error("Exception : ", e);
-        } catch (KeyStoreException e) {
+        } catch (NoSuchAlgorithmException | eyManagementException | KeyStoreException e) {
             log.error("Exception : ", e);
         }
-
         baseUrl = "https://" + host + ":" + port;
     }
 
@@ -185,11 +180,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                 returnDataArray.put(pagiObj);
             }
 
-        } catch (IOException e) {
-            log.error("Exception : ", e);
-        } catch (JSONException e) {
-            log.error("Exception : ", e);
-        } catch (URISyntaxException e) {
+        } catch (IOException | JSONException | URISyntaxException e) {
             log.error("Exception : ", e);
         } finally {
             if (rd != null) {
@@ -251,9 +242,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                 String str = response.getHeaders("Set-Cookie")[0].toString().split(";")[0];
                 cookie = str.split(" ")[1];
             }
-        } catch (ClientProtocolException e) {
-            log.error("Exception : ", e);
-        } catch (IOException e) {
+        } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         }
         return cookie;
@@ -299,9 +288,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             String imageData = imgResult.toString().split(":return")[1];
             imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length() - 4);
 
-        } catch (ClientProtocolException e) {
-            log.error("Exception : ", e);
-        } catch (IOException e) {
+        } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         }
         return imageUrl;
@@ -354,9 +341,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     rtrnObj.put("formData", formData);
                 }
             }
-        } catch (ClientProtocolException e) {
-            log.error("Exception : ", e);
-        } catch (IOException e) {
+        } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         } finally {
             if (rd != null) {
@@ -416,9 +401,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             } else if (rsltObj.has("errorMessage")) {
                 rtrnObj.put("error-message", rsltObj.get("errorMessage"));
             }
-        } catch (ClientProtocolException e) {
-            log.error("Exception : ", e);
-        } catch (IOException e) {
+        } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         } finally {
             if (rd != null) {
@@ -498,9 +481,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             } else if (rsltObj.has("errorMessage")) {
                 rtrnObj.put("error-message", rsltObj.get("errorMessage"));
             }
-        } catch (ClientProtocolException e) {
-            log.error("Exception : ", e);
-        } catch (IOException e) {
+        } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         } finally {
             if (rd != null) {
