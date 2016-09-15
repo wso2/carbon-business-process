@@ -11,4 +11,6 @@ menu :
 bpsHost: localhost
 bpsPort: 9443
 bpsTenantId: -1234
+bpsUsername: admin
+bpsPassword: admin
 

@@ -52,8 +52,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
 
     private CloseableHttpClient client;
     private String baseUrl;
-    private String userName;
-    private String passWord;
 
     /**
      * Initialize the HttpClient
@@ -67,13 +65,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     .setSSLSocketFactory(new SSLConnectionSocketFactory(
                             SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build()))
                     .build();
-        } catch (NoSuchAlgorithmException | eyManagementException | KeyStoreException e) {
+        } catch (NoSuchAlgorithmException | keyManagementException | KeyStoreException e) {
             log.error("Exception : ", e);
         }
         baseUrl = "https://" + host + ":" + port;
-        //Need to change this part after introducing user managemnet module
-        userName = "admin";
-        passWord = "admin";
     }
 
     /**
@@ -86,7 +81,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @throws IOException
      */
     @Override
-    public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId) throws IOException {
+    public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId, String username, String password) throws IOException {
 
         HttpGet httpGet = null;
         CloseableHttpResponse response = null;
@@ -98,7 +93,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
 
         setHttpClient(host, port);
 
-        if (pagination.equals("")) {
+        if ("".equals(pagination)) {
             start = 0;
         } else {
             int pageCount = Integer.parseInt(pagination.split("=")[1]);
@@ -111,7 +106,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             httpGet = new HttpGet(
                     new URI(baseUrl + "/bpmn/repository/deployments?tenantId=" + tenantId + "&start=" + start));
             httpGet.addHeader("Content-type", "application/json");
-            String authString = userName + ":" + password;
+            String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
             httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
@@ -139,7 +134,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     httpGet = new HttpGet(
                             new URI(baseUrl + "/bpmn/repository/process-definitions?deploymentId=" + deploymentId));
                     httpGet.addHeader("Content-type", "application/json");
-                    String authString = userName + ":" + password;
+                    String authString = username + ":" + password;
                     byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
                     httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
                     response = client.execute(httpGet);
@@ -315,7 +310,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @param port
      */
     @Override
-    public JSONObject getFormData(String processId, String host, int port) throws JSONException, IOException {
+    public JSONObject getFormData(String processId, String host, int port, String username, String password) throws JSONException, IOException {
         HttpGet httpGet = null;
         CloseableHttpResponse response = null;
         BufferedReader rd = null;
@@ -329,7 +324,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         try {
             httpGet = new HttpGet(baseUrl + "/bpmn/process-definition/" + processDefId + "/properties");
             httpGet.addHeader("Content-type", "application/json");
-            String authString = userName + ":" + password;
+            String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
             httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
@@ -348,7 +343,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                 JSONArray formData = new JSONObject(rsltForm.toString()).getJSONArray("data");
                 // When form data is not required for process creation
                 if (formData.length() <= 0) {
-                    rtrnObj = createProcessInstance(processDefId);
+                    rtrnObj = createProcessInstance(processDefId, username, password);
                 }
                 // When it is required to fill a form to create process instance
                 else {
@@ -379,7 +374,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      *
      * @param processDefId
      */
-    private JSONObject createProcessInstance(String processDefId) throws JSONException, IOException {
+    private JSONObject createProcessInstance(String processDefId, String username, String password) throws JSONException, IOException {
         HttpPost httpPost = null;
         CloseableHttpResponse response = null;
         BufferedReader rd = null;
@@ -393,7 +388,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
             httpPost.addHeader("Content-Type", "application/json");
-            String authString = userName + ":" + password;
+            String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
             httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 
@@ -444,7 +439,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @param port
      */
     @Override
-    public JSONObject createProcessInstanceWithData(String frmData, String host, int port)
+    public JSONObject createProcessInstanceWithData(String frmData, String host, int port, String username, String password)
             throws JSONException, IOException {
         HttpPost httpPost = null;
         CloseableHttpResponse response = null;
@@ -474,7 +469,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
             httpPost.addHeader("Content-Type", "application/json");
-            String authString = userName + ":" + password;
+            String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
             httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
 

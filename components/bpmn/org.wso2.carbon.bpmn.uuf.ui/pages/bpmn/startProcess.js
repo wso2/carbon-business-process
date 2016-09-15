@@ -1,7 +1,7 @@
 function onRequest(context) {
     var str = context.request.queryString;
     if(str.indexOf("&") == -1) {
-        var processInstanceData = callOSGiService("org.wso2.carbon.bpmn.uuf.ui.service.BPMNExplorerService", "getFormData", [str.split("=")[1], context.app.config.bpsHost,context.app.config.bpsPort]);
+        var processInstanceData = callOSGiService("org.wso2.carbon.bpmn.uuf.ui.service.BPMNExplorerService", "getFormData", [str.split("=")[1], context.app.config.bpsHost,context.app.config.bpsPort, context.app.config.bpsUsername, context.app.config.bpsPassword]);
         var returnProcessInstanceData = JSON.parse(processInstanceData);
         if(returnProcessInstanceData.formData != null) {
            return generateForm(returnProcessInstanceData.formData, returnProcessInstanceData.processDefId);
@@ -12,7 +12,7 @@ function onRequest(context) {
     }
 
     else {
-        var processInstanceDataForm = callOSGiService("org.wso2.carbon.bpmn.uuf.ui.service.BPMNExplorerService", "createProcessInstanceWithData", [context.request.queryString, context.app.config.bpsHost,context.app.config.bpsPort]);
+        var processInstanceDataForm = callOSGiService("org.wso2.carbon.bpmn.uuf.ui.service.BPMNExplorerService", "createProcessInstanceWithData", [context.request.queryString, context.app.config.bpsHost,context.app.config.bpsPort, context.app.config.bpsUsername, context.app.config.bpsPassword]);
         var returnProcessInstanceDataForm = JSON.parse(processInstanceDataForm);
         return returnProcessInstanceDataForm;
     }
