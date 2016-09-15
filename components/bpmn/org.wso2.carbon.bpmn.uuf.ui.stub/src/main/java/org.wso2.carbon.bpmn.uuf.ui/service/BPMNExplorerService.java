@@ -24,9 +24,9 @@ import java.io.IOException;
 
 public interface BPMNExplorerService {
 
-    public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId) throws IOException;
+    public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId, String username, String password) throws IOException;
 
-    public JSONObject getFormData(String processId, String host, int port) throws JSONException, IOException;
+    public JSONObject getFormData(String processId, String host, int port, String username, String password) throws JSONException, IOException;
 
-    public JSONObject createProcessInstanceWithData(String frmData, String host, int port) throws JSONException, IOException;
+    public JSONObject createProcessInstanceWithData(String frmData, String host, int port, String username, String password) throws JSONException, IOException;
 }

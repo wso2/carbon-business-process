@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.carbon.bpmn.uuf.ui.BPMNExplorerServiceConstants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         } catch (NoSuchAlgorithmException | keyManagementException | KeyStoreException e) {
             log.error("Exception : ", e);
         }
-        baseUrl = "https://" + host + ":" + port;
+        baseUrl = BPMNExplorerServiceConstants.URL_SCHEMA + host + ":" + port;
     }
 
     /**
@@ -104,10 +105,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             cookie = HTTPAuthenticate();
             httpGet = new HttpGet(
                     new URI(baseUrl + "/bpmn/repository/deployments?tenantId=" + tenantId + "&start=" + start));
-            httpGet.addHeader("Content-type", "application/json");
+            httpGet.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
+            httpGet.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             response = client.execute(httpGet);
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -132,10 +133,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     deploymentObj.put("package-name", name + "-" + deploymentId);
                     httpGet = new HttpGet(
                             new URI(baseUrl + "/bpmn/repository/process-definitions?deploymentId=" + deploymentId));
-                    httpGet.addHeader("Content-type", "application/json");
+                    httpGet.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
                     String authString = username + ":" + password;
                     byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-                    httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
+                    httpGet.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
                     response = client.execute(httpGet);
                     rd = new BufferedReader(
                             new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -209,8 +210,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         try (CloseableHttpResponse response = null;
              BufferedReader rd = null) {
             httpPost = new HttpPost(baseUrl + "/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/");
-            httpPost.addHeader("SOAPAction", "urn:login");
-            httpPost.addHeader("Content-Type", "text/xml");
+            httpPost.addHeader(BPMNExplorerServiceConstants.SOAP_ACTION, BPMNExplorerServiceConstants.SOAP_ACTION_LOGIN);
+            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.XML_CONTENT_TYPE);
 
             String payload =
                     "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
@@ -261,9 +262,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
              BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap11Endpoint/");
-            httpPost.addHeader("COOKIE", sessionId);
-            httpPost.addHeader("SOAPAction", "urn:getProcessDiagram");
-            httpPost.addHeader("Content-Type", "text/xml");
+            httpPost.addHeader(BPMNExplorerServiceConstants.COOKIE, sessionId);
+            httpPost.addHeader(BPMNExplorerServiceConstants.SOAP_ACTION, BPMNExplorerServiceConstants.SOAP_ACTION_GET_PROCESS_DIAGRAM );
+            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE,  BPMNExplorerServiceConstants.XML_CONTENT_TYPE);
 
             String imgPayload =
                     "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
@@ -310,10 +311,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         try (CloseableHttpResponse response = null;
              BufferedReader rd = null) {
             httpGet = new HttpGet(baseUrl + "/bpmn/process-definition/" + processDefId + "/properties");
-            httpGet.addHeader("Content-type", "application/json");
+            httpGet.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
+            httpGet.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             response = client.execute(httpGet);
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -364,10 +365,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
              BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
-            httpPost.addHeader("Content-Type", "application/json");
+            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
+            httpPost.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             JSONObject bodyObj = new JSONObject();
             bodyObj.put("processDefinitionId", processDefId);
@@ -435,10 +436,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
              BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
-            httpPost.addHeader("Content-Type", "application/json");
+            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpGet.addHeader("Authorization", "Basic" + new String(authEncBytes));
+            httpPost.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             JSONObject bodyObj = new JSONObject();
             bodyObj.put("processDefinitionId", splitFirst[splitFirst.length - 1].split("=")[1]);
