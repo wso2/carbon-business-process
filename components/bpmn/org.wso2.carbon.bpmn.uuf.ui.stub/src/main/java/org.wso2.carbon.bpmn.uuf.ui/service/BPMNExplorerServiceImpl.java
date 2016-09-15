@@ -84,8 +84,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
     public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId, String username, String password) throws IOException {
 
         HttpGet httpGet = null;
-        CloseableHttpResponse response = null;
-        BufferedReader rd = null;
         String line;
         JSONArray returnDataArray = new JSONArray();
         String cookie;
@@ -101,7 +99,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         }
 
 
-        try {
+        try (CloseableHttpResponse response = null;
+             BufferedReader rd = null) {
             cookie = HTTPAuthenticate();
             httpGet = new HttpGet(
                     new URI(baseUrl + "/bpmn/repository/deployments?tenantId=" + tenantId + "&start=" + start));
@@ -155,7 +154,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                             newJsonObj.put("process-def-id", arrayJsonObj.get("id"));
                             newJsonObj.put("version", arrayJsonObj.get("version"));
                             newJsonObj.put("image-data",
-                                           getBPMNProcessDiagram(arrayJsonObj.get("id").toString(), cookie));
+                                    getBPMNProcessDiagram(arrayJsonObj.get("id").toString(), cookie));
                             processArray.put(newJsonObj);
                         }
                         deploymentObj.put("multiProcesses", processArray);
@@ -169,7 +168,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                         deploymentObj.put("process-def-id", arrayJsonObj.get("id"));
                         deploymentObj.put("version", arrayJsonObj.get("version"));
                         deploymentObj.put("image-data",
-                                          getBPMNProcessDiagram(arrayJsonObj.get("id").toString(), cookie));
+                                getBPMNProcessDiagram(arrayJsonObj.get("id").toString(), cookie));
                         JSONObject oneProcessObj = new JSONObject();
                         oneProcessObj.put("oneProcess", deploymentObj);
                         returnDataArray.put(oneProcessObj);
@@ -191,14 +190,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         } catch (IOException | JSONException | URISyntaxException e) {
             log.error("Exception : ", e);
         } finally {
-            if (rd != null) {
-                rd.close();
-            }
-
-            if (response != null) {
-                response.close();
-            }
-
             if (httpGet != null) {
                 httpGet.releaseConnection();
             }
@@ -211,13 +202,12 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      */
     private String HTTPAuthenticate() {
         HttpPost httpPost;
-        CloseableHttpResponse response;
-        BufferedReader rd;
         String line;
         StringEntity stringEntity;
         String cookie = null;
 
-        try {
+        try (CloseableHttpResponse response = null;
+             BufferedReader rd = null) {
             httpPost = new HttpPost(baseUrl + "/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/");
             httpPost.addHeader("SOAPAction", "urn:login");
             httpPost.addHeader("Content-Type", "text/xml");
@@ -264,13 +254,11 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      */
     private Object getBPMNProcessDiagram(String processId, String sessionId) {
         HttpPost httpPost;
-        CloseableHttpResponse response;
-        BufferedReader rd;
         String line;
         StringEntity stringEntity;
         String imageUrl = null;
-        try {
-
+        try (CloseableHttpResponse response = null;
+             BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap11Endpoint/");
             httpPost.addHeader("COOKIE", sessionId);
@@ -312,8 +300,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
     @Override
     public JSONObject getFormData(String processId, String host, int port, String username, String password) throws JSONException, IOException {
         HttpGet httpGet = null;
-        CloseableHttpResponse response = null;
-        BufferedReader rd = null;
         String line;
         JSONObject rsltObj;
         JSONObject rtrnObj = new JSONObject();
@@ -321,7 +307,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         setHttpClient(host, port);
         String processDefId = processId;
 
-        try {
+        try (CloseableHttpResponse response = null;
+             BufferedReader rd = null) {
             httpGet = new HttpGet(baseUrl + "/bpmn/process-definition/" + processDefId + "/properties");
             httpGet.addHeader("Content-type", "application/json");
             String authString = username + ":" + password;
@@ -354,14 +341,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         } finally {
-            if (rd != null) {
-                rd.close();
-            }
-
-            if (response != null) {
-                response.close();
-            }
-
             if (httpGet != null) {
                 httpGet.releaseConnection();
             }
@@ -376,15 +355,13 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      */
     private JSONObject createProcessInstance(String processDefId, String username, String password) throws JSONException, IOException {
         HttpPost httpPost = null;
-        CloseableHttpResponse response = null;
-        BufferedReader rd = null;
         String line = "";
         StringEntity stringEntity;
         JSONObject rsltObj;
         JSONObject rtrnObj = new JSONObject();
 
-        try {
-
+        try (CloseableHttpResponse response = null;
+             BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
             httpPost.addHeader("Content-Type", "application/json");
@@ -416,14 +393,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         } finally {
-            if (rd != null) {
-                rd.close();
-            }
-
-            if (response != null) {
-                response.close();
-            }
-
             if (httpPost != null) {
                 httpPost.releaseConnection();
             }
@@ -442,8 +411,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
     public JSONObject createProcessInstanceWithData(String frmData, String host, int port, String username, String password)
             throws JSONException, IOException {
         HttpPost httpPost = null;
-        CloseableHttpResponse response = null;
-        BufferedReader rd = null;
         String line;
         StringEntity stringEntity;
         JSONObject rsltObj;
@@ -464,8 +431,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             }
         }
 
-        try {
-
+        try (CloseableHttpResponse response = null;
+             BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
             httpPost.addHeader("Content-Type", "application/json");
@@ -498,14 +465,6 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         } catch (ClientProtocolException | IOException e) {
             log.error("Exception : ", e);
         } finally {
-            if (rd != null) {
-                rd.close();
-            }
-
-            if (response != null) {
-                response.close();
-            }
-
             if (httpPost != null) {
                 httpPost.releaseConnection();
             }
