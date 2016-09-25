@@ -16,6 +16,9 @@
 
 package org.wso2.carbon.bpmn.analytics.publisher;
 
+/**
+ * Custom Exception class related to BPMN data publishing
+ */
 public class BPMNDataPublisherException extends Exception {
     public BPMNDataPublisherException(String message) {
         super(message);

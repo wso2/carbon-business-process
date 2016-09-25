@@ -23,6 +23,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
+import org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
@@ -42,9 +43,10 @@ public class PublishProcessVariablesService {
      * Enables the process variable publishing from BPS to DAS by, receiving (from WSO2 PC) and saving analytics
      * configuration details in config registry.
      *
-     * @param processId
-     * @param dasConfigDetailsJson
-     * @return
+     * @param processId process name_version
+     * @param dasConfigDetailsJson Details of analytics configuration with WSO2 DAS
+     * @return Rest call response
+     * @throws IOException
      */
     @POST
     @Path("/{processId}")
@@ -63,7 +65,7 @@ public class PublishProcessVariablesService {
                     "Error in saving DAS Analytics Configuratios in BPS Config-Registry for process :" + processId
                             + "\n Details tried to save:" + dasConfigDetailsJson;
             log.error(errMsg, e);
-            return Response.status(500).entity(errMsg + " : " + e.getMessage()).build();
+            return new BPMNExceptionHandler().toResponse(new RegistryException(errMsg,e));
         }
         return Response.ok().build();
     }
@@ -98,19 +100,16 @@ public class PublishProcessVariablesService {
     /**
      * Save DAS configuration details (received from PC), in config registry
      *
-     * @param dasConfigDetailsJSONString
+     * @param dasConfigDetailsJSONString Details of analytics configuration with WSO2 DAS as a JSON string
      * @throws RegistryException
      */
     private void saveDASconfigInfo(String dasConfigDetailsJSONString) throws RegistryException, IOException {
-
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         Registry configRegistry = carbonContext.getRegistry(RegistryType.SYSTEM_CONFIGURATION);
-
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dasConfigDetailsJOb = objectMapper.readTree(dasConfigDetailsJSONString);
         String processDefinitionId = dasConfigDetailsJOb.get(AnalyticsPublisherConstants.PROCESS_DEFINITION_ID)
                 .textValue();
-
         //create a new resource (text file) to keep process variables
         Resource procVariableJsonResource = configRegistry.newResource();
         procVariableJsonResource.setContent(dasConfigDetailsJSONString);

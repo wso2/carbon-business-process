@@ -67,6 +67,8 @@ import java.util.Map;
 public class BPMNDataPublisher {
 
     private static final Log log = LogFactory.getLog(BPMNDataPublisher.class);
+    private static final char PROC_VAR_VALUE_AVAILABLE = '1';
+    private static final char PROC_VAR_VALUE_UNAVAILABLE = '0';
 
     private DataPublisher dataPublisher;
 
@@ -187,14 +189,14 @@ public class BPMNDataPublisher {
     /**
      * Configure for data publishing to DAS for analytics
      *
-     * @param receiverURLSet
-     * @param username
-     * @param password
-     * @param authURLSet
-     * @param type
-     * @param asyncDataPublishingEnabled
-     * @param genericAnalyticsEnabled
-     * @param kpiAnalyticsEnabled
+     * @param receiverURLSet             Analytics receiver's url
+     * @param username                   Analytics server's username
+     * @param password                   Analytics server's password
+     * @param authURLSet                 Analytics Auth URL set
+     * @param type                       Bpmn Analytics Publisher Type
+     * @param asyncDataPublishingEnabled is async Data Publishing Enabled
+     * @param genericAnalyticsEnabled    is generic Analytics Enabled
+     * @param kpiAnalyticsEnabled        is KPI Analytics Enabled
      * @throws DataEndpointAuthenticationException
      * @throws DataEndpointAgentConfigurationException
      * @throws TransportException
@@ -281,10 +283,6 @@ public class BPMNDataPublisher {
                 engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers()
                         .addHandler(new ProcessKPIParseHandler());
             }
-            // engineConfig.getPostBpmnParseHandlers().add(new ServiceTaskParseHandler());
-            // engineConfig.getBpmnDeployer().getBpmnParser().getBpmnParserHandlers().
-            // addHandler(new ServiceTaskParseHandler());
-
         } else {
             log.warn("Required fields for data publisher are not configured. Receiver URLs, username and password "
                     + "are mandatory. Data publishing will not be enabled.");
@@ -333,7 +331,9 @@ public class BPMNDataPublisher {
     /**
      * Publish the separate event to the DAS for the process variables for the called process instance
      *
-     * @param processInstance
+     * @param processInstance process instance object
+     * @throws BPMNDataPublisherException
+     * @throws IOException
      */
     public void publishKPIvariableData(ProcessInstance processInstance) throws BPMNDataPublisherException, IOException {
         String processDefinitionId = processInstance.getProcessDefinitionId();
@@ -375,8 +375,8 @@ public class BPMNDataPublisher {
             //set process instance id as the 1st payload variable value
             payload[0] = processInstanceId;
 
-            //availability of values for each process variable is represented by this char array as 1 (value available)
-            // or 0 (not available) in respective array index
+            //availability of values for each process variable is represented by this char array as '1' (value available)
+            // or '0' (not available) in respective array index
             char[] valueAvailabiliy = new char[fieldsConfigedForStreamPayload.size() - 2];
 
             for (int i = 2; i < configedProcessVariables.size(); i++) {
@@ -389,55 +389,55 @@ public class BPMNDataPublisher {
                     case "int":
                         if (varValue == null) {
                             payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_UNAVAILABLE;
                         } else {
                             payload[i] = Integer.parseInt(varValue.toString());
-                            valueAvailabiliy[i - 2] = '1';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_AVAILABLE;
                         }
                         break;
                     case "float":
                         if (varValue == null) {
                             payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_UNAVAILABLE;
                         } else {
                             payload[i] = Float.parseFloat(varValue.toString());
-                            valueAvailabiliy[i - 2] = '1';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_AVAILABLE;
                         }
                         break;
                     case "long":
                         if (varValue == null) {
                             payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_UNAVAILABLE;
                         } else {
                             payload[i] = Long.parseLong(varValue.toString());
-                            valueAvailabiliy[i - 2] = '1';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_AVAILABLE;
                         }
                         break;
                     case "double":
                         if (varValue == null) {
                             payload[i] = 0;
-                            valueAvailabiliy[i - 2] = '0';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_UNAVAILABLE;
                         } else {
                             payload[i] = Double.parseDouble(varValue.toString());
-                            valueAvailabiliy[i - 2] = '1';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_AVAILABLE;
                         }
                         break;
                     case "string":
                         if (varValue == null) {
                             payload[i] = "NA";
-                            valueAvailabiliy[i - 2] = '0';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_UNAVAILABLE;
                         } else {
                             payload[i] = varValue;
-                            valueAvailabiliy[i - 2] = '1';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_AVAILABLE;
                         }
                         break;
                     case "bool":
                         if (varValue == null) {
                             payload[i] = false;
-                            valueAvailabiliy[i - 2] = '0';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_UNAVAILABLE;
                         } else {
                             payload[i] = Boolean.parseBoolean(varValue.toString());
-                            valueAvailabiliy[i - 2] = '1';
+                            valueAvailabiliy[i - 2] = PROC_VAR_VALUE_AVAILABLE;
                         }
                         break;
                     default:
@@ -476,7 +476,7 @@ public class BPMNDataPublisher {
     /**
      * Get DAS config details of given certain process which are configured for analytics from the config registry
      *
-     * @param processDefinitionId
+     * @param processDefinitionId Process definition ID
      * @return KPI configuration details in JSON format. Ex:<p>
      * {"processDefinitionId":"myProcess3:1:32518","eventStreamName":"t_666_process_stream","eventStreamVersion":"1.0.0"
      * ,"eventStreamDescription":"This is the event stream generated to configure process analytics with DAS, for the

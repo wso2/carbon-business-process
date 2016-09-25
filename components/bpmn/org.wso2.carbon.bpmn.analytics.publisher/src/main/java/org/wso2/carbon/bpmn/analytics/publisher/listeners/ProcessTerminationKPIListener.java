@@ -26,6 +26,9 @@ import org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsHolder;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Listener which listen whether a process is terminated in order to publish KPI data
+ */
 public class ProcessTerminationKPIListener implements ExecutionListener {
     private static final Log log = LogFactory.getLog(ProcessTerminationKPIListener.class);
 
