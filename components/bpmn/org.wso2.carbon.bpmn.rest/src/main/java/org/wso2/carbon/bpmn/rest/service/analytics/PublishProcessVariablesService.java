@@ -44,8 +44,7 @@ public class PublishProcessVariablesService {
      *
      * @param processId process name_version
      * @param dasConfigDetailsJson Details of analytics configuration with WSO2 DAS
-     * @return Rest call response
-     * @throws IOException
+     * @return http response of this service
      */
     @POST
     @Path("/{processId}")
@@ -71,9 +70,9 @@ public class PublishProcessVariablesService {
     /**
      * Removing published process variable publishing from BPS to DAS
      *
-     * @param processId process name_version
+     * @param processId                     process name_version
      * @param processDefinitionIdJSONString JSON string contains process definition id
-     * @return
+     * @return http response of this service
      */
     @DELETE
     @Path("/{processId}")
@@ -99,7 +98,8 @@ public class PublishProcessVariablesService {
      * Save DAS configuration details (received from PC), in config registry
      *
      * @param dasConfigDetailsJSONString Details of analytics configuration with WSO2 DAS as a JSON string
-     * @throws RegistryException
+     * @throws RegistryException Throws RegistryException if error occurred in accessing registry
+     * @throws IOException       Throws IOException if an error occurred in hadling json content
      */
     private void saveDASconfigInfo(String dasConfigDetailsJSONString) throws RegistryException, IOException {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
@@ -120,7 +120,8 @@ public class PublishProcessVariablesService {
      * Delete DAS configuration details (received from PC), from config registry
      *
      * @param processDefinitionIdJSONString JSON string contains process definition id
-     * @throws RegistryException
+     * @throws RegistryException Throws RegistryException if error occurred in accessing registry
+     * @throws IOException       Throws IOException if an error occurred in hadling json content
      */
     private void deleteDASConfigInfo(String processDefinitionIdJSONString) throws RegistryException, IOException {
 
