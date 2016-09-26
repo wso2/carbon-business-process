@@ -23,7 +23,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.wso2.carbon.bpmn.analytics.publisher.AnalyticsPublisherConstants;
-import org.wso2.carbon.bpmn.rest.common.provider.ExceptionMapper.BPMNExceptionHandler;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.Registry;
@@ -64,8 +63,7 @@ public class PublishProcessVariablesService {
             String errMsg =
                     "Error in saving DAS Analytics Configuratios in BPS Config-Registry for process :" + processId
                             + "\n Details tried to save:" + dasConfigDetailsJson;
-            log.error(errMsg, e);
-            return new BPMNExceptionHandler().toResponse(new RegistryException(errMsg,e));
+            throw new IllegalArgumentException(errMsg, e);
         }
         return Response.ok().build();
     }
