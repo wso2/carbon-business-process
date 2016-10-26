@@ -1,0 +1,82 @@
+<table class="table table-responsive table-striped" id="process-view">
+    <tr>
+        <th>Package Name</th>
+        <th>Process Name</th>
+        <th>Process Definition ID</th>
+        <th>Version</th>
+        <th>Action</th>
+    </tr>
+    {{#each data}}
+        {{#if multiProcesses}}
+            {{#each multiProcesses}}
+                {{#if @first}}
+                    <tr>
+                        <td rowspan="{{multiProcesses.length}}">{{package-name}}</td>
+                        <td>{{process-name}}</td>
+                        <td><a href="" data-toggle="modal" data-target="#diagram"
+                               onclick="$('#imgStatus').text('');$('#processDiagram').attr('src','{{image-data}}');">{{process-def-id}}</a>
+                        </td>
+                        <td>{{version}}</td>
+                        <td><a href="startProcess?id={{process-def-id}}">
+                            <button class="btn-start btn btn-xs btn-info">Start</button>
+                        </a></td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td>{{process-name}}</td>
+                        <td><a href="" data-toggle="modal" data-target="#diagram"
+                               onclick="$('#imgStatus').text('');$('#processDiagram').attr('src','{{image-data}}');">{{process-def-id}}</a>
+                        </td>
+                        <td>{{version}}</td>
+                        <td><a href="startProcess?id={{process-def-id}}">
+                            <button class="btn-start btn btn-xs btn-info">Start</button>
+                        </a></td>
+                    </tr>
+                {{/if}}
+            {{/each}}
+        {{else if oneProcess}}
+            <tr>
+                <td>{{oneProcess.package-name}}</td>
+                <td>{{oneProcess.process-name}}</td>
+                <td><a href="" data-toggle="modal" data-target="#diagram"
+                       onclick="$('#imgStatus').text('');$('#processDiagram').attr('src','{{oneProcess.image-data}}');">{{oneProcess.process-def-id}}</a>
+                </td>
+                <td>{{oneProcess.version}}</td>
+                <td><a href="startProcess?id={{oneProcess.process-def-id}}">
+                    <button class="btn-start btn btn-xs btn-info">Start</button>
+                </a></td>
+            </tr>
+        {{/if}}
+    {{/each}}
+</table>
+
+<ul class="pagination">
+    {{#each data}}
+        {{#if paginationCount}}
+            {{#each paginationCount}}
+                <li><a href="process?pagination={{pageNu}}">{{pageNu}}</a></li>
+            {{/each}}
+        {{/if}}
+    {{/each}}
+</ul>
+
+
+<div class="modal fade" id="diagram" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-center model-lg modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Process Diagram</h4>
+            </div>
+            <div class="modal-body">
+                <div id="diagramScroll">
+                    <img id="processDiagram" src="" />
+                    <p id="imgStatus"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
