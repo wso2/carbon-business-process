@@ -23,7 +23,7 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- *This enables cross domain requests.
+ * This enables cross domain requests.
  */
 @Provider
 public class CrossDomainFilter implements ContainerResponseFilter {
