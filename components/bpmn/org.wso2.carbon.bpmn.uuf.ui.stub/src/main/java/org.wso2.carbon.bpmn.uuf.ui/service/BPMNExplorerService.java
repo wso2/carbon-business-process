@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.uuf.ui;
+package org.wso2.carbon.bpmn.uuf.ui.service;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -20,8 +20,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.ui.bpmn_explorer.service.BPMNExplorerService;
-import org.wso2.carbon.ui.bpmn_explorer.service.BPMNExplorerServiceImpl;
+import org.wso2.carbon.bpmn.uuf.ui.service.BPMNExplorerService;
+import org.wso2.carbon.bpmn.uuf.ui.service.BPMNExplorerServiceImpl;
 
 public class Activator implements BundleActivator {
 
@@ -34,9 +34,7 @@ public class Activator implements BundleActivator {
      */
     public void start(BundleContext context) throws Exception {
         context.registerService(BPMNExplorerService.class.getName(), new BPMNExplorerServiceImpl(), null);
-        if (log.isDebugEnabled()) {
-            log.debug("BPMN-Explorer Bundle Started.");
-        }
+        log.debug("BPMN-Explorer Bundle Started.");
     }
 
     /**
@@ -45,8 +43,6 @@ public class Activator implements BundleActivator {
      * @param context the framework context for the bundle.
      */
     public void stop(BundleContext context) {
-        if (log.isDebugEnabled()) {
-            log.debug("BPMN-Explorer Bundle Started.");
-        }
+        log.debug("BPMN-Explorer Bundle Stopped.");
     }
 }

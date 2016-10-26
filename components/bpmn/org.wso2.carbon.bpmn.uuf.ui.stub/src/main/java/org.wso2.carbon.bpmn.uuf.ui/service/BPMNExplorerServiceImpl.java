@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.bpmn.uuf.ui;
+package org.wso2.carbon.bpmn.uuf.ui.service;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.ClientProtocolException;
@@ -32,7 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.carbon.bpmn.uuf.ui.BPMNExplorerServiceConstants;
+import org.wso2.carbon.bpmn.uuf.ui.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -67,9 +67,9 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                             SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build()))
                     .build();
         } catch (NoSuchAlgorithmException | keyManagementException | KeyStoreException e) {
-            log.error("Exception : ", e);
+            log.error(Constants.DEFAULT_EX, e);
         }
-        baseUrl = BPMNExplorerServiceConstants.URL_SCHEMA + host + ":" + port;
+        baseUrl = Constants.URL_SCHEMA + host + ":" + port;
     }
 
     /**
@@ -78,11 +78,15 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @param pagination
      * @param host
      * @param port
-     * @return
+     * @param tenantId
+     * @param username
+     * @param password
+     * @return JSONArray which contains process details for each BPMN deployment
      * @throws IOException
      */
     @Override
-    public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId, String username, String password) throws IOException {
+    public JSONArray getProcessDetails(String pagination, String host, int port, int tenantId, String username, String password)
+            throws IOException {
 
         HttpGet httpGet = null;
         String line;
@@ -105,10 +109,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             cookie = HTTPAuthenticate();
             httpGet = new HttpGet(
                     new URI(baseUrl + "/bpmn/repository/deployments?tenantId=" + tenantId + "&start=" + start));
-            httpGet.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
+            httpGet.addHeader(Constants.CONTENT_TYPE, Constants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpGet.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
+            httpGet.addHeader(Constants.AUTHORIZATION, Constants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             response = client.execute(httpGet);
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -122,21 +126,21 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             int processCount = Integer.parseInt(rsltListObj.get("total").toString());
             int paginatePageCount = (int) Math.ceil((float) processCount / 10);
 
-            JSONArray deploymentListData = rsltListObj.getJSONArray("data");
+            JSONArray deploymentListData = rsltListObj.getJSONArray(Constants.DATA);
             String name;
             String deploymentId;
             if (processCount > 0) {
                 for (int i = 0; i < deploymentListData.length(); i++) {
-                    deploymentId = deploymentListData.getJSONObject(i).get("id").toString();
-                    name = deploymentListData.getJSONObject(i).get("name").toString();
+                    deploymentId = deploymentListData.getJSONObject(i).get(Constants.ID).toString();
+                    name = deploymentListData.getJSONObject(i).get(Constants.NAME).toString();
                     JSONObject deploymentObj = new JSONObject();
-                    deploymentObj.put("package-name", name + "-" + deploymentId);
+                    deploymentObj.put(Constants.PACKAGE_NAME, name + "-" + deploymentId);
                     httpGet = new HttpGet(
                             new URI(baseUrl + "/bpmn/repository/process-definitions?deploymentId=" + deploymentId));
-                    httpGet.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
+                    httpGet.addHeader(Constants.CONTENT_TYPE, Constants.JSON_CONTENT_TYPE);
                     String authString = username + ":" + password;
                     byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-                    httpGet.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
+                    httpGet.addHeader(Constants.AUTHORIZATION, Constants.BASIC_AUTHORIZATION + new String(authEncBytes));
                     response = client.execute(httpGet);
                     rd = new BufferedReader(
                             new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -145,17 +149,17 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                         result.append(line);
                     }
                     JSONArray processArray = new JSONArray();
-                    JSONArray dataArray = new JSONObject(result.toString()).getJSONArray("data");
+                    JSONArray dataArray = new JSONObject(result.toString()).getJSONArray(Constants.DATA);
                     //When one deployment has several processes
                     if (dataArray.length() >= 2) {
                         for (int j = 0; j < dataArray.length(); j++) {
                             JSONObject arrayJsonObj = dataArray.getJSONObject(j);
                             JSONObject newJsonObj = new JSONObject();
-                            newJsonObj.put("process-name", arrayJsonObj.get("name"));
-                            newJsonObj.put("process-def-id", arrayJsonObj.get("id"));
-                            newJsonObj.put("version", arrayJsonObj.get("version"));
-                            newJsonObj.put("image-data",
-                                    getBPMNProcessDiagram(arrayJsonObj.get("id").toString(), cookie));
+                            newJsonObj.put(Constants.PROCESS_NAME, arrayJsonObj.get(Constants.NAME));
+                            newJsonObj.put(Constants.PROCESS_DEF_ID, arrayJsonObj.get(Constants.ID));
+                            newJsonObj.put(Constants.VERSION, arrayJsonObj.get(Constants.VERSION));
+                            newJsonObj.put(Constants.IMAGE_DATA,
+                                    getBPMNProcessDiagram(arrayJsonObj.get(Constants.ID).toString(), cookie));
                             processArray.put(newJsonObj);
                         }
                         deploymentObj.put("multiProcesses", processArray);
@@ -165,11 +169,11 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     //When one deployment has only one process
                     else if (dataArray.length() == 1) {
                         JSONObject arrayJsonObj = dataArray.getJSONObject(0);
-                        deploymentObj.put("process-name", arrayJsonObj.get("name"));
-                        deploymentObj.put("process-def-id", arrayJsonObj.get("id"));
-                        deploymentObj.put("version", arrayJsonObj.get("version"));
-                        deploymentObj.put("image-data",
-                                getBPMNProcessDiagram(arrayJsonObj.get("id").toString(), cookie));
+                        deploymentObj.put(Constants.PROCESS_NAME, arrayJsonObj.get(Constants.NAME));
+                        deploymentObj.put(Constants.PROCESS_DEF_ID, arrayJsonObj.get(Constants.ID));
+                        deploymentObj.put(Constants.VERSION, arrayJsonObj.get(Constants.VERSION));
+                        deploymentObj.put(Constants.IMAGE_DATA,
+                                getBPMNProcessDiagram(arrayJsonObj.get(Constants.ID).toString(), cookie));
                         JSONObject oneProcessObj = new JSONObject();
                         oneProcessObj.put("oneProcess", deploymentObj);
                         returnDataArray.put(oneProcessObj);
@@ -188,8 +192,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                 returnDataArray.put(pagiObj);
             }
 
-        } catch (IOException | JSONException | URISyntaxException e) {
-            log.error("Exception : ", e);
+        } catch (JSONException | URISyntaxException e) {
+            log.error(Constants.DEFAULT_EX, e);
         } finally {
             if (httpGet != null) {
                 httpGet.releaseConnection();
@@ -201,7 +205,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
     /**
      * Return session cookie from Authentication Admin Service
      */
-    private String HTTPAuthenticate() {
+    private String HTTPAuthenticate() throws IOException {
         HttpPost httpPost;
         String line;
         StringEntity stringEntity;
@@ -210,8 +214,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         try (CloseableHttpResponse response = null;
              BufferedReader rd = null) {
             httpPost = new HttpPost(baseUrl + "/services/AuthenticationAdmin.AuthenticationAdminHttpsSoap11Endpoint/");
-            httpPost.addHeader(BPMNExplorerServiceConstants.SOAP_ACTION, BPMNExplorerServiceConstants.SOAP_ACTION_LOGIN);
-            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.XML_CONTENT_TYPE);
+            httpPost.addHeader(Constants.SOAP_ACTION, Constants.SOAP_ACTION_LOGIN);
+            httpPost.addHeader(Constants.CONTENT_TYPE, Constants.XML_CONTENT_TYPE);
 
             String payload =
                     "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
@@ -219,7 +223,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                             ".org\"><soapenv:Header/><soapenv:Body><aut:login><aut:username>admin</aut:username" +
                             "><aut:password>admin</aut:password></aut:login></soapenv:Body></soapenv:Envelope>";
 
-            stringEntity = new StringEntity(payload, "UTF-8");
+            stringEntity = new StringEntity(payload, Constants.UTF_8_ENCODING);
             stringEntity.setChunked(true);
 
             httpPost.setEntity(stringEntity);
@@ -241,8 +245,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                 String str = response.getHeaders("Set-Cookie")[0].toString().split(";")[0];
                 cookie = str.split(" ")[1];
             }
-        } catch (ClientProtocolException | IOException e) {
-            log.error("Exception : ", e);
+        } catch (ClientProtocolException e) {
+            log.error(Constants.CLIENT_PROTOCOL_EX, e);
         }
         return cookie;
     }
@@ -253,7 +257,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @param processId
      * @param sessionId
      */
-    private Object getBPMNProcessDiagram(String processId, String sessionId) {
+    private Object getBPMNProcessDiagram(String processId, String sessionId) throws IOException {
         HttpPost httpPost;
         String line;
         StringEntity stringEntity;
@@ -262,16 +266,16 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
              BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/services/BPMNDeploymentService.BPMNDeploymentServiceHttpsSoap11Endpoint/");
-            httpPost.addHeader(BPMNExplorerServiceConstants.COOKIE, sessionId);
-            httpPost.addHeader(BPMNExplorerServiceConstants.SOAP_ACTION, BPMNExplorerServiceConstants.SOAP_ACTION_GET_PROCESS_DIAGRAM );
-            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE,  BPMNExplorerServiceConstants.XML_CONTENT_TYPE);
+            httpPost.addHeader(Constants.COOKIE, sessionId);
+            httpPost.addHeader(Constants.SOAP_ACTION, Constants.SOAP_ACTION_GET_PROCESS_DIAGRAM);
+            httpPost.addHeader(Constants.CONTENT_TYPE, Constants.XML_CONTENT_TYPE);
 
             String imgPayload =
                     "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
                             "xmlns:ser=\"http://services.mgt.core.bpmn.carbon.wso2" +
                             ".org\"><soapenv:Header/><soapenv:Body><ser:getProcessDiagram><ser:processId>" +
                             processId + "</ser:processId></ser:getProcessDiagram></soapenv:Body></soapenv:Envelope>";
-            stringEntity = new StringEntity(imgPayload, "UTF-8");
+            stringEntity = new StringEntity(imgPayload, Constants.UTF_8_ENCODING);
             stringEntity.setChunked(true);
 
             httpPost.setEntity(stringEntity);
@@ -285,8 +289,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             String imageData = imgResult.toString().split(":return")[1];
             imageUrl = "data:image/png;base64," + imageData.substring(1, imageData.length() - 4);
 
-        } catch (ClientProtocolException | IOException e) {
-            log.error("Exception : ", e);
+        } catch (ClientProtocolException e) {
+            log.error(Constants.CLIENT_PROTOCOL_EX, e);
         }
         return imageUrl;
     }
@@ -297,9 +301,15 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @param processId
      * @param host
      * @param port
+     * @param username
+     * @param password
+     * @return JSONObject which contains form data for each process definition
+     * @throws JSONException
+     * @throws IOException
      */
     @Override
-    public JSONObject getFormData(String processId, String host, int port, String username, String password) throws JSONException, IOException {
+    public JSONObject getFormData(String processId, String host, int port, String username, String password)
+            throws JSONException, IOException {
         HttpGet httpGet = null;
         String line;
         JSONObject rsltObj;
@@ -311,10 +321,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         try (CloseableHttpResponse response = null;
              BufferedReader rd = null) {
             httpGet = new HttpGet(baseUrl + "/bpmn/process-definition/" + processDefId + "/properties");
-            httpGet.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
+            httpGet.addHeader(Constants.CONTENT_TYPE, Constants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpGet.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
+            httpGet.addHeader(Constants.AUTHORIZATION, Constants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             response = client.execute(httpGet);
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Charset.defaultCharset()));
@@ -325,10 +335,10 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
 
             rsltObj = new JSONObject(rsltForm.toString());
             // When error occurs due to invalid data in the process creation
-            if (!rsltObj.has("data") && rsltObj.has("errorMessage")) {
-                rtrnObj.put("error-message", rsltObj.get("errorMessage"));
+            if (!rsltObj.has(Constants.DATA) && rsltObj.has(Constants.ERROR_MSG)) {
+                rtrnObj.put(Constants.ERROR_MESSAGE, rsltObj.get(Constants.ERROR_MSG));
             } else {
-                JSONArray formData = new JSONObject(rsltForm.toString()).getJSONArray("data");
+                JSONArray formData = new JSONObject(rsltForm.toString()).getJSONArray(Constants.DATA);
                 // When form data is not required for process creation
                 if (formData.length() <= 0) {
                     rtrnObj = createProcessInstance(processDefId, username, password);
@@ -339,8 +349,8 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
                     rtrnObj.put("formData", formData);
                 }
             }
-        } catch (ClientProtocolException | IOException e) {
-            log.error("Exception : ", e);
+        } catch (ClientProtocolException e) {
+            log.error(Constants.CLIENT_PROTOCOL_EX, e);
         } finally {
             if (httpGet != null) {
                 httpGet.releaseConnection();
@@ -353,8 +363,13 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * Create process instance without form data
      *
      * @param processDefId
+     * @param username
+     * @param password
+     * @throws JSONException
+     * @throws IOException
      */
-    private JSONObject createProcessInstance(String processDefId, String username, String password) throws JSONException, IOException {
+    private JSONObject createProcessInstance(String processDefId, String username, String password)
+            throws JSONException, IOException {
         HttpPost httpPost = null;
         String line = "";
         StringEntity stringEntity;
@@ -365,13 +380,13 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
              BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
-            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
+            httpPost.addHeader(Constants.CONTENT_TYPE, Constants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpPost.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
+            httpPost.addHeader(Constants.AUTHORIZATION, Constants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             JSONObject bodyObj = new JSONObject();
-            bodyObj.put("processDefinitionId", processDefId);
+            bodyObj.put(Constants.PROC_DEFINITION_ID, processDefId);
             stringEntity = new StringEntity(bodyObj.toString());
             httpPost.setEntity(stringEntity);
             response = client.execute(httpPost);
@@ -383,16 +398,16 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             }
 
             rsltObj = new JSONObject(result.toString());
-            if (rsltObj.has("id")) {
+            if (rsltObj.has(Constants.ID)) {
                 JSONObject processInstanceObj = new JSONObject();
-                processInstanceObj.put("process-def-id", rsltObj.get("processDefinitionId"));
-                processInstanceObj.put("process-instance-id", rsltObj.get("id"));
-                rtrnObj.put("processInstanceData", processInstanceObj);
-            } else if (rsltObj.has("errorMessage")) {
-                rtrnObj.put("error-message", rsltObj.get("errorMessage"));
+                processInstanceObj.put(Constants.PROCESS_DEF_ID, rsltObj.get(Constants.PROC_DEFINITION_ID));
+                processInstanceObj.put(Constants.PROCESS_INSTANCE_ID, rsltObj.get(Constants.ID));
+                rtrnObj.put(Constants.PROC_INSTANCE_DATA, processInstanceObj);
+            } else if (rsltObj.has(Constants.ERROR_MSG)) {
+                rtrnObj.put(Constants.ERROR_MESSAGE, rsltObj.get(Constants.ERROR_MSG));
             }
-        } catch (ClientProtocolException | IOException e) {
-            log.error("Exception : ", e);
+        } catch (ClientProtocolException e) {
+            log.error(Constants.CLIENT_PROTOCOL_EX, e);
         } finally {
             if (httpPost != null) {
                 httpPost.releaseConnection();
@@ -407,6 +422,11 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
      * @param frmData
      * @param host
      * @param port
+     * @param username
+     * @param password
+     * @return JSONObject which contains details of process instance
+     * @throws JSONException
+     * @throws IOException
      */
     @Override
     public JSONObject createProcessInstanceWithData(String frmData, String host, int port, String username, String password)
@@ -418,7 +438,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
         JSONObject rtrnObj = new JSONObject();
 
         //Decode the query string for form data and process definition id
-        String decodedStr = URLDecoder.decode(frmData, "UTF-8");
+        String decodedStr = URLDecoder.decode(frmData, Constants.UTF_8_ENCODING);
         String splitFirst[] = decodedStr.split("&");
         JSONArray varArray = new JSONArray();
         for (int i = 0; i < (splitFirst.length - 1); i++) {
@@ -426,7 +446,7 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             //If there are values for form fields
             if (splitScnd.length == 2) {
                 JSONObject varObj = new JSONObject();
-                varObj.put("name", splitScnd[0]);
+                varObj.put(Constants.NAME, splitScnd[0]);
                 varObj.put("value", splitScnd[1]);
                 varArray.put(varObj);
             }
@@ -436,13 +456,13 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
              BufferedReader rd = null) {
             httpPost = new HttpPost(
                     baseUrl + "/bpmn/runtime/process-instances");
-            httpPost.addHeader(BPMNExplorerServiceConstants.CONTENT_TYPE, BPMNExplorerServiceConstants.JSON_CONTENT_TYPE);
+            httpPost.addHeader(Constants.CONTENT_TYPE, Constants.JSON_CONTENT_TYPE);
             String authString = username + ":" + password;
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            httpPost.addHeader(BPMNExplorerServiceConstants.AUTHORIZATION, BPMNExplorerServiceConstants.BASIC_AUTHORIZATION + new String(authEncBytes));
+            httpPost.addHeader(Constants.AUTHORIZATION, Constants.BASIC_AUTHORIZATION + new String(authEncBytes));
 
             JSONObject bodyObj = new JSONObject();
-            bodyObj.put("processDefinitionId", splitFirst[splitFirst.length - 1].split("=")[1]);
+            bodyObj.put(Constants.PROC_DEFINITION_ID, splitFirst[splitFirst.length - 1].split("=")[1]);
             bodyObj.put("variables", varArray);
             stringEntity = new StringEntity(bodyObj.toString());
             httpPost.setEntity(stringEntity);
@@ -455,16 +475,16 @@ public class BPMNExplorerServiceImpl implements BPMNExplorerService {
             }
 
             rsltObj = new JSONObject(result.toString());
-            if (rsltObj.has("id")) {
+            if (rsltObj.has(Constants.ID)) {
                 JSONObject processInstanceObj = new JSONObject();
-                processInstanceObj.put("process-def-id", rsltObj.get("processDefinitionId"));
-                processInstanceObj.put("process-instance-id", rsltObj.get("id"));
-                rtrnObj.put("processInstanceData", processInstanceObj);
-            } else if (rsltObj.has("errorMessage")) {
-                rtrnObj.put("error-message", rsltObj.get("errorMessage"));
+                processInstanceObj.put(Constants.PROCESS_DEF_ID, rsltObj.get(Constants.PROC_DEFINITION_ID));
+                processInstanceObj.put(Constants.PROCESS_INSTANCE_ID, rsltObj.get(Constants.ID));
+                rtrnObj.put(Constants.PROC_INSTANCE_DATA, processInstanceObj);
+            } else if (rsltObj.has(Constants.ERROR_MSG)) {
+                rtrnObj.put(Constants.ERROR_MESSAGE, rsltObj.get(Constants.ERROR_MSG));
             }
-        } catch (ClientProtocolException | IOException e) {
-            log.error("Exception : ", e);
+        } catch (ClientProtocolException e) {
+            log.error(Constants.CLIENT_PROTOCOL_EX, e);
         } finally {
             if (httpPost != null) {
                 httpPost.releaseConnection();
