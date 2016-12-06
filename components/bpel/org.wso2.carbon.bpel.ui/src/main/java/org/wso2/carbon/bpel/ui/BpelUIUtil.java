@@ -68,6 +68,13 @@ import javax.xml.stream.XMLStreamException;
 public final class BpelUIUtil {
     private static final String DISABLED = "disabled";
     private static final String CHECKED = "checked";
+    private static final String ACTIVE = "active";
+    private static final String COMPLETED = "completed";
+    private static final String SUSPENDED = "suspended";
+    private static final String TERMINATED = "terminated";
+    private static final String FAILED = "failed";
+    private static final String INSTANCE_LIFE_CYCLE = "instanceLifecycle";
+    private static final String ACTIVITY_LIFE_CYCLE = "activityLifecycle";
     private static Log log = LogFactory.getLog("bpel.ui");
 
     private BpelUIUtil() {
@@ -478,7 +485,7 @@ public final class BpelUIUtil {
         strBuilder.append("list_instances.jsp?filter=pid=");
         strBuilder.append(processId);
         strBuilder.
-                append(" status=active|completed|suspended|terminated|failed|error&order=-last-active");
+                append(" status=" +ACTIVE +"|" +COMPLETED +"|" +SUSPENDED +"|" +TERMINATED +"|" +FAILED +"|error&order=-last-active");
 
         return strBuilder.toString();
     }
@@ -682,7 +689,7 @@ public final class BpelUIUtil {
             List<String> events =
                     Arrays.asList(processDeployDetailsListType.getProcessEventsList().
                             getEnableEventsList().getEnableEvent());
-            if (events.contains("instanceLifecycle") && events.contains("activityLifecycle")
+            if (events.contains(INSTANCE_LIFE_CYCLE) && events.contains(ACTIVITY_LIFE_CYCLE)
                     && events.contains("dataHandling") && events.contains("correlation") &&
                     events.contains("scopeHandling")) {
                 type = "all";
