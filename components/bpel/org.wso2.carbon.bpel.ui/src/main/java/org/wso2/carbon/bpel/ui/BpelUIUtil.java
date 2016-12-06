@@ -98,6 +98,11 @@ public final class BpelUIUtil {
         return text;
     }
 
+    /**
+     * Encodes a given HTML string.
+     * @param aText
+     * @return Encoded string
+     */
     public static String encodeHTML(String aText) {
         final StringBuilder result = new StringBuilder();
         final StringCharacterIterator iterator = new StringCharacterIterator(aText);
@@ -179,6 +184,11 @@ public final class BpelUIUtil {
         return result.toString();
     }
 
+    /**
+     * Prettify the given raw xml string.
+     * @param rawXML
+     * @return prettified string
+     */
     public static String prettyPrint(String rawXML) {
         String tRawXML = rawXML;
         tRawXML = tRawXML.replaceAll("\n|\\r|\\f|\\t", "");
@@ -202,6 +212,10 @@ public final class BpelUIUtil {
         return new String(stream.toByteArray(), Charset.defaultCharset()).trim();
     }
 
+    /**
+     * Get endpoint references map.
+     * @param info
+     */
     public static Map<String, QName> getEndpointRefsMap(ProcessInfoType info) {
         EndpointRef_type0[] endpoints = info.getEndpoints().getEndpointRef();
 
