@@ -460,6 +460,10 @@ public final class BpelUIUtil {
         return strBuilder.toString();
     }
 
+    /**
+     * Return total number of process instances.
+     * @param processInfo
+     */
     public static int getTotalInstance(ProcessInfoType processInfo) {
         int totalInstances = 0;
         for (Instances_type0 processInstance : processInfo.getInstanceSummary().getInstances()) {
@@ -578,6 +582,10 @@ public final class BpelUIUtil {
         return enabledEvents;
     }
 
+    /**
+     * Set event list of the scope using process deploy details list type.
+     * @param processDeployDetailsListType
+     */
     public static ScopeEventType[] setScopeEventsList(
             ProcessDeployDetailsList_type0 processDeployDetailsListType) {
         ScopeEventType[] scopeEnabledEvents = null;
@@ -605,15 +613,17 @@ public final class BpelUIUtil {
 
 
             for (CleanUpType cleanUpType : cleanUpTypes) {
-                if (cleanUpType.getOn().getValue().equalsIgnoreCase("success") &&
-                        cleanUpType.getCategoryList() != null) {
+                if(cleanUpType.getOn() != null) {
+                    if (cleanUpType.getOn().getValue().equalsIgnoreCase("success") &&
+                            cleanUpType.getCategoryList() != null) {
 
-                    CategoryListType categoryList = cleanUpType.getCategoryList();
-                    if (categoryList.getCategory() != null) {
-                        Category_type1[] categories = categoryList.getCategory();
-                        for (Category_type1 categoryType1 : categories) {
-                            successCategories.add(categoryType1.getValue());
+                        CategoryListType categoryList = cleanUpType.getCategoryList();
+                        if (categoryList.getCategory() != null) {
+                            Category_type1[] categories = categoryList.getCategory();
+                            for (Category_type1 categoryType1 : categories) {
+                                successCategories.add(categoryType1.getValue());
 
+                            }
                         }
                     }
                 }
@@ -636,17 +646,19 @@ public final class BpelUIUtil {
             failureCategories = new ArrayList<String>();
             CleanUpType[] cleanUpTypes = processDeployDetailsListType.getCleanUpList().getCleanUp();
             for (CleanUpType cleanUpType : cleanUpTypes) {
-                if (cleanUpType.getOn().getValue().equalsIgnoreCase("failure") &&
-                        cleanUpType.getCategoryList() != null) {
-                    CategoryListType categoryList = cleanUpType.getCategoryList();
-                    if (categoryList.getCategory() != null) {
-                        Category_type1[] categories = categoryList.getCategory();
+                if(cleanUpType.getOn() != null) {
+                    if (cleanUpType.getOn().getValue().equalsIgnoreCase("failure") &&
+                            cleanUpType.getCategoryList() != null) {
+                        CategoryListType categoryList = cleanUpType.getCategoryList();
+                        if (categoryList.getCategory() != null) {
+                            Category_type1[] categories = categoryList.getCategory();
 
-                        for (Category_type1 categoryType1 : categories) {
-                            failureCategories.add(categoryType1.getValue());
+                            for (Category_type1 categoryType1 : categories) {
+                                failureCategories.add(categoryType1.getValue());
+                            }
                         }
-                    }
 
+                    }
                 }
             }
         }
