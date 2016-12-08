@@ -86,12 +86,14 @@ public class BPMNDataPublisher {
         };
 
         if (log.isDebugEnabled()) {
-            log.debug("Starting to Publish BPMN process instance event: " + payload.toString());
+            log.debug("Starting to Publish BPMN process instance event. Process Definition ID:" + processInstance
+                    .getProcessDefinitionId() + ", Process Instance ID:" + processInstance.getId());
         }
         if (dataPublisher != null) {
             dataPublisher.tryPublish(getProcessStreamId(), getMeta(), null, payload);
             if (log.isDebugEnabled()) {
-                log.debug("Published BPMN process instance event: " + payload.toString());
+                log.debug("Published BPMN process instance event. Process Definition ID:" + processInstance
+                        .getProcessDefinitionId() + ", Process Instance ID:" + processInstance.getId());
             }
         } else {
             log.error("Data publisher is not registered. Events will not be published.");
@@ -113,12 +115,16 @@ public class BPMNDataPublisher {
         };
 
         if (log.isDebugEnabled()) {
-            log.debug("Starting to Publish BPMN task instance event: " + payload.toString());
+            log.debug("Starting to Publish BPMN task instance event. Process Definition ID: " + delegateTask
+                    .getProcessDefinitionId() + ", Process Instance ID:" + delegateTask.getProcessInstanceId() +
+                    ", Task ID:" + delegateTask.getId());
         }
         if (dataPublisher != null) {
             dataPublisher.tryPublish(getTaskInstanceStreamId(), getMeta(), null, payload);
             if (log.isDebugEnabled()) {
-                log.debug("Published BPMN task instance event: " + payload.toString());
+                log.debug("Published BPMN task instance event. Process Definition ID: " + delegateTask
+                        .getProcessDefinitionId() + ", Process Instance ID:" + delegateTask.getProcessInstanceId() +
+                        ", Task ID:" + delegateTask.getId());
             }
         } else {
             log.error("Data publisher is not registered. Events will not be published.");
@@ -159,7 +165,10 @@ public class BPMNDataPublisher {
                 if (dataPublisher != null) {
                     dataPublisher.tryPublish(getServiceTaskInstanceStreamId(), getMeta(), null, payload);
                     if (log.isDebugEnabled()) {
-                        log.debug("Published BPMN service task instance event... " + payload.toString());
+                        log.debug("Published BPMN service task instance event... Service task definition Id:" + instance
+                                .getActivityId() + ", task instance Id:" + instance.getId() + ", process definition "
+                                + "id:" + instance.getProcessDefinitionId() + ", process instance Id:" + instance
+                                .getProcessInstanceId());
                     }
                 } else {
                     log.error("Data publisher is not registered. Events will not be published.");
@@ -295,7 +304,7 @@ public class BPMNDataPublisher {
      * @return new object array
      */
     private Object[] getMeta() {
-        return new Object[]{};
+        return new Object[] {};
     }
 
     /**
@@ -455,20 +464,17 @@ public class BPMNDataPublisher {
             if (dataPublishingSuccess) {
                 if (log.isDebugEnabled()) {
                     log.debug("Published BPMN process instance KPI event...  Process Instance Id :" + processInstanceId
-                            + ", Process Definition Id:" + processDefinitionId + ", Published Event's Payload Data :"
-                            + payload.toString());
+                            + ", Process Definition Id:" + processDefinitionId);
                 }
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("Failed Publishing BPMN process instance KPI event... Process Instance Id :" +
-                            processInstanceId + ", Process Definition Id:" + processDefinitionId
-                            + ", Published Event's Payload Data :" + payload.toString());
+                            processInstanceId + ", Process Definition Id:" + processDefinitionId);
                 }
             }
         } catch (RegistryException | RuntimeException | BPMNDataPublisherException e) {
             String strMsg = "Failed Publishing BPMN process instance KPI event... Process Instance Id :" +
-                    processInstanceId + ", Process Definition Id:" + processDefinitionId
-                    + ", Published Event's Payload Data :" + payload.toString();
+                    processInstanceId + ", Process Definition Id:" + processDefinitionId;
             throw new BPMNDataPublisherException(strMsg, e);
         }
     }
