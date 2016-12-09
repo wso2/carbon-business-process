@@ -62,9 +62,19 @@ public class BPMNDeployer extends AbstractDeployer {
             tenantRepository = BPMNServerHolder.getInstance().getTenantManager().createTenantRepository(tenantId);
             tenantRepository.setRepoFolder(tenantRepoFolder);
 
-             if (!CarbonUtils.isWorkerNode()) {
+            //This is to check whether the user have added resolveDeploymentAtStartup system property to true if need
+            // for resolving deployment to avoid inconsistencies
+            boolean fixDeployments = true;
+            if (System.getProperty(BPMNConstants.RESOLVE_DEPLOYMENT_SYS_PROP) != null &&
+                    !Boolean.parseBoolean(System.getProperty(BPMNConstants.RESOLVE_DEPLOYMENT_SYS_PROP))) {
+                fixDeployments = false;
+                log.info("BPMN deployment inconsistencies will not resolved");
+            }
+            if (!isWorkerNode() && fixDeployments) {
+                log.info("Resolving BPMN deployments to avoid inconsistencies");
                 tenantRepository.fixDeployments();
             }
+
         }  catch (BPSFault e) {
             String msg = "Tenant Error: " + tenantId;
             log.error(msg, e);

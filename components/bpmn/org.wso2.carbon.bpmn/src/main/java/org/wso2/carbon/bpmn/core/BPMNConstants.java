@@ -71,5 +71,10 @@ public class BPMNConstants {
     public static final String DBMS_MYSQL = "mysql";
     public static final long MYSQL_SUBSTITUTION_MAX_END_DATE = 2147365800000L; //Date 2038/jan/18, max timestamp allowed in mysql
     public static final long DEFAULT_SUBSTITUTION_MAX_END_DATE = 95617564200000L; //5000/1/1
+
+    /**
+     * {@value #RESOLVE_DEPLOYMENT_SYS_PROP} System property to avoid resolving deployment to avoid inconsistencies
+     */
+    public static final String RESOLVE_DEPLOYMENT_SYS_PROP = "resolveDeploymentsAtStartup";
 }
 
