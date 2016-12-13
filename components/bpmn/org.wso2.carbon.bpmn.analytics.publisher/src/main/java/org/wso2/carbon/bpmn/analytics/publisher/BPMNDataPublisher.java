@@ -509,9 +509,8 @@ public class BPMNDataPublisher {
                         StandardCharsets.UTF_8);
                 ObjectMapper objectMapper = new ObjectMapper();
                 return objectMapper.readTree(dasConfigDetailsJSONStr);
-            } else {
-                return null;
             }
+            return null;
 
         } catch (RegistryException e) {
             String errMsg = "Error in Getting DAS config details of given process definition id :" + processDefinitionId
