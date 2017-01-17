@@ -87,6 +87,11 @@ public class HistoricVariableInstanceService extends BaseHistoricVariableInstanc
         return Response.ok().entity(dataResponse).build();
     }
 
+    /**
+     * Get variable data for a given variable instance by Id.
+     * @param varInstanceId
+     * @return
+     */
     @GET
     @Path("/{varInstanceId}/data")
     public  byte[] getVariableData(@PathParam("varInstanceId") String varInstanceId){
