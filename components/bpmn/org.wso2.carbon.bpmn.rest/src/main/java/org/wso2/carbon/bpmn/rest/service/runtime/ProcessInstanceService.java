@@ -651,6 +651,12 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
+
     protected byte[] getVariableDataByteArray(Execution execution, String variableName, String scope, Response.ResponseBuilder responseBuilder) {
 
         try {

@@ -23,6 +23,7 @@ import org.wso2.carbon.bpmn.rest.model.common.CorrelationQueryProperty;
 import org.wso2.carbon.bpmn.rest.model.correlation.CorrelationActionRequest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
@@ -73,6 +74,12 @@ public class CorrelationService/* extends BaseExecutionService */{
         CorrelationProcess correlationProcess = new CorrelationProcess();
         return correlationProcess.getQueryResponse(correlationActionRequest, uriInfo);
 
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
    /* protected Response getQueryResponse(CorrelationActionRequest correlationActionRequest) {

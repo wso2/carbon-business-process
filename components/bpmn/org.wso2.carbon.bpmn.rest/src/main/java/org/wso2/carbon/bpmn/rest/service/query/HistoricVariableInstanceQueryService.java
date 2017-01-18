@@ -21,6 +21,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricVariableInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricVariableInstanceService;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -71,5 +72,11 @@ public class HistoricVariableInstanceQueryService extends BaseHistoricVariableIn
         }
         DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams);
         return Response.ok().entity(dataResponse).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }

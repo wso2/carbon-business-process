@@ -20,10 +20,12 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricTaskInstanceQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricTaskInstanceService;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +48,12 @@ public class HistoricTaskInstanceQueryService extends BaseHistoricTaskInstanceSe
         }
         String serverRootUrl = uriInfo.getBaseUri().toString().replace("/history/historic-task-instances", "");
         return getQueryResponse(queryRequest, allRequestParams, serverRootUrl);
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }
 

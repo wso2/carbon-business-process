@@ -19,6 +19,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.history.HistoricDetailQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricDetailService;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -50,5 +51,11 @@ public class HistoricDetailQueryService extends BaseHistoricDetailService {
         }
         DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams, uriInfo);
         return Response.ok().entity(dataResponse).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }

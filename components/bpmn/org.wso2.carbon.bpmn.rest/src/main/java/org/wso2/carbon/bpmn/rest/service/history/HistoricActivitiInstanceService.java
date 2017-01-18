@@ -21,6 +21,7 @@ import org.wso2.carbon.bpmn.rest.model.history.HistoricActivityInstanceQueryRequ
 import org.wso2.carbon.bpmn.rest.service.base.BaseHistoricActivitiInstanceService;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -55,6 +56,12 @@ public class HistoricActivitiInstanceService extends BaseHistoricActivitiInstanc
 
         DataResponse dataResponse = getQueryResponse(query, allRequestParams, uriInfo);
         return Response.ok().entity(dataResponse).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
 

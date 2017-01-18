@@ -20,6 +20,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.ExecutionQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseExecutionService;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -48,6 +49,12 @@ public class QueryExecutionService extends BaseExecutionService {
         }
         DataResponse dataResponse = getQueryResponse(queryRequest, allRequestParams, uriInfo);
         return Response.ok().entity(dataResponse).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 
 }

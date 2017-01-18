@@ -327,6 +327,12 @@ public class HistoricProcessInstanceService {
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
+
     public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId, String variableName) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();

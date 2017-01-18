@@ -30,11 +30,13 @@ import org.wso2.carbon.bpmn.rest.model.identity.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseIdentityService;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
 import java.util.List;
@@ -210,5 +212,11 @@ public class IdentityService extends BaseIdentityService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public UserResponse getUser(@PathParam("userId") String userId) {
         return new RestResponseFactory().createUserResponse(getUserFromRequest(userId), false, uriInfo.getBaseUri().toString());
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }

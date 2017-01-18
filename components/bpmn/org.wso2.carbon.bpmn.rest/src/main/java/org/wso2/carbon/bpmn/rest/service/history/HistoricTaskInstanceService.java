@@ -299,6 +299,12 @@ public class HistoricTaskInstanceService extends BaseHistoricTaskInstanceService
         }
     }
 
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
+
     protected RestVariable getVariableFromRequest(boolean includeBinary, String taskId, String variableName, String scope) {
         HistoryService historyService = BPMNOSGIService.getHistoryService();
         RestVariable.RestVariableScope variableScope = RestVariable.getScopeFromString(scope);

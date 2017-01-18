@@ -20,6 +20,7 @@ import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.runtime.TaskQueryRequest;
 import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -41,5 +42,11 @@ public class QueryTaskService extends BaseTaskService {
 
         DataResponse dataResponse = getTasksFromQueryRequest(request, uriInfo, null);
         return Response.ok().entity(dataResponse).build();
+    }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
     }
 }

@@ -1198,6 +1198,12 @@ public class WorkflowTaskService extends BaseTaskService {
         return Response.ok().status(Response.Status.NO_CONTENT).build();
     }
 
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
+
     protected HistoricTaskInstance getHistoricTaskFromRequest(String taskId) {
 
         HistoryService historyService = BPMNOSGIService.getHistoryService();

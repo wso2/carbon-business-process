@@ -357,4 +357,10 @@ public class ManagementService {
         }
         return response;
     }
+
+    @OPTIONS
+    @Path("{path : .*}")
+    public Response options() {
+        return Response.ok("").build();
+    }
 }
