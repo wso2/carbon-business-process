@@ -598,6 +598,11 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         return result;
     }
 
+    /**
+     * Delete variables in local scope of a process instance for a given path.
+     * @param processInstanceId
+     * @return
+     */
     @DELETE
     @Path(value="/{processInstanceId}/variables")
     public Response deleteLocalVariables(@PathParam("processInstanceId") String processInstanceId) {
@@ -1362,6 +1367,10 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
         return new CorrelationProcess().getQueryResponse(correlationActionRequest, uriInfo);
     }
 
+    /**
+     * Delete all variables in local scope of a process instance.
+     * @param execution
+     */
     protected void deleteAllLocalVariables(Execution execution) {
         RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
         Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
