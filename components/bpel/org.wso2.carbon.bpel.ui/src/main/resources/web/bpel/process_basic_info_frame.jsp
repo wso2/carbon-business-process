@@ -1,5 +1,6 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.bpel.ui.BpelUIUtil" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <!--
  ~ Copyright (c) 2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -67,10 +68,10 @@
 <%
             if (processStatus.toUpperCase().equals("ACTIVE")) {
 %>
-            <a href="<%=BpelUIUtil.generateRetireLinkForProcessInfoPage(processID)%>" id="process_det_ret"
+            <a href="<%=BpelUIUtil.generateRetireLinkForProcessInfoPage(URLEncoder.encode(processID,"UTF-8"))%>" id="process_det_ret"
                class="bpel-icon-link registryWriteOperation"
                style="background-image:url(images/deactivate.gif);"><fmt:message key="retire"/></a>
-            <a href="<%=BpelUIUtil.generateRetireLinkForProcessInfoPage(processID)%>" id="process_det_ret"
+            <a href="<%=BpelUIUtil.generateRetireLinkForProcessInfoPage(URLEncoder.encode(processID,"UTF-8"))%>" id="process_det_ret"
                class="bpel-icon-link registryNonWriteOperation"
                style="background-image:url(images/deactivate.gif);color:#777;cursor:default;"
                onclick="return false"><fmt:message key="retire"/></a>
@@ -92,10 +93,10 @@
 <%
             } else if (processOlderVersion.equals("0")){
 %>
-            <a href="<%=BpelUIUtil.generateActivateLinkForProcessInfoPage(processID)%>" id="process_det_act"
+            <a href="<%=BpelUIUtil.generateActivateLinkForProcessInfoPage(URLEncoder.encode(processID,"UTF-8"))%>" id="process_det_act"
                class="bpel-icon-link registryWriteOperation"
                style="background-image:url(images/activate.gif);"><fmt:message key="activate"/></a>
-            <a href="<%=BpelUIUtil.generateActivateLinkForProcessInfoPage(processID)%>" id="process_det_act"
+            <a href="<%=BpelUIUtil.generateActivateLinkForProcessInfoPage(URLEncoder.encode(processID,"UTF-8"))%>" id="process_det_act"
                class="bpel-icon-link registryNonWriteOperation"
                style="background-image:url(images/activate.gif);color:#777;cursor:default;"
                onclick="return false"><fmt:message key="activate"/></a>
@@ -130,7 +131,7 @@
     </tr>
     <tr>
         <td width="30%"><fmt:message key="total.instances"/></td>
-         <td><a href="<%=BpelUIUtil.getInstanceFilterURL(processID)%>"><%= noOfInstances%></a>
+         <td><a href="<%=BpelUIUtil.getInstanceFilterURL(URLEncoder.encode(processID,"UTF-8"))%>"><%= noOfInstances%></a>
         </td>
     </tr>
     <tr>
@@ -141,7 +142,7 @@
     <tr>
         <td width="30%"><fmt:message key="deployment.information"/></td>
         <% if (processStatus.toUpperCase().equals("ACTIVE")) { %>
-            <td><a href="./deployment_descriptor_editor.jsp?Pid=<%=processID%>">View Deployment Descriptor</a></td>
+            <td><a href="./deployment_descriptor_editor.jsp?Pid=<%=URLEncoder.encode(processID,"UTF-8")%>">View Deployment Descriptor</a></td>
         <% } else { %>
             <td>View Deployment Descriptor</td>
         <% } %>

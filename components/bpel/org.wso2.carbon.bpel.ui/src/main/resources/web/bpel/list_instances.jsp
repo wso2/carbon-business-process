@@ -31,6 +31,7 @@
 <%@ page import="org.wso2.carbon.bpel.ui.InstanceFilterUtil" %>
 <%@ page import="org.apache.commons.httpclient.HttpStatus" %>
 <%@ page import="org.wso2.carbon.bpel.ui.InstanceFilter" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
@@ -821,7 +822,7 @@
     <tr>
         <td><a href="instance_view.jsp?iid=<%=instanceInfo.getIid()%>"><%=instanceInfo.getIid()%>
         </a></td>
-        <td><a href="process_info.jsp?Pid=<%=instanceInfo.getPid()%>"><%=instanceInfo.getPid()%>
+        <td><a href="process_info.jsp?Pid=<%=URLEncoder.encode(instanceInfo.getPid(),"UTF-8")%>"><%=instanceInfo.getPid()%>
         </td>
         <td><%=failedActivity.getActivityID()%>
         </td>
@@ -870,7 +871,7 @@
         <%
             if (isAuthenticatedForProcessManagement || isAuthenticatedForInstanceMonitor) {
         %>
-        <td><a href="process_info.jsp?Pid=<%=instanceInfo.getPid()%>"><%=instanceInfo.getPid()%>
+        <td><a href="process_info.jsp?Pid=<%=URLEncoder.encode(instanceInfo.getPid(),"UTF-8")%>"><%=instanceInfo.getPid()%>
         </a></td>
         <%
         } else {
