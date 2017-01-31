@@ -68,6 +68,13 @@ import javax.xml.stream.XMLStreamException;
 public final class BpelUIUtil {
     private static final String DISABLED = "disabled";
     private static final String CHECKED = "checked";
+    private static final String ACTIVE = "active";
+    private static final String COMPLETED = "completed";
+    private static final String SUSPENDED = "suspended";
+    private static final String TERMINATED = "terminated";
+    private static final String FAILED = "failed";
+    private static final String INSTANCE_LIFE_CYCLE = "instanceLifecycle";
+    private static final String ACTIVITY_LIFE_CYCLE = "activityLifecycle";
     private static Log log = LogFactory.getLog("bpel.ui");
 
     private BpelUIUtil() {
@@ -91,6 +98,11 @@ public final class BpelUIUtil {
         return text;
     }
 
+    /**
+     * Encodes a given HTML string.
+     * @param aText
+     * @return Encoded string
+     */
     public static String encodeHTML(String aText) {
         final StringBuilder result = new StringBuilder();
         final StringCharacterIterator iterator = new StringCharacterIterator(aText);
@@ -172,6 +184,11 @@ public final class BpelUIUtil {
         return result.toString();
     }
 
+    /**
+     * Prettify the given raw xml string.
+     * @param rawXML
+     * @return prettified string
+     */
     public static String prettyPrint(String rawXML) {
         String tRawXML = rawXML;
         tRawXML = tRawXML.replaceAll("\n|\\r|\\f|\\t", "");
@@ -195,6 +212,10 @@ public final class BpelUIUtil {
         return new String(stream.toByteArray(), Charset.defaultCharset()).trim();
     }
 
+    /**
+     * Get endpoint references map.
+     * @param info
+     */
     public static Map<String, QName> getEndpointRefsMap(ProcessInfoType info) {
         EndpointRef_type0[] endpoints = info.getEndpoints().getEndpointRef();
 
@@ -460,6 +481,10 @@ public final class BpelUIUtil {
         return strBuilder.toString();
     }
 
+    /**
+     * Return total number of process instances.
+     * @param processInfo
+     */
     public static int getTotalInstance(ProcessInfoType processInfo) {
         int totalInstances = 0;
         for (Instances_type0 processInstance : processInfo.getInstanceSummary().getInstances()) {
@@ -474,7 +499,7 @@ public final class BpelUIUtil {
         strBuilder.append("list_instances.jsp?filter=pid=");
         strBuilder.append(processId);
         strBuilder.
-                append(" status=active|completed|suspended|terminated|failed|error&order=-last-active");
+                append(" status=" +ACTIVE +"|" +COMPLETED +"|" +SUSPENDED +"|" +TERMINATED +"|" +FAILED +"|error&order=-last-active");
 
         return strBuilder.toString();
     }
@@ -578,6 +603,10 @@ public final class BpelUIUtil {
         return enabledEvents;
     }
 
+    /**
+     * Set event list of the scope using process deploy details list type.
+     * @param processDeployDetailsListType
+     */
     public static ScopeEventType[] setScopeEventsList(
             ProcessDeployDetailsList_type0 processDeployDetailsListType) {
         ScopeEventType[] scopeEnabledEvents = null;
@@ -605,15 +634,17 @@ public final class BpelUIUtil {
 
 
             for (CleanUpType cleanUpType : cleanUpTypes) {
-                if (cleanUpType.getOn().getValue().equalsIgnoreCase("success") &&
-                        cleanUpType.getCategoryList() != null) {
+                if(cleanUpType.getOn() != null) {
+                    if (cleanUpType.getOn().getValue().equalsIgnoreCase("success") &&
+                            cleanUpType.getCategoryList() != null) {
 
-                    CategoryListType categoryList = cleanUpType.getCategoryList();
-                    if (categoryList.getCategory() != null) {
-                        Category_type1[] categories = categoryList.getCategory();
-                        for (Category_type1 categoryType1 : categories) {
-                            successCategories.add(categoryType1.getValue());
+                        CategoryListType categoryList = cleanUpType.getCategoryList();
+                        if (categoryList.getCategory() != null) {
+                            Category_type1[] categories = categoryList.getCategory();
+                            for (Category_type1 categoryType1 : categories) {
+                                successCategories.add(categoryType1.getValue());
 
+                            }
                         }
                     }
                 }
@@ -636,17 +667,19 @@ public final class BpelUIUtil {
             failureCategories = new ArrayList<String>();
             CleanUpType[] cleanUpTypes = processDeployDetailsListType.getCleanUpList().getCleanUp();
             for (CleanUpType cleanUpType : cleanUpTypes) {
-                if (cleanUpType.getOn().getValue().equalsIgnoreCase("failure") &&
-                        cleanUpType.getCategoryList() != null) {
-                    CategoryListType categoryList = cleanUpType.getCategoryList();
-                    if (categoryList.getCategory() != null) {
-                        Category_type1[] categories = categoryList.getCategory();
+                if(cleanUpType.getOn() != null) {
+                    if (cleanUpType.getOn().getValue().equalsIgnoreCase("failure") &&
+                            cleanUpType.getCategoryList() != null) {
+                        CategoryListType categoryList = cleanUpType.getCategoryList();
+                        if (categoryList.getCategory() != null) {
+                            Category_type1[] categories = categoryList.getCategory();
 
-                        for (Category_type1 categoryType1 : categories) {
-                            failureCategories.add(categoryType1.getValue());
+                            for (Category_type1 categoryType1 : categories) {
+                                failureCategories.add(categoryType1.getValue());
+                            }
                         }
-                    }
 
+                    }
                 }
             }
         }
@@ -670,7 +703,7 @@ public final class BpelUIUtil {
             List<String> events =
                     Arrays.asList(processDeployDetailsListType.getProcessEventsList().
                             getEnableEventsList().getEnableEvent());
-            if (events.contains("instanceLifecycle") && events.contains("activityLifecycle")
+            if (events.contains(INSTANCE_LIFE_CYCLE) && events.contains(ACTIVITY_LIFE_CYCLE)
                     && events.contains("dataHandling") && events.contains("correlation") &&
                     events.contains("scopeHandling")) {
                 type = "all";
