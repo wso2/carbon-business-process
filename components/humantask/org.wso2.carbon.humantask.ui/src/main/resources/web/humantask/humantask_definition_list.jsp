@@ -6,6 +6,7 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskDefinition_type0" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.UndeployStatus_type0" %>
 <%@ page import="org.wso2.carbon.humantask.stub.mgt.types.TaskStatusType" %>
@@ -209,7 +210,7 @@
                                     if (!TaskStatusType.UNDEPLOYING.equals(taskDef.getState())) {
                                 %>
 
-                                <a href="./task_definition_info.jsp?taskDefId=<%=taskDef.getTaskName()%>"><%=taskDef.getTaskName()%>
+                                <a href="./task_definition_info.jsp?taskDefId=<%=URLEncoder.encode(taskDef.getTaskName(),"UTF-8")%>"><%=taskDef.getTaskName()%>
                                 </a>
 
                                 <%

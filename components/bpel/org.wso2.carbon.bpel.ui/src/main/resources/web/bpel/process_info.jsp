@@ -31,6 +31,7 @@
     <%@ page import="java.util.HashMap" %>
     <%@ page import="java.util.Map" %>
     <%@ page import="java.util.TreeMap" %>
+    <%@ page import="java.net.URLEncoder" %>
     <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
@@ -187,7 +188,7 @@
 
         jQuery(document).ready(function() {
             //BPEL.process.drawInstanceSummaryGraph();
-            BPEL.summary.drawInstanceSummary("<%=processInfo.getPid()%>", "process-instance-summary")
+            BPEL.summary.drawInstanceSummary("<%=URLEncoder.encode(processInfo.getPid(),"UTF-8")%>", "process-instance-summary")
             var wid = jQuery("#process-details").width();
             jQuery("#process-definition").width(wid);
             jQuery("#bpel2svg").width(wid - 2);
@@ -682,8 +683,9 @@
                             </thead>
                             <tr>
                                 <td>
+                                 <% String imageProcessId = URLEncoder.encode(processID,"UTF-8"); %>
                                     <div id="bpel2svg" style="height:auto;text-align:center;">
-                                            <%="<img src=../png?pid=" + processID + " />"%>
+                                            <%="<img src=../png?pid=" + imageProcessId + " />"%>
                                     </div>
                                 </td>
                             </tr>

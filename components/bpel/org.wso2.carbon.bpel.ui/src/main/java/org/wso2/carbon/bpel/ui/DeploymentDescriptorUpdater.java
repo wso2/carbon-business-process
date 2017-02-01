@@ -150,7 +150,10 @@ public class DeploymentDescriptorUpdater {
     }
 
     public ScopeEventType[] getScopeEvents() {
-        return Arrays.copyOf(scopeEvents, scopeEvents.length);
+        if(scopeEvents !=null) {
+            return Arrays.copyOf(scopeEvents, scopeEvents.length);
+        }
+        return null;
     }
 
     public void setScopeEvents(ScopeEventType[] scopeEvents) {

@@ -7,6 +7,7 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <!--
 ~ Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -199,7 +200,7 @@
                         %>
                         <tr>
                             <td>
-                                <a href="./task_definition_info.jsp?taskDefId=<%=aTaskDefinitionsInPackage.getName()%>">
+                                <a href="./task_definition_info.jsp?taskDefId=<%=URLEncoder.encode(aTaskDefinitionsInPackage.getName(),"UTF-8")%>">
                                     <%=aTaskDefinitionsInPackage.getName()%>
                                 </a>
 
