@@ -64,7 +64,7 @@
             </thead>
             <tbody>
             <tr>
-                <td><a href="javascript:deletePackage();">
+                <td><a href="#" onclick="deletePackage();">
                     <img src="images/undeploy.gif">&nbsp;<fmt:message key="bpmn.package.undeploy"/></a></td>
             </tr>
             </tbody>
