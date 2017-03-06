@@ -28,8 +28,5 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="js/moment.min.js"></script>
         <script src="js/daterangepicker.js"></script>
-        <script>
-            $("td:contains('null')").html($("td:contains('null')").html().replace("null", "<%=i18n.localize("not.available", "Not available")%> "));
-        </script>
         <!--[if lte IE 8]> <script src="js/html5shiv.min.js"></script> <script src="js/respond.min.js"></script> <![endif]-->
 </body>
