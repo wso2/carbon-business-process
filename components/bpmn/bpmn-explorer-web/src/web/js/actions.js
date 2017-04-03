@@ -1966,7 +1966,7 @@ function deleteComment(id, commentId) {
  */
 function htmlEncode(value){
   //create a in-memory div, set it's inner text(which jQuery automatically encodes), then extract encoded contents
-  return $('<div/>').text(value).html();
+  return $('<div/>').text(value).html().replace(/"/g, "&quot;").replace(/'/g, '&#x27;').replace(/\//g, "&#x2F;");
 }
 
 
