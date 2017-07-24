@@ -73,6 +73,13 @@ public class RESTInvoker {
         configureHttpClient();
     }
 
+    /**
+     * This method parse the following configuration in the activiti.xml
+     * <bean id="restClientConfiguration">
+     *      <property name="maxTotalConnections" value="200"/>
+     *      <property name="maxConnectionsPerRoute" value="200"/>
+     * </bean>
+     */
     private void parseConfiguration() {
         String carbonConfigDirPath = CarbonUtils.getCarbonConfigDirPath();
         String activitiConfigPath = carbonConfigDirPath + File.separator +
@@ -205,16 +212,21 @@ public class RESTInvoker {
         CloseableHttpResponse response = null;
         Header[] headers;
         int httpStatus;
-        String contentType;
-        String output;
+        String contentType = null;
+        String output = null;
         try {
             httpGet = new HttpGet(uri);
             processHeaderList(httpGet, jsonHeaders);
             response = sendReceiveRequest(httpGet, username, password);
-            output = IOUtils.toString(response.getEntity().getContent());
+            //response entity may be null (eg: 204 response)
+            if (response.getEntity() != null) {
+                output = IOUtils.toString(response.getEntity().getContent());
+                if (response.getEntity().getContentType() != null) {
+                    contentType = response.getEntity().getContentType().getValue();
+                }
+            }
             headers = response.getAllHeaders();
             httpStatus = response.getStatusLine().getStatusCode();
-            contentType = response.getEntity().getContentType().getValue();
             if (log.isTraceEnabled()) {
                 log.trace("Invoked GET " + uri.toString() + " - Response message: " + output);
             }
@@ -247,17 +259,21 @@ public class RESTInvoker {
         CloseableHttpResponse response = null;
         Header[] headers;
         int httpStatus;
-        String contentType;
-        String output;
+        String contentType = null;
+        String output = null;
         try {
             httpPost = new HttpPost(uri);
             httpPost.setEntity(new StringEntity(payload));
             processHeaderList(httpPost, jsonHeaders);
             response = sendReceiveRequest(httpPost, username, password);
-            output = IOUtils.toString(response.getEntity().getContent());
+            if (response.getEntity() != null) {
+                output = IOUtils.toString(response.getEntity().getContent());
+                if (response.getEntity().getContentType() != null) {
+                    contentType = response.getEntity().getContentType().getValue();
+                }
+            }
             headers = response.getAllHeaders();
             httpStatus = response.getStatusLine().getStatusCode();
-            contentType = response.getEntity().getContentType().getValue();
             if (log.isTraceEnabled()) {
                 log.trace("Invoked POST " + uri.toString() +
                         " - Input payload: " + payload + " - Response message: " + output);
@@ -292,17 +308,21 @@ public class RESTInvoker {
         CloseableHttpResponse response = null;
         Header[] headers;
         int httpStatus;
-        String contentType;
-        String output;
+        String contentType = null;
+        String output = null;
         try {
             httpPut = new HttpPut(uri);
             httpPut.setEntity(new StringEntity(payload));
             processHeaderList(httpPut, jsonHeaders);
             response = sendReceiveRequest(httpPut, username, password);
-            output = IOUtils.toString(response.getEntity().getContent());
+            if (response.getEntity() != null) {
+                output = IOUtils.toString(response.getEntity().getContent());
+                if (response.getEntity().getContentType() != null) {
+                    contentType = response.getEntity().getContentType().getValue();
+                }
+            }
             headers = response.getAllHeaders();
             httpStatus = response.getStatusLine().getStatusCode();
-            contentType = response.getEntity().getContentType().getValue();
             if (log.isTraceEnabled()) {
                 log.trace("Invoked PUT " + uri.toString() + " - Response message: " + output);
             }
@@ -334,16 +354,20 @@ public class RESTInvoker {
         CloseableHttpResponse response = null;
         Header[] headers;
         int httpStatus;
-        String contentType;
-        String output;
+        String contentType = null;
+        String output = null;
         try {
             httpDelete = new HttpDelete(uri);
             processHeaderList(httpDelete, jsonHeaders);
             response = sendReceiveRequest(httpDelete, username, password);
-            output = IOUtils.toString(response.getEntity().getContent());
+            if (response.getEntity() != null) {
+                output = IOUtils.toString(response.getEntity().getContent());
+                if (response.getEntity().getContentType() != null) {
+                    contentType = response.getEntity().getContentType().getValue();
+                }
+            }
             headers = response.getAllHeaders();
             httpStatus = response.getStatusLine().getStatusCode();
-            contentType = response.getEntity().getContentType().getValue();
             if (log.isTraceEnabled()) {
                 log.trace("Invoked DELETE " + uri.toString() + " - Response message: " + output);
             }

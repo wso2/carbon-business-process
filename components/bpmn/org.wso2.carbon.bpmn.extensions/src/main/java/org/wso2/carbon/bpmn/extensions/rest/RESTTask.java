@@ -31,11 +31,16 @@ import org.wso2.carbon.bpmn.core.types.datatypes.xml.BPMNXmlException;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.Utils;
 import org.wso2.carbon.bpmn.core.types.datatypes.xml.api.XMLDocument;
 import org.wso2.carbon.bpmn.extensions.internal.BPMNExtensionsComponent;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.registry.core.config.RegistryContext;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointFactory;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -142,9 +147,20 @@ public class RESTTask implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
+
+        if (method == null) {
+            String error = "HTTP method for the REST task not found. Please specify the \"method\" form property.";
+            throw new RESTClientException(error);
+        }
+
         if (log.isDebugEnabled()) {
-            log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " +
-                    serviceURL.getValue(execution).toString());
+            if (serviceURL != null) {
+                log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " + serviceURL
+                        .getValue(execution).toString());
+            } else if (serviceRef != null) {
+                log.debug("Executing RESTInvokeTask " + method.getValue(execution).toString() + " - " + serviceRef
+                        .getValue(execution).toString());
+            }
         }
 
         RESTInvoker restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
@@ -154,6 +170,7 @@ public class RESTTask implements JavaDelegate {
         String bUsername = null;
         String bPassword = null;
         JsonNodeObject jsonHeaders = null;
+        boolean contentAvailable = false;
         try {
             if (serviceURL != null) {
                 url = serviceURL.getValue(execution).toString();
@@ -164,27 +181,45 @@ public class RESTTask implements JavaDelegate {
             } else if (serviceRef != null) {
                 String resourcePath = serviceRef.getValue(execution).toString();
                 String registryPath;
-                String tenantId = execution.getTenantId();
+                int tenantIdInt = Integer.parseInt(execution.getTenantId());
+                RealmService realmService = RegistryContext.getBaseInstance().getRealmService();
+                String domain = realmService.getTenantManager().getDomain(tenantIdInt);
                 Registry registry;
-                if (resourcePath.startsWith(GOVERNANCE_REGISTRY_PREFIX)) {
-                    registryPath = resourcePath.substring(GOVERNANCE_REGISTRY_PREFIX.length());
-                    registry = BPMNExtensionsComponent.getRegistryService().getGovernanceSystemRegistry(
-                            Integer.parseInt(tenantId));
-                } else if (resourcePath.startsWith(CONFIGURATION_REGISTRY_PREFIX)) {
-                    registryPath = resourcePath.substring(CONFIGURATION_REGISTRY_PREFIX.length());
-                    registry = BPMNExtensionsComponent.getRegistryService().getConfigSystemRegistry(
-                            Integer.parseInt(tenantId));
-                } else {
-                    String msg = "Registry type is not specified for service reference in " +
-                            getTaskDetails(execution) +
-                            ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
-                    throw new RESTClientException(msg);
+                Resource urlResource;
+                try {
+                    PrivilegedCarbonContext.startTenantFlow();
+                    if (domain != null) {
+                        PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(domain);
+                        PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(tenantIdInt);
+                    } else {
+                        PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                                .setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+                        PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(tenantIdInt);
+                    }
+
+                    if (resourcePath.startsWith(GOVERNANCE_REGISTRY_PREFIX)) {
+                        registryPath = resourcePath.substring(GOVERNANCE_REGISTRY_PREFIX.length());
+                        registry = BPMNExtensionsComponent.getRegistryService()
+                                .getGovernanceSystemRegistry(tenantIdInt);
+                    } else if (resourcePath.startsWith(CONFIGURATION_REGISTRY_PREFIX)) {
+                        registryPath = resourcePath.substring(CONFIGURATION_REGISTRY_PREFIX.length());
+                        registry = BPMNExtensionsComponent.getRegistryService().getConfigSystemRegistry(tenantIdInt);
+                    } else {
+                        String msg =
+                                "Registry type is not specified for service reference in " + getTaskDetails(execution)
+                                        + ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
+                        throw new RESTClientException(msg);
+                    }
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("Reading endpoint from registry location: " + registryPath + " for task " + getTaskDetails(execution));
+                    }
+
+                    urlResource = registry.get(registryPath);
+                } finally {
+                    PrivilegedCarbonContext.endTenantFlow();
                 }
 
-                if (log.isDebugEnabled()) {
-                    log.debug("Reading endpoint from registry location: " + registryPath + " for task " + getTaskDetails(execution));
-                }
-                Resource urlResource = registry.get(registryPath);
                 if (urlResource != null) {
                     String uepContent = new String((byte[]) urlResource.getContent(), Charset.defaultCharset());
 
@@ -226,11 +261,18 @@ public class RESTTask implements JavaDelegate {
             }
 
             Object output = response.getContent();
-            boolean contentAvailable = !response.getContent().equals("");
+            if (output != null) {
+                contentAvailable = !response.getContent().equals("");
+            }
+            boolean contentTypeAvailable = false;
+            if (response.getContentType() != null) {
+                contentTypeAvailable = true;
+            }
 
-            if (contentAvailable && response.getContentType().contains(APPLICATION_JSON)) {
+            if (contentAvailable && contentTypeAvailable && response.getContentType().contains(APPLICATION_JSON)) {
                 output = JSONUtils.parse(String.valueOf(output));
-            } else if (contentAvailable && response.getContentType().contains(APPLICATION_XML)) {
+            } else if (contentAvailable && contentTypeAvailable && response.getContentType().contains
+                    (APPLICATION_XML)) {
                 output = Utils.parse(String.valueOf(output));
             } else {
                 output = StringEscapeUtils.escapeXml(String.valueOf(output));
@@ -280,7 +322,7 @@ public class RESTTask implements JavaDelegate {
             }
 
             if (httpStatusVariable != null) {
-                execution.setVariableLocal(httpStatusVariable.getValue(execution).toString(), response.getHttpStatus());
+                execution.setVariable(httpStatusVariable.getValue(execution).toString(), response.getHttpStatus());
             }
         } catch (RegistryException | XMLStreamException | URISyntaxException | IOException
                 | SAXException | ParserConfigurationException e) {
@@ -292,6 +334,10 @@ public class RESTTask implements JavaDelegate {
             String errorMessage = "Failed to extract values for output mappings, the response content" +
                     " doesn't support the expression" + method.getValue(execution).toString() + " " +
                     url + " within task " + getTaskDetails(execution);
+            log.error(errorMessage, e);
+            throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
+        } catch (UserStoreException e) {
+            String errorMessage = "Failed to obtain tenant domain information" ;
             log.error(errorMessage, e);
             throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         }
