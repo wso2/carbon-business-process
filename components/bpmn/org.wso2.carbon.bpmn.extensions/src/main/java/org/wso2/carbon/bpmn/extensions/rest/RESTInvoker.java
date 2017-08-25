@@ -251,7 +251,7 @@ public class RESTInvoker {
         String output;
         try {
             httpPost = new HttpPost(uri);
-            httpPost.setEntity(new StringEntity(payload));
+            httpPost.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
             processHeaderList(httpPost, jsonHeaders);
             response = sendReceiveRequest(httpPost, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
@@ -296,7 +296,7 @@ public class RESTInvoker {
         String output;
         try {
             httpPut = new HttpPut(uri);
-            httpPut.setEntity(new StringEntity(payload));
+            httpPut.setEntity(new StringEntity(payload, StandardCharsets.UTF_8));
             processHeaderList(httpPut, jsonHeaders);
             response = sendReceiveRequest(httpPut, username, password);
             output = IOUtils.toString(response.getEntity().getContent());
