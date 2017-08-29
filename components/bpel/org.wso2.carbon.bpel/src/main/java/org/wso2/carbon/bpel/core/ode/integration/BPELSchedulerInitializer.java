@@ -30,7 +30,6 @@ public class BPELSchedulerInitializer implements ServerStartupObserver {
 
     @Override
     public void completingServerStartup() {
-
         if (BPELServiceComponent.getBPELServer().getBpelServerConfiguration().getUseDistributedLock()) {
             if (BPELServiceComponent.getHazelcastInstance() != null) {
                 log.info("HazelCast instance available and configured");
@@ -38,7 +37,6 @@ public class BPELSchedulerInitializer implements ServerStartupObserver {
                 log.error("HazelCast instance not available, but distributed lock enabled");
             }
         }
-
     }
 
     @Override
