@@ -30,17 +30,15 @@ public class BPELSchedulerInitializer implements ServerStartupObserver {
 
     @Override
     public void completingServerStartup() {
-        if (log.isInfoEnabled()) {
-            log.info("Starting BPS Scheduler");
-            if (BPELServiceComponent.getBPELServer().getBpelServerConfiguration().getUseDistributedLock()) {
-                if (BPELServiceComponent.getHazelcastInstance() != null) {
-                    log.info("HazelCast instance available and configured");
-                } else {
-                    log.error("HazelCast instance not available, but distributed lock enabled");
-                }
+
+        if (BPELServiceComponent.getBPELServer().getBpelServerConfiguration().getUseDistributedLock()) {
+            if (BPELServiceComponent.getHazelcastInstance() != null) {
+                log.info("HazelCast instance available and configured");
+            } else {
+                log.error("HazelCast instance not available, but distributed lock enabled");
             }
         }
-        ((BPELServerImpl) BPELServiceComponent.getBPELServer()).getScheduler().start();
+
     }
 
     @Override
@@ -48,5 +46,10 @@ public class BPELSchedulerInitializer implements ServerStartupObserver {
         if (log.isDebugEnabled()) {
             log.debug("Competed server startup");
         }
+
+        /**Need to start the scheduler after all BPEL processes get deployed to resume currently active process instances.
+         Hence start scheduler after completing server startup. Users should configure Node ID in the bps.xml*/
+        log.info("Starting BPS Scheduler");
+        ((BPELServerImpl) BPELServiceComponent.getBPELServer()).getScheduler().start();
     }
 }
