@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.bpmn.extensions.rest;
 
+import java.nio.charset.Charset;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -263,7 +264,7 @@ public class RESTInvoker {
         String output = null;
         try {
             httpPost = new HttpPost(uri);
-            httpPost.setEntity(new StringEntity(payload,StandardCharsets.UTF_8));
+            httpPost.setEntity(new StringEntity(payload, Charset.defaultCharset()));
             processHeaderList(httpPost, jsonHeaders);
             response = sendReceiveRequest(httpPost, username, password);
             if (response.getEntity() != null) {
@@ -312,7 +313,7 @@ public class RESTInvoker {
         String output = null;
         try {
             httpPut = new HttpPut(uri);
-            httpPut.setEntity(new StringEntity(payload,StandardCharsets.UTF_8));
+            httpPut.setEntity(new StringEntity(payload,Charset.defaultCharset()));
             processHeaderList(httpPut, jsonHeaders);
             response = sendReceiveRequest(httpPut, username, password);
             if (response.getEntity() != null) {
