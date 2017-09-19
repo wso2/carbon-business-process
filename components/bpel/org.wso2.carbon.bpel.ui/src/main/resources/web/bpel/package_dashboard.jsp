@@ -10,6 +10,7 @@
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="java.io.File" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="org.wso2.carbon.registry.core.RegistryConstants" %>
 <%@ page import="org.wso2.carbon.businessprocesses.common.utils.CharacterEncoder" %>
 <!--
@@ -237,7 +238,7 @@
                         <tbody>
                         <tr>
                             <td>
-                                <a href="./process_info.jsp?Pid=<%=processInfo.getPid()%>"><%=processInfo.getPid()%>
+                                <a href="./process_info.jsp?Pid=<%=URLEncoder.encode(processInfo.getPid(),"UTF-8")%>"><%=processInfo.getPid()%>
                                 </a>
 
                             </td>

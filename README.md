@@ -5,7 +5,7 @@ carbon-business-process
 
 |  Branch | Build Status |
 | :------------ |:-------------
-| master      | [![Build Status](https://wso2.org/jenkins/job/carbon-business-process/badge/icon)](https://wso2.org/jenkins/job/carbon-business-process/badge) |
+| master      | [![Build Status](https://wso2.org/jenkins/job/platform-builds/job/carbon-business-process/badge/icon)](https://wso2.org/jenkins/job/platform-builds/job/carbon-business-process) |
 
 
 ---

@@ -30,6 +30,7 @@
 <%@ page import="java.util.Comparator" %>
 <%@ page import="javax.xml.namespace.QName" %>
 <%@ page import="org.wso2.carbon.bpel.stub.mgt.*" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 
@@ -347,7 +348,7 @@
     if (isAuthenticatedForInstanceMonitor || isAuthenticatedForProcessManagement) {
 %>
                                         <td>
-                                            <a href="process_info.jsp?Pid=<%=instanceInfo.getPid()%>"><%=instanceInfo.getPid()%>
+                                            <a href="process_info.jsp?Pid=<%=URLEncoder.encode(instanceInfo.getPid(),"UTF-8")%>"><%=instanceInfo.getPid()%>
                                             </a>
                                         </td>
 <%

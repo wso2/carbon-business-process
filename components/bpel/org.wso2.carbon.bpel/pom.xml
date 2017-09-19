@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel</artifactId>
-        <version>4.4.10-SNAPSHOT</version>
+        <version>4.4.20-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -87,7 +87,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity</groupId>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.security.mgt</artifactId>
         </dependency>
         <dependency>

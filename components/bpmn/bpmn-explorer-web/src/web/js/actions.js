@@ -1207,10 +1207,10 @@ function getVariablesOfCompletedProcessInstances(id) {
             } else {
                 var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.data.length; k++) {
-                    var name = variableInfo.data[k].variable.name;
-                    var type = variableInfo.data[k].variable.type;
-                    var value = variableInfo.data[k].variable.value;
-                    var scope = variableInfo.data[k].variable.scope;
+                    var name = htmlEncode(variableInfo.data[k].variable.name);
+                    var type = htmlEncode(variableInfo.data[k].variable.type);
+                    var value = htmlEncode(variableInfo.data[k].variable.value);
+                    var scope = htmlEncode(variableInfo.data[k].variable.scope);
 
                     DIV = DIV + "<tr><td style='word-wrap: break-word'>" + name + "</td><td>" + type + "</td><td style='word-wrap: break-word'>" + value + "</td><td>" + scope + "</td></tr>";
 
@@ -1419,10 +1419,10 @@ function getVariablesOfRunningProcessInstances(id) {
             if (variableInfo.restVariables.length > 0) {
                 var DIV = "<div style='overflow:auto;'><table id ='table1'><thead><td>Name</td><td>Type</td><td>Value</td><td>Scope</td></thead><tbody>"
                 for (var k = 0; k < variableInfo.restVariables.length; k++) {
-                    var name = variableInfo.restVariables[k].name;
-                    var type = variableInfo.restVariables[k].type;
-                    var value = variableInfo.restVariables[k].value;
-                    var scope = variableInfo.restVariables[k].variableScope;
+                    var name = htmlEncode(variableInfo.restVariables[k].name);
+                    var type = htmlEncode(variableInfo.restVariables[k].type);
+                    var value = htmlEncode(variableInfo.restVariables[k].value);
+                    var scope = htmlEncode(variableInfo.restVariables[k].variableScope);
 
                     DIV = DIV + "<tr><td style='word-wrap: break-word'>" + name + "</td><td>" + type + "</td><td style='word-wrap: break-word'>" + value + "</td><td>" + scope + "</td></tr>";
                 }
@@ -1956,6 +1956,17 @@ function deleteComment(id, commentId) {
     document.getElementById('confirmCancel').onclick = function() {
         $('#deleteConfirmModal').modal('hide');
     }
+}
+
+/**
+ * Encode data to display to avoid XSS
+ *
+ * @param value content to encode
+ * @returns {*|{content, fd}|jQuery}
+ */
+function htmlEncode(value){
+  //create a in-memory div, set it's inner text(which jQuery automatically encodes), then extract encoded contents
+  return $('<div/>').text(value).html().replace(/"/g, "&quot;").replace(/'/g, '&#x27;').replace(/\//g, "&#x2F;");
 }
 
 

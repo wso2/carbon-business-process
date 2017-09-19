@@ -227,8 +227,7 @@ public final class BpelUIUtil {
         } catch (UnsupportedEncodingException e) {
             log.error("Error encoding the url " + pid + e);
         }
-        String link = "process_list.jsp?operation=retire&processID=" + encodedPid + "&filter=" + filter +
-                "&order=" + order + "&pageNumber=" + pageNumber + "&retiredPackageName=" + packageName;
+        String link = "process_list.jsp?operation=retire&processID=" + encodedPid + "&pageNumber=" + pageNumber + "&retiredPackageName=" + packageName;
 
         return link;
     }
@@ -241,8 +240,7 @@ public final class BpelUIUtil {
             log.error("Error encoding the url " + pid + e);
         }
 
-        String link = "process_list.jsp?operation=activate&processID=" + encodedPid + "&filter=" + filter +
-                "&order=" + order + "&pageNumber=" + pageNumber;
+        String link = "process_list.jsp?operation=activate&processID=" + encodedPid  + "&pageNumber=" + pageNumber;
 
         return link;
     }
@@ -469,12 +467,14 @@ public final class BpelUIUtil {
         return totalInstances;
     }
 
-    public static String getInstanceFilterURL(String processId) {
+    public static String getInstanceFilterURL(String processId) throws UnsupportedEncodingException {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("list_instances.jsp?filter=pid=");
         strBuilder.append(processId);
-        strBuilder.
-                append(" status=active|completed|suspended|terminated|failed|error&order=-last-active");
+        strBuilder.append("%20status=active");
+        String encodedFilter = URLEncoder.encode("|completed|suspended|terminated|failed|error", "UTF-8");
+        strBuilder.append(encodedFilter);
+        strBuilder.append("&order=-last-active");
 
         return strBuilder.toString();
     }

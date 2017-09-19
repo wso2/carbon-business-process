@@ -242,6 +242,11 @@ public class WorkflowTaskService extends BaseTaskService {
         //return getTasksFromQueryRequest(request, requestParams);
     }
 
+    /**
+     * Create a new task instance for a process instance.
+     * @param taskRequest
+     * @return
+     */
     @POST
     @Path("/")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
