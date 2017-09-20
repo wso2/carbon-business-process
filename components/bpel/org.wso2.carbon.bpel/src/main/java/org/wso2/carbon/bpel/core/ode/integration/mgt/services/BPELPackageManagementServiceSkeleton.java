@@ -59,6 +59,12 @@ public class BPELPackageManagementServiceSkeleton extends AbstractAdmin
         }
     }
 
+    /**
+     * This method will return the latest version of the BPEL package
+     * @param packageName BPEL package name
+     * @return Latest package version
+     * @throws PackageManagementException
+     */
     public String getLatestVersionInPackage(String packageName) throws PackageManagementException {
         TenantProcessStoreImpl tenantProcessStore = getTenantProcessStore();
         BPELPackageRepository packageRepo = tenantProcessStore.getBPELPackageRepository();
