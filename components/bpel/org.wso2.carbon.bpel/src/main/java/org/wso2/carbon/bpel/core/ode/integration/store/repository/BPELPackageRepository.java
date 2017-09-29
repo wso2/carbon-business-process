@@ -402,8 +402,7 @@ public class BPELPackageRepository {
     public BPELPackageInfo getBPELPackageInfoForPackage(String packageName)
             throws RegistryException {
         String packageLocationInRegistry =
-                BPELPackageRepositoryUtils.getResourcePathForBPELPackage(packageName.substring(0,
-                        packageName.lastIndexOf('-')));
+                BPELPackageRepositoryUtils.getResourcePathForBPELPackage(packageName);
         return getBPELPackageInfo(packageLocationInRegistry);
     }
 
