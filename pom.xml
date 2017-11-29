@@ -974,7 +974,7 @@
                 <version>${carbon.commons.version}</version>
             </dependency>
             <dependency>
-                <groupId>tranql.wso2</groupId>
+                <groupId>org.wso2.orbit.tranql</groupId>
                 <artifactId>tranql-connector</artifactId>
                 <version>${tranql-connector}</version>
             </dependency>
@@ -1534,7 +1534,7 @@
         <orbit.version.spring>3.2.9.wso2v1</orbit.version.spring>
         <orbit.version.woden>1.0.0.M9-wso2v1</orbit.version.woden>
         <axion.wso2>1.0.0.M3-dev-wso2v1</axion.wso2>
-        <tranql-connector>1.1.0.wso2v1</tranql-connector>
+        <tranql-connector>1.8.wso2v1</tranql-connector>
         <antlr.wso2.version>3.2.0.wso2v1</antlr.wso2.version>
         <xalan.wso2.version>2.7.0.2wso2v1</xalan.wso2.version>
         <rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
