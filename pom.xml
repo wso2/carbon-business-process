@@ -21,7 +21,7 @@
     <groupId>org.wso2.carbon.business-process</groupId>
     <artifactId>carbon-business-process</artifactId>
     <packaging>pom</packaging>
-    <version>4.4.19-SNAPSHOT</version>
+    <version>4.4.26-SNAPSHOT</version>
     <name>WSO2 Carbon Business Process Aggregator Pom</name>
     <url>http://wso2.org</url>
 
@@ -1398,7 +1398,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <carbon.business-process.version>4.4.19-SNAPSHOT</carbon.business-process.version>
+        <carbon.business-process.version>4.4.26-SNAPSHOT</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.4.0,4.5.0)
         </carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>${carbon.business-process.version}</carbon.business-process.exp.pkg.version>
@@ -1410,11 +1410,11 @@
         <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
 
         <!-- Carbon kernel version -->
-        <carbon.kernel.version>4.4.12</carbon.kernel.version>
+        <carbon.kernel.version>4.4.18</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.5.7</carbon.commons.version>
+        <carbon.commons.version>4.6.3</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->

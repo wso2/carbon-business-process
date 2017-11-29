@@ -77,9 +77,13 @@ public class BPELApplicationAdmin extends AbstractAdmin {
         List<PackageMetadata> packageList = new ArrayList<PackageMetadata>();
 
         String packageName;
+        String versionLessPackageName;
+        Artifact artifact;
         for (Artifact.Dependency dep : deps) {
-            Artifact artifact = dep.getArtifact();
-            packageName = artifact.getRuntimeObjectName();
+            artifact = dep.getArtifact();
+            versionLessPackageName = artifact.getName() + "-" + artifact.getVersion();
+            packageName = versionLessPackageName + "-" + bpelAdmin
+                    .getLatestVersionInPackage(versionLessPackageName);
             if (packageName == null) {
                 continue;
             }
@@ -99,7 +103,7 @@ public class BPELApplicationAdmin extends AbstractAdmin {
                     }
                 }
                 String[] processes = new String[processList.size()];
-                packageMetadata.setProcessList(processes);
+                packageMetadata.setProcessList(processList.toArray(processes));
 
                 packageList.add(packageMetadata);
             }

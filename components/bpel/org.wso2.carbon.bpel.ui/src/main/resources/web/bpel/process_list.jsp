@@ -209,7 +209,7 @@
             processListOrderBy = "-deployed";
         }
 
-        parameters = "filter=" + processListFilter + "&order=" + processListOrderBy+"&packageSearchString=" + packageSearchString;
+        parameters = "filter=" + URLEncoder.encode(processListFilter, "UTF-8") + "&order=" + processListOrderBy + "&packageSearchString=" + packageSearchString;
 
 
     }
