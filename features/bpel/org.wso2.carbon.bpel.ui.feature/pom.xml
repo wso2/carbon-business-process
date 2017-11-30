@@ -124,7 +124,7 @@
                                 </importBundleDef>
                                 <importBundleDef>net.sf.saxon.wso2:saxon.he</importBundleDef>
                                 <importBundleDef>net.sourceforge.serp.wso2:serp</importBundleDef>
-                                <importBundleDef>tranql.wso2:tranql-connector</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.tranql:tranql-connector</importBundleDef>
                                 <importBundleDef>antlr.wso2:antlr</importBundleDef>
                                 <importBundleDef>rhino.wso2:js</importBundleDef>
                                 <importBundleDef>org.apache.batik.wso2:batik</importBundleDef>
