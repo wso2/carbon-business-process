@@ -28,6 +28,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpStatus;
 import org.wso2.carbon.bpmn.rest.common.RestResponseFactory;
 import org.wso2.carbon.bpmn.rest.common.RestUrls;
 import org.wso2.carbon.bpmn.rest.common.utils.BPMNOSGIService;
@@ -35,8 +36,10 @@ import org.wso2.carbon.bpmn.rest.common.utils.Utils;
 import org.wso2.carbon.bpmn.rest.model.common.DataResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionResponse;
 import org.wso2.carbon.bpmn.rest.model.repository.ProcessDefinitionsPaginateList;
+import org.wso2.carbon.bpmn.rest.model.runtime.ProcessDefinitionActionRequest;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -224,6 +227,19 @@ public class ProcessDefinitionService {
                 .build();
     }
 
+    @PUT
+    @Path("/{processDefinitionId}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response performProcessDefinitionAction(@PathParam("processDefinitionId") String processDefinitionId,
+            ProcessDefinitionActionRequest processDefinitionActionRequest) {
+        if (ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(processDefinitionActionRequest.getAction())) {
+            return activateProcessDefinition(processDefinitionId, processDefinitionActionRequest);
+        } else if (ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(processDefinitionActionRequest.getAction())) {
+            return suspendProcessDefinition(processDefinitionId, processDefinitionActionRequest);
+        }
+        throw new ActivitiIllegalArgumentException("Invalid action: '" +
+                processDefinitionActionRequest.getAction() + "'.");
+    }
 
     private ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
 
@@ -297,5 +313,56 @@ public class ProcessDefinitionService {
             }
         }
         throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
+    }
+
+    /**
+     * This method will activate the given process definition
+     *
+     * @param processDefinitionId            Process definition id
+     * @param processDefinitionActionRequest Process definition activate request
+     * @return Successfully activated then HTTP Response Code 200
+     * If already activated then HTTP Response Code 409
+     * If process definition is not found then HTTP Response Code 404
+     */
+    protected Response activateProcessDefinition(String processDefinitionId,
+            ProcessDefinitionActionRequest processDefinitionActionRequest) {
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        if (processDefinition != null) {
+            if (!processDefinition.isSuspended()) {
+                return Response.status(HttpStatus.SC_CONFLICT).build();
+            }
+            repositoryService.activateProcessDefinitionById(processDefinition.getId(),
+                    processDefinitionActionRequest.isIncludeProcessInstances(),
+                    processDefinitionActionRequest.getDate());
+
+            return Response.ok().build();
+        }
+        return Response.status(HttpStatus.SC_NOT_FOUND).build();
+    }
+
+    /**
+     * This method will suspend the given process definition
+     *
+     * @param processDefinitionId            Process definition id
+     * @param processDefinitionActionRequest Process definition suspend request
+     * @return Successfully suspended then HTTP Response Code 200
+     * If already suspended then HTTP Response Code 409
+     * If process definition is not found then HTTP Response Code 404
+     */
+    protected Response suspendProcessDefinition(String processDefinitionId,
+            ProcessDefinitionActionRequest processDefinitionActionRequest) {
+        RepositoryService repositoryService = BPMNOSGIService.getRepositoryService();
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        if (processDefinition != null) {
+            if (processDefinition.isSuspended()) {
+                return Response.status(HttpStatus.SC_CONFLICT).build();
+            }
+            repositoryService.suspendProcessDefinitionById(processDefinition.getId(),
+                    processDefinitionActionRequest.isIncludeProcessInstances(),
+                    processDefinitionActionRequest.getDate());
+            return Response.ok().build();
+        }
+        return Response.status(HttpStatus.SC_NOT_FOUND).build();
     }
 }
