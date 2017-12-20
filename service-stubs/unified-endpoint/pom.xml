@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>carbon-business-process</artifactId>
-        <version>4.4.28-SNAPSHOT</version>
+        <version>4.4.28</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
