@@ -1458,10 +1458,12 @@ public class InstanceManagementServiceSkeleton extends AbstractAdmin
             ProcessingException, InstanceManagementException {
         QName processId = getProcess(iid);
         TenantProcessStoreImpl processStore = getTenantProcessForCurrentSession();
-        if (processId != null && !processStore.containsProcess(processId)) {
-            log.error("Trying to invoke a illegal operation. Instance ID:" + iid);
-            throw new IllegalAccessException("Operation is not permitted.");
-        } else if (processId == null) {
+        if (processId != null) {
+            if (!processStore.containsProcess(processId)) {
+                log.error("Trying to invoke a illegal operation. Instance ID:" + iid);
+                throw new IllegalAccessException("Operation is not permitted.");
+            }
+        } else {
             throw new InstanceManagementException("Process instance for instance ID " + iid + " does not exist");
         }
     }
