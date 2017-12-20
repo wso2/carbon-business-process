@@ -165,6 +165,13 @@ function completeTask(data, id) {
                                                 "name" : data[i].name,
                                                 "value" : data[i].value,
                                             });
+                            } else if (vData[j].type === "date") {
+                                var startDateTemp = new Date(data[i].value);
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value": startDateTemp.toISOString,
+                                                "type" : "date"
+                                            });
                             } else {
                                 try {
                                     //if length is 0, then that input is not a mandatory input and user haven't enter anything
@@ -432,6 +439,13 @@ function startProcessWithData(data, id) {
                                 variables.push({
                                                 "name" : data[i].name,
                                                 "value" : data[i].value,
+                                            });
+                            } else if (vData[j].type === "date") {
+                                var startDateTemp = new Date(data[i].value);
+                                variables.push({
+                                                "name" : data[i].name,
+                                                "value": startDateTemp.toISOString(),
+                                                "type" : "date"
                                             });
                             } else {
                                 try {

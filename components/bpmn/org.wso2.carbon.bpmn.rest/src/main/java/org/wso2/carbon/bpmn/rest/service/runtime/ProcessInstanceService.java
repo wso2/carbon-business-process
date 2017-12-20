@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -232,11 +233,16 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
 
         RuntimeService runtimeService = BPMNOSGIService.getRuntimeService();
+        IdentityService identityService = BPMNOSGIService.getIdentityService();
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        String userName = carbonContext.getUsername();
 
         ProcessInstanceResponse processInstanceResponse;
         // Actually start the instance based on key or id
         try {
             ProcessInstance instance;
+
+            identityService.setAuthenticatedUserId(userName);
             if (processInstanceCreateRequest.getProcessDefinitionId() != null) {
                 instance = runtimeService.startProcessInstanceById(
                         processInstanceCreateRequest.getProcessDefinitionId(), processInstanceCreateRequest.getBusinessKey(), startVariables);
@@ -281,6 +287,8 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
         } catch (ActivitiObjectNotFoundException aonfe) {
             throw new ActivitiIllegalArgumentException(aonfe.getMessage(), aonfe);
+        } finally {
+            identityService.setAuthenticatedUserId(null);
         }
 
         return Response.ok().status(Response.Status.CREATED).entity(processInstanceResponse).build();

@@ -236,6 +236,9 @@ function generateForm(data, disabled) {
             formContent += genSelect(data[i], disabled);
         } else if (data[i].type == "date") {
             if (data[i].value) {
+                // Convert date format from dd/mm/yyyy to yyyy-mm-dd
+                // This conversions is required since the date-picker accepts values only in yyyy-mm-dd format
+                data[i].value = data[i].value.split("/").reverse().join("-");
                 formContent += genDatepickerWithValues(data[i]);
             } else {
                 formContent += genDatepicker(data[i], disabled);
