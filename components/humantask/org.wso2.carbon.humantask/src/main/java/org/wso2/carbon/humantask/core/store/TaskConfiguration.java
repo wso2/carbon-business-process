@@ -130,7 +130,7 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
             endpointConfig.setServicePort(service.getPort());
             endpointConfig.setServiceNS(service.getName().getNamespaceURI());
             endpointConfig.setBasePath(getHumanTaskDefinitionFile().getParentFile().getAbsolutePath());
-
+            endpointConfig.setServiceDescriptionLocation(service.getServiceDescriptionReference());
             addEndpointConfiguration(endpointConfig);
         }
 
@@ -148,7 +148,7 @@ public class TaskConfiguration extends HumanTaskBaseConfiguration {
             endpointConfig.setServicePort(cbService.getPort());
             endpointConfig.setServiceNS(cbService.getName().getNamespaceURI());
             endpointConfig.setBasePath(getHumanTaskDefinitionFile().getParentFile().getAbsolutePath());
-
+            endpointConfig.setServiceDescriptionLocation(cbService.getServiceDescriptionReference());
             addEndpointConfiguration(endpointConfig);
         }
     }
