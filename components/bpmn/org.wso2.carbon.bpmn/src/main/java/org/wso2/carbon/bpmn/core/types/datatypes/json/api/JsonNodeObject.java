@@ -74,7 +74,7 @@ public class JsonNodeObject {
             //when result is a list, then it should be a json array
             return builder.createJsonArrayFromMap((List<Object>)result);
 
-        } else if (result instanceof String || result instanceof Integer || result instanceof Byte ||
+        } else if (result == null || result instanceof String || result instanceof Integer || result instanceof Byte ||
                         result instanceof Character || result instanceof Short || result instanceof Long ||
                         result instanceof Float || result instanceof Double || result instanceof Boolean) {
 
