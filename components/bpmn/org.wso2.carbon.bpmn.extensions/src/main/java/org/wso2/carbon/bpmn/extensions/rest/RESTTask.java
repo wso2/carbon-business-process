@@ -280,7 +280,7 @@ public class RESTTask implements JavaDelegate {
 
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
-                execution.setVariableLocal(outVarName, output);
+                execution.setVariable(outVarName, output);
             } else if (outputMappings != null) {
                 String outMappings = outputMappings.getValue(execution).toString();
                 outMappings = outMappings.trim();
@@ -295,7 +295,7 @@ public class RESTTask implements JavaDelegate {
                     } else {
                         value = ((XMLDocument) output).xPath(expression);
                     }
-                    execution.setVariableLocal(varName, value);
+                    execution.setVariable(varName, value);
                 }
             } else {
                 String outputNotFoundErrorMsg = "An outputVariable or outputMappings is not provided. " +
@@ -318,7 +318,7 @@ public class RESTTask implements JavaDelegate {
                 }
                 headerJsonStr.append("}");
                 JsonNodeObject headerJson = JSONUtils.parse(headerJsonStr.toString());
-                execution.setVariableLocal(responseHeaderVariable.getValue(execution).toString(), headerJson);
+                execution.setVariable(responseHeaderVariable.getValue(execution).toString(), headerJson);
             }
 
             if (httpStatusVariable != null) {
