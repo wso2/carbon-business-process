@@ -1449,10 +1449,10 @@
 
         <!-- Axis2 Version -->
         <axis2.version>1.6.1-wso2v20</axis2.version>
-        <axis2.wso2.version>1.6.1-wso2v20</axis2.wso2.version>
+        <axis2.wso2.version>1.6.1-wso2v23</axis2.wso2.version>
         <exp.pkg.version.axis2>1.6.1</exp.pkg.version.axis2>
         <imp.pkg.version.axis2>[1.6.1, 1.7.0)</imp.pkg.version.axis2>
-        <axis2-transports.version>2.0.0.wso2v1</axis2-transports.version>
+        <axis2-transports.version>2.0.0.wso2v12</axis2-transports.version>
         <imp.pkg.version.axis2-transport-jms>[2.0.0, 2.1.0)</imp.pkg.version.axis2-transport-jms>
         <axis2.osgi.version.range>[1.6.1, 1.7.0)</axis2.osgi.version.range>
 
