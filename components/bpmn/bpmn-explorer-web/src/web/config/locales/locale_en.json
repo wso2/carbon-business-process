@@ -168,6 +168,7 @@
    "go.back.to.my.substitution.view" : "Go Back To My Substitution View",
    "you.have.admin.access.to.manage.substitutions" : "You Have Admin Access To Manage Substitutions",
    "you.are.in.the.user.substitutions.admin.view" : "You are in the User Substitutions Admin View",
-   "unauthorized" : "Unauthorized"
-
+   "unauthorized" : "Unauthorized",
+   "cookie.policy": "This site uses cookies. By logging in to the site, you are agreeing on the usage of cookies. For more information, refer",
+   "cookie.policy.link.label": "WSO2 cookie policy"
 }

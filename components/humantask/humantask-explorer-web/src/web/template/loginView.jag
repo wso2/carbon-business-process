@@ -34,6 +34,11 @@
                         </div>
 
                         <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
+                        <% if (isPrivacyPolicyEnabled) { %>
+                            <div class="alert alert-warning" role="alert"><%=i18n.localize("cookie.policy", "Cookie Policy")%>
+                            <a href="<%=privacyPolicyLink%>"><%=i18n.localize("cookie.policy.link.label", "Cookie Policy Link")%></a>.
+                            </div>
+                        <% } %>
                         <% if (message != "") { %>
                                 <div class="alert alert-danger" role="alert"><%=message%></div>
                             <% } %>
