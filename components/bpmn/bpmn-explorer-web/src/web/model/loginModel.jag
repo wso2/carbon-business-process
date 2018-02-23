@@ -20,4 +20,6 @@ if(loginFailed){
 	message = "Username or password invalid!";
 	session.remove("loginFailed");
 }
+var isPrivacyPolicyEnabled = data.app.enablePrivacyPolicy;
+var privacyPolicyLink = data.app.privacyPolicyLink;
 %>
