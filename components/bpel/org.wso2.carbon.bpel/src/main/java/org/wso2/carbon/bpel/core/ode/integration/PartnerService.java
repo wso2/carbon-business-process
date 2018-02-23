@@ -39,14 +39,17 @@ import org.apache.ode.il.OMUtils;
 import org.apache.ode.utils.DOMUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.bpel.core.BPELConstants;
+import org.wso2.carbon.bpel.core.internal.BPELServerHolder;
 import org.wso2.carbon.bpel.core.ode.integration.axis2.WSDLAwareSOAPProcessor;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
 import org.wso2.carbon.bpel.core.ode.integration.utils.AxisServiceUtils;
 import org.wso2.carbon.bpel.core.ode.integration.utils.BPELMessageContextFactory;
 import org.wso2.carbon.bpel.core.ode.integration.utils.Messages;
 import org.wso2.carbon.bpel.core.ode.integration.utils.SOAPUtils;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpoint;
 import org.wso2.carbon.unifiedendpoint.core.UnifiedEndpointConstants;
 
@@ -165,27 +168,27 @@ public class PartnerService implements PartnerRoleChannel {
             // Below logic is required only if tenant information from the thread local context is required here.
             // However,
             // it does not seem required, hence commenting out.
-//            String deployer = processConfiguration.getDeployer();
-//
-//            if(log.isDebugEnabled()) {
-//                String msg = "Process Name => " + processConfiguration.getProcessId() +
-//                        " Deployer =>" + processConfiguration.getDeployer();
-//                log.debug(msg);
-//            }
-//
-//            PrivilegedCarbonContext.startTenantFlow();
-//            // Assuming that deployer should not be null
-//            String domain = BPELServerHolder.getInstance().getRealmService().getTenantManager().getDomain(Integer
-// .parseInt(deployer));
-//            if(domain != null) {
-//                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(domain);
-//                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(Integer.parseInt(deployer));
-//
-//            } else {
-//                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants
-// .SUPER_TENANT_DOMAIN_NAME);
-//                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(Integer.parseInt(deployer));
-//            }
+            String deployer = processConfiguration.getDeployer();
+
+            if(log.isDebugEnabled()) {
+                String msg = "Process Name => " + processConfiguration.getProcessId() +
+                        " Deployer =>" + processConfiguration.getDeployer();
+                log.debug(msg);
+            }
+
+            PrivilegedCarbonContext.startTenantFlow();
+            // Assuming that deployer should not be null
+            String domain = BPELServerHolder.getInstance().getRealmService().getTenantManager().getDomain(Integer
+ .parseInt(deployer));
+            if(domain != null) {
+                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(domain);
+                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(Integer.parseInt(deployer));
+
+            } else {
+                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants
+ .SUPER_TENANT_DOMAIN_NAME);
+                PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(Integer.parseInt(deployer));
+            }
 
 
             final MessageContext mctx = new MessageContext();
@@ -369,18 +372,15 @@ public class PartnerService implements PartnerRoleChannel {
                     out.getSender().cleanup(mctx);
                 }
             }
-
-//            PrivilegedCarbonContext.endTenantFlow();
-
         } catch (Exception e) {
             String errmsg = Messages.msgErrorSendingMessageToAxisForODEMex(
                     partnerRoleMessageExchange.toString());
             log.error(errmsg, e);
             replyWithFailure(partnerRoleMessageExchange,
                     MessageExchange.FailureType.COMMUNICATION_ERROR, errmsg);
+        } finally {
+                PrivilegedCarbonContext.endTenantFlow();
         }
-
-
     }
 
     private void inferBindingInformation() {
