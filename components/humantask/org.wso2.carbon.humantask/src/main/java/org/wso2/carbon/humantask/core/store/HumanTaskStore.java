@@ -811,13 +811,6 @@ public class HumanTaskStore {
     }
 
     /**
-     * @param humanTaskDeploymentRepo : The deployment repository location to set.
-     */
-    public void setHumanTaskDeploymentRepo(File humanTaskDeploymentRepo) {
-        this.humanTaskDeploymentRepo = humanTaskDeploymentRepo;
-    }
-
-    /**
      * @return : The list of task configurations in the store.
      */
     public List<HumanTaskBaseConfiguration> getTaskConfigurations() {
