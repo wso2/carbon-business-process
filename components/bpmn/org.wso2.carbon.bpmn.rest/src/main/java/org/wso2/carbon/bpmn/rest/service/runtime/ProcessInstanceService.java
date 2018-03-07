@@ -99,6 +99,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 @Path("/process-instances")
 public class ProcessInstanceService extends BaseProcessInstanceService {
@@ -510,12 +514,17 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
 
             JAXBContext jaxbContext;
             try {
+                XMLInputFactory xif = XMLInputFactory.newFactory();
+                xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+                xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+                XMLStreamReader xsr = xif.createXMLStreamReader(
+                        new StreamSource(httpServletRequest.getInputStream()));
+
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller.
-                        unmarshal(httpServletRequest.getInputStream());
+                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(xsr);
 
-            } catch (JAXBException | IOException e) {
+            } catch (JAXBException | IOException | XMLStreamException e) {
                 throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
                         "RestVariable " +
                         "instance.", e);
@@ -747,10 +756,16 @@ public class ProcessInstanceService extends BaseProcessInstanceService {
             } else if (Utils.isApplicationXmlRequest(httpServletRequest)) {
                 JAXBContext jaxbContext;
                 try {
+                    XMLInputFactory xif = XMLInputFactory.newInstance();
+                    xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+                    xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+                    XMLStreamReader xsr = xif.createXMLStreamReader(
+                            new StreamSource(httpServletRequest.getInputStream()));
+
                     jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
-                            unmarshal(httpServletRequest.getInputStream());
+                    RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller
+                            .unmarshal(xsr);
                     if (restVariableCollection == null) {
                         throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
                                 "RestVariable Collection instance.");
