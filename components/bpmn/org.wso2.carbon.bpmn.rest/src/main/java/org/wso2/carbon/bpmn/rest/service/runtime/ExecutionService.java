@@ -25,6 +25,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -354,10 +358,15 @@ public class ExecutionService  extends BaseExecutionService {
             JAXBContext jaxbContext;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+                inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+                XMLStreamReader xmlReader = inputFactory
+                        .createXMLStreamReader(new StreamSource(httpServletRequest.getInputStream()));
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(httpServletRequest.getInputStream());
+                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(xmlReader);
 
-            } catch (JAXBException | IOException e) {
+            } catch (JAXBException | IOException | XMLStreamException e) {
                 throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a RestVariable instance.", e);
             }
         }
