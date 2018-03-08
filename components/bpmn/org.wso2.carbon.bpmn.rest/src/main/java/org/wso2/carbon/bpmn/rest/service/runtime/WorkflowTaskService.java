@@ -41,7 +41,6 @@ import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -50,6 +49,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.util.*;
 
@@ -629,11 +632,15 @@ public class WorkflowTaskService extends BaseTaskService {
             JAXBContext jaxbContext = null;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+                inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+                XMLStreamReader xmlReader = inputFactory
+                        .createXMLStreamReader(new StreamSource(httpServletRequest.getInputStream()));
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller.
-                        unmarshal(httpServletRequest.getInputStream());
+                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(xmlReader);
 
-            } catch (JAXBException | IOException e) {
+            } catch (JAXBException | IOException | XMLStreamException e) {
                 throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
                         "Rest Variable instance.", e);
             }
