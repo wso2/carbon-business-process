@@ -40,6 +40,7 @@ import org.wso2.carbon.bpmn.rest.model.runtime.*;
 import org.wso2.carbon.bpmn.rest.service.base.BaseTaskService;
 
 import javax.activation.DataHandler;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -501,7 +502,7 @@ public class WorkflowTaskService extends BaseTaskService {
                     jaxbContext = JAXBContext.newInstance(RestVariableCollection.class);
                     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                     RestVariableCollection restVariableCollection = (RestVariableCollection) jaxbUnmarshaller.
-                            unmarshal(httpServletRequest.getInputStream());
+                            unmarshal(getXMLReader(httpServletRequest.getInputStream()));
                     if (restVariableCollection == null) {
                         throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
                                 "RestVariable Collection instance.");
@@ -632,15 +633,11 @@ public class WorkflowTaskService extends BaseTaskService {
             JAXBContext jaxbContext = null;
             try {
                 jaxbContext = JAXBContext.newInstance(RestVariable.class);
-                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-                inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-                inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-                XMLStreamReader xmlReader = inputFactory
-                        .createXMLStreamReader(new StreamSource(httpServletRequest.getInputStream()));
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(xmlReader);
+                restVariable = (RestVariable) jaxbUnmarshaller.unmarshal(
+                        getXMLReader(httpServletRequest.getInputStream()));
 
-            } catch (JAXBException | IOException | XMLStreamException e) {
+            } catch (JAXBException | IOException e) {
                 throw new ActivitiIllegalArgumentException("xml request body could not be transformed to a " +
                         "Rest Variable instance.", e);
             }
@@ -1407,5 +1404,20 @@ public class WorkflowTaskService extends BaseTaskService {
             DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
             task.setDelegationState(delegationState);
         }
+    }
+
+    private XMLStreamReader getXMLReader(ServletInputStream servletInputStream) {
+        XMLStreamReader xmlReader;
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+
+        try {
+            xmlReader = inputFactory.createXMLStreamReader(new StreamSource(servletInputStream));
+        } catch (XMLStreamException e) {
+            throw new ActivitiIllegalArgumentException("Error while retrieving the xml reader from the http servlet "
+                    + "request while retrieving the Rest Variable instance.", e);
+        }
+        return xmlReader;
     }
 }
