@@ -129,25 +129,28 @@ public class BPMNDeployer extends AbstractDeployer {
 	    if (isWorkerNode()) {
 		    return;
 	    }
-        File bpmnArchiveFile = new File(bpmnArchivePath);
-        if (bpmnArchiveFile.exists()) {
-            if (log.isTraceEnabled()) {
-                log.trace("BPMN package: " + bpmnArchivePath + " exists in the deployment folder. " +
-                          "Therefore, this can be an update of the package and the undeployment will be aborted.");
+        if (System.getProperty(BPMNConstants.RESOLVE_DEPLOYMENT_SYS_PROP) != null && Boolean
+                .parseBoolean(System.getProperty(BPMNConstants.RESOLVE_DEPLOYMENT_SYS_PROP))
+                || System.getProperty(BPMNConstants.RESOLVE_DEPLOYMENT_SYS_PROP) == null) {
+            File bpmnArchiveFile = new File(bpmnArchivePath);
+            if (bpmnArchiveFile.exists()) {
+                if (log.isTraceEnabled()) {
+                    log.trace("BPMN package: " + bpmnArchivePath + " exists in the deployment folder. " +
+                              "Therefore, this can be an update of the package and the undeployment will be aborted.");
+                }
+                return;
             }
-            return;
-        }
 
-        Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
-        String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
-        try {
-           tenantRepository.undeploy(deploymentName, true);
-        } catch (BPSFault be) {
-            String errorMsg = "Error un deploying BPMN Package " + deploymentName;
-            throw new DeploymentException(errorMsg, be);
+            Integer tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            log.info("Undeploying BPMN archive " + bpmnArchivePath + " for tenant: " + tenantId);
+            String deploymentName = FilenameUtils.getBaseName(bpmnArchivePath);
+            try {
+               tenantRepository.undeploy(deploymentName, true);
+            } catch (BPSFault be) {
+                String errorMsg = "Error un deploying BPMN Package " + deploymentName;
+                throw new DeploymentException(errorMsg, be);
+            }
         }
-
     }
 
 	/**
