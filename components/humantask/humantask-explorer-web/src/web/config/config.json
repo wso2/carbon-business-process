@@ -5,7 +5,7 @@
     "footer": "&copy; 2005 - 2018 WSO2 Inc. All Rights Reserved.",
     "webappUrlName": "humantask-explorer",
     "enablePrivacyPolicy": true,
-    "privacyPolicyLink": "%https.host%"
+    "privacyPolicyLink": "/humantask-explorer/cookie-policy"
   },
   "server": {
     "https": "%https.host%",

@@ -4,7 +4,7 @@
     "author": "WSO2 Business Process Server",
     "footer": "&copy; 2005 - 2018 WSO2 Inc. All Rights Reserved.",
     "enablePrivacyPolicy": true,
-    "privacyPolicyLink": "%https.host%"
+    "privacyPolicyLink": "/bpmn-explorer/cookie-policy"
   },
   "server": {
     "https": "%https.host%",
