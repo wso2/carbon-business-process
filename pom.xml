@@ -1410,7 +1410,7 @@
         <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
 
         <!-- Carbon kernel version -->
-        <carbon.kernel.version>4.4.24</carbon.kernel.version>
+        <carbon.kernel.version>4.4.25</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
@@ -1418,7 +1418,7 @@
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.framework.version>5.11.112</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.11.134</carbon.identity.framework.version>
         <carbon.identity.imp.pkg.version>[5.0.0, 6.0.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
