@@ -1,0 +1,92 @@
+<!--
+ * Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<div class="row">
+    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+     <div id="toc"></div>
+    </div>
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+     <!-- content -->
+     <div class="container col-xs-12 col-sm-12 col-md-12 col-lg-12 col-centered wr-content col-centered padding-bottom-100">
+         <div>
+             <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">
+                 WSO2 EI 6.2.0 - Cookie Policy
+             </h2>
+         </div>
+         <div class="boarder-all ">
+             <div class="clearfix"></div>
+             <!-- Customizable content. Due to this nature, i18n is not implemented for this section -->
+             <div id="cookiePolicy" class="padding-double">
+                 <h2 id="cookie-policy"><strong>Cookie Policy</strong></h2>
+                 <p>WSO2 EI 6.2.0 uses cookies to provide you with the best user experience, and to securely identify you. You might not be able to access some of the services if you disable cookies.</p>
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="what-is-a-cookie">What is a cookie &quest;</h2>
+                 <p>A browser cookie is a small piece of data that is stored on your device to help websites and mobile apps remember things about you. Other technologies, including Web storage and identifiers associated with your device, may be used for similar purposes. In this policy, we use the term &ldquo;cookies&rdquo; to discuss all of these technologies.</p>
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="how-ei-process-cookies">How does EI 6.1.0 process cookies &quest;</h2>
+                 <p>EI 6.2.0 stores and retrieves information on your browser using cookies. The primary purpose of this cookies are to let users to login to the system, maintain session and keeping track of activities you do within the login session. The cookie lifetime will end once your session ends when you log-out or on session expiry.</p>
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="what-ei-use-cookies-for">What does EI 6.2.0 use cookies for &quest;</h2>
+                 <p>EI 6.2.0 uses cookies for security purposes.</p>
+                 <div class="margin-bottom"></div>
+                 <h3 id="ei-uses-cookies-for-the-following-purposes">EI 6.2.0 uses cookies for the following aspects of security purposes.</h3>
+                 <ul>
+                     <li>EI 6.2.0 uses selected cookies to identify and prevent security risks. For example, EI 6.2.0 may use these cookies to store your session information to prevent others from changing your password without your username and password.</li>
+                     <li>EI 6.2.0 uses session cookie to maintain your active session.</li>
+                 </ul>
+
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="what-type-of-cookies-ei-use">What type of cookies does EI 6.2.0 use &quest;</h2>
+                 <p>EI 6.2.0 uses session cookies. A session cookie is a cookie that is erased when the user closes the Web browser.</p>
+                 <p>A session cookie is erased when the user closes the Web browser. It is stored in temporarily and is not retained after the browser is closed. Session cookies do not collect information from the user’s computer.</p>
+
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="how-do-i-control-my-cookies">How do I control my cookies &quest;</h2>
+                 <p>Most browsers allow you to control cookies through settings. However, if you limit the ability of websites to set cookies, you may worsen your overall user experience, since it will no longer be personalized to you. It may also stop you from saving customized
+                   settings like login information. Disabling cookies might make you unable to use Authentication and
+                    Authorization functionalities offered by EI 6.2.0.</p>
+                 <p>If you have any questions or concerns regarding the use of cookies, please contact the Data
+                 Protection Officer of the organization running this EI 6.2.0 instance.</p>
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="what-are-the-cookies-used">What are the cookies used &quest;</h2>
+                 <table class="table table-bordered">
+                     <tbody>
+                     <tr>
+                         <td>
+                             <p>JSESSIONID</p>
+                         </td>
+                         <td>
+                             <p>Keeps track of the user session data when you are logged in for providing a better user experience.</p>
+                         </td>
+                         <td>
+                             <p>Session</p>
+                         </td>
+                     </tr>
+                     </tbody>
+                 </table>
+                 <div class="margin-bottom-double"></div>
+                 <h2 id="disclaimer">Disclaimer</h2>
+                 <p>This cookie policy is only for illustrative purpose of the product EI 6.2.0. The content in the policy is technically correct at the time of the product distribution. The organization which runs this EI 6.2.0 has full authority and responsibility of the effective Cookie Policy.</p>
+             </div>
+             <!-- /Costomizable content -->
+             <div class="clearfix"></div>
+         </div>
+     </div>
+     <!-- /content -->
+
+    </div>
+</div>
