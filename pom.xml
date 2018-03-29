@@ -1149,7 +1149,7 @@
             <dependency>
                 <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${orbit.fasterxml.jackson.version}</version>
+                <version>${orbit.fasterxml.jackson.core.version}</version>
             </dependency>
 
             <!--WSO2 Encoder-->
@@ -1410,23 +1410,23 @@
         <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
 
         <!-- Carbon kernel version -->
-        <carbon.kernel.version>4.4.25</carbon.kernel.version>
+        <carbon.kernel.version>4.4.26</carbon.kernel.version>
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.6.19</carbon.commons.version>
+        <carbon.commons.version>4.6.22</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
-        <carbon.identity.framework.version>5.11.134</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.11.148</carbon.identity.framework.version>
         <carbon.identity.imp.pkg.version>[5.0.0, 6.0.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
-        <carbon.deployment.version>4.7.13</carbon.deployment.version>
+        <carbon.deployment.version>4.7.15</carbon.deployment.version>
         <carbon.deployment.imp.pkg.version>[4.6.0, 5.0.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
-        <carbon.registry.version>4.6.27</carbon.registry.version>
+        <carbon.registry.version>4.6.30</carbon.registry.version>
         <carbon.registry.imp.pkg.version>[4.4.0,5.0.0)</carbon.registry.imp.pkg.version>
 
         <!-- Carbon Multi-tenancy version-->
@@ -1434,7 +1434,7 @@
         <carbon.multitenancy.imp.pkg.version>[4.6.11, 5.0.0)</carbon.multitenancy.imp.pkg.version>
 
         <!-- Carbon Event-processing version-->
-        <carbon.analytics.common.version>5.1.31</carbon.analytics.common.version>
+        <carbon.analytics.common.version>5.1.37</carbon.analytics.common.version>
         <carbon.analytics.common.imp.pkg.version>[5.0.0, 6.0.0)</carbon.analytics.common.imp.pkg.version>
 
         <!-- Axiom Version -->
@@ -1452,7 +1452,7 @@
         <axis2.wso2.version>1.6.1-wso2v23</axis2.wso2.version>
         <exp.pkg.version.axis2>1.6.1</exp.pkg.version.axis2>
         <imp.pkg.version.axis2>[1.6.1, 1.7.0)</imp.pkg.version.axis2>
-        <axis2-transports.version>2.0.0.wso2v15</axis2-transports.version>
+        <axis2-transports.version>2.0.0-wso2v16</axis2-transports.version>
         <imp.pkg.version.axis2-transport-jms>[2.0.0, 2.1.0)</imp.pkg.version.axis2-transport-jms>
         <axis2.osgi.version.range>[1.6.1, 1.7.0)</axis2.osgi.version.range>
 
@@ -1517,7 +1517,7 @@
 
         <!-- slf4j Version -->
         <!--slf4j.wso2.version>1.5.10.wso2v1</slf4j.wso2.version-->
-        <slf4j.version>1.7.12</slf4j.version>
+        <slf4j.version>1.7.21</slf4j.version>
 
         <!-- Abdera -->
         <!--<version.abdera>1.0-wso2v2</version.abdera>-->
@@ -1559,7 +1559,7 @@
         <neethi.version>3.0.2</neethi.version>
         <!--<neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>-->
         <!--<neethi.osgi.version.range>[2.0.4.wso2v4, 3.1.0)</neethi.osgi.version.range>-->
-        <stax2.version>3.1.1</stax2.version>
+        <stax2.version>3.1.4</stax2.version>
         <woodstox.core.version>4.2.0</woodstox.core.version>
         <jaxb.xjc.version>2.1.13</jaxb.xjc.version>
         <jaxb.impl.version>2.1.13</jaxb.impl.version>
@@ -1659,6 +1659,7 @@
 
         <!--For BPMN JSON-->
         <orbit.fasterxml.jackson.version>2.2.3.wso2v1</orbit.fasterxml.jackson.version>
+        <orbit.fasterxml.jackson.core.version>2.6.1.wso2v3</orbit.fasterxml.jackson.core.version>
         <fasterxml.jackson.version>2.2.3</fasterxml.jackson.version>
 
         <!--WSO2 Encoder Version-->
