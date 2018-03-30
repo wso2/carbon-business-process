@@ -1659,7 +1659,7 @@
 
         <!--For BPMN JSON-->
         <orbit.fasterxml.jackson.version>2.2.3.wso2v1</orbit.fasterxml.jackson.version>
-        <orbit.fasterxml.jackson.core.version>2.6.1.wso2v3</orbit.fasterxml.jackson.core.version>
+        <orbit.fasterxml.jackson.core.version>2.2.3.wso2v1</orbit.fasterxml.jackson.core.version>
         <fasterxml.jackson.version>2.2.3</fasterxml.jackson.version>
 
         <!--WSO2 Encoder Version-->
