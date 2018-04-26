@@ -110,7 +110,7 @@
                                 <importBundleDef>
                                     org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec
                                 </importBundleDef>
-                                <importBundleDef>org.apache.geronimo.modules.wso2:geronimo-kernel
+                                <importBundleDef>org.apache.geronimo.framework:geronimo-kernel
                                 </importBundleDef>
                                 <importBundleDef>geronimo-spec.wso2:geronimo-spec-javamail
                                 </importBundleDef>
