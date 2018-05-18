@@ -61,6 +61,30 @@
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
+        <!-- geronimo framework 3.0.1 related dependencies -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.framework</groupId>
+            <artifactId>geronimo-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-bundleutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-reflect</artifactId>
+        </dependency>
+
+
+
         <!--<dependency>-->
         <!--<groupId>org.wso2.carbon</groupId>-->
         <!--<artifactId>org.wso2.carbon.datasource</artifactId>-->
@@ -185,7 +209,12 @@
                         </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.bpel.core.internal,
-                            org.wso2.carbon.bpel.core.*
+                            org.wso2.carbon.bpel.core.*,
+                            com.thoughtworks.xstream.*;version="${com.thoughtworks.xstream.version}",
+                            net.sf.cglib.asm.*;version="${cglib.version}",
+                            org.apache.geronimo.crypto.*,
+                            org.apache.xbean.osgi.bundle.util.*;version="${xbean.bundleutils.version}",
+                            org.apache.xbean.recipe.*;version="${xbean.reflect.version}"
                         </Export-Package>
                         <Import-Package>
                             !org.wso2.carbon.bpel.core,
@@ -196,6 +225,11 @@
                             version="${carbon.business-process.imp.pkg.version}",
                             org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.*;
                             version="${carbon.business-process.imp.pkg.version}",
+                            !com.thoughtworks.xstream.*;version="${com.thoughtworks.xstream.version}",
+                            !net.sf.cglib.asm.*;version="${cglib.version}",
+                            !org.apache.geronimo.crypto.*,
+                            !org.apache.xbean.osgi.bundle.util.*;version="${xbean.bundleutils.version}",
+                            !org.apache.xbean.recipe.*;version="${xbean.reflect.version}"
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
