@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -194,6 +195,7 @@ public class TenantRepository {
             RepositoryService repositoryService = engine.getRepositoryService();
             DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
             archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+            this.validateZIPFile(archiveStream, deploymentRegistryPath);
             deploymentBuilder.addZipInputStream(archiveStream);
             deploymentBuilder.deploy();
             tenantRegistry.put(deploymentRegistryPath, deploymentEntry);
@@ -212,6 +214,19 @@ public class TenantRepository {
                 } catch (IOException e) {
                     log.error("Could not close archive stream", e);
                 }
+            }
+        }
+    }
+
+    private void validateZIPFile(ZipInputStream zipStream, String deploymentRegistryPath) throws IOException {
+        ZipEntry entry;
+
+        String canonicalDescPath = new File(deploymentRegistryPath).getCanonicalPath();
+        while ((entry = zipStream.getNextEntry()) != null) {
+            String canonicalEntryPath = new File(deploymentRegistryPath + File.separator +
+                    entry.getName()).getCanonicalPath();
+            if (!canonicalEntryPath.startsWith(canonicalDescPath)) {
+                throw new DeploymentException("Entry is outside of the target dir: " + entry.getName());
             }
         }
     }

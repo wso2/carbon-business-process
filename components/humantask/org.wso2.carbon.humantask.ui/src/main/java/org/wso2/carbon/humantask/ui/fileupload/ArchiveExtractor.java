@@ -43,7 +43,12 @@ public final class ArchiveExtractor {
             ZipInputStream zipStream = new ZipInputStream(new FileInputStream(file));
             ZipEntry entry;
 
+            String canonicalDescPath = new File(destination).getCanonicalPath();
             while ((entry = zipStream.getNextEntry()) != null) {
+                String canonicalEntryPath = new File(destination + File.separator + entry.getName()).getCanonicalPath();
+                if(!canonicalEntryPath.startsWith(canonicalDescPath)){
+                    throw new Exception("Entry is outside of the target dir: " + entry.getName());
+                }
                 if (entry.isDirectory()) {
                     if (log.isDebugEnabled()) {
                         log.debug("Extracting directory " + entry.getName());
