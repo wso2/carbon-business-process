@@ -221,11 +221,11 @@ public class TenantRepository {
     private void validateZIPFile(ZipInputStream zipStream, String deploymentRegistryPath) throws IOException {
         ZipEntry entry;
 
-        String canonicalDescPath = new File(deploymentRegistryPath).getCanonicalPath();
+        String canonicalDestPath = new File(deploymentRegistryPath).getCanonicalPath();
         while ((entry = zipStream.getNextEntry()) != null) {
             String canonicalEntryPath = new File(deploymentRegistryPath + File.separator +
                     entry.getName()).getCanonicalPath();
-            if (!canonicalEntryPath.startsWith(canonicalDescPath)) {
+            if (!canonicalEntryPath.startsWith(canonicalDestPath)) {
                 throw new DeploymentException("Entry is outside of the target dir: " + entry.getName());
             }
         }
