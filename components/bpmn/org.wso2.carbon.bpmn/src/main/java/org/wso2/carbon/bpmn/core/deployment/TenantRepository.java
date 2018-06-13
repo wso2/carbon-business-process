@@ -39,6 +39,8 @@ import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.api.Resource;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -220,13 +222,31 @@ public class TenantRepository {
 
     private void validateZIPFile(ZipInputStream zipStream, String deploymentRegistryPath) throws IOException {
         ZipEntry entry;
-
-        String canonicalDestPath = new File(deploymentRegistryPath).getCanonicalPath();
-        while ((entry = zipStream.getNextEntry()) != null) {
-            String canonicalEntryPath = new File(deploymentRegistryPath + File.separator +
-                    entry.getName()).getCanonicalPath();
-            if (!canonicalEntryPath.startsWith(canonicalDestPath)) {
-                throw new DeploymentException("Entry is outside of the target dir: " + entry.getName());
+        ZipInputStream validateInputStream = null;
+        try {
+            String canonicalDestPath = new File(deploymentRegistryPath).getCanonicalPath();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = zipStream.read(buffer)) > -1 ) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+            validateInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            while ((entry = zipStream.getNextEntry()) != null) {
+                String canonicalEntryPath = new File(deploymentRegistryPath + File.separator +
+                        entry.getName()).getCanonicalPath();
+                if (!canonicalEntryPath.startsWith(canonicalDestPath)) {
+                    throw new DeploymentException("Entry is outside of the target dir: " + entry.getName());
+                }
+            }
+        } finally {
+            if (validateInputStream != null) {
+                try {
+                    validateInputStream.close();
+                } catch (IOException e) {
+                    log.error("Could not close archive stream", e);
+                }
             }
         }
     }
