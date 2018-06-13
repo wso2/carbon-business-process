@@ -245,7 +245,7 @@ public class TenantRepository {
                 try {
                     validateInputStream.close();
                 } catch (IOException e) {
-                    log.error("Could not close archive stream", e);
+                    log.error("Could not close validate stream", e);
                 }
             }
         }
