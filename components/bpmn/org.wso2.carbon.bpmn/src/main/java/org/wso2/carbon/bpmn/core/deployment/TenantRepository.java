@@ -233,7 +233,7 @@ public class TenantRepository {
             }
             baos.flush();
             validateInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
-            while ((entry = zipStream.getNextEntry()) != null) {
+            while ((entry = validateInputStream.getNextEntry()) != null) {
                 String canonicalEntryPath = new File(deploymentRegistryPath + File.separator +
                         entry.getName()).getCanonicalPath();
                 if (!canonicalEntryPath.startsWith(canonicalDestPath)) {
