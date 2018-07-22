@@ -39,6 +39,8 @@ import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.api.Resource;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -194,6 +197,7 @@ public class TenantRepository {
             RepositoryService repositoryService = engine.getRepositoryService();
             DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().tenantId(tenantId.toString()).name(deploymentName);
             archiveStream = new ZipInputStream(new FileInputStream(deploymentContext.getBpmnArchive()));
+            this.validateZIPFile(archiveStream, deploymentRegistryPath);
             deploymentBuilder.addZipInputStream(archiveStream);
             deploymentBuilder.deploy();
             tenantRegistry.put(deploymentRegistryPath, deploymentEntry);
@@ -211,6 +215,37 @@ public class TenantRepository {
                     archiveStream.close();
                 } catch (IOException e) {
                     log.error("Could not close archive stream", e);
+                }
+            }
+        }
+    }
+
+    private void validateZIPFile(ZipInputStream zipStream, String deploymentRegistryPath) throws IOException {
+        ZipEntry entry;
+        ZipInputStream validateInputStream = null;
+        try {
+            String canonicalDestPath = new File(deploymentRegistryPath).getCanonicalPath();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = zipStream.read(buffer)) > -1 ) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+            validateInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            while ((entry = validateInputStream.getNextEntry()) != null) {
+                String canonicalEntryPath = new File(deploymentRegistryPath + File.separator +
+                        entry.getName()).getCanonicalPath();
+                if (!canonicalEntryPath.startsWith(canonicalDestPath)) {
+                    throw new DeploymentException("Entry is outside of the target dir: " + entry.getName());
+                }
+            }
+        } finally {
+            if (validateInputStream != null) {
+                try {
+                    validateInputStream.close();
+                } catch (IOException e) {
+                    log.error("Could not close validate stream", e);
                 }
             }
         }

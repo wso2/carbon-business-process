@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpel-feature</artifactId>
-        <version>4.4.26-SNAPSHOT</version>
+        <version>4.4.73-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -110,7 +110,7 @@
                                 <importBundleDef>
                                     org.apache.geronimo.specs.wso2:geronimo-j2ee-connector_1.5_spec
                                 </importBundleDef>
-                                <importBundleDef>org.apache.geronimo.modules.wso2:geronimo-kernel
+                                <importBundleDef>org.apache.geronimo.framework:geronimo-kernel
                                 </importBundleDef>
                                 <importBundleDef>geronimo-spec.wso2:geronimo-spec-javamail
                                 </importBundleDef>
@@ -124,7 +124,7 @@
                                 </importBundleDef>
                                 <importBundleDef>net.sf.saxon.wso2:saxon.he</importBundleDef>
                                 <importBundleDef>net.sourceforge.serp.wso2:serp</importBundleDef>
-                                <importBundleDef>tranql.wso2:tranql-connector</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.tranql:tranql-connector</importBundleDef>
                                 <importBundleDef>antlr.wso2:antlr</importBundleDef>
                                 <importBundleDef>rhino.wso2:js</importBundleDef>
                                 <importBundleDef>org.apache.batik.wso2:batik</importBundleDef>

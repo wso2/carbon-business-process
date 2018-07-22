@@ -1,17 +1,19 @@
 {
-    "app": {
-	"title" : "HumanTask Explorer",
-	"author": "WSO2 Business Process Server",
-	"footer": "&copy; 2005 - 2015 WSO2 Inc. All Rights Reserved.",
-	"webappUrlName": "humantask-explorer"
-    },
-    "server": {
-        "https": "%https.host%",
-        "http": "%http.host%",
-        "bpsHost": "",
-        "bpsPort": "",
-        "bpsTenant": ""
-    }
+  "app": {
+    "title" : "HumanTask Explorer",
+    "author": "WSO2 Business Process Server",
+    "footer": "&copy; 2005 - 2018 WSO2 Inc. All Rights Reserved.",
+    "webappUrlName": "humantask-explorer",
+    "enablePrivacyPolicy": true,
+    "privacyPolicyLink": "/humantask-explorer/cookie-policy"
+  },
+  "server": {
+    "https": "%https.host%",
+    "http": "%http.host%",
+    "bpsHost": "",
+    "bpsPort": "",
+    "bpsTenant": ""
+  }
 }
 
 

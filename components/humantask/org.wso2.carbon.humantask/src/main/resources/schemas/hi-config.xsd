@@ -27,6 +27,7 @@
                     </xsd:sequence>
                     <xsd:attribute name="name" type="xsd:QName"/>
                     <xsd:attribute name="port" type="xsd:NCName"/>
+                    <xsd:attribute name="serviceDescriptionReference" type="xsd:string" use="optional"/>
                 </xsd:complexType>
             </xsd:element>
         </xsd:sequence>
@@ -40,6 +41,7 @@
                     </xsd:sequence>
                     <xsd:attribute name="name" type="xsd:QName"/>
                     <xsd:attribute name="port" type="xsd:NCName"/>
+                    <xsd:attribute name="serviceDescriptionReference" type="xsd:string" use="optional"/>
                 </xsd:complexType>
             </xsd:element>
         </xsd:sequence>

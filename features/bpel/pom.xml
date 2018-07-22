@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>carbon-business-process</artifactId>
-        <version>4.4.26-SNAPSHOT</version>
+        <version>4.4.73-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -119,7 +119,7 @@
                 <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
             </dependency>
             <dependency>
-                <groupId>org.apache.geronimo.modules.wso2</groupId>
+                <groupId>org.apache.geronimo.framework</groupId>
                 <artifactId>geronimo-kernel</artifactId>
             </dependency>
             <dependency>
@@ -143,7 +143,7 @@
                 <artifactId>serp</artifactId>
             </dependency>
             <dependency>
-                <groupId>tranql.wso2</groupId>
+                <groupId>org.wso2.orbit.tranql</groupId>
                 <artifactId>tranql-connector</artifactId>
             </dependency>
             <dependency>

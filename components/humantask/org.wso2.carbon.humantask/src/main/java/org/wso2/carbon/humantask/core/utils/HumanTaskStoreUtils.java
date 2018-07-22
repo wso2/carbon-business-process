@@ -55,14 +55,8 @@ public final class HumanTaskStoreUtils {
     }
 
     public static EndpointConfiguration getEndpointConfig(OMElement serviceEle) {
-        OMElement endpointEle = serviceEle.getFirstElement();
-        if (endpointEle == null || !endpointEle.getQName().equals(
-                new QName(BusinessProcessConstants.BPEL_PKG_ENDPOINT_CONFIG_NS,
-                        BusinessProcessConstants.ENDPOINT))) {
-            return null;
-        }
 
-        String serviceDescLocation = endpointEle.getAttributeValue(new QName(null,
+        String serviceDescLocation = serviceEle.getAttributeValue(new QName(null,
                 BusinessProcessConstants.SERVICE_DESC_LOCATION));
 
         if (StringUtils.isNotEmpty(serviceDescLocation)) {
@@ -72,7 +66,7 @@ public final class HumanTaskStoreUtils {
             return endpointConfig;
         }
 
-        String endpointRef = endpointEle.getAttributeValue(new QName(null,
+        String endpointRef = serviceEle.getAttributeValue(new QName(null,
                 BusinessProcessConstants.ENDPOINTREF));
         if (StringUtils.isNotEmpty(endpointRef)) {
             EndpointConfiguration endpointConfig = new EndpointConfiguration();

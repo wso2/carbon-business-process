@@ -106,5 +106,7 @@
   "no":"No",
   "yes":"Yes",
   "category":"Category",
-  "search.result":"Search Results"
+  "search.result":"Search Results",
+  "cookie.policy": "This site uses cookies. By logging in to the site, you are agreeing on the usage of cookies. For more information, refer",
+  "cookie.policy.link.label": "WSO2 cookie policy"
 }
