@@ -1442,7 +1442,7 @@
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.6.47</carbon.commons.version>
+        <carbon.commons.version>4.6.48</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
@@ -1480,7 +1480,7 @@
         <axis2.wso2.version>1.6.1-wso2v27</axis2.wso2.version>
         <exp.pkg.version.axis2>1.6.1</exp.pkg.version.axis2>
         <imp.pkg.version.axis2>[1.6.1, 1.7.0)</imp.pkg.version.axis2>
-        <axis2-transports.version>2.0.0-wso2v27</axis2-transports.version>
+        <axis2-transports.version>2.0.0-wso2v28</axis2-transports.version>
         <imp.pkg.version.axis2-transport-jms>[2.0.0, 2.1.0)</imp.pkg.version.axis2-transport-jms>
         <axis2.osgi.version.range>[1.6.1, 1.7.0)</axis2.osgi.version.range>
 
