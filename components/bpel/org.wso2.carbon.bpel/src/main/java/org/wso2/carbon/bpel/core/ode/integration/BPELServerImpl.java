@@ -1039,22 +1039,48 @@ public final class BPELServerImpl implements BPELServer, Observer {
         @Override
         public void memberAdded(MembershipEvent membershipEvent) {
             // Noting to do here.
+            if (log.isDebugEnabled()) {
+                log.debug("New member added event triggered: " + membershipEvent);
+            }
         }
 
         @Override
         public void memberRemoved(MembershipEvent membershipEvent) {
+            if (log.isDebugEnabled()) {
+                log.debug("Member removed event triggered: " + membershipEvent);
+            }
+
             HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
             Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
+
+            if (log.isDebugEnabled()) {
+                StringBuilder nodeListBuilder = new StringBuilder();
+                nodeListBuilder.append("[");
+                for (Member member : hazelcastInstance.getCluster().getMembers()) {
+                    nodeListBuilder.append(",").append(getHazelCastNodeID(member));
+                }
+                nodeListBuilder.append("]");
+                log.debug("BPS Cluster members: " + nodeListBuilder.toString());
+                log.debug("Leader node of the BPS cluster: " + getHazelCastNodeID(leader));
+            }
+
             // Allow Leader to update distributed map.
             if (leader.localMember()) {
                 String leftMemberID = getHazelCastNodeID(membershipEvent.getMember());
                 hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).remove(leftMemberID);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Removed the member: " + leftMemberID + " from the distributed map (WSO2_BPS_NODE_ID_MAP)");
+                }
             }
         }
 
         @Override
         public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
             // Noting to do here.
+            if (log.isDebugEnabled()) {
+                log.debug("Member attribute change event triggered: " + memberAttributeEvent);
+            }
         }
     }
 
