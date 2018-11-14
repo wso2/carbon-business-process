@@ -137,6 +137,12 @@
 
         <!-- Interval between immediate retries when the transaction fails -->
         <!--<tns:ODESchedulerImmediateTransactionRetryInterval>1000</tns:ODESchedulerImmediateTransactionRetryInterval>-->
+
+        <!--<tns:ODESecondaryStaleNodeDetection>
+            <tns:Enable>false</tns:Enable>
+            <tns:ODEDBUpdateSchedulerInterval>20000</tns:ODEDBUpdateSchedulerInterval>
+            <tns:ODESecondaryStaleThresholdFactor>4</tns:ODESecondaryStaleThresholdFactor>
+        </tns:ODESecondaryStaleNodeDetection>-->
     <!--</tns:ODESchedulerConfiguration>-->
 
     <!--Configurations for BPEL UI-->

@@ -60,6 +60,9 @@ import org.wso2.carbon.bpel.core.ode.integration.store.ProcessConfigurationImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.ProcessStoreImpl;
 import org.wso2.carbon.bpel.core.ode.integration.store.TenantProcessStoreImpl;
 import org.wso2.carbon.bpel.core.ode.integration.utils.BPELDatabaseCreator;
+import org.wso2.carbon.registry.core.Registry;
+import org.wso2.carbon.registry.core.config.RegistryContext;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.MBeanRegistrar;
 
@@ -114,6 +117,8 @@ public final class BPELServerImpl implements BPELServer, Observer {
     /* BPEL Server Configuration */
     private BPELServerConfiguration bpelServerConfiguration;
 
+    private boolean isManager= false;
+
     private static BPELServerImpl ourInstance = new BPELServerImpl();
 
     public static BPELServerImpl getInstance() {
@@ -159,6 +164,10 @@ public final class BPELServerImpl implements BPELServer, Observer {
             log.debug("Initializing BPEL server");
         }
         initBPELServer(eprContext);
+
+        isManager = isManagerNode();
+        if (isManager)
+            log.info("This node is a manager node");
 
         if (log.isDebugEnabled()) {
             log.debug("Initializing multithreaded connection manager");
@@ -896,6 +905,25 @@ public final class BPELServerImpl implements BPELServer, Observer {
         }
     }
 
+    /**
+     * Function to check whether this nos node is manager node by checking registry read/write ability
+     *
+     * @return true if this is manager node, false otherwise
+     */
+    private boolean isManagerNode() {
+        try {
+            //get config registry of super tenant
+            Registry configRegistry = BPELServiceComponent.getRegistryService().getConfigSystemRegistry(-1234);
+            RegistryContext registryContext = configRegistry.getRegistryContext();
+            if (registryContext != null) {
+                return !registryContext.isReadOnly();
+            }
+        } catch (RegistryException e) {
+            log.error("Error occurred while retrieving config registry", e);
+        }
+        return false;
+    }
+
     public BPELServerConfiguration getBpelServerConfiguration() {
         return bpelServerConfiguration;
     }
@@ -1009,9 +1037,50 @@ public final class BPELServerImpl implements BPELServer, Observer {
             HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
             Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
             if (leader.localMember()) {
+                log.debug("ODEClusterImpl#isLeader: true");
                 return true;
             }
+            log.debug("#ODEClusterImpl#isLeader: false");
             return false;
+        }
+
+
+        @Override
+        public void removeMember(String memberID) {
+            // Only manager node is allowed to remove node from the cluster forcefully
+            if (memberID != null && isManager()) {
+                log.info("Forcefully removing member from BPS Cluster: " + memberID);
+
+                HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
+                for (Object key : hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).keySet()) {
+                    if (memberID.equals(hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).get(key))) {
+                        hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).remove(key);
+                        log.info("Member "+ memberID + "[" + key + "] removed from WSO2_BPS_NODE_ID_MAP");
+                        break;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean isManager() {
+            if (log.isDebugEnabled()) {
+                log.debug("ODEClusterImpl#isManager:" + isManager);
+            }
+            return isManager;
+        }
+
+        @Override
+        public String getLeader() {
+            HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
+            Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
+            String leaderNodeId =
+                    (String) hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).get(getHazelCastNodeID(leader));
+            if (log.isDebugEnabled()) {
+                log.debug("ODEClusterImpl#getLeader: Hazelcast cluster leader member : " + leader +
+                        " , NodeId : " + leaderNodeId);
+            }
+            return leaderNodeId;
         }
 
         /**
@@ -1025,6 +1094,9 @@ public final class BPELServerImpl implements BPELServer, Observer {
             HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
             for (Object s : hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).keySet()) {
                 nodeList.add((String) hazelcastInstance.getMap(BPELConstants.BPS_CLUSTER_NODE_MAP).get(s));
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("ODEClusterImpl#getKnownNodes: Known nodeList: " + nodeList);
             }
             return nodeList;
         }
@@ -1042,6 +1114,7 @@ public final class BPELServerImpl implements BPELServer, Observer {
             if (log.isDebugEnabled()) {
                 log.debug("New member added event triggered: " + membershipEvent);
             }
+            log.info("ODEClusterImpl#memberAdded: Member added to BPS Cluster: " + membershipEvent.getMember());
         }
 
         @Override
@@ -1050,6 +1123,7 @@ public final class BPELServerImpl implements BPELServer, Observer {
                 log.debug("Member removed event triggered: " + membershipEvent);
             }
 
+            log.info("ODEClusterImpl#memberRemoved: Member removed from BPS Cluster: " + membershipEvent.getMember());
             HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
             Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
 
@@ -1072,6 +1146,7 @@ public final class BPELServerImpl implements BPELServer, Observer {
                 if (log.isDebugEnabled()) {
                     log.debug("Removed the member: " + leftMemberID + " from the distributed map (WSO2_BPS_NODE_ID_MAP)");
                 }
+                log.info("Member " + membershipEvent.getMember() + "[" + leftMemberID + "] removed from WSO2_BPS_NODE_ID_MAP");
             }
         }
 
@@ -1079,7 +1154,8 @@ public final class BPELServerImpl implements BPELServer, Observer {
         public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
             // Noting to do here.
             if (log.isDebugEnabled()) {
-                log.debug("Member attribute change event triggered: " + memberAttributeEvent);
+                log.debug("ODEClusterImpl#memberAttributeChanged Member attribute change from BPS Cluster: " +
+                        memberAttributeEvent.getMember());
             }
         }
     }

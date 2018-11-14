@@ -33,6 +33,7 @@ import org.wso2.carbon.bpel.config.TEventListeners;
 import org.wso2.carbon.bpel.config.TExtensionBundles;
 import org.wso2.carbon.bpel.config.TMexInterceptors;
 import org.wso2.carbon.bpel.config.TMultithreadedHttpConnectionManagerConfig;
+import org.wso2.carbon.bpel.config.TODESecondaryStaleNodeDetection;
 import org.wso2.carbon.bpel.config.TOpenJPAConfig;
 import org.wso2.carbon.bpel.config.TProcessDehydration;
 import org.wso2.carbon.bpel.config.TSchedule;
@@ -118,6 +119,11 @@ public class BPELServerConfiguration {
     private long odeSchedulerWarningDelay = 5 * 60 * 1000;
     private int odeSchedulerImmediateTransactionRetryLimit = 3;
     private long odeSchedulerImmediateTransactionRetryInterval = 1000;
+
+    private boolean odeSecondaryStaleNodeDetectionEnable = false;
+    private long odeHeartbeatDBUpdateSchedulerInterval = 20000;
+    private int odeSecondaryStaleThresholdFactor = 4;
+
     //Maximum length of a instance variable in instance view.
     private int instanceViewVariableLength = BPELConstants.DEFAULT_INSTANCE_VIEW_VARIABLE_LENGTH;
     private int transactionManagerTimeout = -1;
@@ -384,6 +390,15 @@ public class BPELServerConfiguration {
 
         odeConfig.setProperty(BPELConstants.ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_INTERVAL,
                 Long.toString(this.odeSchedulerImmediateTransactionRetryInterval));
+
+        odeConfig.setProperty(BPELConstants.ODE_SECONDARY_STALE_NODE_DETECTION_ENABLE,
+                Boolean.toString(odeSecondaryStaleNodeDetectionEnable));
+
+        odeConfig.setProperty(BPELConstants.ODE_SECONDARY_STALE_NODE_DETECTION_HEARTBEAT_INTERVAL,
+                Long.toString(odeHeartbeatDBUpdateSchedulerInterval));
+
+        odeConfig.setProperty(BPELConstants.ODE_SECONDARY_STALE_NODE_DETECTION_THRESHOLD_FACTOR,
+                Integer.toString(odeSecondaryStaleThresholdFactor));
 
         return odeConfig;
     }
@@ -811,8 +826,27 @@ public class BPELServerConfiguration {
                     config.getODESchedulerImmediateTransactionRetryLimit() : odeSchedulerImmediateTransactionRetryLimit;
 
             odeSchedulerImmediateTransactionRetryInterval = config.getODESchedulerImmediateInterval() > 0 ?
-                    config.getODESchedulerImmediateTransactionRetryInterval() :
-                    odeSchedulerImmediateTransactionRetryInterval;
+                    config.getODESchedulerImmediateTransactionRetryInterval() : odeSchedulerImmediateTransactionRetryInterval;
+
+            if (config.getODESecondaryStaleNodeDetection() != null) {
+                TODESecondaryStaleNodeDetection secondaryStaleDetectionConfig = config.getODESecondaryStaleNodeDetection();
+                String secondaryStaleNodeDetectionEnableValue = secondaryStaleDetectionConfig.getEnable();
+
+                if (secondaryStaleNodeDetectionEnableValue != null &&
+                        Boolean.valueOf(secondaryStaleNodeDetectionEnableValue)) {
+                    odeSecondaryStaleNodeDetectionEnable = true;
+
+                    odeHeartbeatDBUpdateSchedulerInterval =
+                            secondaryStaleDetectionConfig.getODEDBUpdateSchedulerInterval() > 0 ?
+                                    secondaryStaleDetectionConfig.getODEDBUpdateSchedulerInterval() :
+                                    odeHeartbeatDBUpdateSchedulerInterval;
+
+                    odeSecondaryStaleThresholdFactor =
+                            secondaryStaleDetectionConfig.getODESecondaryStaleThresholdFactor() > 0 ?
+                                    secondaryStaleDetectionConfig.getODESecondaryStaleThresholdFactor() :
+                                    odeSecondaryStaleThresholdFactor;
+                }
+            }
         }
     }
 
