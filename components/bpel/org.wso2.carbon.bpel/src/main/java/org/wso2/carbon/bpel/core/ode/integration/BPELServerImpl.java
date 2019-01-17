@@ -47,6 +47,7 @@ import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
 import org.apache.ode.scheduler.simple.ODECluster;
 import org.apache.ode.scheduler.simple.SimpleScheduler;
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.internal.BPELServerHolder;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
@@ -913,7 +914,8 @@ public final class BPELServerImpl implements BPELServer, Observer {
     private boolean isManagerNode() {
         try {
             //get config registry of super tenant
-            Registry configRegistry = BPELServiceComponent.getRegistryService().getConfigSystemRegistry(-1234);
+            Registry configRegistry = BPELServiceComponent.getRegistryService().getConfigSystemRegistry(
+                    MultitenantConstants.SUPER_TENANT_ID);
             RegistryContext registryContext = configRegistry.getRegistryContext();
             if (registryContext != null) {
                 return !registryContext.isReadOnly();
@@ -1037,10 +1039,14 @@ public final class BPELServerImpl implements BPELServer, Observer {
             HazelcastInstance hazelcastInstance = BPELServiceComponent.getHazelcastInstance();
             Member leader = hazelcastInstance.getCluster().getMembers().iterator().next();
             if (leader.localMember()) {
-                log.debug("ODEClusterImpl#isLeader: true");
+                if (log.isDebugEnabled()) {
+                    log.debug("ODEClusterImpl#isLeader: true");
+                }
                 return true;
             }
-            log.debug("#ODEClusterImpl#isLeader: false");
+            if (log.isDebugEnabled()) {
+                log.debug("#ODEClusterImpl#isLeader: false");
+            }
             return false;
         }
 
