@@ -98,7 +98,7 @@
                                 <importBundleDef>org.jibx.wso2:jibx</importBundleDef>
                                 <importBundleDef>org.apache.axis2.wso2:axis2-jaxbri
                                 </importBundleDef>
-                                <importBundleDef>com.sun.xml.bind.wso2:jaxb</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.sun.xml.bind:jaxb</importBundleDef>
                                 <importBundleDef>org.apache.bcel.wso2:bcel</importBundleDef>
                                 <importBundleDef>axion.wso2:axion</importBundleDef>
                                 <importBundleDef>commons-primitives.wso2:commons-primitives
