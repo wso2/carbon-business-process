@@ -387,7 +387,7 @@
                 <version>${jaxb.xjc.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.xml.bind.wso2</groupId>
+                <groupId>org.wso2.orbit.sun.xml.bind</groupId>
                 <artifactId>jaxb</artifactId>
                 <version>${jaxb.wso2.version}</version>
             </dependency>
@@ -1591,7 +1591,7 @@
         <woodstox.core.version>4.2.0</woodstox.core.version>
         <jaxb.xjc.version>2.1.13</jaxb.xjc.version>
         <jaxb.impl.version>2.1.13</jaxb.impl.version>
-        <jaxb.wso2.version>2.2.5.wso2v1</jaxb.wso2.version>
+        <jaxb.wso2.version>2.3.2.wso2v1</jaxb.wso2.version>
         <javax.ws.rs.version>2.0-m10</javax.ws.rs.version>
         <javax.persistence.version>2.0.3</javax.persistence.version>
         <httpcore.nio.version>4.2.4</httpcore.nio.version>
