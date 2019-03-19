@@ -182,7 +182,7 @@
                                 <importBundleDef>commons-fileupload:commons-fileupload:${commons.fileupload.version}</importBundleDef>
                                 <importBundleDef>org.codehaus.woodstox:stax2-api:${stax2.version}</importBundleDef>
 
-                                <importBundleDef>com.jayway.jsonpath.wso2:json-path:${jsonpath.wso2.version}</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.com.jayway.jsonpath:json-path:${jsonpath.wso2.version}</importBundleDef>
                                 <importBundleDef>net.minidev:json-smart:${json.smart.version}</importBundleDef>
 
                             </importBundles>
