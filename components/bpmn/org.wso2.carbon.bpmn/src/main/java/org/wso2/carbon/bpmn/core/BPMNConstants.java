@@ -76,5 +76,9 @@ public class BPMNConstants {
      * {@value #RESOLVE_DEPLOYMENT_SYS_PROP} System property to avoid resolving deployment to avoid inconsistencies
      */
     public static final String RESOLVE_DEPLOYMENT_SYS_PROP = "resolveDeploymentsAtStartup";
+
+    //For secure vault implementation in ActivitiEngine
+    public static final String SECURE_VAULT_NS = "http://org.wso2.securevault/configuration";
+    public static final String SECRET_ALIAS_ATTR_NAME = "secretAlias";
 }
 
