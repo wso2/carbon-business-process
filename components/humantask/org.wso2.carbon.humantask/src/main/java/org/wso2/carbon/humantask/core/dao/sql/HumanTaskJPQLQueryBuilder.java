@@ -256,7 +256,7 @@ public class HumanTaskJPQLQueryBuilder {
         }
         Query assignedToMeQuery = em.createQuery(SELECT_DISTINCT_TASKS +
                 JOIN_HUMAN_ROLES_JOIN_ORG_ENTITIES +
-                " oe.name = :name " +
+                "LOWER(oe.name) = LOWER(:name) " +
                 AND +
                 HR_TYPE_ROLE_TYPE +
                 AND +
@@ -484,7 +484,7 @@ public class HumanTaskJPQLQueryBuilder {
 
         Query assignedToMeQuery = em.createQuery(SELECT_DISTINCT_TASKS_COUNT +
                 JOIN_HUMAN_ROLES_JOIN_ORG_ENTITIES +
-                " oe.name = :name " +
+                "LOWER(oe.name) = LOWER(:name) " +
                 AND +
                 HR_TYPE_ROLE_TYPE +
                 AND +
