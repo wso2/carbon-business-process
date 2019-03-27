@@ -1648,6 +1648,8 @@
         <commons.fileupload.version>1.2.2</commons.fileupload.version>
         <jsonpath.wso2.version>2.4.0.wso2v2</jsonpath.wso2.version>
         <json.smart.version>2.3</json.smart.version>
+        <accessors-smart.version>1.2</accessors-smart.version>
+        <org.ow2.asm.asm.version>5.2</org.ow2.asm.asm.version>
 
 
         <!-- Servlet API -->
