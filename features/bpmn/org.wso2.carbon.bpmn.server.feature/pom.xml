@@ -166,7 +166,7 @@
                                 <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:${org.activiti.wso2.version}</importBundleDef>
                                 <importBundleDef>org.apache.commons:commons-lang3:${commons.lang3.version}</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-core:${orbit.fasterxml.jackson.core.version}</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:${orbit.fasterxml.jackson.core.version}</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:${orbit.fasterxml.jackson.databind.version}</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-annotations:${orbit.fasterxml.jackson.core.version}</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.joda-time:joda-time:${joda.time.version}</importBundleDef>
                                 <!-- importBundleDef>org.wso2.orbit.javax.mail:mail:1.4.1.wso2v1</importBundleDef -->
