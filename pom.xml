@@ -1144,12 +1144,12 @@
             <dependency>
                 <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>${orbit.fasterxml.jackson.core.version}</version>
+                <version>${orbit.fasterxml.jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.orbit.com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${orbit.fasterxml.jackson.core.version}</version>
+                <version>${orbit.fasterxml.jackson.version}</version>
             </dependency>
 
             <!--WSO2 Encoder-->
@@ -1442,7 +1442,7 @@
         <carbon.kernel.imp.pkg.version>[4.4.0, 4.5.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.6.52</carbon.commons.version>
+        <carbon.commons.version>4.6.58-SNAPSHOT</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.4.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
@@ -1686,9 +1686,7 @@
         <org.codehaus.groovy.version>2.4.7</org.codehaus.groovy.version>
 
         <!--For BPMN JSON-->
-        <orbit.fasterxml.jackson.version>2.2.3.wso2v1</orbit.fasterxml.jackson.version>
-        <orbit.fasterxml.jackson.databind.version>2.6.1.wso2v3</orbit.fasterxml.jackson.databind.version>
-        <orbit.fasterxml.jackson.core.version>2.6.1.wso2v1</orbit.fasterxml.jackson.core.version>
+        <orbit.fasterxml.jackson.version>2.9.8.wso2v1</orbit.fasterxml.jackson.version>
 
         <!--WSO2 Encoder Version-->
         <orbit.encoder.wso2.version>1.2.0.wso2v2</orbit.encoder.wso2.version>
