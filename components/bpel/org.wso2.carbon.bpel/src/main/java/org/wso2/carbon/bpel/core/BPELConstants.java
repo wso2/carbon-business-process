@@ -306,5 +306,11 @@ public final class BPELConstants {
     public static final String ODE_SCHEDULER_IMMEDIATE_TRANSACTION_RETRY_INTERVAL
             = "ode.scheduler.immediateTransactionRetryInterval";
 
+    public static final String ODE_SECONDARY_STALE_NODE_DETECTION_ENABLE = "ode.secondary.stale.node.detection.enable";
+    public static final String ODE_SECONDARY_STALE_NODE_DETECTION_HEARTBEAT_INTERVAL
+            = "ode.secondary.stale.node.detection.hb.interval";
+    public static final String ODE_SECONDARY_STALE_NODE_DETECTION_THRESHOLD_FACTOR
+            = "ode.secondary.stale.node.detection.threshold.factor";
+
     public static final String BPS_CLUSTER_NODE_MAP = "WSO2_BPS_NODE_ID_MAP";
 }

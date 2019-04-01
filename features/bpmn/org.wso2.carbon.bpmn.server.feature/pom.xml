@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn-feature</artifactId>
-        <version>4.4.62-SNAPSHOT</version>
+        <version>4.4.94-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -165,9 +165,9 @@
                             <importBundles>
                                 <importBundleDef>org.wso2.orbit.org.activiti:activiti-all:${org.activiti.wso2.version}</importBundleDef>
                                 <importBundleDef>org.apache.commons:commons-lang3:${commons.lang3.version}</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-core:${orbit.fasterxml.jackson.core.version}</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:${orbit.fasterxml.jackson.core.version}</importBundleDef>
-                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-annotations:${orbit.fasterxml.jackson.core.version}</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-core:${orbit.fasterxml.jackson.version}</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-databind:${orbit.fasterxml.jackson.version}</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.com.fasterxml.jackson.core:jackson-annotations:${orbit.fasterxml.jackson.version}</importBundleDef>
                                 <importBundleDef>org.wso2.orbit.joda-time:joda-time:${joda.time.version}</importBundleDef>
                                 <!-- importBundleDef>org.wso2.orbit.javax.mail:mail:1.4.1.wso2v1</importBundleDef -->
                                 <importBundleDef>org.mybatis:mybatis:${mybatis.version}</importBundleDef>
@@ -182,8 +182,10 @@
                                 <importBundleDef>commons-fileupload:commons-fileupload:${commons.fileupload.version}</importBundleDef>
                                 <importBundleDef>org.codehaus.woodstox:stax2-api:${stax2.version}</importBundleDef>
 
-                                <importBundleDef>com.jayway.jsonpath.wso2:json-path:${jsonpath.wso2.version}</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.com.jayway.jsonpath:json-path:${jsonpath.wso2.version}</importBundleDef>
                                 <importBundleDef>net.minidev:json-smart:${json.smart.version}</importBundleDef>
+                                <importBundleDef>net.minidev:accessors-smart:${accessors-smart.version}</importBundleDef>
+                                <importBundleDef>org.ow2.asm:asm:${org.ow2.asm.asm.version}</importBundleDef>
 
                             </importBundles>
 

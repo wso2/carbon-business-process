@@ -292,8 +292,12 @@ public class RESTTask implements JavaDelegate {
                     Object value;
                     if (output instanceof JsonNodeObject) {
                         value = ((JsonNodeObject) output).jsonPath(expression);
-                    } else {
+                    } else if (output instanceof XMLDocument) {
                         value = ((XMLDocument) output).xPath(expression);
+                    } else {
+                        String errorMessage = "Unrecognized content type found. " + "HTTP Status : " + response
+                                .getHttpStatus() + ", Response Content : " + output.toString();
+                        throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
                     }
                     execution.setVariable(varName, value);
                 }

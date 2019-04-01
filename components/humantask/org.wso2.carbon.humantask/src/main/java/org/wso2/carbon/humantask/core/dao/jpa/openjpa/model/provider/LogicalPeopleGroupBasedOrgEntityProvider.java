@@ -39,6 +39,7 @@ public class LogicalPeopleGroupBasedOrgEntityProvider implements OrganizationalE
             EvaluationContext evaluationContext) throws HumanTaskException {
         String roleName = null;
 
+        List<OrganizationalEntityDAO> orgEnties = new ArrayList<OrganizationalEntityDAO>();
         for (TArgument tArgument : tFrom.getArgumentArray()) {
             String expressionLanguage = (tArgument.getExpressionLanguage() == null) ?
                     tFrom.getExpressionLanguage() : tArgument.getExpressionLanguage();
@@ -48,24 +49,21 @@ public class LogicalPeopleGroupBasedOrgEntityProvider implements OrganizationalE
             //TODO what about expression language
             if ("role".equals(tArgument.getName())) {
                 roleName = tArgument.newCursor().getTextValue();
-                if(roleName != null && roleName.contains("htd:getInput")) {
-                roleName =
-                        CommonTaskUtil.calculateRole(evaluationContext, roleName,
-                                expressionLanguage);
+                if (roleName != null && roleName.contains("htd:getInput")) {
+                    roleName =
+                            CommonTaskUtil.calculateRole(evaluationContext, roleName,
+                                    expressionLanguage);
                 }
-                break;
+                if (StringUtils.isNotEmpty(roleName)) {
+                    roleName = roleName.trim();
+                    orgEnties.add(peopleQueryEvaluator.createGroupOrgEntityForRole(roleName));
+                }
             }
         }
 
-        if (roleName == null || StringUtils.isEmpty(roleName)) {
-            throw new HumanTaskRuntimeException("The role name cannot be empty: " +
-                    tFrom.toString());
-        } else {
-            roleName = roleName.trim();
+        if (orgEnties.size() == 0) {
+            throw new HumanTaskRuntimeException("There must be at least one role: " + tFrom.toString());
         }
-
-        List<OrganizationalEntityDAO> orgEnties = new ArrayList<OrganizationalEntityDAO>();
-        orgEnties.add(peopleQueryEvaluator.createGroupOrgEntityForRole(roleName));
 
         return orgEnties;
     }
