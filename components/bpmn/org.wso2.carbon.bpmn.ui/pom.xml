@@ -112,6 +112,7 @@
                             version="${carbon.business-process.exp.pkg.version}",
                             org.wso2.carbon.businessprocesses.common.utils.*;
                             version="${carbon.business-process.exp.pkg.version}",
+                            javax.activation.*;version="[0.0.0, 1.0.0)",
                             *;resolution:=optional
                         </Import-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>
