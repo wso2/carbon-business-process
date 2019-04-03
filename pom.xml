@@ -58,6 +58,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.wso2.orbit.javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${version.org.wso2.orbit.javax.activation}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.core</artifactId>
                 <version>${carbon.kernel.version}</version>
@@ -1685,6 +1690,7 @@
         <geronimo.crypto.version>3.0.1</geronimo.crypto.version>
         <xbean.bundleutils.version>3.13</xbean.bundleutils.version>
         <xbean.reflect.version>3.11</xbean.reflect.version>
+        <version.org.wso2.orbit.javax.activation>1.1.1.wso2v2</version.org.wso2.orbit.javax.activation>
     </properties>
 
 
