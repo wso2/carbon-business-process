@@ -185,7 +185,7 @@
                                 <importBundleDef>org.wso2.orbit.com.jayway.jsonpath:json-path:${jsonpath.wso2.version}</importBundleDef>
                                 <importBundleDef>net.minidev:json-smart:${json.smart.version}</importBundleDef>
                                 <importBundleDef>net.minidev:accessors-smart:${accessors-smart.version}</importBundleDef>
-                                <importBundleDef>org.ow2.asm:asm:${org.ow2.asm.asm.version}</importBundleDef>
+                                <importBundleDef>org.ow2.asm:asm-all:${org.ow2.asm.asm-all.version}</importBundleDef>
 
                             </importBundles>
 
