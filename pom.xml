@@ -994,11 +994,6 @@
                 <version>${rhino.wso2.version}</version>
             </dependency>
             <dependency>
-                <groupId>asm.wso2</groupId>
-                <artifactId>asm</artifactId>
-                <version>${asm.wso2.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>cglib.wso2</groupId>
                 <artifactId>cglib</artifactId>
                 <version>${cglib.wso2.version}</version>
@@ -1090,9 +1085,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.wso2.orbit.asm4</groupId>
-                <artifactId>asm4-all</artifactId>
-                <version>${org.asm4.wso2.version}</version>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-all</artifactId>
+                <version>${org.ow2.asm.asm-all.version}</version>
             </dependency>
 
             <dependency>
@@ -1560,7 +1555,6 @@
         <antlr.wso2.version>3.2.0.wso2v1</antlr.wso2.version>
         <xalan.wso2.version>2.7.0.2wso2v1</xalan.wso2.version>
         <rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
-        <asm.wso2.version>3.1.wso2v1</asm.wso2.version>
         <cglib.wso2.version>2.2.wso2v1</cglib.wso2.version>
         <bcel.wso2.version>5.2.0.wso2v1</bcel.wso2.version>
         <jibx.wso2.version>1.2.1.wso2v1</jibx.wso2.version>
@@ -1643,7 +1637,7 @@
         <jsonpath.wso2.version>2.4.0.wso2v2</jsonpath.wso2.version>
         <json.smart.version>2.3</json.smart.version>
         <accessors-smart.version>1.2</accessors-smart.version>
-        <org.ow2.asm.asm.version>5.2</org.ow2.asm.asm.version>
+        <org.ow2.asm.asm-all.version>5.2</org.ow2.asm.asm-all.version>
 
 
         <!-- Servlet API -->
@@ -1677,8 +1671,7 @@
         <project.scm.id>scm-server</project.scm.id>
 
         <!-- For HT Rendering -->
-        <com.predic8.soa-model-core.wso2.version>1.6.0.wso2v1</com.predic8.soa-model-core.wso2.version>
-        <org.asm4.wso2.version>4.0.0.wso2v1</org.asm4.wso2.version>
+        <com.predic8.soa-model-core.wso2.version>1.6.0.wso2v2</com.predic8.soa-model-core.wso2.version>
         <org.codehaus.groovy.version>2.4.7</org.codehaus.groovy.version>
 
         <!--For BPMN JSON-->
