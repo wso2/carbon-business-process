@@ -18,7 +18,7 @@
     <parent>
         <artifactId>bpmn</artifactId>
         <groupId>org.wso2.carbon.business-process</groupId>
-        <version>4.4.80-SNAPSHOT</version>
+        <version>4.4.95-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -54,7 +54,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jayway.jsonpath.wso2</groupId>
+            <groupId>org.wso2.orbit.com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
         </dependency>
 

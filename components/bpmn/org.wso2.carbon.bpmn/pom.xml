@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>bpmn</artifactId>
-        <version>4.4.80-SNAPSHOT</version>
+        <version>4.4.95-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -81,7 +81,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jayway.jsonpath.wso2</groupId>
+            <groupId>org.wso2.orbit.com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
         </dependency>
 
@@ -151,6 +151,7 @@
                         <Import-Package>
                             !org.wso2.carbon.bpel.deployer,
                             org.wso2.carbon.ndatasource.*,
+                            com.jayway.jsonpath.*;version="1.2.0",
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Import-Package>-->
