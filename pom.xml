@@ -1483,7 +1483,7 @@
         <neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>
         <neethi.osgi.version.range>[2.0.4.wso2v4, 3.0.0)</neethi.osgi.version.range>
 
-        <axis2.osgi.version.range.bpel>[1.6.1-wso2v35, 1.7.0)</axis2.osgi.version.range.bpel>
+        <axis2.osgi.version.range.bpel>[1.6.1, 1.7.0)</axis2.osgi.version.range.bpel>
 
         <!-- Xerces Version -->
         <!--xercesImpl.version>2.8.1.wso2v2</xercesImpl.version-->
