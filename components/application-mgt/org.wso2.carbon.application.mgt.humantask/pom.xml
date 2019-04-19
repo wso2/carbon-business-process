@@ -76,7 +76,7 @@
                         <Private-Package>org.wso2.carbon.application.mgt.humantask.internal
                         </Private-Package>
                         <Import-Package>
-                            org.wso2.carbon.application.deployer.*; version="${carbon.commons.imp.pkg.version}",
+                            org.wso2.carbon.application.deployer.*; version="${carbon.kernel.imp.pkg.version}",
                             org.wso2.carbon.humantask.skeleton.mgt.services.*;
                             version="${carbon.business-process.imp.pkg.version}",
                             *;resolution:=optional
