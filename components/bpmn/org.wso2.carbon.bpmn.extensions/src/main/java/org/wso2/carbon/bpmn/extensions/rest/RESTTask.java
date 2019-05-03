@@ -132,6 +132,8 @@ public class RESTTask implements JavaDelegate {
     private static final String DELETE_METHOD = "DELETE";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_XML = "application/xml";
+    private static final String REST_INVOKE_ERROR_CODE = "REST_INVOKE_ERROR_CODE";
+    private static final String REST_INVOKE_ERROR_MESSAGE = "REST_INVOKE_ERROR_MESSAGE";
 
     private Expression serviceURL;
     private Expression basicAuthUsername;
@@ -361,9 +363,13 @@ public class RESTTask implements JavaDelegate {
             RESTResponse response) {
         if (httpStatusVariable != null && response != null) {
             execution.setVariable(httpStatusVariable.getValue(execution).toString(), response.getHttpStatus());
+        } else if (response != null) {
+            execution.setVariable(REST_INVOKE_ERROR_CODE, response.getHttpStatus());
         }
         if (errorMessageVariable != null) {
             execution.setVariable(errorMessageVariable.getValue(execution).toString(), errorMessage);
+        } else {
+            execution.setVariable(REST_INVOKE_ERROR_MESSAGE, errorMessage);
         }
     }
 
