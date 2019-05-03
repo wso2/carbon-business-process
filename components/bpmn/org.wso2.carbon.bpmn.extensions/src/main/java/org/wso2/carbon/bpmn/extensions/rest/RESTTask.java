@@ -132,6 +132,8 @@ public class RESTTask implements JavaDelegate {
     private static final String DELETE_METHOD = "DELETE";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_XML = "application/xml";
+    private static final String REST_INVOKE_ERROR_CODE = "REST_INVOKE_ERROR_CODE";
+    private static final String REST_INVOKE_ERROR_MESSAGE = "REST_INVOKE_ERROR_MESSAGE";
 
     private Expression serviceURL;
     private Expression basicAuthUsername;
@@ -144,6 +146,7 @@ public class RESTTask implements JavaDelegate {
     private Expression headers;
     private Expression responseHeaderVariable;
     private Expression httpStatusVariable;
+    private Expression errorMessageVariable;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -165,7 +168,7 @@ public class RESTTask implements JavaDelegate {
 
         RESTInvoker restInvoker = BPMNRestExtensionHolder.getInstance().getRestInvoker();
 
-        RESTResponse response;
+        RESTResponse response = null;
         String url = null;
         String bUsername = null;
         String bPassword = null;
@@ -297,6 +300,7 @@ public class RESTTask implements JavaDelegate {
                     } else {
                         String errorMessage = "Unrecognized content type found. " + "HTTP Status : " + response
                                 .getHttpStatus() + ", Response Content : " + output.toString();
+                        setErrorDetailsForTaskExecution(execution, errorMessage, response);
                         throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
                     }
                     execution.setVariable(varName, value);
@@ -332,16 +336,19 @@ public class RESTTask implements JavaDelegate {
                 | SAXException | ParserConfigurationException e) {
             String errorMessage = "Failed to execute " + method.getValue(execution).toString() +
                     " " + url + " within task " + getTaskDetails(execution);
+            setErrorDetailsForTaskExecution(execution, errorMessage, response);
             log.error(errorMessage, e);
             throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         } catch (BPMNJsonException | BPMNXmlException e) {
             String errorMessage = "Failed to extract values for output mappings, the response content" +
                     " doesn't support the expression" + method.getValue(execution).toString() + " " +
                     url + " within task " + getTaskDetails(execution);
+            setErrorDetailsForTaskExecution(execution, errorMessage, response);
             log.error(errorMessage, e);
             throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         } catch (UserStoreException e) {
             String errorMessage = "Failed to obtain tenant domain information" ;
+            setErrorDetailsForTaskExecution(execution, errorMessage, response);
             log.error(errorMessage, e);
             throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         }
@@ -350,6 +357,20 @@ public class RESTTask implements JavaDelegate {
     private String getTaskDetails(DelegateExecution execution) {
         String task = execution.getCurrentActivityId() + ":" + execution.getCurrentActivityName() + " in process instance " + execution.getProcessInstanceId();
         return task;
+    }
+
+    private void setErrorDetailsForTaskExecution(DelegateExecution execution, String errorMessage,
+            RESTResponse response) {
+        if (httpStatusVariable != null && response != null) {
+            execution.setVariable(httpStatusVariable.getValue(execution).toString(), response.getHttpStatus());
+        } else if (response != null) {
+            execution.setVariable(REST_INVOKE_ERROR_CODE, response.getHttpStatus());
+        }
+        if (errorMessageVariable != null) {
+            execution.setVariable(errorMessageVariable.getValue(execution).toString(), errorMessage);
+        } else {
+            execution.setVariable(REST_INVOKE_ERROR_MESSAGE, errorMessage);
+        }
     }
 
     public void setServiceURL(Expression serviceURL) {
@@ -399,4 +420,9 @@ public class RESTTask implements JavaDelegate {
     public void setBasicAuthPassword(Expression basicAuthPassword) {
         this.basicAuthPassword = basicAuthPassword;
     }
+
+    public void setErrorMessageVariable(Expression errorMessageVariable) {
+        this.errorMessageVariable = errorMessageVariable;
+    }
+
 }
