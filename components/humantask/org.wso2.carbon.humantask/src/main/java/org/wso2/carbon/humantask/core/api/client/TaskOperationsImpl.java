@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.humantask.client.api.*;
 import org.wso2.carbon.humantask.client.api.types.*;
@@ -81,6 +82,7 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -1696,7 +1698,6 @@ public class TaskOperationsImpl extends AbstractAdmin
             throw new HumanTaskRuntimeException("Cannot determine the user name of the user " +
                     "performing the task operation!");
         }
-
         return userName;
     }
 

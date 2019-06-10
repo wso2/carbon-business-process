@@ -66,8 +66,10 @@ public final class OperationAuthorizationUtil {
                             entityForRole.getOrgEntityType())) {
                         String roleName = entityForRole.getName();
                         List<String> userListForRole = pqe.getUserNameListForRole(roleName);
-                        if (userListForRole.contains(validatee.getName())) {
-                            return true;
+                        for (String userName : userListForRole) {
+                            if (validatee.getName().equalsIgnoreCase(userName)) {
+                                return true;
+                            }
                         }
                     }
                 }
