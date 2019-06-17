@@ -13,31 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.wso2.carbon.humantask.coordination.module.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.humantask.core.HumanTaskEngineService;
 
-
-/**
- * @scr.component name="org.wso2.carbon.humantask.HTCoordinationModuleServiceComponent" immediate="true"
- * @scr.reference name="humantask.engine"
- * interface="org.wso2.carbon.humantask.core.HumanTaskEngineService"
- * cardinality="1..1" policy="dynamic" bind="setHTServer" unbind="unsetHTServer"
- */
+@Component(
+        name = "org.wso2.carbon.humantask.HTCoordinationModuleServiceComponent",
+        immediate = true)
 public class HTCoordinationModuleServiceComponent {
+
     private static Log log = LogFactory.getLog(HTCoordinationModuleContentHolder.class);
 
+    @Activate
     protected void activate(ComponentContext ctxt) {
-        if(log.isDebugEnabled()) {
+
+        if (log.isDebugEnabled()) {
             log.debug("HumanTask Coordination Module is activated.");
         }
     }
 
+    @Reference(
+            name = "humantask.engine",
+            service = org.wso2.carbon.humantask.core.HumanTaskEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetHTServer")
     protected void setHTServer(HumanTaskEngineService humanTaskEngineService) {
+
         if (log.isDebugEnabled()) {
             log.debug("HTServer bound from the coordination module");
         }
@@ -45,6 +55,7 @@ public class HTCoordinationModuleServiceComponent {
     }
 
     protected void unsetHTServer(HumanTaskEngineService humanTaskEngineService) {
+
         if (log.isDebugEnabled()) {
             log.debug("HTServer unbound from the coordination module");
         }
