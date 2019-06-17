@@ -97,6 +97,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -157,17 +162,17 @@
                         <configuration>
                             <tasks>
                                 <path id="h2.classpath">
-                                    <path refid="maven.compile.classpath" />
+                                    <path refid="maven.compile.classpath"/>
                                 </path>
 
-                                <echo message="########### Create B4P Coordination Database ##############" />
-                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/target/database/b4ph2db;create=true" userid="sa" password="" autocommit="true" onerror="continue">
+                                <echo message="########### Create B4P Coordination Database ##############"/>
+                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="" url="jdbc:h2:${basedir}/target/database/b4ph2db;create=true" userid="sa">
                                     <classpath>
-                                        <path refid="h2.classpath" />
+                                        <path refid="h2.classpath"/>
                                     </classpath>
-                                    <fileset file="${basedir}/target/h2.sql" />
+                                    <fileset file="${basedir}/target/h2.sql"/>
                                 </sql>
-                                <echo message="##################### END ############################" />
+                                <echo message="##################### END ############################"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -179,19 +184,19 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="maven.runtime.classpath" refid="maven.compile.classpath" />
+                                <property name="maven.runtime.classpath" refid="maven.compile.classpath"/>
                                 <path id="classpath">
-                                    <pathelement path="${maven.runtime.classpath}" />
+                                    <pathelement path="${maven.runtime.classpath}"/>
                                 </path>
-                                <taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="classpath" />
+                                <taskdef classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="classpath" name="openjpac"/>
                                 <openjpac>
                                     <fileset dir="${basedir}/src/main">
-                                        <include name="**/dao/jpa/openjpa/entity/*.java" />
+                                        <include name="**/dao/jpa/openjpa/entity/*.java"/>
                                         <!--<include name="**/*.java" />-->
                                     </fileset>
                                     <classpath>
-                                        <pathelement location="${basedir}/target/classes" />
-                                        <pathelement path="${maven.runtime.classpath}" />
+                                        <pathelement location="${basedir}/target/classes"/>
+                                        <pathelement path="${maven.runtime.classpath}"/>
                                     </classpath>
                                 </openjpac>
                             </tasks>
