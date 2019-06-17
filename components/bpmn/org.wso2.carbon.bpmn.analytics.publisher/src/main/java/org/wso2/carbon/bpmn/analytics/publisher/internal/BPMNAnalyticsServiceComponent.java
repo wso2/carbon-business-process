@@ -18,6 +18,11 @@ package org.wso2.carbon.bpmn.analytics.publisher.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisher;
 import org.wso2.carbon.bpmn.analytics.publisher.BPMNDataPublisherException;
 import org.wso2.carbon.bpmn.analytics.publisher.BPSAnalyticsServer;
@@ -26,17 +31,11 @@ import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
-/**
- * @scr.component name="org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent"
- * immediate="true"
- * @scr.reference name="realm.service" interface="org.wso2.carbon.user.core.service.RealmService"
- * cardinality="1..1" policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
- * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
- * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
- * @scr.reference name="bpmn.service" interface="org.wso2.carbon.bpmn.core.BPMNEngineService"
- * cardinality="1..1" policy="dynamic" bind="setBPMNEngineService" unbind="unsetBPMNEngineService"
- */
+@Component(
+        name = "org.wso2.carbon.bpmn.analytics.publisher.internal.BPMNAnalyticsServiceComponent",
+        immediate = true)
 public class BPMNAnalyticsServiceComponent {
+
     private static final Log log = LogFactory.getLog(BPMNAnalyticsServiceComponent.class);
 
     /**
@@ -44,6 +43,7 @@ public class BPMNAnalyticsServiceComponent {
      *
      * @param ctxt ComponentContext
      */
+    @Activate
     protected void activate(ComponentContext ctxt) {
 
         try {
@@ -52,8 +52,7 @@ public class BPMNAnalyticsServiceComponent {
             BPSAnalyticsService bpsAnalyticsService = new BPSAnalyticsService();
             bpsAnalyticsService.setBPSAnalyticsServer(bpmnAnalyticsHolder.getBPSAnalyticsServer());
             // Register BPS analytics Service OSGI Service
-            ctxt.getBundleContext().registerService(BPSAnalyticsService.class.getName(),
-                    bpsAnalyticsService, null);
+            ctxt.getBundleContext().registerService(BPSAnalyticsService.class.getName(), bpsAnalyticsService, null);
             BPMNDataPublisher BPMNDataPublisher = new BPMNDataPublisher();
             BPMNAnalyticsHolder.getInstance().setBpmnDataPublisher(BPMNDataPublisher);
             BPMNDataPublisher.configure();
@@ -63,11 +62,19 @@ public class BPMNAnalyticsServiceComponent {
         }
     }
 
+    @Reference(
+            name = "bpmn.service",
+            service = org.wso2.carbon.bpmn.core.BPMNEngineService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetBPMNEngineService")
     public void setBPMNEngineService(BPMNEngineService bpmnEngineService) {
+
         BPMNAnalyticsHolder.getInstance().setBpmnEngineService(bpmnEngineService);
     }
 
     public void unsetBPMNEngineService(BPMNEngineService bpmnEngineService) {
+
         BPMNAnalyticsHolder.getInstance().setBpmnEngineService(null);
     }
 
@@ -76,7 +83,14 @@ public class BPMNAnalyticsServiceComponent {
      *
      * @param registryService
      */
+    @Reference(
+            name = "registry.service",
+            service = org.wso2.carbon.registry.core.service.RegistryService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRegistryService")
     public void setRegistryService(RegistryService registryService) {
+
         BPMNAnalyticsHolder.getInstance().setRegistryService(registryService);
     }
 
@@ -86,6 +100,7 @@ public class BPMNAnalyticsServiceComponent {
      * @param registryService
      */
     public void unsetRegistryService(RegistryService registryService) {
+
         BPMNAnalyticsHolder.getInstance().setRegistryService(null);
     }
 
@@ -94,7 +109,14 @@ public class BPMNAnalyticsServiceComponent {
      *
      * @param realmService
      */
+    @Reference(
+            name = "realm.service",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService")
     public void setRealmService(RealmService realmService) {
+
         BPMNAnalyticsHolder.getInstance().setRealmService(realmService);
     }
 
@@ -104,12 +126,13 @@ public class BPMNAnalyticsServiceComponent {
      * @param realmService
      */
     public void unsetRealmService(RealmService realmService) {
+
         BPMNAnalyticsHolder.getInstance().setRealmService(null);
     }
 
     // Initializing the analytics server .
-    private void initAnalyticsServer(BPMNAnalyticsHolder bpmnAnalyticsHolder)
-            throws BPMNDataPublisherException {
+    private void initAnalyticsServer(BPMNAnalyticsHolder bpmnAnalyticsHolder) throws BPMNDataPublisherException {
+
         bpmnAnalyticsHolder.setBPSAnalyticsServer(new BPSAnalyticsServer());
         bpmnAnalyticsHolder.getBPSAnalyticsServer().init();
     }
