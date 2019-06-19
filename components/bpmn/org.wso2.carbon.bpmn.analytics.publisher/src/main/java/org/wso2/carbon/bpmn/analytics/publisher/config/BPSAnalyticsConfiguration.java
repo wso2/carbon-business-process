@@ -15,6 +15,7 @@
 */
 package org.wso2.carbon.bpmn.analytics.publisher.config;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,12 +27,14 @@ import org.wso2.carbon.bps.common.analytics.config.TBPMN;
 import org.wso2.carbon.bps.common.analytics.config.TBPSAnalytics;
 import org.wso2.securevault.SecretResolver;
 import org.wso2.securevault.SecretResolverFactory;
+import org.wso2.securevault.commons.MiscellaneousUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.namespace.QName;
 
 /**
  * The memory model of the BPS analytics configuration - bps-analytics.xml.
@@ -100,9 +103,17 @@ public class BPSAnalyticsConfiguration {
 
 
         SecretResolver secretResolver = null;
+        OMElement analyticPassword = null;
         try (InputStream in = new FileInputStream(BPSAnalyticsConfigurationFile);) {
             StAXOMBuilder builder = new StAXOMBuilder(in);
-            secretResolver = SecretResolverFactory.create(builder.getDocumentElement(), true);
+            OMElement rootElement = builder.getDocumentElement();
+            secretResolver = SecretResolverFactory.create(rootElement, true);
+            OMElement analyticServer = rootElement.getFirstChildWithName(new
+                                        QName(AnalyticsPublisherConstants.BPS_ANALYTIC_SERVER_KEY));
+            if (analyticServer != null) {
+                analyticPassword = analyticServer.getFirstChildWithName(new
+                                    QName(AnalyticsPublisherConstants.BPS_ANALYTIC_PASSWORD_KEY));
+            }
         } catch (Exception e) {
             log.warn("Error occurred while retrieving secured BPS Analytics configuration.", e);
         }
@@ -111,7 +122,7 @@ public class BPSAnalyticsConfiguration {
             return;
         }
         if (tBPSAnalytics.getAnalyticServer() != null) {
-            initAnalytics(secretResolver, tBPSAnalytics.getAnalyticServer());
+            initAnalytics(secretResolver, tBPSAnalytics.getAnalyticServer(), analyticPassword);
         }
         if (tBPSAnalytics.getBPMN() != null) {
             initBPMNAnalytics(tBPSAnalytics.getBPMN());
@@ -125,7 +136,8 @@ public class BPSAnalyticsConfiguration {
      * @param tAnalyticServer
      * @param secretResolver
      */
-    private void initAnalytics(SecretResolver secretResolver, TAnalyticServer tAnalyticServer) {
+    private void initAnalytics(SecretResolver secretResolver, TAnalyticServer tAnalyticServer,
+                               OMElement analyticPassword) {
 
         // Get Auth URL Set
         this.analyticsAuthURLSet = tAnalyticServer.getAuthURLSet();
@@ -136,11 +148,8 @@ public class BPSAnalyticsConfiguration {
         // Get Username
         this.analyticsServerUsername = tAnalyticServer.getUsername();
         // Get Password
-        if (secretResolver != null && secretResolver.isInitialized()
-                && secretResolver.isTokenProtected(AnalyticsPublisherConstants
-                .BPS_BPMN_ANALYTICS_SERVER_PASSWORD_SECRET_ALIAS)) {
-            this.analyticsServerPassword = secretResolver.resolve(AnalyticsPublisherConstants
-                    .BPS_BPMN_ANALYTICS_SERVER_PASSWORD_SECRET_ALIAS);
+        if (secretResolver != null && secretResolver.isInitialized() && analyticPassword != null) {
+            this.analyticsServerPassword = MiscellaneousUtil.resolve(analyticPassword, secretResolver);
             if (log.isDebugEnabled()) {
                 log.debug("Loaded analytics password from secure vault");
             }

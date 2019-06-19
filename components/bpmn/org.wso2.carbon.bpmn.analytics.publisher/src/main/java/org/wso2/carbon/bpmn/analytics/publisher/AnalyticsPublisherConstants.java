@@ -39,4 +39,7 @@ public class AnalyticsPublisherConstants {
     // BPS Analytics Configurations related constants
     public static final String BPS_BPMN_ANALYTICS_SERVER_PASSWORD_SECRET_ALIAS = "BPS.Analytics.Server.Password";
     public static final String BPS_ANALYTICS_CONFIGURATION_FILE_NAME = "bps-analytics.xml";
+
+    public static final String BPS_ANALYTIC_SERVER_KEY = "AnalyticServer";
+    public static final String BPS_ANALYTIC_PASSWORD_KEY = "Password";
 }
