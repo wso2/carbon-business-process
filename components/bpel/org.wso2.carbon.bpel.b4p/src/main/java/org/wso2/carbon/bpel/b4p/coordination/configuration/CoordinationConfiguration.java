@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.bpel.b4p.coordination.configuration;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,12 +29,14 @@ import org.wso2.carbon.bpel.b4p.coordination.config.TTaskAuthenticationConfig;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.securevault.SecretResolver;
 import org.wso2.securevault.SecretResolverFactory;
+import org.wso2.securevault.commons.MiscellaneousUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.namespace.QName;
 
 /**
  * Utility class for reading Coordination Configuration from b4p-coordination-config.xml.
@@ -43,6 +46,10 @@ public class CoordinationConfiguration {
     public static final String HUMAN_TASK_COORDINATION_CONFIG_FILE = "b4p-coordination-config.xml";
     public static final String PROTOCOL_HANDLER_USERNAME_ALIAS = "HumanTask.ProtocolHandler.Username";
     public static final String PROTOCOL_HANDLER_PASSWORD_ALIAS = "HumanTask.ProtocolHandler.Password";
+    public static final String HUMAN_TASK_HANDLER_AUTHENTICATION = "TaskProtocolHandlerAuthentication";
+    public static final String HUMAN_TASK_HANDLER_USERNAME = "Username";
+    public static final String HUMEN_TASK_HANDLER_PASSWORD = "Password";
+
     private static Log log = LogFactory.getLog(CoordinationConfiguration.class);
     private static volatile CoordinationConfiguration coordinationConfiguration = null;
     private boolean humantaskCoordinationEnabled = false;
@@ -121,6 +128,36 @@ public class CoordinationConfiguration {
             in = new FileInputStream(file);
             StAXOMBuilder builder = new StAXOMBuilder(in);
             secretResolver = SecretResolverFactory.create(builder.getDocumentElement(), true);
+            OMElement taskHandler = builder.getDocumentElement().
+                    getFirstChildWithName(new QName(HUMAN_TASK_HANDLER_AUTHENTICATION));
+            if (taskHandler != null) {
+                OMElement taskHandlerUsername = taskHandler.getFirstChildWithName(new
+                                                    QName(HUMAN_TASK_HANDLER_USERNAME));
+                OMElement taskHandlerPassword = taskHandler.getFirstChildWithName(new
+                                                    QName(HUMEN_TASK_HANDLER_PASSWORD));
+                // Get Username
+                if (secretResolver != null && secretResolver.isInitialized() && taskHandlerUsername != null) {
+                    protocolHandlerAdminUser = MiscellaneousUtil.resolve(taskHandlerUsername, secretResolver);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Loaded TaskEngine's protocol handler username from secure vault");
+                    }
+                } else {
+                    if (authentication.getUsername() != null) {
+                        this.protocolHandlerAdminUser = authentication.getUsername();
+                    }
+                }
+                // Get Password
+                if (secretResolver != null && secretResolver.isInitialized() && taskHandlerPassword != null) {
+                    protocolHandlerAdminPassword = MiscellaneousUtil.resolve(taskHandlerPassword, secretResolver);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Loaded TaskEngine's protocol handler password from secure vault");
+                    }
+                } else {
+                    if (authentication.getPassword() != null) {
+                        this.protocolHandlerAdminPassword = authentication.getPassword();
+                    }
+                }
+            }
         } catch (Exception e) {
             log.warn("Error occurred while retrieving secured TaskEngineProtocolHandler configuration.", e);
         } finally {
@@ -128,30 +165,6 @@ public class CoordinationConfiguration {
                 in.close();
             } catch (IOException e) {
                 log.error(e.getLocalizedMessage(), e);
-            }
-        }
-        // Get Username
-        if (secretResolver != null && secretResolver.isInitialized()
-                && secretResolver.isTokenProtected(PROTOCOL_HANDLER_USERNAME_ALIAS)) {
-            protocolHandlerAdminUser = secretResolver.resolve(PROTOCOL_HANDLER_USERNAME_ALIAS);
-            if (log.isDebugEnabled()) {
-                log.debug("Loaded TaskEngine's protocol handler username from secure vault");
-            }
-        } else {
-            if (authentication.getUsername() != null) {
-                this.protocolHandlerAdminUser = authentication.getUsername();
-            }
-        }
-        // Get Password
-        if (secretResolver != null && secretResolver.isInitialized()
-                && secretResolver.isTokenProtected(PROTOCOL_HANDLER_PASSWORD_ALIAS)) {
-            protocolHandlerAdminPassword = secretResolver.resolve(PROTOCOL_HANDLER_PASSWORD_ALIAS);
-            if (log.isDebugEnabled()) {
-                log.debug("Loaded TaskEngine's protocol handler password from secure vault");
-            }
-        } else {
-            if (authentication.getPassword() != null) {
-                this.protocolHandlerAdminPassword = authentication.getPassword();
             }
         }
     }

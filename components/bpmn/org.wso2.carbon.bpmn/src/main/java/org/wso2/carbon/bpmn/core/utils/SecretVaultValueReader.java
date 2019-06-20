@@ -22,6 +22,7 @@ import org.wso2.carbon.bpmn.core.BPMNConstants;
 import org.wso2.carbon.bpmn.core.BPSFault;
 import org.wso2.securevault.SecretResolver;
 import org.wso2.securevault.SecretResolverFactory;
+import org.wso2.securevault.commons.MiscellaneousUtil;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -102,16 +103,8 @@ public class SecretVaultValueReader {
      */
     private String getSecureVaultValue(SecretResolver secretResolver, OMElement propertyElement) {
         String value = null;
-        OMAttribute attribute;
-
         if (propertyElement != null) {
-            attribute = propertyElement.getAttribute(
-                    new QName(BPMNConstants.SECURE_VAULT_NS, "secretAlias")
-            );
-
-            if (attribute != null) {
-                value = secretResolver.resolve(attribute.getAttributeValue());
-            }
+            value = MiscellaneousUtil.resolve(propertyElement, secretResolver);
         }
         return value;
     }
